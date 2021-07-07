@@ -149,12 +149,13 @@ foreach ($fields as $f) {
                             <span class="mail" data-toggle="tooltip" title="Share via Email"><a href="javascript:;"
                                                                                                 onclick="window.open('<?= 'mailto:?&body=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-envelope"></i></a></span>
-                            <span class="link" data-toggle="tooltip" title="Share on LinkedIn"><a href="javascript:;"
-                                                                                                  onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
+                            <span class="link" data-toggle="tooltip" title="Share on LinkedIn"><a
+                                        href="javascript:;"
+                                        onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-linkedin"></i></a></span>
                             <span class="j-">
                             <?php
-                                $link = Url::to('/'.$app_type.'/'.$application_name['slug'], "https");
+                            $link = Url::to('/' . $app_type . '/' . $application_name['slug'], "https");
                             ?>
                             <a href="javascript:;" class="clipb tt jj-clipboard" type="button" data-toggle="tooltip"
                                title="Copy Link" data-link="<?= $link ?>">
@@ -258,7 +259,7 @@ foreach ($fields as $f) {
                         <span class="j-delt">
                             <a href="#" id="j-delete" data-toggle="tooltip"
                                title="Delete <?= $app_type ?>" value="<?= $application_id ?>"><i
-                                class="fa fa-trash-o"></i></a>
+                                        class="fa fa-trash-o"></i></a>
                         </span>
                         <span class="j-cls">
                             <a href="#" id="j-closed" data-toggle="tooltip"
@@ -426,7 +427,8 @@ foreach ($fields as $f) {
                                                        name="<?= $arr['applied_application_enc_id'] . 'rejectType' ?>"
                                                        id="<?= $arr['applied_application_enc_id'] . 'permanent' ?>"
                                                        class="">
-                                                <label for="<?= $arr['applied_application_enc_id'] . 'permanent' ?>">Blacklist Candidate</label>
+                                                <label for="<?= $arr['applied_application_enc_id'] . 'permanent' ?>">Blacklist
+                                                    Candidate</label>
                                             </div>
                                         </li>
                                         <li>
@@ -598,7 +600,8 @@ foreach ($fields as $f) {
                                         <?php
                                         if (COUNT($arr['createdBy']['userEducations']) > 1) {
                                             ?>
-                                            &nbsp <span>+<?= COUNT($arr['createdBy']['userEducations']) - 1 ?> more</span>
+                                            &nbsp
+                                            <span>+<?= COUNT($arr['createdBy']['userEducations']) - 1 ?> more</span>
                                             <?php
                                         }
                                         ?>
@@ -685,25 +688,30 @@ foreach ($fields as $f) {
                                         ?>
                                         <li>
                                             <?php
-                                               $phoneArr = explode('+', $arr['phone']);
-                                               $phone = $phoneArr[1]
+                                            $phoneArr = explode('+', $arr['phone']);
+                                            $phone = $phoneArr[1]
                                             ?>
                                             <a href="https://api.whatsapp.com/send?phone=<?= $phone ?>"
-                                               title="Contact Candidate" data-toggle="tooltip" class="shareBtn"><i class="fa fa-whatsapp"></i></a>
+                                               title="Contact Candidate" data-toggle="tooltip" class="shareBtn"><i
+                                                        class="fa fa-whatsapp"></i></a>
                                         </li>
-                                        <li>
-                                            <a href="/account/schedular/interview?app_id=<?= $application_id ?>&applied_id=<?= $arr['applied_application_enc_id'] ?>&current_round=<?= $arr['current_round'] ?>"
-                                               title="Schedule Interview" data-toggle="tooltip">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/interview-schedule.png') ?>"/>
-                                            </a>
-                                        </li>
+                                        <?php if ($arr['status'] != 'Hired' && $arr['status'] != 'Cancelled') { ?>
+                                            <li>
+                                                <a href="/account/schedular/interview?app_id=<?= $application_id ?>&applied_id=<?= $arr['applied_application_enc_id'] ?>&current_round=<?= $arr['current_round'] ?>"
+                                                   title="Schedule Interview" data-toggle="tooltip">
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/interview-schedule.png') ?>"/>
+                                                </a>
+                                            </li>
+                                        <?php } ?>
                                         <li class="notes" data-toggle="tooltip" title="Notes">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/notes-icon-circle.png') ?>"
                                                  class="noteImg" data-val="<?= $notes; ?>">
                                         </li>
                                         <li>
                                             <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
-                                               data-key="<?= $arr['name']; ?>" data-img="<?= (($arr['image']) ? $arr['image'] : "https://ui-avatars.com/api/?name=" . $arr['name'] . "&size=200&rounded=false&background=" . str_replace('#', '', $arr['initials_color']) . "&color=ffffff") ?>" title="Chat Now"
+                                               data-key="<?= $arr['name']; ?>"
+                                               data-img="<?= (($arr['image']) ? $arr['image'] : "https://ui-avatars.com/api/?name=" . $arr['name'] . "&size=200&rounded=false&background=" . str_replace('#', '', $arr['initials_color']) . "&color=ffffff") ?>"
+                                               title="Chat Now"
                                                data-toggle="tooltip">
                                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
                                             </a>
