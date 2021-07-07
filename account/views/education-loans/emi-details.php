@@ -1,5 +1,7 @@
 <?php
-use yii\helpers\Url;
+$payable_interest = ($data->loan_amount / 100 * 15);
+$total_payment = (int)$payable_interest + (int)$data->loan_amount + (int)$data->processing_fee;
+$emi_structures = $data->loanEmiStructures;
 ?>
     <section>
         <div class="container">
@@ -17,87 +19,73 @@ use yii\helpers\Url;
                         <div class="portlet-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <p class="loanName">School Loan For Tarry</p>
+<!--                                    <p class="loanName">School Loan For Tarry</p>-->
+                                    <p class="loanName"><?= $data->loanAppEnc->loanTypeEnc->loan_name . ' for ' . $data->loanAppEnc->createdBy->first_name ?></p>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-3 col-sm-4 text-sm-left borderRight">
                                     <div class="statsBox">
                                         <p class="mb0">Total Payment</p>
-                                        <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 77,000</h3>
+                                        <h3 class="mt10"><span><i class="fa fa-inr"></i></span> <?= money_format('%!i', $total_payment) ?></h3>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-4 col-xs-6 text-sm-left borderRight">
                                     <div class="statsBox">
                                         <p class="mb0">Interest Payable</p>
-                                        <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 10,780 <span>14%</span></h3>
+                                        <h3 class="mt10"><span><i class="fa fa-inr"></i></span> <?= money_format('%!i', $payable_interest) ?> <span><?= $data->rate_of_interest ?>%</span></h3>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-4 col-xs-6 text-sm-left borderRight">
                                     <div class="statsBox">
                                         <p class="mb0">Principle Amount</p>
-                                        <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 66,220</h3>
+                                        <h3 class="mt10"><span><i class="fa fa-inr"></i></span> <?= money_format('%!i', $data->loan_amount); ?></h3>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-4 col-xs-6 text-sm-left borderRight">
                                     <div class="statsBox">
                                         <p class="mb0">Processing Fee</p>
-                                        <h3 class="mt10"><span><i class="fa fa-inr"></i></span> 2000</h3>
+                                        <h3 class="mt10"><span><i class="fa fa-inr"></i></span> <?= money_format('%!i', $data->processing_fee); ?></h3>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="scroll-table">
-                                        <table class="emiTable">
-                                            <thead>
-                                            <tr>
-                                                <th class="w30">Installment Date</th>
-                                                <th class="w30">Installment Amount</th>
-                                                <th class="w30">Loan Amount</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td>01 Jan 2021</td>
-                                                <td><i class="fa fa-inr"></i> 9,000</td>
-                                                <td><i class="fa fa-inr"></i> 77,000</td>
-                                            </tr>
-                                            <tr>
-                                                <td>01 Feb 2021</td>
-                                                <td><i class="fa fa-inr"></i> 9,000</td>
-                                                <td><i class="fa fa-inr"></i> 68,000</td>
-                                            </tr>
-                                            <tr>
-                                                <td>01 Mar 2021</td>
-                                                <td><i class="fa fa-inr"></i> 9,000</td>
-                                                <td><i class="fa fa-inr"></i> 59,000</td>
-                                            </tr>
-                                            <tr>
-                                                <td>01 Apr 2021</td>
-                                                <td><i class="fa fa-inr"></i> 9,000</td>
-                                                <td><i class="fa fa-inr"></i> 50,000</td>
-                                            </tr>
-                                            <tr>
-                                                <td>01 May 2021</td>
-                                                <td><i class="fa fa-inr"></i> 9,000</td>
-                                                <td><i class="fa fa-inr"></i> 41,000</td>
-                                            </tr>
-                                            <tr>
-                                                <td>01 Jun 2021</td>
-                                                <td><i class="fa fa-inr"></i> 9,000</td>
-                                                <td><i class="fa fa-inr"></i> 32,000</td>
-                                            </tr>
-                                            <tr>
-                                                <td>01 Jul 2021</td>
-                                                <td><i class="fa fa-inr"></i> 9,000</td>
-                                                <td><i class="fa fa-inr"></i> 23,000</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                            <?php
+                                if(count($emi_structures) >= 1){
+                                    ?>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="scroll-table">
+                                                <table class="emiTable">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="w30">Installment Date</th>
+                                                        <th class="w30">Installment Amount</th>
+                                                        <th class="w30">Loan Amount</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <?php
+                                                        $balanceAmount = (int)$total_payment;
+                                                        foreach ($emi_structures as $emi){
+                                                            $balanceAmount = $balanceAmount - (int)$emi->amount;
+                                                            ?>
+                                                            <tr>
+                                                                <td><?= date('d M Y', strtotime($emi->due_date)) ?></td>
+                                                                <td><i class="fa fa-inr"></i> <?= money_format('%!i', $emi->amount) ?></td>
+                                                                <td><i class="fa fa-inr"></i> <?= money_format('%!i', $balanceAmount) ?></td>
+                                                            </tr>
+                                                            <?php
+                                                        }
+                                                    ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
+                                    <?php
+                                }
+                            ?>
+
                         </div>
                     </div>
                 </div>
