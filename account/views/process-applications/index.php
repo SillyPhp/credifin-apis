@@ -1004,7 +1004,7 @@ $this->registerCss('
 
 .page-content {
    position:relative;
-    padding:50px 0px 0px 0px!important;
+    padding:0px 0px 0px 0px!important;
 }
 .bg-img{
     position: absolute;
@@ -1305,7 +1305,7 @@ $this->registerCss('
     left: 0;
     border: 1px solid #eee;
     width: 0px;
-    height: calc(100vh - 105px);
+    height: calc(100vh - 62px);
     transition: .3s ease;
     box-shadow: 0 0 10px rgba(0,0,0,.2);
     z-index: 999;
