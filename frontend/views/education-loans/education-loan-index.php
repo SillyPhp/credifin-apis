@@ -129,7 +129,7 @@ use yii\helpers\Url;
                 <?php
                 foreach ($loan_org as $l) {
                     ?>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-sm-4 col-xs-12">
                         <a href="<?= Url::to('/education-loans/apply-loan/' . $l['organization_enc_id'], true) ?>"
                            target="_blank">
                             <div class="college-card-partner">
@@ -402,9 +402,9 @@ $this->registerCss('
 }
 .img-back-partner{
   position: absolute;
-  width: 350px;
-  height: 350px;
-  border:1px solid #91c8ff;
+  width: 450px;
+  height: 450px;
+  border:0px solid #91c8ff;
   top:22%;
   left:50%;
   border-radius: 50%;
@@ -419,7 +419,7 @@ $this->registerCss('
 //}
 
 .college-card-partner:hover > .img-back-partner{
- border-width: 150px; 
+ border-width: 500px; 
 }
 
 .college-card-partner p{

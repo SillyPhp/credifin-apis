@@ -247,16 +247,11 @@ $this->registerCss('
 }
 .marg-top{margin-top:50px;}
 .study-in-usa-bg {
-//	background: url(' . Url::to('@eyAssets/images/pages/education-loans/bg1.png') . ');
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: top right;
 	display: flex;
 	align-items: center;
 	position: relative;
 	text-align: center;
-    height: 80vh;
-    max-height: 600px;
+    min-height: 550px;
 }
 .study-in-usa-bg h1 {
 	font-size: 32px;
@@ -288,9 +283,11 @@ $this->registerCss('
     color: #ffffff;
     border: none;
     outline: none;
+    display:inline-block;
 }
 .loan-side-img img {
     width: 100%;
+    margin:20px 0;
 }
 .study-in-usa-bg ul li{
     display: inline;
@@ -345,9 +342,9 @@ $this->registerCss('
 }
 .benefit-bg {
     background-color: #edf4fc;
+    padding:30px 0;
 }
 .bene-img {
-    padding: 15px;
     margin-bottom: 20px;
     text-align: center;
 }
@@ -356,20 +353,31 @@ $this->registerCss('
     margin-bottom: 8px;
     width: 90px;
     height: 90px;
-    color: #fff;
-    background-color: #00a0e3;
+    color: #00a0e3;
+    border: 6px solid #00a0e3;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 4px;
+    border-radius: 50%;
     margin: 0 auto;
-    box-shadow: 0 0 15px 0px rgb(0 0 0 / 50%);
+    position:relative;
+    box-shadow: inset 2px 2px 8px 0px #696969;
+}
+.bene-img i:after{
+    content: "";
+    left: 32px;
+    bottom: -22px;
+    position: absolute;
+    border-top: 10px solid transparent;
+    border-right: 15px solid #00A0E3;
+    border-bottom: 10px solid transparent;
+    transform: rotate(-90deg);
 }
 .bene-img p {
     font-size: 14px;
     font-family: roboto;
     font-weight: 500;
-    margin: 20px 0 0;
+    margin: 25px 0 0;
 }
 //.other-loan {
 //    padding: 20px 0 50px;
@@ -495,9 +503,17 @@ $this->registerCss('
 }
 }
 @media screen and (max-width: 515px) and (min-width: 300px) {
-.branding-logo{position:relative;}
+.branding-logo{
+    position:relative;
+    }
 .marg-top {
     margin-top: 0px;
-}
+    }
+.education-overview{
+    background-position: top left;
+    }
+.education-wrap h1, .table-head{
+    font-size:24px;
+    }
 }
 ');

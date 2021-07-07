@@ -236,26 +236,36 @@ foreach ($fields as $f) {
             <div class="col-md-3 col-sm-12">
                 <div class="ed-main">
                     <div class="option-1">
-                            <span class="j-edt">
-                                <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/edit"
-                                   target="_blank" data-toggle="tooltip" title=""
-                                   data-original-title="Edit <?= $app_type ?>"><i class="fa fa-pencil-square-o"></i></a>
-                            </span>
+                        <span class="j-edt">
+                            <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/edit"
+                               target="_blank" data-toggle="tooltip" title=""
+                               data-original-title="Edit <?= $app_type ?>"><i class="fa fa-pencil-square-o"></i></a>
+                        </span>
                         <span class="j-cln">
-                                <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/clone"
-                                   target="_blank" data-toggle="tooltip" title=""
-                                   data-original-title="Clone <?= $app_type ?>"><i class="fa fa-clone"></i></a>
-                            </span>
+                            <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/clone"
+                               target="_blank" data-toggle="tooltip" title=""
+                               data-original-title="Clone <?= $app_type ?>"><i class="fa fa-clone"></i></a>
+                        </span>
                         <span class="j-delt">
-                                <a href="#" id="j-delete" data-toggle="tooltip"
-                                   title="Delete <?= $app_type ?>" value="<?= $application_id ?>"><i
-                                            class="fa fa-trash-o"></i></a>
-                            </span>
+                            <a href="#" id="j-delete" data-toggle="tooltip"
+                               title="Delete <?= $app_type ?>" value="<?= $application_id ?>"><i
+                                class="fa fa-trash-o"></i></a>
+                        </span>
                         <span class="j-cls">
-                                <a href="#" id="j-closed" data-toggle="tooltip"
-                                   title="Close <?= $app_type ?>" data-name="<?= $app_type ?>"
-                                   value="<?= $application_id ?>"><i class="fa fa-times"></i></a>
-                            </span>
+                            <a href="#" id="j-closed" data-toggle="tooltip"
+                               title="Close <?= $app_type ?>" data-name="<?= $app_type ?>"
+                               value="<?= $application_id ?>"><i class="fa fa-times"></i></a>
+                        </span>
+                        <span class="j-">
+                            <?php
+
+                                $link = Url::to('/'.$app_type.'/'.$application_name['slug'], "https");
+                            ?>
+                            <a href="javascript:;" class="clipb tt jj-clipboard" type="button" data-toggle="tooltip"
+                               title="Copy Link" data-link="<?= $link ?>">
+                                <i class="fa fa-clipboard"></i>
+                            </a>
+                        </span>
                     </div>
                     <div class="scd-btn">
                         <a href="/account/schedular/interview?app_id=<?= $application_name['application_enc_id'] ?>">Schedule
@@ -670,6 +680,14 @@ foreach ($fields as $f) {
                                         }
                                         ?>
                                         <li>
+                                            <?php
+                                               $phoneArr = explode('+', $arr['phone']);
+                                               $phone = $phoneArr[1]
+                                            ?>
+                                            <a href="https://api.whatsapp.com/send?phone=<?= $phone ?>"
+                                               title="Contact Candidate" data-toggle="tooltip" class="shareBtn"><i class="fa fa-whatsapp"></i></a>
+                                        </li>
+                                        <li>
                                             <a href="/account/schedular/interview?app_id=<?= $application_id ?>&applied_id=<?= $arr['applied_application_enc_id'] ?>&current_round=<?= $arr['current_round'] ?>"
                                                title="Schedule Interview" data-toggle="tooltip">
                                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/interview-schedule.png') ?>"/>
@@ -895,6 +913,13 @@ foreach ($fields as $f) {
 $this->registerCss('
 .clamp-c{
   position:relative;
+}
+.shareBtn{
+    font-size: 30px;
+    color: #128c7e;
+}
+.shareBtn:hover{
+    color: #128c7e;
 }
 .all-data {
     position: absolute;
@@ -2135,6 +2160,7 @@ overflow: hidden;
 }
 ');
 $script = <<<JS
+console.log('$phone')
 window.onscroll = function() {myFunction()};
 
 var header = document.getElementById("myHeader");
@@ -2146,6 +2172,19 @@ function myFunction() {
   } else {
     header.classList.remove("sticky");
   }
+}
+$(document).on('click', '.jj-clipboard',function (event) {
+    event.preventDefault();
+    var link = $(this).attr('data-link');
+    CopyToClipboard(link, true, "Link copied");
+});
+function CopyToClipboard(value, showNotification, notificationText) {
+    var temp = $("<input>");
+    $("body").append(temp);
+    temp.val(value).select();
+    document.execCommand("copy");
+    temp.remove();
+    toastr.success("", "Link Copy to Clipboard");
 }
 $(document).on('click','#j-delete',function(e){
      e.preventDefault();

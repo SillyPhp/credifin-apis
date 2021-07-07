@@ -104,6 +104,7 @@ $this->registerCss('
     font-size: 13px;
 }
 .short-main {
+    height: 175px;
     border: 2px solid #eef1f5;
     padding: 20px 10px;
     position: relative;
