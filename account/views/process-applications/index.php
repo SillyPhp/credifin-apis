@@ -1454,7 +1454,7 @@ $this->registerCss('
 .set-height{height:55px;}
 .sticky {
     position: fixed;
-    top: 104px;
+    top: 65px;
     width: 83.45vw;
     z-index: 99;
     background: rgb(255, 255, 255);
