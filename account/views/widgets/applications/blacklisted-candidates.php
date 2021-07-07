@@ -2,7 +2,6 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 ?>
-
 <?php Pjax::begin(['id' => 'blockedCandidates']);
 foreach ($blacklistedApplicants['data'] as $s){ ?>
     <div class="col-md-4 col-sm-6">
@@ -104,6 +103,7 @@ $this->registerCss('
     font-size: 13px;
 }
 .short-main {
+    max-height: 175px;
     border: 2px solid #eef1f5;
     padding: 20px 10px;
     position: relative;
