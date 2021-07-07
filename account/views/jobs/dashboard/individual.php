@@ -13,7 +13,8 @@ use yii\widgets\Pjax;
                 ?>
                 <div class="widget-row">
                     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                        <a class="dashboard-stat dashboard-stat-v2 blue" href="<?= Url::to('/account/jobs/reviewed') ?>">
+                        <a class="dashboard-stat dashboard-stat-v2 blue"
+                           href="<?= Url::to('/account/jobs/reviewed') ?>">
                             <div class="visual">
                                 <i class="fa fa-comments"></i>
                             </div>
@@ -39,7 +40,8 @@ use yii\widgets\Pjax;
                         </a>
                     </div>
                     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                        <a class="dashboard-stat dashboard-stat-v2 green" href="<?= Url::to('/account/jobs/applied') ?>">
+                        <a class="dashboard-stat dashboard-stat-v2 green"
+                           href="<?= Url::to('/account/jobs/applied') ?>">
                             <div class="visual">
                                 <i class="fa fa-shopping-cart"></i>
                             </div>
@@ -52,7 +54,8 @@ use yii\widgets\Pjax;
                         </a>
                     </div>
                     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                        <a class="dashboard-stat dashboard-stat-v2 purple" href="<?= Url::to('/account/jobs/accepted') ?>">
+                        <a class="dashboard-stat dashboard-stat-v2 purple"
+                           href="<?= Url::to('/account/jobs/accepted') ?>">
                             <div class="visual">
                                 <i class="fa fa-globe"></i>
                             </div>
@@ -64,7 +67,8 @@ use yii\widgets\Pjax;
                         </a>
                     </div>
                     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                        <a class="dashboard-stat dashboard-stat-v2 yellow" href="<?= Url::to('/account/jobs/pending') ?>">
+                        <a class="dashboard-stat dashboard-stat-v2 yellow"
+                           href="<?= Url::to('/account/jobs/pending') ?>">
                             <div class="visual">
                                 <i class="fa fa-globe"></i>
                             </div>
@@ -83,7 +87,8 @@ use yii\widgets\Pjax;
                             </div>
                             <div class="details">
                                 <div class="number">
-                                    <span data-counter="counterup" data-value="89"><?= $total_shortlist_org; ?></span></div>
+                                    <span data-counter="counterup" data-value="89"><?= $total_shortlist_org; ?></span>
+                                </div>
                                 <div class="desc">Followed Companies</div>
                             </div>
                         </a>
@@ -179,7 +184,8 @@ use yii\widgets\Pjax;
                                                                     <div class="overlay">
                                                                         <div class="text-o">
                                                                             <?php if ($review['applied_application_enc_id']) { ?>
-                                                                                <a class="over-bttn ob1" disabled="disabled">Applied</a>
+                                                                                <a class="over-bttn ob1"
+                                                                                   disabled="disabled">Applied</a>
                                                                             <?php } else { ?>
                                                                                 <a href="/job/<?= $review['slug']; ?>"
                                                                                    class="over-bttn ob1 hover_short apply-btn">Apply</a>
@@ -202,8 +208,9 @@ use yii\widgets\Pjax;
                                                                                     </button>
                                                                                 </div>
                                                                                 <div class="j-grid">
-                                                                                    <a href="/job/<?= $review['slug']; ?>"
-                                                                                       title="">VIEW JOB</a>
+                                                                                    <a href="javascript:;"
+                                                                                       onclick="window.open('<?= Url::to('/job/' . $review['slug']); ?>', '_blank');">VIEW
+                                                                                        JOB</a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -273,8 +280,9 @@ use yii\widgets\Pjax;
                                                                                     </button>
                                                                                 </div>
                                                                                 <div class=" j-grid">
-                                                                                    <a href="/job/<?= $shortlist['slug']; ?>"
-                                                                                       title="">VIEW JOB</a>
+                                                                                    <a href="javascript:;"
+                                                                                       onclick="window.open('<?= Url::to('/job/' . $shortlist['slug']); ?>', '_blank');">VIEW
+                                                                                        JOB</a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -324,14 +332,17 @@ use yii\widgets\Pjax;
                                                                     <div class="overlay1">
                                                                         <div class="text-o">
                                                                             <a href="/account/process-applications/<?= $apply['app_id']; ?>"
-                                                                               class="over-bttn ob1">View Application</a>
+                                                                               class="over-bttn ob1">View
+                                                                                Application</a>
                                                                         </div>
                                                                     </div>
                                                                     <div class="hr-com-jobs">
                                                                         <div class="row minus-15-pad">
-                                                                            <div class="j-grid"><a
-                                                                                        href="/job/<?= $apply['slug']; ?>"
-                                                                                        title="">VIEW JOB</a></div>
+                                                                            <div class="j-grid">
+                                                                                <a href="javascript:;"
+                                                                                   onclick="window.open('<?= Url::to('/job/' . $apply['slug']); ?>', '_blank');">VIEW
+                                                                                    JOB</a>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -376,14 +387,17 @@ use yii\widgets\Pjax;
                                                                     <div class="overlay1">
                                                                         <div class="text-o"><a
                                                                                     href="/account/process-applications/<?= $accept['app_id']; ?>"
-                                                                                    class="over-bttn ob2">View Application</a>
+                                                                                    class="over-bttn ob2">View
+                                                                                Application</a>
                                                                         </div>
                                                                     </div>
                                                                     <div class="hr-com-jobs">
                                                                         <div class="row minus-15-pad">
-                                                                            <div class="j-grid"><a
-                                                                                        href="/job/<?= $accept['slug']; ?>"
-                                                                                        title="">VIEW JOB</a></div>
+                                                                            <div class="j-grid">
+                                                                                <a href="javascript:;"
+                                                                                   onclick="window.open('<?= Url::to('/job/' . $accept['slug']); ?>', '_blank');">VIEW
+                                                                                    JOB</a>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -439,8 +453,9 @@ use yii\widgets\Pjax;
                                                                         <div class="row ">
                                                                             <div class="col-md-12 col-sm-12 minus-15-pad">
                                                                                 <div class=" j-grid">
-                                                                                    <a href="/job/<?= $shortlist['slug']; ?>"
-                                                                                       title="">VIEW JOB</a>
+                                                                                    <a href="javascript:;"
+                                                                                       onclick="window.open('<?= Url::to('/job/' . $shortlist['slug']); ?>', '_blank');">VIEW
+                                                                                        JOB</a>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -486,7 +501,8 @@ use yii\widgets\Pjax;
                             </span>
                             </div>
                             <div class="actions">
-                                <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View
+                                <a href="<?= Url::to('/account/organization/shortlisted') ?>" title=""
+                                   class="viewall-jobs">View
                                     All</a>
                             </div>
                         </div>
@@ -495,7 +511,7 @@ use yii\widgets\Pjax;
                                 <?=
                                 $this->render('/widgets/organization/card', [
                                     'organization_data' => $shortlist_org,
-                                    'for'=>'Jobs'
+                                    'for' => 'Jobs'
                                 ]);
                                 ?>
                             </div>
