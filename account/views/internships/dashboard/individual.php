@@ -183,8 +183,10 @@ use yii\widgets\Pjax;
                                                                         </button>
 
                                                                     </div>
-                                                                    <div class="j-grid"> 
-                                                                        <a  href="/internship/<?= $review['slug']; ?>" title="">VIEW INTERNSHIP</a>
+                                                                    <div class="j-grid">
+                                                                        <a href="javascript:;"
+                                                                           onclick="window.open('<?= Url::to('/internship/' . $review['slug']); ?>', '_blank');">VIEW
+                                                                            INTERNSHIP</a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -245,8 +247,10 @@ use yii\widgets\Pjax;
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
                                                                     </div> 
-                                                                    <div class=" j-grid"> 
-                                                                        <a  href="/internship/<?= $shortlist['slug']; ?>" title="">VIEW INTERNSHIP</a>
+                                                                    <div class=" j-grid">
+                                                                        <a href="javascript:;"
+                                                                           onclick="window.open('<?= Url::to('/internship/' . $shortlist['slug']); ?>', '_blank');">VIEW
+                                                                            INTERNSHIP</a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -295,7 +299,11 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row minus-15-pad">
-                                                                <div class="j-grid"> <a  href="/internship/<?= $apply['slug']; ?>" title="">VIEW INTERNSHIP</a></div>
+                                                                <div class="j-grid">
+                                                                    <a href="javascript:;"
+                                                                       onclick="window.open('<?= Url::to('/internship/' . $apply['slug']); ?>', '_blank');">VIEW
+                                                                        INTERNSHIP</a>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -340,7 +348,11 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row minus-15-pad">
-                                                                <div class="j-grid"> <a  href="/internship/<?= $accept['slug']; ?>" title="">VIEW  INTERNSHIP</a></div>
+                                                                <div class="j-grid">
+                                                                    <a href="javascript:;"
+                                                                       onclick="window.open('<?= Url::to('/internship/' . $accept['slug']); ?>', '_blank');">VIEW
+                                                                        INTERNSHIP</a>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -392,7 +404,9 @@ use yii\widgets\Pjax;
                                                             <div class="row ">
                                                                 <div class="col-md-12 col-sm-12 minus-15-pad">
                                                                     <div class=" j-grid">
-                                                                        <a  href="/internship/<?= $shortlist['slug']; ?>" title="">VIEW INTERNSHIP</a>
+                                                                        <a href="javascript:;"
+                                                                           onclick="window.open('<?= Url::to('/internship/' . $shortlist['slug']); ?>', '_blank');">VIEW
+                                                                            INTERNSHIP</a>
                                                                     </div>
                                                                 </div>
                                                             </div>
