@@ -53,7 +53,6 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                 </div>
                             </div>
                         </div>
-                        </div>
                     </div>
                     <?php ActiveForm::end(); ?>
                     <?php Pjax::end(); ?>
@@ -227,6 +226,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                 </div>
             </div>
             </div>
+        </div>
         </div>
     <div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">
