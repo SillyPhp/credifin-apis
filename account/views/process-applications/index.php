@@ -284,7 +284,9 @@ foreach ($fields as $f) {
                 <div class="job-whatsapp">
                     <input type="text" class="form-control" id="whatsAppNum" name="text"
                            placeholder="Whatsapp">
-                    <button class="grn share_Btn_whats" data-link="<?=Url::to('/'.$app_type.'/'.$application_name['slug'], "https");?>"><i class="fa fa-whatsapp"></i></button>
+                    <button class="grn share_Btn_whats" data-link="<?=Url::to('/'.$app_type.'/'.$application_name['slug'], "https");?>">
+                        <i class="fa fa-whatsapp"></i>
+                    </button>
                     <p class="errorMsg">Please enter a valid number</p>
                 </div>
             </div>
@@ -2188,9 +2190,13 @@ overflow: hidden;
 ');
 $script = <<<JS
 window.onscroll = function() {myFunction()};
-$('.share_Btn_whats').on('click', function (e){  
-    let inputElem = e.target.parentElement;
-    let parentElem = inputElem.parentElement;
+$(document).on('keyup', '#whatsAppNum', function (e){
+    if(e.keyCode == 13){
+        $('.share_Btn_whats').trigger('click');
+    }
+})
+$(document).on('click', '.share_Btn_whats', function (){
+    let parentElem = this.parentElement;
     let inputVal = parentElem.querySelector('#whatsAppNum').value;
     let errorMsg = parentElem.querySelector('.errorMsg');
     const num = /^[0-9-+]+$/;
