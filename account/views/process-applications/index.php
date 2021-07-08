@@ -149,12 +149,13 @@ foreach ($fields as $f) {
                             <span class="mail" data-toggle="tooltip" title="Share via Email"><a href="javascript:;"
                                                                                                 onclick="window.open('<?= 'mailto:?&body=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-envelope"></i></a></span>
-                            <span class="link" data-toggle="tooltip" title="Share on LinkedIn"><a href="javascript:;"
-                                                                                                  onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
+                            <span class="link" data-toggle="tooltip" title="Share on LinkedIn"><a
+                                        href="javascript:;"
+                                        onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-linkedin"></i></a></span>
                             <span class="j-">
                             <?php
-                                $link = Url::to('/'.$app_type.'/'.$application_name['slug'], "https");
+                            $link = Url::to('/' . $app_type . '/' . $application_name['slug'], "https");
                             ?>
                             <a href="javascript:;" class="clipb tt jj-clipboard" type="button" data-toggle="tooltip"
                                title="Copy Link" data-link="<?= $link ?>">
@@ -284,6 +285,7 @@ foreach ($fields as $f) {
                     <input type="text" class="form-control" id="whatsAppNum" name="text"
                            placeholder="Whatsapp">
                     <button class="grn share_Btn_whats" data-link="<?=Url::to('/'.$app_type.'/'.$application_name['slug'], "https");?>"><i class="fa fa-whatsapp"></i></button>
+                    <p class="errorMsg">Please enter a valid number</p>
                 </div>
             </div>
         </div>
@@ -598,7 +600,8 @@ foreach ($fields as $f) {
                                         <?php
                                         if (COUNT($arr['createdBy']['userEducations']) > 1) {
                                             ?>
-                                            &nbsp <span>+<?= COUNT($arr['createdBy']['userEducations']) - 1 ?> more</span>
+                                            &nbsp
+                                            <span>+<?= COUNT($arr['createdBy']['userEducations']) - 1 ?> more</span>
                                             <?php
                                         }
                                         ?>
@@ -686,8 +689,6 @@ foreach ($fields as $f) {
                                         <li>
                                             <?php
                                             if(!empty($arr['phone']) && $arr['phone']){
-//                                               $phoneArr = explode('+', $arr['phone']);
-//                                               $phone = $phoneArr[1]
                                             ?>
                                             <a href="https://api.whatsapp.com/send?phone=<?= $arr['phone'] ?>" target="_blank"
                                                title="Contact Candidate" data-toggle="tooltip" class="shareBtn"><i class="fa fa-whatsapp"></i></a>
@@ -695,19 +696,23 @@ foreach ($fields as $f) {
                                                 }
                                             ?>
                                         </li>
-                                        <li>
-                                            <a href="/account/schedular/interview?app_id=<?= $application_id ?>&applied_id=<?= $arr['applied_application_enc_id'] ?>&current_round=<?= $arr['current_round'] ?>"
-                                               title="Schedule Interview" data-toggle="tooltip">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/interview-schedule.png') ?>"/>
-                                            </a>
-                                        </li>
+                                        <?php if ($arr['status'] != 'Hired' && $arr['status'] != 'Cancelled') { ?>
+                                            <li>
+                                                <a href="/account/schedular/interview?app_id=<?= $application_id ?>&applied_id=<?= $arr['applied_application_enc_id'] ?>&current_round=<?= $arr['current_round'] ?>"
+                                                   title="Schedule Interview" data-toggle="tooltip">
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/interview-schedule.png') ?>"/>
+                                                </a>
+                                            </li>
+                                        <?php } ?>
                                         <li class="notes" data-toggle="tooltip" title="Notes">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/notes-icon-circle.png') ?>"
                                                  class="noteImg" data-val="<?= $notes; ?>">
                                         </li>
                                         <li>
                                             <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
-                                               data-key="<?= $arr['name']; ?>" data-img="<?= (($arr['image']) ? $arr['image'] : "https://ui-avatars.com/api/?name=" . $arr['name'] . "&size=200&rounded=false&background=" . str_replace('#', '', $arr['initials_color']) . "&color=ffffff") ?>" title="Chat Now"
+                                               data-key="<?= $arr['name']; ?>"
+                                               data-img="<?= (($arr['image']) ? $arr['image'] : "https://ui-avatars.com/api/?name=" . $arr['name'] . "&size=200&rounded=false&background=" . str_replace('#', '', $arr['initials_color']) . "&color=ffffff") ?>"
+                                               title="Chat Now"
                                                data-toggle="tooltip">
                                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
                                             </a>
@@ -920,6 +925,16 @@ foreach ($fields as $f) {
 </div>
 <?php
 $this->registerCss('
+.errorMsg{
+    position: absolute;
+    margin: 0;
+    font-size: 12px;
+    display: none;
+    color: #df4759;
+}
+.showError{
+    display: block;
+}
 .clamp-c{
   position:relative;
 }
@@ -2172,10 +2187,19 @@ overflow: hidden;
 }
 ');
 $script = <<<JS
-console.log('$phone')
 window.onscroll = function() {myFunction()};
-
-$('.share_Btn_whats').on('click', function (){
+$('.share_Btn_whats').on('click', function (e){  
+    let inputElem = e.target.parentElement;
+    let parentElem = inputElem.parentElement;
+    let inputVal = parentElem.querySelector('#whatsAppNum').value;
+    let errorMsg = parentElem.querySelector('.errorMsg');
+    const num = /^[0-9-+]+$/;
+    if(!inputVal.match(num) && inputVal != ''){
+      errorMsg.classList.add('showError');
+      return false;
+    }else{
+      errorMsg.classList.remove('showError');
+    }
     if($('#whatsAppNum').val() != ''){
         window.open('https://api.whatsapp.com/send?phone=' +$('#whatsAppNum').val() + '&text=' + $(this).attr('data-link'));
     }
