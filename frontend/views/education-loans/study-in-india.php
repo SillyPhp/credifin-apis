@@ -16,8 +16,8 @@ use borales\extensions\phoneInput\PhoneInput;
                         <span class="wrap"></span>
                     </span>
                 </h1>
-                <p>Don't let <span class="black-bold">financial burden stop you</span> from fulfilling <br>
-                    your desire to <span class="black-bold">study in your dream college<span class="black-bold">.</p>
+                <p>Don't let <span class="bold-fontt">financial burden stop you</span> from fulfilling <br>
+                    your desire to <span class="bold-fontt">study in your dream college<span class="bold-fontt">.</p>
                 <ul>
                     <li><a href="#contact" class="apply-now btn-orange">Reach Us</a></li>
                     <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
@@ -109,7 +109,7 @@ if($blogs['blogs']){
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
-.black-bold {
+.bold-fontt {
     font-weight: bold;
 }
 .studyus-head {
@@ -337,9 +337,6 @@ display:none;
      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
-
-
-
 .tt-hint {
   color: #999
 }
@@ -383,7 +380,6 @@ display:none;
     text-align: left !important;
     color: #800000 !important;
 }
-
 .form-control{
     margin: 10px auto;
     padding: 12px 12px;
@@ -430,7 +426,6 @@ display:none;
     align-content: center;
     margin: 0 auto;
 } 
-
 .form-flex-2{
     display: flex;
     width: 100%;
@@ -476,7 +471,6 @@ label {
   align-items: center;
   cursor: pointer;
 }
-
 .check {
   margin-right: 7px;
   width: 1.35rem;

@@ -160,6 +160,7 @@ class JobsController extends Controller
                 $a->joinWith(['appliedApplications k' => function ($y) {
                     $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
+                $a->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE', 'b.application_for' =>1]);
             }], false)
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
@@ -196,6 +197,7 @@ class JobsController extends Controller
                 ['a.status' => 'Pending'],
                 ['a.status' => 'Accepted']
             ])
+            ->andwhere(['b.is_deleted' => 0, 'b.application_for' =>1, 'b.status' => 'Active'])
             ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
@@ -298,6 +300,7 @@ class JobsController extends Controller
                 $b->joinWith(['appliedApplications k' => function ($y) {
                     $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
+                $b->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE', 'b.application_for' =>1]);
             }], false)
             ->having(['type' => 'Jobs'])
             ->limit(8)
@@ -339,6 +342,7 @@ class JobsController extends Controller
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
             ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted' => 0])
+            ->andWhere(['c.status' => 'ACTIVE', 'c.is_deleted' => 0, 'c.application_for' =>1])
             ->having(['type' => 'Jobs'])
             ->groupBy('a.applied_application_enc_id')
             ->limit(8)
@@ -385,6 +389,7 @@ class JobsController extends Controller
                 $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id, 'e.is_deleted' => 0]);
             }], true)
             ->where(['IN', 'a.application_enc_id', $application_enc_id])
+            ->andWhere(['a.status' => 'ACTIVE', 'a.is_deleted' => 0, 'a.application_for' =>1])
             ->joinWith(['title c' => function ($x) {
                 $x->joinWith(['categoryEnc d'], false);
                 $x->joinWith(['parentEnc d1'], false);

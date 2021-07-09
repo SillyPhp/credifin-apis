@@ -1,5 +1,8 @@
 <?php
+
 namespace common\models;
+
+use Yii;
 
 /**
  * This is the model class for table "{{%loan_application_school_fee}}".
@@ -37,7 +40,7 @@ class LoanApplicationSchoolFee extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['school_fee_enc_id', 'loan_app_enc_id', 'student_name', 'school_name', 'class', 'created_by'], 'required'],
+            [['school_fee_enc_id', 'loan_app_enc_id', 'student_name', 'school_name', 'class'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['school_fee_enc_id', 'loan_app_enc_id', 'student_name', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
@@ -48,6 +51,7 @@ class LoanApplicationSchoolFee extends \yii\db\ActiveRecord
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
         ];
     }
+    
 
     /**
      * @return \yii\db\ActiveQuery

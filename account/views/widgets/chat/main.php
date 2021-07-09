@@ -43,6 +43,7 @@ $this->registerCss("
     position:fixed;
     bottom:10px;
     right:30px;
+    z-index:1;
 }
 #chat-icon button{
     background:none;

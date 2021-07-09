@@ -5,46 +5,6 @@
 use yii\helpers\Url;
 
 ?>
-    <!--    <section class="backgrounds">-->
-    <!--        <div class="container">-->
-    <!--            <div class="row">-->
-    <!--                <div class="col-md-6 col-sm-6">-->
-    <!--                    <div class="loan-text">-->
-    <!--                        <h1>Education Loan With Lower Interest Rates.</h1>-->
-    <!--                        <h2>Apply for a Student Loan at <span class="blue1">a low rate of interest.</span> <br>-->
-    <!--                            <span class="blue1"> 0% interest rate </span> only for selected colleges and universities!!-->
-    <!--                        </h2>-->
-    <!--                                             <h3 class="mb1">We Work With You To Turn Your Dreams Into Reality</h3>-->
-    <!--                        <a href="--><? //= Url::to('/education-loans/apply') ?><!--"-->
-    <!--                           class="hvr-sweep-to-bottom-2">-->
-    <!--                            Apply Now-->
-    <!--                        </a>-->
-    <!--                        <a href="--><? //= Url::to('/site/admission-form') ?><!--"-->
-    <!--                           class="hvr-sweep-to-bottom-3">-->
-    <!--                            Enquire Now-->
-    <!--                        </a>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--                <div class="col-md-6 col-sm-6 clouds">-->
-    <!--                    <div class="loan-image">-->
-    <!--                        <img src="--><? //= Url::to('@eyAssets/images/pages/education-loans/loan-hdr-icn.png') ?><!--"/>-->
-    <!--                    </div>-->
-    <!--                    <div class="cloud moving">-->
-    <!--                        <img src="--><? //= Url::to('@eyAssets/images/pages/education-loans/c1.png') ?><!--"/>-->
-    <!--                    </div>-->
-    <!--                    <div class="cloud1 moving1">-->
-    <!--                        <img src="--><? //= Url::to('@eyAssets/images/pages/education-loans/c2.png') ?><!--"/>-->
-    <!--                    </div>-->
-    <!--                    <div class="cloud2 moving">-->
-    <!--                        <img src="--><? //= Url::to('@eyAssets/images/pages/education-loans/c3.png') ?><!--"/>-->
-    <!--                    </div>-->
-    <!--                    <div class="cloud3 moving1">-->
-    <!--                        <img src="--><? //= Url::to('@eyAssets/images/pages/education-loans/c4.png') ?><!--"/>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </section>-->
 
 <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
     <div class="clearfix"></div>
@@ -169,7 +129,7 @@ use yii\helpers\Url;
                 <?php
                 foreach ($loan_org as $l) {
                     ?>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-sm-4 col-xs-12">
                         <a href="<?= Url::to('/education-loans/apply-loan/' . $l['organization_enc_id'], true) ?>"
                            target="_blank">
                             <div class="college-card-partner">
@@ -442,9 +402,9 @@ $this->registerCss('
 }
 .img-back-partner{
   position: absolute;
-  width: 350px;
-  height: 350px;
-  border:1px solid #91c8ff;
+  width: 450px;
+  height: 450px;
+  border:0px solid #91c8ff;
   top:22%;
   left:50%;
   border-radius: 50%;
@@ -459,16 +419,22 @@ $this->registerCss('
 //}
 
 .college-card-partner:hover > .img-back-partner{
- border-width: 150px; 
+ border-width: 500px; 
 }
 
 .college-card-partner p{
-  position: relative;
-  z-index: 3;
-  transition: 500ms all linear;
-  font-weight: 700;
-  line-height: 18px;
-  margin-top: 1rem;
+    position: relative;
+    z-index: 3;
+    transition: 500ms all linear;
+    font-weight: 700;
+    line-height: 18px;
+    margin-top: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 36px;
 }
 
 .college-card-partner:hover > p{
