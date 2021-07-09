@@ -104,9 +104,11 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
                                 <div class="row">
                                     <div class="col-md-6 col-sm-6">
                                         <div class="indi">
-                                            <div class="indi-img">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/individual-signup1.gif') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
-                                            </div>
+                                            <a href="/signup/individual">
+                                                <div class="indi-img">
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/individual-signup1.gif') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                                                </div>
+                                            </a>
                                             <div class="indi-btn">
                                                 <a href="/signup/individual">Individual / Candidate</a>
                                             </div>
@@ -114,9 +116,11 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
                                     </div>
                                     <div class="col-md-6 col-sm-6">
                                         <div class="organ">
-                                            <div class="organ-img">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/isu1.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
-                                            </div>
+                                            <a href="/signup/organization">
+                                                <div class="organ-img">
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/isu1.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                                                </div>
+                                            </a>
                                         <div class="organ-btn">
                                             <a href="/signup/organization">Organization / Companies</a>
                                         </div>

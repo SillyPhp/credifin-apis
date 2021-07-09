@@ -8,9 +8,9 @@ use yii\helpers\Url;
     <div class="image-bottom-right">
         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/lv-s2.png') ?>" alt="">
     </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 sol-sm-8">
+    <div class="container-fluid">
+        <div class="row loan-offerings">
+            <div class="col-md-7 sol-sm-7">
                 <div class="loan-vector-txt">
                     <h2>Loans That We Offer</h2>
                     <p>Find customized loans for all your needs.</p>
@@ -86,7 +86,7 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-4">
+            <div class="col-md-5 col-sm-5">
                 <div class="loan-vector">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/loan-vector1.png') ?>" alt="">
                 </div>
@@ -96,6 +96,12 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
+.loan-offerings {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 .loan-product:hover {
     background-color: #00a0e3;
     color: #fff;
@@ -146,11 +152,8 @@ $this->registerCss('
     font-weight: 400;
     margin-top: 10px
 }
-.loan-vector {
-    margin-top: 80px;
-}
 .loan-vector img {
-    width: 120%;
+    width: 100%;
     max-width: 500px;
 }
 .loan-product {
@@ -178,5 +181,23 @@ $this->registerCss('
 }
 .loan-product-txt {
    margin: 5px 0px 5px 10px;
+   
+}
+@media screen and (max-width: 992px) {
+    .image-bottom-right, .loan-vector {
+        display: none;
+    }
+    .image-top-right img {
+    max-width: 350px;
+    }
+}
+@media screen and (max-width: 550px) {
+    .image-top-right img {
+        max-width: 240px;
+    }
+    .loan-vector-txt h2 {
+        font-size: 28pt;
+        line-height: 40px;
+    }
 }
 ');

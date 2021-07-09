@@ -392,6 +392,7 @@ class InternshipsController extends Controller
                     $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
                 $b->groupBy(['h.application_enc_id']);
+                $b->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE', 'b.application_for' =>1]);
             }], false)
             ->having(['type' => 'Internships'])
             ->orderBy(['a.id' => SORT_DESC])
@@ -412,6 +413,7 @@ class InternshipsController extends Controller
                 $a->joinWith(['appliedApplications k' => function ($y) {
                     $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
+                $a->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE', 'b.application_for' =>1]);
             }], false)
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
@@ -447,6 +449,7 @@ class InternshipsController extends Controller
                 ['a.status' => 'Accepted']
             ])
             ->andWhere(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
+            ->andWhere(['c.status' => 'ACTIVE', 'c.is_deleted' => 0, 'c.application_for' =>1])
             ->having(['type' => 'Internships'])
             ->groupBy('a.applied_application_enc_id')
             ->asArray()
@@ -483,6 +486,7 @@ class InternshipsController extends Controller
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
             ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted' => 0])
+            ->andWhere(['c.status' => 'ACTIVE', 'c.is_deleted' => 0, 'c.application_for' =>1])
             ->having(['type' => 'Internships'])
             ->groupBy('a.applied_application_enc_id')
             ->asArray()
@@ -507,6 +511,7 @@ class InternshipsController extends Controller
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
             ->innerJoin(EmployerApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
+            ->andWhere(['b.status' => 'ACTIVE', 'b.is_deleted' => 0, 'b.application_for' =>1])
             ->having(['type' => 'Internships'])
             ->groupBy(['b.application_enc_id'])
             ->orderBy(['a.id' => SORT_DESC])
@@ -765,6 +770,7 @@ class InternshipsController extends Controller
                 $a->joinWith(['appliedApplications k' => function ($y) {
                     $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
+                $a->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE', 'b.application_for' =>1]);
             }], false)
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
@@ -801,6 +807,7 @@ class InternshipsController extends Controller
                 ['a.status' => 'Pending'],
                 ['a.status' => 'Accepted']
             ])
+            ->andwhere(['b.is_deleted' => 0, 'b.application_for' =>1, 'b.status' => 'Active'])
             ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
@@ -854,14 +861,30 @@ class InternshipsController extends Controller
 
         $shortlist_org = FollowedOrganizations::find()
             ->alias('a')
-            ->select(['b.establishment_year', 'a.followed_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+            ->select(['az.organization_enc_id', 'a.organization_enc_id', 'az.establishment_year', 'a.followed_enc_id', 'az.name as org_name', 'c.industry', 'az.logo', 'az.logo_location', 'az.slug'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
-            ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
-            ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
+            ->joinWith(['organizationEnc az'=> function($az){
+                $az->joinWith(['employerApplications b' => function ($x) {
+                    $x->select(['b.organization_enc_id', 'b.application_type_enc_id', 'h.name', 'COUNT(distinct b.application_enc_id) as total_application']);
+                    $x->joinWith(['applicationTypeEnc h' => function ($x2) {
+                        $x2->distinct();
+                        $x2->groupBy(['h.name']);
+                        $x2->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
+                    }], true);
+                    $x->groupBy(['b.application_enc_id']);
+                    $x->onCondition(['b.is_deleted' => 0, 'b.application_for' => 1, 'b.status' => 'ACTIVE']);
+                }], true);
+                $az->groupBy(['az.organization_enc_id']);
+                $az->distinct();
+            }])
+            ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = az.industry_enc_id')
+            ->groupBy(['a.followed_enc_id'])
+            ->distinct()
             ->orderBy(['a.id' => SORT_DESC])
             ->limit(8)
             ->asArray()
             ->all();
+
         $total_shortlist_org = FollowedOrganizations::find()
             ->alias('a')
             ->select(['b.establishment_year', 'a.followed_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
@@ -888,6 +911,7 @@ class InternshipsController extends Controller
                 $b->joinWith(['appliedApplications k' => function ($y) {
                     $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
+                $b->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE', 'b.application_for' =>1]);
             }], false)
             ->having(['type' => 'Internships'])
             ->limit(8)
@@ -926,6 +950,7 @@ class InternshipsController extends Controller
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
             ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted' => 0])
+            ->andWhere(['c.status' => 'ACTIVE', 'c.is_deleted' => 0, 'c.application_for' =>1])
             ->having(['type' => 'Internships'])
             ->groupBy('a.applied_application_enc_id')
             ->limit(8)
@@ -972,6 +997,7 @@ class InternshipsController extends Controller
                 $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id, 'e.is_deleted' => 0]);
             }], true)
             ->where(['IN', 'a.application_enc_id', $application_enc_id])
+            ->andWhere(['a.status' => 'ACTIVE', 'a.is_deleted' => 0, 'a.application_for' =>1])
             ->joinWith(['title c' => function ($x) {
                 $x->joinWith(['categoryEnc d'], false);
             }], false)
@@ -1022,6 +1048,7 @@ class InternshipsController extends Controller
                 $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id, 'e.is_deleted' => 0]);
             }], true)
             ->where(['IN', 'a.application_enc_id', $application_enc_id])
+            ->andWhere(['a.status' => 'ACTIVE', 'a.is_deleted' => 0, 'a.application_for' =>1])
             ->joinWith(['title c' => function ($x) {
                 $x->joinWith(['categoryEnc d'], false);
             }], false)
@@ -1319,6 +1346,7 @@ class InternshipsController extends Controller
                     $c->joinWith(['locationEnc e'], true);
                 }], false)
                 ->where([
+                    "a.is_erexx_approved" => 1,
                     "a.has_placement_rights" => 1,
                     "a.status" => "Active",
                     "a.is_deleted" => 0,

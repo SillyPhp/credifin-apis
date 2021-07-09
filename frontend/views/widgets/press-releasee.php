@@ -144,7 +144,8 @@ $this->registerCss('
     margin-bottom: 20px;
 }
 .press-release-hd:hover {
-    box-shadow: 0 0 15px 2px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 10px 4px rgb(76 76 76 / 10%);
+    transition: .3s ease;
 }
 .press-release {
     background-color: #fff;

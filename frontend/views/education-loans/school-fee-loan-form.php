@@ -153,6 +153,10 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                 </div>
                             </div>
                             <div class="child-info-div"></div>
+<!--                            <div class="col-md-12 padd-20">-->
+<!--                                <p class="termsText">By clicking submit you agree to our-->
+<!--                                    <a href="--><?//= Url::to('/education-loans/terms-and-conditions')?><!--">terms and conditions</a> </p>-->
+<!--                            </div>-->
                             <div class="row">
                                 <div class="col-md-12 padd-20">
                                 <div class="input-group padd-20">
@@ -247,7 +251,18 @@ $this->registerCss('
 #loadBtn{
     display:none;
 }
-
+.termsText{
+    font-size: 12px;
+    font-family: roboto;
+    text-align: center;
+}
+.termsText a{
+    color: #00a0e3;
+}
+.termsText a:hover{
+    color: #ff7803;
+    transition: .3s ease;
+}
 .padd-20{
     padding-bottom: 10px;
 }
@@ -840,8 +855,8 @@ $.validator.addMethod("check_date_of_birth", function (value, element) {
     mydate.setFullYear(year, month - 1, day);
     
     var maxDate = new Date();
-    if ((maxDate.getFullYear()-year) <= 18) {
-        $.validator.messages.check_date_of_birth = "Sorry, only persons above or equal the age of 2 can be covered";
+    if ((maxDate.getFullYear()-year) <= 1) {
+        $.validator.messages.check_date_of_birth = "Sorry, only persons above or equal the age of 1 can be covered";
         return false;
     }
     return true;

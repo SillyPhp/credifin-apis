@@ -140,7 +140,8 @@ foreach ($fields as $f) {
                                                                                                    onclick="window.open('<?= 'https://www.facebook.com/sharer/sharer.php?u=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
                                             class="fa fa-facebook"></i></a></span>
                             <span class="wts" data-toggle="tooltip" title="Share on Whatsapp"><a
-                                        href="javascript:;" onclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                        href="javascript:;"
+                                        onclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
                                             class="fa fa-whatsapp"></i></a></span>
                             <span class="twt" data-toggle="tooltip" title="Share on Twitter"><a href="javascript:;"
                                                                                                 onclick="window.open('<?= 'https://twitter.com/intent/tweet?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
@@ -148,9 +149,19 @@ foreach ($fields as $f) {
                             <span class="mail" data-toggle="tooltip" title="Share via Email"><a href="javascript:;"
                                                                                                 onclick="window.open('<?= 'mailto:?&body=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-envelope"></i></a></span>
-                            <span class="link" data-toggle="tooltip" title="Share on LinkedIn"><a href="javascript:;"
-                                                                                                  onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
+                            <span class="link" data-toggle="tooltip" title="Share on LinkedIn"><a
+                                        href="javascript:;"
+                                        onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-linkedin"></i></a></span>
+                            <span class="j-">
+                            <?php
+                            $link = Url::to('/' . $app_type . '/' . $application_name['slug'], "https");
+                            ?>
+                            <a href="javascript:;" class="clipb tt jj-clipboard" type="button" data-toggle="tooltip"
+                               title="Copy Link" data-link="<?= $link ?>">
+                                <i class="fa fa-clipboard"></i>
+                            </a>
+                        </span>
                         </div>
                     </div>
                 </div>
@@ -235,26 +246,27 @@ foreach ($fields as $f) {
             <div class="col-md-3 col-sm-12">
                 <div class="ed-main">
                     <div class="option-1">
-                            <span class="j-edt">
-                                <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/edit"
-                                   target="_blank" data-toggle="tooltip" title=""
-                                   data-original-title="Edit <?= $app_type ?>"><i class="fa fa-pencil-square-o"></i></a>
-                            </span>
+                        <span class="j-edt">
+                            <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/edit"
+                               target="_blank" data-toggle="tooltip" title=""
+                               data-original-title="Edit <?= $app_type ?>"><i class="fa fa-pencil-square-o"></i></a>
+                        </span>
                         <span class="j-cln">
-                                <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/clone"
-                                   target="_blank" data-toggle="tooltip" title=""
-                                   data-original-title="Clone <?= $app_type ?>"><i class="fa fa-clone"></i></a>
-                            </span>
+                            <a href="/account/<?= strtolower($application_name['application_type']) . '/' . $application_id ?>/clone"
+                               target="_blank" data-toggle="tooltip" title=""
+                               data-original-title="Clone <?= $app_type ?>"><i class="fa fa-clone"></i></a>
+                        </span>
                         <span class="j-delt">
-                                <a href="#" id="j-delete" data-toggle="tooltip"
-                                   title="Delete <?= $app_type ?>" value="<?= $application_id ?>"><i
-                                            class="fa fa-trash-o"></i></a>
-                            </span>
+                            <a href="#" id="j-delete" data-toggle="tooltip"
+                               title="Delete <?= $app_type ?>" value="<?= $application_id ?>"><i
+                                class="fa fa-trash-o"></i></a>
+                        </span>
                         <span class="j-cls">
-                                <a href="#" id="j-closed" data-toggle="tooltip"
-                                   title="Close <?= $app_type ?>" data-name="<?= $app_type ?>"
-                                   value="<?= $application_id ?>"><i class="fa fa-times"></i></a>
-                            </span>
+                            <a href="#" id="j-closed" data-toggle="tooltip"
+                               title="Close <?= $app_type ?>" data-name="<?= $app_type ?>"
+                               value="<?= $application_id ?>"><i class="fa fa-times"></i></a>
+                        </span>
+
                     </div>
                     <div class="scd-btn">
                         <a href="/account/schedular/interview?app_id=<?= $application_name['application_enc_id'] ?>">Schedule
@@ -262,19 +274,22 @@ foreach ($fields as $f) {
                     </div>
                 </div>
             </div>
-            <!--                        <div class="col-md-12 use-ff">-->
-            <!--                            <div class="job-txt">Invite Candidates via:</div>-->
+            <div class="col-md-12 use-ff">
+                <div class="job-txt">Invite Candidates via:</div>
             <!--                            <div class="job-mail">-->
             <!--                                <input type="email" class="form-control" id="email" name="email"-->
             <!--                                       placeholder="Email">-->
             <!--                                <button class="redd"><i class="fa fa-envelope"></i></button>-->
             <!--                            </div>-->
-            <!--                            <div class="job-whatsapp">-->
-            <!--                                <input type="text" class="form-control" id="text" name="text"-->
-            <!--                                       placeholder="Whatsapp">-->
-            <!--                                <button class="grn"><i class="fa fa-whatsapp"></i></button>-->
-            <!--                            </div>-->
-            <!--                        </div>-->
+                <div class="job-whatsapp">
+                    <input type="text" class="form-control" id="whatsAppNum" name="text"
+                           placeholder="Whatsapp">
+                    <button class="grn share_Btn_whats" data-link="<?=Url::to('/'.$app_type.'/'.$application_name['slug'], "https");?>">
+                        <i class="fa fa-whatsapp"></i>
+                    </button>
+                    <p class="errorMsg">Please enter a valid number</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -296,11 +311,12 @@ foreach ($fields as $f) {
             <?php
             $k = 0;
             foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
+                $tooltipTitle = ($p['field_name'] == 'Get Applications') ? 'New Application' : $p['field_name'];
                 ?>
                 <li id="<?= 'nav' . $p['field_enc_id'] ?>"
                     style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
-                       title="" onclick="roundClick()" data-original-title="<?= $p['field_name'] ?>" href="#">
+                       title="" onclick="roundClick()" data-original-title="<?= $tooltipTitle ?>" href="#">
                         <i class="<?= $p['icon'] ?>"
                            aria-hidden="true"></i><span><?= $user_pCount[$p['field_name']] ?></span>
                     </a>
@@ -414,8 +430,7 @@ foreach ($fields as $f) {
                                                        name="<?= $arr['applied_application_enc_id'] . 'rejectType' ?>"
                                                        id="<?= $arr['applied_application_enc_id'] . 'permanent' ?>"
                                                        class="">
-                                                <label for="<?= $arr['applied_application_enc_id'] . 'permanent' ?>">Permanent
-                                                    Reject</label>
+                                                <label for="<?= $arr['applied_application_enc_id'] . 'permanent' ?>">Blacklist Candidate</label>
                                             </div>
                                         </li>
                                         <li>
@@ -463,6 +478,9 @@ foreach ($fields as $f) {
                                             $msg = "Candidate's CV has been saved for later. Please check CV in 
                                                     drop resume";
                                             break;
+                                        case 4:
+                                            $msg = "This candidate has been rejected";
+                                            break;
                                     }
                                     ?>
                                     <p><?= $msg ?></p>
@@ -506,7 +524,8 @@ foreach ($fields as $f) {
                             <div class="col-md-4">
                                 <div class="pr-user-detail">
                                     <a class="pr-user-icon url-forward" href="#"
-                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>" target="_blank">
+                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"
+                                       target="_blank">
                                         <?php if ($arr['image']): ?>
                                             <img src="<?= $arr['image'] ?>"
                                                  onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<?= $arr['name'] ?>&size=200&rounded=false&background=<?= str_replace('#', '', $arr['initials_color']) ?>&color=ffffff'"/>
@@ -517,16 +536,38 @@ foreach ($fields as $f) {
                                         <?php endif; ?>
                                     </a>
                                     <a class="pr-user-n url-forward" href="#"
-                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>" target="_blank"><?= $arr['name'] ?></a>
-                                    <?php
-                                    if ($arr['createdBy']['userWorkExperiences']) {
-                                        foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
-                                            if ($exp['is_current'] == 1) {
-                                                echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
+                                       data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"
+                                       target="_blank"><?= $arr['name'] ?></a>
+                                    <div class="clamp-c">
+                                        <?php
+                                        if ($arr['createdBy']['userWorkExperiences']) {
+                                            foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
+                                                if ($exp['is_current'] == 1) {
+                                                    echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
+                                                    break;
+                                                }
+                                            }
+
+                                            $crexperience = [];
+                                            foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
+                                                if ($exp['is_current'] == 1) {
+                                                    array_push($crexperience, $exp);
+                                                }
+                                            }
+                                            if (count($crexperience) > 1) {
+                                                ?>
+                                                <div class="all-data">
+                                                    <?php
+                                                    foreach ($crexperience as $exp) {
+                                                        echo '<h5>' . $exp["title"] . ' @ ' . $exp["company"] . '</h5>';
+                                                    }
+                                                    ?>
+                                                </div>
+                                                <?php
                                             }
                                         }
-                                    }
-                                    ?>
+                                        ?>
+                                    </div>
                                 </div>
                                 <div class="pr-user-past">
                                     <?php
@@ -557,10 +598,11 @@ foreach ($fields as $f) {
                                   <span class="past-title">
                                     Edu
                                   </span>
-                                        <h5><?= $arr['createdBy']['userEducations'][0]['institute'] . ' - ' . $arr['createdBy']['userEducations'][0]['degree']; ?></h5>
+                                        <h5><?= $arr['createdBy']['userEducations'][0]['institute'] . ' - ' . $arr['createdBy']['userEducations'][0]['degree']; ?> </h5>
                                         <?php
                                         if (COUNT($arr['createdBy']['userEducations']) > 1) {
                                             ?>
+                                            &nbsp
                                             <span>+<?= COUNT($arr['createdBy']['userEducations']) - 1 ?> more</span>
                                             <?php
                                         }
@@ -647,18 +689,32 @@ foreach ($fields as $f) {
                                         }
                                         ?>
                                         <li>
-                                            <a href="/account/schedular/interview?app_id=<?= $application_id ?>&applied_id=<?= $arr['applied_application_enc_id'] ?>&current_round=<?= $arr['current_round'] ?>"
-                                               title="Schedule Interview" data-toggle="tooltip">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/interview-schedule.png') ?>"/>
-                                            </a>
+                                            <?php
+                                            if(!empty($arr['phone']) && $arr['phone']){
+                                            ?>
+                                            <a href="https://api.whatsapp.com/send?phone=<?= $arr['phone'] ?>" target="_blank"
+                                               title="Contact Candidate" data-toggle="tooltip" class="shareBtn"><i class="fa fa-whatsapp"></i></a>
+                                            <?php
+                                                }
+                                            ?>
                                         </li>
+                                        <?php if ($arr['status'] != 'Hired' && $arr['status'] != 'Cancelled') { ?>
+                                            <li>
+                                                <a href="/account/schedular/interview?app_id=<?= $application_id ?>&applied_id=<?= $arr['applied_application_enc_id'] ?>&current_round=<?= $arr['current_round'] ?>"
+                                                   title="Schedule Interview" data-toggle="tooltip">
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/interview-schedule.png') ?>"/>
+                                                </a>
+                                            </li>
+                                        <?php } ?>
                                         <li class="notes" data-toggle="tooltip" title="Notes">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/notes-icon-circle.png') ?>"
                                                  class="noteImg" data-val="<?= $notes; ?>">
                                         </li>
                                         <li>
                                             <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
-                                               data-key="<?= $arr['name']; ?>" title="Chat Now"
+                                               data-key="<?= $arr['name']; ?>"
+                                               data-img="<?= (($arr['image']) ? $arr['image'] : "https://ui-avatars.com/api/?name=" . $arr['name'] . "&size=200&rounded=false&background=" . str_replace('#', '', $arr['initials_color']) . "&color=ffffff") ?>"
+                                               title="Chat Now"
                                                data-toggle="tooltip">
                                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
                                             </a>
@@ -706,6 +762,7 @@ foreach ($fields as $f) {
                                             <?php
                                             $isHighlight = true;
                                             foreach ($arr['appliedApplicationProcesses'] as $p) {
+                                                $roundName = trim($p['field_name']) == 'Get Applications' ? 'New Applications' : $p['field_name'];
                                                 ?>
                                                 <div data-id="<?= $p['field_enc_id'] ?>">
                                                     <a href="#"
@@ -716,7 +773,7 @@ foreach ($fields as $f) {
                                                            }
                                                        } ?>" value="<?= $p['applied_application_enc_id']; ?>">
                                                         <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
-                                                        <?= $p['field_name'] ?>
+                                                        <?= $roundName ?>
                                                     </a>
                                                 </div>
                                                 <?php
@@ -757,11 +814,11 @@ foreach ($fields as $f) {
                                 </thead>
                                 <tbody class="qu_data">
                                 <?php foreach ($que as $list_que) {
-                                    $linkQ = "/account/questionnaire/display-answers/".$list_que["qid"]."/".$arr["applied_application_enc_id"];
+                                    $linkQ = "/account/questionnaire/display-answers/" . $list_que["qid"] . "/" . $arr["applied_application_enc_id"];
                                     ?>
                                     <tr>
                                         <td><a class="blue question_list"
-                                               href="<?= Url::to($linkQ,'https') ?>"
+                                               href="<?= Url::to($linkQ, 'https') ?>"
                                                data-questionId="<?= $list_que['qid']; ?>"
                                                data-appliedId="<?= $arr['applied_application_enc_id']; ?>"
                                                target="_blank"><?= $list_que['name']; ?></a>
@@ -870,6 +927,48 @@ foreach ($fields as $f) {
 </div>
 <?php
 $this->registerCss('
+.errorMsg{
+    position: absolute;
+    margin: 0;
+    font-size: 12px;
+    display: none;
+    color: #df4759;
+}
+.showError{
+    display: block;
+}
+.clamp-c{
+  position:relative;
+}
+.shareBtn{
+    font-size: 30px;
+    color: #128c7e;
+}
+.shareBtn:hover{
+    color: #128c7e;
+}
+.all-data {
+    position: absolute;
+    background-color: #fff;
+    display: none;
+    border-radius:4px;
+    padding:8px 15px;
+    top: 30px;
+    box-shadow:0px 1px 6px 2px #ddd;
+}
+.all-data:before {
+    content: "";
+    left: 12px;
+    top: -18px;
+    position: absolute;
+    border-top: 10px solid transparent;
+    border-right: 15px solid #00A0E3;
+    border-bottom: 10px solid transparent;
+    transform: rotate(90deg);
+}
+.clamp-c:hover .all-data {
+    display: block;
+}
 .activeJov{
     background: #fbfbfb;
     border: 1px solid #eee;
@@ -927,10 +1026,13 @@ $this->registerCss('
     font-size:20px;
     color: #fff;
 }
-
+.clipb i{
+    font-size: 11px; 
+    color: #ff7803
+}
 .page-content {
    position:relative;
-    padding:50px 0px 0px 0px!important;
+    padding:0px 0px 0px 0px!important;
 }
 .bg-img{
     position: absolute;
@@ -1227,18 +1329,18 @@ $this->registerCss('
     background: #fff;
     height: auto;
     position: fixed;
-    top: 105px;
+    top: 62px;
     left: 0;
     border: 1px solid #eee;
     width: 0px;
-    height: calc(100vh - 105px);
+    height: calc(100vh - 62px);
     transition: .3s ease;
     box-shadow: 0 0 10px rgba(0,0,0,.2);
     z-index: 999;
 }
 .pa-sidebar{
     width: 100%;
-    height: calc(100vh - 105px);
+    height: calc(100vh - 70px);
     overflow-x: hidden;
     z-index: 999;
 }
@@ -1381,7 +1483,7 @@ $this->registerCss('
 .set-height{height:55px;}
 .sticky {
     position: fixed;
-    top: 104px;
+    top: 65px;
     width: 83.45vw;
     z-index: 99;
     background: rgb(255, 255, 255);
@@ -2088,7 +2190,26 @@ overflow: hidden;
 ');
 $script = <<<JS
 window.onscroll = function() {myFunction()};
-
+$(document).on('keyup', '#whatsAppNum', function (e){
+    if(e.keyCode == 13){
+        $('.share_Btn_whats').trigger('click');
+    }
+})
+$(document).on('click', '.share_Btn_whats', function (){
+    let parentElem = this.parentElement;
+    let inputVal = parentElem.querySelector('#whatsAppNum').value;
+    let errorMsg = parentElem.querySelector('.errorMsg');
+    const num = /^[0-9-+]+$/;
+    if(!inputVal.match(num) && inputVal != ''){
+      errorMsg.classList.add('showError');
+      return false;
+    }else{
+      errorMsg.classList.remove('showError');
+    }
+    if($('#whatsAppNum').val() != ''){
+        window.open('https://api.whatsapp.com/send?phone=' +$('#whatsAppNum').val() + '&text=' + $(this).attr('data-link'));
+    }
+})
 var header = document.getElementById("myHeader");
 var sticky = header.offsetTop - 55;
 
@@ -2098,6 +2219,19 @@ function myFunction() {
   } else {
     header.classList.remove("sticky");
   }
+}
+$(document).on('click', '.jj-clipboard',function (event) {
+    event.preventDefault();
+    var link = $(this).attr('data-link');
+    CopyToClipboard(link, true, "Link copied");
+});
+function CopyToClipboard(value, showNotification, notificationText) {
+    var temp = $("<input>");
+    $("body").append(temp);
+    temp.val(value).select();
+    document.execCommand("copy");
+    temp.remove();
+    toastr.success("", "Link Copy to Clipboard");
 }
 $(document).on('click','#j-delete',function(e){
      e.preventDefault();
@@ -2540,81 +2674,83 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         }, 500);
     }
 
-function shownotes(){
-    let noteImg = document.getElementsByClassName('noteImg');
-    for (let i = 0; i < noteImg.length; i++) {
-        noteImg[i].addEventListener('click', function () {
-            let noteForm = document.querySelectorAll('.noteForm');
-            if (noteForm.length > 0) {
-                noteForm[0].remove();
-            }
-            var note_val = noteImg[i].getAttribute('data-val');
-            let parentElem = this.parentElement;
-            let rootElem = parentElem.parentElement;
-            let div = document.createElement('div');
-            div.setAttribute('class', 'noteForm');
-            let notesTemp = '<form><div class="noteInput"><span id="closeNotes"><i class="fa fa-times"></i></span><p>Notes</p><textarea class="noteText">' + note_val + '</textarea><button type="button" class="saveNote"><i class="fa fa-check"></i></button></div></form>';
-            div.innerHTML = notesTemp;
-            parentElem.insertAdjacentElement('afterend', div);
+    function shownotes() {
+        let noteImg = document.getElementsByClassName('noteImg');
+        for (let i = 0; i < noteImg.length; i++) {
+            noteImg[i].addEventListener('click', function () {
+                let noteForm = document.querySelectorAll('.noteForm');
+                if (noteForm.length > 0) {
+                    noteForm[0].remove();
+                }
+                var note_val = noteImg[i].getAttribute('data-val');
+                let parentElem = this.parentElement;
+                let rootElem = parentElem.parentElement;
+                let div = document.createElement('div');
+                div.setAttribute('class', 'noteForm');
+                let notesTemp = '<form><div class="noteInput"><span id="closeNotes"><i class="fa fa-times"></i></span><p>Notes</p><textarea class="noteText">' + note_val + '</textarea><button type="button" class="saveNote"><i class="fa fa-check"></i></button></div></form>';
+                div.innerHTML = notesTemp;
+                parentElem.insertAdjacentElement('afterend', div);
 
-            let closeNotes = document.getElementById('closeNotes');
-            closeNotes.addEventListener('click', function () {
-                let noteInput = closeNotes.closest('.noteForm');
-                noteInput.remove();
-            });
-        })
+                let closeNotes = document.getElementById('closeNotes');
+                closeNotes.addEventListener('click', function () {
+                    let noteInput = closeNotes.closest('.noteForm');
+                    noteInput.remove();
+                });
+            })
+        }
     }
-}
-shownotes()
-function showRejectType(e) {
-    let parElem = e.parentElement;
-    let rootElem = parElem.parentElement;
-    let rejectType = rootElem.querySelector('.rejectType');
-    rejectType.style.display = "flex";
-    parElem.style.display = "none";
-}
 
-function showRejectReason(e) {
-    let parElem = e.parentElement;
-    let rootElem = parElem.parentElement;
-    let rejectType = rootElem.querySelector('.rejectRea');
-    rejectType.style.display = "flex";
-    parElem.style.display = "none";
-}
+    shownotes()
 
-var modal = document.getElementById("myModal");
-var span = document.getElementsByClassName("close")[0];
-let bdy = document.getElementsByTagName('body');
+    function showRejectType(e) {
+        let parElem = e.parentElement;
+        let rootElem = parElem.parentElement;
+        let rejectType = rootElem.querySelector('.rejectType');
+        rejectType.style.display = "flex";
+        parElem.style.display = "none";
+    }
 
-function showJobsModal() {
-    modal.style.display = "block";
-    bdy[0].classList.add('modal-open');
-}
+    function showRejectReason(e) {
+        let parElem = e.parentElement;
+        let rootElem = parElem.parentElement;
+        let rejectType = rootElem.querySelector('.rejectRea');
+        rejectType.style.display = "flex";
+        parElem.style.display = "none";
+    }
 
-function closeModal() {
-    modal.style.display = "none";
-    bdy[0].classList.remove('modal-open');
-}
+    var modal = document.getElementById("myModal");
+    var span = document.getElementsByClassName("close")[0];
+    let bdy = document.getElementsByTagName('body');
 
-let openConJob = document.getElementById('conjobs');
+    function showJobsModal() {
+        modal.style.display = "block";
+        bdy[0].classList.add('modal-open');
+    }
 
-function openConJobs() {
-    openConJob.style.display = "block";
-    bdy[0].classList.remove('modal-open');
-}
-
-function closeConJobsModal() {
-    openConJob.style.display = "none";
-    bdy[0].classList.remove('modal-open');
-}
-
-window.onclick = function (event) {
-    if (event.target == modal) {
+    function closeModal() {
         modal.style.display = "none";
-    } else if (event.target == openConJob) {
-        openConJob.style.display = "none";
+        bdy[0].classList.remove('modal-open');
     }
-}
+
+    let openConJob = document.getElementById('conjobs');
+
+    function openConJobs() {
+        openConJob.style.display = "block";
+        bdy[0].classList.remove('modal-open');
+    }
+
+    function closeConJobsModal() {
+        openConJob.style.display = "none";
+        bdy[0].classList.remove('modal-open');
+    }
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        } else if (event.target == openConJob) {
+            openConJob.style.display = "none";
+        }
+    }
 
 </script>
 <script id="modalJobCards" type="text/template">

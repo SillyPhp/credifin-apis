@@ -55,6 +55,12 @@ if (empty($app['square_image']) || $app['square_image'] == 1) {
 } else {
     $Instaimage = Yii::$app->params->digitalOcean->sharingImageUrl . $app['square_image'];
 }
+
+if (empty($app['story_image']) || $app['story_image'] == 1) {
+    $Storyimage = \frontend\models\script\StoriesImageScript::widget(['content' => $content]);
+} else {
+    $Storyimage = Yii::$app->params->digitalOcean->sharingImageUrl . $app['story_image'];
+}
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
@@ -243,6 +249,8 @@ if (!Yii::$app->user->isGuest) {
                             (1250*650)</a>
                         <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square
                             Size (800*800)</a>
+                        <a href="<?= $Storyimage; ?>" download target="_blank"><i class="fa fa-download"></i> Story
+                            Size (Default)</a>
                     </div>
                 </div>
                 <!--  org details-->
@@ -1444,8 +1452,7 @@ $this->registerCss("
     }
     @media only screen and (max-width: 649px) {
       .btn-parent{
-            left: 0px;
-            bottom: 28px;
+            left: 28px;
             transform: unset;
             border-radius: 0px 10px 0 0;
       }
@@ -1453,8 +1460,11 @@ $this->registerCss("
     @media only screen and (max-width: 430px) {
     .btn-parent{
         position: fixed;
-        bottom:0px;
-        left: 0px;
+        }
+    }
+     @media only screen and (max-width: 380px) {
+    .btn-parent{
+        left:0px;
         }
     }
     @media only screen and (max-width: 575px) {
