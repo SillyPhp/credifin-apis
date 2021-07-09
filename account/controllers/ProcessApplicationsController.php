@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use account\models\emails\SendEmailModel;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\AppliedApplications;
 use common\models\CandidateConsiderJobs;
@@ -9,6 +10,7 @@ use common\models\EmployerApplications;
 use common\models\HiringProcessNotes;
 use common\models\RejectionReasons;
 use common\models\Utilities;
+use frontend\models\whatsAppShareForm;
 use Yii;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -58,6 +60,14 @@ class ProcessApplicationsController extends Controller
     public function actionIndex($aidk)
     {
         $application_id = $aidk;
+        $model = new SendEmailModel();
+        $whatsAppmodel = new whatsAppShareForm();
+        if (Yii::$app->request->post()) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $model->email = Yii::$app->request->post('email');
+                $model->application_id = Yii::$app->request->post('application_id');
+                return $model->sendEmails();
+        }
         if (Yii::$app->user->identity->organization) {
             $application_name = EmployerApplications::find()
                 ->alias('a')
@@ -179,6 +189,7 @@ class ProcessApplicationsController extends Controller
                 return $this->render('index', [
                     'fields' => $applied_users,
                     'que' => $question,
+                    'whatsAppmodel' => $whatsAppmodel,
                     'application_name' => $application_name,
                     'application_id' => $application_id,
                     'similarApps' => $this->GetJobsOfCompany($application_name['application_type'], $aidk, $application_name['application_for']),
@@ -210,6 +221,7 @@ class ProcessApplicationsController extends Controller
                 ->one();
             return $this->render('individual_candidate_process', [
                 'applied' => $applied_user,
+                'model' => $model,
             ]);
         }
     }
