@@ -473,7 +473,7 @@ use yii\widgets\Pjax;
                                                                  class="img-responsive" alt=""/>
                                                         </div>
                                                         <div class="tab-empty-text">
-                                                            <div class="">You haven't Saved any jobs.</div>
+                                                            <div class="">You haven't Shortlisted in any job.</div>
                                                         </div>
                                                     </div>
                                                     <?php
