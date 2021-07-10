@@ -297,24 +297,8 @@ foreach ($fields as $f) {
                     $form->field($whatsAppmodel, 'phone')->textInput(['id' => 'phone-input']);
                     ?>
                     <p id="phone-error" style="color:red;" class="help-block help-block-error"></p>
-<!--                    --><?//=
-//                    $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
-//                        'options' => ['id' => 'whatsappNumber','class' => 'form-control', 'placeholder' => '+91 98 XXXX XXXX'],
-//                        'jsOptions' => [
-//                            'allowExtensions' => false,
-//                            'preferredCountries' => ['in'],
-//                            'nationalMode' => false,
-//                        ]
-//                    ]);
-//                    ?>
                     <button class="grn" id="whatsapp-invitation"><i class="fa fa-whatsapp"></i></button>
                     <?php ActiveForm::end(); ?>
-<!--                    <input type="text" class="form-control" id="whatsAppNum" name="text"-->
-<!--                           placeholder="Whatsapp">-->
-<!--                    <button class="grn share_Btn_whats" data-link="--><?//=Url::to('/'.$app_type.'/'.$application_name['slug'], "https");?><!--">-->
-<!--                        <i class="fa fa-whatsapp"></i>-->
-<!--                    </button>-->
-<!--                    <p class="errorMsg">Please enter a valid number</p>-->
                 </div>
             </div>
         </div>
