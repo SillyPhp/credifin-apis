@@ -412,7 +412,10 @@ $script = <<< JS
          }else{
              window.location.href = '/account/'+type+'/clone-template?aidk='+$('input[name="tRadio"]:checked').val();   
          }
-     }else {window.location.href = '/account/'+type+'/'+$('#hidden_profile').val()+'/create';   }
+     }else 
+     {
+         window.location.href = '/account/'+type+'/'+$('#hidden_profile').val()+'/create'; 
+     }
  }); 
   $(document).on('click','#tab_key_skip',function(e) {
    e.preventDefault();
@@ -450,8 +453,8 @@ $script = <<< JS
      success:function(res) {
        $('.load-suggestions').hide();
        if (res.response.status==200){
-           $('#tab2_content').html(Mustache.render($('#temp-card').html(), res.response.data));
-       }else {
+            $('#tab2_content').html(Mustache.render($('#temp-card').html(), res.response.data));
+        }else {
            $('#choose_temp').hide();
            $('#tab2_content').html('<div id="no_temp"><h3 class="text-center" style="font-family: roboto;">Sorry No Available Templates For This Profile,<br> Creating Job With Your Current Selected Profile</h3><button class="tab_key_continue btn btn-default">Continue</button></div>')
        }
