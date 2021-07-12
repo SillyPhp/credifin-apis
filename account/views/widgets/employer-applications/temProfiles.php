@@ -442,9 +442,8 @@ $(document).on('click','#tab_key_skip',function(e) {
  }  
  function ajaxFunction(id, noTemp) {
     var oppType = type == 'internships' ? 'Internship' : 'Job';
-    console.log(oppType);
    $.ajax({
-     url:'https://sneh.eygb.me/api/v3/job/get-templates',
+     url:'/api/v3/job/get-templates',
      method:'POST',
      data:{id:id,type:type},
      beforeSend:function() {
