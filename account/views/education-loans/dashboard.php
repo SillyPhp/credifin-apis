@@ -98,7 +98,7 @@ if (isset($_GET['filter'])) {
             </div>
 
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 heading-filters-container">
                     <?php
                     $filterList = [
                         'all' => 'All',
@@ -133,7 +133,7 @@ if (isset($_GET['filter'])) {
                         }
                         ?>
                     </ul>
-                    <span id="search-filter-span"><input style="height: 35px" class="form-control-static" id="search-filter" type="text" placeholder="Type to search..." value="<?= $_GET['search'] ?>" /><button id="search-filter-btn" class="btn btn-primary">Search</button></button></span>
+                    <div id="search-filter-span"><input style="height: 35px" class="form-control-static" id="search-filter" type="text" placeholder="Type to search..." value="<?= $_GET['search'] ?>" /><button id="search-filter-btn" class="btn btn-primary">Search</button></button></div>
                 </div>
             </div>
         </div>
@@ -453,6 +453,12 @@ if (isset($_GET['filter'])) {
 </div>
 <?php
 $this->registerCss('
+.heading-filters-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
 #search-filter-span{
     display: flex;
     margin-bottom: 10px;
@@ -462,6 +468,10 @@ $this->registerCss('
     padding: 0px 15px;
     margin-right: 10px;
     border-radius: 2px;
+}
+#search-filter-span input, #search-filter-span button{
+    margin-top: 10px;
+    margin-bottom: 5px;
 }
 .form-group{
     margin-bottom: 5px;
