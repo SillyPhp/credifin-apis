@@ -1385,4 +1385,8 @@ class SiteController extends Controller
         return $this->render('ranked-college');
     }
 
+    public function actionEnigma21(){
+        return $this->render('aiesec-main');
+    }
+
 }
