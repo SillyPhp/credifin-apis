@@ -1001,7 +1001,7 @@ width:100% !important;
         padding-inline-start: 0px;
     }
 }
-#collegeLoanBox,#hideDiveChild,#parent_co_borrower,#student_co_borrower{
+#collegeLoanBox,#hideDiveChild,#parent_co_borrower{
 display:none;
 }
 ');
@@ -1265,6 +1265,7 @@ jQuery.validator.addClassRules('child_school', {
         required: true 
     });
     $('#mobile, #loanamount').mask("#", {reverse: true});
+    $('#co-anualincome').mask("#", {reverse: true});
     $("#nextBtn, #subBtn").click(function(){
        var form = $("#myForm");  
        var error = $('.alert-danger', form);
@@ -1808,6 +1809,7 @@ $this->registerJs($script);
             }
         }
         showSchoolField = () => {
+            alert(1);
             let schoolNameField = document.querySelectorAll('.schoolNameField')
             if(event.target.checked){
                 for(let i = 0; i < schoolNameField.length; i++){
@@ -1885,12 +1887,7 @@ $this->registerJs($script);
                         name="school_name_${count}" placeholder="School Name">
                 </div>
                 ${num > 1 && count == 1 ? `
-                <div class="form-group" id="schoolAttend" >
-                    <label class="check-container">All Attend The Same School
-                      <input id="checkmark" name="checkmark" type="checkbox" onchange="showSchoolField()">
-                      <span class="checkmark"></span>
-                    </label>
-                </div>
+
                 `: ''}
             </div>
             <div class="col-md-12 padd-20">
@@ -2060,6 +2057,9 @@ $this->registerJs($script);
                 document.getElementById('noChild').value = "";
                 countryName.style.display = "none";
                 collegeLoanBox.style.display = "block";
+                let childFormBox = document.querySelectorAll('.childFormBox');
+                let num = 1;
+                removeChildFormBox(num, childFormBox);
             }else{
                 collegeLoanBox.style.display = "none";
                 if (applicantRadio==1){
@@ -2082,14 +2082,26 @@ $this->registerJs($script);
             const schoolInfo = document.getElementById('schooInfo');
             const collegeLoanBox = document.getElementById('collegeLoanBox');
             const ParentCoBorrower = document.getElementById('parent_co_borrower');
-            const StudentCoBorrower = document.getElementById('student_co_borrower');
             if(radioValue == '1'){
                 ParentCoBorrower.style.display = "block";
-                StudentCoBorrower.style.display = "none";
-                if (applicantRadio=='1'){
-                    countryName.style.display = "block";
-                    schoolInfo.innerHTML = "";
-                    document.getElementById('noChild').value = "";
+                if (applicantRadio!=''||applicantRadio!=null){
+                    if (applicantRadio=='0') {
+                        //alert('parent college');
+                        schoolInfo.innerHTML = "";
+                        document.getElementById('noChild').value = "";
+                        countryName.style.display = "none";
+                        collegeLoanBox.style.display = "block";
+                        let childFormBox = document.querySelectorAll('.childFormBox');
+                        let num = 1;
+                        removeChildFormBox(num, childFormBox);
+                    }
+                    else if (applicantRadio=='1'){
+                        //alert('parent school');
+                        collegeLoanBox.style.display = "none";
+                        countryName.style.display = "block";
+                        schoolInfo.innerHTML = "";
+                        document.getElementById('noChild').value = "";
+                    }
                 }
             }
         }
@@ -2100,12 +2112,27 @@ $this->registerJs($script);
             const schoolInfo = document.getElementById('schooInfo');
             const collegeLoanBox = document.getElementById('collegeLoanBox');
             const ParentCoBorrower = document.getElementById('parent_co_borrower');
-            const StudentCoBorrower = document.getElementById('student_co_borrower');
             if(radioValue == '0'){
                 ParentCoBorrower.style.display = "none";
-                StudentCoBorrower.style.display = "block";
-                if (applicantRadio=='0') {
-                    countryName.style.display = "none";
+                if (applicantRadio!=''||applicantRadio!=null){
+                    if (applicantRadio=='0') {
+                        //alert('student college');
+                        schoolInfo.innerHTML = "";
+                        document.getElementById('noChild').value = "";
+                        countryName.style.display = "none";
+                        collegeLoanBox.style.display = "block";
+                        let childFormBox = document.querySelectorAll('.childFormBox');
+                        let num = 1;
+                        removeChildFormBox(num, childFormBox);
+                    }
+                    else if (applicantRadio=='1'){
+                        //alert('student school');
+                        countryName.style.display = "none";
+                        schoolInfo.innerHTML = createChild();
+                        let childFormBox = document.querySelectorAll('.childFormBox');
+                        let num = 1;
+                        removeChildFormBox(num, childFormBox);
+                    }
                 }
             }
         }
