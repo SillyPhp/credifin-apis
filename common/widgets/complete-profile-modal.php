@@ -922,6 +922,10 @@ $this->registerCss('
     transform: translate(-50%, -50%) !important;
     z-index: 10049 !important;
 }
+.lp-dialog-main .modal-content{
+    width: 60vw;
+    height: auto;
+}
 .close-lp-modal{
     position: absolute;
     right: 0px;
