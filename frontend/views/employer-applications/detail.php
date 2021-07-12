@@ -599,6 +599,7 @@ if (!empty($data2) && Yii::$app->params->options->showSchema) {
 <?php
 echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/mustache/courses-card');
+$app_profile = (($data1['name']) ? $data1['name'] : $data2['name']);
 $this->registerCss("
 .new-row{
 	padding: 0;
@@ -1871,7 +1872,7 @@ button.lc-item-video-menu {
 $script = <<<JS
 var type = "$type";
 var keyword = "$searchItems";
-var cat = '';
+var cat = '$app_profile';
 var slugg = '$slug'
 
 function getCourseList(keyword=null,cat=null){

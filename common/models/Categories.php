@@ -13,6 +13,7 @@ use Yii;
  * @property string $slug Category Slug
  * @property string $icon Category Icon
  * @property string $icon_png Category PNG Icon
+ * @property int $source 0 as EY, 1 as Api
  * @property string $created_on On which date Category information was added to database
  * @property string $created_by By which User Category information was added
  * @property string $last_updated_on On which date Category information was updated
@@ -54,6 +55,7 @@ class Categories extends \yii\db\ActiveRecord
     {
         return [
             [['category_enc_id', 'name', 'slug'], 'required'],
+            [['source'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['category_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['icon', 'icon_png'], 'string', 'max' => 50],
