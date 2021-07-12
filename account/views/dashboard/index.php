@@ -385,7 +385,7 @@ endif;
                     </div>
                 </div>
 
-
+                <?= $this->render('@common/widgets/career-advice')?>
 
             <?php endif; ?>
             <!--            <div class="portlet light portlet-fit nd-shadow">-->
@@ -657,6 +657,7 @@ a:focus, a:hover{
     text-transform: uppercase;
     color:#9eacb4;
 }
+
 @media only screen and (max-width: 950px) {
 .marg{
     margin-top:20px !important;
