@@ -38,7 +38,7 @@ use yii\helpers\Url;
                                 <div class="field-first_name">
                                     <label class="formHeading">Loan Amount</label>
                                     <input type="text" class="form-control text-capitalize formVal"
-                                         data-type="number"  name="loan_amount">
+                                         data-type="number"  name="amount">
                                     <p class="errorMsg"></p>
                                 </div>
                             </div>
@@ -282,7 +282,7 @@ $('.applyBtn').on('click', function (e){
     let submitForm = document.querySelector('#applyLoanForm');
     let formFields = submitForm.querySelectorAll('.formVal');
     let data = {};
-    data['loan-id'] = loan_id;
+    data['loan_app_id'] = loan_id;
     for(let i=0; i<formFields.length; i++){
         validations(formFields[i]);
         let fieldVal = formFields[i].value;
@@ -293,15 +293,19 @@ $('.applyBtn').on('click', function (e){
     if(hasError){
         return false;
     }
-    console.log(data);
-    // $.ajax({
-    //     url:'',
-    //     data: data,
-    //     method: 'post',
-    //     success: function(res){
-    //       
-    //     }
-    // })
+    $.ajax({
+        url:'https://ravinder.eygb.me/api/v3/education-loan/refinance',
+        data: data,
+        method: 'post',
+        success: function(res){
+           if(response['status'] == 200){
+               toastr.success('Loan Application Applied', 'success');
+               modal.style.display = "none";
+           }else{
+               toastr.error('Some Error Occurred', 'error');
+           }
+        }
+    })
 })
 $('.formVal').on('change', function(event){
     let formFiled = event.target;

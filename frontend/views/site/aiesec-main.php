@@ -1,7 +1,36 @@
 <?php
 
 use yii\helpers\Url;
+$keywords = "Enigma 2021,  ";
 
+$description = "Enigma'21 aims to give the delegates a much more culturally diverse and enriched experience";
+
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/themes/ey/images/pages/aiesec/enigma-sharing.jpg');
+
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 
     <section class="aiesec-header">
@@ -10,11 +39,21 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-12 col-sm-12">
                     <div class="aiesec-txt">
-                        <h1>MODEL UNITED NATIONS</h1>
+                        <h1 class="cOrange">ENIGMA'21</h1>
                         <p>AIESEC in Ludhiana</p>
-                        <p style="font-size: 14px;">Mark your calendars for August 6 to August 8, 2021 and win exciting
+                        <p style="font-size: 14px;">Mark your calendars for <span class="colorOrange">August 6 to 8, 2021</span> and win exciting
                             cash prizes.</p>
-                        <a href="https://pages.razorpay.com/pl_HQDv9kT7ZXSUBd/view" class="reg-btn">REGISTER NOW</a>
+                        <?php
+                        if(Yii::$app->user->isGuest){
+                            ?>
+                            <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="reg-btn">REGISTER NOW</a>
+                            <?php
+                        }else{
+                            ?>
+                            <a href="https://pages.razorpay.com/pl_HQDv9kT7ZXSUBd/view" target="_blank" class="reg-btn">REGISTER NOW</a>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
@@ -41,8 +80,18 @@ use yii\helpers\Url;
                     <div class="venue-date">
                         <p>The event will be held on</p>
                         <p class="text-bold" style="margin-bottom: 15px;">ZOOM on 6th, 7th & 8th August 2021</p>
-                        <a href="https://pages.razorpay.com/pl_HQDv9kT7ZXSUBd/view" class="reg-btn2">REGISTER NOW</a>
-                    </div>
+                        <?php
+                        if(Yii::$app->user->isGuest){
+                            ?>
+                            <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="reg-btn2">REGISTER NOW</a>
+                            <?php
+                        }else{
+                            ?>
+                            <a href="https://pages.razorpay.com/pl_HQDv9kT7ZXSUBd/view" target="_blank" class="reg-btn2">REGISTER NOW</a>
+                            <?php
+                        }
+                        ?>
+                        </div>
                 </div>
             </div>
         </div>
@@ -119,7 +168,7 @@ $this->registerCss('
     font-size: 34px;
 }
 .aiesec-header{
-    background:url(' . Url::to('https://images.unsplash.com/photo-1461988625982-7e46a099bf4f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1500&q=80') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/aiesec/enigma-header.png') . ');
     min-height:500px;
     background-size:cover;
     background-position: left;
@@ -127,6 +176,13 @@ $this->registerCss('
     display: flex;
     justify-content: flex-start;
     align-items: center;
+}
+.colorOrange, .cOrange{
+    color: #ff7803;
+}
+.colorOrange{
+    font-size: 20px;
+    font-weight: 500; 
 }
 .overlay-left {
   position: absolute;
@@ -163,6 +219,9 @@ $this->registerCss('
     color:#fff;
     transform: scale(1.2);
 }
+.reg-btn2:focus{
+    color:#fff;
+}
 .about-aiesec {
     margin: 30px 0;
 }
@@ -172,7 +231,7 @@ $this->registerCss('
 .aiesec-txt h1 {
     font-size: 42px;
     font-family: lora;
-    color: #fff;
+    color: #ff7803;
     font-weight:600;
 }
 .aiesec-txt p{
