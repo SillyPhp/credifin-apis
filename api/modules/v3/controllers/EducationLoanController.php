@@ -63,7 +63,7 @@ class EducationLoanController extends ApiBaseController
                 'loan-second-form' => ['POST', 'OPTIONS'],
                 'upload-image' => ['POST', 'OPTIONS'],
                 'update-institute-payment' => ['POST', 'OPTIONS'],
-                'refinance' => ['GET', 'OPTIONS'],
+                'refinance' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
