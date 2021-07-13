@@ -1,6 +1,8 @@
 <?php
 use yii\helpers\Url;
 Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEAD);
+$oppType = $type == 'internships' ? 'Internship' : 'Job';
+
 ?>
 <!--light box-->
 <div id="job_profile_light">
@@ -15,7 +17,7 @@ Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEA
                                 <a href="<?= Url::to('/account/dashboard')?>" id="wizard-back-cont" type="button" class="btn btn-primary wizard-back-cont">
                                     <i class="fa fa-arrow-left" aria-hidden="true"></i> Back To Dashboard
                                 </a>
-                                <h3 class="text-center" style="font-family: roboto;">Select Profile For Your Job</h3>
+                                <h3 class="text-center" style="font-family: roboto;">Select Profile For Your <?= $oppType ?></h3>
                             </div>
                         </div>
                     </div>
@@ -34,7 +36,7 @@ Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEA
                                 </div>
                             </div>
                 <div class="tab_pane" id="tab_index_2">
-                        <h3 class="text-center" id="choose_temp" style="font-family: roboto;">We Have Some Awsome Templates To Make Your Job Process Faster, Check Out..</h3>
+                        <h3 class="text-center" id="choose_temp" style="font-family: roboto;">We Have Some Awesome Templates To Make Your <?= $oppType ?> Process Faster, Check Out..</h3>
                     <div class="load-suggestions">
                         <span></span>
                         <span></span>
@@ -381,14 +383,15 @@ $script = <<< JS
         goNext(p);
  })
  function goNext(id) {
-         tabs1.hide();
-         ajaxFunction(id);
-         tabs2.show();
-         Btback.show();
-         BtContinue.show();
-         BTskip.show();
-         BTnext.hide();
+    tabs1.hide();
+    ajaxFunction(id)
+    tabs2.show();
+    // Btback.show();
+    // BtContinue.show();
+    // BTskip.show();
+    // BTnext.hide();
  }
+ 
  $(document).on('click','#tab_key_back',function(e) {
    e.preventDefault();
     var tabs1 = $('#tab_index_1');
@@ -412,51 +415,58 @@ $script = <<< JS
          }else{
              window.location.href = '/account/'+type+'/clone-template?aidk='+$('input[name="tRadio"]:checked').val();   
          }
-     }else 
-     {
-         window.location.href = '/account/'+type+'/'+$('#hidden_profile').val()+'/create'; 
-     }
+     }else {window.location.href = '/account/'+type+'/'+$('#hidden_profile').val()+'/create';   }
  }); 
-  $(document).on('click','#tab_key_skip',function(e) {
+$(document).on('click','#tab_key_skip',function(e) {
    e.preventDefault();
    skipable();
    })
-   
+
  function skipable() {
    swal({
-                        title: "",
-                        text: "Continue Without Template ?",
-                        type:'warning',
-                        showCancelButton: true,  
-                        confirmButtonClass: "btn-primary",
-                        confirmButtonText: "Yes",
-                        closeOnConfirm: true, 
-                        closeOnCancel: true
-                         },
-                            function (isConfirm) { 
-                             if (isConfirm){
-                              window.location.href = '/account/'+type+'/'+$('#hidden_profile').val()+'/create';   
-                             }
-                         }
-                        );
+    title: "",
+    text: "Continue Without Template ?",
+    type:'warning',
+    showCancelButton: true,  
+    confirmButtonClass: "btn-primary",
+    confirmButtonText: "Yes",
+    closeOnConfirm: true, 
+    closeOnCancel: true
+     },
+        function (isConfirm) { 
+         if (isConfirm){
+          window.location.href = '/account/'+type+'/'+$('#hidden_profile').val()+'/create';   
+         }
+     }
+    );
  }  
- function ajaxFunction(id) {
+ function ajaxFunction(id, noTemp) {
+    var oppType = type == 'internships' ? 'Internship' : 'Job';
    $.ajax({
      url:'/api/v3/job/get-templates',
      method:'POST',
      data:{id:id,type:type},
      beforeSend:function() {
-       $('.load-suggestions').show();
-       $('#choose_temp').show();
-       $('#tab2_content').html(null);
+        Btback.hide();
+        BtContinue.hide();
+        BTskip.hide();
+        BTnext.hide();
+        $('.load-suggestions').show()
+        $('#choose_temp').hide();
+        $('#tab2_content').html(null);
      },
      success:function(res) {
-       $('.load-suggestions').hide();
        if (res.response.status==200){
+            $('#choose_temp').show();
+            $('.load-suggestions').hide();
             $('#tab2_content').html(Mustache.render($('#temp-card').html(), res.response.data));
-        }else {
-           $('#choose_temp').hide();
-           $('#tab2_content').html('<div id="no_temp"><h3 class="text-center" style="font-family: roboto;">Sorry No Available Templates For This Profile,<br> Creating Job With Your Current Selected Profile</h3><button class="tab_key_continue btn btn-default">Continue</button></div>')
+            Btback.show();
+            BtContinue.show();
+            BTskip.show();
+       }else {
+            $('.load-suggestions').show()
+            $('#tab2_content').html('<div id="no_temp"><h3 class="text-center" style="font-family: roboto;">Creating '+oppType+' With Your Current Selected Profile</h3></div>');
+            window.location.href = '/account/'+type+'/'+$('#hidden_profile').val()+'/create';
        }
      }
    })
