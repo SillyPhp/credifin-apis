@@ -385,7 +385,6 @@ endif;
                     </div>
                 </div>
 
-                <?= $this->render('@common/widgets/career-advice')?>
 
             <?php endif; ?>
             <!--            <div class="portlet light portlet-fit nd-shadow">-->
