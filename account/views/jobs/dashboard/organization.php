@@ -330,7 +330,8 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                         </div>
                     </div>
                 <?php }?>
-                <div class="col-lg-12 col-xs-12 col-sm-12">
+                <?php if($blacklistedApplicants['count'] > 0){ ?>
+                    <div class="col-lg-12 col-xs-12 col-sm-12">
                     <div class="portlet light nd-shadow">
                         <div class="portlet-title">
                             <div class="caption">
@@ -359,6 +360,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                         </div>
                     </div>
                 </div>
+                <?php }?>
             </div>
             <div class="row">
                 <div class="col-lg-6 col-xs-12 col-sm-12">
