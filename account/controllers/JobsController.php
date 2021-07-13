@@ -151,8 +151,7 @@ class JobsController extends Controller
         return $applications->getApplications($options);
     }
 
-    private function __individualDashboard()
-    {
+    private function __individualDashboard(){
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
             ->select(['a.application_enc_id', 'k.applied_application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
@@ -161,6 +160,7 @@ class JobsController extends Controller
                 $a->joinWith(['appliedApplications k' => function ($y) {
                     $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
+                $a->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE', 'b.application_for' =>1]);
             }], false)
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
@@ -197,6 +197,7 @@ class JobsController extends Controller
                 ['a.status' => 'Pending'],
                 ['a.status' => 'Accepted']
             ])
+            ->andwhere(['b.is_deleted' => 0, 'b.application_for' =>1, 'b.status' => 'Active'])
             ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
@@ -299,6 +300,7 @@ class JobsController extends Controller
                 $b->joinWith(['appliedApplications k' => function ($y) {
                     $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
+                $b->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE', 'b.application_for' =>1]);
             }], false)
             ->having(['type' => 'Jobs'])
             ->limit(8)
@@ -340,6 +342,7 @@ class JobsController extends Controller
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
             ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted' => 0])
+            ->andWhere(['c.status' => 'ACTIVE', 'c.is_deleted' => 0, 'c.application_for' =>1])
             ->having(['type' => 'Jobs'])
             ->groupBy('a.applied_application_enc_id')
             ->limit(8)
@@ -386,11 +389,13 @@ class JobsController extends Controller
                 $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id, 'e.is_deleted' => 0]);
             }], true)
             ->where(['IN', 'a.application_enc_id', $application_enc_id])
+            ->andWhere(['a.status' => 'ACTIVE', 'a.is_deleted' => 0, 'a.application_for' =>1])
             ->joinWith(['title c' => function ($x) {
                 $x->joinWith(['categoryEnc d'], false);
                 $x->joinWith(['parentEnc d1'], false);
             }], false)
             ->joinWith(['organizationEnc b'], false)
+            ->limit(8)
             ->asArray()
             ->all();
 
@@ -409,6 +414,7 @@ class JobsController extends Controller
             'shortlist1' => $shortlist1,
         ]);
     }
+
     public function actionGetFollowedCompaniesJobs(){
         if (Yii::$app->request->isAjax & Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -433,8 +439,8 @@ class JobsController extends Controller
                 return ['status'=>200,'data'=>$applications];
         }
     }
-    public function actionDashboard()
-    {
+
+    public function actionDashboard(){
         if (Yii::$app->user->identity->organization) {
             return $this->__organizationDashboard();
         } else {
@@ -1128,6 +1134,7 @@ class JobsController extends Controller
                     $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
                 $b->groupBy(['h.application_enc_id']);
+                $b->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE', 'b.application_for' =>1]);
             }], false)
             ->having(['type' => 'Jobs'])
             ->orderBy(['a.id' => SORT_DESC])
@@ -1149,6 +1156,7 @@ class JobsController extends Controller
                 $a->joinWith(['appliedApplications k' => function ($y) {
                     $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
+                $a->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE', 'b.application_for' =>1]);
             }], false)
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
@@ -1184,6 +1192,7 @@ class JobsController extends Controller
                 ['a.status' => 'Accepted']
             ])
             ->andWhere(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
+            ->andWhere(['c.status' => 'ACTIVE', 'c.is_deleted' => 0, 'c.application_for' =>1])
             ->having(['type' => 'Jobs'])
             ->groupBy('a.applied_application_enc_id')
             ->asArray()
@@ -1220,6 +1229,7 @@ class JobsController extends Controller
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
             ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted' => 0])
+            ->andWhere(['c.status' => 'ACTIVE', 'c.is_deleted' => 0, 'c.application_for' =>1])
             ->having(['type' => 'Jobs'])
             ->groupBy('a.applied_application_enc_id')
             ->asArray()
@@ -1228,6 +1238,47 @@ class JobsController extends Controller
 
         return $this->render('individual/accepted-jobs', [
             'accepted' => $accepted_applications,
+        ]);
+    }
+
+
+    public function actionShortlistedResume()
+    {
+
+        $application_id = DropResumeApplications::find()
+            ->alias('a')
+            ->innerJoinWith(['dropResumeApplicationTitles b' => function ($x) {
+                $x->joinWith(['title0 c'], false);
+                $x->andWhere(['c.assigned_to' => 'Internships']);
+            }], false)
+            ->where(['a.user_enc_id' => Yii::$app->user->identity->user_enc_id])
+            ->andWhere(['a.status' => 1])
+            ->asArray()
+            ->all();
+
+
+        $application_enc_id = [];
+        foreach ($application_id as $app) {
+            array_push($application_enc_id, $app['application_enc_id']);
+        }
+
+        $shortlist1 = EmployerApplications::find()
+            ->alias('a')
+            ->select(['a.application_enc_id', 'a.organization_enc_id', 'a.title', 'b.name as org_name', 'a.slug', 'c.category_enc_id', 'd.name', 'd.icon'])
+            ->joinWith(['appliedApplications e' => function ($y) {
+                $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id, 'e.is_deleted' => 0]);
+            }], true)
+            ->where(['IN', 'a.application_enc_id', $application_enc_id])
+            ->andWhere(['a.status' => 'ACTIVE', 'a.is_deleted' => 0, 'a.application_for' =>1])
+            ->joinWith(['title c' => function ($x) {
+                $x->joinWith(['categoryEnc d'], false);
+            }], false)
+            ->joinWith(['organizationEnc b'], false)
+            ->asArray()
+            ->all();
+
+        return $this->render('individual/shortlist-resume', [
+            'shortlisted_resume' => $shortlist1,
         ]);
     }
 
@@ -1245,6 +1296,7 @@ class JobsController extends Controller
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
             ->innerJoin(EmployerApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
+            ->andWhere(['b.status' => 'ACTIVE', 'b.is_deleted' => 0, 'b.application_for' =>1])
             ->having(['type' => 'Jobs'])
             ->groupBy(['b.application_enc_id'])
             ->orderBy(['a.id' => SORT_DESC])

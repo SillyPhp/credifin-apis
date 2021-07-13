@@ -129,6 +129,7 @@ Pjax::end();
 $this->registerCss('
 .cat-logo {
     width: 45px;
+    min-width: 45px;
     height: 45px;
     border-radius: 50% !important;
     background-color: #fff;
@@ -150,7 +151,7 @@ $this->registerCss('
     box-shadow: 0 0 6px 3px #eee;
     align-items: center;
     border-radius: 4px !important;
-    padding: 5px;
+    padding: 6px;
     margin-bottom: 15px;
     transition: all .3s;
 }

@@ -6,21 +6,27 @@ use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
 ?>
 <section class="study-in-usa-bg">
-    <div class="opacity-div"></div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
+<!--    <div class="opacity-div"></div>-->
+    <div class="container pt-0">
+        <div class="row ushd">
+            <div class="col-md-6 col-sm-12 col-xs-12">
                 <h1>
                     <span class="typewrite" data-period="2000"
                           data-type='["Study In USA.", "Education Loan.", "Easy Apply.", "Easy EMIs To Pay.", "Less Paperwork." ]'>
                         <span class="wrap"></span>
                     </span>
                 </h1>
-                <p>Don't let financial burden stop you from fulfilling <br> your desire to study in your dream college.</p>
+                <p>Don't let <span class="bold-fontt">financial burden stop you</span> from fulfilling <br>
+                    your desire to <span class="bold-fontt">study in your dream college<span class="bold-fontt">.</p>
                 <ul>
                     <li><a href="#contact" class="apply-now btn-orange">Reach Us</a></li>
                     <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
                 </ul>
+            </div>
+            <div class="col-md-6">
+                <div class="usa-vector">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/us.png') ?>">
+                </div>
             </div>
         </div>
     </div>
@@ -104,6 +110,16 @@ if($blogs['blogs']){
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+section > .container.pt-0 {
+    padding-top: 0px !important;
+}
+.ushd{
+    display: flex;
+    align-items: center;
+}
+.bold-fontt {
+    font-weight: bold;
+}
 .studyus-head {
     padding: 30px;
 }
@@ -161,6 +177,14 @@ $this->registerCss('
     display: inline;
     margin-right: 10px;
 }
+.usa-vector {
+    
+}
+.usa-vector img {
+    min-height: 500px;
+    height: 90vh;
+    max-height: 700px;
+}
 .apply-now {
 	padding: 10px 15px;
 	background: #00A0E3;
@@ -172,6 +196,7 @@ $this->registerCss('
 	border-radius: 4px;
 	display: inline-block;
 	width: 150px;
+	text-align: center;
 }
 .btn-orange{
     background: #ff7803 !important;
@@ -227,15 +252,16 @@ $this->registerCss('
     transition: .3s ease;
 }
 .study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/Study-usa-bg.jpg') . ');
-	min-height: 500px;
-	background-repeat: no-repeat;
-	background-size: cover;
+	background: url(' . Url::to('@eyAssets/images/pages/education-loans/us-bg.png') . '), url(' . Url::to('@eyAssets/images/pages/education-loans/study-in-us-bg.png') . ') ;
+	background-repeat: no-repeat, no-repeat;
+    background-position: bottom right, bottom left;
+    background-size: 500px, 100% 100%;
+    min-height: 500px;
 	display: flex;
 	align-items: center;
 	position: relative;
-	text-align: center;
-	height: 100vh;
+	text-align: left;
+	height: 90vh;
 	max-height: 700px;
 }
 .opacity-div{
@@ -249,7 +275,7 @@ $this->registerCss('
 .study-in-usa-bg p{
     font-size: 24px;
 	font-family: roboto;
-	color: #fff;
+	color: #000;
 	padding: 0 0 18px;
 	line-height: 30px;
 }
@@ -553,7 +579,22 @@ label {
 .course-box:nth-child(3n+0){
     margin-right:1%;
 }
+}
 
+@media only screen and (max-width: 499px) and (min-width: 320px){
+    .study-in-usa-bg {
+        text-align: center;
+    }
+    .apply-now {
+        margin-bottom: 10px;
+    }
+    .usa-vector{
+        display: none;
+    }
+    .whystudy img {
+        max-height: 250px;
+    }
+}
 ');
 $script = <<<JS
 setTimeout(function (){
