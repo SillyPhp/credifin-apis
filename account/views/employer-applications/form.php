@@ -1869,13 +1869,6 @@ function work_from_home(job_type_str) {
         $('#wh_type').addClass('col-md-12');
          }
 }
- function ChildFunction()
-     {
-       
-       $.pjax.reload({container: '#pjax_questionnaire', async: false});
-       $.pjax.reload({container: '#pjax_process', async: false});
-     }
-window.ChildFunction = ChildFunction;
         $(document).on('click','.button-submit',function(event)
             {
             event.preventDefault();

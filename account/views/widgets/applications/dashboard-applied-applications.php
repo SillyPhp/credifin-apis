@@ -180,8 +180,6 @@ use yii\helpers\Url;
         </div>
     </div>
 
-   
-
 <?php
     if($viewed == 0){
 ?>

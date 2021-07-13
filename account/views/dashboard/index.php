@@ -130,7 +130,8 @@ endif;
                     'applied' => $applied,
                     'question_list' => $question_list,
                     'shortlist_org' => $shortlist_org,
-                    'viewed' => $viewed
+                    'viewed' => $viewed,
+                    'loan' => $loan,
                 ]); ?>
                 <?= $this->render('/widgets/applications/reminder-applications', [
                     'app_reminder' => $app_reminder,
@@ -383,7 +384,6 @@ endif;
                         ?>
                     </div>
                 </div>
-
 
 
             <?php endif; ?>
@@ -656,6 +656,7 @@ a:focus, a:hover{
     text-transform: uppercase;
     color:#9eacb4;
 }
+
 @media only screen and (max-width: 950px) {
 .marg{
     margin-top:20px !important;

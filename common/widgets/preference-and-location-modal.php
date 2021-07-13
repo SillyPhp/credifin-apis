@@ -213,6 +213,10 @@ $this->registerCss('
     justify-content: center;
     height: 450px !important;
 }
+.lp-dialog-main .modal-content{
+    width: 60vw;
+    height: auto;
+}
 .lp-fom h3{
     color: #000;  
     margin-top: 0px; 
