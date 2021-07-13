@@ -120,7 +120,7 @@ class SkillUpController extends Controller
                 Yii::$app->session->setFlash('success', "Form saved successfully.");
                 $this->redirect('/account/skill-up/create');
             } else {
-                Yii::$app->session->setFlash('error', $data['message']);
+                Yii::$app->session->setFlash('error', 'Internal server error occurred');
                 $this->redirect('/account/skill-up/create');
             }
         } else {
