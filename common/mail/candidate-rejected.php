@@ -173,14 +173,14 @@ img + div{
             <img src="https://www.empoweryouth.com/assets/themes/email/images/zpBn4vYx2RmKpNExaDvPdJg3Aq9Vyl.png">
         </div>
         <div class="rejects-you">
-            <h2>Thank you for considering [Company_name]</h2>
-            <p>With a heavy heart, we wanted to let you know that <span class="darktext">we have chosen to move forward with a different candidate</span> for the [Job_title] position.</p>
+            <h2>We really appreciate that you have considered [Company_name]</h2>
+            <p>We'd like to inorm you that <span class="darktext">we are not able to advance you to the next round </span> for the [Job_title] position at this time.</p>
         </div>
         <div class="job-img">
             <img src="https://www.empoweryouth.com/assets/themes/email/images/6mMpL8zN9QqG9KeNwlbkoAxKOrBbnw.png">
         </div>
         <div class="content">
-            <p>We appreciate all you efforts but the skill set that you have does not fit well with this job role. Below, <span class="darktext">keeping your skill set in mind</span>, we are listing some <span class="darktext">similar jobs where you can apply</span>.</p>
+            <p>We appreciate all your efforts but the skill set that you have does not fit well with this job role. Below, <span class="darktext">keeping your skill set in mind</span>, we are listing some <span class="darktext">similar jobs where you can apply</span>.</p>
         </div>
         <div class="similar-job">
             <div class="sim-job-img">
