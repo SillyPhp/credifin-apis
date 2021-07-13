@@ -163,11 +163,6 @@ echo $this->render('/widgets/e-campus')
             </div>
         </div>
     </section>
-
-
-    <?= $this->render('@common/widgets/career-advice') ?>
-
-
     <section class="fixed-bttn">
         <div class="container">
             <div class="row">
