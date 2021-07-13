@@ -367,9 +367,9 @@ $this->registerCss('
 }
 .img-back-partner{
   position: absolute;
-  width: 350px;
-  height: 350px;
-  border:1px solid #91c8ff;
+  width: 450px;
+  height: 450px;
+  border:0px solid #91c8ff;
   top:22%;
   left:50%;
   border-radius: 50%;
@@ -384,16 +384,22 @@ $this->registerCss('
 //}
 
 .college-card-partner:hover > .img-back-partner{
- border-width: 150px; 
+ border-width: 500px; 
 }
 
 .college-card-partner p{
-  position: relative;
-  z-index: 3;
-  transition: 500ms all linear;
-  font-weight: 700;
-  line-height: 18px;
-  margin-top: 1rem;
+    position: relative;
+    z-index: 3;
+    transition: 500ms all linear;
+    font-weight: 700;
+    line-height: 18px;
+    margin-top: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 36px;
 }
 
 .college-card-partner:hover > p{

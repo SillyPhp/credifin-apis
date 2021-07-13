@@ -335,9 +335,9 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         <button type="button" class="addAnotherCo input-group-text" onclick="addAnotherCo(randomVal())"> <i class="fas fa-plus-square"></i> Add Another Co-Borrower (Optional, You Can Add Multiple If You Want)</button>
                                     </div>
 
-<!--                                    <div class="col-md-12 padd-20">-->
-<!--                                        <p class="termsText">By clicking submit you agree to our <a href="--><?//= Url::to('terms-and-conditions')?><!--">terms and conditions</a> </p>-->
-<!--                                    </div>-->
+                                    <div class="col-md-12 padd-20">
+                                        <p class="termsText">By clicking submit you agree to our <a href="<?= Url::to('terms-and-conditions')?>">terms and conditions</a> </p>
+                                    </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="input-group padd-20">

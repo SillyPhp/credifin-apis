@@ -651,7 +651,7 @@ body{background-color:#f9f9f9;}
     color:#000;
 }
 .education-detail, .experience-detail, .achievements-detail, .Interests-detail, .hobbies-detail {
-    padding-bottom: 20px;
+    padding-bottom: 15px;
 }
 .set {
     margin-bottom: -1px;
@@ -674,7 +674,7 @@ body{background-color:#f9f9f9;}
     padding: 3px 15px;
     border: 1px solid #b9c5ce;
     border-radius: 6px;
-    margin: 0 5px 0 0;
+    margin: 0 5px 10px 0;
     font-weight: 500;
     color: #605c5c;
 }
@@ -1072,7 +1072,6 @@ img.img-responsive.payment-img {
 .sidebar-container:hover, .sidebar-container:focus{
     transform: translateY(-5px);
     -webkit-transform: translateY(-5px);
-	cursor:pointer;
 }
 .sidebar-box{
     text-align: center;
