@@ -2,6 +2,8 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+use borales\extensions\phoneInput\PhoneInput;
+use yii\bootstrap\ActiveForm;
 
 $base_url = 'https://empoweryouth.com';
 switch ($application_name['application_type']) {
@@ -276,16 +278,27 @@ foreach ($fields as $f) {
             </div>
             <div class="col-md-12 use-ff">
                 <div class="job-txt">Invite Candidates via:</div>
-            <!--                            <div class="job-mail">-->
-            <!--                                <input type="email" class="form-control" id="email" name="email"-->
-            <!--                                       placeholder="Email">-->
-            <!--                                <button class="redd"><i class="fa fa-envelope"></i></button>-->
-            <!--                            </div>-->
+                <div class="job-mail">
+                    <input type="email" class="form-control" id="email" name="email"
+                           placeholder="Email">
+                    <button class="redd" id="email-invitation"><i class="fa fa-envelope"></i></button>
+                </div>
                 <div class="job-whatsapp">
-                    <input type="text" class="form-control" id="whatsAppNum" name="text"
-                           placeholder="Whatsapp">
-                    <button class="grn share_Btn_whats" data-link="<?=Url::to('/'.$app_type.'/'.$application_name['slug'], "https");?>"><i class="fa fa-whatsapp"></i></button>
-                    <p class="errorMsg">Please enter a valid number</p>
+                    <?php
+                    $form = ActiveForm::begin([
+                        'id' => 'whatsapp-form',
+                        'fieldConfig' => [
+                            'template' => '<div class="form-group">{input}{error}</div>',
+                            'labelOptions' => ['class' => ''],
+                        ],
+                    ]);
+                    ?>
+                    <?=
+                    $form->field($whatsAppmodel, 'phone')->textInput(['id' => 'phone-input']);
+                    ?>
+                    <p id="phone-error" style="color:red;" class="help-block help-block-error"></p>
+                    <button class="grn" id="whatsapp-invitation"><i class="fa fa-whatsapp"></i></button>
+                    <?php ActiveForm::end(); ?>
                 </div>
             </div>
         </div>
@@ -925,6 +938,18 @@ foreach ($fields as $f) {
 </div>
 <?php
 $this->registerCss('
+#whatsapp-form .form-group{
+    margin-bottom:0px;
+}
+#whatsapp-form .form-group .help-block, #phone-error{
+    margin:0px;
+}
+#phone-input{
+    width: 278px;
+}
+//.job-whatsapp {
+//    margin-top: 10px !important;
+//}
 .errorMsg{
     position: absolute;
     margin: 0;
@@ -1683,7 +1708,7 @@ li{
     width: 100%;
     height:102%;
     background: rgba(255,255,255,255);
-    z-index: 9;
+    z-index: 1;
     border-radius: 8px;
     padding: 10px 15px;
 }
@@ -2187,10 +2212,44 @@ overflow: hidden;
 }
 ');
 $script = <<<JS
+var application_id = "$application_id";
 window.onscroll = function() {myFunction()};
-$('.share_Btn_whats').on('click', function (e){  
-    let inputElem = e.target.parentElement;
-    let parentElem = inputElem.parentElement;
+$(document).on('keyup','input#email', function (e){
+    if (e.keyCode === 13) {
+        $('#email-invitation').click();
+    }
+})
+$(document).on('click', '#email-invitation', function(){
+    var email_id = $(this).parent().find('input#email').val();
+    if(email_id != "" && typeof email_id !== "undefined"){
+        $.ajax({
+            method: "POST",
+            data: {"email":email_id, application_id:application_id},
+            beforeSend: function()
+            {
+                $("#email-invitation").html('<i class="fa fa-spinner fa-spin"></i>');
+            },
+            success: function (res){
+                $("#email-invitation").html('<i class="fa fa-envelope"></i>');
+                if (res.status == 200) {
+                    toastr.success(res.title, res.message);
+                    $('#email').val("");
+                } else {
+                    toastr.error(res.title, res.message);
+                }
+            }
+        });
+    } else {
+        alert("no email found");
+    }
+})
+$(document).on('keyup', '#whatsAppNum', function (e){
+    if(e.keyCode == 13){
+        $('.share_Btn_whats').trigger('click');
+    }
+})
+$(document).on('click', '.share_Btn_whats', function (){
+    let parentElem = this.parentElement;
     let inputVal = parentElem.querySelector('#whatsAppNum').value;
     let errorMsg = parentElem.querySelector('.errorMsg');
     const num = /^[0-9-+]+$/;
@@ -2206,7 +2265,6 @@ $('.share_Btn_whats').on('click', function (e){
 })
 var header = document.getElementById("myHeader");
 var sticky = header.offsetTop - 55;
-
 function myFunction() {
   if (window.pageYOffset > sticky) {
     header.classList.add("sticky");
@@ -2629,17 +2687,54 @@ var skillSet = $('#skill-sett')
 if(skillSet.length > 0){
    var pb = new PerfectScrollbar('#skill-sett');
 }
+var input = document.querySelector("#phone-input");
+    var iti = window.intlTelInput(input, {
+        'utilsScript': "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/utils.min.js",
+       'allowExtensions': false,
+       'preferredCountries': ['in'],
+       'nationalMode': false,
+       'separateDialCode':true
+  });
+var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
+function allnumeric(inputtxt){
+  var numbers = /^[0-9]+$/;
+  if(inputtxt.match(numbers)) {
+      return true;
+  }
+  return false;
+}
+$(document).on('click', '#whatsapp-invitation', function(e){
+    e.preventDefault();
+    if ($('#phone-input').val()) {
+      if ($('#phone-input').val().trim()&& allnumeric($('#phone-input').val().trim())) {
+        if (iti.isValidNumber()) {
+            var number = iti.getNumber(intlTelInputUtils.numberFormat.E164);
+            var msg = 'https://www.empoweryouth.com' + $('.j-title > a').attr("href");
+            $('#phone-input').removeClass('error');
+            $('#phone-error').html("");
+            window.open("https://wa.me/" + number +'?text=' + msg , '_blank');
+        } else {
+          input.classList.add("error");
+          var errorCode = iti.getValidationError();
+          $('#phone-error').html(errorMap[errorCode]);
+        }
+      } else {
+          input.classList.add("error");
+          $('#phone-error').html('Invalid Phone Number');
+      }
+  }
+})
 
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-
-
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
     function showJobsSidebar() {
