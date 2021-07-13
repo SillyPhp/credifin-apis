@@ -12,6 +12,7 @@ use common\models\Cities;
 use common\models\CollegeCourses;
 use common\models\CollegeCoursesPool;
 use common\models\EducationLoanPayments;
+use common\models\extended\CloneLoanApplication;
 use common\models\InstituteLeadsPayments;
 use common\models\LoanApplicantResidentialInfo;
 use common\models\LoanApplications;
@@ -27,6 +28,7 @@ use common\models\PathToOpenLeads;
 use common\models\PathToUnclaimOrgLoanApplication;
 use common\models\spaces\Spaces;
 use common\models\States;
+use Vtiful\Kernel\Excel;
 use Yii;
 use yii\web\Response;
 use yii\helpers\Url;
@@ -61,6 +63,7 @@ class EducationLoanController extends ApiBaseController
                 'loan-second-form' => ['POST', 'OPTIONS'],
                 'upload-image' => ['POST', 'OPTIONS'],
                 'update-institute-payment' => ['POST', 'OPTIONS'],
+                'refinance' => ['GET', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -244,37 +247,39 @@ class EducationLoanController extends ApiBaseController
         }
     }
 
-    public function actionSaveTeachersLoan(){
+    public function actionSaveTeachersLoan()
+    {
         $params = Yii::$app->request->post();
-        if ($params){
+        if ($params) {
             $model = new LoanApplicationsForm();
             $orgDate = $params['applicant_dob'];
             $userId = (($params['userID']) ? $params['userID'] : null);
             if ($model->load(Yii::$app->request->post(), '')) {
-                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
-                 $model->months = (($params['months']) ? $params['months'] : null);
-                 $model->employement_type = $params['employement_type'];
-                 if ($model->validate()) {
-                  if ($data = $model->saveTeachersLoan( $userId,'Ey',$params)) {
-                      if ($data['status']){
-                          return $this->response(200, ['status' => 200, 'data' => $data]);
-                      }else{
-                          return $this->response(500, ['status' => 500, 'message' => $data['message']]);
-                      }
+                $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
+                $model->months = (($params['months']) ? $params['months'] : null);
+                $model->employement_type = $params['employement_type'];
+                if ($model->validate()) {
+                    if ($data = $model->saveTeachersLoan($userId, 'Ey', $params)) {
+                        if ($data['status']) {
+                            return $this->response(200, ['status' => 200, 'data' => $data]);
+                        } else {
+                            return $this->response(500, ['status' => 500, 'message' => $data['message']]);
+                        }
+                    }
+                    return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
                 }
-                return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
+                return $this->response(409, ['status' => 409, $model->getErrors()]);
             }
-            return $this->response(409, ['status' => 409, $model->getErrors()]);
-            }
-                return $this->response(422, ['status' => 422, 'message' => 'Modal values not loaded..']);
-             } else {
+            return $this->response(422, ['status' => 422, 'message' => 'Modal values not loaded..']);
+        } else {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
-            }
+        }
     }
 
-    public function actionSaveSchoolFeeLoan(){
+    public function actionSaveSchoolFeeLoan()
+    {
         $params = Yii::$app->request->post();
-        if ($params){
+        if ($params) {
             $model = new LoanApplicationsForm();
             $orgDate = $params['applicant_dob'];
             $userId = (($params['userID']) ? $params['userID'] : null);
@@ -282,10 +287,10 @@ class EducationLoanController extends ApiBaseController
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
                 $model->yearly_income = $params['yearly_income'];
                 if ($model->validate()) {
-                    if ($data = $model->saveSchoolFeeLoan( $userId,'Ey',$params)) {
-                        if ($data['status']){
+                    if ($data = $model->saveSchoolFeeLoan($userId, 'Ey', $params)) {
+                        if ($data['status']) {
                             return $this->response(200, ['status' => 200, 'data' => $data]);
-                        }else{
+                        } else {
                             return $this->response(500, ['status' => 500, 'message' => $data['message']]);
                         }
                     }
@@ -534,7 +539,7 @@ class EducationLoanController extends ApiBaseController
                 $result = false;
         }
         if ($result) {
-            return $this->response(200, ['status' => 200, 'id' => ($id)?$id:$result]);
+            return $this->response(200, ['status' => 200, 'id' => ($id) ? $id : $result]);
         }
     }
 
@@ -866,53 +871,53 @@ class EducationLoanController extends ApiBaseController
                     ->one();
             }
 
-                if ($co_applicant) {
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $encrypted_string = $utilitiesModel->encrypt();
-                    if (substr($encrypted_string, -1) == '.') {
-                        $encrypted_string = substr($encrypted_string, 0, -1);
-                    }
-                    $co_applicant->image = $encrypted_string . '.' . $image_ext;
-                    $co_applicant->image_location = Yii::$app->getSecurity()->generateRandomString();
-                    $base_path = Yii::$app->params->upload_directories->loans->image . $co_applicant->image_location . '/';
-                    $co_applicant->updated_by = $user_id;
-                    $co_applicant->updated_on = date('Y-m-d H:i:s');
-                    if ($co_applicant->update()) {
-                        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                        $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image, "public");
-                        return ['id' => $co_applicant->loan_co_app_enc_id, 'fileUrl' => Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image];
-                    } else {
-                        print_r($co_applicant->getErrors());
-                        die();
-                    }
-                } else {
-                    $co_applicant = new LoanCoApplicants();
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $co_applicant->loan_co_app_enc_id = $utilitiesModel->encrypt();
-                    $co_applicant->loan_app_enc_id = $params['loan_app_id'];
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $encrypted_string = $utilitiesModel->encrypt();
-                    if (substr($encrypted_string, -1) == '.') {
-                        $encrypted_string = substr($encrypted_string, 0, -1);
-                    }
-                    $co_applicant->relation = $params['relation'];
-                    $co_applicant->image = $encrypted_string . '.' . $image_ext;
-                    $co_applicant->image_location = Yii::$app->getSecurity()->generateRandomString();
-                    $base_path = Yii::$app->params->upload_directories->loans->image . $co_applicant->image_location . '/';
-                    $co_applicant->created_by = $user_id;
-                    $co_applicant->created_on = date('Y-m-d H:i:s');
-                    if ($co_applicant->save()) {
-                        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                        $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image, "public");
-                        return ['id' => $co_applicant->loan_co_app_enc_id, 'fileUrl' => Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image];
-                    } else {
-                        print_r($co_applicant->getErrors());
-                    }
+            if ($co_applicant) {
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $encrypted_string = $utilitiesModel->encrypt();
+                if (substr($encrypted_string, -1) == '.') {
+                    $encrypted_string = substr($encrypted_string, 0, -1);
                 }
+                $co_applicant->image = $encrypted_string . '.' . $image_ext;
+                $co_applicant->image_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->loans->image . $co_applicant->image_location . '/';
+                $co_applicant->updated_by = $user_id;
+                $co_applicant->updated_on = date('Y-m-d H:i:s');
+                if ($co_applicant->update()) {
+                    $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                    $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                    $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image, "public");
+                    return ['id' => $co_applicant->loan_co_app_enc_id, 'fileUrl' => Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image];
+                } else {
+                    print_r($co_applicant->getErrors());
+                    die();
+                }
+            } else {
+                $co_applicant = new LoanCoApplicants();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $co_applicant->loan_co_app_enc_id = $utilitiesModel->encrypt();
+                $co_applicant->loan_app_enc_id = $params['loan_app_id'];
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $encrypted_string = $utilitiesModel->encrypt();
+                if (substr($encrypted_string, -1) == '.') {
+                    $encrypted_string = substr($encrypted_string, 0, -1);
+                }
+                $co_applicant->relation = $params['relation'];
+                $co_applicant->image = $encrypted_string . '.' . $image_ext;
+                $co_applicant->image_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->loans->image . $co_applicant->image_location . '/';
+                $co_applicant->created_by = $user_id;
+                $co_applicant->created_on = date('Y-m-d H:i:s');
+                if ($co_applicant->save()) {
+                    $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                    $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                    $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image, "public");
+                    return ['id' => $co_applicant->loan_co_app_enc_id, 'fileUrl' => Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image];
+                } else {
+                    print_r($co_applicant->getErrors());
+                }
+            }
 
         } else if ($params['type'] == 'id_proof') {
             if (isset($params['id']) && !empty($params['id'])) {
@@ -1087,5 +1092,31 @@ class EducationLoanController extends ApiBaseController
         } else {
             return $this->response(500, ['status' => 500, 'message' => 'No Params Found']);
         }
+    }
+
+    public function actionRefinance()
+    {
+        try {
+            $cloneLoanModel = new CloneLoanApplication();
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['loan_app_id']) || !isset($params['amount']) || !isset($params['year']) || !isset($params['semester'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $loan_data = $cloneLoanModel->_getLoanData($params['loan_app_id']);
+            $loan_data['amount'] = $params['amount'];
+            $loan_data['years'] = $params['year'];
+            $loan_data['semesters'] = $params['semester'];
+
+
+            if ($cloneLoanModel->_saveApplication($loan_data)) {
+                return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+            }
+        } catch (\Exception $e) {
+            return $this->response(500, ['status' => 500, 'message' => $e->getMessage()]);
+        }
+
     }
 }
