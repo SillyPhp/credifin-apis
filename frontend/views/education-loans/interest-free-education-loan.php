@@ -126,6 +126,8 @@ use yii\helpers\Url;
         </div>
     </section>
 
+<?= $this->render('/widgets/interest-free-upto-10lakhs') ?>
+
     <section class="head-bg">
         <div class="container">
             <div class="row partner-bg">
@@ -333,7 +335,6 @@ if ($blogs['blogs']) {
             </div>
         </div>
     </section>
-
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
