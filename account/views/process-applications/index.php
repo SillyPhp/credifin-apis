@@ -311,7 +311,7 @@ foreach ($fields as $f) {
     <div class="set-height">
         <ul class="nav nav-tabs pr-process-tab" id="myHeader">
             <li class="active" id=""
-                style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
+                style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 3; ?>)">
                 <a data-filter="*" href="#" onclick="roundClick()">All <span><?php
                         foreach ($user_pCount as $v) {
                             $pcnt += $v;
@@ -325,7 +325,7 @@ foreach ($fields as $f) {
                 $tooltipTitle = ($p['field_name'] == 'Get Applications') ? 'New Application' : $p['field_name'];
                 ?>
                 <li id="<?= 'nav' . $p['field_enc_id'] ?>"
-                    style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
+                    style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 3; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
                        title="" onclick="roundClick()" data-original-title="<?= $tooltipTitle ?>" href="#">
                         <i class="<?= $p['icon'] ?>"
@@ -336,12 +336,22 @@ foreach ($fields as $f) {
                 $k++;
             }
             ?>
-            <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
+            <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 3; ?>)">
                 <a data-filter=".result" data-toggle="tooltip" data-placement="bottom" data-original-title="Hired"
                    href="#" onclick="roundClick()">
                     <i class="fa fa-check-square-o"></i><span>
                     <?php
                     echo $hcount;
+                    ?>
+                </span>
+                </a>
+            </li>
+            <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 3; ?>)">
+                <a data-filter=".rejected" data-toggle="tooltip" data-placement="bottom" data-original-title="Rejeted"
+                   href="#" onclick="roundClick()">
+                    <i class="fas fa-times"></i><span>
+                    <?php
+                    echo $rejected_count;
                     ?>
                 </span>
                 </a>
@@ -358,6 +368,7 @@ foreach ($fields as $f) {
                     $tempfieldMain = "result";
                     $fieldName = "Hired";
                 } else if ($arr['status'] == 'Rejected') {
+                    $tempfieldMain = "rejected";
                     $fieldName = "Rejected";
                 } else {
                     $fieldName = "Applied";

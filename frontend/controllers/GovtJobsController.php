@@ -38,7 +38,7 @@ class GovtJobsController extends Controller
     {
         $get = IndianGovtJobs::find()
                 ->alias('a')
-                ->select(['a.job_enc_id','a.slug','a.image','a.square_image','a.image_location','Organizations','CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image,
+                ->select(['a.job_enc_id','a.slug','a.image','a.square_image','story_image','a.image_location','Organizations','CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image,
                         'https') . '", c.image_location, "/", c.image) ELSE NULL END logo','Location','Position','Eligibility','Last_date','Pdf_link','Data'])
                 ->where(['a.slug'=>$id])
                 ->asArray()
