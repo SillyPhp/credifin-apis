@@ -5,11 +5,11 @@ use yii\helpers\Url;
 ?>
 
     <section class="interest-free-header">
-        <img class="percent" src="https://user-images.githubusercontent.com/72601463/125429432-ebbb7573-d851-46e7-8603-fc7748d2c9de.png">
+        <img class="percent" src="<?= Url::to('@eyAssets/images/pages/education-loans/percent.png') ?>" alt="">
 
-        <img class="shape-divider" src="https://user-images.githubusercontent.com/72601463/125428784-91e6ace2-d973-41c0-ae76-ea0ee2da5192.png">
+        <img class="shape-divider" src="<?= Url::to('@eyAssets/images/pages/education-loans/Vector.png') ?>" alt="">
 
-        <img class="coins" src="https://user-images.githubusercontent.com/72601463/125429427-92ba63e4-209c-4478-a6f3-ac535c2c5730.png">
+        <img class="coins" src="<?= Url::to('@eyAssets/images/pages/education-loans/coins.png') ?>" alt="">
         <div class="container pbm0">
             <div class="row">
                 <div class="col-md-7 col-sm-7">
@@ -24,7 +24,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-5 col-sm-5">
                     <div class="header-img">
-                        <img class="main-img" src="https://user-images.githubusercontent.com/72601463/125267770-bc280800-e324-11eb-92d5-80bc4fc6109e.png">
+                        <img class="main-img" src="<?= Url::to('@eyAssets/images/pages/education-loans/interest-free-img.png') ?>" alt="">
                     </div>
                 </div>
             </div>
@@ -384,8 +384,9 @@ $this->registerCss('
 }
 
 .header-img{
+    margin-top: 40px;
   position: relative;
-  text-align: center;
+  text-align center;
   flex-basis: 50%;
   z-index: 1;
 }
