@@ -36,6 +36,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                     <?php $form = ActiveForm::begin([
                         'id' => 'feeds_form',
                         'enableClientValidation' => true,
+                        'validationUrl' => ['/' . Yii::$app->controller->id . '/' . 'validate-source'],
                         'options' => ['enctype' => 'multipart/form-data']
                     ]); ?>
                     <?= $form->field($model, 'channel_name')->hiddenInput(['id' => 'channel_name'])->label(false); ?>
@@ -52,7 +53,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                         <div class="source-field hidden">
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input form-md-floating-label">
-                                    <?= $form->field($model, 'source_url')->textInput(['placeholder' => 'Source Url', 'class' => 'form-control', 'id' => 'source_url'])->label(false); ?>
+                                    <?= $form->field($model, 'source_url', ['enableAjaxValidation' => true])->textInput(['placeholder' => 'Source Url', 'class' => 'form-control', 'id' => 'source_url'])->label(false); ?>
                                 </div>
                             </div>
                         </div>
@@ -157,10 +158,10 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                     </h3>
                     <div class="author-s">
                         <div class="author list-data">
-                            <i class="fas fa-user"></i><span id="authorElem"> Author</span>
+                            <i class="fa fa-user"></i><span id="authorElem"> Author</span>
                         </div>
                         <div class="source">
-                            <i class="fas fa-link"></i><span id="sourceElem"> Source</span>
+                            <i class="fa fa-link"></i><span id="sourceElem"> Source</span>
                         </div>
                     </div>
                     <p class="feed-content" id="descriptionElem">
@@ -172,16 +173,16 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                         </div>
                         <div class="feed-share disabled">
                             <a href="javascript:;" class="fb">
-                                <i class="fab fa-facebook-f"></i>
+                                <i class="fa fa-facebook-f"></i>
                             </a>
                             <a href="javascript:;" class="wts-app">
-                                <i class="fab fa-whatsapp"></i>
+                                <i class="fa fa-whatsapp"></i>
                             </a>
                             <a href="javascript:;" class="tw">
-                                <i class="fab fa-twitter"></i>
+                                <i class="fa fa-twitter"></i>
                             </a>
-                            <a href="javascript:;" class="male">
-                                <i class="fab fa-linkedin"></i>
+                            <a href="javascript:;" class="fb">
+                                <i class="fa fa-linkedin"></i>
                             </a>
                         </div>
                     </div>
@@ -204,6 +205,11 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
 <?php
 $source_youtube_key = array_search('Youtube', $source_list);
 $this->registerCss('
+.has-error .help-block.help-block-error{
+    opacity: 1 !important;
+    color: #e73d4a !important;
+    filter: alpha(opacity=100);  
+}
 .mt-20{
     margin-top:20px;
 }
@@ -681,6 +687,7 @@ a.ui.active.label:hover, a.ui.labels .active.label:hover{
     width: 25px;
     text-align: center;
     border-radius: 50px;
+    line-height:22px;
     height: 25px;
     font-size: 13px;
     padding-top: 3px;
@@ -928,7 +935,8 @@ $(document).on('change','select[name="source_id"]',function() {
     setTimeout(function() {
         $('#descriptionElem').html(self.getData());
         description = self.getData();
-    }, 10);
+        $('#editor').val(self.getData());
+    }, 500);
 });
     function url(input) {
         if (input.files && input.files[0]) {
@@ -1006,9 +1014,11 @@ $(document).on('change','#source_url',function (e){
                         });
                     }
                 } else if(res['status'] === 203){
-                    $('#image_url').val(res['image']);
+                    if(res['image']){
+                        $('#image_url').val(res['image']);
+                        $(".target").attr("src", res['image']);
+                    }
                     CKEDITOR.instances.editor.setData("");
-                    $(".target").attr("src", res['image']);
                     $('#title').val(res['title']);
                     $('#titleElem').html(res['title']);
                     $('#short_desc').val(res['description']);
@@ -1028,27 +1038,25 @@ $(document).on('change','#source_url',function (e){
     
     $(document).on('click','#preview-button',function(e) {
         e.preventDefault();
-        $('#feeds_form').data('yiiActiveForm').submitting = true;
-        $('#feeds_form').yiiActiveForm('validate');
         var form = $('#feeds_form');
-        setTimeout(function() {
-            if(form.find('.has-error').length) {
-                alert('Please Enter required fields');
-                return false;
+        if(form.find('.has-error').length) {
+            alert('Please Enter required fields');
+            return false;
+        }
+        $.ajax({
+            url:'/account/skill-up/preview',
+            data:form.serialize()+ "&description=" + encodeURIComponent(description),
+            method:'post',
+            success: function(data) {
+               if(data['status'] === 200){
+                   window.open("/account/skill-up/feed-preview?id="+data['id']);
+               }else if(data['status'] === 409){
+                   toastr.error('Please fill all required fields', 'error'); 
+               }else{
+                   toastr.error(response.message, 'error'); 
+               }
             }
-            $.ajax({
-                url:'/account/skill-up/preview',
-                data:form.serialize()+ "&description=" + encodeURIComponent(description),
-                method:'post',
-                success: function(data) {
-                   if(data['status'] === 200){
-                       window.open("/account/skill-up/feed-preview?id="+data['id']);
-                   }else{
-                       toastr.error(response.message, 'error'); 
-                   }
-                }
-            });
-        }, 1000)
+        });
     })
     
     localStorage.removeItem("imgData");

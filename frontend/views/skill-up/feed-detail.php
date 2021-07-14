@@ -103,7 +103,7 @@ $this->params['header_dark'] = true;
                                     <p><?= $post['post_title'] ?></p>
                                     <div class="author-relate">
                                         <div class="source"><i
-                                                    class="fas fa-link"></i><Span><?= $post['source_name'] ?></Span>
+                                                    class="fas fa-link mr-5"></i><Span><?= $post['source_name'] ?></Span>
                                         </div>
                                     </div>
                                 </div>

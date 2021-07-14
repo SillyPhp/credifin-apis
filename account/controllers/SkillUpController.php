@@ -14,6 +14,7 @@ use yii\web\HttpException;
 use yii\web\UploadedFile;
 use yii\web\Response;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 class SkillUpController extends Controller
 {
@@ -191,10 +192,25 @@ class SkillUpController extends Controller
         $model = new SkillsUpForm();
         if ($model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $var = Yii::$app->security->generateRandomString(10);
-            $session = Yii::$app->session;
-            $session->set($var, $model);
-            return ['status' => 200, 'id' => $var];
+            if(!ActiveForm::validate($model)) {
+                $var = Yii::$app->security->generateRandomString(10);
+                $session = Yii::$app->session;
+                $session->set($var, $model);
+                return ['status' => 200, 'id' => $var];
+            } else{
+                return ['status' => 409];
+            }
+        } else {
+            return ['status' => 201];
+        }
+    }
+
+    public function actionValidateSource()
+    {
+        $model = new SkillsUpForm();
+        if ($model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($model);
         } else {
             return ['status' => 201];
         }
