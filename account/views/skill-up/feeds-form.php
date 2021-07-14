@@ -47,7 +47,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                     <div class="feeds-data row">
                         <div class="col-md-12">
                             <div class="content-t">Content Type</div>
-                            <?= $form->field($model, 'content_type')->radioList(['Video' => 'Video', 'Blog' => 'Blog', 'News' => 'News', 'Podcast' => 'Podcast'])->label(false); ?>
+                            <?= $form->field($model, 'content_type')->radioList(['Video' => 'Video', 'Blog' => 'Blog', 'News' => 'News', 'Podcast' => 'Podcast', 'Article' => 'Article', 'Audio' => 'Audio'])->label(false); ?>
                         </div>
                         <div class="source-field hidden">
                             <div class="col-md-12">
