@@ -263,12 +263,33 @@ class DashboardController extends Controller
             }
 
             $loan = LoanApplications::find()
-                ->select(['loan_app_enc_id','loan_status'])
+                ->alias('a')
+                ->select(['a.loan_app_enc_id', 'a.loan_status', 'a.applicant_name', 'a.years', 'a.semesters',
+                    'a.amount',
+                    '(CASE
+                        WHEN c1.course_name IS NOT NULL THEN c1.course_name
+                        WHEN e1.course_name IS NOT NULL THEN e1.course_name
+                        ELSE d.course_name
+                        END) as course_name',
+                    ])
+                ->joinWith(['loanApplications b'],false)
+                ->joinWith(['pathToClaimOrgLoanApplications c' => function($c){
+                    $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
+                        $cc->joinWith(['courseEnc c1']);
+                    }], false);
+                }], false)
+                ->joinWith(['pathToUnclaimOrgLoanApplications e' => function($e){
+                    $e->joinWith(['assignedCourseEnc ee' => function ($ee) {
+                        $ee->joinWith(['courseEnc e1']);
+                    }], false);
+                }], false)
+                ->joinWith(['pathToOpenLeads d'], false)
                 ->where([
-                    'created_by'=>Yii::$app->user->identity->user_enc_id,
-                    'loan_status'=>6,
-                    'parent_application_enc_id' => null,
-                    'is_deleted' => 0
+                    'a.created_by'=>Yii::$app->user->identity->user_enc_id,
+                    'a.loan_status'=>6,
+                    'a.parent_application_enc_id' => null,
+                    'a.is_deleted' => 0,
+                    'b.loan_status' => 6
                 ])
                 ->asArray()
                 ->all();
@@ -324,6 +345,7 @@ class DashboardController extends Controller
                 ->asArray()
                 ->one();
         }
+
         return $this->render('index', [
             'loanApplication' => $loanApplication,
             'applied' => $applied_app,

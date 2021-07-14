@@ -12,8 +12,18 @@ use yii\helpers\Url;
             <div class="loan-text-data">
                 <div class="upper-loan">
                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/party.png') ?>">
-                    <h3>Congratulations</h3>
-                    <p>Your previous loan has been completed.</p>
+                    <h3>Congratulations <span><?= $loan[0]['applicant_name'] ?></span></h3>
+                    <p>Your previous loan for <span><?= $loan[0]['course_name'] ?></span>,
+                        <span>
+                            <?=
+                            $loan[0]['years'],
+                            $loan[0]['years'] == 1 ? 'st' : ($loan[0]['years'] == 2) ? 'nd' : 'th';
+                            ?>
+                        </span> year, <span><?=
+                            $loan[0]['semesters'],
+                            $loan[0]['semesters'] == 1 ? 'st' : ($loan[0]['semesters'] == 2) ? 'nd' : 'th';
+                            ?></span> semester
+                        has been completed.</p>
                 </div>
                 <div class="bottom-loan">
                     <p>Apply loan for next semester</p>
@@ -124,12 +134,17 @@ $this->registerCss( '
     font-weight: bold;
     font-size:30px;
     color: #fff;
+    text-transform: capitalize;
 }
 .upper-loan p {
     font-family: roboto;
     font-size: 18px;
-    font-weight: 500;
+    font-weight: 400;
     color: #fff;
+}
+.upper-loan h3 span,
+.upper-loan p span{
+    color: #ff7803;
 }
 .bottom-loan p {
     margin: 15px 0 10px !important;
@@ -294,11 +309,11 @@ $('.applyBtn').on('click', function (e){
         return false;
     }
     $.ajax({
-        url:'https://ravinder.eygb.me/api/v3/education-loan/refinance',
+        url:'/api/v3/education-loan/refinance',
         data: data,
         method: 'post',
-        success: function(res){
-           if(response['status'] == 200){
+        success: function(response){
+           if(response['response']['status'] == 200){
                toastr.success('Loan Application Applied', 'success');
                modal.style.display = "none";
            }else{
