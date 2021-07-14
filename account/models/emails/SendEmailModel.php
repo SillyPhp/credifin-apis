@@ -144,7 +144,7 @@ class SendEmailModel extends Model
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->onCondition(['c.is_deleted' => 0]);
                 $b->joinWith(['benefitEnc d'], false);
-                $b->select(['c.application_enc_id', 'c.benefit_enc_id']);
+                $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'd.benefit', 'd.icon', 'd.icon_location']);
             }])
             ->joinWith(['applicationInterviewQuestionnaires q' => function ($b) {
                 $b->onCondition(['q.is_deleted' => 0]);
@@ -192,8 +192,8 @@ class SendEmailModel extends Model
                     ['html' => $this->template],['data'=>$data]
                 )
                     ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
-                    ->setTo([$this->email => 'Nitesh Sharma'])
-                    ->setSubject('Congratulations! Your Application Has Been Received');
+                    ->setTo([$this->email])
+                    ->setSubject( $data['org_name'] . " has shortlisted you for " . $data['name']);
                 if (!$mail->send()) {
                     return [
                         'status' => 201,
