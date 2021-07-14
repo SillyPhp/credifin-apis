@@ -23,25 +23,25 @@ $content = [
 $keywords = 'Jobs,Jobs in India';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 $content['bg_icon'] = ImageScript::getProfile($content['bg_icon']);
-if (empty($app['image'])||$app['image']==1){
+if (empty($get['image'])||$get['image']==1){
     $image =  ImageScript::widget(['content' => $content]);
 }else
 {
-    $image = Yii::$app->params->digitalOcean->sharingImageUrl.$app['image'];
+    $image = Yii::$app->params->digitalOcean->sharingImageUrl.$get['image'];
 }
 
-if (empty($app['square_image'])||$app['square_image']==1){
+if (empty($get['square_image'])||$get['square_image']==1){
     $Instaimage =  \frontend\models\script\InstaImageScript::widget(['content' => $content]);
 }else
 {
-    $Instaimage = Yii::$app->params->digitalOcean->sharingImageUrl.$app['square_image'];
+    $Instaimage = Yii::$app->params->digitalOcean->sharingImageUrl.$get['square_image'];
 }
 
-if (empty($app['story_image'])||$app['story_image']==1){
+if (empty($get['story_image'])||$get['story_image']==1){
     $Storyimage =  \frontend\models\script\StoriesImageScript::widget(['content' => $content]);
 }else
 {
-    $Storyimage = Yii::$app->params->digitalOcean->sharingImageUrl.$app['story_image'];
+    $Storyimage = Yii::$app->params->digitalOcean->sharingImageUrl.$get['story_image'];
 }
 $this->params['seo_tags'] = [
     'rel' => [
