@@ -416,12 +416,17 @@ $this->registerCss('
     overflow:hidden;
 }
 .college-img{
-    width: 70px;
-    height: 70px;
+    width: 100%;
+    height: 100%;
     margin: auto;
     line-height: 65px;
     transition: 300ms all linear;
     overflow:hidden;
+}
+.college-img img {
+    height: 70px;
+    width: 100px;
+    object-fit: contain;
 }
 .partner-name{
   width: fit-content;
