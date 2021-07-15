@@ -336,7 +336,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                     </div>
 
                                     <div class="col-md-12 padd-20">
-                                        <p class="termsText">By clicking submit you agree to our <a href="<?= Url::to('terms-and-conditions')?>">terms and conditions</a> </p>
+                                        <p class="termsText">By clicking submit you agree to our <a href="<?= Url::to('terms-and-conditions')?>" target="_blank">terms and conditions</a> </p>
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
