@@ -48,7 +48,7 @@ $this->params['header_dark'] = true;
                         <div class="vid-content">
                             <?= $detail['post_description'] ?>
                         </div>
-                        <div class="original-art">  
+                        <div class="original-art">
                             <a href="<?= $detail['post_source_url'] ?>"
                                target="_blank">ORIGINAL <?= $detail['content_type'] ?></a>
                         </div>
