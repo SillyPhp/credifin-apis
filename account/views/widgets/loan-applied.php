@@ -86,7 +86,7 @@ use yii\helpers\Url;
                                 </div>
                             </div>
                             <div class="col-md-12 text-center mt20">
-                                <button type="button" id="<?= $loan[0]['loan_app_enc_id']?>" class="applyBtn">Apply</button>
+                                <button type="button" data-id="" id="<?= $loan[0]['loan_app_enc_id']?>" class="applyBtn">Apply</button>
                             </div>
                         </div>
                     </form>
@@ -96,6 +96,7 @@ use yii\helpers\Url;
 
     </div>
 <?php
+$user_id = Yii::$app->user->identity->user_enc_id;
 $this->registerCss( '
 .loan-app-main {
     background: linear-gradient(97.96deg, #330867 -33.18%, #25C1C2 105.68%);
@@ -298,6 +299,7 @@ $('.applyBtn').on('click', function (e){
     let formFields = submitForm.querySelectorAll('.formVal');
     let data = {};
     data['loan_app_id'] = loan_id;
+    data['user_id'] = '$user_id';
     for(let i=0; i<formFields.length; i++){
         validations(formFields[i]);
         let fieldVal = formFields[i].value;
@@ -309,7 +311,7 @@ $('.applyBtn').on('click', function (e){
         return false;
     }
     $.ajax({
-        url:'/api/v3/education-loan/refinance',
+        url:'https://ravinder.eygb.me/api/v3/education-loan/refinance',
         data: data,
         method: 'post',
         success: function(response){

@@ -289,7 +289,7 @@ class DashboardController extends Controller
                     'a.loan_status'=>6,
                     'a.parent_application_enc_id' => null,
                     'a.is_deleted' => 0,
-                    'b.loan_status' => 6
+//                    'b.loan_status' => 6
                 ])
                 ->asArray()
                 ->all();
