@@ -20,7 +20,7 @@ $this->params['header_dark'] = true;
                                         title="YouTube video player" frameborder="0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                         allowfullscreen></iframe>
-                            <?php } elseif ($detail['content_type'] == 'Podcast') { ?>
+                            <?php } elseif ($detail['content_type'] == 'Podcast' || $detail['content_type'] == 'Audio') { ?>
                                 <?= $detail['embed_code'] ?>
                             <?php } else { ?>
                                 <?php if ($detail['post_image_url']) { ?>
@@ -48,7 +48,7 @@ $this->params['header_dark'] = true;
                         <div class="vid-content">
                             <?= $detail['post_description'] ?>
                         </div>
-                        <div class="original-art">
+                        <div class="original-art">  
                             <a href="<?= $detail['post_source_url'] ?>"
                                target="_blank">ORIGINAL <?= $detail['content_type'] ?></a>
                         </div>
@@ -91,8 +91,11 @@ $this->params['header_dark'] = true;
                     </div>
                 </div>
                 <div class="col-md-4">
+                    <?php
+                    if($related_posts){
+                    ?>
                     <div class="related-art dash-inner-box nd-shadow">
-                        <h3>Related Articles</h3>
+                        <h3>Related Posts</h3>
                         <?php foreach ($related_posts as $post) { ?>
                             <a href="<?= Url::to('/skill-up/detail/' . $post['slug']) ?>" class="relate-box">
                                 <div class="relate-icon">
@@ -103,13 +106,16 @@ $this->params['header_dark'] = true;
                                     <p><?= $post['post_title'] ?></p>
                                     <div class="author-relate">
                                         <div class="source"><i
-                                                    class="fas fa-link"></i><Span><?= $post['source_name'] ?></Span>
+                                                    class="fas fa-link mr-5"></i><Span><?= $post['source_name'] ?></Span>
                                         </div>
                                     </div>
                                 </div>
                             </a>
                         <?php } ?>
                     </div>
+                        <?php
+                    }
+                        ?>
                 </div>
             </div>
         </div>
