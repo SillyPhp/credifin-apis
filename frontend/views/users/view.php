@@ -1370,7 +1370,9 @@ $(document).on('click','.download-resume',function (e){
             }
         })    
 })
-var ps = new PerfectScrollbar('.over-scroll');
+if($('.over-scroll').length){
+    var ps = new PerfectScrollbar('.over-scroll');
+}
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
