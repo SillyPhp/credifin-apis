@@ -120,10 +120,8 @@ class CloneLoanApplication extends LoanApplications
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $utilitiesModel = new \common\models\Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $loan = new LoanApplications();
-            $loan->loan_app_enc_id = $utilitiesModel->encrypt();
+            $loan->loan_app_enc_id = Yii::$app->security->generateRandomString(32);
             $loan->parent_application_enc_id = $data['loan_app_enc_id'];
             $loan->had_taken_addmission = $data['had_taken_addmission'];
             $loan->loan_type_enc_id = $data['loan_type_enc_id'];
@@ -152,57 +150,90 @@ class CloneLoanApplication extends LoanApplications
             $loan->created_on = date('Y-m-d H:i:s');
             if (!$loan->save()) {
                 $transaction->rollback();
+                print_r('1');
                 throw new \Exception(json_encode($loan->getErrors()));
             }
 
             if ($data['pathToClaimOrgLoanApplications']) {
 
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $pathToClaim = new PathToClaimOrgLoanApplication();
-                $pathToClaim->bridge_enc_id = $utilitiesModel->encrypt();
+                $pathToClaim->bridge_enc_id = Yii::$app->security->generateRandomString(32);
                 $pathToClaim->loan_app_enc_id = $loan->loan_app_enc_id;
                 $pathToClaim->assigned_course_enc_id = $data['pathToClaimOrgLoanApplications'][0]['assigned_course_enc_id'];
                 $pathToClaim->country_enc_id = $data['pathToClaimOrgLoanApplications'][0]['country_enc_id'];
                 $pathToClaim->created_by = $data['user_id'];
                 if (!$pathToClaim->save()) {
                     $transaction->rollback();
+                    print_r('2');
                     throw new \Exception(json_encode($pathToClaim->getErrors()));
                 }
 
             } elseif ($data['pathToOpenLeads']) {
 
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $pathToLeads = new PathToOpenLeads();
-                $pathToLeads->bridge_enc_id = $utilitiesModel->encrypt();
+                $pathToLeads->bridge_enc_id = Yii::$app->security->generateRandomString(32);
                 $pathToLeads->loan_app_enc_id = $loan->loan_app_enc_id;
                 $pathToLeads->course_name = $data['pathToOpenLeads'][0]['course_name'];
                 $pathToLeads->country_enc_id = $data['pathToOpenLeads'][0]['country_enc_id'];
                 $pathToLeads->created_by = $data['user_id'];
                 if (!$pathToLeads->save()) {
                     $transaction->rollback();
+                    print_r('3');
                     throw new \Exception(json_encode($pathToLeads->getErrors()));
                 }
 
             } elseif ($data['pathToUnclaimOrgLoanApplications']) {
 
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $pathToUnclaim = new PathToUnclaimOrgLoanApplication();
-                $pathToUnclaim->bridge_enc_id = $utilitiesModel->encrypt();
+                $pathToUnclaim->bridge_enc_id = Yii::$app->security->generateRandomString(32);
                 $pathToUnclaim->loan_app_enc_id = $loan->loan_app_enc_id;
                 $pathToUnclaim->assigned_course_enc_id = $data['pathToUnclaimOrgLoanApplications'][0]['assigned_course_enc_id'];
                 $pathToUnclaim->country_enc_id = $data['pathToUnclaimOrgLoanApplications'][0]['country_enc_id'];
                 $pathToUnclaim->created_by = $data['user_id'];
                 if (!$pathToUnclaim->save()) {
                     $transaction->rollback();
+                    print_r('4');
                     throw new \Exception(json_encode($pathToUnclaim->getErrors()));
+                }
+            }
+
+            if ($data['loanCertificates']) {
+                foreach ($data['loanCertificates'] as $cer) {
+                    $this->_saveCertificates($cer, $data['user_id'], $transaction, $loan->loan_app_enc_id, null);
+                }
+            }
+
+            if ($data['loanApplicantResidentialInfos']) {
+                foreach ($data['loanApplicantResidentialInfos'] as $r) {
+                    $this->_saveResInfo($r, $data['user_id'], $transaction, $loan->loan_app_enc_id, null);
+                }
+            }
+
+            if ($data['loanCandidateEducations']) {
+                foreach ($data['loanCandidateEducations'] as $e) {
+                    $loanEdu = new LoanCandidateEducation();
+                    $loanEdu->loan_candidate_edu_enc_id = Yii::$app->security->generateRandomString(32);
+                    $loanEdu->loan_app_enc_id = $loan->loan_app_enc_id;
+                    $loanEdu->qualification_enc_id = $e['qualification_enc_id'];
+                    $loanEdu->institution = $e['institution'];
+                    $loanEdu->obtained_marks = $e['obtained_marks'];
+                    $loanEdu->proof_image = $e['proof_image'];
+                    $loanEdu->proof_image_name = $e['proof_image_name'];
+                    $loanEdu->proof_image_location = $e['proof_image_location'];
+                    $loanEdu->created_by = $data['user_id'];
+                    $loanEdu->created_on = date('Y-m-d H:i:s');
+                    if (!$loanEdu->save()) {
+                        $transaction->rollback();
+                        print_r('6');
+                        throw new \Exception(json_encode($loanEdu->getErrors()));
+                    }
                 }
             }
 
             if ($data['loanCoApplicants']) {
                 foreach ($data['loanCoApplicants'] as $co) {
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $coApplicant = new LoanCoApplicants();
-                    $coApplicant->loan_co_app_enc_id = $utilitiesModel->encrypt();
+                    $coApplicant->loan_co_app_enc_id = Yii::$app->security->generateRandomString(32);
                     $coApplicant->loan_app_enc_id = $loan->loan_app_enc_id;
                     $coApplicant->name = $co['name'];
                     $coApplicant->email = $co['email'];
@@ -222,60 +253,20 @@ class CloneLoanApplication extends LoanApplications
                     $coApplicant->aadhaar_link_phone_number = $co['aadhaar_link_phone_number'];
                     if (!$coApplicant->save()) {
                         $transaction->rollback();
+                        print_r('5');
                         throw new \Exception(json_encode($coApplicant->getErrors()));
                     }
 
                     if ($co['loanCertificates']) {
                         foreach ($co['loanCertificates'] as $cer) {
-                            if (!$this->_saveCertificates($cer, $data['user_id'], null, $coApplicant->loan_co_app_enc_id)) {
-                                $transaction->rollback();
-                            }
+                            $this->_saveCertificates($cer, $data['user_id'], $transaction, null, $coApplicant->loan_co_app_enc_id);
                         }
                     }
 
                     if ($co['loanApplicantResidentialInfos']) {
                         foreach ($co['loanApplicantResidentialInfos'] as $r) {
-                            if (!$this->_saveResInfo($r, $data['user_id'], null, $coApplicant->loan_co_app_enc_id)) {
-                                $transaction->rollback();
-                            }
+                            $this->_saveResInfo($r, $data['user_id'], $transaction, null, $coApplicant->loan_co_app_enc_id);
                         }
-                    }
-                }
-            }
-
-            if ($data['loanCertificates']) {
-                foreach ($data['loanCertificates'] as $cer) {
-                    if (!$this->_saveCertificates($cer, $data['user_id'], $loan->loan_app_enc_id, null)) {
-                        $transaction->rollback();
-                    }
-                }
-            }
-
-            if ($data['loanApplicantResidentialInfos']) {
-                foreach ($data['loanApplicantResidentialInfos'] as $r) {
-                    if (!$this->_saveResInfo($r, $data['user_id'], $loan->loan_app_enc_id, null)) {
-                        $transaction->rollback();
-                    }
-                }
-            }
-
-            if ($data['loanCandidateEducations']) {
-                foreach ($data['loanCandidateEducations'] as $e) {
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $loanEdu = new LoanCandidateEducation();
-                    $loanEdu->loan_candidate_edu_enc_id = $utilitiesModel->encrypt();
-                    $loanEdu->loan_app_enc_id = $loan->loan_app_enc_id;
-                    $loanEdu->qualification_enc_id = $e['qualification_enc_id'];
-                    $loanEdu->institution = $e['institution'];
-                    $loanEdu->obtained_marks = $e['obtained_marks'];
-                    $loanEdu->proof_image = $e['proof_image'];
-                    $loanEdu->proof_image_name = $e['proof_image_name'];
-                    $loanEdu->proof_image_location = $e['proof_image_location'];
-                    $loanEdu->created_by = $data['user_id'];
-                    $loanEdu->created_on = date('Y-m-d H:i:s');
-                    if (!$loanEdu->save()) {
-                        $transaction->rollback();
-                        throw new \Exception(json_encode($loanEdu->getErrors()));
                     }
                 }
             }
@@ -284,16 +275,15 @@ class CloneLoanApplication extends LoanApplications
             return true;
 
         } catch (\Exception $e) {
+            $transaction->rollback();
             throw new \Exception($e->getMessage());
         }
     }
 
-    public function _saveCertificates($certificate, $user_id, $loan_app_id = null, $co_app_id = null)
+    public function _saveCertificates($certificate, $user_id, $transaction, $loan_app_id = null, $co_app_id = null)
     {
         $loanCertificates = new LoanCertificates();
-        $utilitiesModel = new \common\models\Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $loanCertificates->certificate_enc_id = $utilitiesModel->encrypt();
+        $loanCertificates->certificate_enc_id = Yii::$app->security->generateRandomString(32);
         if ($loan_app_id != null) {
             $loanCertificates->loan_app_enc_id = $loan_app_id;
         } else {
@@ -308,18 +298,18 @@ class CloneLoanApplication extends LoanApplications
         $loanCertificates->created_by = $user_id;
         $loanCertificates->created_on = date('Y-m-d H:i:s');
         if (!$loanCertificates->save()) {
+            $transaction->rollback();
+            print_r('7');
             throw new \Exception(json_encode($loanCertificates->getErrors()));
         }
 
         return true;
     }
 
-    public function _saveResInfo($res, $user_id, $loan_app_id = null, $co_app_id = null)
+    public function _saveResInfo($res, $user_id, $transaction, $loan_app_id = null, $co_app_id = null)
     {
         $residentialInfo = new LoanApplicantResidentialInfo();
-        $utilitiesModel = new \common\models\Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $residentialInfo->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
+        $residentialInfo->loan_app_res_info_enc_id = Yii::$app->security->generateRandomString(32);
         if ($loan_app_id != null) {
             $residentialInfo->loan_app_enc_id = $loan_app_id;
         } else {
@@ -334,6 +324,8 @@ class CloneLoanApplication extends LoanApplications
         $residentialInfo->created_by = $user_id;
         $residentialInfo->created_on = date('Y-m-d H:i:s');
         if (!$residentialInfo->save()) {
+            $transaction->rollback();
+            print_r('8');
             throw new \Exception(json_encode($residentialInfo->getErrors()));
         }
 
