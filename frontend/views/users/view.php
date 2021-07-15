@@ -453,7 +453,7 @@ $this->params['header_dark'] = false;
                 </div>
                 <?php
             }
-            if ($userAppliedData) {
+            if ($userAppliedData && Yii::$app->user->identity->organization->organization_enc_id) {
                 ?>
                 <div class="col-md-4">
                     <div class="row">
