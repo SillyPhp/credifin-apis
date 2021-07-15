@@ -228,7 +228,8 @@ class SkillsUpForm extends Model
                     break;
                 case  'Podcast':
                     break;
-                case  'Blog':
+                case  'Blog' :
+                case 'Article':
                     $blogType = Categories::find()
                         ->alias('a')
                         ->select(['a.category_enc_id', 'a.name'])
