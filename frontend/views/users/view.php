@@ -1368,7 +1368,7 @@ $(document).on('click','.download-resume',function (e){
                     alert('an error occurerd')
                 }
             }
-        })    
+        })
 })
 if($('.over-scroll').length){
     var ps = new PerfectScrollbar('.over-scroll');
