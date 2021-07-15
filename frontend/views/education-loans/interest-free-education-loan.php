@@ -366,7 +366,7 @@ $this->registerCss('
   z-index: 2;
 }
 .header-text h1 {
-    margin-top: 40px;
+    margin-top: 60px;
     font-size: 50px;
     font-family: roboto;
     font-weight: 600;
