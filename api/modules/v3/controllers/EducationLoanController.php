@@ -1101,7 +1101,7 @@ class EducationLoanController extends ApiBaseController
 
             $params = Yii::$app->request->post();
 
-            if (!isset($params['loan_app_id']) || !isset($params['amount']) || !isset($params['year']) || !isset($params['semester'])) {
+            if (!isset($params['loan_app_id']) || !isset($params['amount']) || !isset($params['year']) || !isset($params['semester']) || !isset($params['user_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information']);
             }
 
@@ -1109,6 +1109,7 @@ class EducationLoanController extends ApiBaseController
             $loan_data['amount'] = $params['amount'];
             $loan_data['years'] = $params['year'];
             $loan_data['semesters'] = $params['semester'];
+            $loan_data['user_id'] = $params['user_id'];
 
 
             if ($cloneLoanModel->_saveApplication($loan_data)) {

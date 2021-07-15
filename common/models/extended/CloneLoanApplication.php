@@ -148,7 +148,7 @@ class CloneLoanApplication extends LoanApplications
             $loan->ask_guarantor_info = $data['ask_guarantor_info'];
             $loan->aadhaar_link_phone_number = $data['aadhaar_link_phone_number'];
             $loan->loan_type = $data['loan_type'];
-            $loan->created_by = Yii::$app->user->identity->user_enc_id;
+            $loan->created_by = $data['user_id'];
             $loan->created_on = date('Y-m-d H:i:s');
             if (!$loan->save()) {
                 $transaction->rollback();
@@ -163,7 +163,7 @@ class CloneLoanApplication extends LoanApplications
                 $pathToClaim->loan_app_enc_id = $loan->loan_app_enc_id;
                 $pathToClaim->assigned_course_enc_id = $data['pathToClaimOrgLoanApplications'][0]['assigned_course_enc_id'];
                 $pathToClaim->country_enc_id = $data['pathToClaimOrgLoanApplications'][0]['country_enc_id'];
-                $pathToClaim->created_by = Yii::$app->user->identity->user_enc_id;
+                $pathToClaim->created_by = $data['user_id'];
                 if (!$pathToClaim->save()) {
                     $transaction->rollback();
                     throw new \Exception(json_encode($pathToClaim->getErrors()));
@@ -177,7 +177,7 @@ class CloneLoanApplication extends LoanApplications
                 $pathToLeads->loan_app_enc_id = $loan->loan_app_enc_id;
                 $pathToLeads->course_name = $data['pathToOpenLeads'][0]['course_name'];
                 $pathToLeads->country_enc_id = $data['pathToOpenLeads'][0]['country_enc_id'];
-                $pathToLeads->created_by = Yii::$app->user->identity->user_enc_id;
+                $pathToLeads->created_by = $data['user_id'];
                 if (!$pathToLeads->save()) {
                     $transaction->rollback();
                     throw new \Exception(json_encode($pathToLeads->getErrors()));
@@ -191,7 +191,7 @@ class CloneLoanApplication extends LoanApplications
                 $pathToUnclaim->loan_app_enc_id = $loan->loan_app_enc_id;
                 $pathToUnclaim->assigned_course_enc_id = $data['pathToUnclaimOrgLoanApplications'][0]['assigned_course_enc_id'];
                 $pathToUnclaim->country_enc_id = $data['pathToUnclaimOrgLoanApplications'][0]['country_enc_id'];
-                $pathToUnclaim->created_by = Yii::$app->user->identity->user_enc_id;
+                $pathToUnclaim->created_by = $data['user_id'];
                 if (!$pathToUnclaim->save()) {
                     $transaction->rollback();
                     throw new \Exception(json_encode($pathToUnclaim->getErrors()));
@@ -227,7 +227,7 @@ class CloneLoanApplication extends LoanApplications
 
                     if ($co['loanCertificates']) {
                         foreach ($co['loanCertificates'] as $cer) {
-                            if (!$this->_saveCertificates($cer, null, $coApplicant->loan_co_app_enc_id)) {
+                            if (!$this->_saveCertificates($cer, $data['user_id'], null, $coApplicant->loan_co_app_enc_id)) {
                                 $transaction->rollback();
                             }
                         }
@@ -235,7 +235,7 @@ class CloneLoanApplication extends LoanApplications
 
                     if ($co['loanApplicantResidentialInfos']) {
                         foreach ($co['loanApplicantResidentialInfos'] as $r) {
-                            if (!$this->_saveResInfo($r, null, $coApplicant->loan_co_app_enc_id)) {
+                            if (!$this->_saveResInfo($r, $data['user_id'], null, $coApplicant->loan_co_app_enc_id)) {
                                 $transaction->rollback();
                             }
                         }
@@ -245,7 +245,7 @@ class CloneLoanApplication extends LoanApplications
 
             if ($data['loanCertificates']) {
                 foreach ($data['loanCertificates'] as $cer) {
-                    if (!$this->_saveCertificates($cer, $loan->loan_app_enc_id, null)) {
+                    if (!$this->_saveCertificates($cer, $data['user_id'], $loan->loan_app_enc_id, null)) {
                         $transaction->rollback();
                     }
                 }
@@ -253,7 +253,7 @@ class CloneLoanApplication extends LoanApplications
 
             if ($data['loanApplicantResidentialInfos']) {
                 foreach ($data['loanApplicantResidentialInfos'] as $r) {
-                    if (!$this->_saveResInfo($r, $loan->loan_app_enc_id, null)) {
+                    if (!$this->_saveResInfo($r, $data['user_id'], $loan->loan_app_enc_id, null)) {
                         $transaction->rollback();
                     }
                 }
@@ -271,7 +271,7 @@ class CloneLoanApplication extends LoanApplications
                     $loanEdu->proof_image = $e['proof_image'];
                     $loanEdu->proof_image_name = $e['proof_image_name'];
                     $loanEdu->proof_image_location = $e['proof_image_location'];
-                    $loanEdu->created_by = Yii::$app->user->identity->user_enc_id;
+                    $loanEdu->created_by = $data['user_id'];
                     $loanEdu->created_on = date('Y-m-d H:i:s');
                     if (!$loanEdu->save()) {
                         $transaction->rollback();
@@ -288,7 +288,7 @@ class CloneLoanApplication extends LoanApplications
         }
     }
 
-    public function _saveCertificates($certificate, $loan_app_id = null, $co_app_id = null)
+    public function _saveCertificates($certificate, $user_id, $loan_app_id = null, $co_app_id = null)
     {
         $loanCertificates = new LoanCertificates();
         $utilitiesModel = new \common\models\Utilities();
@@ -305,7 +305,7 @@ class CloneLoanApplication extends LoanApplications
         $loanCertificates->proof_image = $certificate['proof_image'];
         $loanCertificates->proof_image_location = $certificate['proof_image_location'];
         $loanCertificates->proof_of = $certificate['proof_of'];
-        $loanCertificates->created_by = Yii::$app->user->identity->user_enc_id;
+        $loanCertificates->created_by = $user_id;
         $loanCertificates->created_on = date('Y-m-d H:i:s');
         if (!$loanCertificates->save()) {
             throw new \Exception(json_encode($loanCertificates->getErrors()));
@@ -314,7 +314,7 @@ class CloneLoanApplication extends LoanApplications
         return true;
     }
 
-    public function _saveResInfo($res, $loan_app_id = null, $co_app_id = null)
+    public function _saveResInfo($res, $user_id, $loan_app_id = null, $co_app_id = null)
     {
         $residentialInfo = new LoanApplicantResidentialInfo();
         $utilitiesModel = new \common\models\Utilities();
@@ -331,7 +331,7 @@ class CloneLoanApplication extends LoanApplications
         $residentialInfo->city_enc_id = $res['city_enc_id'];
         $residentialInfo->state_enc_id = $res['state_enc_id'];
         $residentialInfo->is_sane_cur_addr = $res['is_sane_cur_addr'];
-        $residentialInfo->created_by = Yii::$app->user->identity->user_enc_id;
+        $residentialInfo->created_by = $user_id;
         $residentialInfo->created_on = date('Y-m-d H:i:s');
         if (!$residentialInfo->save()) {
             throw new \Exception(json_encode($residentialInfo->getErrors()));
