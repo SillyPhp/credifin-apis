@@ -1014,6 +1014,9 @@ class SiteController extends Controller
             case 'getOpportunities':
                 return $this->renderAjax('/widgets/homepage_components/featured_opportunities');
                 break;
+            case 'getAiesec':
+                return $this->renderAjax('/widgets/homepage_components/aiesec-feature');
+                break;
             case 'getLearningTopics':
                 return $this->renderAjax('/widgets/homepage_components/learning_topics');
                 break;
