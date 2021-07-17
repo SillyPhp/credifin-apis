@@ -157,7 +157,7 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
                         <div class="reminderbox">
                             <div class="innerpart">
                                 <a type="button" data-toggle="collapse"
-                                   data-target="#demo">
+                                   data-target="#demo-reminder">
                                 <span class="review-list-toggler" href="#">
                                     <i class="fa fa-chevron-right"></i>
                                 </span>
@@ -190,7 +190,7 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
                                 </div>
                             </div>
                         </div>
-                        <div id="demo" class="collapse userdata">
+                        <div id="demo-reminder" class="collapse userdata">
                             <a href="#" target="_blank">https://www.applied-job-url.com </a><span class="g"></span>
                             <textarea class="boxx" id="descriptionField" rows="5" cols="70"
                                       placeholder="Write notes here">Description here.</textarea>
