@@ -66,7 +66,7 @@ $primaryfields = \common\models\Categories::find()
                                         <div class="uploadUserImg lp-form posRel">
                                             <div class="displayImg">
                                                 <img id="output"
-                                                     src="https://via.placeholder.com/350x350?text=Cover+Image">
+                                                     src="https://via.placeholder.com/350x350?text=Profile+Image">
                                             </div>
                                             <input type="file" accept="image/jpeg, image/png, image/jpg"
                                                    data-name="userImg" class="userImg form-control tg-fileinput"

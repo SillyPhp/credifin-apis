@@ -366,7 +366,7 @@ $this->registerCss('
   z-index: 2;
 }
 .header-text h1 {
-    margin-top: 40px;
+    margin-top: 60px;
     font-size: 50px;
     font-family: roboto;
     font-weight: 600;
@@ -1104,10 +1104,17 @@ html {
         text-align: left;
     }
 }
-
+@media only screen and (max-width: 1326px) and (min-width: 1025px){
+  .interest-free-header {
+        height: 95vh;
+  }
+  .header-text {
+    padding-top: 40px;
+  }
+}
 @media only screen and (max-width: 1024px) and (min-width: 992px){
   .interest-free-header {
-        height: 65vh;
+        height: 70vh;
   }
 }
 
@@ -1121,7 +1128,7 @@ html {
     }
    
     .interest-free-header {
-        height: 75vh;
+        height: 80vh;
     }
     .header-img img {
         max-width: 300px;
