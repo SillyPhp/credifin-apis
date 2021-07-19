@@ -7,7 +7,7 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-md-5">
                 <div class="enigma-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/aiesec/blue-name1.png') ?>">
+                    <img src="<?= Url::to('@eyAssets/images/pages/aiesec/white-enigma.png') ?>">
                 </div>
             </div>
             <div class="col-md-7">
@@ -36,7 +36,7 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .enigma21-aiesec {
-    margin: 30px 0;
+    margin: 0px 0 30px;
     padding: 40px 0 50px 0;
     box-shadow: 0 0 16px 0px #eee;
     background-image: linear-gradient(167deg, #beecff 0%, #00a0e3 100%);
