@@ -357,7 +357,7 @@ $this->registerCss('
   align-items: center;
   position: relative;
   min-height: 350px;
-  height: 82vh;
+  height: 80vh;
 }
 
 .header-text{

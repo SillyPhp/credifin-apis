@@ -27,7 +27,7 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-md-5 tac">
                 <div class="whystudy">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/sf-icon.png')?>" alt="">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/schoolfeefinance.png')?>" alt="">
                 </div>
             </div>
             <div class="col-md-7">
@@ -132,7 +132,7 @@ $this->registerCss('
 
 }
 .study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/schoolfee.png') . ');
+	background: url(' . Url::to('@eyAssets/images/pages/education-loans/students.png') . ');
 	min-height: 500px;
 	background-repeat: no-repeat;
 	background-size: cover;
