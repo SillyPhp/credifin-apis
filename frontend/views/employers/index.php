@@ -10,7 +10,9 @@ $this->params['header_dark'] = false;
             <div class="row use-flex">
                 <div class="header-text">
                     <h1>Hire the Best Candidate</h1>
-                    <p>Looking for the best candidates for your company ? Now hire highly skilled candidates and increase your company's worth absolutely free!</p>
+                    <p><Span class="txt-bold">Looking for the best candidates for your company ? </Span><br>
+                        Now hire highly skilled candidates and increase your company's worth absolutely free!
+                    </p>
                     <?php if (Yii::$app->user->identity->organization) { ?>
                         <div class="buttonss">
                             <a href="/account/jobs/create" class="post-btn">Post a Job</a>
@@ -362,6 +364,10 @@ echo $this->render('/widgets/e-campus')
     <!--    <div class="bluebg"></div>-->
 <?php
 $this->registerCss('
+.txt-bold{
+    font-weight: 500;
+    color: #ff7803;
+}
 .post-btn:hover, .view-btn:hover {
     box-shadow: 0px 0px 5px -2px #555;
     transform: scale(1.03);
@@ -405,7 +411,7 @@ $this->registerCss('
 
 .header-text h1{
   font-family: lobster;
-  margin-bottom: 0;
+  margin-bottom: 10px;
   position: relative;
   display: inline-block;
   padding: 5px 0;
