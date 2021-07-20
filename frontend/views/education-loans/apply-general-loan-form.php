@@ -71,7 +71,6 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                     <span id="applicantRadio"></span>
                                 </div>
                                 <div id="parent_co_borrower">
-                                    <div id="addAnotherCo">
                                         <div class="coapplicant">
                                             <div class="col-md-12 padd-20">
                                                 <div class="form-group">
@@ -164,7 +163,6 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
                                 </div>
 <!--                                parent co borower details end-->
 
@@ -640,7 +638,7 @@ border: 1px solid #ddd !important;
 .cl-icon ul li{
     display: inline-grid;
     background: #fff;
-    height: 100px;
+    height: 100px; 
     width: 100px; 
     border-radius: 10px; 
     margin:0 5px 15px;
