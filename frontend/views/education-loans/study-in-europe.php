@@ -30,7 +30,7 @@ use borales\extensions\phoneInput\PhoneInput;
         <div class="row">
             <div class="col-md-5 tac">
                 <div class="whystudy">
-                    <img src="<?= Url::to('@eyAssets/images/pages/custom/europe.png')?>" alt="">
+                    <img src="<?= Url::to('@eyAssets/images/pages/custom/europe-eiffel-tower.png')?>" alt="">
                 </div>
             </div>
             <div class="col-md-7">
@@ -227,7 +227,7 @@ $this->registerCss('
 }
 
 .study-in-usa-bg{
-       background: url(' . Url::to('@eyAssets/images/pages/education-loans/europe-hdr.jpg') . ');
+       background: url(' . Url::to('@eyAssets/images/pages/education-loans/eiffel-tower.jpg') . ');
        min-height: 500px;
 	   background-repeat: no-repeat;
 	   background-size: cover;
