@@ -150,7 +150,6 @@ class CloneLoanApplication extends LoanApplications
             $loan->created_on = date('Y-m-d H:i:s');
             if (!$loan->save()) {
                 $transaction->rollback();
-                print_r('1');
                 throw new \Exception(json_encode($loan->getErrors()));
             }
 
@@ -164,7 +163,6 @@ class CloneLoanApplication extends LoanApplications
                 $pathToClaim->created_by = $data['user_id'];
                 if (!$pathToClaim->save()) {
                     $transaction->rollback();
-                    print_r('2');
                     throw new \Exception(json_encode($pathToClaim->getErrors()));
                 }
 
@@ -178,7 +176,6 @@ class CloneLoanApplication extends LoanApplications
                 $pathToLeads->created_by = $data['user_id'];
                 if (!$pathToLeads->save()) {
                     $transaction->rollback();
-                    print_r('3');
                     throw new \Exception(json_encode($pathToLeads->getErrors()));
                 }
 
@@ -192,7 +189,6 @@ class CloneLoanApplication extends LoanApplications
                 $pathToUnclaim->created_by = $data['user_id'];
                 if (!$pathToUnclaim->save()) {
                     $transaction->rollback();
-                    print_r('4');
                     throw new \Exception(json_encode($pathToUnclaim->getErrors()));
                 }
             }
@@ -224,7 +220,6 @@ class CloneLoanApplication extends LoanApplications
                     $loanEdu->created_on = date('Y-m-d H:i:s');
                     if (!$loanEdu->save()) {
                         $transaction->rollback();
-                        print_r('6');
                         throw new \Exception(json_encode($loanEdu->getErrors()));
                     }
                 }
@@ -253,7 +248,6 @@ class CloneLoanApplication extends LoanApplications
                     $coApplicant->aadhaar_link_phone_number = $co['aadhaar_link_phone_number'];
                     if (!$coApplicant->save()) {
                         $transaction->rollback();
-                        print_r('5');
                         throw new \Exception(json_encode($coApplicant->getErrors()));
                     }
 
@@ -299,7 +293,6 @@ class CloneLoanApplication extends LoanApplications
         $loanCertificates->created_on = date('Y-m-d H:i:s');
         if (!$loanCertificates->save()) {
             $transaction->rollback();
-            print_r('7');
             throw new \Exception(json_encode($loanCertificates->getErrors()));
         }
 
@@ -325,7 +318,6 @@ class CloneLoanApplication extends LoanApplications
         $residentialInfo->created_on = date('Y-m-d H:i:s');
         if (!$residentialInfo->save()) {
             $transaction->rollback();
-            print_r('8');
             throw new \Exception(json_encode($residentialInfo->getErrors()));
         }
 
