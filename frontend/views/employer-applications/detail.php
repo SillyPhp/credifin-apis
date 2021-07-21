@@ -429,6 +429,7 @@ $this->render('/widgets/employer_applications/top-banner', [
     }
     ?>
 </section>
+
 <?php
 if ($settings["showNewPositionsWidget"]):
     ?>
@@ -440,6 +441,7 @@ if ($settings["showNewPositionsWidget"]):
         </div>
     </section>
 <?php endif; ?>
+
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -449,6 +451,9 @@ if ($settings["showNewPositionsWidget"]):
     <div class="col-md-12">
         <div class="blogbox"></div>
     </div>
+</div>
+
+<div class="container">
     <div class="row">
         <div class="col-md-8 col-sm-8 col-xs-12">
             <div class="heading-style">Courses</div>
@@ -466,6 +471,7 @@ if ($settings["showNewPositionsWidget"]):
     </div>
     <div id="list-main"></div>
 </div>
+
 <?php if (!empty($popular_videos)) {
     if (!empty($cat_name)) {
         $ctt = ucfirst(strtolower($cat_name));
@@ -492,30 +498,30 @@ if ($settings["showNewPositionsWidget"]):
             </div>
         </div>
     </div>
-    <div>
-        <div class="container">
-            <div id="mixedSlider">
-                <div class="MS-content lc-items-grids">
-                    <?php foreach ($popular_videos as $p) { ?>
-                        <div class="item lc-single-item-main">
-                            <div class="lc-item-img">
-                                <a href="<?= Url::to('/learning/video/' . $p['slug']); ?>" class="lc-item-video-link"
-                                   target="_blank">
-                                </a>
-                                <div class="lc-item-video-img"
-                                     style="background-image: url(<?= Url::to($p['cover_image']); ?>);"></div>
+
+    <div class="container">
+        <div id="mixedSlider">
+            <div class="MS-content lc-items-grids">
+                <?php foreach ($popular_videos as $p) { ?>
+                    <div class="item lc-single-item-main">
+                        <div class="lc-item-img">
+                            <a href="<?= Url::to('/learning/video/' . $p['slug']); ?>" class="lc-item-video-link"
+                               target="_blank">
+                            </a>
+                            <div class="lc-item-video-img"
+                                 style="background-image: url(<?= Url::to($p['cover_image']); ?>);"></div>
+                        </div>
+                        <div class="lc-item-desciption">
+                            <div class="lc-item-user-detail">
+                                <h3 class="lc-item-video-title">
+                                    <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" target="_blank"
+                                       class="ml-20">
+                                        <?= Yii::t('frontend', $p['title']); ?>
+                                    </a>
+                                </h3>
                             </div>
-                            <div class="lc-item-desciption">
-                                <div class="lc-item-user-detail">
-                                    <h3 class="lc-item-video-title">
-                                        <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" target="_blank"
-                                           class="ml-20">
-                                            <?= Yii::t('frontend', $p['title']); ?>
-                                        </a>
-                                    </h3>
-                                </div>
-                            </div>
-                            <div class="lc-item-video-stats">
+                        </div>
+                        <div class="lc-item-video-stats">
                                 <span class="lc-item-video-stat marg">
                                     <?php
                                     $link = Url::to('learning/video/' . $p['slug'], 'https');
@@ -539,10 +545,9 @@ if ($settings["showNewPositionsWidget"]):
                                             </span>
                                         </a>
                                 </span>
-                            </div>
                         </div>
-                    <?php } ?>
-                </div>
+                    </div>
+                <?php } ?>
             </div>
         </div>
     </div>
@@ -583,6 +588,8 @@ if (!empty($data2) && Yii::$app->params->options->showSchema) {
                 "value": "<?= (($data2['fixed_wage']) ? $data2['fixed_wage'] : $data2['max_wage']) ?>"
             }
         }
+
+
 
     </script>
     <?php
