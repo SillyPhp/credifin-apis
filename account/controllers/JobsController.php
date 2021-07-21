@@ -1794,7 +1794,6 @@ class JobsController extends Controller
                 }], false)
                 ->where([
                     "a.is_erexx_approved" => 1,
-                    "a.has_placement_rights" => 1,
                     "a.status" => "Active",
                     "a.is_deleted" => 0,
                 ])

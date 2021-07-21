@@ -357,7 +357,7 @@ $this->registerCss('
   align-items: center;
   position: relative;
   min-height: 350px;
-  height: 82vh;
+  height: 80vh;
 }
 
 .header-text{
@@ -366,7 +366,7 @@ $this->registerCss('
   z-index: 2;
 }
 .header-text h1 {
-    margin-top: 40px;
+    margin-top: 60px;
     font-size: 50px;
     font-family: roboto;
     font-weight: 600;
@@ -433,7 +433,7 @@ $this->registerCss('
   position: absolute;
   width: 100%;
   left: 0;
-  bottom: 0;
+  bottom: -1px;
   z-index: 2;
 }
 
@@ -1104,35 +1104,56 @@ html {
         text-align: left;
     }
 }
-
-@media only screen and (max-width: 1024px){
+@media only screen and (max-width: 1326px) and (min-width: 1025px){
   .interest-free-header {
-        height: 39vh;
+        height: 95vh;
+  }
+  .header-text {
+    padding-top: 40px;
+  }
+}
+@media only screen and (max-width: 1024px) and (min-width: 992px){
+  .interest-free-header {
+        height: 70vh;
   }
 }
 
-@media only screen and (max-width: 768px){
+@media only screen and (max-width: 992px) and (min-width: 768px){
    .header-text h1 {
         line-height: 40px;
         font-size: 30px;
     }
     .header-img {
-        margin-top: 20px;
+        margin-top: 80px;
     }
-   .header-img img {
+   
+    .interest-free-header {
+        height: 80vh;
+    }
+    .header-img img {
         max-width: 300px;
     }
 }
+@media only screen and (max-width: 767px) and (min-width: 576px){
+   .header-text h1 {
+        line-height: 40px;
+        font-size: 30px;
+    }
+    .header-img {
+        display: none;
+    }
+}
 
-@media only screen and (max-width: 425px){
+@media only screen and (max-width: 575px) and (min-width: 425px){
+    .header-text h1 {
+        font-size: 36px;
+        line-height: 50px;
+    }
   .interest-free-header{
-   padding: 10px 20px; 
+    padding: 10px 20px; 
   }
-  .header-img{
+  .header-img {
     display: none;
-  }
-  .header-text{
-    flex-basis: 100%;
   }
   .percent{
     top: 10px;
@@ -1148,15 +1169,24 @@ html {
     }
 }
 
-@media only screen and (max-width: 375px){
-  .header-text{
-    font-size: 80%;
-  }
-  
-  .header-btn > a {
-    padding: 10px 15px;
-  }
-  
+@media only screen and (max-width: 420px) and (min-width: 320px){
+     .header-img{
+        display: none;
+    }
+     .header-text h1 {
+        font-size: 24px;
+        line-height: 36px;
+    }
+    .header-text p {
+        font-size: 15px;
+        line-height: 20px;
+    }
+    .apply-btn {
+        margin-bottom: 15px;
+    }
+    .enquire-btn {
+        margin-left: 0px;
+    }
   .interest-free-header {
     height: 80vh;
 }
