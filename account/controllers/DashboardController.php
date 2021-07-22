@@ -272,7 +272,9 @@ class DashboardController extends Controller
                         ELSE d.course_name
                         END) as course_name',
                     ])
-                ->joinWith(['loanApplications b'],false)
+                ->joinWith(['loanApplications b' => function($b){
+                    $b->select(['b.loan_app_enc_id', 'b.parent_application_enc_id']);
+                }])
                 ->joinWith(['pathToClaimOrgLoanApplications c' => function($c){
                     $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
                         $cc->joinWith(['courseEnc c1']);
@@ -289,11 +291,9 @@ class DashboardController extends Controller
                     'a.loan_status'=>6,
                     'a.parent_application_enc_id' => null,
                     'a.is_deleted' => 0,
-//                    'b.loan_status' => 6
                 ])
                 ->asArray()
-                ->all();
-
+                ->one();
             $app_reminder_form = new ApplicationReminderForm();
             $app_reminder = ApplicationReminder::find()
                 ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'is_deleted' => 0])

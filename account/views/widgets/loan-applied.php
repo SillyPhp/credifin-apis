@@ -12,16 +12,16 @@ use yii\helpers\Url;
             <div class="loan-text-data">
                 <div class="upper-loan">
                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/party.png') ?>">
-                    <h3>Congratulations <span><?= $loan[0]['applicant_name'] ?></span></h3>
-                    <p>Your previous loan for <span><?= $loan[0]['course_name'] ?></span>,
+                    <h3>Congratulations <span><?= $loan['applicant_name'] ?></span></h3>
+                    <p>Your previous loan for <span><?= $loan['course_name'] ?></span>,
                         <span>
                             <?=
-                            $loan[0]['years'],
-                            $loan[0]['years'] == 1 ? 'st' : ($loan[0]['years'] == 2) ? 'nd' : 'th';
+                            $loan['years'],
+                            $loan['years'] == 1 ? 'st' : ($loan['years'] == 2) ? 'nd' : 'th';
                             ?>
                         </span> year, <span><?=
-                            $loan[0]['semesters'],
-                            $loan[0]['semesters'] == 1 ? 'st' : ($loan[0]['semesters'] == 2) ? 'nd' : 'th';
+                            $loan['semesters'],
+                            $loan['semesters'] == 1 ? 'st' : ($loan['semesters'] == 2) ? 'nd' : 'th';
                             ?></span> semester
                         has been completed.</p>
                 </div>
