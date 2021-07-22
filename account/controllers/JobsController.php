@@ -439,7 +439,7 @@ class JobsController extends Controller
         }
         $options['limit'] = 3;
         $options['location'] = implode(',', $locations);
-        $options['skills'] = $skills;
+        $options['skills'] = implode(',', $skills);
         $options['orderBy'] = new Expression('rand()');
 
         $jobsByLocation = ApplicationCards::jobs($options);
@@ -460,7 +460,9 @@ class JobsController extends Controller
             'total_accepted' => $total_accepted,
             'shortlist1' => $shortlist1,
             'jobsByLocation' => $jobsByLocation,
-            'jobsBySkills' => $jobsBySkills
+            'preferredLocations' => implode(',', $locations),
+            'jobsBySkills' => $jobsBySkills,
+            'preferredSkills' => implode(',', $skills),
         ]);
     }
 

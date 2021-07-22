@@ -197,7 +197,7 @@ class ApplicationCards
                     $optLocation = $options['location'];
                 }
                 if (!empty($options['skills'])) {
-                    $skills = $options['skills'];
+                    $skills = explode(',', $options['skills']);
                 }
         }
 

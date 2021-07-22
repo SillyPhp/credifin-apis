@@ -20,7 +20,7 @@ use yii\widgets\Pjax;
                             'jobsByLocation' => $jobsByLocation,
                         ]) ?>
                         <div class="col-md-12 text-center">
-                            <a href="" class="jbl-viewall viewall-jobs">View All</a>
+                            <a href="<?= Url::to('/jobs/list?location='.$preferredLocations)?>" class="jbl-viewall viewall-jobs">View All</a>
                         </div>
                     </div>
                 </div>
@@ -39,7 +39,7 @@ use yii\widgets\Pjax;
                             'jobsBySkills' => $jobsBySkills,
                         ]) ?>
                         <div class="col-md-12 text-center">
-                            <a href="" class="jbl-viewall viewall-jobs">View All</a>
+                            <a href="<?= Url::to('/jobs/list?skills='.$preferredSkills)?>" class="jbl-viewall viewall-jobs">View All</a>
                         </div>
                     </div>
                 </div>
