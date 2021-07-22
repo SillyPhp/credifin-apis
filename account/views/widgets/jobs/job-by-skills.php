@@ -2,7 +2,7 @@
     use yii\helpers\Url;
 ?>
 <?php
-    foreach ($jobsByLocation as $job){
+    foreach ($jobsBySkills as $job){
 ?>
 <div class="col-md-12">
     <div class="new-card-main">
@@ -13,9 +13,8 @@
             <div class="ci-card-txt">
                 <h3 class="new-card-title"><?= $job['title'] ?></h3>
                 <p class="company-name"><?= $job['organization_name'] ?></p>
-                <p class="salry"><?= $job['city'] ?></p>
+                <p class="salry"><?= $job['skills'] ?></p>
                 <p class="salry"><?= $job['type'] ?></p>
-
             </div>
         </a>
     </div>
@@ -25,6 +24,9 @@
 ?>
 <?php
 $this->registerCSS('
+.text-center{
+    text-align:center;
+}
 .new-card-main a{
     margin-bottom: 20px;
     background-color: #fff;

@@ -15,10 +15,14 @@ use yii\widgets\Pjax;
                 </div>
 
                 <div class="portlet-body">
-                    <?= $this->render('/widgets/jobs/job-by-location', [
-                        'jobsByLocation' => $jobsByLocation,
-                    ]) ?>
-                    <a href=""></a>
+                    <div class="row">
+                        <?= $this->render('/widgets/jobs/job-by-location', [
+                            'jobsByLocation' => $jobsByLocation,
+                        ]) ?>
+                        <div class="col-md-12 text-center">
+                            <a href="" class="jbl-viewall viewall-jobs">View All</a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -30,9 +34,14 @@ use yii\widgets\Pjax;
                 </div>
 
                 <div class="portlet-body">
-                    <?= $this->render('/widgets/jobs/job-by-location', [
-                        'jobsByLocation' => $jobsByLocation,
-                    ]) ?>
+                    <div class="row">
+                        <?= $this->render('/widgets/jobs/job-by-skills', [
+                            'jobsBySkills' => $jobsBySkills,
+                        ]) ?>
+                        <div class="col-md-12 text-center">
+                            <a href="" class="jbl-viewall viewall-jobs">View All</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -554,7 +563,10 @@ use yii\widgets\Pjax;
 
 <?php
 $this->registerCss('
-
+.jbl-viewall.viewall-jobs{
+    float: unset;
+    margin-left: 0px;
+}
 .font-dark > span > i {
     font-size: 13px;
     margin-left: 5px;

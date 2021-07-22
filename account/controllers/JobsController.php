@@ -437,12 +437,14 @@ class JobsController extends Controller
         foreach ($userSkills as $skill){
             array_push($skills, $skill['skill']);
         }
-
         $options['limit'] = 3;
         $options['location'] = implode(',', $locations);
+        $options['skills'] = $skills;
         $options['orderBy'] = new Expression('rand()');
 
         $jobsByLocation = ApplicationCards::jobs($options);
+        unset($options['location']);
+        $jobsBySkills = ApplicationCards::jobs($options);
 
         return $this->render('dashboard/individual', [
             'shortlisted' => $shortlist_jobs,
@@ -457,7 +459,8 @@ class JobsController extends Controller
             'accepted' => $accepted_jobs,
             'total_accepted' => $total_accepted,
             'shortlist1' => $shortlist1,
-            'jobsByLocation' => $jobsByLocation
+            'jobsByLocation' => $jobsByLocation,
+            'jobsBySkills' => $jobsBySkills
         ]);
     }
 
