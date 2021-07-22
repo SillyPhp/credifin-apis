@@ -7,7 +7,7 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-md-5">
                 <div class="enigma-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/aiesec/white-enigma.png') ?>">
+                    <img src="<?= Url::to('@eyAssets/images/pages/aiesec/white-enigm.png') ?>">
                 </div>
             </div>
             <div class="col-md-7">
