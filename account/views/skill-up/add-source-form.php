@@ -38,7 +38,7 @@ $eform = ActiveForm::begin([
         </div>
         <div class="col-md-7">
             <div class="col-md-12">
-                <?= $eform->field($addSourceForm, 'source_name')->textInput(['class' => 'capitalize form-control']); ?>
+                <?= $eform->field($addSourceForm, 'source_name')->textInput(['class' => 'form-control']); ?>
             </div>
             <div class="col-md-12">
                 <?= $eform->field($addSourceForm, 'link')->textInput(['class' => 'form-control'])->hint('e.g: https://youtube.com'); ?>

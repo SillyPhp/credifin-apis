@@ -102,7 +102,7 @@ $this->params['seo_tags'] = [
             <div class="row">
                 <div class="col-md-5">
                     <div class="enigma-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/aiesec/blue-back.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/aiesec/blue-name1.png') ?>">
                     </div>
                 </div>
                 <div class="col-md-7">
@@ -116,6 +116,10 @@ $this->params['seo_tags'] = [
                         <p>Besides this, we will also bring forth an element of physical MUNs, the absence of which from
                             its virtual counterparts has been keeping much of Ludhiana's former MUNing crowd
                             disinterested- the Socials.</p>
+                    </div>
+                    <div class="powered-by">
+                        <p>Powered By :</p>
+                        <img src="<?= Url::to('@eyAssets/images/logos/eycom.png') ?>">
                     </div>
                 </div>
             </div>
@@ -161,12 +165,23 @@ $this->params['seo_tags'] = [
 
 <?php
 $this->registerCss('
-.text-bold{font-weight:600;}
-.head-style {
-//    text-align: center;
-    font-family: lora;
-    font-size: 34px;
+.powered-by {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
 }
+.powered-by p {
+    font-size: 16px;
+    font-family: Roboto;
+    font-weight: 600;
+    margin: 0;
+}
+.powered-by img {
+    width: 200px;
+    margin-left: 10px;
+}
+.text-bold{font-weight:600;}
 .aiesec-header{
     background:url(' . Url::to('@eyAssets/images/pages/aiesec/enigma-header.png') . ');
     min-height:500px;
@@ -259,15 +274,17 @@ p.about-aiesec-content, .mun-txt {
 .venue-date {
 //    text-align:center;
 }
-.head-style-enigma{
+.head-style-enigma, .head-style{
     margin: 0 0 10px;
     font-family: lora;
     font-weight: 600;
     font-size: 28px;
 }
 .enigma-img{text-align:center;}
-.enigma-img img{
-    width: 300px;
+.enigma-img img {
+    width: 250px;
+    height: auto;
+    object-fit: contain;
 }
 .venue-date p {
     margin-bottom: 0;

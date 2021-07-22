@@ -3,21 +3,28 @@
 use yii\helpers\Url;
 
 ?>
-    <section class="study-in-usa-bg">
-        <div class="study-overlay"></div>
-        <div class="container">
+
+    <section class="interest-free-header">
+        <img class="percent" src="<?= Url::to('@eyAssets/images/pages/education-loans/percent.png') ?>" alt="">
+
+        <img class="shape-divider" src="<?= Url::to('@eyAssets/images/pages/education-loans/Vector.png') ?>" alt="">
+
+        <img class="coins" src="<?= Url::to('@eyAssets/images/pages/education-loans/coins.png') ?>" alt="">
+        <div class="container pbm0">
             <div class="row">
-                <div class="col-md-6">
-                    <h1>Interest Free Education Loan</h1>
-                    <p>With our <span class="bold-font">Interest Free Education Loan</span>,
-                        we will make it <span class="bold-font">simple and easier</span> for you to fulfil
-                        your <span class="bold-font">dream of studying
-                        </span> in your <span class="bold-font">desired College/University</span>.</p>
-                    <div class="apply-btn">
-                        <ul>
-                            <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
-                            <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
-                        </ul>
+                <div class="col-md-7 col-sm-7">
+                    <div class="header-text">
+                        <h1>INTEREST FREE EDUCATION LOANS</h1>
+                        <p>With our Interest Free Education Loan, we will make it simple and easier for you to fulfil your dream of studying in your desired College/University.</p>
+                        <div class="header-btn">
+                            <a href="/education-loans/apply" class="apply-btn">APPLY NOW</a>
+                            <a href="#contact" class="enquire-btn">Enquire Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 col-sm-5">
+                    <div class="header-img">
+                        <img class="main-img" src="<?= Url::to('@eyAssets/images/pages/education-loans/interest-free-img.png') ?>" alt="">
                     </div>
                 </div>
             </div>
@@ -338,6 +345,113 @@ if ($blogs['blogs']) {
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+.pbm0 {
+    padding-top: 0px !important;
+}
+
+.interest-free-header{
+  background: #FF7803;
+  font-family: roboto;
+  padding: 0px 40px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  min-height: 350px;
+  height: 80vh;
+}
+
+.header-text{
+  flex-basis: 50%;
+  position: relative;
+  z-index: 2;
+}
+.header-text h1 {
+    margin-top: 60px;
+    font-size: 50px;
+    font-family: roboto;
+    font-weight: 600;
+    color: #fff;
+    line-height: 65px;
+    letter-spacing: 0.5px;
+}
+.header-text p {
+    color: #0e0e0e;
+    font-size: 18px;
+    line-height: 26px;
+    font-family: roboto;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.header-img{
+    margin-top: 40px;
+  position: relative;
+  text-align center;
+  flex-basis: 50%;
+  z-index: 1;
+}
+.header-img img{
+  max-width: 400px;
+}
+
+.header-btn{
+  margin-top: 20px;
+  font-weight: 700;
+}
+
+.header-btn a{
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.apply-btn{
+  background-color: #00A0E3;
+  color: #fff;
+  box-shadow: 0 3px 2px #00000045;
+  transition: 0.2s ease-in; 
+}
+
+.apply-btn:hover {
+    background-color: #fff;
+    color: #00a0e3;
+}
+
+.enquire-btn{
+  background-color: #E4E4E4;
+  color: #3A3A3A; 
+  margin-left: 10px;
+  transition: 0.2s ease-in;
+}
+
+.enquire-btn:hover {
+    color: #ff7803;
+}
+
+.shape-divider{
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: -1px;
+  z-index: 2;
+}
+
+.percent{
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 80px;
+}
+
+.coins{
+  position: absolute;
+  bottom: 40px;
+  left: 10px;
+  width: 100px;
+  z-index: 1;
+}
+
 .college-card-partner {
     position: relative;
     box-shadow: 0 0 10px rgb(0 0 0 / 10%);
@@ -416,12 +530,17 @@ $this->registerCss('
     overflow:hidden;
 }
 .college-img{
-    width: 70px;
-    height: 70px;
+    width: 100%;
+    height: 100%;
     margin: auto;
     line-height: 65px;
     transition: 300ms all linear;
     overflow:hidden;
+}
+.college-img img {
+    height: 70px;
+    width: 100px;
+    object-fit: contain;
 }
 .partner-name{
   width: fit-content;
@@ -984,5 +1103,93 @@ html {
     .study-in-usa-bg h1 {
         text-align: left;
     }
+}
+@media only screen and (max-width: 1326px) and (min-width: 1025px){
+  .interest-free-header {
+        height: 95vh;
+  }
+  .header-text {
+    padding-top: 40px;
+  }
+}
+@media only screen and (max-width: 1024px) and (min-width: 992px){
+  .interest-free-header {
+        height: 70vh;
+  }
+}
+
+@media only screen and (max-width: 992px) and (min-width: 768px){
+   .header-text h1 {
+        line-height: 40px;
+        font-size: 30px;
+    }
+    .header-img {
+        margin-top: 80px;
+    }
+   
+    .interest-free-header {
+        height: 80vh;
+    }
+    .header-img img {
+        max-width: 300px;
+    }
+}
+@media only screen and (max-width: 767px) and (min-width: 576px){
+   .header-text h1 {
+        line-height: 40px;
+        font-size: 30px;
+    }
+    .header-img {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 575px) and (min-width: 425px){
+    .header-text h1 {
+        font-size: 36px;
+        line-height: 50px;
+    }
+  .interest-free-header{
+    padding: 10px 20px; 
+  }
+  .header-img {
+    display: none;
+  }
+  .percent{
+    top: 10px;
+    left: 95%;
+    transform: translatex(-100%);
+    width: 35px;
+  }
+  .coins{
+    width: 50px;
+  }
+  .interest-free-header {
+    height: 80vh;
+    }
+}
+
+@media only screen and (max-width: 420px) and (min-width: 320px){
+     .header-img{
+        display: none;
+    }
+     .header-text h1 {
+        font-size: 24px;
+        line-height: 36px;
+    }
+    .header-text p {
+        font-size: 15px;
+        line-height: 20px;
+    }
+    .apply-btn {
+        margin-bottom: 15px;
+    }
+    .enquire-btn {
+        margin-left: 0px;
+    }
+  .interest-free-header {
+    height: 80vh;
+}
+  
 }
 ');

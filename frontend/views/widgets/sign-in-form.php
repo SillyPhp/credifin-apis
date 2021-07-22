@@ -80,8 +80,9 @@ $this->registerCss('
 	box-shadow: 0px 2px 3px 2px lightgray;
 	padding-top: 60px;
 	padding-bottom: 25px;
-	margin-top: -150px;
+	margin-top: -120px;
 	background-color: white;
+	z-index:9;
 }
 .login-text{
     font-size:47px;
