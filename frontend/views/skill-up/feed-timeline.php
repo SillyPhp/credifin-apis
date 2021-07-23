@@ -79,6 +79,30 @@ $this->params['header_dark'] = true;
                                                     <div>Courses</div>
                                                 </label>
                                             </li>
+                                            <li>
+                                                <input class="filter-checkbox" id="case-study-filter" type="checkbox"
+                                                       name="case_study"
+                                                       value="Case Study"/>
+                                                <label for="case-study-filter">
+                                                    <div>Case Study</div>
+                                                </label>
+                                            </li>
+                                            <li>
+                                                <input class="filter-checkbox" id="research-paper-filter" type="checkbox"
+                                                       name="research_paper"
+                                                       value="Research Paper"/>
+                                                <label for="research-paper-filter">
+                                                    <div>Research Paper</div>
+                                                </label>
+                                            </li>
+                                            <li>
+                                                <input class="filter-checkbox" id="vlog-webinar-filter" type="checkbox"
+                                                       name="vlog_webinar"
+                                                       value="Vlog/Webinar"/>
+                                                <label for="vlog-webinar-filter">
+                                                    <div>Vlog/Webinar</div>
+                                                </label>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
