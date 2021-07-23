@@ -19,6 +19,11 @@ use yii\widgets\Pjax;
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-6">
+        <button type="button" class="selectAllBtn">Select All</button>
+    </div>
+</div>
 <?php
 Pjax::begin(['id' => 'pjax_locations1']);
 if (!empty($placement_locations)) {
@@ -66,6 +71,19 @@ if (!empty($placement_locations)) {
 Pjax::end(); ?>
 <input type="text" name="placement_calc" id="placement_calc" readonly>
 <?php
+$this->registerCSS('
+.selectAllBtn{
+    border-radius: 6px !important;
+    color: #fff;
+    background: #00a0e3;
+    border: 1px solid #00a0e3;
+    padding: 6px 12px;
+}
+.selectAllBtn:hover{
+    box-shadow: 0 0 10px rgb(0 0 0 / 50%) !important;
+    transition: .3s ease;
+}
+');
 $script = <<< JS
 var place_len = 0;
 
@@ -76,7 +94,9 @@ $(document).on('click', '.modal-load-class', function() {
 $(document).on("click",'input[name="placement_locations[]"]' , function() {
        placement_location_positions($(this),1);
 });
-
+$(document).on('click', '.selectAllBtn', function (){
+    $.each($('[name="placement_locations[]"]').trigger('click'));
+})
 function placement_location_positions(thisObj,positions) {
   if (thisObj.prop("checked")==true) {
         thisObj.next('label').find('input').val(positions);
@@ -109,6 +129,7 @@ function hidePositionBox(thisObj)
     thisObj.next('label').find('.spinner').css('display','none');
     thisObj.next('label').find(".tooltips").css('display','none'); 
 }
+
 function place_checker(place_len)
         {
           if(place_len == 0)
