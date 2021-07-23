@@ -21,7 +21,19 @@ use yii\widgets\Pjax;
 </div>
 <div class="row">
     <div class="col-md-6">
-        <button type="button" class="selectAllBtn">Select All</button>
+        <div class="disFlex">
+            <button type="button" class="selectAllBtn">Select All</button>
+            <div class="form-group  allPos">
+                <p>Enter No. of Positions</p>
+                <div class="input-group allSpiner">
+                    <input type="text" class="form-control place_no" value="1">
+                    <div class="input-group-btn-vertical">
+                        <button class="btn btn-default all_up_bt" type="button"><i class="fa fa-caret-up"></i></button>
+                        <button class="btn btn-default all_down_bt" type="button"><i class="fa fa-caret-down"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <?php
@@ -72,16 +84,31 @@ Pjax::end(); ?>
 <input type="text" name="placement_calc" id="placement_calc" readonly>
 <?php
 $this->registerCSS('
+.allPos p{
+    margin-top: 10px !important;
+    margin-bottom: 0px;
+}
+.form-group.form-md-line-input {
+    padding-top: 0px !important;
+}
+.allSpiner{
+    width: 100px;
+    display: inline-flex;
+}
 .selectAllBtn{
     border-radius: 6px !important;
     color: #fff;
     background: #00a0e3;
     border: 1px solid #00a0e3;
     padding: 6px 12px;
+    margin-right: 10px;
 }
 .selectAllBtn:hover{
     box-shadow: 0 0 10px rgb(0 0 0 / 50%) !important;
     transition: .3s ease;
+}
+.mb0{
+    margin-bottom: 0px !important;
 }
 ');
 $script = <<< JS
@@ -160,26 +187,47 @@ $(document).on("keypress",'.place_no', function (evt) {
         evt.preventDefault();
     }
    }); 
-$(document).on('click','.down_bt',function(e)
-       {
-       e.preventDefault();
-       var down = $(this).parent().prev().val(); 
-       if(down>=2)  
-       $(this).parent().prev().val( parseInt(down,10)-1 );
-       else
-        {
+
+$(document).on('click', '.all_up_bt', function (e){
+   e.preventDefault()
+   var upField = $(this).parent().prev(); 
+   var up = $(this).parent().prev().val(); 
+   if(up>=0){
+        upField.val( parseInt(up,10)+1 );
+        $('.place_no').val(upField.val());
+   }else{
         return false;
-         }  
-   }); 
+   } 
+});
+$(document).on('click', '.all_down_bt', function (e){
+    e.preventDefault()
+    var downField = $(this).parent().prev();
+    var down = $(this).parent().prev().val(); 
+    if(down>=2)  {
+        downField.val( parseInt(down,10)-1 );
+        $('.place_no').val(downField.val());
+    }else {
+        return false;
+    }  
+});
+$(document).on('click','.down_bt',function(e){
+   e.preventDefault();
+   var down = $(this).parent().prev().val(); 
+   if(down>=2){  
+        $(this).parent().prev().val( parseInt(down,10)-1 );
+    }else {
+        return false;
+   }  
+}); 
 $(document).on('click','.up_bt',function(e)
        {
        e.preventDefault();  
        var up = $(this).parent().prev().val();
-       if(up>=0) 
-       $(this).parent().prev().val( parseInt(up,10)+1 );
-       else{
-        return false;
-           } 
+       if(up>=0) {
+            $(this).parent().prev().val( parseInt(up,10)+1 );
+       }else{
+            return false;
+       } 
    });
 $('[data-toggle="tooltip"]').tooltip();
 JS;
