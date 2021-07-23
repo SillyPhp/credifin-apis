@@ -217,7 +217,7 @@ $this->registerCss("
     left:0;
 }
 .hr-company-box:hover > .lf-bttn{
-    left:13px;
+    left:0px;
     opacity:1;
 }
 .lf-bttn a{

@@ -1,9 +1,9 @@
 <?php
 
-use yii\helpers\Url;
-use yii\widgets\Pjax;
 use borales\extensions\phoneInput\PhoneInput;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 $base_url = 'https://empoweryouth.com';
 switch ($application_name['application_type']) {
@@ -73,6 +73,18 @@ foreach ($fields as $f) {
         $hcount += 1;
     }
 }
+
+// grtting positions by location
+
+$locations = [];
+foreach ($application_name['applicationPlacementLocations'] as $apl) {
+    if (isset($locations[$apl['name']])) {
+        $locations[$apl['name']] += $apl['positions'];
+    } else {
+        $locations[$apl['name']] = $apl['positions'];
+    }
+}
+
 ?>
 <div class="bg-img"></div>
 <div class="hamburger-jobs">
@@ -261,7 +273,7 @@ foreach ($fields as $f) {
                         <span class="j-delt">
                             <a href="#" id="j-delete" data-toggle="tooltip"
                                title="Delete <?= $app_type ?>" value="<?= $application_id ?>"><i
-                                class="fa fa-trash-o"></i></a>
+                                        class="fa fa-trash-o"></i></a>
                         </span>
                         <span class="j-cls">
                             <a href="#" id="j-closed" data-toggle="tooltip"
@@ -277,28 +289,61 @@ foreach ($fields as $f) {
                 </div>
             </div>
             <div class="col-md-12 use-ff">
-                <div class="job-txt">Invite Candidates via:</div>
-                <div class="job-mail">
-                    <input type="email" class="form-control" id="email" name="email"
-                           placeholder="Email">
-                    <button class="redd" id="email-invitation"><i class="fa fa-envelope"></i></button>
+                <div class="col-md-6">
+                    <div class="job-txt">Invite Candidates via</div>
+                    <div class="dis-flex">
+                        <div class="job-mail">
+                            <input type="email" class="form-control" id="email" name="email"
+                                   placeholder="Email">
+                            <button class="redd" id="email-invitation"><i class="fa fa-envelope"></i></button>
+                        </div>
+                        <div class="job-whatsapp">
+                            <?php
+                            $form = ActiveForm::begin([
+                                'id' => 'whatsapp-form',
+                                'fieldConfig' => [
+                                    'template' => '<div class="form-group">{input}{error}</div>',
+                                    'labelOptions' => ['class' => ''],
+                                ],
+                            ]);
+                            ?>
+                            <?=
+                            $form->field($whatsAppmodel, 'phone')->textInput(['id' => 'phone-input']);
+                            ?>
+                            <p id="phone-error" style="color:red;" class="help-block help-block-error"></p>
+                            <button class="grn" id="whatsapp-invitation"><i class="fa fa-whatsapp"></i></button>
+                            <?php ActiveForm::end(); ?>
+                        </div>
+                    </div>
                 </div>
-                <div class="job-whatsapp">
-                    <?php
-                    $form = ActiveForm::begin([
-                        'id' => 'whatsapp-form',
-                        'fieldConfig' => [
-                            'template' => '<div class="form-group">{input}{error}</div>',
-                            'labelOptions' => ['class' => ''],
-                        ],
-                    ]);
-                    ?>
-                    <?=
-                    $form->field($whatsAppmodel, 'phone')->textInput(['id' => 'phone-input']);
-                    ?>
-                    <p id="phone-error" style="color:red;" class="help-block help-block-error"></p>
-                    <button class="grn" id="whatsapp-invitation"><i class="fa fa-whatsapp"></i></button>
-                    <?php ActiveForm::end(); ?>
+                <div class="col-md-6">
+                    <div class="main-locations">
+                        <div class="job-txt">Openings By Locations</div>
+                        <?php if ($application_name['applicationPlacementLocations']) { ?>
+                            <ul class="location-posts">
+                                <?php foreach ($locations as $key=>$val){ ?>
+                                    <li><?= $key . '<span>' . $val . '</span>' ?></li>
+                                <?php } ?>
+                            </ul>
+                        <?php }else {?>
+                            <span class="work-home">Work From Home</span>
+                        <?php }?>
+                        <?php if (count($locations) > 4) { ?>
+                            <div class="hidden-locations">
+                                <?php if ($application_name['applicationPlacementLocations']) { ?>
+                                    <ul class="location-postss">
+                                        <?php foreach ($locations as $key=>$val){ ?>
+                                            <li><?= $key . '<span>' . $val . '</span>' ?></li>
+                                        <?php } ?>
+                                    </ul>
+                                <?php } ?>
+                            </div>
+                        <?php }else {?>
+                            <div class="hidden-locations" style="display: none;">
+                                <ul class="location-postss" style="display: none;"></ul>
+                            </div>
+                        <?php }?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -452,7 +497,8 @@ foreach ($fields as $f) {
                                                        name="<?= $arr['applied_application_enc_id'] . 'rejectType' ?>"
                                                        id="<?= $arr['applied_application_enc_id'] . 'permanent' ?>"
                                                        class="">
-                                                <label for="<?= $arr['applied_application_enc_id'] . 'permanent' ?>">Blacklist Candidate</label>
+                                                <label for="<?= $arr['applied_application_enc_id'] . 'permanent' ?>">Blacklist
+                                                    Candidate</label>
                                             </div>
                                         </li>
                                         <li>
@@ -712,12 +758,14 @@ foreach ($fields as $f) {
                                         ?>
                                         <li>
                                             <?php
-                                            if(!empty($arr['phone']) && $arr['phone']){
-                                            ?>
-                                            <a href="https://api.whatsapp.com/send?phone=<?= $arr['phone'] ?>" target="_blank"
-                                               title="Contact Candidate" data-toggle="tooltip" class="shareBtn"><i class="fa fa-whatsapp"></i></a>
-                                            <?php
-                                                }
+                                            if (!empty($arr['phone']) && $arr['phone']) {
+                                                ?>
+                                                <a href="https://api.whatsapp.com/send?phone=<?= $arr['phone'] ?>"
+                                                   target="_blank"
+                                                   title="Contact Candidate" data-toggle="tooltip" class="shareBtn"><i
+                                                            class="fa fa-whatsapp"></i></a>
+                                                <?php
+                                            }
                                             ?>
                                         </li>
                                         <?php if ($arr['status'] != 'Hired' && $arr['status'] != 'Cancelled') { ?>
@@ -949,6 +997,29 @@ foreach ($fields as $f) {
 </div>
 <?php
 $this->registerCss('
+.dis-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.location-posts li, .location-postss li {
+    background-color: #eee;
+    padding: 6px 10px 6px 10px;
+    display: inline-block;
+    border-radius: 4px;
+    font-family: Roboto;
+    margin: 0 5px 5px 0;
+}
+.location-posts li span, .location-postss li span {
+    background-color: #00a0e3;
+    color: #fff;
+    border-radius: 4px;
+    display: inline-block;
+    text-align: center;
+    margin-left: 5px;
+    padding: 0 5px;
+}
 #whatsapp-form .form-group{
     margin-bottom:0px;
 }
@@ -956,7 +1027,7 @@ $this->registerCss('
     margin:0px;
 }
 #phone-input{
-    width: 278px;
+    width: 100%;
 }
 //.job-whatsapp {
 //    margin-top: 10px !important;
@@ -1028,24 +1099,62 @@ $this->registerCss('
     background-color: #43d854;
 }
 .job-txt{
-    font-size: 16px;
+    font-size: 14px;
     color: #000;
-    font-weight: 600;
-    margin-right: 10px;
+    font-weight: 500;
+    margin: 0 0 10px 0;
+    text-align:center;
+    font-family:roboto;
 }
 .use-ff {
-    border-top: 2px solid #bdb7b7;
-    padding-top: 20px;
+    border-top: 2px solid #e0e0e0;
+    padding-top: 10px;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    margin: 15px 0 10px;
+    margin: 15px 0 0px;
+    flex-wrap:wrap;
 }
 .job-mail, .job-whatsapp {
     position: relative;
-    flex-basis: 25%;
-    margin: 0 5px;
+    margin: 0 0 10px;
+    flex-basis:49%;
 }
+.location-posts {
+    height: 36px;
+    overflow: hidden;
+    text-align:center;
+    padding:0;
+}
+.main-locations:hover > .hidden-locations{opacity:1;}
+.hidden-locations{
+    opacity:0;
+    transition: all .5s;
+}
+.main-locations {
+    text-align: center;
+    font-family:roboto;
+}
+.work-home {
+    background-color: #b1b1b1;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 26px;
+}
+.location-postss {
+    max-height: 90px;
+    text-align: center;
+    padding: 10px 5px 5px;
+    position: absolute;
+    top: 20px;
+    left: 0;
+    background-color:#fdfdfd;
+    box-shadow: 0 0 7px 1px #eee;
+    transition:all .5s;
+    z-index:2;
+    width:100%;
+}
+.iti{width:100%;}
 .job-mail input, .job-whatsapp input {
     height: 36px;
     padding-right: 45px;
@@ -1644,6 +1753,7 @@ $this->registerCss('
 	font-family: roboto;
 	padding: 8px 15px;
 	border-radius: 4px;
+	display:inline-block;
 }
 .without-q {
 	display: flex;
@@ -2120,6 +2230,7 @@ overflow: hidden;
     .loc{
         margin-bottom:22px;
     }
+    .scd-btn a{margin-bottom:15px;}
 }
 @media screen and (max-width: 600px){
 .sticky {
@@ -2128,9 +2239,9 @@ overflow: hidden;
     top:0 !important;
     z-index:1;
     background: #fff;
-    padding:0px;
-    
+    padding:0px;   
 }
+.job-mail, .job-whatsapp{flex-basis:100%;}
 .sticky li{
     margin:0 0 15px 0 !important;
 }
@@ -2694,6 +2805,8 @@ $(document).on('click','.customJobBox', function(e) {
 });
 var ps = new PerfectScrollbar('#hamburgerJobs');
 var pa = new PerfectScrollbar('.modal-jobs');
+var pa = new PerfectScrollbar('.location-postss');
+
 var skillSet = $('#skill-sett')
 if(skillSet.length > 0){
    var pb = new PerfectScrollbar('#skill-sett');
