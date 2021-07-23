@@ -342,6 +342,7 @@ if ($blogs['blogs']) {
             </div>
         </div>
     </section>
+
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
@@ -357,7 +358,7 @@ $this->registerCss('
   align-items: center;
   position: relative;
   min-height: 350px;
-  height: 80vh;
+  height: 85vh;
 }
 
 .header-text{
@@ -384,7 +385,7 @@ $this->registerCss('
 }
 
 .header-img{
-    margin-top: 40px;
+  margin-top: 65px;
   position: relative;
   text-align center;
   flex-basis: 50%;
@@ -1095,7 +1096,7 @@ html {
 }
 @media only screen and (max-width: 680px) and (min-width: 320px) {
     .whystudy img {
-        max-height: 290px;
+        max-height: 250px;
     } 
     .apply-now {
         margin-bottom: 10px;
@@ -1176,6 +1177,9 @@ html {
      .header-text h1 {
         font-size: 24px;
         line-height: 36px;
+    }
+    .header-text {
+        text-align: center;
     }
     .header-text p {
         font-size: 15px;
