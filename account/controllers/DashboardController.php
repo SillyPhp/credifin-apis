@@ -286,14 +286,16 @@ class DashboardController extends Controller
                     }], false);
                 }], false)
                 ->joinWith(['pathToOpenLeads d'], false)
+                ->joinWith(['assignedLoanProviders f'], false)
                 ->where([
                     'a.created_by'=>Yii::$app->user->identity->user_enc_id,
-                    'a.loan_status'=>6,
+                    'f.status'=>11,
                     'a.parent_application_enc_id' => null,
                     'a.is_deleted' => 0,
                 ])
                 ->asArray()
                 ->one();
+
             $app_reminder_form = new ApplicationReminderForm();
             $app_reminder = ApplicationReminder::find()
                 ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'is_deleted' => 0])
