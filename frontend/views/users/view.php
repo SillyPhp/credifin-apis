@@ -183,7 +183,8 @@ $this->params['header_dark'] = false;
                                 ?>
                                 <li class="talking">
                                     <a href="javascript:;" class="open_chat" data-id="<?= $user['user_enc_id']; ?>"
-                                       data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>">
+                                       data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>"
+                                       data-img="<?= (($image) ? $image : "https://ui-avatars.com/api/?name=" . $user['first_name'] . " " . $user['last_name'] . "&size=200&rounded=false&background=" . str_replace('#', '', $user['initials_color']) . "&color=ffffff"); ?>">
                                         <i class="fa fa-comments"></i>
                                     </a>
                                 </li>
@@ -452,45 +453,43 @@ $this->params['header_dark'] = false;
                 </div>
                 <?php
             }
-            if ($userAppliedData) {
+            if ($userAppliedData && Yii::$app->user->identity->organization->organization_enc_id) {
                 ?>
                 <div class="col-md-4">
                     <div class="row">
-                        <div class="col-lg-12 col-xs-12 col-sm-12">
-                            <div class="portlet light margin-top-40">
-                                <div class="portlet-title tabbable-line">
-                                    <div class="caption">
-                                        <?php
-                                        if ($_GET['id']) {
-                                            echo '<span class="caption-subject font-dark bold uppercase">Also Applied In</span>';
-                                        } else {
-                                            echo '<span class="caption-subject font-dark bold uppercase">Applied In</span>';
-                                        }
-                                        ?>
-                                    </div>
+                        <div class="portlet light border-rad">
+                            <div class="portlet-title tabbable-line">
+                                <div class="caption">
+                                    <?php
+                                    if ($_GET['id']) {
+                                        echo '<span class="caption-subject font-dark bold uppercase">Also Applied In</span>';
+                                    } else {
+                                        echo '<span class="caption-subject font-dark bold uppercase">Applied In</span>';
+                                    }
+                                    ?>
                                 </div>
-                                <div class="portlet-body">
-                                    <div class="mt-comments">
-                                        <?php
-                                        foreach ($userAppliedData as $data) {
-                                            ?>
-                                            <a href="/<?= (($data['type'] == 'Jobs') ? 'job/' : 'internship/') . $data['slug'] ?>"
-                                               class="mt-comment">
-                                                <div class="mt-comment-img">
-                                                    <img src="/assets/common/categories/<?= (($data['icon']) ? $data['icon'] : 'others.svg') ?>">
-                                                </div>
-                                                <div class="mt-comment-body">
-                                                    <div class="mt-comment-info">
-                                                        <span class="mt-comment-author"><?= $data['category'] ?></span>
-                                                        <span class="mt-comment-date"><?= (($data['type'] == 'Jobs') ? 'Job' : 'Internship') ?></span>
-                                                    </div>
-                                                    <div class="mt-comment-text"> <?= $data['parent'] ?></div>
-                                                </div>
-                                            </a>
-                                            <?php
-                                        }
+                            </div>
+                            <div class="portlet-body over-scroll">
+                                <div class="mt-comments">
+                                    <?php
+                                    foreach ($userAppliedData as $data) {
                                         ?>
-                                    </div>
+                                        <a href="/<?= (($data['type'] == 'Jobs') ? 'job/' : 'internship/') . $data['slug'] ?>"
+                                           class="mt-comment">
+                                            <div class="mt-comment-img">
+                                                <img src="/assets/common/categories/<?= (($data['icon']) ? $data['icon'] : 'others.svg') ?>">
+                                            </div>
+                                            <div class="mt-comment-body">
+                                                <div class="mt-comment-info">
+                                                    <span class="mt-comment-author"><?= $data['category'] ?></span>
+                                                    <span class="mt-comment-date"><?= (($data['type'] == 'Jobs') ? 'Job' : 'Internship') ?></span>
+                                                </div>
+                                                <div class="mt-comment-text"> <?= $data['parent'] ?></div>
+                                            </div>
+                                        </a>
+                                        <?php
+                                    }
+                                    ?>
                                 </div>
                             </div>
                         </div>
@@ -513,6 +512,23 @@ if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user
     }
 }
 $this->registerCss('
+.over-scroll {
+    position: relative;
+    max-height: 550px;
+    overflow-y: scroll;
+}
+.border-rad{
+    border-radius:6px;
+    box-shadow: 0 5px 6px rgb(0 0 0 / 20%);
+}
+.mt-comment-author {
+    width: 70%;
+    display: -webkit-box !important;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+  line-height:20px;
+}
 .pro-text {
 	text-align: right;
 	font-family: roboto;
@@ -635,7 +651,7 @@ body{background-color:#f9f9f9;}
     color:#000;
 }
 .education-detail, .experience-detail, .achievements-detail, .Interests-detail, .hobbies-detail {
-    padding-bottom: 20px;
+    padding-bottom: 15px;
 }
 .set {
     margin-bottom: -1px;
@@ -658,7 +674,7 @@ body{background-color:#f9f9f9;}
     padding: 3px 15px;
     border: 1px solid #b9c5ce;
     border-radius: 6px;
-    margin: 0 5px 0 0;
+    margin: 0 5px 10px 0;
     font-weight: 500;
     color: #605c5c;
 }
@@ -779,6 +795,7 @@ body{background-color:#f9f9f9;}
 	left: -19%;
 	top: 5%;
 	width: 240px;
+	overflow:hidden;
 }
 .inner-header-page .freelance-image img, .inner-header-page .freelance-image canvas{
 //	max-width:140px;
@@ -1044,7 +1061,7 @@ img.img-responsive.payment-img {
 .sidebar-container {
 	background: #ffffff;
 	overflow: hidden;
-	margin-bottom: 30px;
+	margin-bottom: 25px;
 	position: relative;
 	transition: .4s;
 	/* padding: 0px 15px 10px 15px; */
@@ -1055,7 +1072,6 @@ img.img-responsive.payment-img {
 .sidebar-container:hover, .sidebar-container:focus{
     transform: translateY(-5px);
     -webkit-transform: translateY(-5px);
-	cursor:pointer;
 }
 .sidebar-box{
     text-align: center;
@@ -1245,11 +1261,15 @@ ul.status-detail li>strong {
         /*overflow: hidden;*/
     }
     .mt-comments .mt-comment .mt-comment-body .mt-comment-info .mt-comment-author {
-        display: inline-block;
-        /*float: left;*/
         margin: 0px;
         color: #060606;
         font-weight: 600;
+        width: 70%;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 20px;
     }
     .mt-comments .mt-comment .mt-comment-body .mt-comment-info .mt-comment-date {
         display: inline-block;
@@ -1348,9 +1368,14 @@ $(document).on('click','.download-resume',function (e){
                     alert('an error occurerd')
                 }
             }
-        })    
+        })
 })
+if($('.over-scroll').length){
+    var ps = new PerfectScrollbar('.over-scroll');
+}
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
+$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

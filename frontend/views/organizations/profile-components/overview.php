@@ -1,6 +1,8 @@
 <?php
 
 use yii\helpers\Url;
+
+
 ?>
 
     <div class="container">
@@ -516,7 +518,8 @@ function getCourses() {
     success: function(res) {
         if(res.response.status == 200){
             for(var i = 0; i < res.response.courses.length; i++ ){
-               courseCard(res.response.courses[i]); 
+                let courseData = res.response.courses[i];
+                courseCard(courseData); 
             }
            initCourse();
         }else{
@@ -534,7 +537,7 @@ function courseCard(res) {
     let Cduration = course_duration == 1 ? course_duration+'Year' : course_duration+'Years';
     var collegeCard = `<div class="course-box" >
                         <a href="">
-                            <h3>`+course_name+`</h3>
+                            <h3>`+course_name.replace(/</g, '&lt;').replace(/>/g, '&gt;')+`</h3>
                             <div class="seats">Duration : <span>`+Cduration+`</span></div>
                         </a>
                     </div>`;

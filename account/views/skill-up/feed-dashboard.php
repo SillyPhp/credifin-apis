@@ -76,7 +76,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="actions">
                         <div class="set-im">
-                            <a href="<?= Url::to('/skills-up'); ?>" data-toggle="tooltip"
+                            <a href="<?= Url::to('create'); ?>" data-toggle="tooltip"
                                title="Add More"
                                class="add-lead">
                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
@@ -108,21 +108,22 @@ use yii\helpers\Url;
                                 foreach ($feeds as $f) { ?>
                                     <tr>
                                         <td><?= $f['date'] ?></td>
-                                        <td><?= $f['post_title'] ?></td>
+                                        <td><a href="/skill-up/detail/<?= $f['slug'] ?>"
+                                               target="_blank"><?= $f['post_title'] ?></a></td>
                                         <td><?= $f['author_name'] ?></td>
                                         <td><?= $f['source'] ?></td>
                                         <td><?= $f['content_type'] ?></td>
                                         <td><a href="<?= $f['post_source_url'] ?>"
-                                               class="src-link"><?= $f['post_source_url'] ?></a>
+                                               class="src-link" target="_blank"><?= $f['post_source_url'] ?></a>
                                         </td>
                                         <td>
                                             <ul>
-                                                <li><?= $f['skills']?></li>
+                                                <li><?= $f['skills'] ?></li>
                                             </ul>
                                         </td>
                                         <td>
                                             <ul>
-                                                <li><?= $f['industries']?></li>
+                                                <li><?= $f['industries'] ?></li>
                                             </ul>
                                         </td>
                                     </tr>

@@ -2,6 +2,17 @@
 
 use yii\helpers\Url;
 ?>
+<?php
+if($loan && empty($loan['loanApplications'])) {
+    ?>
+    <div class="row">
+        <?= $this->render('/widgets/loan-applied', [
+            'loan' => $loan
+        ]) ?>
+    </div>
+    <?php
+}
+?>
     <div class="portlet applied_app light portlet-fit nd-shadow">
         <div class="portlet-title">
             <div class="caption">
@@ -92,14 +103,14 @@ use yii\helpers\Url;
     </div>
 
     <div class="portlet light view_applications nd-shadow">
-    <div class="portlet-title tabbable-line">
-        <div class="caption">
-            <i class=" icon-social-twitter font-dark hide"></i>
-            <span class="caption-subject font-dark bold uppercase">Questionnaires<span data-toggle="tooltip" title="Here you will find all pending questionnaires that are to be filled"><i class="fa fa-info-circle"></i></span>
-            </span>
+        <div class="portlet-title tabbable-line">
+            <div class="caption">
+                <i class=" icon-social-twitter font-dark hide"></i>
+                <span class="caption-subject font-dark bold uppercase">Questionnaires<span data-toggle="tooltip" title="Here you will find all pending questionnaires that are to be filled"><i class="fa fa-info-circle"></i></span>
+                </span>
+            </div>
         </div>
-    </div>
-    <div class="portlet-body">
+        <div class="portlet-body">
         <div class="row">
             <div class="col-md-12">
                 <?php if(!empty($question_list)){
@@ -134,15 +145,16 @@ use yii\helpers\Url;
         </div>
     </div>
     </div>
+
     <div class="portlet light view_applications nd-shadow">
-    <div class="portlet-title tabbable-line">
-        <div class="caption">
-            <i class=" icon-social-twitter font-dark hide"></i>
-            <span class="caption-subject font-dark bold uppercase">Scheduled Interviews<span data-toggle="tooltip" title="Here you will find see your scheduled interviews."><i class="fa fa-info-circle"></i></span>
-            </span>
+        <div class="portlet-title tabbable-line">
+            <div class="caption">
+                <i class=" icon-social-twitter font-dark hide"></i>
+                <span class="caption-subject font-dark bold uppercase">Scheduled Interviews<span data-toggle="tooltip" title="Here you will find see your scheduled interviews."><i class="fa fa-info-circle"></i></span>
+                </span>
+            </div>
         </div>
-    </div>
-    <div class="portlet-body">
+        <div class="portlet-body">
         <div class="row">
             <div class="col-md-12">
                 <?= $this->render('/widgets/schedule_interview/calender-widget');?>
@@ -179,6 +191,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+
 <?php
     if($viewed == 0){
 ?>

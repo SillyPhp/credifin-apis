@@ -1155,6 +1155,17 @@ how-icon{
         float: left;
         width: 100%;
     }
+    .headerContent .job-search h1{
+        font-size: 26px;
+        line-height: 30px;
+        padding: 0 15px;
+        
+    }
+    .headerContent .job-search h2{
+        font-size: 20px;
+        margin-top: 0px;
+        margin-bottom: 0px;    
+    }
 }
 @media only screen and (max-width: 520px) and (min-width: 360px) {
     .job-search > h1 {
@@ -1256,6 +1267,8 @@ if (!Yii::$app->user->isGuest) {
         'getOurServices',
         'getFeaturedApplications',
         'getStats',
+        'getProductOffering',
+        'getAiesec',
         'getTopCities',
 //        'getEduAndRedbull',
         'getGovernmentJobs',
@@ -1280,6 +1293,8 @@ if (!Yii::$app->user->isGuest) {
         'getFeaturedApplications',
         'getFeaturedInternships',
         'getStats',
+        'getProductOffering',
+        'getAiesec',
         'getTopCities',
 //        'getEduAndRedbull',
         'getGovernmentJobs',
@@ -1302,8 +1317,6 @@ if (!Yii::$app->user->isGuest) {
     ");
 }
 $this->registerJs($script);
-$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
-//$this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet');
 $this->registerCssFile('@eyAssets/css/home-page-slider.css');
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);

@@ -1014,8 +1014,14 @@ class SiteController extends Controller
             case 'getOpportunities':
                 return $this->renderAjax('/widgets/homepage_components/featured_opportunities');
                 break;
+            case 'getAiesec':
+                return $this->renderAjax('/widgets/homepage_components/aiesec-feature');
+                break;
             case 'getLearningTopics':
                 return $this->renderAjax('/widgets/homepage_components/learning_topics');
+                break;
+            case 'getProductOffering':
+                return $this->renderAjax('/widgets/product-offerings');
                 break;
             case 'getWhatsappCommunity':
                 return $this->renderAjax('/widgets/whatsapp-widget');
@@ -1376,6 +1382,14 @@ class SiteController extends Controller
 
     public function actionPlModal(){
         return $this->render('pl-modal');
+    }
+
+    public function actionRankedCollege(){
+        return $this->render('ranked-college');
+    }
+
+    public function actionEnigma21(){
+        return $this->render('aiesec-main');
     }
 
 }

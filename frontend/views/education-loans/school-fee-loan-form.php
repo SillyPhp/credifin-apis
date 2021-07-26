@@ -855,8 +855,8 @@ $.validator.addMethod("check_date_of_birth", function (value, element) {
     mydate.setFullYear(year, month - 1, day);
     
     var maxDate = new Date();
-    if ((maxDate.getFullYear()-year) <= 18) {
-        $.validator.messages.check_date_of_birth = "Sorry, only persons above or equal the age of 2 can be covered";
+    if ((maxDate.getFullYear()-year) <= 1) {
+        $.validator.messages.check_date_of_birth = "Sorry, only persons above or equal the age of 1 can be covered";
         return false;
     }
     return true;

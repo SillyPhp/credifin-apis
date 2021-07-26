@@ -7,6 +7,7 @@ use common\models\AssignedLoanProvider;
 use common\models\LoanApplicationLogs;
 use common\models\LoanApplications;
 use common\models\LoanDocuments;
+use common\models\LoanSanctionReports;
 use common\models\Organizations;
 use common\models\SelectedServices;
 use common\models\Services;
@@ -86,10 +87,9 @@ class EducationLoansController extends Controller
             }], true, 'LEFT JOIN')
             ->asArray()
             ->all();
-        print_r($loansApplications);
     }
 
-    public function actionDashboard($filter = null)
+    public function actionDashboard($filter = null, $search = null)
     {
         $model = new LoanSanctionedForm();
         $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Loans");
@@ -165,6 +165,28 @@ class EducationLoansController extends Controller
                 $filter = explode(',', $filter);
                 $loans->andWhere(['in', 'i.status', $filter]);
             }
+        }
+        if ($search != null) {
+            $loans->andFilterHaving([
+                'or',
+                ['like', 'apply_date', $search],
+                ['like', 'loan_status', $search],
+                ['like', 'applicant_name', $search],
+                ['like', 'amount', $search],
+                ['like', 'amount_received', $search],
+                ['like', 'amount_due', $search],
+                ['like', 'scholarship', $search],
+                ['like', 'degree', $search],
+                ['like', 'course_name', $search],
+                ['like', 'org_name', $search],
+                ['like', 'semesters', $search],
+                ['like', 'years', $search],
+                ['like', 'phone', $search],
+                ['like', 'email', $search],
+                ['like', 'city', $search],
+                ['like', 'gender', $search],
+                ['like', 'dob', $search],
+            ]);
         }
         $loans = $loans->asArray()->all();
         $stats = LoanApplications::find()
@@ -481,12 +503,14 @@ class EducationLoansController extends Controller
     public function actionLoanProfileView(){
         return $this->render('loan-profile-view');
     }
-
     public function actionIndividual(){
         return $this->render('individual');
     }
-
-    public function actionEmiDetails(){
-        return $this->render('emi-details');
+    public function actionEmiDetails($id){
+        setlocale(LC_MONETARY, 'en_IN');
+        $data = LoanSanctionReports::findOne(['report_enc_id' => $id]);
+        return $this->render('emi-details', [
+            'data' => $data,
+        ]);
     }
 }

@@ -130,9 +130,9 @@ endif;
                     'applied' => $applied,
                     'question_list' => $question_list,
                     'shortlist_org' => $shortlist_org,
-                    'viewed' => $viewed
+                    'viewed' => $viewed,
+                    'loan' => $loan,
                 ]); ?>
-
                 <?= $this->render('/widgets/applications/reminder-applications', [
                     'app_reminder' => $app_reminder,
                     'app_reminder_form' => $app_reminder_form,
@@ -385,7 +385,7 @@ endif;
                     </div>
                 </div>
 
-
+            <?= $this->render('@common/widgets/career-page-section') ?>
 
             <?php endif; ?>
             <!--            <div class="portlet light portlet-fit nd-shadow">-->
@@ -657,6 +657,7 @@ a:focus, a:hover{
     text-transform: uppercase;
     color:#9eacb4;
 }
+
 @media only screen and (max-width: 950px) {
 .marg{
     margin-top:20px !important;

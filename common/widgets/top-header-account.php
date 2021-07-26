@@ -5,7 +5,9 @@
                 Dashboard
             </a>
         </li>
-        <?= $this->render('education-loans'); ?>
+        <?= $this->render('education-loans', [
+                'li_class'=>'ey-nav-item ey-header-item ey-header-item-is-menu'
+        ]); ?>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/account/jobs/dashboard">Manage Jobs</a>
             <i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -183,7 +185,7 @@
             </div>
         </li>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="/account/internships/create">Create Internships</a>
+            <a href="/account/internships/create">Create Internship</a>
             <i class="fa fa-caret-down" aria-hidden="true"></i>
             <div class="ey-sub-menu">
                 <div class="container-fluid">
@@ -515,7 +517,7 @@ $this->registerCss('
     left: 50%;
     position: absolute;
     right: 0;
-    top: 63px;
+    top: 62px;
     z-index: 4;
     height:0px;
     width: 100vw;
