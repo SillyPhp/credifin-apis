@@ -15,6 +15,7 @@ use common\models\CollegeCourses;
 use common\models\CollegeCoursesPool;
 use common\models\CollegeCutoff;
 use common\models\CollegeFaculty;
+use common\models\CollegeInfrastructure;
 use common\models\CollegeScholarships;
 use common\models\CollegeSections;
 use common\models\CollegeSettings;
@@ -2032,5 +2033,51 @@ class CollegeProfileController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
+    public function actionAddInfra()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['name']) || empty($params['name'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "name"']);
+            }
+
+            $icon = UploadedFile::getInstanceByName('icon');
+
+            $infra = new CollegeInfrastructure();
+            $infra->college_infrastructure_enc_id = Yii::$app->security->generateRandomString();
+            $infra->infra_name = $params['name'];
+            $infra->created_by = $user->user_enc_id;
+            $infra->created_on = date('Y-m-d H:i:s');
+            if ($icon) {
+
+                $infra->icon_location = \Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->collegeProfile->infrastructure_icon . $infra->icon_location . '/';
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+
+                $encrypted_string = $utilitiesModel->encrypt();
+                if (substr($encrypted_string, -1) == '.') {
+                    $encrypted_string = substr($encrypted_string, 0, -1);
+                }
+
+                $infra->icon = $encrypted_string . '.png';
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $result = $my_space->uploadFile($icon->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $infra->icon, "public");
+            }
+            if (!$infra->save()) {
+                return $this->response(500, ['status' => 500, 'error' => $infra->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
 
 }
