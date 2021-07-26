@@ -1984,7 +1984,9 @@ class CollegeProfileController extends ApiBaseController
 
             if ($admissionDetail) {
                 $admissionDetail->fees = $params['fees'];
-                $admissionDetail->scholarship_enc_id = $params['scholarship_id'];
+                if (isset($params['scholarship_id']) && !empty($params['scholarship_id'])) {
+                    $admissionDetail->scholarship_enc_id = $params['scholarship_id'];
+                }
                 $admissionDetail->selection_process = $params['selection_process'];
                 $admissionDetail->eligibility_criteria = $params['eligibility_criteria'];
                 $admissionDetail->other_details = $params['other_details'];
@@ -2073,6 +2075,28 @@ class CollegeProfileController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionIngraList()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $infra_list = CollegeInfrastructure::find()
+                ->select(['college_infrastructure_enc_id', 'infra_name',
+                    'CASE WHEN icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->collegeProfile->infrastructure_icon, 'https') . '", icon_location, "/", icon) ELSE NULL END icon',])
+                ->where(['is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            if ($infra_list) {
+                return $this->response(200, ['status' => 200, 'infrastructure_list' => $infra_list]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
