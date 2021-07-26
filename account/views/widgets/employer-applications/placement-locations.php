@@ -148,7 +148,7 @@ $(document).on('click', '.selectAllBtn', function (){
     let locationsDiv = document.querySelector('.locationInputs');
     let checked = locationsDiv.querySelectorAll('.checkbox-input:checked'); 
     let unChecked = locationsDiv.querySelectorAll('.checkbox-input:not(:checked)');
-    if(checked.length == 0){
+    if(checked.length == 0 || unChecked.length > 0){
         for(let i=0; i<unChecked.length; i++){
             $(unChecked[i]).trigger('click');
             $('.selectAllBtn').addClass('active');

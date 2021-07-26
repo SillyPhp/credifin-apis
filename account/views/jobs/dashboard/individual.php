@@ -10,7 +10,7 @@ use yii\widgets\Pjax;
             <div class="portlet light nd-shadow">
                 <div class="portlet-title tabbable-line">
                     <div class="caption">
-                        Jobs Preferred by Location
+                        <span class="caption-subject font-dark bold uppercase">Jobs Preferred by Location</span>
                     </div>
                 </div>
 
@@ -29,7 +29,7 @@ use yii\widgets\Pjax;
             <div class="portlet light nd-shadow">
                 <div class="portlet-title tabbable-line">
                     <div class="caption">
-                        Jobs Matching Your Skills
+                        <span class="caption-subject font-dark bold uppercase"> Jobs Matching Your Skills</span>
                     </div>
                 </div>
 
@@ -734,7 +734,50 @@ a:hover{
       z-index:99;
       background-color:#fff;
       opacity:0.7;
-    }
+}
+/*Sidebar Jobs Cards*/
+.job-card-sidebar-candidate a{
+    margin-bottom: 15px;
+    width: 100%;
+    min-height: 120px;
+    border: 2px solid #eef1f5;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    padding: 10px;
+    border-radius:8px !important;
+    font-family: roboto;
+    color: #000;
+}
+.job-cat-icon{
+  flex-basis: 30%;
+  text-align: center;
+}
+.job-cat-icon img{
+  width: 80%;
+}
+.job-card-detail{
+  flex-basis: 70%;
+  padding: 0 0px 0 10px;
+  line-height: 19px;
+}
+.job-card-detail h3{
+  margin-top: 0px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+.job-card-detail p{
+    margin-bottom: 0px;
+}
+.jcc-location{
+  color: #ff7803;
+}
+.job-card-sidebar-candidate i{
+  margin-right: 5px;
+}    
 ');
 $script = <<<JS
 
