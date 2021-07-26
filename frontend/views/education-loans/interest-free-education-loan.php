@@ -342,6 +342,7 @@ if ($blogs['blogs']) {
             </div>
         </div>
     </section>
+
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
