@@ -12,8 +12,18 @@ use yii\helpers\Url;
             <div class="loan-text-data">
                 <div class="upper-loan">
                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/party.png') ?>">
-                    <h3>Congratulations</h3>
-                    <p>Your previous loan has been completed.</p>
+                    <h3>Congratulations <span><?= $loan['applicant_name'] ?></span></h3>
+                    <p>Your previous loan for <span><?= $loan['course_name'] ?></span>,
+                        <span>
+                            <?=
+                            $loan['years'],
+                            $loan['years'] == 1 ? 'st' : ($loan['years'] == 2) ? 'nd' : 'th';
+                            ?>
+                        </span> year, <span><?=
+                            $loan['semesters'],
+                            $loan['semesters'] == 1 ? 'st' : ($loan['semesters'] == 2) ? 'nd' : 'th';
+                            ?></span> semester
+                        has been completed.</p>
                 </div>
                 <div class="bottom-loan">
                     <p>Apply loan for next semester</p>
@@ -76,7 +86,7 @@ use yii\helpers\Url;
                                 </div>
                             </div>
                             <div class="col-md-12 text-center mt20">
-                                <button type="button" id="<?= $loan[0]['loan_app_enc_id']?>" class="applyBtn">Apply</button>
+                                <button type="button" data-id="" id="<?= $loan[0]['loan_app_enc_id']?>" class="applyBtn">Apply</button>
                             </div>
                         </div>
                     </form>
@@ -86,6 +96,7 @@ use yii\helpers\Url;
 
     </div>
 <?php
+$user_id = Yii::$app->user->identity->user_enc_id;
 $this->registerCss( '
 .loan-app-main {
     background: linear-gradient(97.96deg, #330867 -33.18%, #25C1C2 105.68%);
@@ -124,12 +135,17 @@ $this->registerCss( '
     font-weight: bold;
     font-size:30px;
     color: #fff;
+    text-transform: capitalize;
 }
 .upper-loan p {
     font-family: roboto;
     font-size: 18px;
-    font-weight: 500;
+    font-weight: 400;
     color: #fff;
+}
+.upper-loan h3 span,
+.upper-loan p span{
+    color: #ff7803;
 }
 .bottom-loan p {
     margin: 15px 0 10px !important;
@@ -283,6 +299,7 @@ $('.applyBtn').on('click', function (e){
     let formFields = submitForm.querySelectorAll('.formVal');
     let data = {};
     data['loan_app_id'] = loan_id;
+    data['user_id'] = '$user_id';
     for(let i=0; i<formFields.length; i++){
         validations(formFields[i]);
         let fieldVal = formFields[i].value;
@@ -297,8 +314,8 @@ $('.applyBtn').on('click', function (e){
         url:'https://ravinder.eygb.me/api/v3/education-loan/refinance',
         data: data,
         method: 'post',
-        success: function(res){
-           if(response['status'] == 200){
+        success: function(response){
+           if(response['response']['status'] == 200){
                toastr.success('Loan Application Applied', 'success');
                modal.style.display = "none";
            }else{

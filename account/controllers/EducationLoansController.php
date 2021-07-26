@@ -87,7 +87,6 @@ class EducationLoansController extends Controller
             }], true, 'LEFT JOIN')
             ->asArray()
             ->all();
-        print_r($loansApplications);
     }
 
     public function actionDashboard($filter = null, $search = null)
