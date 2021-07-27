@@ -1,8 +1,6 @@
 <?php
 
-
 namespace api\modules\v1\models;
-
 
 use common\models\Organizations;
 use common\models\UnclaimedOrganizations;
@@ -53,7 +51,7 @@ class OrganizationsList
                     $x->groupBy(['h.name']);
                     $x->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
                 }], false);
-                $x->onCondition(['b.is_deleted' => 0]);
+                $x->onCondition(['b.is_deleted' => 0, 'b.application_for' => 1, 'b.status' => 'ACTIVE']);
                 $x->groupBy(['b.organization_enc_id']);
             }], true)
             ->joinWith(['followedOrganizations fo' => function ($x) use ($options) {
@@ -133,7 +131,7 @@ class OrganizationsList
                 $x->joinWith(['applicationPlacementCities t' => function ($x) {
                     $x->joinWith(['cityEnc x'], false);
                 }], false);
-                $x->onCondition(['b.is_deleted' => 0]);
+                $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE']);
                 $x->groupBy('b.organization_enc_id');
             }], true)
             ->joinWith(['unclaimedFollowedOrganizations fo' => function ($x) use ($options) {
