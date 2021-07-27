@@ -71,7 +71,7 @@ class EducationLoansController extends Controller
         ]);
     }
 
-    public function actionApply($ref_id = null)
+    public function actionApply($ref_id = null,$lead_id = null)
     {
         if(!Yii::$app->user->identity->organization->organization_enc_id):
         $india = Countries::findOne(['name' => 'India'])->country_enc_id;
@@ -82,6 +82,7 @@ class EducationLoansController extends Controller
         return $this->render('apply-general-loan-form', [
             'india' => $india,
             'ref_id' => $ref_id,
+            'lead_id' => $lead_id,
             'action_name' => $action_name
         ]);
         else:
