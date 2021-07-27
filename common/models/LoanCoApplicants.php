@@ -22,6 +22,7 @@ namespace common\models;
  * @property int $address 0 new address,1 same as applicant
  * @property string $pan_number co borrower pan card number
  * @property string $aadhaar_number
+ * @property string $aadhaar_link_phone_number Aadhar Link Phone Number
  * @property string $created_by user_enc_id
  * @property string $created_on created on
  * @property string $updated_on
@@ -55,7 +56,7 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
             [['annual_income'], 'number'],
             [['co_applicant_dob', 'created_on', 'updated_on'], 'safe'],
             [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'email', 'image', 'image_location', 'occupation', 'created_by', 'updated_by'], 'string', 'max' => 100],
-            [['phone', 'pan_number'], 'string', 'max' => 15],
+            [['phone', 'pan_number','aadhaar_link_phone_number'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],

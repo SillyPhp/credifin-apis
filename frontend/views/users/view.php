@@ -453,7 +453,7 @@ $this->params['header_dark'] = false;
                 </div>
                 <?php
             }
-            if ($userAppliedData) {
+            if ($userAppliedData && Yii::$app->user->identity->organization->organization_enc_id) {
                 ?>
                 <div class="col-md-4">
                     <div class="row">
@@ -1368,9 +1368,11 @@ $(document).on('click','.download-resume',function (e){
                     alert('an error occurerd')
                 }
             }
-        })    
+        })
 })
-var ps = new PerfectScrollbar('.over-scroll');
+if($('.over-scroll').length){
+    var ps = new PerfectScrollbar('.over-scroll');
+}
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');

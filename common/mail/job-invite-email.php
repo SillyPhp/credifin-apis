@@ -75,7 +75,6 @@ img + div {
 	font-weight:bold;	
 }
 .job-overview {
-	float: left;
 	width: 100%;
 }
 .job-overview ul li{
@@ -137,7 +136,6 @@ img + div {
 }
 /*-----job-description-----*/
 .job-description{
-	float:left;
 	padding-top:10px;
 }
 .job-description li {
@@ -178,7 +176,6 @@ img + div {
 }	
 .interview{
 	width:100%;
-	float:left;
 }
 .interview ul{
 	padding-inline-start: 10px;	
@@ -190,7 +187,6 @@ img + div {
 	display:flex;
 }
 .skills{
-	float:left;
 	width:100%;	
 }
 .skills ul {
@@ -209,7 +205,6 @@ img + div {
 	margin:5px; 
 }
 .week-days{
-    float: left;
     width: 100%;
 }
 .week-days ul{
@@ -242,7 +237,6 @@ img + div {
   margin:0px;
 }
 .working-hours{
-	float:left;
 	width:100%;
 	margin: 0 auto;
 	margin-top: 0px;
@@ -280,9 +274,9 @@ img + div {
 	width: 70%;
 	float: left;
 }
-.emp-benefits{
-	float:left;	
+.emp-benefits{	
 	width:100%;
+	display: inline-block;
 }
 .benefit-box{
 	width: 26%;
@@ -308,7 +302,6 @@ img + div {
 }
 /*----apply btn-----*/
 .applyBtn{
-	float:left;
 	text-align:center;
 	margin:0 auto;
 	width:100%;
@@ -418,7 +411,6 @@ img + div {
     background-color: #E2ECFD;
     padding: 20px;
     width: 100%;
-    float: left;
 }
 	.web-social a {
 		margin: 0 5px;
@@ -589,7 +581,7 @@ if (!empty($data['applicationPlacementLocations'])) {
     </div>
     <?php
     $benefits = $data['applicationEmployeeBenefits'];
-    if (!empty($benefits)): ?>
+    if (!empty($benefits) && $benefits): ?>
         <div class="emp-benefits">
             <div class="jo-heading">Employee Benefits</div>
             <?php
@@ -604,7 +596,14 @@ if (!empty($data['applicationPlacementLocations'])) {
                             ?>
                             <div class="benefit-box">
                                 <div class="bb-icon">
-                                    <img src="<?= Url::to('https://www.empoweryouth.com/assets/common/email_service/location.png/flexible_hour.svg'); ?>">
+                                    <?php
+                                    if (!empty($benefits[$next]['icon'])) {
+                                        $benefit_icon = Url::to(Yii::$app->params->upload_directories->benefits->icon . $benefits[$next]['icon_location'] . DIRECTORY_SEPARATOR . $benefits[$next]['icon'], 'https');
+                                    } else {
+                                        $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg', 'https');
+                                    }
+                                    ?>
+                                    <img src="<?= Url::to($benefit_icon, 'https'); ?>"/>
                                 </div>
                                 <div class="bb-text">
                                     <?= $benefits[$next]['benefit']; ?>
