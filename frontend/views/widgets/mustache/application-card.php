@@ -83,57 +83,50 @@ switch ([$controller_id, $action_id]) {
                                 <h5 class="salary"><i class="fas fa-puzzle-piece"></i> : {{sector}}</h5>
                                 {{/sector}}
                             </div>
+                            <div class="clear"></div>
                         </div>
                     </div>
                     <div class="application-card-wrapper">
-                        <a href="" class="application-card-open">Apply Now</a>
                         <a href="{{link}}" class="application-card-open" target="_blank" title="View Detail">View
                             Detail</a>
-                        <a href="javascript:;" class="<?= $btn_id ?>" title="Add to Review List"><i
-                                    class="fas fa-plus"></i></a>
-                        <a href="javascript:;" class="share-b" title="Share"><i class="fas fa-share-alt"></i></a>
+                        <a href="javascript:;" class="<?= $btn_id ?>" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
+                        <a href="javascript:;" class="share-b" title="Share">&nbsp;<i class="fas fa-share-alt"></i>&nbsp</a>
                         <div class="sharing-links">
                             <div class="inner">
                                 <div class="fb">
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                    <a href="javascript:;" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="j-facebook j-linkedin share_btn tt" type="button" data-toggle="tooltip"
                                        title="Share on Facebook">
                                         <span><i class="fab fa-facebook-f"></i></span></a>
                                 </div>
                                 <div class="wts-app">
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                    <a href="javascript:;" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="j-whatsapp share_btn tt" type="button" data-toggle="tooltip"
                                        title="Share on Whatsapp">
                                         <span><i class="fab fa-whatsapp"></i></span>
                                     </a>
                                 </div>
                                 <div class="tw">
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                    <a href="javascript:;" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
 
                                        class="j-twitter share_btn tt" type="button" data-toggle="tooltip"
                                        title="Share on Twitter">
                                         <span><i class="fab fa-twitter"></i></span></a>
                                 </div>
                                 <div class="linkd">
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                    <a href="javascript:;" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
                                        title="Share on LinkedIn">
                                         <span><i class="fab fa-linkedin"></i></span></a>
                                 </div>
                                 <div class="male">
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('mailto:?&body=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                    <a href="javascript:;" onclick="window.open('<?= Url::to('mailto:?&body=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
                                        title="Share via E-Mail">
                                         <span><i class="far fa-envelope"></i></span></a>
                                 </div>
                                 <div class="tele">
-                                    <a href="javascript:;"
-                                       onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                    <a href="javascript:;" onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
                                        title="Share on Telegram">
                                         <span><i class="fab fa-telegram-plane"></i></span></a>
@@ -433,43 +426,6 @@ $(document).on('mouseleave', '.app-box', function(){
 JS;
 $this->registerJs($script);
 $this->registerCss('
-.application-card-main{
-    border-radius:4px;
-    box-shadow: 0 1px 6px 1px #d2d2d2;
-    }
-.application-card-wrapper {
-    position: inherit;
-    opacity: 1;
-    border-top: 2px solid #eee;
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    padding: 8px 0;
-    margin:0;
-    left:auto;
-}
-.application-card-wrapper > a{
-    padding:0;
-    margin:0;
-    min-height:auto;
-    float:none;
-    font-size: 14px;
-	z-index:2;
-	font-weight:500;
-}
-.application-card-open {
-    background-color:transparent;
-    color: #202c45 !important;
-}
-.application-card-add, .featured-application-card-add {
-    color: #ed4303 !important;
-    background-color:transparent;
-}
-.share-b {
-    color: #00a0e3 !important;
-    background-color:transparent !important;
-}
-.application-card-description h4{font-weight:500;}
 .overlay {
   position: absolute;
   width: 100%;
@@ -479,7 +435,7 @@ $this->registerCss('
   right: 0;
   bottom: 0;
   background-color: rgba(0,0,0,0.5);
-  z-index: 1;
+  z-index: 2;
   cursor: pointer;
 }
 .fbold{font-weight:600 !important;}
@@ -498,6 +454,11 @@ text-overflow: ellipsis;
     margin-top:0px !important;
     margin-bottom: 6px !important;
 }
+.application-card-main {
+    background-color: transparent !important;
+    margin-bottom: 20px !important;
+    border-radius: 10px;
+}
 .not-found{
     max-width: 400px;
     margin: auto;
@@ -505,10 +466,11 @@ text-overflow: ellipsis;
 }
 .app-box {
     text-align: left;
-    padding: 10px 10px 0 ;
+    padding: 10px;
     border-radius: 10px;
     position:relative;
     background:#fff;
+    height:188px;
 }
 .img{
     max-width: 66px;
@@ -520,15 +482,12 @@ text-overflow: ellipsis;
 .comps-name-1{
     padding-left: 15px;
     padding-top: 20px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
 }
 .org_name{display:block;}
 .skill a{
     color: black;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: bold;
 }
 .comp-name{
     font-weight: 700;
@@ -560,7 +519,7 @@ text-overflow: ellipsis;
     margin: 3px !important;
     background-color:#ff7803 !important;
     color: #fff !important;
-    border-radius: 0px 4px 0px 4px !important;
+    border-radius: 0px 10px 0px 10px !important;
     float: right !important;
     position:absolute !important;
     right: -4px !important;
@@ -647,7 +606,6 @@ text-overflow: ellipsis;
 	text-align: center;
 	padding: 10px;
 	display: none;
-	z-index:2;
 }
 .inner {
     display: flex;

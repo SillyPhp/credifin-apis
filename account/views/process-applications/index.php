@@ -289,8 +289,8 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                 </div>
             </div>
             <div class="col-md-12 use-ff">
-                <div class="col-md-6">
-                    <div class="job-txt">Invite Candidates via</div>
+                <div class="col-md-6 col-sm-12">
+                    <div class="job-txt pos-left">Invite Candidates via</div>
                     <div class="dis-flex">
                         <div class="job-mail">
                             <input type="email" class="form-control" id="email" name="email"
@@ -316,33 +316,30 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 col-sm-12">
+                    <div class="job-txt pos-right">Openings By Locations</div>
                     <div class="main-locations">
-                        <div class="job-txt">Openings By Locations</div>
                         <?php if ($application_name['applicationPlacementLocations']) { ?>
                             <ul class="location-posts">
-                                <?php foreach ($locations as $key=>$val){ ?>
+                                <?php foreach ($locations as $key => $val) { ?>
                                     <li><?= $key . '<span>' . $val . '</span>' ?></li>
                                 <?php } ?>
                             </ul>
-                        <?php }else {?>
+                            <?php if (count($locations) > 3) { ?>
+                                <a href="javascript:;" class="and-more"> View All </a>
+                            <?php } ?>
+                        <?php } else { ?>
                             <span class="work-home">Work From Home</span>
-                        <?php }?>
-                        <?php if (count($locations) > 4) { ?>
-                            <div class="hidden-locations">
-                                <?php if ($application_name['applicationPlacementLocations']) { ?>
-                                    <ul class="location-postss">
-                                        <?php foreach ($locations as $key=>$val){ ?>
-                                            <li><?= $key . '<span>' . $val . '</span>' ?></li>
-                                        <?php } ?>
-                                    </ul>
-                                <?php } ?>
-                            </div>
-                        <?php }else {?>
-                            <div class="hidden-locations" style="display: none;">
-                                <ul class="location-postss" style="display: none;"></ul>
-                            </div>
-                        <?php }?>
+                        <?php } ?>
+                        <div class="hidden-locations">
+                            <?php if ($application_name['applicationPlacementLocations']) { ?>
+                                <ul class="location-postss">
+                                    <?php foreach ($locations as $key => $val) { ?>
+                                        <li><?= $key . '<span>' . $val . '</span>' ?></li>
+                                    <?php } ?>
+                                </ul>
+                            <?php } ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -997,13 +994,14 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
 </div>
 <?php
 $this->registerCss('
+.hidden-locations{display:none;}
 .dis-flex {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     flex-wrap: wrap;
 }
-.location-posts li, .location-postss li {
+.location-posts li {
     background-color: #eee;
     padding: 6px 10px 6px 10px;
     display: inline-block;
@@ -1093,18 +1091,26 @@ $this->registerCss('
     display: block;
 }
 .redd{
-    background-color: #ea4335;
+    background-color:#f9938a;
 }
 .grn{
-    background-color: #43d854;
+    background-color:#63c56e;
 }
-.job-txt{
+.job-txt {
     font-size: 14px;
-    color: #000;
+    position: absolute;
+    top: -21px;
     font-weight: 500;
-    margin: 0 0 10px 0;
-    text-align:center;
-    font-family:roboto;
+    text-align: center;
+    font-family: roboto;
+    background-color: #fdfdfd;
+    padding: 0px 10px;
+}
+.pos-left{
+    left: 0px;
+}
+.pos-right{
+    right: 0px;
 }
 .use-ff {
     border-top: 2px solid #e0e0e0;
@@ -1117,46 +1123,69 @@ $this->registerCss('
 }
 .job-mail, .job-whatsapp {
     position: relative;
-    margin: 0 0 10px;
-    flex-basis:49%;
+    margin: 5px 10px 5px 0px;
+    flex-basis:45%;
 }
 .location-posts {
     height: 36px;
     overflow: hidden;
-    text-align:center;
+    text-align:right;
     padding:0;
+    margin:5px 0;
+    flex-basis: 85%;
 }
-.main-locations:hover > .hidden-locations{opacity:1;}
-.hidden-locations{
-    opacity:0;
-    transition: all .5s;
+.and-more {
+    /* background-color: #00a0e3; */
+    color: #00a0e3 !important;
+    padding: 6px 12px;
+    display: inline-block;
+    border-radius: 4px;
+    font-weight: 500;
+    width:80px;
 }
+.and-more:focus{text-decoration:none;}
 .main-locations {
-    text-align: center;
-    font-family:roboto;
+    text-align: right;
+    font-family: roboto;
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
 }
 .work-home {
     background-color: #b1b1b1;
     color: #fff;
     padding: 6px 10px;
     border-radius: 26px;
+    display: inline-block;
+    margin-top: 5px;
 }
 .location-postss {
-    max-height: 90px;
-    text-align: center;
-    padding: 10px 5px 5px;
+    max-height: 150px;
+    padding: 0;
     position: absolute;
-    top: 20px;
-    left: 0;
-    background-color:#fdfdfd;
-    box-shadow: 0 0 7px 1px #eee;
-    transition:all .5s;
-    z-index:2;
-    width:100%;
+    top: 40px;
+    right: 0;
+    box-shadow: 1px 4px 10px 2px #d8d8d8;
+    transition: all .3s;
+    z-index: 2;
+    width: 180px;
+    text-align: center;
+    border-radius: 4px;
+}
+.location-postss li {
+    width: 100%;
+    margin: 0;
+    padding: 8px 5px;
+}
+.location-postss li:nth-child(even){
+    background-color:#f5f5f5;
+}
+.location-postss li:nth-child(odd){
+    background-color:#fff;
 }
 .iti{width:100%;}
 .job-mail input, .job-whatsapp input {
-    height: 36px;
+    height: 34px;
     padding-right: 45px;
 }
 .job-whatsapp button, .job-mail button {
@@ -1164,7 +1193,7 @@ $this->registerCss('
     top: 1px;
     right: 1px;
     width: 40px;
-    height: 34px;
+    height: 32px;
     border: none;
     font-size:20px;
     color: #fff;
@@ -2226,11 +2255,17 @@ overflow: hidden;
         width: 100%;
     }
 }
+@media screen and (max-width: 992px){
+    .scd-btn a{margin-bottom:15px;}
+    .job-txt{position:relative;top:0;}
+    .dis-flex{margin-bottom:10px;}
+    .location-posts{text-align:center;}
+    .main-locations{height:auto;text-align:center;}
+}
 @media screen and (max-width: 768px){
     .loc{
         margin-bottom:22px;
     }
-    .scd-btn a{margin-bottom:15px;}
 }
 @media screen and (max-width: 600px){
 .sticky {
@@ -2341,6 +2376,17 @@ $(document).on('keyup','input#email', function (e){
         $('#email-invitation').click();
     }
 })
+$('.and-more').click( function(e) {
+    e.preventDefault(); // stops link from making page jump to the top
+    e.stopPropagation(); // when you click the button, it stops the page from seeing it as clicking the body too
+    $('.hidden-locations').toggle();
+});
+$('.hidden-locations').click( function(e) {
+    e.stopPropagation(); // when you click within the content area, it stops the page from seeing it as clicking the body too 
+});
+$('body').click( function() {
+    $('.hidden-locations').hide();
+   });
 $(document).on('click', '#email-invitation', function(){
     var email_id = $(this).parent().find('input#email').val();
     if(email_id != "" && typeof email_id !== "undefined"){
@@ -2805,7 +2851,7 @@ $(document).on('click','.customJobBox', function(e) {
 });
 var ps = new PerfectScrollbar('#hamburgerJobs');
 var pa = new PerfectScrollbar('.modal-jobs');
-var pa = new PerfectScrollbar('.location-postss');
+var pj = new PerfectScrollbar('.location-postss');
 
 var skillSet = $('#skill-sett')
 if(skillSet.length > 0){
@@ -2848,7 +2894,6 @@ $(document).on('click', '#whatsapp-invitation', function(e){
       }
   }
 })
-
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
