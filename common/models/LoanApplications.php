@@ -49,6 +49,7 @@ use Yii;
  * @property string $created_on created on
  * @property string $updated_by
  * @property string $updated_on
+ * @property string $lead_application_enc_id Lead application Link
  * @property int $status 0 as Pending, 1 as Approved, 2 as Rejected
  * @property int $loan_status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Senctioned, 5 as Disbursed, 6 as Completed, 10 as Rejected
  * @property string $loan_type
@@ -111,12 +112,13 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['employement_type', 'degree', 'candidate_status', 'source', 'loan_type', 'lender_reasons'], 'string'],
             [['applicant_dob', 'deadline', 'intake', 'created_on', 'updated_on'], 'safe'],
             [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship'], 'number'],
-            [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'created_by', 'updated_by','lead_application_enc_id'], 'string', 'max' => 100],
             [['phone', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['loan_purpose'], 'string', 'max' => 255],
             [['loan_app_enc_id'], 'unique'],
             [['college_course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeCourses::className(), 'targetAttribute' => ['college_course_enc_id' => 'college_course_enc_id']],
+            [['lead_application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LeadsApplications::className(), 'targetAttribute' => ['lead_application_enc_id' => 'application_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanTypes::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
@@ -222,6 +224,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getCollegeCourseEnc()
     {
         return $this->hasOne(CollegeCourses::className(), ['college_course_enc_id' => 'college_course_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLeadApplicationEnc()
+    {
+        return $this->hasOne(LeadsApplications::className(), ['application_enc_id' => 'lead_application_enc_id']);
     }
 
     /**

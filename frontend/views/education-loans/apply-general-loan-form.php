@@ -35,6 +35,7 @@ Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->p
 Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var lead_id = "' . $lead_id . '"', \yii\web\View::POS_HEAD);
 ?>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <section class="bg-blue">
@@ -1378,7 +1379,8 @@ function ajaxSubmit()
                 is_addmission_taken:$('input[name="college_taken"]:checked').val(),
                 clg_pref:clg_pref,
                 country_enc_id:$('#country_name').val(),
-                refferal_id : refferal_id
+                refferal_id : refferal_id,
+                lead_id : lead_id,
                 },  
             beforeSend:function(e)
             {  
