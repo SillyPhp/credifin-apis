@@ -1749,6 +1749,34 @@ class CollegeProfileController extends ApiBaseController
         }
     }
 
+    public function actionCutoffList()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $college_id = $this->getOrgId();
+
+            $cutoffs = CollegeCutoff::find()
+                ->alias('a')
+                ->select(['a.college_cut_off_enc_id', 'a.assgined_course_enc_id', 'c.course_name', 'a.college_enc_id', 'a.general', 'a.obc',
+                    'a.sc', 'a.st', 'a.pwd', 'a.ews'])
+                ->joinWith(['assginedCourseEnc b' => function ($b) {
+                    $b->joinWith(['courseEnc c']);
+                }], false)
+                ->where(['a.is_deleted' => 0, 'a.college_enc_id' => $college_id])
+                ->asArray()
+                ->all();
+
+            if ($cutoffs) {
+                return $this->response(200, ['status' => 200, 'cutoff' => $cutoffs]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
     public function actionAddFaculty()
     {
         if ($user = $this->isAuthorized()) {
@@ -1948,7 +1976,9 @@ class CollegeProfileController extends ApiBaseController
                 $college_admission_detail->admission_detail_enc_id = $utilitiesModel->encrypt();
                 $college_admission_detail->assigned_course_id = $assigned_college_courses->assigned_college_enc_id;
                 $college_admission_detail->fees = $params['fees'];
-                $college_admission_detail->scholarship_enc_id = $params['scholarship_id'];
+                if (isset($params['scholarship_id']) && !empty($params['scholarship_id'])) {
+                    $college_admission_detail->scholarship_enc_id = $params['scholarship_id'];
+                }
                 $college_admission_detail->created_by = $user->user_enc_id;
                 $college_admission_detail->created_on = date('Y-m-d H:i:s');
                 if (!$college_admission_detail->save()) {
@@ -2081,13 +2111,14 @@ class CollegeProfileController extends ApiBaseController
         }
     }
 
-    public function actionIngraList()
+    public function actionInfraList()
     {
         if ($user = $this->isAuthorized()) {
 
             $infra_list = CollegeInfrastructure::find()
                 ->select(['college_infrastructure_enc_id', 'infra_name',
-                    'CASE WHEN icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->collegeProfile->infrastructure_icon, 'https') . '", icon_location, "/", icon) ELSE NULL END icon',])
+                    'CASE WHEN icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->collegeProfile->infrastructure_icon, 'https') . '", icon_location, "/", icon) ELSE NULL END icon',
+                ])
                 ->where(['is_deleted' => 0])
                 ->asArray()
                 ->all();
