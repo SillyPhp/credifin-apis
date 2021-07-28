@@ -334,7 +334,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label for="annulIncome" class="input-group-text">
-                                            Loan Amount Required (<i class="fa fa-inr" id="rp_symbol" aria-hidden="true"></i>)
+                                            <span id="total_sec" style="display: none;">Total</span> Loan Amount Required (<i class="fa fa-inr" id="rp_symbol" aria-hidden="true"></i>)
                                         </label>
                                         <input type="text" class="form-control" minlength="3" maxlength="7" id="loanamount" name="loanamount"
                                                placeholder="Enter Loan Amount">
@@ -398,96 +398,98 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                 <div class="row">
                                     <div class="col-md-12 padd-20">
                                     <div id="addAnotherCo">
-                                        <div class="coapplicant"><div class="col-md-12 padd-20 display-flex"><span class="input-group-text">Borrower's Details</span>
-                                            </div>
-                                            <div class="col-md-12 padd-20">
-                                                <div class="form-group">
-                                                    <label for="co-name[]" class="input-group-text">
-                                                        Name
-                                                    </label>
-                                                    <input type="text" name="co-name[1]" class="form-control text-capitalize" id="co-name" placeholder="Enter Full Name">
+                                        <div id="parent_student_borrower">
+                                            <div class="coapplicant"><div class="col-md-12 padd-20 display-flex"><span class="input-group-text">Borrower's Details</span>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-12 padd-20">
-                                                <div class="form-group">
-                                                    <div class="radio-heading input-group-text">
-                                                        Relation
+                                                <div class="col-md-12 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="co-name" class="input-group-text">
+                                                            Name
+                                                        </label>
+                                                        <input type="text" name="co-name[1]" class="form-control text-capitalize" id="co-name" placeholder="Enter Full Name">
                                                     </div>
-                                                    <ul id="co-relation-ul-1" class="displayInline">
-                                                        <li>
-                                                            <label for="co-father-1" class="container-radio">
-                                                                Father
-                                                                <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-1" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label for="co-mother-1" class="container-radio">
-                                                                Mother
-                                                                <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-1" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label for="co-brother-1" class="container-radio">
-                                                                Brother
-                                                                <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-1" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label for="co-sister-1" class="container-radio">
-                                                                Sister
-                                                                <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-1" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label for="co-guardian-1" class="container-radio">
-                                                                Guardian
-                                                                <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-1" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </li>
-                                                    </ul>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-12 padd-20">
-                                                <div class="form-group">
-                                                    <div class="radio-heading input-group-text">
-                                                        Employment type ?
+                                                <div class="col-md-12 padd-20">
+                                                    <div class="form-group">
+                                                        <div class="radio-heading input-group-text">
+                                                            Relation
+                                                        </div>
+                                                        <ul id="co-relation-ul-1" class="displayInline">
+                                                            <li>
+                                                                <label for="co-father-1" class="container-radio">
+                                                                    Father
+                                                                    <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-1" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label for="co-mother-1" class="container-radio">
+                                                                    Mother
+                                                                    <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-1" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label for="co-brother-1" class="container-radio">
+                                                                    Brother
+                                                                    <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-1" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label for="co-sister-1" class="container-radio">
+                                                                    Sister
+                                                                    <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-1" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label for="co-guardian-1" class="container-radio">
+                                                                    Guardian
+                                                                    <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-1" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                        </ul>
                                                     </div>
-                                                    <ul class="displayInline">
-                                                        <li>
-                                                            <label for="sal-1" class="container-radio">
-                                                                Salaried
-                                                                <input type="radio" value="1" checked="checked" id="sal-1" name="co-emptype[1]" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label for="self-1" class="container-radio">
-                                                                Self-Employed
-                                                                <input type="radio" value="2" id="self-1" name="co-emptype[1]" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label for="non-1" class="container-radio">
-                                                                Non-Working
-                                                                <input type="radio" value="3" id="non-1" name="co-emptype[1]" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </li>
-                                                    </ul>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-12 padd-20">
-                                                <div class="form-group">
-                                                    <label for="co-anualincome" class="input-group-text">
-                                                        Annual Income
-                                                    </label>
-                                                    <input type="text" name="co-anualincome[1]" minlength="3" maxlength="7" class="form-control" id="co-anualincome" placeholder="Enter Annual Income">
+                                                <div class="col-md-12 padd-20">
+                                                    <div class="form-group">
+                                                        <div class="radio-heading input-group-text">
+                                                            Employment type ?
+                                                        </div>
+                                                        <ul class="displayInline">
+                                                            <li>
+                                                                <label for="sal-1" class="container-radio">
+                                                                    Salaried
+                                                                    <input type="radio" value="1" checked="checked" id="sal-1" name="co-emptype[1]" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label for="self-1" class="container-radio">
+                                                                    Self-Employed
+                                                                    <input type="radio" value="2" id="self-1" name="co-emptype[1]" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label for="non-1" class="container-radio">
+                                                                    Non-Working
+                                                                    <input type="radio" value="3" id="non-1" name="co-emptype[1]" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="co-anualincome" class="input-group-text">
+                                                            Annual Income
+                                                        </label>
+                                                        <input type="text" name="co-anualincome[1]" minlength="3" maxlength="7" class="form-control" id="co-anualincome" placeholder="Enter Annual Income">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1871,7 +1873,6 @@ $this->registerJs($script);
             }
         }
         showSchoolField = () => {
-            alert(1);
             let schoolNameField = document.querySelectorAll('.schoolNameField')
             if(event.target.checked){
                 for(let i = 0; i < schoolNameField.length; i++){
@@ -2083,10 +2084,16 @@ $this->registerJs($script);
             if(radioValue == '1'){
                 collegeLoanBox.style.display = "none";
                 if (applicantRadio==1){
+                    //alert('parent as school');
+                    $('#loanamount').attr('readonly','true');
+                    $('#total_sec').show();
                     countryName.style.display = "block";
                     schoolInfo.innerHTML = "";
                     document.getElementById('noChild').value = "";
                 }else if (applicantRadio==0){
+                    //alert('student as school');
+                    $('#loanamount').removeAttr('readOnly');
+                    $('#total_sec').hide();
                     countryName.style.display = "none";
                     schoolInfo.innerHTML = createChild();
                     let childFormBox = document.querySelectorAll('.childFormBox');
@@ -2115,6 +2122,8 @@ $this->registerJs($script);
             const schoolInfo = document.getElementById('schooInfo');
             const collegeLoanBox = document.getElementById('collegeLoanBox');
             if(radioValue == '0'){
+                $('#loanamount').removeAttr('readOnly');
+                $('#total_sec').hide();
                 schoolInfo.innerHTML = "";
                 document.getElementById('noChild').value = "";
                 countryName.style.display = "none";
@@ -2145,10 +2154,15 @@ $this->registerJs($script);
             const collegeLoanBox = document.getElementById('collegeLoanBox');
             const ParentCoBorrower = document.getElementById('parent_co_borrower');
             if(radioValue == '1'){
+                //alert('parent');
+                $('#parent_student_borrower').css('display','none');
                 ParentCoBorrower.style.display = "block";
                 if (applicantRadio!=''||applicantRadio!=null){
                     if (applicantRadio=='0') {
-                        //alert('parent college');
+                       // alert('parent college');
+                        $('#loanamount').removeAttr('readOnly');
+                        $('#total_sec').hide();
+                        $('#parent_student_borrower').css('display','none');
                         schoolInfo.innerHTML = "";
                         document.getElementById('noChild').value = "";
                         countryName.style.display = "none";
@@ -2159,6 +2173,9 @@ $this->registerJs($script);
                     }
                     else if (applicantRadio=='1'){
                         //alert('parent school');
+                        $('#loanamount').attr('readonly','true');
+                        $('#total_sec').show();
+                        $('#parent_student_borrower').css('display','none');
                         collegeLoanBox.style.display = "none";
                         countryName.style.display = "block";
                         schoolInfo.innerHTML = "";
@@ -2175,10 +2192,13 @@ $this->registerJs($script);
             const collegeLoanBox = document.getElementById('collegeLoanBox');
             const ParentCoBorrower = document.getElementById('parent_co_borrower');
             if(radioValue == '0'){
+               // alert('student');
+                $('#parent_student_borrower').css('display','block');
                 ParentCoBorrower.style.display = "none";
                 if (applicantRadio!=''||applicantRadio!=null){
                     if (applicantRadio=='0') {
                         //alert('student college');
+                        $('#parent_student_borrower').css('display','block');
                         schoolInfo.innerHTML = "";
                         document.getElementById('noChild').value = "";
                         countryName.style.display = "none";
@@ -2189,6 +2209,7 @@ $this->registerJs($script);
                     }
                     else if (applicantRadio=='1'){
                         //alert('student school');
+                        $('#parent_student_borrower').css('display','block');
                         countryName.style.display = "none";
                         schoolInfo.innerHTML = createChild();
                         let childFormBox = document.querySelectorAll('.childFormBox');
