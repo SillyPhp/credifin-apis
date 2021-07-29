@@ -69,7 +69,7 @@ Yii::$app->view->registerJs('var profile = "' . Yii::$app->getRequest()->getQuer
         <div class="paid-candidate-inner--box">
         <div class="paid-candidate-box-thumb">
             {{#logo}}
-        <img src="" alt="" class="img-responsive img-circle"/>
+        <img src="{{logo}}" alt="" class="img-responsive img-circle"/>
             {{/logo}}
             {{^logo}}
         <canvas class="user-icon img-circle img-responsive" name="{{name}}" color="{{initials_color}}" width="140" height="140" font="70px"></canvas>
