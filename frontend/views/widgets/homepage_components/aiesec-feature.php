@@ -21,7 +21,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="powered-by">
                     <p>Powered By :</p>
-                    <img class="load-later" data-src="<?= Url::to('@eyAssets/images/logos/eycom.png') ?>">
+                    <img src="<?= Url::to('@eyAssets/images/logos/eycom.png') ?>">
                 </div>
                 <div class="venue-date">
                     <p>The event will be held on</p>
