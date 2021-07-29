@@ -192,7 +192,7 @@ class BlogController extends Controller
                 ->andWhere(['!=', 'z.post_enc_id', $post->post_enc_id])
                 ->andWhere(['z.status' => 'Active', 'z.is_deleted' => 0])
 //                ->andFilterWhere(['like', 'b.category_enc_id', $categories])
-                ->andWhere(['a.is_visible'=>1])
+                ->andWhere(['z.is_visible'=>1])
                 ->andWhere(['b.category_enc_id' => $categories])
                 ->orderBy(new Expression('rand()'))
                 ->asArray()
