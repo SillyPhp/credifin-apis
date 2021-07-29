@@ -21,7 +21,7 @@ use Yii;
  * @property CollegeInfrastructure $collegeInfrastructureEnc
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
- * @property Users $collegeEnc
+ * @property Organizations $collegeEnc
  */
 class CollegeInfrastructureDetail extends \yii\db\ActiveRecord
 {
@@ -47,7 +47,7 @@ class CollegeInfrastructureDetail extends \yii\db\ActiveRecord
             [['college_infrastructure_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeInfrastructure::className(), 'targetAttribute' => ['college_infrastructure_enc_id' => 'college_infrastructure_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
-            [['college_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['college_enc_id' => 'user_enc_id']],
+            [['college_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['college_enc_id' => 'organization_enc_id']],
         ];
     }
 
@@ -80,6 +80,6 @@ class CollegeInfrastructureDetail extends \yii\db\ActiveRecord
      */
     public function getCollegeEnc()
     {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'college_enc_id']);
+        return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'college_enc_id']);
     }
 }

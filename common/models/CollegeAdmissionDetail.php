@@ -11,6 +11,7 @@ use Yii;
  * @property string $admission_detail_enc_id admission detail id
  * @property string $assigned_course_id assigned_college_course_id
  * @property double $fees course fees
+ * @property double $registration_fee
  * @property string $scholarship_enc_id scholarship id
  * @property string $selection_process course selection process
  * @property string $eligibility_criteria eligibility criteria
@@ -41,7 +42,7 @@ class CollegeAdmissionDetail extends \yii\db\ActiveRecord
     {
         return [
             [['admission_detail_enc_id', 'assigned_course_id', 'created_by'], 'required'],
-            [['fees'], 'number'],
+            [['fees', 'registration_fee'], 'number'],
             [['selection_process', 'eligibility_criteria', 'other_details'], 'string'],
             [['created_on', 'updated_on'], 'safe'],
             [['admission_detail_enc_id', 'assigned_course_id', 'scholarship_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
