@@ -994,7 +994,9 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
 </div>
 <?php
 $this->registerCss('
-.hidden-locations{display:none;}
+.hidden-locations{
+    display:none;
+}
 .dis-flex {
     display: flex;
     justify-content: flex-start;
@@ -2851,8 +2853,10 @@ $(document).on('click','.customJobBox', function(e) {
 });
 var ps = new PerfectScrollbar('#hamburgerJobs');
 var pa = new PerfectScrollbar('.modal-jobs');
-var pj = new PerfectScrollbar('.location-postss');
-
+var locationPosts = $('.location-postss')
+if(locationPosts.length > 0){
+    var pj = new PerfectScrollbar('.location-postss');
+}
 var skillSet = $('#skill-sett')
 if(skillSet.length > 0){
    var pb = new PerfectScrollbar('#skill-sett');
