@@ -119,7 +119,7 @@ if (!empty($total_applications)) {
                                     </div>
                                 </a>
                                 <div class="exp-soon-msg">
-                                    Expring Soon
+                                    Expiring Soon
                                 </div>
                             </div>
                             <?php
