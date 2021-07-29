@@ -215,6 +215,7 @@ text-transform: capitalize;
 }
 .paid-candidate-box-thumb img{
     height:100%;
+    width:100%;
 }
 .com-load-more-btn{
     max-width:150px;
