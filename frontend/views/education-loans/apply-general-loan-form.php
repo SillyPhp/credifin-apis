@@ -1962,6 +1962,15 @@ $this->registerJs($script);
                         name="class_name_${count}" placeholder="Class Name">
                 </div>
             </div>
+         <div class="col-md-12 padd-20">
+                <div class="form-group">
+                    <label for="loan_amount_${count}" class="input-group-text">
+                        Loan Amount
+                    </label>
+                    <input type="text" minlength="3" minlength="255" class="form-control text-capitalize child_class" id="class_name_${count}"
+                        name="loan_amount_${count}" placeholder="Class Name">
+                </div>
+            </div>
         </div>`
             return childInfoForm;
         }
