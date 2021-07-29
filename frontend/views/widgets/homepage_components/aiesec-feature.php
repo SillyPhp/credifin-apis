@@ -7,7 +7,7 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-md-5">
                 <div class="enigma-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/aiesec/white-enigm.png') ?>">
+                    <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/aiesec/white-enigm.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>">
                 </div>
             </div>
             <div class="col-md-7">
@@ -21,7 +21,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="powered-by">
                     <p>Powered By :</p>
-                    <img src="<?= Url::to('@eyAssets/images/logos/eycom.png') ?>">
+                    <img class="load-later" data-src="<?= Url::to('@eyAssets/images/logos/eycom.png') ?>">
                 </div>
                 <div class="venue-date">
                     <p>The event will be held on</p>
@@ -66,6 +66,7 @@ $this->registerCss('
     align-items: center;
     justify-content: flex-start;
     flex-wrap: wrap;
+    height:31px;
     color:#fff;
 }
 .powered-by p {
@@ -108,3 +109,8 @@ a.reg-btnn:hover{
     color:#ff7803;
 }
 ');
+$script = <<<JS
+$('.load-later').Lazy();
+JS;
+$this->registerJs($script);
+

@@ -1260,6 +1260,7 @@ $(document).on('submit', '#search_jobs_internships', function() {
         return false;
     }
 });
+$('.load-later').Lazy();
 JS;
 if (!Yii::$app->user->isGuest) {
     $this->registerJs("
@@ -1316,6 +1317,7 @@ if (!Yii::$app->user->isGuest) {
     
     ");
 }
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.9/jquery.lazy.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/home-page-slider.css');
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);

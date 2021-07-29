@@ -38,8 +38,8 @@ use yii\helpers\Url;
                                 <a href="<?= $d['link'] ?>" target="_blank">
                                     <div class="press-release">
                                         <div class="press-img">
-                                            <img src="<?= Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->pressPublishers->logo . $d['logo_location'] . DIRECTORY_SEPARATOR . $d['logo'], 'https'); ?>"
-                                                 alt=""/>
+                                            <img class="load-later" data-src="<?= Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->pressPublishers->logo . $d['logo_location'] . DIRECTORY_SEPARATOR . $d['logo'], 'https'); ?>"
+                                                 src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt=""/>
                                         </div>
                                     </div>
                                     <div class="press-txt-hd"><?= $d['name'] ?></div>
@@ -173,3 +173,7 @@ $this->registerCss('
     height: 46px;
 }
 ');
+$script = <<<JS
+$('.load-later').Lazy();
+JS;
+$this->registerJs($script);
