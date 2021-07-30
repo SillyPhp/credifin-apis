@@ -44,7 +44,7 @@ use yii\helpers\Url;
                         <div class="item">
                             <div class="gov-job">
                                 <a class="load-later" data-href="/education-loans/study-abroad">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/abroad-loan.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>"
+                                    <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/abroad-loan.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>"
                                          alt="education in abroad">
                                     <h3 class="link-none">
                                         Abroad Education Loan
