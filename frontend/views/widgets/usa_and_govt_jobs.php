@@ -119,7 +119,7 @@ $this->registerCss('
 .owl-carousel .owl-item img{width:auto !important;}
 .owl-theme .owl-dots{display:none !important;}
 .owl-controls .owl-nav > div{background:none;}
-.owl-controls .owl-prev i, .owl-controls .owl-next i{
+.owl-controls .owl-nav .owl-prev i, .owl-controls .owl-nav .owl-next i{
     font-size:35px !important;
 }
 @media (max-width:550px){
