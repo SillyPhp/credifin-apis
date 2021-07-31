@@ -4,6 +4,8 @@ namespace frontend\controllers;
 
 use common\models\AppliedApplications;
 use common\models\Auth;
+use common\models\Posts;
+use common\models\SkillsUpPostAssignedBlogs;
 use common\models\Users;
 use common\models\RandomColors;
 use common\models\Utilities;
@@ -77,5 +79,21 @@ class TestCacheController extends Controller
             }
         }
         echo $k;
+    }
+
+    public function actionSkill(){
+        $data = SkillsUpPostAssignedBlogs::find()
+            ->alias('a')
+            ->select(['b.is_visible','b.post_enc_id'])
+            ->joinWith(['blogPostEnc b'],false,'INNER JOIN')
+            ->asArray()->all();
+        $k = 0;
+        foreach ($data as $d){
+            $update = Posts::findOne(['post_enc_id'=>$d['post_enc_id']]);
+            $update->is_visible = 0;
+            $update->update();
+            $k++;
+        }
+        return $k;
     }
 }

@@ -40,6 +40,9 @@ class SkillUpController extends Controller
         $counts['news'] = $this->getFeedCounts('News');
         $counts['article'] = $this->getFeedCounts('Article');
         $counts['course'] = $this->getFeedCounts('Course');
+        $counts['case_study'] = $this->getFeedCounts('Case Study');
+        $counts['research_paper'] = $this->getFeedCounts('Research Paper');
+        $counts['vlog_webinar'] = $this->getFeedCounts('Vlog/Webinar');
 
         $feedList = $this->getFeedsList(10);
 
@@ -192,12 +195,12 @@ class SkillUpController extends Controller
         $model = new SkillsUpForm();
         if ($model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            if(!ActiveForm::validate($model)) {
+            if (!ActiveForm::validate($model)) {
                 $var = Yii::$app->security->generateRandomString(10);
                 $session = Yii::$app->session;
                 $session->set($var, $model);
                 return ['status' => 200, 'id' => $var];
-            } else{
+            } else {
                 return ['status' => 409];
             }
         } else {

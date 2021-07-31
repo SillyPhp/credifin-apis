@@ -955,9 +955,6 @@ class SiteController extends Controller
             case 'getGovernmentJobs':
                 return $this->renderAjax('/widgets/usa_and_govt_jobs');
                 break;
-            case 'getEduAndRedbull':
-                return $this->renderAjax('/widgets/edupreneur_and_redbull');
-                break;
             case 'getTopCities':
                 $other_jobs = (new \yii\db\Query())
                     ->distinct()
@@ -1011,9 +1008,6 @@ class SiteController extends Controller
                     'cities_jobs' => $cities_jobs
                 ]);
                 break;
-            case 'getOpportunities':
-                return $this->renderAjax('/widgets/homepage_components/featured_opportunities');
-                break;
             case 'getAiesec':
                 return $this->renderAjax('/widgets/homepage_components/aiesec-feature');
                 break;
@@ -1029,20 +1023,11 @@ class SiteController extends Controller
             case 'getInternationalJobs':
                 return $this->renderAjax('/widgets/international-jobs');
                 break;
-            case 'getSafetySigns':
-                return $this->renderAjax('/widgets/safety-signs');
-                break;
             case 'getPressRelease':
                 $data = self::getPressReleasData(['limit' => 6]);
                 return $this->renderAjax('/widgets/press-releasee', [
                     'data' => $data,
                     'viewBtn' => true,
-                ]);
-                break;
-            case 'getOnlineClasses':
-                $model = new ClassEnquiryForm();
-                return $this->renderAjax('/widgets/online-classes', [
-                    'model' => $model,
                 ]);
                 break;
             case 'getStats':
@@ -1051,9 +1036,6 @@ class SiteController extends Controller
             case 'getFeaturedApplications':
                 return $this->renderAjax('/widgets/employer_applications/preferred-applications');
                 break;
-//            case 'getFeaturedJobs':
-//                return $this->renderAjax('/widgets/employer_applications/preferred-jobs');
-//                break;
             case 'getHowItWorks':
                 if (Yii::$app->user->isGuest) {
                     return $this->renderAjax('/widgets/homepage_components/how-it-works');
@@ -1072,12 +1054,6 @@ class SiteController extends Controller
                 break;
             case 'getOurServices':
                 return $this->renderAjax('/widgets/our-services');
-                break;
-            case 'getNewsUpdate':
-                return $this->renderAjax('/widgets/news-update');
-                break;
-            case 'getTweets':
-                return $this->renderAjax('/widgets/homepage_components/tweets');
                 break;
             case 'getShortcuts':
                 $job_profiles = AssignedCategories::find()

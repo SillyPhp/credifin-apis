@@ -3,10 +3,10 @@ use yii\helpers\Url;
 ?>
 <section class="main-bg">
     <div class="image-top-right">
-        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/lv-s1.png') ?>" alt="">
+        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/lv-s1.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
     </div>
     <div class="image-bottom-right">
-        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/lv-s2.png') ?>" alt="">
+        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/lv-s2.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
     </div>
     <div class="container-fluid">
         <div class="row loan-offerings">
@@ -21,7 +21,7 @@ use yii\helpers\Url;
                             <a href="/education-loans/annual-fee-financing" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/annual-fee-f.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/annual-fee-f.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         Annual Fee Finance
                                 </div>
@@ -29,7 +29,7 @@ use yii\helpers\Url;
                             <a href="/education-loans/study-in-india" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-loan-moratorium.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-loan-moratorium.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         Education Loan With Moratorium
                                 </div>
@@ -37,7 +37,7 @@ use yii\helpers\Url;
                             <a href="/education-loans/school-fee-finance" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/school-fee-f.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/school-fee-f.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         School Fee Finance
                                 </div>
@@ -45,7 +45,7 @@ use yii\helpers\Url;
                             <a href="/education-loans/interest-free" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/interest-free-lon.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/interest-free-lon.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         Interest Free Loan
                                 </div>
@@ -53,7 +53,7 @@ use yii\helpers\Url;
                             <a href="/education-loans/study-abroad" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/abroad-edu-loan.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/abroad-edu-loan.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         Abroad Education Loans
                                 </div>
@@ -61,7 +61,7 @@ use yii\helpers\Url;
                             <a href="/education-loans/refinance" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Edu-Loan-Refinance.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/Edu-Loan-Refinance.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         Education Loan Refinance
                                 </div>
@@ -69,7 +69,7 @@ use yii\helpers\Url;
                             <a href="/education-loans/loan-for-teachers/apply" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/teacher-loan.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/teacher-loan.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         Teacher Loan
                                 </div>
@@ -77,7 +77,7 @@ use yii\helpers\Url;
                             <a href="#" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edtech-loans.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/edtech-loans.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         EdTech Loans
                                 </div>
@@ -88,7 +88,7 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-5 col-sm-5">
                 <div class="loan-vector">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/loan-vector1.png') ?>" alt="">
+                    <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/loan-vector1.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                 </div>
             </div>
         </div>
@@ -201,3 +201,7 @@ $this->registerCss('
     }
 }
 ');
+$script = <<<JS
+$('.load-later').Lazy();
+JS;
+$this->registerJs($script);

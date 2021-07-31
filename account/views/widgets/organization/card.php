@@ -4,7 +4,7 @@ use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 if (!$column_size) {
-    $column_size = 'col-md-3';
+    $column_size = 'col-md-4';
 }
 
 Pjax::begin(['id' => 'pjax_org']);

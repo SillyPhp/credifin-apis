@@ -299,7 +299,7 @@ if (Yii::$app->params->options->showSchema) {
             "@context" : "https://schema.org/",
             "@type" : "JobPosting",
             "title" : "<?= $get['title']; ?>",
-            "description" : "<?= $get['description'] ?>",
+            "description" : "<?= str_replace("'","",$get['description']) ?>",
             "datePosted" : "<?= $get['created_at'] ?>",
             "employmentType" : "<?= $get['type'] ?>",
             "hiringOrganization" : {

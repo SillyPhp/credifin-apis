@@ -627,6 +627,9 @@ $this->registerCss('
     object-fit: cover;
     object-position: center;
 }
+.prof-p canvas {
+    border-radius: 50%;
+}
 .prof-inner {
 	margin: 0 0 0 10px;
 }

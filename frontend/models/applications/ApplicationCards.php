@@ -196,6 +196,9 @@ class ApplicationCards
                 if (!empty($options['location'])) {
                     $optLocation = $options['location'];
                 }
+                if (!empty($options['skills'])) {
+                    $skills = explode(',', $options['skills']);
+                }
         }
 
         if (isset($options['limit'])) {
@@ -243,7 +246,8 @@ class ApplicationCards
                 'm.wage_duration as salary_duration',
                 'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
-                '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
+                '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city',
+                'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skills',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -268,6 +272,7 @@ class ApplicationCards
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['a.application_for' => 1])
             //->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
+            ->groupBy(['a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
         $cards2 = (new \yii\db\Query())
@@ -319,6 +324,7 @@ class ApplicationCards
                 WHEN g.name IS NULL THEN x.location_name
                 ELSE g.name
                END) as city',
+                'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skills',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->leftJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -336,6 +342,7 @@ class ApplicationCards
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['a.application_for' => 1])
             // ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
+            ->groupBy(['a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
 
