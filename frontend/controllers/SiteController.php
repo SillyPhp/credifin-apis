@@ -1367,5 +1367,7 @@ class SiteController extends Controller
     public function actionEnigma21(){
         return $this->render('aiesec-main');
     }
-
+  public function actionInstagramEy(){
+    return $this->render('instagram-ey');
+  }
 }

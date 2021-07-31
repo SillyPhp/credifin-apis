@@ -11,7 +11,7 @@ use yii\helpers\Url;
                         <div class="item">
                             <div class="gov-job">
                                 <a href="/usa-jobs">
-                                    <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/usa-j.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>"
+                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/usa-j.png') ?>"
                                          alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
                                     <h3 class="link-none">
                                         USA Government Jobs
@@ -22,7 +22,7 @@ use yii\helpers\Url;
                         <div class="item">
                             <div class="gov-job">
                                 <a href="/govt-jobs">
-                                    <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/indian-jobs.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>"
+                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/indian-jobs.png') ?>"
                                          alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
                                     <h3 class="link-none">
                                         Indian Government Jobs
@@ -33,7 +33,7 @@ use yii\helpers\Url;
                         <div class="item">
                             <div class="gov-job">
                                 <a href="/education-loans/study-in-india">
-                                    <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/india-loan.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>"
+                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/india-loan.png') ?>"
                                          alt="education in india">
                                     <h3 class="link-none">
                                         Indian Education Loan
@@ -43,8 +43,8 @@ use yii\helpers\Url;
                         </div>
                         <div class="item">
                             <div class="gov-job">
-                                <a class="load-later" data-href="/education-loans/study-abroad">
-                                    <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/abroad-loan.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>"
+                                <a href="/education-loans/study-abroad">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/abroad-loan.png') ?>"
                                          alt="education in abroad">
                                     <h3 class="link-none">
                                         Abroad Education Loan
@@ -160,7 +160,6 @@ $('.owl-carousel').owlCarousel({
     }
   }
 })
-$('.load-later').Lazy();
 JS;
 $this->registerjs($script);
 $this->registerCssfile('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css');
