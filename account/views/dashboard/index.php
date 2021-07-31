@@ -276,25 +276,25 @@ endif;
                         <div class="actions">
                             <div class="set-im">
                                 <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
-                                   title="Create AI Job" class="ai">
+                                   title="Create AI Job" class="ai" target="_blank">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>"></a>
                                 <?php
                                 if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
                                     ?>
                                     <a href="<?= Url::toRoute('/jobs/campus-placement'); ?>" data-toggle="tooltip"
-                                       title="Campus Hiring" class="ai">
+                                       title="Campus Hiring" class="ai" target="_blank">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
                                     <?php
                                 }
                                 ?>
                                 <a href="<?= Url::to('/tweets/job/create'); ?>" data-toggle="tooltip"
-                                   title="Post Job Tweet" class="tweet">
+                                   title="Post Job Tweet" class="tweet" target="_blank">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>
                                 <a href="<?= Url::toRoute('/jobs/quick-job'); ?>" data-toggle="tooltip"
-                                   title="Create Quick Job" class="quick">
+                                   title="Create Quick Job" class="quick" target="_blank">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png'); ?>"></a>
                                 <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All"
-                                   class="view">
+                                   class="view" target="_blank">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                             </div>
                         </div>
@@ -336,7 +336,7 @@ endif;
                         <div class="actions">
                             <div class="set-im">
                                 <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
-                                   title="Create AI Internship">
+                                   title="Create AI Internship" target="_blank">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>">
                                 </a>
                                 <?php
@@ -344,18 +344,23 @@ endif;
                                     ?>
                                     <a href="<?= Url::toRoute('/internships/campus-placement'); ?>"
                                        data-toggle="tooltip"
-                                       title="Campus Hiring" class="ai">
+                                       title="Campus Hiring" class="ai" target="_blank">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
                                     <?php
                                 }
                                 ?>
                                 <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
-                                   title="Post Internship Tweet">
+                                   title="Post Internship Tweet" target="_blank">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>">
                                 </a>
+                                <a href="<?= Url::toRoute('/internships/quick-internship'); ?>" data-toggle="tooltip"
+                                   title="Create Quick Internship" class="quick" target="_blank">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png'); ?>">
+                                </a>
                                 <a href="<?= Url::toRoute('/internships'); ?>" data-toggle="tooltip"
-                                   title="View All">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                   title="View All" target="_blank">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>">
+                                </a>
                             </div>
                         </div>
                     </div>

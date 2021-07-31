@@ -226,7 +226,7 @@ $this->registerCss('
         font-size: 32pt;
     }
 }
-@media screen and (max-width: 768px) and (min-wudth: 500px) {
+@media screen and (max-width: 768px) and (min-width: 500px) {
     .activate-text p {
         font-size: 20px;
     }
@@ -237,7 +237,10 @@ $this->registerCss('
         width: 130px;
     }
 }
-@media screen and (max-width: 540px) and (min-wudth: 320px) {
+@media screen and (max-width: 540px) and (min-width: 320px) {
+    .activate-text {
+        text-align: center;
+    }
     .activate-text p {
         font-size: 18px;
     }
@@ -246,6 +249,7 @@ $this->registerCss('
     }
     .activate-btn {
         width: 110px;
+        text-align: center;
     }
     .activate-text {
         padding-top: 0px;
