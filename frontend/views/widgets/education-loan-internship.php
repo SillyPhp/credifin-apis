@@ -93,5 +93,8 @@ $this->registerCss('
     font-size: 20px;
     text-transform: uppercase;
 }
+@media screen and (max-width: 990px) and (min-width: 768px){
+
+}
 ')
 ?>
