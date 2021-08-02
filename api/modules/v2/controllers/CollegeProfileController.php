@@ -2198,7 +2198,7 @@ class CollegeProfileController extends ApiBaseController
 
     public function actionInfraDetailList()
     {
-        if ($user = isAuthorized()) {
+        if ($user = $this->isAuthorized()) {
 
             $list = CollegeInfrastructureDetail::find()
                 ->select(['college_infrastructure_detail_enc_id', 'college_infrastructure_enc_id',

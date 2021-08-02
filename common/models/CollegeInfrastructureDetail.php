@@ -40,9 +40,10 @@ class CollegeInfrastructureDetail extends \yii\db\ActiveRecord
     {
         return [
             [['college_infrastructure_detail_enc_id', 'college_infrastructure_enc_id', 'college_enc_id', 'description', 'created_by'], 'required'],
+            [['description'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['college_infrastructure_detail_enc_id', 'college_infrastructure_enc_id', 'college_enc_id', 'description', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['college_infrastructure_detail_enc_id', 'college_infrastructure_enc_id', 'college_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['college_infrastructure_detail_enc_id'], 'unique'],
             [['college_infrastructure_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeInfrastructure::className(), 'targetAttribute' => ['college_infrastructure_enc_id' => 'college_infrastructure_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
