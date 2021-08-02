@@ -61,7 +61,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         </label>
                                         <ul class="displayInline">
                                             <li>
-                                                <label class="container-radio"><input type="radio" id="parent" value="1" onclick="showRelation(this)" name="applicantRadio"> Parent<span class="checkmark"></span></label>
+                                                <label class="container-radio"><input type="radio" id="parent" value="1" onclick="showRelation(this)" name="applicantRadio"> Parent / Guardian<span class="checkmark"></span></label>
                                             </li>
                                             <li>
                                                 <label class="container-radio"><input type="radio" id="applicant" value="0" onclick="hideRelation(this)" name="applicantRadio"> Student<span class="checkmark"></span></label>
@@ -1328,6 +1328,9 @@ jQuery.validator.addClassRules('child_class', {
 jQuery.validator.addClassRules('child_school', {
         required: true 
     });
+jQuery.validator.addClassRules('child_loan', {
+        required: true 
+    });
     $('#mobile, #loanamount').mask("#", {reverse: true});
     $('#co-anualincome').mask("#", {reverse: true});
     $("#nextBtn, #subBtn").click(function(){
@@ -1346,6 +1349,9 @@ jQuery.validator.addClassRules('child_school', {
 				    required:true,
 				},
 				'college_taken':{
+				    required:true,
+				},
+				'noChild':{
 				    required:true,
 				},
 				'dob':{
@@ -1378,7 +1384,7 @@ jQuery.validator.addClassRules('child_school', {
 				},
 				'loanamount':{ 
 				    required:true,
-				    min:10000,
+				    min:1000,
 				    max:5000000
 				},
 				'co-name[1]':{
@@ -1389,7 +1395,7 @@ jQuery.validator.addClassRules('child_school', {
 				},
 				'co-anualincome[1]':{
 				    required:true,
-				    min:10000,
+				    min:1000,
 				    max:5000000
 				},
 				'co-relation[1]':{ 
@@ -1576,6 +1582,8 @@ function ajaxSubmit()
     var clg_pref = $('input[name="college_name_pref[]"]').map(function () {
     return this.value;
         }).get();
+    console.log(co_applicants);
+    return false;
     $.ajax({
             url : '/api/v3/education-loan/save-application',
             method : 'POST', 
@@ -1789,6 +1797,13 @@ function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,s
             }
     })
 }
+$(document).on('keyup','.child_loan',function(e) {
+   var sum = 0;
+    $('.child_loan').each(function(){
+    sum += !isNaN(parseFloat(this.value)) ? parseFloat(this.value) : 0;
+    $('#loanamount').val(sum);
+});
+})
 JS;
 $this->registerJs($script);
 ?>
@@ -1852,7 +1867,7 @@ $this->registerJs($script);
                 '                                            <label for="class_name_1" class="input-group-text">\n' +
                 '                                                Class\n' +
                 '                                            </label>\n' +
-                '                                            <input type="text" minlength="3" class="form-control text-capitalize child_class" id="class_name_1" name="class_name_1" placeholder="Class Name">\n' +
+                '                                            <input type="text" minlength="2" class="form-control text-capitalize child_class" id="class_name_1" name="class_name_1" placeholder="Class Name">\n' +
                 '                                        </div>\n' +
                 '                                    </div>'
             return child;
@@ -1901,7 +1916,8 @@ $this->registerJs($script);
                 for (let i = 1; i <= num; i++) {
                     let childForm = childrenInfoForm(count, num);
                     childDiv.innerHTML += childForm;
-                    count++
+                    count++;
+                    $('.child_loan').mask("#", {reverse: true});
                 }
             }
         }
@@ -1935,7 +1951,7 @@ $this->registerJs($script);
             <div class="col-md-12 padd-20">
                 <div class="form-group">
                     <label for="applicant_name_${count}" class="input-group-text">
-                        Name
+                      Child Name
                     </label>
                     <input type="text" minlength="3" minlength="50" class="form-control text-capitalize child_name" id="applicant_name_${count}"
                      name="applicant_name_${count}" placeholder="Full Name">
@@ -1958,17 +1974,17 @@ $this->registerJs($script);
                     <label for="class_name_${count}" class="input-group-text">
                         Class
                     </label>
-                    <input type="text" minlength="3" minlength="255" class="form-control text-capitalize child_class" id="class_name_${count}"
+                    <input type="text" minlength="2" minlength="255" class="form-control text-capitalize child_class" id="class_name_${count}"
                         name="class_name_${count}" placeholder="Class Name">
                 </div>
             </div>
          <div class="col-md-12 padd-20">
                 <div class="form-group">
                     <label for="loan_amount_${count}" class="input-group-text">
-                        Loan Amount
+                        Loan Amount For Student ${count}
                     </label>
-                    <input type="text" minlength="3" minlength="255" class="form-control text-capitalize child_class" id="class_name_${count}"
-                        name="loan_amount_${count}" placeholder="Class Name">
+                    <input type="text" min="1000" max="5000000" class="form-control text-capitalize child_loan" id="child_loan_${count}"
+                        name="loan_amount_${count}" placeholder="Loan Amount">
                 </div>
             </div>
         </div>`
@@ -2218,6 +2234,8 @@ $this->registerJs($script);
                     }
                     else if (applicantRadio=='1'){
                         //alert('student school');
+                        $('#loanamount').removeAttr('readOnly');
+                        $('#total_sec').hide();
                         $('#parent_student_borrower').css('display','block');
                         countryName.style.display = "none";
                         schoolInfo.innerHTML = createChild();
