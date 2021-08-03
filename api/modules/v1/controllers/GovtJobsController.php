@@ -108,8 +108,8 @@ class GovtJobsController extends ApiBaseController
                     if ($pos['MinimumRange']) {
                         $get[$i]['salary'] .= '$' . $pos['MinimumRange'];
                     }
-                    if($pos['RateIntervalCode']){
-                        $get[$i]['salary'] .= ' '.$pos['RateIntervalCode'];
+                    if ($pos['RateIntervalCode']) {
+                        $get[$i]['salary'] .= ' ' . $pos['RateIntervalCode'];
                     }
                 }
                 $data = UsaDepartments::find()
@@ -245,8 +245,8 @@ class GovtJobsController extends ApiBaseController
                 if ($pos['MinimumRange']) {
                     $get[$i]['salary'] .= '$' . $pos['MinimumRange'];
                 }
-                if($pos['RateIntervalCode']){
-                    $get[$i]['salary'] .= ' '.$pos['RateIntervalCode'];
+                if ($pos['RateIntervalCode']) {
+                    $get[$i]['salary'] .= ' ' . $pos['RateIntervalCode'];
                 }
             }
             $data = UsaDepartments::find()
@@ -378,7 +378,7 @@ class GovtJobsController extends ApiBaseController
             ->alias('a')
             ->select(['a.job_id id', 'c.slug company_slug',
 //                'CASE WHEN a.image IS NOT NULL THEN CONCAT("https://eycdn.ams3.digitaloceanspaces.com/' . Yii::$app->params->upload_directories->indian_jobs->departments->image . '", a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.Position, "&size=200&rounded=false&background=random&color=ffffff") END logo',
-                'a.slug','a.image_location','a.image', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
+                'a.slug', 'a.image_location', 'a.image', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
             ->andWhere(['a.is_deleted' => 0])
             ->andFilterWhere([
                 'or',
@@ -403,7 +403,7 @@ class GovtJobsController extends ApiBaseController
                 }
                 if (!empty($d['image']) && !empty($d['image_location'])) {
                     $logo = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
-                    if(file_exists($logo)){
+                    if (file_exists($logo)) {
                         $data[$i]['logo'] = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
                     } else {
                         $data[$i]['logo'] = "https://ui-avatars.com/api/?name=" . $d['Position'] . "&size=200&rounded=false&background=random&color=ffffff";
@@ -447,7 +447,8 @@ class GovtJobsController extends ApiBaseController
                 'c.Value Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
             ->joinWith(['assignedIndianJobs b' => function ($b) use ($dept_id) {
                 $b->joinWith(['deptEnc c'], false);
-                $b->andWhere(['b.dept_enc_id' => $dept_id]);
+                $b->andWhere(['or', ['b.dept_enc_id' => $dept_id],
+                    ['c.slug' => $dept_id]]);
             }], false, 'LEFT JOIN')
             ->limit($limit)
             ->orderBy(['a.created_on' => SORT_DESC])
@@ -462,7 +463,7 @@ class GovtJobsController extends ApiBaseController
                 }
                 if (!empty($d['image']) && !empty($d['image_location'])) {
                     $logo = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
-                    if(file_exists($logo)){
+                    if (file_exists($logo)) {
                         $data[$i]['logo'] = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
                     } else {
                         $data[$i]['logo'] = "https://ui-avatars.com/api/?name=" . $d['Position'] . "&size=200&rounded=false&background=random&color=ffffff";
