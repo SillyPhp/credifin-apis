@@ -374,7 +374,74 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
-c
+.college-card-partner {
+    position: relative;
+    box-shadow: 0 0 10px rgb(0 0 0 / 10%);
+    text-align: center;
+    padding: 1rem;
+    overflow: hidden;
+    transition: 300ms all linear;
+    margin-bottom: 30px;
+    background-color:#fff;
+}
+.college-img-partner {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 3px 6px;
+    background-color: #fff;
+    z-index: 2;
+}
+.college-card-partner img {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
+.img-back-partner{
+  position: absolute;
+  width: 450px;
+  height: 450px;
+  border:0px solid #91c8ff;
+  top:22%;
+  left:50%;
+  border-radius: 50%;
+  transform: translate(-50%, -38%);
+  z-index: 1;
+  transition: 300ms all linear;
+}
+
+
+//.college-card-partner:hover{
+//  transform: scale(0.9);  
+//}
+
+.college-card-partner:hover > .img-back-partner{
+ border-width: 500px; 
+}
+
+.college-card-partner p{
+    position: relative;
+    z-index: 3;
+    transition: 500ms all linear;
+    font-weight: 700;
+    line-height: 18px;
+    margin-top: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 36px;
+}
+
+.college-card-partner:hover > p{
+  color: #fff;
+}
+
 .heading-style {
     color: #000;
 }
