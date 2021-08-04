@@ -96,7 +96,7 @@ $this->registerCss('
 }
 .p0{
     padding-left: 0px;
-    pading-right: 0px;
+    padding-right: 0px;
 }
 .heading-data-set h3 {
 	font-size: 28px;
@@ -167,7 +167,7 @@ $this->registerCss('
         padding: 20px 5px;
     }
 }
-@media screen and (max-width: 767px) {
+@media only screen and (max-width: 767px) {
     .bg-loans-set{
         background-position: left;
     }

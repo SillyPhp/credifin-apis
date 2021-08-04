@@ -169,7 +169,12 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                     <div class="divider"></div>
-                    <?= $this->render('/widgets/mustache/skills/discussion-box'); ?>
+
+
+                    <?= $this->render('/widgets/mustache/skills/discussion-box',[
+                            'commentBoxClasses' => 'for-videos',
+                            'grid'=>'col-md-12'
+                    ]); ?>
 
 
                     <div class="divider"></div>
@@ -219,6 +224,7 @@ $this->params['seo_tags'] = [
 <?php
 
 $this->registerCss('
+.for-videos{height:70px;}
 .comment-text{
     word-break: break-all;
 }

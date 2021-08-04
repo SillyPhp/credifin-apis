@@ -66,7 +66,6 @@ class EducationLoansController extends Controller
             ->all();
         return $this->render("education-loan-index", [
             'data' => $data,
-            'loan_org' => $loan_org,
             'blogs' => $this->getBlogsByTags(['education loan'])
         ]);
     }

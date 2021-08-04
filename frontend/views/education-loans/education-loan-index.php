@@ -19,19 +19,19 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="row">
-                <div class="loansWorks col-md-3 col-sm-6">
+                <div class="loansWorks col-md-3 col-xs-6">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/apply-loan.png') ?>">
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Apply Online'); ?></h4>
                 </div>
-                <div class="loansWorks col-md-3 col-sm-6">
+                <div class="loansWorks col-md-3 col-xs-6">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/suggest-loan.png') ?>">
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'We Will Suggest The Best Suitable Loan'); ?></h4>
                 </div>
-                <div class="loansWorks col-md-3 col-sm-6">
+                <div class="loansWorks col-md-3 col-xs-6">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/share-docs.png') ?>" alt="share-docs">
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Share Relevant Documents'); ?></h4>
                 </div>
-                <div class="loansWorks col-md-3 col-sm-6">
+                <div class="loansWorks col-md-3 col-xs-6">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/sanctioned-loan.png') ?>"
                          alt="sanctioned-loan">
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Loan Sanctioned'); ?></h4>
@@ -115,36 +115,6 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="bgeEd">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h5 class="heading-style"><?= Yii::t('frontend', 'Partner Colleges'); ?></h5>
-                </div>
-            </div>
-            <div class="row">
-                <?php
-                foreach ($loan_org as $l) {
-                    ?>
-                    <div class="col-md-3 col-sm-4 col-xs-12">
-                        <a href="<?= Url::to('/education-loans/apply-loan/' . $l['organization_enc_id'], true) ?>"
-                           target="_blank">
-                            <div class="college-card-partner">
-                                <div class="college-img-partner">
-                                    <img src="<?= $l['org_logo'] ?>" alt="org-logo">
-                                </div>
-                                <div class="img-back-partner"></div>
-                                <p><?= $l['name'] ?></p>
-                            </div>
-                        </a>
-                    </div>
-                    <?php
-                }
-                ?>
             </div>
         </div>
     </section>
@@ -374,74 +344,6 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
-.college-card-partner {
-    position: relative;
-    box-shadow: 0 0 10px rgb(0 0 0 / 10%);
-    text-align: center;
-    padding: 1rem;
-    overflow: hidden;
-    transition: 300ms all linear;
-    margin-bottom: 30px;
-    background-color:#fff;
-}
-.college-img-partner {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    margin: auto;
-    border-radius: 50%;
-    overflow: hidden;
-    padding: 3px 6px;
-    background-color: #fff;
-    z-index: 2;
-}
-.college-card-partner img {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
-}
-.img-back-partner{
-  position: absolute;
-  width: 450px;
-  height: 450px;
-  border:0px solid #91c8ff;
-  top:22%;
-  left:50%;
-  border-radius: 50%;
-  transform: translate(-50%, -38%);
-  z-index: 1;
-  transition: 300ms all linear;
-}
-
-
-//.college-card-partner:hover{
-//  transform: scale(0.9);  
-//}
-
-.college-card-partner:hover > .img-back-partner{
- border-width: 500px; 
-}
-
-.college-card-partner p{
-    position: relative;
-    z-index: 3;
-    transition: 500ms all linear;
-    font-weight: 700;
-    line-height: 18px;
-    margin-top: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    height: 36px;
-}
-
-.college-card-partner:hover > p{
-  color: #fff;
-}
-
 .heading-style {
     color: #000;
 }
@@ -580,7 +482,7 @@ $this->registerCss('
 .questions-faq li {
     background-color: #fff;
     margin-bottom: 7px;
-    padding: 8px 20px;
+    padding: 8px 27px;
     font-family: roboto;
     border-radius: 4px;
     cursor: pointer;
@@ -598,7 +500,7 @@ $this->registerCss('
 .collaspe-trigger {
     position: absolute;
     top: 18px;
-    right: 10px;
+    right: -2px;
     cursor: pointer;
 }
 .collaspe-icon {
@@ -705,35 +607,6 @@ $this->registerCss('
     font-family: roboto;
     font-weight: 500;
     line-height: 20px;
-}
-.finance-text{
-    margin: 10px 0;
-    font-size: 15px;
-    font-family: roboto;
-    font-weight: 700;
-    text-align: center;
-    color: #333;
-}
-.finance-icon{
-    text-align: center;
-    width: 100px;
-    margin: 0px auto;
-    height: 100px;
-}
-.finance{
-    width: 100%;
-    height: 185px;
-    box-shadow: 0 0 11px -4px #999;
-    margin-bottom: 30px;
-    background-color: #fff;
-    transition: all .2s;
-    position: relative;
-    padding: 20px;
-}
-.finance-icon img {
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
 }
 .rupe-img img{
     width:300px;
@@ -951,6 +824,13 @@ $this->registerCss('
     }
     .loan-image img{
         max-width: 300px;
+    }
+    .loansWorks img{
+        width: 100px;
+        heigth: 100px;
+    }
+    .loansWorks{
+        margin-bottom: 25px;
     }
 }
 @media (max-width:415px){
@@ -1272,8 +1152,13 @@ $this->registerCss('
          line-height: 30px;
      }
 }
-@media screen and (max-width: 768px) and (min-width:600px) {
-   
+@media only screen and (max-width: 375px) {
+   .whats-btn a{
+    padding: 10px 7px;
+   }
+   .tele-btn a{
+    padding: 10px 7px;
+   }
 }
 @media screen and (max-width: 590px) and (min-width:320px) {
     
@@ -1282,19 +1167,14 @@ $this->registerCss('
     .loan-image img {
         margin-top: 100px;
     }
-    
-    .edu-flex{
-        flex-direction: column;
-    }
-    .order2{
-        order: 1;
-    }
-    .order1{
-        order: 2;
-    }
 }
-@media screen and (max-width:768px) and (min-width:200px){
-    
+@media only screen and (max-width:768px){
+    .edu-flex{
+        display: block;
+    }    
+    .edu-hw-icon img{
+        width: 60%;
+    }
 }
 @media screen and (max-width:998px) and (min-width:774px){
     .moving1 img,.moving img{

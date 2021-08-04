@@ -4,12 +4,12 @@ use yii\helpers\Url;
 
 <section class="loanBlogs">
     <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-sm-4 col-xs-12">
+        <div class="row  blog-heading">
+            <div class="col-xs-7">
                 <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'Related Blogs'); ?></h2>
             </div>
             <?php if($blogs['count'] > 4){   ?>
-            <div class="col-md-6 col-sm-4 col-xs-12">
+            <div class="col-xs-5">
                 <div class="type-1">
                     <div>
                         <a href="<?= Url::to('/blog/tag/'. $param); ?>" class="btn btn-3">
@@ -57,18 +57,24 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.blog-heading{
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.type-1{
+    margin: 0 !important;
+}
 .col-item {
     border: 1px solid #E1E1E1;
     border-radius: 5px;
     background: #FFF;
     min-height: 250px;
 	box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+	margin-bottom: 20px;
 }
 .col-item:hover{
     color: #000;
-}
-.loanBlogs{
-    padding: 0 20px 10px;
 }
 .heading-style{
     color: #000;
