@@ -35,6 +35,7 @@ use frontend\widgets\Login;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
+use yii\web\HttpException;
 use yii\web\Controller;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -1368,6 +1369,35 @@ class SiteController extends Controller
         return $this->render('aiesec-main');
     }
   public function actionInstagramEy(){
+      $this->layout = 'widget-layout';
     return $this->render('instagram-ey');
+  }
+  public function actionGetInstagram(){
+      if (Yii::$app->request->isAjax) {
+          Yii::$app->response->format = Response::FORMAT_JSON;
+          $limit = Yii::$app->request->post('limit');
+          $offset = Yii::$app->request->post('offset');
+          $model = Posts::find()
+              ->alias('z')
+              ->select(['z.post_enc_id','z.title','z.slug','z.post_type_enc_id','z.featured_image_alt',
+                  'CASE WHEN z.featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->posts->featured_image) . '", z.featured_image_location, "/", z.featured_image) ELSE NULL END featured_image'])
+              ->joinWith(['postTypeEnc a' => function($a){
+                  $a->andWhere(['a.post_type' => 'Social']);
+              }], false)
+              ->andWhere(['z.is_deleted' => 0,'z.is_visible' => 1])
+              ->orderBy(['z.created_on' => SORT_DESC]);
+          $totalData = $model->count();
+          $dataDetail = $model->limit($limit)
+              ->offset($offset)
+              ->all();
+          return [
+            'status' => 200,
+            'cards' => $dataDetail,
+            'total' => $totalData,
+            'count' => sizeof($dataDetail)
+          ];
+      } else {
+          throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+      }
   }
 }
