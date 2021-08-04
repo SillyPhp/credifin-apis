@@ -1373,7 +1373,7 @@ class SiteController extends Controller
     public function actionEnigma21(){
         return $this->render('aiesec-main');
     }
-  public function actionInstagramEy(){
+  public function actionLinkInBio(){
       $this->layout = 'widget-layout';
     return $this->render('instagram-ey');
   }
