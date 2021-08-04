@@ -994,6 +994,9 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
 </div>
 <?php
 $this->registerCss('
+.has-success #phone-input {
+    border-color: #c2cad8;
+}
 .hidden-locations{
     display:none;
 }
@@ -1192,12 +1195,13 @@ $this->registerCss('
 }
 .job-whatsapp button, .job-mail button {
     position: absolute;
-    top: 1px;
-    right: 1px;
+    top: 0px;
+    right: 0px;
     width: 40px;
-    height: 32px;
+    height: 33px;
     border: none;
     font-size:20px;
+    border-radius:0px 4px 4px 0px;
     color: #fff;
 }
 .clipb i{
@@ -1757,6 +1761,7 @@ $this->registerCss('
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    height:15px;
 }
 .e-logo i {
     font-size: 22px;
