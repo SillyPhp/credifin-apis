@@ -224,7 +224,7 @@ $this->registerCss('
 //	align-items: center;
 	position: relative;
 	text-align: left;
-	height: 100vh;
+	min-height: 550px;
 }
 .opacity-div{
     position: absolute;
