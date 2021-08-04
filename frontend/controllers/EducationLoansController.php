@@ -66,7 +66,6 @@ class EducationLoansController extends Controller
             ->all();
         return $this->render("education-loan-index", [
             'data' => $data,
-            'loan_org' => $loan_org,
             'blogs' => $this->getBlogsByTags(['education loan'])
         ]);
     }
@@ -345,9 +344,17 @@ class EducationLoansController extends Controller
             $model->load(Yii::$app->request->post());
             return ActiveForm::validate($model);
         }
-        return $this->render('annual-fee-financing',[
+      $loan_org = Organizations::find()
+        ->select(['organization_enc_id', 'name', 'logo', 'logo_location',
+          'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
+        ->where(['is_deleted' => 0, 'has_loan_featured' => 1, 'status' => 'Active'])
+        ->asArray()
+        ->all();
+
+      return $this->render('annual-fee-financing',[
             'model' => $model,
             'data' => $data,
+            'loan_org' => $loan_org,
             'blogs' => $this->getBlogsByTags(['annual fee financing', 'annual fee finance'])
         ]);
     }

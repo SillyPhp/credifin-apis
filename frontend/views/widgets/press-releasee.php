@@ -10,11 +10,11 @@ use yii\helpers\Url;
 
                 ?>
                 <div class="row">
-                    <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="col-xs-7">
                         <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'As Seen In'); ?></h2>
                     </div>
 
-                    <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="col-xs-5">
                         <div class="type-1">
                             <div>
                                 <a href="<?= Url::to('/education-loans/press-releases'); ?>" class="btn btn-3">
@@ -171,6 +171,9 @@ $this->registerCss('
     font-weight: 600;
     text-align: center;
     height: 46px;
+}
+.press-bg .heading-style{
+    margin: 0 !important;
 }
 ');
 $script = <<<JS
