@@ -1900,7 +1900,7 @@ class CollegeProfileController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
-            $image = UploadedFile::getInstanceByName('image');
+//            $image = UploadedFile::getInstanceByName('image');
 
             // this is for update
             if (isset($params['faculty_id']) && !empty($params['faculty_id'])) {
@@ -1926,7 +1926,9 @@ class CollegeProfileController extends ApiBaseController
             $faculty->designation_enc_id = $this->saveDesignation($params['designation']);
             $faculty->department_enc_id = $this->saveDepartment($params['department']);
             $faculty->experience = $params['experience'];
-            if ($image) {
+            if (isset($params['image']) && !empty($params['image'])) {
+
+                $image = base64_decode($params['image']);
 
                 $faculty->image_location = \Yii::$app->getSecurity()->generateRandomString();
                 $base_path = Yii::$app->params->upload_directories->collegeProfile->faculty_image . $faculty->image_location . '/';
@@ -1938,9 +1940,17 @@ class CollegeProfileController extends ApiBaseController
                 }
 
                 $faculty->image = $encrypted_string . '.png';
-                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFile($image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $faculty->image, "public");
+                $file = dirname(__DIR__, 4) . '/files/temp/' . $user->image;
+                if (file_put_contents($file, $image)) {
+                    $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                    $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                    $result = $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $faculty->image, "public");
+                    if (file_exists($file)) {
+                        unlink($file);
+                    }
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'file put error']);
+                }
             }
 
             if (isset($params['faculty_id']) && !empty($params['faculty_id'])) {
@@ -1974,6 +1984,7 @@ class CollegeProfileController extends ApiBaseController
                 ->joinWith(['designationEnc b'], false)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.is_deleted' => 0, 'a.college_enc_id' => $this->getOrgId()])
+                ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
                 ->all();
 
