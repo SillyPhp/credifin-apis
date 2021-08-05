@@ -32,7 +32,7 @@ class OrganizationsController extends ApiBaseController
     {
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
-            'except' => ['detail', 'opportunities', 'locations'],
+            'except' => ['detail', 'opportunities', 'locations', 'index'],
             'class' => HttpBearerAuth::className()
         ];
         $behaviors['verbs'] = [

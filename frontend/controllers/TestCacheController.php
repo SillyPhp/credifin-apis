@@ -4,9 +4,12 @@ namespace frontend\controllers;
 
 use common\models\AppliedApplications;
 use common\models\Auth;
+use common\models\Posts;
+use common\models\SkillsUpPostAssignedBlogs;
 use common\models\Users;
 use common\models\RandomColors;
 use common\models\Utilities;
+use yii\helpers\Url;
 use yii\web\Controller;
 use Yii;
 
@@ -78,4 +81,88 @@ class TestCacheController extends Controller
         }
         echo $k;
     }
+
+    public function actionSkill(){
+        $data = SkillsUpPostAssignedBlogs::find()
+            ->alias('a')
+            ->select(['b.is_visible','b.post_enc_id'])
+            ->joinWith(['blogPostEnc b'],false,'INNER JOIN')
+            ->asArray()->all();
+        $k = 0;
+        foreach ($data as $d){
+            $update = Posts::findOne(['post_enc_id'=>$d['post_enc_id']]);
+            $update->is_visible = 0;
+            $update->update();
+            $k++;
+        }
+        return $k;
+    }
+
+    public function actionEmailBulk($get=null,$start=null,$end=null){
+        $file1 = Url::to('@rootDirectory/files/temp/EdTech-Loan-Proposal.pdf');
+        $file2 = Url::to('@rootDirectory/files/temp/College-Proposal.pdf');
+           $csv = [];
+           $i = 0;
+           if (($handle = fopen(Url::to('@rootDirectory/files/temp/list.csv'), "r")) !== false) {
+               $columns = fgetcsv($handle, 1000, ",");
+               while (($row = fgetcsv($handle, 1000, ",")) !== false) {
+                   $csv[$i] = array_combine($columns, $row);
+                   $i++;
+               }
+               fclose($handle);
+           }
+           $start = $start;
+           $end = $end;
+           for ($i=$start;$i<=$end;$i++){
+               if (!empty($csv[$i]['Email'])){
+                   Yii::$app->mailer->htmlLayout = 'layouts/email';
+                   $mail = Yii::$app->mailer->compose(
+                       ['html' => 'Partnership'],['data'=>'']
+                   )
+                       ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+                       ->setTo([$csv[$i]['Email'] => $csv[$i]['Name']])
+                       ->setSubject('EmpowerYouth Partnership Proposal')
+                       ->setReplyTo('sumit@empoweryouth.com')
+                       ->attach($file1)
+                       ->attach($file2);
+                   if ($mail->send()) {
+                       echo $i.'<br>';
+                   }
+               }
+           }
+       }
+
+    public function actionEmailTest($get=null,$start=null,$end=null){
+        $file1 = Url::to('@rootDirectory/files/temp/EdTech-Loan-Proposal.pdf');
+        $file2 = Url::to('@rootDirectory/files/temp/College-Proposal.pdf');
+            $csv = [];
+            $i = 0;
+            if (($handle = fopen(Url::to('@rootDirectory/files/temp/list1.csv'), "r")) !== false) {
+                $columns = fgetcsv($handle, 1000, ",");
+                while (($row = fgetcsv($handle, 1000, ",")) !== false) {
+                    $csv[$i] = array_combine($columns, $row);
+                    $i++;
+                }
+                fclose($handle);
+            }
+            $start = $start;
+            $end = $end;
+            for ($i=$start;$i<=$end;$i++){
+                if (!empty($csv[$i]['Email'])){
+                    Yii::$app->mailer->htmlLayout = 'layouts/email';
+                    $mail = Yii::$app->mailer->compose(
+                        ['html' => 'Partnership'],['data'=>'']
+                    )
+                        ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+                        ->setTo([$csv[$i]['Email'] => $csv[$i]['Name']])
+                        ->setSubject('EmpowerYouth Partnership Proposal')
+                        ->setReplyTo('sumit@empoweryouth.com')
+                        ->attach($file1)
+                        ->attach($file2);
+                    if ($mail->send()) {
+                        echo $i.'<br>';
+                    }
+                }
+            }
+        }
 }

@@ -77,6 +77,36 @@ use yii\helpers\Url;
 <section class="bg-blue pb10">
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
+
+<section class="bgeEd">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h5 class="heading-style"><?= Yii::t('frontend', 'Partner Colleges'); ?></h5>
+            </div>
+        </div>
+        <div class="row">
+          <?php
+          foreach ($loan_org as $l) {
+            ?>
+              <div class="col-md-3 col-sm-4 col-xs-12">
+                  <a href="<?= Url::to('/education-loans/apply-loan/' . $l['organization_enc_id'], true) ?>"
+                     target="_blank">
+                      <div class="college-card-partner">
+                          <div class="college-img-partner">
+                              <img src="<?= $l['org_logo'] ?>" alt="org-logo">
+                          </div>
+                          <div class="img-back-partner"></div>
+                          <p><?= $l['name'] ?></p>
+                      </div>
+                  </a>
+              </div>
+            <?php
+          }
+          ?>
+        </div>
+    </div>
+</section>
 <?= $this->render('/widgets/Our-lending-partners');?>
 <?= $this->render('/widgets/education-loan-faqs');?>
 <?php
@@ -233,6 +263,73 @@ $this->registerCss('
     font-size: 40px;
     font-weight: 600;
     color: #fff;
+}
+.college-card-partner {
+    position: relative;
+    box-shadow: 0 0 10px rgb(0 0 0 / 10%);
+    text-align: center;
+    padding: 1rem;
+    overflow: hidden;
+    transition: 300ms all linear;
+    margin-bottom: 30px;
+    background-color:#fff;
+}
+.college-img-partner {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 3px 6px;
+    background-color: #fff;
+    z-index: 2;
+}
+.college-card-partner img {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
+.img-back-partner{
+  position: absolute;
+  width: 450px;
+  height: 450px;
+  border:0px solid #91c8ff;
+  top:22%;
+  left:50%;
+  border-radius: 50%;
+  transform: translate(-50%, -38%);
+  z-index: 1;
+  transition: 300ms all linear;
+}
+
+
+//.college-card-partner:hover{
+//  transform: scale(0.9);  
+//}
+
+.college-card-partner:hover > .img-back-partner{
+ border-width: 500px; 
+}
+
+.college-card-partner p{
+    position: relative;
+    z-index: 3;
+    transition: 500ms all linear;
+    font-weight: 700;
+    line-height: 18px;
+    margin-top: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 36px;
+}
+
+.college-card-partner:hover > p{
+  color: #fff;
 }
 ')
 ?>

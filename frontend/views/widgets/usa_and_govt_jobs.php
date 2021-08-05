@@ -34,7 +34,7 @@ use yii\helpers\Url;
                             <div class="gov-job">
                                 <a href="/education-loans/study-in-india">
                                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/india-loan.png') ?>"
-                                         alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
+                                         alt="education in india">
                                     <h3 class="link-none">
                                         Indian Education Loan
                                     </h3>
@@ -45,7 +45,7 @@ use yii\helpers\Url;
                             <div class="gov-job">
                                 <a href="/education-loans/study-abroad">
                                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/abroad-loan.png') ?>"
-                                         alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
+                                         alt="education in abroad">
                                     <h3 class="link-none">
                                         Abroad Education Loan
                                     </h3>
@@ -119,7 +119,7 @@ $this->registerCss('
 .owl-carousel .owl-item img{width:auto !important;}
 .owl-theme .owl-dots{display:none !important;}
 .owl-controls .owl-nav > div{background:none;}
-.owl-controls .owl-prev i, .owl-controls .owl-next i{
+.owl-controls .owl-nav .owl-prev i, .owl-controls .owl-nav .owl-next i{
     font-size:35px !important;
 }
 @media (max-width:550px){

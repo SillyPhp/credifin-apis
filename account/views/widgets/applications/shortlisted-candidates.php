@@ -9,77 +9,53 @@ use yii\widgets\Pjax;
 foreach ($shortlistedApplicants['data'] as $s) { ?>
     <div class="col-md-4 col-sm-6">
         <div class="divRel">
-        <div class="short-main">
-            <div class="remove-btn">
-                <button type="button" class="j-closedd tt remove-candidate" data-toggle="tooltip"
-                        data-original-title="Remove Candidate"
-                        data-id="<?= $s['shortlisted_applicant_enc_id'] ?>">
-                    <i class="fa fa-times" aria-hidden="true"></i>
-                </button>
-            </div>
-            <div class="flex-short">
-                <div class="short-logo">
-                    <?php if (!empty($s['image_location']) && !empty($s['image'])) { ?>
-                        <?php $user_img = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $s['image_location'] . DIRECTORY_SEPARATOR . $s['image']; ?>
-                        <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>" class="blue question_list open-link-new-tab" target="_blank">
-                            <img src="<?= $user_img; ?>" width="60px" height="60" class="img-circle"/>
-                        </a>
-                        <?php
-                    } else {
-                        ?>
-                        <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>" class="blue open-link-new-tab" target="_blank">
-                            <canvas class="user-icon img-circle" name="<?= $s['name'] ?>"
-                                    color="<?= $s['initials_color'] ?>" width="60" height="60" font="25px"></canvas>
-                        </a>
-                    <?php }
-                    ?>
+            <div class="short-main">
+                <div class="remove-btn">
+                    <button type="button" class="j-closedd tt remove-candidate" data-toggle="tooltip"
+                            data-original-title="Remove Candidate"
+                            data-id="<?= $s['shortlisted_applicant_enc_id'] ?>">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </button>
                 </div>
-                <div class="short-details">
-                    <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>" class="blue question_list open-link-new-tab" target="_blank">
-                        <p class="short-job"><?= $s['name'] ?></p>
-                    </a>
-                    <?= $s['city'] ? '<p class="short-name"><i class="fa fa-map-marker"></i>'.$s['city'].'</p>' :
-                            '<p class="shortText">location not added<p>'?>
+                <div class="flex-short">
+                    <div class="short-logo">
+                        <?php if (!empty($s['image_location']) && !empty($s['image'])) { ?>
+                            <?php $user_img = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $s['image_location'] . DIRECTORY_SEPARATOR . $s['image']; ?>
+                            <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>"
+                               class="blue question_list open-link-new-tab" target="_blank">
+                                <img src="<?= $user_img; ?>" width="60px" height="60" class="img-circle"/>
+                            </a>
+                            <?php
+                        } else {
+                            ?>
+                            <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>"
+                               class="blue open-link-new-tab" target="_blank">
+                                <canvas class="user-icon img-circle" name="<?= $s['name'] ?>"
+                                        color="<?= $s['initials_color'] ?>" width="60" height="60" font="25px"></canvas>
+                            </a>
+                        <?php }
+                        ?>
                     </div>
+                    <div class="short-details">
+                        <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>"
+                           class="blue question_list open-link-new-tab" target="_blank">
+                            <p class="short-job"><?= $s['name'] ?></p>
+                        </a>
+                        <?= $s['city'] ? '<p class="short-name"><i class="fa fa-map-marker"></i>' . $s['city'] . '</p>' :
+                            '<p class="shortText">location not added<p>' ?>
+                    </div>
+                </div>
+                <div class="short-skills">
+                    <?php if ($s['applications']) {
+                        foreach ($s['applications'] as $application) {
+                            ?>
+                            <a href="javascript:;" data-href="<?= Url::to('/' . $type . '/' . $application['slug']) ?>"
+                               class="blue question_list open-link-new-tab"
+                               target="_blank"><?= $application['title'] ?></a>
+                        <?php }
+                    } ?>
+                </div>
             </div>
-            <ul class="short-skills">
-                <?php if ($s['skills']) {
-                    foreach ($s['skills'] as $skill) {
-                        ?>
-                        <li> <?= $skill['skill'] ?></li>
-                    <?php }
-                }else { ?>
-                <p class="shortText">Skills Not Added</p>
-                <?php } ?>
-            </ul>
-            <div class="slide-btn">
-                <button class="slide-bttn" type="button" data-toggle="collapse"
-                        data-target="#<?= $s['candidate_enc_id'] ?>">
-                    <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
-                       title="" data-original-title="View Applications"></i>
-                </button>
-            </div>
-        </div>
-        <div class="cd-box-border collapse" id="<?= $s['candidate_enc_id'] ?>">
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                    <th>Application Name</th>
-                </tr>
-                </thead>
-                <tbody class="qu_data">
-                <?php if ($s['applications']) {
-                    foreach ($s['applications'] as $application) {
-                        ?>
-                        <tr>
-                            <td><a href="javascript:;" data-href="<?= Url::to('/' . $type . '/' . $application['slug']) ?>" class="blue question_list open-link-new-tab" target="_blank"><?= $application['title'] ?></a>
-                            </td>
-                        </tr>
-                    <?php }
-                } ?>
-                </tbody>
-            </table>
-        </div>
         </div>
     </div>
 <?php }
@@ -166,17 +142,18 @@ $this->registerCss('
     padding: 6px 6px 0;
     flex-wrap: wrap;
     align-items: center;
-    height: 38px;
+    height: 34px;
     overflow: hidden;
 }
-.short-skills li {
-    list-style: none;
+.short-skills a {
     background-color: #eee;
-    padding: 4px 10px;
-    font-family: Roboto;
-    margin-bottom: 5px !important;
-    border-radius: 4px;
-    margin: 0 5px 0 0;
+    color: #333;
+    font-family: roboto;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    line-height: 22px;
 }
 .slide-btn {
     margin-bottom: -1px;

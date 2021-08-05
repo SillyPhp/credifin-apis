@@ -1,10 +1,12 @@
 <?php
+
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 ?>
 
 <?php Pjax::begin(['id' => 'blockedCandidates']);
-foreach ($blacklistedApplicants['data'] as $s){ ?>
+foreach ($blacklistedApplicants['data'] as $s) { ?>
     <div class="col-md-4 col-sm-6">
         <div class="divRel">
             <div class="short-main">
@@ -16,13 +18,15 @@ foreach ($blacklistedApplicants['data'] as $s){ ?>
                 <div class="flex-short">
                     <div class="short-logo">
                         <?php if (!empty($s['image'])) { ?>
-                            <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>" class="blue question_list open-link-new" target="_blank">
+                            <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>"
+                               class="blue question_list open-link-new" target="_blank">
                                 <img src="<?= $s['image']; ?>" width="60px" height="60" class="img-circle"/>
                             </a>
                             <?php
                         } else {
                             ?>
-                            <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>" class="blue open-link-new" target="_blank">
+                            <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>"
+                               class="blue open-link-new" target="_blank">
                                 <canvas class="user-icon img-circle" name="<?= $s['name'] ?>"
                                         color="<?= $s['initials_color'] ?>" width="60" height="60" font="25px"></canvas>
                             </a>
@@ -30,62 +34,23 @@ foreach ($blacklistedApplicants['data'] as $s){ ?>
                         ?>
                     </div>
                     <div class="short-details">
-                        <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>" class="blue question_list open-link-new" target="_blank">
+                        <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>"
+                           class="blue question_list open-link-new" target="_blank">
                             <p class="short-job"><?= $s['name'] ?></p>
                         </a>
-                        <?= $s['city'] ? '<p class="short-name"><i class="fa fa-map-marker"></i>'.$s['city'].'</p>' :
-                            '<p class="shortText">location not added<p>'?>
+                        <?= $s['city'] ? '<p class="short-name"><i class="fa fa-map-marker"></i>' . $s['city'] . '</p>' :
+                            '<p class="shortText">location not added<p>' ?>
                     </div>
                 </div>
-                <ul class="short-skills">
-                    <?php if ($s['createdBy']['userSkills']) {
-                        foreach ($s['createdBy']['userSkills'] as $skill) {
-                            ?>
-                            <li> <?= $skill['skill'] ?></li>
-                        <?php }
-                    }else{ ?>
-                        <p class="shortText">Skills Not Added</p>
-                    <?php } ?>
-                </ul>
-                <div class="slide-btn">
-                <button class="slide-bttn" type="button" data-toggle="collapse"
-                        data-target="#<?= $s['applied_application_enc_id'] ?>">
-                    <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
-                       title="" data-original-title="View Applications"></i>
-                </button>
-            </div>
-            </div>
-            <div class="cd-box-border collapse" id="<?= $s['applied_application_enc_id']?>">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th width="90%">Blacklisted From Job</th>
-<!--                        <th width="10%">Remove</th>-->
-                    </tr>
-                    </thead>
-                    <tbody class="qu_data">
+                <div class="short-skills">
                     <?php if ($s['applications']) {
                         foreach ($s['applications'] as $application) {
                             ?>
-                            <tr>
-                                <td>
-                                    <a href="javascript:;" data-href="<?= Url::to('/' . $type . '/' . $application['slug']) ?>"
-                                       class="blue question_list open-link-new"><?= $application['title'] ?></a>
-                                </td>
-<!--                                <td>-->
-<!--                                    <div class="remove-saved-btn">-->
-<!--                                        <button type="button" class="remove-saved-candidate" data-toggle="tooltip"-->
-<!--                                                data-original-title="Remove Candidate"-->
-<!--                                                data-id="--><?//= $application['candidate_rejection_enc_id'] ?><!--">-->
-<!--                                            <i class="fa fa-times" aria-hidden="true"></i>-->
-<!--                                        </button>-->
-<!--                                    </div>-->
-<!--                                </td>-->
-                            </tr>
+                            <a href="javascript:;" data-href="<?= Url::to('/' . $type . '/' . $application['slug']) ?>"
+                               class="blue question_list open-link-new"><?= $application['title'] ?></a>
                         <?php }
                     } ?>
-                    </tbody>
-                </table>
+                </div>
             </div>
         </div>
     </div>
@@ -104,13 +69,13 @@ $this->registerCss('
     font-size: 13px;
 }
 .short-main {
-    height: 175px;
+    height: 155px;
     border: 2px solid #eef1f5;
-    padding: 20px 10px;
+    padding: 20px 10px 10px;
     position: relative;
     transition: all .3s;
     border-radius: 6px;
-    z-index:0;
+    z-index: 0;
 }
 .short-main:hover .remove-btn{
     opacity:1;
@@ -174,17 +139,18 @@ $this->registerCss('
     padding: 6px 6px 0;
     flex-wrap: wrap;
     align-items: center;
-    height: 38px;
+    height: 34px;
     overflow: hidden;
 }
-.short-skills li {
-    list-style: none;
+.short-skills a {
     background-color: #eee;
-    padding: 4px 10px;
-    font-family: Roboto;
-    margin-bottom: 5px !important;
-    border-radius: 4px;
-    margin: 0 5px 0 0;
+    color: #333;
+    font-family: roboto;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    line-height: 22px;
 }
 .slide-btn {
     margin-bottom: -1px;
