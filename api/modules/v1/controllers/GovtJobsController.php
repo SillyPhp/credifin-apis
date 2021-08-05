@@ -269,6 +269,29 @@ class GovtJobsController extends ApiBaseController
         }
     }
 
+    public function actionUsDeptDetail()
+    {
+
+        $params = Yii::$app->request->post();
+        if (isset($params['slug']) && !empty($params['slug'])) {
+            $slug = $params['slug'];
+        } else {
+            return $this->response(422, 'missing information "slug"');
+        }
+
+        $d = UsaDepartments::find()
+            ->select(['Value', 'slug', 'total_applications', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE CONCAT("https://ui-avatars.com/api/?name=", value, "&size=200&rounded=false&background=random&color=ffffff") END logo'])
+            ->where(['slug' => $slug])
+            ->asArray()
+            ->one();
+
+        if ($d) {
+            return $this->response(200, $d);
+        } else {
+            return $this->response(404, 'Not Found');
+        }
+    }
+
     public function actionSearchUsaJobs()
     {
 
@@ -352,6 +375,30 @@ class GovtJobsController extends ApiBaseController
         } else {
             return $this->response(404, 'not found');
         }
+    }
+
+    public function actionInDeptDetail()
+    {
+        $params = Yii::$app->request->post();
+
+        if (isset($params['dept_id']) && !empty($params['dept_id'])) {
+            $dept_id = $params['dept_id'];
+        } else {
+            return $this->response(422, 'missing information "dept_id"');
+        }
+
+        $data = IndianGovtDepartments::find()
+            ->select(['dept_enc_id dept_id', 'Value', 'total_applications', 'slug', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE CONCAT("https://ui-avatars.com/api/?name=", value, "&size=200&rounded=false&background=random&color=ffffff") END logo'])
+            ->Where(['or', ['dept_enc_id' => $dept_id], ['slug' => $dept_id]])
+            ->asArray()
+            ->one();
+
+        if ($data) {
+            return $this->response(200, $data);
+        } else {
+            return $this->response(404, 'not found');
+        }
+
     }
 
     public function actionInJobs()
