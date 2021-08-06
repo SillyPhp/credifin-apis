@@ -5,26 +5,6 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
 ?>
-<!--<section class="study-in-usa-bg">-->
-<!--    <div class="opacity-div"></div>-->
-<!--    <div class="container">-->
-<!--        <div class="row">-->
-<!--            <div class="col-md-12">-->
-<!--                <h1>-->
-<!--                    <span class="typewrite" data-period="2000"-->
-<!--                          data-type='["Study In AUSTRALIA.", "Education Loan.", "Easy Apply.", "Easy EMIs To Pay.", "Less Paperwork." ]'>-->
-<!--                        <span class="wrap"></span>-->
-<!--                    </span>-->
-<!--                </h1>-->
-<!--                <p>Don't let financial burden stop you from fulfilling <br> your desire to study in your dream college.</p>-->
-<!--                <ul>-->
-<!--                    <li><a href="#contact" class="apply-now btn-orange">Reach Us</a></li>-->
-<!--                    <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>-->
-<!--                </ul>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</section>-->
 
 <section class="study-in-aus-bg">
     <div class="container">
@@ -136,6 +116,9 @@ if($blogs['blogs']){
 $this->registerCss('
 /* study in australia header css */
 
+.bold-fontt {
+    font-weight: bold;
+}
 .study-in-aus-bg {
     background: url(' . Url::to('@eyAssets/images/pages/education-loans/roadmaps.png') . ') top right, url(' . Url::to('@eyAssets/images/pages/education-loans/circles.png') . ') 70% 70%, linear-gradient(90deg, #D9FFFE -2.4%, #FFFFFF 61.98%);
 	background-repeat: no-repeat;
@@ -196,25 +179,6 @@ $this->registerCss('
     background: #00a0e3 !important;
     border: 1px solid #00a0e3 !important;
 }
-.aus img {
-    position: absolute;
-    width: 100%;
-    max-width: 500px;
-}
-.aus img:nth-child(1) {
-    top: 0;
-    right: 0;
-}
-.aus1 img {
-    position: absolute;
-    width: 100%;
-    max-width: 250px;
-}
-.aus1 img:nth-child(1) {
-    bottom: 25px;
-    right: 280px;
-}
-
 /* css ends */
 
 .studyus-head {
@@ -270,37 +234,6 @@ $this->registerCss('
     font-size: 25px;
     color: #fff;
 }
-.study-in-usa-bg ul li{
-    display: inline;
-    margin-right: 10px;
-}
-.apply-now{
-    padding: 10px 15px;
-	background: #00A0E3;
-	color: #fff;
-	border: 1px solid #00A0E3;
-	box-shadow: 0 5px 10px rgba(0,0,0,.3);
-	font-size: 16px;
-	font-family: roboto;
-	border-radius: 4px;
-	display: inline-block;
-	width: 150px;
-}
-.btn-orange{
-    background: #ff7803 !important;
-    border: 1px solid #ff7803 !important;
-}
-.apply-now:hover{
-    background: #ff7803; 
-    color: #fff;
-    border: 1px solid #ff7803;
-    transition: .3s ease;
-}
-.btn-orange:hover{
-    background: #00a0e3 !important;
-    border: 1px solid #00a0e3 !important;
-}
-
 .padd-15{
     padding: 0 15px;
 }
@@ -338,40 +271,6 @@ $this->registerCss('
 .cus-number a:hover{
     box-shadow: 0 0 10px rgba(0,0,0,.3);
     transition: .3s ease;
-}
-.study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/australia-hdr.png') . ');
-	min-height: 500px;
-	background-repeat: no-repeat;
-	background-size: cover;
-	display: flex;
-	align-items: center;
-	position: relative;
-	text-align: center;
-	height: 100vh;
-	max-height: 700px;
-}
-.opacity-div{
-    position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0,0,0,.4);
-}
-.study-in-usa-bg p{
-    font-size: 24px;
-	font-family: roboto;
-	color: #fff;
-	padding: 0 0 18px;
-	line-height: 30px;
-}
-.study-in-usa-bg h1{
-    font-size: 45px;
-	margin-bottom: 20px;
-	color: #FF7803;
-	font-weight: 700;
-	font-family: roboto;
 }
 .footer{
     margin-top: 0px !important;

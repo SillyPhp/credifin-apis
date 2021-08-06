@@ -5,6 +5,7 @@ namespace api\modules\v2\models;
 use common\models\Countries;
 use common\models\EducationLoanPayments;
 use common\models\extended\PaymentsModule;
+use common\models\LeadsApplications;
 use common\models\LoanApplicationOptions;
 use common\models\LoanApplications;
 use common\models\LoanApplicationSchoolFee;
@@ -43,7 +44,7 @@ class LoanApplicationsForm extends LoanApplications
         ];
     }
 
-    public function add($addmission_taken = 1, $userId, $college_id, $source = 'Mec', $is_claimed = 1, $course_name = null, $pref = [], $refferal_id = null)
+    public function add($addmission_taken = 1, $userId, $college_id, $source = 'Mec', $is_claimed = 1, $course_name = null, $pref = [], $refferal_id = null, $lead_id = null)
     {
         $loan_type = LoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
         if (empty($this->country_enc_id)) {
@@ -70,6 +71,12 @@ class LoanApplicationsForm extends LoanApplications
                 $referralData = Referral::findOne(['code' => $refferal_id]);
                 if ($referralData) {
                     $this->lead_by = $referralData->user_enc_id;
+                }
+            }
+            if ($lead_id) {
+                $checkLead = LeadsApplications::find()->select(['application_enc_id'])->where(['application_enc_id' => $lead_id,'is_deleted' => 0])->one();
+                if ($checkLead) {
+                    $this->lead_application_enc_id = $lead_id;
                 }
             }
             if (!$this->save()) {

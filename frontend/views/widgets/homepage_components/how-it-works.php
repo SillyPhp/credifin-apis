@@ -8,7 +8,7 @@ use yii\helpers\Url;
             <div class="col-md-3">
                 <div class="fade-in one">
                     <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png') ?>"
+                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>"
                              title="Create your Exclusive Profile" alt="Create your Exclusive Profile"/>
                     </div>
                     <div class="how-text-box">
@@ -19,7 +19,7 @@ use yii\helpers\Url;
             <div class="col-md-3">
                 <div class="fade-in two">
                     <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>"
+                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>"
                              title="Get discovered by top employers" alt="Get discovered by top employers"/>
                     </div>
                     <div class="how-text-box">
@@ -30,7 +30,7 @@ use yii\helpers\Url;
             <div class="col-md-3">
                 <div class="fade-in three">
                     <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>"
+                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>"
                              title="Evaluate Offer"
                              alt="Evaluate Offer"/>
                     </div>
@@ -42,7 +42,7 @@ use yii\helpers\Url;
             <div class="col-md-3">
                 <div class="fade-in four">
                     <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>"
+                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" 
                              title="Receive Custom Job Notifications" alt="Receive Custom Job Notifications">
                     </div>
                     <div class="how-text-box">
@@ -59,3 +59,9 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
+<?php
+$script = <<<JS
+$('.load-later').Lazy();
+JS;
+$this->registerJs($script);

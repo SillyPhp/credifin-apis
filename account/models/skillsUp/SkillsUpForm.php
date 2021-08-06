@@ -97,7 +97,6 @@ class SkillsUpForm extends Model
             $utilitiesModel->variables['field_name'] = 'slug';
             $model->slug = $utilitiesModel->create_slug() . '-' . rand(100000, 999999);
             $model->content_type = $this->content_type;
-            $model->status = 'Active';
             if ($this->image) {
                 // saving post image
                 $model->cover_image_location = \Yii::$app->getSecurity()->generateRandomString();

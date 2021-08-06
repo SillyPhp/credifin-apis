@@ -213,6 +213,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+
     <section class="bgeEd pdbtm">
         <div class="container">
             <div class="row">
@@ -280,6 +281,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+
 <?php
 if ($blogs['blogs']) {
     echo $this->render('/widgets/education-loan/blogs', [
@@ -342,6 +344,7 @@ if ($blogs['blogs']) {
             </div>
         </div>
     </section>
+
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
