@@ -1738,8 +1738,8 @@ class CollegeProfileController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
 
             $scholarship = CollegeScholarships::find()
-                ->select(['college_scholarship_enc_id', 'title', 'amount', 'detail', 'apply_link'])
-                ->where(['college_enc_id' => $this->getOrgId()])
+                ->select(['college_scholarship_enc_id', 'title', 'am2ount', 'detail', 'apply_link'])
+                ->where(['college_enc_id' => $this->getOrgId(), 'is_deleted' => 0])
                 ->asArray()
                 ->all();
 
@@ -1912,7 +1912,9 @@ class CollegeProfileController extends ApiBaseController
 
                 $faculty->last_updated_by = $user->user_enc_id;
                 $faculty->last_updated_on = date('Y-m-d H:i:s');
+
             } else {
+
                 $faculty = new CollegeFaculty();
                 $utilitiesModel = new \common\models\Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -1920,20 +1922,23 @@ class CollegeProfileController extends ApiBaseController
                 $faculty->college_enc_id = $this->getOrgId();
                 $faculty->created_by = $user->user_enc_id;
                 $faculty->created_on = date('Y-m-d H:i:s');
+
             }
 
             $faculty->faculty_name = $params['name'];
             $faculty->designation_enc_id = $this->saveDesignation($params['designation']);
             $faculty->department_enc_id = $this->saveDepartment($params['department']);
             $faculty->experience = $params['experience'];
-            if (isset($params['image']) && !empty($params['image'])) {
+
+            if (isset($params['image']) && !empty($params['image']) && $params['image'] != '') {
 
                 $image = base64_decode($params['image']);
 
                 $faculty->image_location = \Yii::$app->getSecurity()->generateRandomString();
                 $base_path = Yii::$app->params->upload_directories->collegeProfile->faculty_image . $faculty->image_location . '/';
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
 
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $encrypted_string = $utilitiesModel->encrypt();
                 if (substr($encrypted_string, -1) == '.') {
                     $encrypted_string = substr($encrypted_string, 0, -1);
