@@ -775,6 +775,12 @@ a:hover{
 .jcc-location{
   color: #ff7803;
 }
+.jcc-location, .company-name, .card-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
 .job-card-sidebar-candidate i{
   margin-right: 5px;
 }    
