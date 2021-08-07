@@ -2,7 +2,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 ?>
-<section>
+<section class="sign-in">
     <div class="container">
         <div class="row">
             <div class="col-md-10 log-position col-md-offset-1">
@@ -62,6 +62,10 @@ use yii\bootstrap\ActiveForm;
 </section>
 <?php
 $this->registerCss('
+.sign-in{
+    position: relative;
+    z-index: 5;
+}
 .field-pass, .field-pass *{
     margin-top:0px;
     margin-bottom:0px;

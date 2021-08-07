@@ -53,7 +53,7 @@ $this->params['seo_tags'] = [
 
             <input type="hidden" id="video-id" value="<?= $video_detail['youtube_video_id']; ?>">
             <div class="col-md-7 white-bg">
-                <div class="row">
+                <div>
                     <div class="video-frame" id="ytplayer">
 
                     </div>
@@ -361,30 +361,30 @@ float: left;
 /*----------*/
 .video-frame{
     max-height: 480px;
-    width: calc(100% + 30px);
-    margin: 0px -15px;
-    margin-top: -20px;
+    width: 100%;
+    margin: 0px auto;
+//    margin-top: -20px;
     border-radius: 4px 4px 0px 0px;
 }
 .fluid-width-video-wrapper {
 padding-top: 0px !important;
 height: 400px;
 }
-.white-bg{
-    background:#fff;
-    border-left:1px solid #eee;
-    border-right:1px solid #eee;
-    padding:20px 30px 30px 30px;
-    box-shadow: 0px 1px 10px 0px #ddd;
-    margin: 0px 0px 20px;
-    border-radius: 4px;
-}
+//.white-bg{
+//    background:#fff;
+//    border-left:1px solid #eee;
+//    border-right:1px solid #eee;
+//    padding:20px 30px 30px 30px;
+//    box-shadow: 0px 1px 10px 0px #ddd;
+//    margin: 0px 0px 20px;
+//    border-radius: 4px;
+//}
 .video-options{
     padding:5px 10px;
     border:1px solid #262626;
     background:#262626;
-    width: calc(100% + 30px);
-    margin: 0px -15px;
+    width:100%;
+//    margin: 0px -15px;
     margin-top: -6px;
 }
 .flex-view{
@@ -883,6 +883,9 @@ color: #c12127;
 background: #c12127;
 }
 
+@media screen and (max-width: 550px){
+
+}
 @media screen and (max-width: 992px){
 .video-icon{
 max-width:100%;

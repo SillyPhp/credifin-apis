@@ -247,7 +247,7 @@ class ApplicationCards
                 'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city',
-                'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skills',
+                'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ", ") skills',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -324,7 +324,7 @@ class ApplicationCards
                 WHEN g.name IS NULL THEN x.location_name
                 ELSE g.name
                END) as city',
-                'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skills',
+                'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ", ") skills',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->leftJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')

@@ -131,9 +131,16 @@ class  SkillUpController extends Controller
             }], false)
             ->joinWith(['skillsUpPostAssignedVideos f' => function ($f) {
                 $f->joinWith(['videoEnc f1']);
-            }], false)
-            ->where(['a.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->asArray()
+            }], false);
+        $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Skill-Up-Executive");
+        if ($permissions) {
+            $postDetail->where(['a.slug' => $slug, 'a.is_deleted' => 0]);
+        } else {
+            $postDetail->where(['a.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0]);
+        }
+
+
+        $postDetail = $postDetail->asArray()
             ->one();
 
         $skills = [];
