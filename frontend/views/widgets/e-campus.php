@@ -77,9 +77,9 @@ $this->registercss('
     text-align: center;
     padding-top: 20px;
     font-size: 35px;
-    font-family: lobster;
-    color:#fff;
-    margin-top: 0px;
+    font-family: roboto;
+    color:#333;
+    margin-top: 0;
 }
 .e-parent {
     height: 125px;
