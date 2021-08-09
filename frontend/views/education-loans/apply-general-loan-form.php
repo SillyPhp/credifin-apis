@@ -195,7 +195,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label for="number" class="input-group-text">
-                                            Name of Applicant (Customer/Student Name)
+                                            Name of Customer/Student Name
                                         </label>
                                         <input value="<?= ($userDetail->first_name)?$userDetail->first_name . " " . $userDetail->last_name : "" ?>" type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
                                     </div>
@@ -416,37 +416,37 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                                         </div>
                                                         <ul id="co-relation-ul-1" class="displayInline">
                                                             <li>
-                                                                <label for="co-father-1" class="container-radio">
+                                                                <label for="co-father-z" class="container-radio">
                                                                     Father
-                                                                    <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-1" class="checkbox-input services">
+                                                                    <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-z" class="checkbox-input services">
                                                                     <span class="checkmark"></span>
                                                                 </label>
                                                             </li>
                                                             <li>
-                                                                <label for="co-mother-1" class="container-radio">
+                                                                <label for="co-mother-z" class="container-radio">
                                                                     Mother
-                                                                    <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-1" class="checkbox-input services">
+                                                                    <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-z" class="checkbox-input services">
                                                                     <span class="checkmark"></span>
                                                                 </label>
                                                             </li>
                                                             <li>
-                                                                <label for="co-brother-1" class="container-radio">
+                                                                <label for="co-brother-z" class="container-radio">
                                                                     Brother
-                                                                    <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-1" class="checkbox-input services">
+                                                                    <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-z" class="checkbox-input services">
                                                                     <span class="checkmark"></span>
                                                                 </label>
                                                             </li>
                                                             <li>
-                                                                <label for="co-sister-1" class="container-radio">
+                                                                <label for="co-sister-z" class="container-radio">
                                                                     Sister
-                                                                    <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-1" class="checkbox-input services">
+                                                                    <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-z" class="checkbox-input services">
                                                                     <span class="checkmark"></span>
                                                                 </label>
                                                             </li>
                                                             <li>
-                                                                <label for="co-guardian-1" class="container-radio">
+                                                                <label for="co-guardian-z" class="container-radio">
                                                                     Guardian
-                                                                    <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-1" class="checkbox-input services">
+                                                                    <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-z" class="checkbox-input services">
                                                                     <span class="checkmark"></span>
                                                                 </label>
                                                             </li>
@@ -460,23 +460,23 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                                         </div>
                                                         <ul class="displayInline">
                                                             <li>
-                                                                <label for="sal-1" class="container-radio">
+                                                                <label for="sal-z" class="container-radio">
                                                                     Salaried
-                                                                    <input type="radio" value="1" checked="checked" id="sal-1" name="co-emptype[1]" class="checkbox-input services">
+                                                                    <input type="radio" value="1" checked="checked" id="sal-z" name="co-emptype[1]" class="checkbox-input services">
                                                                     <span class="checkmark"></span>
                                                                 </label>
                                                             </li>
                                                             <li>
-                                                                <label for="self-1" class="container-radio">
+                                                                <label for="self-z" class="container-radio">
                                                                     Self-Employed
-                                                                    <input type="radio" value="2" id="self-1" name="co-emptype[1]" class="checkbox-input services">
+                                                                    <input type="radio" value="2" id="self-z" name="co-emptype[1]" class="checkbox-input services">
                                                                     <span class="checkmark"></span>
                                                                 </label>
                                                             </li>
                                                             <li>
-                                                                <label for="non-1" class="container-radio">
+                                                                <label for="non-z" class="container-radio">
                                                                     Non-Working
-                                                                    <input type="radio" value="3" id="non-1" name="co-emptype[1]" class="checkbox-input services">
+                                                                    <input type="radio" value="3" id="non-z" name="co-emptype[1]" class="checkbox-input services">
                                                                     <span class="checkmark"></span>
                                                                 </label>
                                                             </li>
@@ -1554,15 +1554,10 @@ jQuery.validator.addClassRules('child_loan', {
     
 function ajaxSubmit()
 {
+    var applicantRadio = $('input[name="applicantRadio"]:checked').val();
+    var loan_application_type = $('input[name="applicantTypeRadio"]:checked').val();
     let co_applicants = [];
-    let college_course_info = [];
     var obj = {};
-    var object = {};  
-    object['pulled_from'] = $('#pulled_from').val();
-    object['course_text'] = $('#course_name_text').val();
-    object['colg_text'] = $('#colg_text').val();
-    object['colg_id'] = $('#colg_id').val();
-    college_course_info.push(object);
     obj['name'] = $('input[name="co-name[1]"]').val()
     obj['relation'] = $('input[name="co-relation[1]"]:checked').val();
     obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').val();
@@ -1579,17 +1574,21 @@ function ajaxSubmit()
         co_applicants.push(objCoBorrower);
         }
     }
-    var clg_pref = $('input[name="college_name_pref[]"]').map(function () {
-    return this.value;
-        }).get();
-    console.log(co_applicants);
-    return false;
-    $.ajax({
-            url : '/api/v3/education-loan/save-application',
-            method : 'POST', 
-            data : {
+    var url = '';
+    var data = {};
+    if(loan_application_type==0){
+        let college_course_info = [];
+        var object = {};  
+        object['pulled_from'] = $('#pulled_from').val();
+        object['course_text'] = $('#course_name_text').val();
+        object['colg_text'] = $('#colg_text').val();
+        object['colg_id'] = $('#colg_id').val();
+        college_course_info.push(object);
+        url = '/api/v3/education-loan/save-application';
+        data = {
                 applicant_name:$('#applicant_name').val(),
                 applicant_dob:$('#dob').val(),
+                is_applicant:applicantRadio,                
                 applicant_current_city:$('#location').val(),
                 years:$('#years').val(),
                 semesters:$('#semesters').val(),
@@ -1601,10 +1600,54 @@ function ajaxSubmit()
                 userID:userID, 
                 is_india:$('input[name="countryRadio"]:checked').val(),
                 is_addmission_taken:$('input[name="college_taken"]:checked').val(),
-                clg_pref:clg_pref,
                 country_enc_id:$('#country_name').val(),
                 refferal_id : refferal_id
-                },  
+                };
+    }else if (loan_application_type==1){
+        let child_information = [];
+    var obj = {};
+    if (applicantRadio=='1'){
+        for (var i= 0; i<$('#noChild').val();i++){
+        obj['child_loan_amount'] =  $('.child_loan:eq('+i+')').val();
+        obj['child_name'] = $('.child_name:eq('+i+')').val();
+        obj['child_class'] = $('.child_class:eq('+i+')').val();
+        if (document.getElementById("checkmark")){
+            if (document.getElementById("checkmark").checked===true){
+                obj['child_school'] = $('.child_school:eq(0)').val();
+            }else{
+                obj['child_school'] = $('.child_school:eq('+i+')').val();
+            }
+        }else{
+            obj['child_school'] = $('.child_school:eq('+i+')').val();
+        }
+        child_information.push(obj);
+        obj = {};
+    }
+    }else{
+        obj['child_name'] = $('#applicant_name').val();
+        obj['child_class'] = $('.child_class:eq(0)').val();
+        obj['child_school'] = $('.child_school:eq(0)').val();
+        obj['child_loan_amount'] = $('#loanamount').val();
+        child_information.push(obj);
+    }
+         data = {
+                applicant_name:$('#applicant_name').val(),
+                applicant_dob:$('#dob').val(),
+                is_applicant:applicantRadio,
+                applicant_current_city:$('#location').val(),
+                phone:$('#mobile').val(),
+                email:$('#email').val(),
+                amount:$('#loanamount').val(),   
+                yearly_income:$('#salary').val(),   
+                child_information:child_information,
+                userID:userID
+                }
+        url = '/api/v3/education-loan/save-school-fee-loan';
+    }
+    $.ajax({
+            url : url,
+            method : 'POST', 
+            data : data,  
             beforeSend:function(e)
             {  
                 $('#subBtn').hide();     

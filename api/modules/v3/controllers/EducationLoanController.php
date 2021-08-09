@@ -229,10 +229,14 @@ class EducationLoanController extends ApiBaseController
                 $model->country_enc_id = $params['country_enc_id'];
             }
             if ($model->load(Yii::$app->request->post(), '')) {
-                $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
+                $model->applicant_dob = null;
                 if ($model->validate()) {
-                    if ($data = $model->add($params['is_addmission_taken'], $userId, $parser['college_id'], 'Ey', $parser['is_claim'], $course_name, $pref, $params['refferal_id'])) {
-                        return $this->response(200, ['status' => 200, 'data' => $data]);
+                    if ($data = $model->add($params['is_addmission_taken'], $userId, $parser['college_id'], 'Ey', $parser['is_claim'], $course_name, $pref, $params['refferal_id'],$params['is_applicant'])) {
+                        if ($data['status']){
+                            return $this->response(200, ['status' => 200, 'data' => $data]);
+                        }else{
+                            return $this->response(500, ['status' => 500, 'message' => $data['message']]);
+                        }
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
                 }
@@ -279,7 +283,7 @@ class EducationLoanController extends ApiBaseController
             $orgDate = $params['applicant_dob'];
             $userId = (($params['userID']) ? $params['userID'] : null);
             if ($model->load(Yii::$app->request->post(), '')) {
-                $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
+                $model->applicant_dob = null;
                 $model->yearly_income = $params['yearly_income'];
                 if ($model->validate()) {
                     if ($data = $model->saveSchoolFeeLoan( $userId,'Ey',$params)) {
