@@ -1738,7 +1738,7 @@ class CollegeProfileController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
 
             $scholarship = CollegeScholarships::find()
-                ->select(['college_scholarship_enc_id', 'title', 'am2ount', 'detail', 'apply_link'])
+                ->select(['college_scholarship_enc_id', 'title', 'amount', 'detail', 'apply_link'])
                 ->where(['college_enc_id' => $this->getOrgId(), 'is_deleted' => 0])
                 ->asArray()
                 ->all();
