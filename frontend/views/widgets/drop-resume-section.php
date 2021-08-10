@@ -13,7 +13,7 @@ use yii\helpers\Url;
                             candidate
                             for your team, your vision and the company as a whole.</p>
                         <div class="drop-btn">
-                            <a href="" class="activate-drop arrow">Activate</a>
+<!--                            <a href="" class="activate-drop arrow">Activate</a>-->
                             <a href="" class="detail-drop">View Detail</a>
                         </div>
                     </div>
