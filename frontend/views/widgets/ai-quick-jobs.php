@@ -85,7 +85,7 @@ $this->registerCss('
 .jobs-main-heading{
     text-align: center;
     font-size: 28pt;
-    text-transform: uppercase;
+    text-transform: capitalize;
     font-family: roboto;
     font-weight: 700;
     word-spacing:3px;
@@ -148,6 +148,12 @@ $this->registerCss('
     opacity: 0.8;
     color: #fff;
 }
+
+@media only screen and (max-width: 768px){
+    .ai-job{
+        margin-bottom: 55px;
+    }
+}
 @media (max-width:1200px){
 .ai-job{width:84%;}
 }
@@ -164,6 +170,7 @@ $this->registerCss('
 .jobs-main-heading{
     font-size:23pt;
 }
+
 .parent{
     margin:80px 0px 0px 0;
 }
@@ -171,6 +178,11 @@ $this->registerCss('
     width:78%;
     margin-bottom:70px;
 }
+}
+@media (min-width: 414px) and (max-width: 768px){
+    .ai-img{
+        width: 53%;
+    }
 }
 @media (max-width:375px){
     .ai-job{width:85%}
