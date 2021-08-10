@@ -302,12 +302,14 @@ class LoanApplicationsForm extends LoanApplications
                     }
                 }
             }
+            $total_student = count($params['child_information']);
             $total_amount = PaymentsModule::_defaultPayment();
+            $total_amount = $total_amount*$total_student;
             $gst = PaymentsModule::_defaultGst();
             $percentage = ($total_amount * $gst) / 100;
             $total_amount = $total_amount + $percentage;
             $args = [];
-            $args['amount'] = $this->floatPaisa($total_amount)*count($params['child_information']); //for inr float to paisa format for razor pay payments
+            $args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
             $args['currency'] = "INR";
             $args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
             $response = PaymentsModule::_authPayToken($args);
