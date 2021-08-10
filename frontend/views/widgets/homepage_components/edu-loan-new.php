@@ -110,7 +110,7 @@ $this->registerCss('
     font-family: lora;
     color: #000;
     font-weight: 600;
-    margin: 10px 0px;
+    margin: 10px 0;
 }
 .heading-data-set p {
     font-size: 18px;
