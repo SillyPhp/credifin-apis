@@ -143,6 +143,8 @@ use yii\helpers\Url;
         </div>
     </section>
 
+
+
     <section class="ey-branding">
         <div class="study-overlay"></div>
         <div class="container">
@@ -161,6 +163,7 @@ use yii\helpers\Url;
         </div>
     </section>
 
+<?= $this->render('/widgets/college-fee-apply-now') ?>
 <!--    <section class="other-loan">-->
 <!--        <div class="container">-->
 <!--            <div class="row">-->
@@ -433,7 +436,6 @@ $this->registerCss('
     align-items: center;
     background-size: cover;
     background-repeat: no-repeat;
-    margin-bottom: 30px;
 }
 .branding-logo {
     position: absolute;

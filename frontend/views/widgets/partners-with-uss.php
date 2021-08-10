@@ -88,7 +88,7 @@ $this->registerCss('
     max-width: 500px;
 }
 .partner-text {
-    padding: 70px 0px 0px 100px;
+    padding: 110px 0px 0px 100px;
 }
 .partner-text h2 {
     font-family: lora;
