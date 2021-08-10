@@ -14,7 +14,10 @@ use yii\helpers\Url;
                     </span>
                     </h1>
                     <p>Our annual fee financing solution provides loan to parents and students on annual basis with easy monthly installments designed in a way to make it easier for the borrowers to repay.</p>
-                    <a href="#contact" class="enq-btn">Enquire Now</a>
+                    <div class="header-btn">
+                        <a href="/education-loans/apply" class="apply-now btn-orange">APPLY NOW</a>
+                        <a href="#contact" class="apply-now">Enquire Now</a>
+                    </div>
                 </div>
             </div>
             <div class="col-sm-6">
@@ -218,24 +221,7 @@ $this->registerCss('
     font-weight: 400;
     word-spacing: 2px;
 }
-.enq-btn{
-    background: #0079ac;
-    font-family: Roboto;
-    padding: 10px 20px;
-    color: #fff;
-    font-size: 14px;
-    display: inline-block;
-    margin-top: 12px;
-    border-radius: 5px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    transition: all ease-in 200ms;
-}
-.enq-btn:hover{
-    color: #0079ac;
-    background: #fff;
-    transition: all ease-in 200ms;
-}
+
 .header-img{
     position: relative;
     z-index: 2;
@@ -425,7 +411,32 @@ $this->registerCss('
   z-index: 1;
   transition: 300ms all linear;
 }
-
+.apply-now{
+    padding: 8px 20px;
+	background: #00A0E3;
+	color: #fff;
+	border: 1px solid #00A0E3;
+	box-shadow: 0 5px 10px rgba(0,0,0,.3);
+	font-size: 16px;
+	font-family: roboto;
+	border-radius: 4px;
+	display: inline-block;
+}
+.btn-orange{
+    background: #ff7803 !important;
+    border: 1px solid #ff7803 !important;
+    margin-right: 10px;
+}
+.apply-now:hover{
+    background: #ff7803; 
+    color: #fff;
+    border: 1px solid #ff7803;
+    transition: .3s ease;
+}
+.btn-orange:hover{
+    background: #00a0e3 !important;
+    border: 1px solid #00a0e3 !important;
+}
 
 //.college-card-partner:hover{
 //  transform: scale(0.9);  

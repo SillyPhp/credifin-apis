@@ -1267,7 +1267,7 @@ ul.status-detail li>strong {
         font-weight: 600;
         width: 70%;
         display: -webkit-box !important;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp:1;
         -webkit-box-orient: vertical;
         overflow: hidden;
         line-height: 20px;
