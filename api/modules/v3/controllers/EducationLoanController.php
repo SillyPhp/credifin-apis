@@ -163,31 +163,35 @@ class EducationLoanController extends ApiBaseController
         }
 
         if ($params['status'] == 'captured') {
-            $loan_application = LoanApplications::find()
-                ->where(['loan_app_enc_id' => $loan_app_id])
-                ->one();
-            if ($loan_application) {
-                $loan_application->status = 0;
-                $loan_application->updated_by = null;
-                $loan_application->updated_on = date('Y-m-d H:i:s');
-                $loan_application->update();
-                $params['loan_app_enc_id'] = $loan_application->loan_app_enc_id;
-                $params['name'] = $loan_application->applicant_name;
-                $params['email'] = $loan_application->email;
-                Yii::$app->notificationEmails->educationLoanThankYou($params);
+            $loan_applications = LoanApplications::find()
+                ->where(['in','loan_app_enc_id', $loan_app_id])
+                ->all();
+            if ($loan_applications) {
+                foreach ($loan_applications as $loan_application){
+                    $loan_application->status = 0;
+                    $loan_application->updated_by = null;
+                    $loan_application->updated_on = date('Y-m-d H:i:s');
+                    $loan_application->update();
+                    $params['loan_app_enc_id'] = $loan_application->loan_app_enc_id;
+                    $params['name'] = $loan_application->applicant_name;
+                    $params['email'] = $loan_application->email;
+                }
             }
+            Yii::$app->notificationEmails->educationLoanThankYou($params);
         }
 
-        $loan_payments = EducationLoanPayments::find()
-            ->where(['education_loan_payment_enc_id' => $loan_payment_id])
-            ->one();
-        if ($loan_payments) {
-            $loan_payments->payment_id = (($params['payment_id']) ? $params['payment_id'] : null);
-            $loan_payments->payment_status = $params['status'];
-            $loan_payments->payment_signature = $params['signature'];
-            $loan_payments->updated_by = null;
-            $loan_payments->updated_on = date('Y-m-d H:i:s');
-            $loan_payments->update();
+        $loan_payment = EducationLoanPayments::find()
+            ->where(['in','education_loan_payment_enc_id' ,$loan_payment_id])
+            ->all();
+        if ($loan_payment) {
+            foreach ($loan_payment as $loan_payments){
+                $loan_payments->payment_id = (($params['payment_id']) ? $params['payment_id'] : null);
+                $loan_payments->payment_status = $params['status'];
+                $loan_payments->payment_signature = $params['signature'];
+                $loan_payments->updated_by = null;
+                $loan_payments->updated_on = date('Y-m-d H:i:s');
+                $loan_payments->update();
+            }
         }
         return $this->response(200, ['status' => 200, 'message' => 'success']);
     }
