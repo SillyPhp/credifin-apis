@@ -134,9 +134,10 @@ class EducationLoansController extends Controller
         return $this->render('education-loan-university');
     }
 
-    public function actionSchoolFeeLoanApply(){
+    public function actionSchoolFeeLoanApply($ref_id = null,$lead_id = null){
         if(!Yii::$app->user->identity->organization->organization_enc_id):
-        return $this->render('school-fee-loan-form');
+//        return $this->render('school-fee-loan-form');
+        return $this->actionApply($ref_id, $lead_id);
     else:
         throw new HttpException(401, Yii::t('frontend', 'Sorry, You Are Unauthorized, This Section Can Only Be View In Candidate Login'));
         endif;
