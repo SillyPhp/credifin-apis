@@ -4,7 +4,7 @@ namespace common\models;
 
 
 /**
- * This is the model class for table "lJCWPnNNVy3d95ppLp7M_loan_application_options".
+ * This is the model class for table "{{%loan_application_options}}".
  *
  * @property int $id Primary Key
  * @property string $option_enc_id Option Encrypted ID
@@ -14,6 +14,9 @@ namespace common\models;
  * @property double $total_loan_amount
  * @property double $monthly_emi
  * @property string $property_requirement
+ * @property string $comment
+ * @property string $follow_up_on
+ * @property string $follow_up_by
  * @property string $created_on On which date  information was added to database
  * @property string $created_by Foreign Key to Users Table
  * @property string $last_updated_on On which date  information was updated
@@ -23,6 +26,7 @@ namespace common\models;
  * @property LoanApplications $loanAppEnc
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
+ * @property Users $followUpBy
  */
 class LoanApplicationOptions extends \yii\db\ActiveRecord
 {
@@ -40,16 +44,17 @@ class LoanApplicationOptions extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['option_enc_id', 'loan_app_enc_id', 'created_by'], 'required'],
+            [['option_enc_id', 'loan_app_enc_id'], 'required'],
             [['application_by', 'number_of_loans', 'is_deleted'], 'integer'],
             [['total_loan_amount', 'monthly_emi'], 'number'],
-            [['property_requirement'], 'string'],
-            [['created_on', 'last_updated_on'], 'safe'],
-            [['option_enc_id', 'loan_app_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['property_requirement', 'comment'], 'string'],
+            [['follow_up_on', 'created_on', 'last_updated_on'], 'safe'],
+            [['option_enc_id', 'loan_app_enc_id', 'follow_up_by', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['option_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
+            [['follow_up_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['follow_up_by' => 'user_enc_id']],
         ];
     }
 
@@ -76,5 +81,13 @@ class LoanApplicationOptions extends \yii\db\ActiveRecord
     public function getLastUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFollowUpBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'follow_up_by']);
     }
 }

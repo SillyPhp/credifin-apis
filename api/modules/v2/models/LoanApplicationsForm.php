@@ -5,7 +5,6 @@ namespace api\modules\v2\models;
 use common\models\Countries;
 use common\models\EducationLoanPayments;
 use common\models\extended\PaymentsModule;
-use common\models\LeadsApplications;
 use common\models\LoanApplicationOptions;
 use common\models\LoanApplications;
 use common\models\LoanApplicationSchoolFee;
@@ -34,7 +33,7 @@ class LoanApplicationsForm extends LoanApplications
     public function rules()
     {
         return [
-            [['applicant_name', 'applicant_dob', 'applicant_current_city', 'phone', 'email', 'amount'], 'required'],
+            [['applicant_name', 'applicant_current_city', 'phone', 'email', 'amount'], 'required'],
             [['co_applicants', 'country_enc_id', 'aadhaar_number', 'purpose', 'gender', 'years', 'semesters', 'loan_type_enc_id', 'course_enc_id', 'college_course_enc_id', 'degree'], 'safe'],
             [['degree'], 'string'],
             [['years', 'semesters', 'gender', 'status'], 'integer'],
@@ -44,7 +43,7 @@ class LoanApplicationsForm extends LoanApplications
         ];
     }
 
-    public function add($addmission_taken = 1, $userId, $college_id, $source = 'Mec', $is_claimed = 1, $course_name = null, $pref = [], $refferal_id = null, $lead_id = null)
+    public function add($addmission_taken = 1, $userId, $college_id, $source = 'Mec', $is_claimed = 1, $course_name = null, $pref = [], $refferal_id = null,$is_applicant=null)
     {
         $loan_type = LoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
         if (empty($this->country_enc_id)) {
@@ -71,12 +70,6 @@ class LoanApplicationsForm extends LoanApplications
                 $referralData = Referral::findOne(['code' => $refferal_id]);
                 if ($referralData) {
                     $this->lead_by = $referralData->user_enc_id;
-                }
-            }
-            if ($lead_id) {
-                $checkLead = LeadsApplications::find()->select(['application_enc_id'])->where(['application_enc_id' => $lead_id,'is_deleted' => 0])->one();
-                if ($checkLead) {
-                    $this->lead_application_enc_id = $lead_id;
                 }
             }
             if (!$this->save()) {
@@ -139,28 +132,7 @@ class LoanApplicationsForm extends LoanApplications
                 } else {
                     $transaction->rollback();
                     $this->_flag = false;
-                }
-
-                if (!empty($pref))
-                    $c = 1;
-                foreach ($pref as $p) {
-                    if (!empty($p)) {
-                        $preferenceModel = new LoanApplicationsCollegePreference();
-                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                        $preferenceModel->preference_enc_id = $utilitiesModel->encrypt();
-                        $preferenceModel->loan_app_enc_id = $this->loan_app_enc_id;
-                        $preferenceModel->created_by = (($userId) ? $userId : null);
-                        $preferenceModel->college_name = trim($p);
-                        $preferenceModel->sequence = $c;
-                        if (!$preferenceModel->save()) {
-                            $transaction->rollback();
-                            $this->_flag = false;
-                            throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($preferenceModel->errors, 0, false)));
-                        } else {
-                            $c++;
-                            $this->_flag = true;
-                        }
-                    }
+                    throw new \Exception ("<br /> Course Cannot Be Blank");
                 }
             }
 
@@ -239,48 +211,100 @@ class LoanApplicationsForm extends LoanApplications
                     $this->_flag = false;
                     throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_payment->errors, 0, false)));
                 } else {
-                    $transaction->commit();
-                    $data = [];
-                    $data['loan_app_enc_id'] = $this->loan_app_enc_id;
-                    $data['education_loan_payment_enc_id'] = $loan_payment->education_loan_payment_enc_id;
-                    $data['payment_id'] = $loan_payment->payment_token;
-                    return $data;
+                    $this->_flag = true;
                 }
             }
+
+            if ($this->_flag){
+                $loanOptions = new LoanApplicationOptions();
+                $loanOptions->option_enc_id = Yii::$app->security->generateRandomString(8);
+                $loanOptions->loan_app_enc_id = $this->loan_app_enc_id;
+                $loanOptions->application_by = (int)$is_applicant;
+                $loanOptions->created_by = (($userId) ? $userId : null);
+                $loanOptions->created_on = date('Y-m-d H:i:s');
+                if (!$loanOptions->save()) {
+                    $transaction->rollBack();
+                    $this->_flag = false;
+                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanOptions->errors, 0, false))." ".$loanOptions::tableName());
+                } else{
+                    $this->_flag = true;
+                }
+            }
+
             if ($this->_flag) {
                 $transaction->commit();
                 $data = [];
                 $data['loan_app_enc_id'] = $this->loan_app_enc_id;
-                $data['education_loan_payment_enc_id'] = '';
-                $data['payment_id'] = '';
+                $data['education_loan_payment_enc_id'] = $loan_payment->education_loan_payment_enc_id;
+                $data['payment_id'] = $loan_payment->payment_token;
+                $data['status'] = true;
                 return $data;
             } else {
                 $transaction->rollBack();
-                return false;
+                return [
+                    'message'=>'Unable to Save',
+                    'status'=>false
+                ];
             }
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            return $exception->getMessage();
+            return [
+                'message'=>$exception->getMessage(),
+                'status'=>false
+            ];
         }
     }
     public function saveSchoolFeeLoan($userId,$source,$params){
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $utilitiesModel = new \common\models\Utilities();
-            $this->loan_app_enc_id = Yii::$app->security->generateRandomString(8);
-            $this->source = $source;
-            $this->had_taken_addmission = 0;
-            $this->loan_type = 'School Fee Loan';
-            $this->created_by = (($userId) ? $userId : null);
-            $this->created_on = date('Y-m-d H:i:s');
-            if (!$this->save()) {
+            if (!empty($params['child_information'])){
+                foreach ($params['child_information'] as $information){
+                    $this->loan_app_enc_id = Yii::$app->security->generateRandomString(8);
+                    $this->source = $source;
+                    $this->had_taken_addmission = 0;
+                    $this->amount = $information['child_loan_amount'];
+                    $this->loan_type = 'School Fee Loan';
+                    $this->created_by = (($userId) ? $userId : null);
+                    $this->created_on = date('Y-m-d H:i:s');
+                    $this->setIsNewRecord(true);
+                    $this->id = null;
+                    if (!$this->save()) {
+                        $transaction->rollback();
+                        $this->_flag = false;
+                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($this->errors, 0, false))." ".$this::tableName());
+                    } else {
+                        $this->_flag = true;
+                    }
+                }
+            }else{
                 $transaction->rollback();
                 $this->_flag = false;
-                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($this->errors, 0, false)));
-            } else {
-                $this->_flag = true;
+                throw new \Exception ("Child Information is Empty");
             }
+
+            if ($this->_flag){
+                foreach ($params['child_information'] as $information){
+                    $loanSchool = new LoanApplicationSchoolFee();
+                    $loanSchool->school_fee_enc_id = Yii::$app->security->generateRandomString(8);
+                    $loanSchool->loan_app_enc_id = $this->loan_app_enc_id;
+                    $loanSchool->student_name = $information['child_name'];
+                    $loanSchool->school_name = $information['child_school'];
+                    $loanSchool->loan_amount = $information['child_loan_amount'];
+                    $loanSchool->class = $information['child_class'];
+                    $loanSchool->created_by = (($userId) ? $userId : null);
+                    $loanSchool->created_on = date('Y-m-d H:i:s');
+                    if (!$loanSchool->save()) {
+                        $transaction->rollBack();
+                        $this->_flag = false;
+                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanSchool->errors, 0, false))." ".$loanSchool::tableName());
+                    } else{
+                        $this->_flag = true;
+                    }
+                }
+            }
+            $total_student = count($params['child_information']);
             $total_amount = PaymentsModule::_defaultPayment();
+            $total_amount = $total_amount*$total_student;
             $gst = PaymentsModule::_defaultGst();
             $percentage = ($total_amount * $gst) / 100;
             $total_amount = $total_amount + $percentage;
@@ -302,29 +326,9 @@ class LoanApplicationsForm extends LoanApplications
                 if (!$loan_payment->save()) {
                     $transaction->rollBack();
                     $this->_flag = false;
-                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_payment->errors, 0, false)));
+                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_payment->errors, 0, false))." ".$loan_payment::tableName());
                 } else{
                     $this->_flag = true;
-                }
-            }
-
-            if ($this->_flag){
-                foreach ($params['child_information'] as $information){
-                    $loanSchool = new LoanApplicationSchoolFee();
-                    $loanSchool->school_fee_enc_id = Yii::$app->security->generateRandomString(8);
-                    $loanSchool->loan_app_enc_id = $this->loan_app_enc_id;
-                    $loanSchool->student_name = $information['child_name'];
-                    $loanSchool->school_name = $information['child_school'];
-                    $loanSchool->class = $information['child_class'];
-                    $loanSchool->created_by = (($userId) ? $userId : null);
-                    $loanSchool->created_on = date('Y-m-d H:i:s');
-                    if (!$loanSchool->save()) {
-                        $transaction->rollBack();
-                        $this->_flag = false;
-                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanSchool->errors, 0, false)));
-                    } else{
-                        $this->_flag = true;
-                    }
                 }
             }
              if ($this->_flag){
@@ -337,7 +341,7 @@ class LoanApplicationsForm extends LoanApplications
                  if (!$loanOptions->save()) {
                      $transaction->rollBack();
                      $this->_flag = false;
-                     throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanOptions->errors, 0, false)));
+                     throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanOptions->errors, 0, false))." ".$loanOptions::tableName());
                  } else{
                      $this->_flag = true;
                  }
