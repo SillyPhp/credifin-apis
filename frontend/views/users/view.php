@@ -281,8 +281,7 @@ $this->params['header_dark'] = false;
                                             <!--                                    <img src="-->
                                             <?//= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?><!--"/>-->
                                             <canvas class="user-icon" name="<?= $edu['institute'] ?>" width="80"
-                                                    height="80"
-                                                    font="30px"></canvas>
+                                                    height="80" font="30px" color="<?= $edu['initials_color']; ?>"></canvas>
                                         </div>
                                         <div class="prof-inner">
                                             <div class="uni-name s-text"><?= $edu['institute'] ?>
@@ -309,8 +308,7 @@ $this->params['header_dark'] = false;
                                     <div class="set">
                                         <div class="prof-p">
                                             <canvas class="user-icon" name="<?= $exp['company'] ?>" width="80"
-                                                    height="80"
-                                                    font="30px"></canvas>
+                                                    height="80" font="30px" color="<?= $exp['initials_color']; ?>"></canvas>
                                         </div>
                                         <div class="prof-inner">
                                             <div class="uni-name s-text"><?= $exp['company'] . ', ' . $exp['city_name'] ?>
