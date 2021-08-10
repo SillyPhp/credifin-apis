@@ -1377,6 +1377,9 @@ class SiteController extends Controller
       $this->layout = 'widget-layout';
     return $this->render('instagram-ey');
   }
+    public function actionLinkDetail(){
+        return $this->render('insta-detail');
+    }
   public function actionGetInstagram(){
       if (Yii::$app->request->isAjax) {
           Yii::$app->response->format = Response::FORMAT_JSON;

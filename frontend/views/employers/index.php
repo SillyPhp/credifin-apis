@@ -50,6 +50,8 @@ if (Yii::$app->user->isGuest) {
     ]);
 } ?>
 
+<?php if(!Yii::$app->user->identity->organization){
+  ?>
     <section class="hwn">
         <div class="container">
             <div class="row">
@@ -93,7 +95,15 @@ if (Yii::$app->user->isGuest) {
             </div>
         </div>
     </section>
-<?= $this->render('/widgets/safety-signs') ?>
+<?php } ?>
+
+<?php if(Yii::$app->user->identity->organization){
+  ?>
+    <section>
+      <?= $this->render('/widgets/ai-quick-jobs'); ?>
+    </section>
+<?php } ?>
+
 <?php
 echo $this->render('/widgets/e-campus')
 ?>
@@ -102,7 +112,7 @@ echo $this->render('/widgets/e-campus')
         <div class="container">
             <div class="row">
                 <div class="head-about">
-                    <h3>What's Great About Us?</h3>
+                    <h3>What's Great About EmpowerYouth?</h3>
                 </div>
             </div>
             <div class="row">
@@ -150,7 +160,7 @@ echo $this->render('/widgets/e-campus')
                             <div class="bx-img">
                                 <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/free4all.png') ?>">
                             </div>
-                            <h4>Free For All</h4>
+                            <h4>Free Forever</h4>
                             <div class="about-text">You can apply for jobs and have your learning courses without giving
                                 any
                                 penny.
@@ -191,6 +201,7 @@ echo $this->render('/widgets/e-campus')
             </div>
         </div>
     </section>
+
     <section class="fixed-bttn">
         <div class="container">
             <div class="row">
@@ -218,11 +229,15 @@ echo $this->render('/widgets/e-campus')
         </div>
     </section>
 
+<?php if(!Yii::$app->user->identity->organization){
+  ?>
     <section>
-        <?= $this->render('/widgets/ai-quick-jobs'); ?>
+      <?= $this->render('/widgets/ai-quick-jobs'); ?>
     </section>
+<?php } ?>
 
-    <Section class="information">
+    <!-- Stats Section-->
+    <!-- <Section class="information">
         <div class="box-parent row">
             <div class="bolls">
                 <div class="boll1 bol2"></div>
@@ -260,7 +275,7 @@ echo $this->render('/widgets/e-campus')
                 </div>
             </div>
         </div>
-    </Section>
+    </Section>-->
 
     <section class="emp-back">
         <div class="container">
@@ -316,7 +331,8 @@ echo $this->render('/widgets/e-campus')
         </div>
     </section>
 
-    <section class="how-it-works">
+    <!-- How it Works Section-->
+    <!-- <section class="how-it-works">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -353,7 +369,7 @@ echo $this->render('/widgets/e-campus')
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
 <?= $this->render('/widgets/organizations/companies-with-us'); ?>
 
@@ -361,6 +377,9 @@ echo $this->render('/widgets/e-campus')
     'feedbackFormModel' => $feedbackFormModel,
     'partnerWithUsModel' => $partnerWithUsModel,
 ]); ?>
+
+
+<?= $this->render('/widgets/safety-signs') ?>
     <!--    <div class="bluebg"></div>-->
 <?php
 $this->registerCss('
