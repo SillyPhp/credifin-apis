@@ -778,7 +778,7 @@ $this->registerCss('
 }
 .short-main {
     border: 2px solid #eef1f5;
-    padding: 20px 10px 0;
+    padding: 10px 10px 0;
     position: relative;
     transition: all .3s;
     border-radius: 6px;
@@ -846,7 +846,7 @@ $this->registerCss('
     padding-left: 6px;
     font-family:roboto;
     flex-wrap: wrap;
-    height: 34px;
+    height: 22px;
     overflow: hidden;
 }
 .short-skills a {
