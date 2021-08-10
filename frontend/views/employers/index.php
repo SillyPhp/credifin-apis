@@ -236,7 +236,7 @@ echo $this->render('/widgets/e-campus')
     </section>
 <?php } ?>
 
-    <!-- Stats Section-->
+    <!-- Old Stats Section-->
     <!-- <Section class="information">
         <div class="box-parent row">
             <div class="bolls">
@@ -276,6 +276,45 @@ echo $this->render('/widgets/e-campus')
             </div>
         </div>
     </Section>-->
+
+    <!-- New Stats Section-->
+    <!--<section class="stats">
+        <div class="container">
+            <div class="row">
+                <h2>EmpowerYouth By Numbers</h2>
+            </div>
+            <div class="row">
+                <div class="col-sm-3 stat-card-holder">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-university"></i></div>
+                        <div class="stat-num">50+</div>
+                        <div class="stat-info">Colleges</div>
+                    </div>
+                </div>
+                <div class="col-sm-3 stat-card-holder">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
+                        <div class="stat-num">10k+</div>
+                        <div class="stat-info">Freshers</div>
+                    </div>
+                </div>
+                <div class="col-sm-3 stat-card-holder">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-user"></i></div>
+                        <div class="stat-num">5k+</div>
+                        <div class="stat-info">Experienced Candidates</div>
+                    </div>
+                </div>
+                <div class="col-sm-3 stat-card-holder">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
+                        <div class="stat-num">15k+</div>
+                        <div class="stat-info">Internships</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>-->
 
     <section class="emp-back">
         <div class="container">
@@ -558,6 +597,84 @@ $this->registerCss('
     color:#fff;
     font-weight: 300;
     font-family: roboto;
+}
+.stats{
+    background: #F5F5F5;
+    padding: 30px 0;
+}
+.stats .container{
+    padding: 0 15px !important;
+}
+.stats h2{
+    margin: 0 0 20px 0;
+    text-align: center; 
+    font-size: 28pt;
+    font-weight: 700;  
+}
+.stat-card{
+    box-shadow: 0px 0px 6.09259px 0.87037px rgb(0 0 0 / 25%);
+    border-radius: 8.7037px;
+    background: #fff;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+.stat-icon{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: auto;
+    position: relative;
+}
+.stat-card-holder:nth-child(1) .stat-icon{
+    background: #C4D9FC;
+}
+.stat-card-holder:nth-child(2) .stat-icon{
+    background: #E4FED3;
+}
+.stat-card-holder:nth-child(3) .stat-icon{
+    background: #FFCADB;
+}
+.stat-card-holder:nth-child(4) .stat-icon{
+    background: #FFD7BA;
+}
+.stat-card-holder:nth-child(1) .fas{
+    color: #7098DA;
+}
+.stat-card-holder:nth-child(2) .fas{
+    color: #B3E99C;
+}
+.stat-card-holder:nth-child(3) .fas{
+    color: #ED5485;
+}
+.stat-card-holder:nth-child(4) .fas{
+    color: #E3670C;
+}
+.stat-icon .fas{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 20px;
+}
+.stat-num {
+    font-size: 50px;
+    font-family: Open Sans;
+    text-align: center;
+    font-weight: bolder;
+    color: #000;
+}
+.stat-info {
+    text-align: center;
+    color: #A4A4A4;
+    font-size: 16px;
+    margin-top: -10px;
+    font-weight: 800;
+}
+@media (max-width:992px){
+    .stat-card{
+        min-height: 190px;
+    }
 }
 @media (max-width:768px){
     .box-parent{padding:20px 50px !important;}
@@ -1110,6 +1227,9 @@ $this->registerCss('
     display: none;
   }
   .bg-line {width:100%;left:0;transform:translatey(0%);}
+  .waves{
+    height: 35px;
+  }
 }
 @media only screen and (max-width: 550px){
   .companies-header{
