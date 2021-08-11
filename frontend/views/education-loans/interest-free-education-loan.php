@@ -4,7 +4,7 @@ use yii\helpers\Url;
 $this->title = 'Interest Free Education Loan';
 $keywords = 'Interest Free Loans available for select colleges/Universities | Empower Youth';
 $description = 'Do Not let monetary constraints stop your from getting admission in your dream college/ university';
-$image = Url::to('@eyAssets/images/pages/education-loans/interest-free-share.png', 'https');
+$image = Url::to('@eyAssets/images/pages/education-loans/interest-free-education-loan.png', 'https');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
