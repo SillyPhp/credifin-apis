@@ -322,6 +322,27 @@ class LoanApplicationsForm extends LoanApplications
                                 $education_loan_payment_id[] = $loan_payment->education_loan_payment_enc_id;
                                 $this->_flag = true;
                             }
+
+                            if ($this->co_applicants && !empty($this->co_applicants) && $this->co_applicants != null) {
+                                foreach ($this->co_applicants as $key => $applicant) {
+                                    $model = new LoanCoApplicants();
+                                    $model->loan_co_app_enc_id = Yii::$app->security->generateRandomString(8);
+                                    $model->loan_app_enc_id = $this->loan_app_enc_id;
+                                    $model->name = $applicant['name'];
+                                    $model->relation = $applicant['relation'];
+                                    $model->employment_type = $applicant['employment_type'];
+                                    $model->annual_income = $applicant['annual_income'];
+                                    $model->created_by = (($userId) ? $userId : null);
+                                    $model->created_on = date('Y-m-d H:i:s');
+                                    if (!$model->save()) {
+                                        $transaction->rollback();
+                                        $this->_flag = false;
+                                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
+                                    } else {
+                                        $this->_flag = true;
+                                    }
+                                }
+                            }
                         }
                     }
                 }else{
