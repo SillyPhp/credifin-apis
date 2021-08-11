@@ -45,13 +45,13 @@ $this->registerCss('
     width: 100%;
 }
 .college-fee-headings h1{
-    font-size: 50px;
+    font-size: 40px;
     font-family: lora;
     font-weight: 600;
     color: #000;
 }
 .college-fee-headings p {
-    font-size: 24px;
+    font-size: 20px;
     font-family: roboto;
     color: #6a6a6a;
     line-height: 32px;
@@ -63,9 +63,9 @@ $this->registerCss('
 }
 .col-apply-btn {
     background: #fff;
-    padding: 14px 40px;
+    padding: 10px 22px;
     border-radius: 4px;
-    font-size: 20px;
+    font-size: 18px;
     color: #00a0e3;
     border: none;
     outline: none;
@@ -81,8 +81,7 @@ $this->registerCss('
 .college-fee-image1 {
     background: url(' . Url::to('@eyAssets/images/pages/education-loans/color-dots.png') . ');
     background-repeat: no-repeat;
-    min-height: 400px;
-    background-position: center;
+    background-position: bottom;
     background-size: cover;
 }
 @media screen and (max-width: 576px) and (min-height: 320px) {
