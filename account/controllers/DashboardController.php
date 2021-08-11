@@ -7,6 +7,7 @@ use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationReminder;
 use common\models\DropResumeApplications;
 use common\models\Interviewers;
+use common\models\LoanApplications;
 use common\models\OrganizationAssignedCategories;
 use common\models\ReviewedApplications;
 use common\models\ShortlistedApplicants;
@@ -260,6 +261,41 @@ class DashboardController extends Controller
                     $question[] = $array;
                 }
             }
+
+            $loan = LoanApplications::find()
+                ->alias('a')
+                ->select(['a.loan_app_enc_id', 'a.loan_status', 'a.applicant_name', 'a.years', 'a.semesters',
+                    'a.amount',
+                    '(CASE
+                        WHEN c1.course_name IS NOT NULL THEN c1.course_name
+                        WHEN e1.course_name IS NOT NULL THEN e1.course_name
+                        ELSE d.course_name
+                        END) as course_name',
+                    ])
+                ->joinWith(['loanApplications b' => function($b){
+                    $b->select(['b.loan_app_enc_id', 'b.parent_application_enc_id']);
+                }])
+                ->joinWith(['pathToClaimOrgLoanApplications c' => function($c){
+                    $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
+                        $cc->joinWith(['courseEnc c1']);
+                    }], false);
+                }], false)
+                ->joinWith(['pathToUnclaimOrgLoanApplications e' => function($e){
+                    $e->joinWith(['assignedCourseEnc ee' => function ($ee) {
+                        $ee->joinWith(['courseEnc e1']);
+                    }], false);
+                }], false)
+                ->joinWith(['pathToOpenLeads d'], false)
+                ->joinWith(['assignedLoanProviders f'], false)
+                ->where([
+                    'a.created_by'=>Yii::$app->user->identity->user_enc_id,
+                    'f.status'=>11,
+                    'a.parent_application_enc_id' => null,
+                    'a.is_deleted' => 0,
+                ])
+                ->asArray()
+                ->one();
+
             $app_reminder_form = new ApplicationReminderForm();
             $app_reminder = ApplicationReminder::find()
                 ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'is_deleted' => 0])
@@ -311,6 +347,7 @@ class DashboardController extends Controller
                 ->asArray()
                 ->one();
         }
+
         return $this->render('index', [
             'loanApplication' => $loanApplication,
             'applied' => $applied_app,
@@ -334,6 +371,7 @@ class DashboardController extends Controller
             'scriptModel' => $scriptModel,
             'userValues' => $this->_CompleteProfile(),
             'userPref' => $this->_CompletePreference(),
+            'loan' => $loan,
         ]);
     }
 

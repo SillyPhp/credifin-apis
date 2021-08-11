@@ -7,6 +7,9 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 $total_applications = count($applications);
 $next = 0;
+if(!$type){
+    $type = 'jobs';
+}
 Pjax::begin(['id' => 'pjax_active_jobs']);
 if (!empty($total_applications)) {
     ?>
@@ -44,16 +47,14 @@ if (!empty($total_applications)) {
                         }
                     } else {
                         ?>
-                        <div class="col-md-12">
                             <div class="tab-empty">
                                 <div class="tab-empty-icon">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/jobsclose.png'); ?>" class="img-responsive" alt=""/>
                                 </div>
                                 <div class="tab-empty-text">
-                                    <div class="">No closed jobs</div>
+                                    <div class="">No closed <?= $type ?></div>
                                 </div>
                             </div>
-                        </div>
                     <?php } ?>
                 </div>
             </div>
@@ -61,16 +62,14 @@ if (!empty($total_applications)) {
     </div>
     <?php
 } else { ?>
-    <div class="col-md-12">
         <div class="tab-empty">
             <div class="tab-empty-icon">
                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/jobsclose.png'); ?>" class="img-responsive" alt=""/>
             </div>
             <div class="tab-empty-text">
-                <div class="">No closed jobs</div>
+                <div class="">No closed <?= $type ?></div>
             </div>
         </div>
-    </div>
 <?php }
 Pjax::end();
 ?>

@@ -63,7 +63,6 @@ class SkillsUpForm extends Model
             [['skills', 'description', 'title', 'embed_code', 'channel_name', 'channel_id', 'video_id', 'video_tags', 'video_duration', 'blog_tags', 'author', 'industry', 'image', 'image_url', 'short_description', 'content_type'], 'trim'],
             [['source_url'], 'url', 'defaultScheme' => 'http'],
             [['image'], 'safe'],
-            [['source_url'], 'string', 'max' => 200],
             ['source_url', 'unique', 'targetClass' => SkillsUpPosts::className(), 'targetAttribute' => ['source_url' => 'post_source_url'], 'message' => 'This link has already been used.'],
             [['image'], 'file', 'extensions' => 'jpg, png, svg', 'skipOnEmpty' => true, 'maxFiles' => 1, 'maxSize' => 1024 * 1024 * 2],
         ];
@@ -98,7 +97,6 @@ class SkillsUpForm extends Model
             $utilitiesModel->variables['field_name'] = 'slug';
             $model->slug = $utilitiesModel->create_slug() . '-' . rand(100000, 999999);
             $model->content_type = $this->content_type;
-            $model->status = 'Active';
             if ($this->image) {
                 // saving post image
                 $model->cover_image_location = \Yii::$app->getSecurity()->generateRandomString();
@@ -118,7 +116,7 @@ class SkillsUpForm extends Model
             $model->created_on = date('Y-m-d H:i:s');
             if (!$model->validate() || !$model->save()) {
                 $transaction->rollBack();
-                throw new \Exception(array_values($model->firstErrors)[0]);
+                throw new \Exception(array_values($model->firstErrors));
             }
 
             $source = SkillsUpSources::findOne(['source_enc_id' => $this->source_id])->name;
@@ -228,7 +226,8 @@ class SkillsUpForm extends Model
                     break;
                 case  'Podcast':
                     break;
-                case  'Blog':
+                case  'Blog' :
+                case 'Article':
                     $blogType = Categories::find()
                         ->alias('a')
                         ->select(['a.category_enc_id', 'a.name'])
@@ -337,8 +336,6 @@ class SkillsUpForm extends Model
                         throw new \Exception(array_values($skillsUpCourse->firstErrors)[0]);
                     }
                     break;
-                default :
-                    throw new \Exception('content type not found');
             }
 
             // save author
@@ -441,6 +438,8 @@ class SkillsUpForm extends Model
             return ['status' => 200];
 
         } catch (\Exception $e) {
+            print_r($e->getMessage());
+            die();
             $transaction->rollBack();
             return ['status' => 500, 'message' => $e->getMessage()];
         }

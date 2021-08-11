@@ -66,12 +66,11 @@ class EducationLoansController extends Controller
             ->all();
         return $this->render("education-loan-index", [
             'data' => $data,
-            'loan_org' => $loan_org,
             'blogs' => $this->getBlogsByTags(['education loan'])
         ]);
     }
 
-    public function actionApply($ref_id = null)
+    public function actionApply($ref_id = null,$lead_id = null)
     {
         if(!Yii::$app->user->identity->organization->organization_enc_id):
         $india = Countries::findOne(['name' => 'India'])->country_enc_id;
@@ -82,6 +81,7 @@ class EducationLoansController extends Controller
         return $this->render('apply-general-loan-form', [
             'india' => $india,
             'ref_id' => $ref_id,
+            'lead_id' => $lead_id,
             'action_name' => $action_name
         ]);
         else:
@@ -134,9 +134,10 @@ class EducationLoansController extends Controller
         return $this->render('education-loan-university');
     }
 
-    public function actionSchoolFeeLoanApply(){
+    public function actionSchoolFeeLoanApply($ref_id = null,$lead_id = null){
         if(!Yii::$app->user->identity->organization->organization_enc_id):
-        return $this->render('school-fee-loan-form');
+//        return $this->render('school-fee-loan-form');
+        return $this->actionApply($ref_id, $lead_id);
     else:
         throw new HttpException(401, Yii::t('frontend', 'Sorry, You Are Unauthorized, This Section Can Only Be View In Candidate Login'));
         endif;
@@ -344,9 +345,17 @@ class EducationLoansController extends Controller
             $model->load(Yii::$app->request->post());
             return ActiveForm::validate($model);
         }
-        return $this->render('annual-fee-financing',[
+      $loan_org = Organizations::find()
+        ->select(['organization_enc_id', 'name', 'logo', 'logo_location',
+          'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
+        ->where(['is_deleted' => 0, 'has_loan_featured' => 1, 'status' => 'Active'])
+        ->asArray()
+        ->all();
+
+      return $this->render('annual-fee-financing',[
             'model' => $model,
             'data' => $data,
+            'loan_org' => $loan_org,
             'blogs' => $this->getBlogsByTags(['annual fee financing', 'annual fee finance'])
         ]);
     }

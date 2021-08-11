@@ -119,7 +119,7 @@ if (!empty($total_applications)) {
                                     </div>
                                 </a>
                                 <div class="exp-soon-msg">
-                                    Expring Soon
+                                    Expiring Soon
                                 </div>
                             </div>
                             <?php
@@ -217,7 +217,7 @@ $this->registerCss("
     left:0;
 }
 .hr-company-box:hover > .lf-bttn{
-    left:13px;
+    left:0px;
     opacity:1;
 }
 .lf-bttn a{

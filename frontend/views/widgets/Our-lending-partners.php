@@ -37,12 +37,12 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3 col-xs-6">
                     <div class="college-card">
                         <div class="college-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png') ?>"
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/global-logo.png') ?>"
                                  alt="InCred">
                         </div>
                         <div class="partner-name">
                             <div class="text-effect"></div>
-                            <p>InCred</p>
+                            <p>Global Financial Services</p>
                         </div>
                     </div>
                 </div>
@@ -72,7 +72,7 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3 col-xs-6">
                     <div class="college-card">
                         <div class="college-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>" alt="PHF Leasing">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/phf-leasing-ltd.png') ?>" alt="PHF Leasing">
                         </div>
                         <div class="partner-name">
                             <div class="text-effect"></div>
@@ -88,6 +88,28 @@ use yii\helpers\Url;
                         <div class="partner-name">
                             <div class="text-effect"></div>
                             <p>We Pay India</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-3 col-xs-6">
+                    <div class="college-card">
+                        <div class="college-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/paisa-online.png') ?>" alt="Amrit Malwa Private Limtied">
+                        </div>
+                        <div class="partner-name">
+                            <div class="text-effect"></div>
+                            <p>Paisa Online</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-3 col-xs-6">
+                    <div class="college-card">
+                        <div class="college-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/mpower-logo.jpg') ?>" alt="Amrit Malwa Private Limtied">
+                        </div>
+                        <div class="partner-name">
+                            <div class="text-effect"></div>
+                            <p>MPower Financing</p>
                         </div>
                     </div>
                 </div>

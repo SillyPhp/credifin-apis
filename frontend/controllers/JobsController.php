@@ -24,6 +24,8 @@ use common\models\UnclaimedOrganizations;
 use common\models\UnclaimOrganizationLocations;
 use common\models\UsaDepartments;
 use common\models\Usernames;
+use common\models\UserPreferences;
+use common\models\UserSkills;
 use frontend\models\applications\PreferredApplicationCards;
 use frontend\models\curl\RollingCurl;
 use frontend\models\curl\RollingCurlRequest;
@@ -386,6 +388,9 @@ class JobsController extends Controller
             }
             if ($parameters['slug'] && !empty($parameters['slug'])) {
                 $options['slug'] = $parameters['slug'];
+            }
+            if ($parameters['skills'] && !empty($parameters['skills'])) {
+                $options['skills'] = $parameters['skills'];
             }
             $cards = ApplicationCards::jobs($options);
             if (count($cards) > 0) {

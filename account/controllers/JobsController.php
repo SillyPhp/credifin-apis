@@ -19,7 +19,9 @@ use common\models\ErexxEmployerApplications;
 use common\models\FollowedOrganizations;
 use common\models\RejectionReasons;
 use common\models\ShortlistedApplicants;
+use common\models\UserPreferences;
 use common\models\UserSkills;
+use frontend\models\applications\ApplicationCards;
 use http\Params;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -28,6 +30,7 @@ use yii\web\Response;
 use yii\helpers\Url;
 use yii\web\HttpException;
 use yii\web\UploadedFile;
+use yii\db\Expression;
 use common\models\Industries;
 use common\models\Organizations;
 use common\models\EmployerApplications;
@@ -399,6 +402,50 @@ class JobsController extends Controller
             ->asArray()
             ->all();
 
+        $userLocation = UserPreferences::find()
+            ->alias('a')
+            ->select(['a.preference_enc_id'])
+            ->joinWith(['userPreferredLocations pl' => function($pl){
+                $pl->select(['pl.preference_enc_id','pl.preferred_location_enc_id', 'pl.city_enc_id', 'c.name']);
+                $pl->joinWith(['cityEnc c'], false);
+                $pl->onCondition(['pl.is_deleted' => 0]);
+            }])
+            ->where([
+                'a.created_by' => Yii::$app->user->identity->user_enc_id,
+                'a.assigned_to' => 'Jobs'
+            ])
+            ->asArray()
+            ->one();
+
+        $locations = [];
+        foreach ($userLocation['userPreferredLocations'] as $location){
+            array_push($locations, $location['name']);
+        }
+
+        $userSkills = UserSkills::find()
+            ->alias('a')
+            ->select(['a.user_skill_enc_id', 'a.skill_enc_id', 'se.skill'])
+            ->joinWith(['skillEnc se'], false)
+            ->where([
+                'a.created_by' => Yii::$app->user->identity->user_enc_id,
+                'a.is_deleted' => 0,
+            ])
+            ->asArray()
+            ->all();
+
+        $skills = [];
+        foreach ($userSkills as $skill){
+            array_push($skills, $skill['skill']);
+        }
+        $options['limit'] = 3;
+        $options['location'] = implode(',', $locations);
+        $options['skills'] = implode(',', $skills);
+        $options['orderBy'] = new Expression('rand()');
+
+        $jobsByLocation = ApplicationCards::jobs($options);
+        unset($options['location']);
+        $jobsBySkills = ApplicationCards::jobs($options);
+
         return $this->render('dashboard/individual', [
             'shortlisted' => $shortlist_jobs,
             'applied' => $applied_applications,
@@ -412,6 +459,10 @@ class JobsController extends Controller
             'accepted' => $accepted_jobs,
             'total_accepted' => $total_accepted,
             'shortlist1' => $shortlist1,
+            'jobsByLocation' => $jobsByLocation,
+            'preferredLocations' => implode(',', $locations),
+            'jobsBySkills' => $jobsBySkills,
+            'preferredSkills' => implode(',', $skills),
         ]);
     }
 
@@ -1794,7 +1845,6 @@ class JobsController extends Controller
                 }], false)
                 ->where([
                     "a.is_erexx_approved" => 1,
-                    "a.has_placement_rights" => 1,
                     "a.status" => "Active",
                     "a.is_deleted" => 0,
                 ])

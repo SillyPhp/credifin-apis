@@ -44,7 +44,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                         <form action="" id="myForm" autocomplete="off">
                             <div class="tab" id="step1">
                                 <div class="row m-0">
-                                    <div class="col-md-12">
+                                    <div class="col-md-12 mt-40">
                                         <h1 class="heading-style"><?php
                                             if($action_name == 'interest-free'){
                                                 echo 'Interest Free Education Loan';

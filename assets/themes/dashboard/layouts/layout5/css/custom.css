@@ -152,6 +152,7 @@ a:hover{
     border-radius:14px !important; 
     margin-bottom:20px; 
     text-decoration:none;
+    position: relative;
     min-height:266px;
 }
 .hr-company-box:hover{
