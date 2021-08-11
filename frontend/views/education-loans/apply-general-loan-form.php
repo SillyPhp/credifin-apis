@@ -1558,19 +1558,19 @@ function ajaxSubmit()
     var loan_application_type = $('input[name="applicantTypeRadio"]:checked').val();
     let co_applicants = [];
     var obj = {};
-    obj['name'] = $('input[name="co-name[1]"]').val()
-    obj['relation'] = $('input[name="co-relation[1]"]:checked').val();
-    obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').val();
-    obj['annual_income'] = $('input[name="co-anualincome[1]"]').val(); 
+    obj['name'] = $('input[name="co-name[1]"]').not(':hidden').val()
+    obj['relation'] = $('input[name="co-relation[1]"]:checked').not(':hidden').val();
+    obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').not(':hidden').val();
+    obj['annual_income'] = $('input[name="co-anualincome[1]"]').not(':hidden').val(); 
     co_applicants.push(obj);
     if ($('input[name="co-name[2]"]').length>0){
         if ($('input[name="co-name[2]"]').val().length!=0)
         {
         var objCoBorrower = {};
-        objCoBorrower['name'] = $('input[name="co-name[2]"]').val()
-        objCoBorrower['relation'] = $('input[name="co-relation[2]"]:checked').val();
-        objCoBorrower['employment_type'] = $('input[name="co-emptype[2]"]:checked').val();
-        objCoBorrower['annual_income'] = $('input[name="co-anualincome[2]"]').val();
+        objCoBorrower['name'] = $('input[name="co-name[2]"]').not(':hidden').val()
+        objCoBorrower['relation'] = $('input[name="co-relation[2]"]:checked').not(':hidden').val();
+        objCoBorrower['employment_type'] = $('input[name="co-emptype[2]"]:checked').not(':hidden').val();
+        objCoBorrower['annual_income'] = $('input[name="co-anualincome[2]"]').not(':hidden').val();
         co_applicants.push(objCoBorrower);
         }
     }
