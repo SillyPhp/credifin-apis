@@ -15,8 +15,8 @@ use yii\helpers\Url;
                     </h1>
                     <p>Our annual fee financing solution provides loan to parents and students on annual basis with easy monthly installments designed in a way to make it easier for the borrowers to repay.</p>
                     <div class="header-btn">
-                        <a href="/education-loans/apply" class="apply-now btn-orange">APPLY NOW</a>
-                        <a href="#contact" class="apply-now">Enquire Now</a>
+                        <a href="/education-loans/apply" class="apply-now btn-orange">Apply Now</a>
+                        <a href="#contact" class="enq-now">Enquire Now</a>
                     </div>
                 </div>
             </div>
@@ -212,6 +212,7 @@ $this->registerCss('
     font-size: 45px;
     color: #00a0e3;
     font-family: Roboto;
+    min-height: 64px;
 }
 .header-text p{
     font-size: 18px;
@@ -411,7 +412,10 @@ $this->registerCss('
   z-index: 1;
   transition: 300ms all linear;
 }
-.apply-now{
+.header-btn{
+    margin-top: 30px;
+}
+.enq-now, .apply-now{
     padding: 8px 20px;
 	background: #00A0E3;
 	color: #fff;
@@ -426,16 +430,22 @@ $this->registerCss('
     background: #ff7803 !important;
     border: 1px solid #ff7803 !important;
     margin-right: 10px;
-}
-.apply-now:hover{
-    background: #ff7803; 
-    color: #fff;
-    border: 1px solid #ff7803;
     transition: .3s ease;
 }
+.enq-now:hover{
+    background: #fff; 
+    color: #00a0e3;
+    border: 1px solid #fff;
+    transition: .3s ease;
+    font-weight: 700;
+    
+}
 .btn-orange:hover{
-    background: #00a0e3 !important;
-    border: 1px solid #00a0e3 !important;
+    background: #fff !important;
+    border: 1px solid #fff !important;
+    color: #ff7803;
+    font-weight: 700;
+    transition: .3s ease;
 }
 
 //.college-card-partner:hover{
@@ -473,6 +483,7 @@ $this->registerCss('
 @media only screen and (max-width: 550px){
     .header-text h1{
         font-size: 35px;
+        min-height: 50px;
     }
     .header-text p{
         font-size: 14px;
