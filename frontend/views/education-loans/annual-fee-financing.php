@@ -191,6 +191,9 @@ if($blogs['blogs']){
 
 <?php
 $this->registerCss('
+html{
+    scroll-behavior: smooth;
+}
 .header-benefit{
 }
 .annual-fee-header{
@@ -489,7 +492,19 @@ $this->registerCss('
         font-size: 14px;
     }
 }
-')
+');
+$script = <<<JS
+$("a[href^='#']").click(function(e) {
+        e.preventDefault();
+
+        var position = $($(this).attr("href")).offset().top;
+        $("body, html").animate({
+            scrollTop: position
+        }, 1500 );
+    });
+JS;
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.9/jquery.lazy.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJS($script);
 ?>
 <script>
     var TxtType = function(el, toRotate, period) {
