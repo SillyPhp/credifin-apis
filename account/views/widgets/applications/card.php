@@ -215,6 +215,7 @@ $this->registerCss("
     transition:all .3s;
     opacity:0;
     left:0;
+    top:5px;
 }
 .hr-company-box:hover > .lf-bttn{
     left:0px;
@@ -223,7 +224,7 @@ $this->registerCss("
 .lf-bttn a{
     display:block;
     padding:5px 7px;
-    border-radius: 0 0 8px 0;
+    border-radius: 0 8px 8px 0;
 }
 .fb-book{color:#3b5998;}
 .fb-book:hover{background-color:#3b5998;color:#fff;}

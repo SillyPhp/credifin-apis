@@ -43,7 +43,7 @@ foreach ($blacklistedApplicants['data'] as $s) { ?>
                     </div>
                 </div>
                 <div class="short-skills">
-                    <span>Job :</span>&nbsp;
+                    <span><?= ucfirst($type) ?> :</span>&nbsp;
                     <?php if ($s['applications']) {
                         foreach ($s['applications'] as $application) {
                             ?>
