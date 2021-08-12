@@ -179,6 +179,9 @@ $this->registerCss('
     .header-text p, .enq-now, .apply-now{
         font-size: 14px;
     }
+    .school-fee-text h2{
+        font-size: 21pt;
+    }
 }
 @media only screen and (max-width: 992px){
     .school-fee-info .row{
@@ -193,6 +196,19 @@ $this->registerCss('
     }
 }
 ');
+
+$script = <<<JS
+$("a[href^='#']").click(function(e) {
+        e.preventDefault();
+
+        var position = $($(this).attr("href")).offset().top;
+        $("body, html").animate({
+            scrollTop: position
+        }, 1500 );
+    });
+JS;
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.9/jquery.lazy.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJS($script);
 ?>
 <script>
     var TxtType = function(el, toRotate, period) {
