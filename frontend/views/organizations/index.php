@@ -468,25 +468,24 @@ function getCompanies(params={'business_activity':activities},template=$("#compa
                     utilities.initials(); 
                     $.fn.raty.defaults.path = '/assets/common/new_stars'; 
                     $('.average-star').raty({
-                   readOnly: true, 
-                   hints:['','','','',''], 
-                  score: function() {
-                    return $(this).attr('data-score');
-                  }
+                    readOnly: true, 
+                    hints:['','','','',''], 
+                    score: function() {
+                        return $(this).attr('data-score');
+                    }
                 });
                     if (total==response.total){
                         $('.load-more-bttn').hide();
                         loadmorecards = false;
                     }
                 }
-                else
-                    {
+                else {
                     if(page === 1) {
                         $('.empty').css('display','block');
                     }
                     $('.load-more-bttn').hide();
                     loadmorecards = false;
-                    }
+                }
             }
         })
     } 
@@ -498,8 +497,7 @@ var activities = [
     'Others',
     ];
 getCompanies();
-$(document).on('submit','#form_search_cmp',function(e)
-{
+$(document).on('submit','#form_search_cmp',function(e){
     var k = $('input[name="keyword"]').val().trim().replace(/[^a-z0-9\s]/gi, '');
     e.preventDefault();
     if (k.length==0||k=='')

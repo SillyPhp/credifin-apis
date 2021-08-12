@@ -141,15 +141,12 @@ $this->registerCss('
     font-size: 25px;
     color: #fff;
 }
-.study-in-usa-bg{
-    padding-top: 100px;
-}
 .study-in-usa-bg ul li{
     display: inline;
     margin-right: 10px;
 }
 .apply-now{
-    padding: 10px 15px;
+    padding: 10px 20px;
 	background: #00A0E3;
 	color: #fff;
 	border: 1px solid #00A0E3;
@@ -158,8 +155,6 @@ $this->registerCss('
 	font-family: roboto;
 	border-radius: 4px;
 	display: inline-block;
-	width: 150px;
-	text-align: center;
 }
 .btn-orange{
     background: #ff7803 !important;
@@ -221,10 +216,9 @@ $this->registerCss('
 	background-repeat: no-repeat;
 	background-size: cover;
 	display: flex;
-//	align-items: center;
+	align-items: center;
 	position: relative;
-	text-align: left;
-	height: 100vh;
+	min-height: 550px;
 }
 .opacity-div{
     position: absolute;
@@ -235,7 +229,7 @@ $this->registerCss('
 	background: rgba(0,0,0,.4);
 }
 .abroad-vector img {
-    max-width: 115%;
+    max-width: 100%;
 }
 .study-in-usa-bg p{
     font-size: 24px;
@@ -530,10 +524,26 @@ label {
     top:10px !important;
 }
 
-
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 1024px) and (min-width: 992px){
+    .study-in-usa-bg p {
+        font-size: 21px;
+        line-height: 28px;
+    }
+}
+@media only screen and (max-width: 768px) {
+.study-in-usa-bg {
+    text-align: center;
+}
 .study-in-usa-bg h1{
     font-size: 30px;
+}
+.study-map-box{
+    width:50%;
+    border: none;
+    margin-bottom: 20px;
+}
+.study-maps-sec{
+    margin-top:30px;
 }
 .h-point1 {
     width: 50%;
@@ -544,21 +554,12 @@ label {
 .course-box:nth-child(3n+0){
     margin-right:1%;
 }
+.abroad-vector img {
+    display: none;
+}   
 }
-@media only screen and (max-width: 768px) and (min-width: 320px){
-    .abroad-vector img {
-        display: none;
-    }
-    .study-in-usa-bg {
-        text-align: center;
-    }
-}
-@media only screen and (max-width: 1024px) and (min-width: 992px){
-    .study-in-usa-bg p {
-        font-size: 21px;
-        line-height: 28px;
-    }
-}
+@media only screen and (max-width: 500px) {
+.study-map-box{width:100%;}
 ');
 $script = <<<JS
 setTimeout(function (){

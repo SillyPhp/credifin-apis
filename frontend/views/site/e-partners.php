@@ -297,7 +297,7 @@ $this->registerCss('
 }
 .conRelative{
     position: relative;
-    background: url('. Url::to('@eyAssets/images/pages/education-loans/fin-img.png') .');
+    background: url('. Url::to('@eyAssets/images/pages/education-loans/education-loan-refinance.png') .');
     padding: 50px 40px 50px 0;
     background-repeat: no-repeat;
     background-position: right;

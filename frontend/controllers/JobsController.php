@@ -24,6 +24,8 @@ use common\models\UnclaimedOrganizations;
 use common\models\UnclaimOrganizationLocations;
 use common\models\UsaDepartments;
 use common\models\Usernames;
+use common\models\UserPreferences;
+use common\models\UserSkills;
 use frontend\models\applications\PreferredApplicationCards;
 use frontend\models\curl\RollingCurl;
 use frontend\models\curl\RollingCurlRequest;
@@ -387,6 +389,9 @@ class JobsController extends Controller
             if ($parameters['slug'] && !empty($parameters['slug'])) {
                 $options['slug'] = $parameters['slug'];
             }
+            if ($parameters['skills'] && !empty($parameters['skills'])) {
+                $options['skills'] = $parameters['skills'];
+            }
             $cards = ApplicationCards::jobs($options);
             if (count($cards) > 0) {
                 $response = [
@@ -449,7 +454,7 @@ class JobsController extends Controller
         }
         $app = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'l.name profile_name', 'a.square_image', 'l.category_enc_id profile_id', 'a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
+            ->select(['a.application_enc_id', 'l.name profile_name','a.story_image', 'a.square_image', 'l.category_enc_id profile_id', 'a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
             ->where(['a.unique_source_id' => $eaidk, 'a.status' => 'ACTIVE'])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);

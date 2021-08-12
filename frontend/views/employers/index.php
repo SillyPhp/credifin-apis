@@ -5,15 +5,43 @@ use yii\helpers\Url;
 
 $this->params['header_dark'] = false;
 ?>
-    <section class="header">
+    <Section class="companies-header">
         <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="header-content"></div>
+            <div class="row use-flex">
+                <div class="header-text">
+                    <h1>Hire the Best Candidate</h1>
+                    <p><Span class="txt-bold">Looking for the best candidates for your company ? </Span><br>
+                        Now hire highly skilled candidates and increase your company's worth absolutely free!
+                    </p>
+                    <?php if (Yii::$app->user->identity->organization) { ?>
+                        <div class="buttonss">
+                            <a href="/account/jobs/create" class="post-btn">Post a Job</a>
+                            <a href="/candidates" class="view-btn">View Candidate</a>
+                        </div>
+                    <?php } elseif(Yii::$app->user->isGuest) { ?>
+                        <div class="buttonss">
+                            <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="post-btn">Post a Job</a>
+                            <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="view-btn">View Candidate</a>
+                        </div>
+                    <?php } ?>
+                </div>
+                <div class="header-img">
+                    <img src="<?= Url::to('@eyAssets/images/pages/employers/group-m.png') ?>">
+                    <div class="floating-div">
+                        <img src="<?= Url::to('@eyAssets/images/pages/employers/suitcase.png') ?>">
+                        <div class="floating-text">
+                            Trusted Employees
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+        <div class="bg-circle circle1"></div>
+        <div class="bg-circle circle2"></div>
+        <div class="bg-circle circle3"></div>
+        <img src="<?= Url::to('@eyAssets/images/pages/employers/wave-line.png') ?>" class="bg-line">
+        <img src="<?= Url::to('@eyAssets/images/pages/employers/waves.png') ?>" class="waves">
+    </Section>
 
 <?php
 if (Yii::$app->user->isGuest) {
@@ -22,6 +50,8 @@ if (Yii::$app->user->isGuest) {
     ]);
 } ?>
 
+<?php if(!Yii::$app->user->identity->organization){
+  ?>
     <section class="hwn">
         <div class="container">
             <div class="row">
@@ -65,16 +95,24 @@ if (Yii::$app->user->isGuest) {
             </div>
         </div>
     </section>
-<?= $this->render('/widgets/safety-signs')?>
-    <?php
-        echo $this->render('/widgets/e-campus')
-    ?>
+<?php } ?>
+
+<?php if(Yii::$app->user->identity->organization){
+  ?>
+    <section>
+      <?= $this->render('/widgets/ai-quick-jobs'); ?>
+    </section>
+<?php } ?>
+
+<?php
+echo $this->render('/widgets/e-campus')
+?>
 
     <section class="great-bg">
         <div class="container">
             <div class="row">
                 <div class="head-about">
-                    <h3>What's Great About Us?</h3>
+                    <h3>What's Great About EmpowerYouth?</h3>
                 </div>
             </div>
             <div class="row">
@@ -122,7 +160,7 @@ if (Yii::$app->user->isGuest) {
                             <div class="bx-img">
                                 <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/free4all.png') ?>">
                             </div>
-                            <h4>Free For All</h4>
+                            <h4>Free Forever</h4>
                             <div class="about-text">You can apply for jobs and have your learning courses without giving
                                 any
                                 penny.
@@ -191,11 +229,15 @@ if (Yii::$app->user->isGuest) {
         </div>
     </section>
 
+<?php if(!Yii::$app->user->identity->organization){
+  ?>
     <section>
-        <?= $this->render('/widgets/ai-quick-jobs'); ?>
+      <?= $this->render('/widgets/ai-quick-jobs'); ?>
     </section>
+<?php } ?>
 
-    <Section class="information">
+    <!-- Old Stats Section-->
+    <!-- <Section class="information">
         <div class="box-parent row">
             <div class="bolls">
                 <div class="boll1 bol2"></div>
@@ -233,57 +275,93 @@ if (Yii::$app->user->isGuest) {
                 </div>
             </div>
         </div>
-    </Section>
+    </Section>-->
+
+    <!-- New Stats Section-->
+    <!--<section class="stats">
+        <div class="container">
+            <div class="row">
+                <h2>EmpowerYouth By Numbers</h2>
+            </div>
+            <div class="row">
+                <div class="col-sm-3 stat-card-holder">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-university"></i></div>
+                        <div class="stat-num">50+</div>
+                        <div class="stat-info">Colleges</div>
+                    </div>
+                </div>
+                <div class="col-sm-3 stat-card-holder">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
+                        <div class="stat-num">10k+</div>
+                        <div class="stat-info">Freshers</div>
+                    </div>
+                </div>
+                <div class="col-sm-3 stat-card-holder">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-user"></i></div>
+                        <div class="stat-num">5k+</div>
+                        <div class="stat-info">Experienced Candidates</div>
+                    </div>
+                </div>
+                <div class="col-sm-3 stat-card-holder">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
+                        <div class="stat-num">15k+</div>
+                        <div class="stat-info">Internships</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>-->
 
     <section class="emp-back">
         <div class="container">
             <div class="row">
                 <div class="emp-main">
-                    <h3>Job candidates have reported that they trust employees 3x More<Span> than employers to provide information on working at a company</Span>
-                    </h3>
-                    <div class="row">
-                        <div class="col-md-4 col-sm-4">
-                            <div class="set-size charts-container">
-                                <div class="pie-wrapper progress-75 style-2">
-                                    <span class="label">75<span class="smaller">%</span></span>
-                                    <div class="pie">
-                                        <div class="left-side half-circle"></div>
-                                        <div class="right-side half-circle"></div>
-                                    </div>
-                                    <div class="shadow"></div>
+                    <h3>Job candidates have reported that they trust employees 3x More<Span> than employers to provide information on working at a company</Span></h3>
+                    <div class="col-md-4 col-sm-4">
+                        <div class="set-size charts-container">
+                            <div class="pie-wrapper progress-75 style-2">
+                                <span class="label">75<span class="smaller">%</span></span>
+                                <div class="pie">
+                                    <div class="left-side half-circle"></div>
+                                    <div class="right-side half-circle"></div>
                                 </div>
-                                <div class="emp-text">of job seekers consider a
-                                    company's<span> employer brand before</span> even applying for a job
-                                </div>
+                                <div class="shadow"></div>
+                            </div>
+                            <div class="emp-text">of job seekers consider a
+                                company's<span> employer brand before</span> even applying for a job
                             </div>
                         </div>
-                        <div class="col-md-4 col-sm-4">
-                            <div class="set-size charts-container">
-                                <div class="pie-wrapper progress-75 style-2">
-                                    <span class="label">69<span class="smaller">%</span></span>
-                                    <div class="pie pie2">
-                                        <div class="left-side half-circle"></div>
-                                        <div class="right-side half-circle"></div>
-                                    </div>
-                                    <div class="shadow"></div>
+                    </div>
+                    <div class="col-md-4 col-sm-4">
+                        <div class="set-size charts-container">
+                            <div class="pie-wrapper progress-75 style-2">
+                                <span class="label">69<span class="smaller">%</span></span>
+                                <div class="pie pie2">
+                                    <div class="left-side half-circle"></div>
+                                    <div class="right-side half-circle"></div>
                                 </div>
-                                <div class="emp-text">of job seekers will <span>not accept</span> a job with a company
-                                    if that company has a <span>bad reputation</span></div>
+                                <div class="shadow"></div>
                             </div>
+                            <div class="emp-text">of job seekers will <span>not accept</span> a job with a company
+                                if that company has a <span>bad reputation</span></div>
                         </div>
-                        <div class="col-md-4 col-sm-4">
-                            <div class="set-size charts-container">
-                                <div class="pie-wrapper progress-75 style-2">
-                                    <span class="label">80<span class="smaller">%</span></span>
-                                    <div class="pie pie3">
-                                        <div class="left-side half-circle"></div>
-                                        <div class="right-side half-circle"></div>
-                                    </div>
-                                    <div class="shadow"></div>
+                    </div>
+                    <div class="col-md-4 col-sm-4">
+                        <div class="set-size charts-container">
+                            <div class="pie-wrapper progress-75 style-2">
+                                <span class="label">80<span class="smaller">%</span></span>
+                                <div class="pie pie3">
+                                    <div class="left-side half-circle"></div>
+                                    <div class="right-side half-circle"></div>
                                 </div>
-                                <div class="emp-text">of job seekers rely on <span>social media</span> and company
-                                    review sites as important <span>research resources</span> when looking for work
-                                </div>
+                                <div class="shadow"></div>
+                            </div>
+                            <div class="emp-text">of job seekers rely on <span>social media</span> and company
+                                review sites as important <span>research resources</span> when looking for work
                             </div>
                         </div>
                     </div>
@@ -292,7 +370,8 @@ if (Yii::$app->user->isGuest) {
         </div>
     </section>
 
-    <section class="how-it-works">
+    <!-- How it Works Section-->
+    <!-- <section class="how-it-works">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -329,7 +408,7 @@ if (Yii::$app->user->isGuest) {
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
 <?= $this->render('/widgets/organizations/companies-with-us'); ?>
 
@@ -337,9 +416,164 @@ if (Yii::$app->user->isGuest) {
     'feedbackFormModel' => $feedbackFormModel,
     'partnerWithUsModel' => $partnerWithUsModel,
 ]); ?>
+
+
+<?= $this->render('/widgets/safety-signs') ?>
     <!--    <div class="bluebg"></div>-->
 <?php
 $this->registerCss('
+.txt-bold{
+    font-weight: 500;
+    color: #ff7803;
+}
+.post-btn:hover, .view-btn:hover {
+    box-shadow: 0px 0px 5px -2px #555;
+    transform: scale(1.03);
+}
+.use-flex {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+.companies-header{
+  background-color: #ccdce7;
+  width: 100%;
+  min-height: 550px;
+  display: flex;
+  align-items:center;
+  flex-direction:row;
+  font-size: 18px;
+  position: relative;
+  overflow:hidden;
+  transition: all .3s;
+}
+.header-img, .header-text{
+  flex-basis:50%;
+  position:relative;
+}
+.header-img{
+  text-align: center;
+}
+
+.header-img > img{
+  width: 80%;
+  position: relative;
+  z-index: 2;
+}
+
+.header-text{
+  margin: 25px 0 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.header-text h1{
+  font-family: lobster;
+  margin-bottom: 10px;
+  position: relative;
+  display: inline-block;
+  padding: 5px 0;
+  font-size:40px;
+}
+
+.header-text p{
+  font-family: roboto;
+  margin: 5px 0;
+  color: #707070;
+}
+
+.buttonss a{
+    text-decoration: none;
+    padding: 6px 20px;
+    display: inline-block;
+    border-radius: 4px;
+    color: #fff;
+    font-family: roboto;
+    letter-spacing: 0.8px;
+    font-size: 16px;
+    transition: all .3s;
+}
+.buttonss{
+  margin-top: 25px;
+}
+.post-btn{
+  background-color: #00a0e3;
+}
+.view-btn{
+  background-color: #ff7803;
+}
+.header-text h1::before{
+  content: "";
+  position: absolute;
+  width: 30%;
+  height: 3px;
+  bottom:0;
+  left:0;
+  display: inline-block;
+  background-color: #ff7803;
+  border-radius: 10px;
+}
+
+.bg-circle{
+  width: 200px;
+  height: 200px;
+  background-color: #18A0FB;
+  filter: blur(100px);
+  position: absolute;
+  border-radius: 50%;
+  z-index: 0;
+  transform: translate(-50%, -50%);
+}
+
+.circle1{
+  top: 30%;
+  left: 0;
+}
+.circle2{
+  top: -20px;
+  right: 10px;
+}
+.circle3{
+  bottom:0;
+  right: 0;
+}
+.bg-line {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    z-index: 1;
+    transform: translatex(-35%);
+}
+
+.floating-div {
+    background: linear-gradient(45deg, #FDA085, #F6D365);
+    position: absolute;
+    top: 70%;
+    left: 0;
+    z-index: 3;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    font-family: roboto;
+    box-shadow: 8px 2px 5px 0 #00000065;
+    padding: 4px 10px;
+}
+
+.floating-div img{
+  height: auto;
+  width: 30px;
+  margin-right: 10px;
+}
+
+.waves{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  z-index: 4;
+}
+
 .box-parent {
     background:#ff7803;
     border-radius: 8px;
@@ -363,6 +597,84 @@ $this->registerCss('
     color:#fff;
     font-weight: 300;
     font-family: roboto;
+}
+.stats{
+    background: #F5F5F5;
+    padding: 30px 0;
+}
+.stats .container{
+    padding: 0 15px !important;
+}
+.stats h2{
+    margin: 0 0 20px 0;
+    text-align: center; 
+    font-size: 28pt;
+    font-weight: 700;  
+}
+.stat-card{
+    box-shadow: 0px 0px 6.09259px 0.87037px rgb(0 0 0 / 25%);
+    border-radius: 8.7037px;
+    background: #fff;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+.stat-icon{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: auto;
+    position: relative;
+}
+.stat-card-holder:nth-child(1) .stat-icon{
+    background: #C4D9FC;
+}
+.stat-card-holder:nth-child(2) .stat-icon{
+    background: #E4FED3;
+}
+.stat-card-holder:nth-child(3) .stat-icon{
+    background: #FFCADB;
+}
+.stat-card-holder:nth-child(4) .stat-icon{
+    background: #FFD7BA;
+}
+.stat-card-holder:nth-child(1) .fas{
+    color: #7098DA;
+}
+.stat-card-holder:nth-child(2) .fas{
+    color: #B3E99C;
+}
+.stat-card-holder:nth-child(3) .fas{
+    color: #ED5485;
+}
+.stat-card-holder:nth-child(4) .fas{
+    color: #E3670C;
+}
+.stat-icon .fas{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 20px;
+}
+.stat-num {
+    font-size: 50px;
+    font-family: Open Sans;
+    text-align: center;
+    font-weight: bolder;
+    color: #000;
+}
+.stat-info {
+    text-align: center;
+    color: #A4A4A4;
+    font-size: 16px;
+    margin-top: -10px;
+    font-weight: 800;
+}
+@media (max-width:992px){
+    .stat-card{
+        min-height: 190px;
+    }
 }
 @media (max-width:768px){
     .box-parent{padding:20px 50px !important;}
@@ -648,14 +960,6 @@ $this->registerCss('
     background:#ecf5fe;
     height:50px;
 }    
-.header{
-    background:url(' . Url::to('@eyAssets/images/pages/index2/cover-img.png') . ');
-    background-repeat:no-repeat; 
-    background-size:cover;
-}
-.header-content{
-    height:400px;
-}
 .vertically-center{
     position: relative;
     top: 50%;
@@ -908,5 +1212,37 @@ $this->registerCss('
     .header{
         background-position:-55px !important;
     }
+}
+
+@media only screen and (max-width: 768px){
+  .use-flex{
+    font-size: 16px;
+    flex-direction: column-reverse;
+  }
+  .header-img > img{
+    width: 80%;
+    margin-top:50px;
+  } 
+  .floating-div{
+    display: none;
+  }
+  .bg-line {width:100%;left:0;transform:translatey(0%);}
+  .waves{
+    height: 35px;
+  }
+}
+@media only screen and (max-width: 550px){
+  .companies-header{
+    text-align: center;
+    justify-content: center;
+  }
+  .header-text h1{font-size:34px;}
+  .header-text p{padding:0 10px;}
+  .buttons a{
+    padding: 5px 10px;
+  }
+  .buttons{
+    margin-top: 20px;
+  }
 }
 ');

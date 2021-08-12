@@ -151,17 +151,21 @@ $round_avg = round($overall_avg);
                     <!--                    </ul>-->
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
-                    <div class="follow-btn">
-                        <?php if (!empty($follow) && $follow['followed'] == 1) {
-                            ?>
-                            <button class="follow">Following</button>
+                    <?php if (Yii::$app->user->identity->organization) { ?>
+                        <span></span>
+                    <?php } else { ?>
+                        <div class="follow-btn">
+                            <?php if (!empty($follow) && $follow['followed'] == 1) {
+                                ?>
+                                <button class="follow">Following</button>
 
-                            <?php
-                        } elseif (!Yii::$app->user->isGuest) {
-                            ?>
-                            <button class="follow">Follow</button>
-                        <?php } ?>
-                    </div>
+                                <?php
+                            } elseif (!Yii::$app->user->isGuest) {
+                                ?>
+                                <button class="follow">Follow</button>
+                            <?php } ?>
+                        </div>
+                    <?php } ?>
                     <div class="social-btns">
                         <?php if (!empty($organization['facebook'])) { ?><a
                             href="<?= htmlspecialchars_decode($organization['facebook']) ?>" class="facebook-social"
@@ -230,7 +234,8 @@ $round_avg = round($overall_avg);
                                     <div class="desc-image mt-40">
                                         <img src="/assets/themes/ey/images/pages/dashboard/no-description.png">
                                     </div>
-                                    <p class="heading_style_1">No Business details have been provided by the Organization.</p>
+                                    <p class="heading_style_1">No Business details have been provided by the
+                                        Organization.</p>
                                 </div>
                             <?php } ?>
 
@@ -848,7 +853,7 @@ $this->registerCss('
 }
 .team-icon{
     width:100%;
-    height:186px;
+    height:230px;
     overflow:hidden;
     object-fit:cover;
     position:relative;

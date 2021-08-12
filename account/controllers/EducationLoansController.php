@@ -87,7 +87,6 @@ class EducationLoansController extends Controller
             }], true, 'LEFT JOIN')
             ->asArray()
             ->all();
-        print_r($loansApplications);
     }
 
     public function actionDashboard($filter = null, $search = null)
@@ -490,7 +489,8 @@ class EducationLoansController extends Controller
         return 'updated';
     }
 
-    public function actionCandidateDashboard($id){
+    public function actionCandidateDashboard($id)
+    {
         $data = Yii::$app->userData->loanApplication($id, Yii::$app->user->identity->user_enc_id);;
         if (!$data) {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
@@ -501,13 +501,18 @@ class EducationLoansController extends Controller
         ]);
     }
 
-    public function actionLoanProfileView(){
+    public function actionLoanProfileView()
+    {
         return $this->render('loan-profile-view');
     }
-    public function actionIndividual(){
+
+    public function actionIndividual()
+    {
         return $this->render('individual');
     }
-    public function actionEmiDetails($id){
+
+    public function actionEmiDetails($id)
+    {
         setlocale(LC_MONETARY, 'en_IN');
         $data = LoanSanctionReports::findOne(['report_enc_id' => $id]);
         return $this->render('emi-details', [

@@ -153,12 +153,12 @@ class ApplicationCards
                         array_push($locations, $loc);
                     }
                 }
-                if ($userId) {
+                if ($userId && !Yii::$app->user->identity->organization->organization_enc_id) {
                     $resumeModel = new ResumeData();
                     $resumeData = $resumeModel->getResumeData($userId);
                     $job_preference = self::getPreference('Jobs');
                     if (!empty($job_preference) || !empty($resumeData)) {
-                        if (!empty($job_preference['locations'])) {
+                        if (!empty($job_preference['locations']) && $job_preference['locations']) {
                             foreach ($job_preference['locations'] as $loc) {
                                 $expLoc = explode(", ", $loc);
                                 foreach ($expLoc as $el) {
@@ -166,10 +166,10 @@ class ApplicationCards
                                 }
                             }
                         }
-                        if (!empty($resumeData['userSkills'])) {
+                        if (!empty($resumeData['userSkills']) && $resumeData['userSkills']) {
                             $resumeSkills = ArrayHelper::getColumn($resumeData['userSkills'], 'skill');
                         }
-                        if (!empty($resumeData['userWorkExperiences'])) {
+                        if (!empty($resumeData['userWorkExperiences']) && $resumeData['userWorkExperiences']) {
                             foreach ($resumeData['userWorkExperiences'] as $exp) {
                                 array_push($jobTitles, $exp['title']);
                                 array_push($locations, $exp['city'], $exp['state'], $exp['country']);
@@ -195,6 +195,9 @@ class ApplicationCards
             default :
                 if (!empty($options['location'])) {
                     $optLocation = $options['location'];
+                }
+                if (!empty($options['skills'])) {
+                    $skills = explode(',', $options['skills']);
                 }
         }
 
@@ -243,7 +246,8 @@ class ApplicationCards
                 'm.wage_duration as salary_duration',
                 'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
-                '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
+                '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city',
+                'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ", ") skills',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -263,9 +267,12 @@ class ApplicationCards
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+            ->leftJoin(ApplicationSkills::tableName() . 'as sy', 'sy.application_enc_id = a.application_enc_id')
+            ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = sy.skill_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['a.application_for' => 1])
             //->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
+            ->groupBy(['a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
         $cards2 = (new \yii\db\Query())
@@ -317,6 +324,7 @@ class ApplicationCards
                 WHEN g.name IS NULL THEN x.location_name
                 ELSE g.name
                END) as city',
+                'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ", ") skills',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->leftJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -329,9 +337,12 @@ class ApplicationCards
             ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
+            ->leftJoin(ApplicationSkills::tableName() . 'as sy', 'sy.application_enc_id = a.application_enc_id')
+            ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = sy.skill_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['a.application_for' => 1])
             // ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
+            ->groupBy(['a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
 

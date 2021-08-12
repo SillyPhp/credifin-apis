@@ -771,7 +771,7 @@ $this->registerCss('
 }
 .team-icon{
     width:100%;
-    height:186px;
+    height:230px;
     overflow:hidden;
     object-fit:cover;
     position:relative;
@@ -971,7 +971,7 @@ a.web{
 #enable, #enable:hover, a.facebook-social, .facebook-social:hover,
 a.twitter, .twitter:hover, a.linkedin-social, .linkedin-social:hover, a.web, .web:hover{
     transition:.3s all;
-}
+}l
 /*----follow btn ends----*/
 /*----tabs----*/
 .nav-tabs > li.active a, .nav-tabs > li.active a:hover, .nav-tabs > li.active a:focus{

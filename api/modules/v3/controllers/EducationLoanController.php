@@ -12,6 +12,7 @@ use common\models\Cities;
 use common\models\CollegeCourses;
 use common\models\CollegeCoursesPool;
 use common\models\EducationLoanPayments;
+use common\models\extended\CloneLoanApplication;
 use common\models\InstituteLeadsPayments;
 use common\models\LoanApplicantResidentialInfo;
 use common\models\LoanApplications;
@@ -61,6 +62,7 @@ class EducationLoanController extends ApiBaseController
                 'loan-second-form' => ['POST', 'OPTIONS'],
                 'upload-image' => ['POST', 'OPTIONS'],
                 'update-institute-payment' => ['POST', 'OPTIONS'],
+                'refinance' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -161,31 +163,35 @@ class EducationLoanController extends ApiBaseController
         }
 
         if ($params['status'] == 'captured') {
-            $loan_application = LoanApplications::find()
-                ->where(['loan_app_enc_id' => $loan_app_id])
-                ->one();
-            if ($loan_application) {
-                $loan_application->status = 0;
-                $loan_application->updated_by = null;
-                $loan_application->updated_on = date('Y-m-d H:i:s');
-                $loan_application->update();
-                $params['loan_app_enc_id'] = $loan_application->loan_app_enc_id;
-                $params['name'] = $loan_application->applicant_name;
-                $params['email'] = $loan_application->email;
-                Yii::$app->notificationEmails->educationLoanThankYou($params);
+            $loan_applications = LoanApplications::find()
+                ->where(['in','loan_app_enc_id', $loan_app_id])
+                ->all();
+            if ($loan_applications) {
+                foreach ($loan_applications as $loan_application){
+                    $loan_application->status = 0;
+                    $loan_application->updated_by = null;
+                    $loan_application->updated_on = date('Y-m-d H:i:s');
+                    $loan_application->update();
+                    $params['loan_app_enc_id'] = $loan_application->loan_app_enc_id;
+                    $params['name'] = $loan_application->applicant_name;
+                    $params['email'] = $loan_application->email;
+                }
             }
+            Yii::$app->notificationEmails->educationLoanThankYou($params);
         }
 
-        $loan_payments = EducationLoanPayments::find()
-            ->where(['education_loan_payment_enc_id' => $loan_payment_id])
-            ->one();
-        if ($loan_payments) {
-            $loan_payments->payment_id = (($params['payment_id']) ? $params['payment_id'] : null);
-            $loan_payments->payment_status = $params['status'];
-            $loan_payments->payment_signature = $params['signature'];
-            $loan_payments->updated_by = null;
-            $loan_payments->updated_on = date('Y-m-d H:i:s');
-            $loan_payments->update();
+        $loan_payment = EducationLoanPayments::find()
+            ->where(['in','education_loan_payment_enc_id' ,$loan_payment_id])
+            ->all();
+        if ($loan_payment) {
+            foreach ($loan_payment as $loan_payments){
+                $loan_payments->payment_id = (($params['payment_id']) ? $params['payment_id'] : null);
+                $loan_payments->payment_status = $params['status'];
+                $loan_payments->payment_signature = $params['signature'];
+                $loan_payments->updated_by = null;
+                $loan_payments->updated_on = date('Y-m-d H:i:s');
+                $loan_payments->update();
+            }
         }
         return $this->response(200, ['status' => 200, 'message' => 'success']);
     }
@@ -229,10 +235,14 @@ class EducationLoanController extends ApiBaseController
                 $model->country_enc_id = $params['country_enc_id'];
             }
             if ($model->load(Yii::$app->request->post(), '')) {
-                $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
+                $model->applicant_dob = null;
                 if ($model->validate()) {
-                    if ($data = $model->add($params['is_addmission_taken'], $userId, $parser['college_id'], 'Ey', $parser['is_claim'], $course_name, $pref, $params['refferal_id'])) {
-                        return $this->response(200, ['status' => 200, 'data' => $data]);
+                    if ($data = $model->add($params['is_addmission_taken'], $userId, $parser['college_id'], 'Ey', $parser['is_claim'], $course_name, $pref, $params['refferal_id'],$params['is_applicant'])) {
+                        if ($data['status']){
+                            return $this->response(200, ['status' => 200, 'data' => $data]);
+                        }else{
+                            return $this->response(500, ['status' => 500, 'message' => $data['message']]);
+                        }
                     }
                     return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
                 }
@@ -244,32 +254,33 @@ class EducationLoanController extends ApiBaseController
         }
     }
 
-    public function actionSaveTeachersLoan(){
+    public function actionSaveTeachersLoan()
+    {
         $params = Yii::$app->request->post();
-        if ($params){
+        if ($params) {
             $model = new LoanApplicationsForm();
             $orgDate = $params['applicant_dob'];
             $userId = (($params['userID']) ? $params['userID'] : null);
             if ($model->load(Yii::$app->request->post(), '')) {
-                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
-                 $model->months = (($params['months']) ? $params['months'] : null);
-                 $model->employement_type = $params['employement_type'];
-                 if ($model->validate()) {
-                  if ($data = $model->saveTeachersLoan( $userId,'Ey',$params)) {
-                      if ($data['status']){
-                          return $this->response(200, ['status' => 200, 'data' => $data]);
-                      }else{
-                          return $this->response(500, ['status' => 500, 'message' => $data['message']]);
-                      }
+                $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
+                $model->months = (($params['months']) ? $params['months'] : null);
+                $model->employement_type = $params['employement_type'];
+                if ($model->validate()) {
+                    if ($data = $model->saveTeachersLoan($userId, 'Ey', $params)) {
+                        if ($data['status']) {
+                            return $this->response(200, ['status' => 200, 'data' => $data]);
+                        } else {
+                            return $this->response(500, ['status' => 500, 'message' => $data['message']]);
+                        }
+                    }
+                    return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
                 }
-                return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
+                return $this->response(409, ['status' => 409, $model->getErrors()]);
             }
-            return $this->response(409, ['status' => 409, $model->getErrors()]);
-            }
-                return $this->response(422, ['status' => 422, 'message' => 'Modal values not loaded..']);
-             } else {
+            return $this->response(422, ['status' => 422, 'message' => 'Modal values not loaded..']);
+        } else {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
-            }
+        }
     }
 
     public function actionSaveSchoolFeeLoan(){
@@ -279,7 +290,7 @@ class EducationLoanController extends ApiBaseController
             $orgDate = $params['applicant_dob'];
             $userId = (($params['userID']) ? $params['userID'] : null);
             if ($model->load(Yii::$app->request->post(), '')) {
-                $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
+                $model->applicant_dob = null;
                 $model->yearly_income = $params['yearly_income'];
                 if ($model->validate()) {
                     if ($data = $model->saveSchoolFeeLoan( $userId,'Ey',$params)) {
@@ -1087,5 +1098,32 @@ class EducationLoanController extends ApiBaseController
         } else {
             return $this->response(500, ['status' => 500, 'message' => 'No Params Found']);
         }
+    }
+
+    public function actionRefinance()
+    {
+        try {
+            $cloneLoanModel = new CloneLoanApplication();
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['loan_app_id']) || !isset($params['amount']) || !isset($params['year']) || !isset($params['semester']) || !isset($params['user_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $loan_data = $cloneLoanModel->_getLoanData($params['loan_app_id']);
+            $loan_data['amount'] = $params['amount'];
+            $loan_data['years'] = $params['year'];
+            $loan_data['semesters'] = $params['semester'];
+            $loan_data['user_id'] = $params['user_id'];
+
+
+            if ($cloneLoanModel->_saveApplication($loan_data)) {
+                return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+            }
+        } catch (\Exception $e) {
+            return $this->response(500, ['status' => 500, 'message' => $e->getMessage()]);
+        }
+
     }
 }

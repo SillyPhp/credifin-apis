@@ -225,11 +225,12 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="col-md-8 col-sm-8 col-xs-12">
+                    <div class="col-md-12">
                         <div class="heading-set">
                             <h2 class="heading-style"> Our Contributers </h2>
                         </div>
                     </div>
+                </div>
             </div>
             <div class="row" id="contributors">
 
@@ -397,13 +398,14 @@ textarea:focus{
     font-weight: 500;
     font-size: 18px;
     font-family: roboto;
-	margin:0;
+    margin-bottom: 5px;
 }
 .text-bold{
   font-weight:700;
 } 
 .paragraph{
-    text-align: justify;
+    text-align: left;
+    min-height: 115px;
 }
 .paragraph-set{
     text-align:justify;
@@ -414,13 +416,11 @@ textarea:focus{
     padding-top: 20px;
 }
 .card-box {
-	border: 1px solid lightgray;
-	border-radius: 10px;
-	box-shadow: 3px 3px 10px 4px lightgray;
-	transition: 0.5s;
-	padding: 10px;
-	height: 250px;
-	margin-top: 15px;
+	 border-radius: 10px;
+    box-shadow: 0px 0px 6px 1px #eee;
+    transition: 0.5s;
+    padding: 15px;
+    margin-top: 15px;
 }
 .card-box:hover{
     background-color:#EF7F1A;
@@ -435,11 +435,7 @@ textarea:focus{
     padding: 25px 25px 0px 10px;
     font-family: Quicksand;  
 }
-@media only screen and (max-width: 1024px){
-.right-text{
-    padding:90px 0 0 0 !important;
-    }
-}
+
 .right-text{
  padding: 150px 0 5px 0;
  }
@@ -563,149 +559,6 @@ textarea{
 	background-size: 100% 100%;	
 	background-size: 100% 100%;	
 }
-@media only screen and (max-width: 768px){
-.footer{
-   margin-top:0 !important;
- }
-.input-box{
-   max-width: 98% !important;
-}
-.right-text{
-     padding: 12px 0 0px 0px;
-  }
-.h2-head{
-    font-size: 23px;
-    padding:0;
-}
-
-.animation-img2 {
-	left: 300px;
-	top: 15px;
-}
-
-.animation-img6 {
-	top: 76px;
-	left: 6px;
-}
-
-.animation-img4 {
-	top: 145px;
-	left: 211px;
-}
-
-.animation-img3 {
-	left: 333px;
-	top: 100px;
-}
-
-.animation-img5{
-    display:none;
- }
- 
-.heading {
-    font-size: 20px; 
-}
-.img-bg {
-	width: 80%;
-	padding:0;
-}
-.right-heading h3{
-	font-size: 30px !important;
-	font-weight: 700 !important;
-	padding-left:10px !important ;
-}
-.img-circle{
-    text-align: center;
-    margin-right:0;
- } 
-.img-blog{
-   text-align: center;
-  }
-.img-box-fit{
-    display:contents;
-    padding-bottom: 10px; 
-    padding-left: 10px;
-}
-.img-box-fit img{
-    padding: 5px;
-    max-width: 25%;
-    box-shadow: 0px 2px 7px 0px lightgray;
-    border-radius: 90px;
-    background-color: white;
-    margin:5px;
-}
-
-.img-here{ 
-	display: block;
-	margin: 0 auto;
-}
-.center{ 
-   margin:0 auto;
- }
-.paragraph{
-    margin:0;
-    font-size: 14px;
-}
-} 
-@media only screen and (max-width: 650px){
-.right-text {
-	padding: 22px 0 25px 0px !important;
-    text-align: center;
-}
-
-.h2-head {
-	font-size: 20px;
-	padding: 0;
-	margin-bottom: 2px;
-}
-.footer{
-     margin-top:0 !important;
- }
-.img-bg {
-    margin: 0 auto;
-    max-width: 55%;
-    padding: 0;
-}
-.animation-img{
-    display:none;
-}
-}
-@media only screen and (max-width: 834px){
-.text-box {
-	padding-top: 15px;
-	margin: 0 auto;
-}
-.text-here {
-	font-size: 38px;
-	font-weight: 700;
-	text-align: center;
-	font-family: roboto;
-}
-.list-1 {
-	font-size: 13px;
-	padding-left: 16px;
-	list-style: disclosure-closed !important;
-	font-family: roboto;
-	color: #ff7803;
-	padding-bottom: 15px;
-}
-.background-image {
-	background-image: none;
-	background-color:#ffeaea;
-	margin-top: 18px;
-}
-.right-heading h3 {
-	font-size: 48px;
-	font-weight: 714;
-}
-.img-bg {
-	width: 80%;
-    padding:0;
-}
-.right-text {
-	 padding: 0;
-}
-}
 /*collaborators css starts*/
 .collaborators-main {
     display: -webkit-box;
@@ -827,6 +680,148 @@ textarea{
     transform: translateX(0%);
 }
 /*collaborators css ends*/
+@media screen and (max-width: 1200px) and (min-width: 992px) {.heading{min-height:50px;}}
+@media only screen and (max-width: 1024px){
+.right-text{
+    padding:90px 0 0 0 !important;
+    }
+}
+@media only screen and (max-width: 992px){
+.text-box {
+	padding-top: 15px;
+	margin: 0 auto;
+}
+.text-here {
+	font-size: 38px;
+	font-weight: 700;
+	text-align: center;
+	font-family: roboto;
+}
+.list-1 {
+	font-size: 13px;
+	padding-left: 16px;
+	list-style: disclosure-closed !important;
+	font-family: roboto;
+	color: #ff7803;
+	padding-bottom: 15px;
+}
+.background-image {
+	background-image: none;
+	background-color:#ffeaea;
+	margin-top: 18px;
+}
+.right-heading h3 {
+	font-size: 48px;
+	font-weight: 714;
+}
+.img-bg {
+	width: 80%;
+    padding:0;
+}
+.right-text {
+	 padding: 0;
+}
+}
+@media only screen and (max-width: 768px){
+.input-box{
+   max-width: 98% !important;
+}
+.right-text{
+     padding: 12px 0 0px 0px;
+  }
+.h2-head{
+    font-size: 23px;
+    padding:0;
+}
+
+.animation-img2 {
+	left: 300px;
+	top: 15px;
+}
+
+.animation-img6 {
+	top: 76px;
+	left: 6px;
+}
+
+.animation-img4 {
+	top: 145px;
+	left: 211px;
+}
+
+.animation-img3 {
+	left: 333px;
+	top: 100px;
+}
+
+.animation-img5{
+    display:none;
+ }
+.img-bg {
+	width: 80%;
+	padding:0;
+}
+.right-heading h3{
+	font-size: 30px !important;
+	font-weight: 700 !important;
+	padding-left:10px !important ;
+}
+.img-circle{
+    text-align: center;
+    margin-right:0;
+} 
+.img-blog{
+   text-align: center;
+  }
+.img-box-fit{
+    display:contents;
+    padding-bottom: 10px; 
+    padding-left: 10px;
+}
+.img-box-fit img{
+    padding: 5px;
+    max-width: 25%;
+    box-shadow: 0px 2px 7px 0px lightgray;
+    border-radius: 90px;
+    background-color: white;
+    margin:5px;
+}
+
+.img-here{ 
+	display: block;
+	margin: 0 auto;
+}
+.center{ 
+   margin:0 auto;
+ }
+.paragraph{
+    margin:0;
+    font-size: 14px;
+}
+} 
+@media only screen and (max-width: 650px){
+.right-text {
+	padding: 22px 0 25px 0px !important;
+    text-align: center;
+}
+
+.h2-head {
+	font-size: 20px;
+	padding: 0;
+	margin-bottom: 2px;
+}
+.footer{
+     margin-top:0 !important;
+ }
+.img-bg {
+    margin: 0 auto;
+    max-width: 55%;
+    padding: 0;
+}
+.animation-img{
+    display:none;
+}
+}
 ');
 $script = <<< JS
     
@@ -899,7 +894,7 @@ $this->registerJsFile('@eyAssets/js/multislider.js', ['depends' => [\yii\web\Jqu
 
 <script id="video-collaborators" type="text/template">
     {{#.}}
-    <div class="col-lg-4 col-md-6">
+    <div class="col-lg-4 col-md-6 col-sm-6">
         <div class="collaborators-main">
             <div class="c-detail">
                 <h4 class="title">{{name}}</h4>

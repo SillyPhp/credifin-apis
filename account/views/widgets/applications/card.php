@@ -100,7 +100,7 @@ if (!empty($total_applications)) {
                                title="Share on Telegram">
                                 <i class="fa fa-telegram"></i>
                             </a>
-                            <a href="javascript:;" class="clipb tt" type="button" data-toggle="tooltip"
+                            <a href="javascript:;" class="clipb tt jj-clipboard" type="button" data-toggle="tooltip"
                                title="Copy Link" data-link="<?= $link ?>">
                                 <i class="fa fa-clipboard"></i>
                             </a>
@@ -119,7 +119,7 @@ if (!empty($total_applications)) {
                                     </div>
                                 </a>
                                 <div class="exp-soon-msg">
-                                    Expring Soon
+                                    Expiring Soon
                                 </div>
                             </div>
                             <?php
@@ -153,10 +153,10 @@ if (!empty($total_applications)) {
                             </div>
                         </a>
                         <div class="hr-com-jobs">
-                            <a href="<?= Url::to($applications[$next]["link"], true); ?>" data-toggle="tooltip"
-                               class="detail-clg"
-                               title="View Details"><i
-                                        class="fa fa-info-circle"></i></a>
+                            <a href="javascript:;" onclick="window.open('<?= Url::to($applications[$next]["link"], true); ?>', '_blank');"
+                               class="detail-clg" title="View Details">
+                                <i class="fa fa-info-circle"></i>
+                            </a>
                             <div class="appl">
                                 <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $applications[$next]['application_enc_id'], true); ?>">
                                     <?php
@@ -217,7 +217,7 @@ $this->registerCss("
     left:0;
 }
 .hr-company-box:hover > .lf-bttn{
-    left:13px;
+    left:0px;
     opacity:1;
 }
 .lf-bttn a{
@@ -501,7 +501,7 @@ $(document).on('click','.j-closed',function(e){
          });
 });
 
-        $(document).on('click', '.j-clipboard',function (event) {
+        $(document).on('click', '.jj-clipboard',function (event) {
             event.preventDefault();
             var link = $(this).attr('data-link');
             CopyToClipboard(link, true, "Link copied");

@@ -3,14 +3,14 @@ use yii\helpers\Url;
 ?>
 <section class="main-bg">
     <div class="image-top-right">
-        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/lv-s1.png') ?>" alt="">
+        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/lv-s1.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
     </div>
     <div class="image-bottom-right">
-        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/lv-s2.png') ?>" alt="">
+        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/lv-s2.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
     </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8 sol-sm-8">
+    <div class="container-fluid">
+        <div class="row loan-offerings">
+            <div class="col-md-7 sol-sm-7">
                 <div class="loan-vector-txt">
                     <h2>Loans That We Offer</h2>
                     <p>Find customized loans for all your needs.</p>
@@ -21,7 +21,7 @@ use yii\helpers\Url;
                             <a href="/education-loans/annual-fee-financing" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/annual-fee-f.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/annual-fee-f.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         Annual Fee Finance
                                 </div>
@@ -29,7 +29,7 @@ use yii\helpers\Url;
                             <a href="/education-loans/study-in-india" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-loan-moratorium.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/edu-loan-moratorium.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         Education Loan With Moratorium
                                 </div>
@@ -37,7 +37,7 @@ use yii\helpers\Url;
                             <a href="/education-loans/school-fee-finance" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/school-fee-f.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/school-fee-f.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         School Fee Finance
                                 </div>
@@ -45,7 +45,7 @@ use yii\helpers\Url;
                             <a href="/education-loans/interest-free" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/interest-free-lon.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/interest-free-lon.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         Interest Free Loan
                                 </div>
@@ -53,7 +53,7 @@ use yii\helpers\Url;
                             <a href="/education-loans/study-abroad" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/abroad-edu-loan.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/abroad-edu-loan.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         Abroad Education Loans
                                 </div>
@@ -61,7 +61,7 @@ use yii\helpers\Url;
                             <a href="/education-loans/refinance" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Edu-Loan-Refinance.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/Edu-Loan-Refinance.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         Education Loan Refinance
                                 </div>
@@ -69,7 +69,7 @@ use yii\helpers\Url;
                             <a href="/education-loans/loan-for-teachers/apply" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/teacher-loan.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/teacher-loan.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         Teacher Loan
                                 </div>
@@ -77,7 +77,7 @@ use yii\helpers\Url;
                             <a href="#" target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/edtech-loans.png') ?>" alt="">
+                                        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/edtech-loans.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                                     </div>
                                         EdTech Loans
                                 </div>
@@ -86,9 +86,9 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-4">
+            <div class="col-md-5 col-sm-5">
                 <div class="loan-vector">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/loan-vector1.png') ?>" alt="">
+                    <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/loan-vector1.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
                 </div>
             </div>
         </div>
@@ -96,6 +96,12 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
+.loan-offerings {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 .loan-product:hover {
     background-color: #00a0e3;
     color: #fff;
@@ -146,11 +152,8 @@ $this->registerCss('
     font-weight: 400;
     margin-top: 10px
 }
-.loan-vector {
-    margin-top: 80px;
-}
 .loan-vector img {
-    width: 120%;
+    width: 100%;
     max-width: 500px;
 }
 .loan-product {
@@ -178,5 +181,27 @@ $this->registerCss('
 }
 .loan-product-txt {
    margin: 5px 0px 5px 10px;
+   
+}
+@media screen and (max-width: 992px) {
+    .image-bottom-right, .loan-vector {
+        display: none;
+    }
+    .image-top-right img {
+    max-width: 350px;
+    }
+}
+@media screen and (max-width: 550px) {
+    .image-top-right img {
+        max-width: 240px;
+    }
+    .loan-vector-txt h2 {
+        font-size: 28pt;
+        line-height: 40px;
+    }
 }
 ');
+$script = <<<JS
+$('.load-later').Lazy();
+JS;
+$this->registerJs($script);
