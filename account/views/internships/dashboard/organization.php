@@ -174,6 +174,9 @@ use yii\widgets\Pjax;
                                     <a href="<?= Url::to('/tweets/internship/create'); ?>" data-toggle="tooltip"
                                        title="Post Internship Tweet" class="tweet">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>
+                                    <a href="<?= Url::toRoute('/internships/quick-internship'); ?>" data-toggle="tooltip"
+                                       title="Create Quick Internship" class="quick">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png'); ?>"></a>
                                     <a href="<?= Url::toRoute('/internships/active-internships'); ?>"
                                        data-toggle="tooltip"
                                        title="View All" class="view">
