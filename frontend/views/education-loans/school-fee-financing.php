@@ -8,10 +8,7 @@ use yii\helpers\Url;
                 <div class="col-md-6">
                     <div class="header-text">
                         <h1>
-                    <span class="typewrite" data-period="2000"
-                          data-type='["School Fee Finance."]'>
-                        <span class="wrap"></span>
-                    </span>
+                            School Fee Finance
                         </h1>
                         <p>A Good Education Is Foundation For A Better Future Lay Your Child's Career Path Right From School.</p>
                         <div class="header-btn">
@@ -100,7 +97,6 @@ $this->registerCss('
     font-weight: 500;
     color: #ffff;
     margin-bottom: 0;
-    min-height: 64px;
 }
 .header-text p{
     max-width: 530px;
@@ -174,7 +170,7 @@ $this->registerCss('
         display: none;
     }
     .header-text h1{
-        font-size: 35px;
+        font-size: 25px;
     }
     .header-text p, .enq-now, .apply-now{
         font-size: 14px;
@@ -182,11 +178,11 @@ $this->registerCss('
     .school-fee-text h2{
         font-size: 21pt;
     }
+    .school-fee-img{
+        display: none;
+    }
 }
 @media only screen and (max-width: 992px){
-    .school-fee-info .row{
-        flex-direction: column;
-    }
     .school-fee-img img{
         max-width: 275px;
     }
