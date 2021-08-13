@@ -115,7 +115,7 @@ $this->registerCSS('
 ?>
 <script id="insta_posts" type="text/template">
     {{#.}}
-    <a href="{{slug}}" class="post" target="_blank">
+    <a href="{{link}}" class="post" target="_blank">
         <img src="{{featured_image}}" alt="{{featured_image_alt}}">
     </a>
     {{/.}}

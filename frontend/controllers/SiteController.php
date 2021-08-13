@@ -1387,7 +1387,7 @@ class SiteController extends Controller
           $offset = Yii::$app->request->post('offset');
           $model = Posts::find()
               ->alias('z')
-              ->select(['z.post_enc_id','z.title','z.slug','z.post_type_enc_id','z.featured_image_alt',
+              ->select(['z.post_enc_id','z.title','z.slug','z.link', 'z.post_type_enc_id','z.featured_image_alt',
                   'CASE WHEN z.featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->posts->featured_image) . '", z.featured_image_location, "/", z.featured_image) ELSE NULL END featured_image'])
               ->joinWith(['postTypeEnc a' => function($a){
                   $a->andWhere(['a.post_type' => 'Social']);
