@@ -10,39 +10,40 @@
                     On the same hand, think of an education loan that is INTEREST FREE. At EmpowerYouth, we have come up
                     with Interest Free Education Loan to meet all your financial
                     needs and help you get your dream education.</p>
-                <div class="cl-icon">
-                    <p>Our Lenders</p>
-                    <ul>
-                        <li>
-                            <div class="lender-icon">
-                                <span>
-                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>">
-                                </span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="lender-icon">
-                                <span>
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?>">
-                                </span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="lender-icon">
-                                <span>
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?>">
-                                </span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="lender-icon">
-                                <span>
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?>">
-                                </span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+                <p class="lenders">More Than <span>20+</span> Lenders</p>
+<!--                <div class="cl-icon">-->
+<!--                    <p>Our Lenders</p>-->
+<!--                    <ul>-->
+<!--                        <li>-->
+<!--                            <div class="lender-icon">-->
+<!--                                <span>-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?><!--">-->
+<!--                                </span>-->
+<!--                            </div>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <div class="lender-icon">-->
+<!--                                <span>-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?><!--">-->
+<!--                                </span>-->
+<!--                            </div>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <div class="lender-icon">-->
+<!--                                <span>-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?><!--">-->
+<!--                                </span>-->
+<!--                            </div>-->
+<!--                        </li>-->
+<!--                        <li>-->
+<!--                            <div class="lender-icon">-->
+<!--                                <span>-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?><!--">-->
+<!--                                </span>-->
+<!--                            </div>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </div>-->
                 <div class="cl-icon">
                     <p>Our Partner Colleges</p>
                     <ul>
@@ -82,6 +83,14 @@
 </div>
 <?php
 $this->registerCss('
+.lenders{
+    margin-top: 20px;
+    color: #f3f3f2;
+    font-size: 16px;
+}
+.lenders span{
+    font-weight: 600;
+}
 .college-logo {
     position:relative !important;
 }
