@@ -515,8 +515,23 @@ class EducationLoansController extends Controller
     {
         setlocale(LC_MONETARY, 'en_IN');
         $data = LoanSanctionReports::findOne(['report_enc_id' => $id]);
+        $model = LoanSanctionReports::find()
+            ->alias('z')
+            ->select(['z.report_enc_id','z.loan_app_enc_id','z.loan_amount','z.processing_fee','z.rate_of_interest'])
+            ->joinWith(['loanEmiStructures a' => function($a){
+                $a->addSelect(['a.sanction_report_enc_id','a.due_date','a.amount','a.is_advance']);
+            }])
+            ->joinWith(['createdBy b'])
+            ->joinWith(['loanAppEnc c' => function($c){
+                $c->addSelect(['c.loan_app_enc_id','c.applicant_name','c.phone','c.email','c.amount','c1.loan_name']);
+                $c->andWhere(['c.is_deleted' => 0]);
+                $c->joinWith(['loanTypeEnc c1'],false);
+            }])
+            ->andWhere(['z.report_enc_id' => $id])
+            ->asArray()->one();
         return $this->render('emi-details', [
             'data' => $data,
+            'model' => $model
         ]);
     }
 }
