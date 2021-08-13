@@ -202,9 +202,7 @@ echo $this->render('/widgets/e-campus')
         </div>
     </section>
 <?php
-echo $this->render('/widgets/drop-resume-section', [
-        'for' => 'employers'
-])
+echo $this->render('/widgets/drop-resume-section')
 ?>
     <section class="fixed-bttn">
         <div class="container">
