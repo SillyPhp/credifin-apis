@@ -21,7 +21,7 @@ use yii\helpers\Url;
                         }
                     ?>
                        <div class="drop-btn">
-                            <a href="<?= Url::to('/drop-resume'); ?>" class="activate-drop arrow">View Detail</a>
+                            <a href="<?= Url::to((($for == 'employers') ? '' : '/drop-resume')); ?>" class="activate-drop arrow">View Detail</a>
 <!--                            <a href="--><!--" class="detail-drop">View Detail</a>-->
                         </div>
                     </div>

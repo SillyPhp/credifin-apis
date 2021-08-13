@@ -40,7 +40,8 @@ class DropResumeController extends Controller
     }
 
     public function actionIndex(){
-        if(Yii::$app->user->identity->organization){
+        $refer = explode('/', Yii::$app->request->referrer);
+        if(Yii::$app->user->identity->organization || $refer[3] == 'employers' ){
             return $this->render('drop-resume-companies');
         }else{
             return $this->render('drop-resume-landing-page');
