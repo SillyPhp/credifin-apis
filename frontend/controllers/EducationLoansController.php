@@ -131,7 +131,15 @@ class EducationLoansController extends Controller
     public function actionEducationLoanUniversity()
     {
         $this->layout = 'widget-layout';
-        return $this->render('education-loan-university');
+        $model = new AdmissionForm();
+        if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+        return $this->render('education-loan-university',[
+            'model' => $model,
+        ]);
     }
 
     public function actionSchoolFeeLoanApply($ref_id = null,$lead_id = null){
