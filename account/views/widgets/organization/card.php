@@ -203,7 +203,7 @@ $this->registerCss('
     color: #999;
     font-weight: 500;
     display: inline-block;
-    margin: 0px 10px;
+    margin: 0px 5px;
 }
 //.hr-company-box {
 //    padding: 20px 10px 20px;
