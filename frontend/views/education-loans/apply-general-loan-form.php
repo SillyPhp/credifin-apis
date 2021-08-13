@@ -5,7 +5,7 @@ $this->title = 'Education Loan';
 $this->params['header_dark'] = true;
 $keywords = 'Interest Free Loans available for select colleges/Universities | Empower Youth';
 $description = 'Do Not let monetary constraints stop your from getting admission in your dream college/ university';
-$image = Url::to('@eyAssets/images/pages/education-loans/edu-loan-p1.png', 'https');
+$image = Url::to('@eyAssets/images/pages/education-loans/apply-for-education-loan.png', 'https');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
@@ -53,6 +53,32 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                             }else{ echo 'Education Loan';}  ?></h1>
                                     </div>
                                 </div>
+                                <!--Loan Type start-->
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label class="input-group-text" for="inputGroupSelect01">
+                                            Which Type Of Loan Is This ?
+                                        </label>
+                                        <ul class="displayInline">
+                                            <li>
+                                                <label class="container-radio">
+                                                    School Fee Loan
+                                                    <input type="radio" id="TypeSchool" value="1" onclick="showChildren(this)" name="applicantTypeRadio">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </li>
+                                            <li>
+                                                <label class="container-radio">
+                                                    College/University Fee Loan
+                                                    <input type="radio" id="TypeCollege" value="0" onclick="hideChildren(this)" name="applicantTypeRadio">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <span id="applicantTypeRadio"></span>
+                                </div>
+                                <!--Loan Type end-->
 <!--                                parent co borower details start-->
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
@@ -81,7 +107,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                                         <li>
                                                             <label for="co-father-1" class="container-radio">
                                                                 Father
-                                                                <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-1" class="checkbox-input services">
+                                                                <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-1" class="checkbox-input services" checked>
                                                                 <span class="checkmark"></span>
                                                             </label>
                                                         </li>
@@ -119,7 +145,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                             <div class="col-md-12 padd-20">
                                                 <div class="form-group">
                                                     <label for="co-name[]" class="input-group-text">
-                                                        Name
+                                                       Your Name
                                                     </label>
                                                     <input type="text" name="co-name[1]" class="form-control text-capitalize" id="co-name" placeholder="Enter Your Full Name">
                                                 </div>
@@ -133,7 +159,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                                         <li>
                                                             <label for="sal-1" class="container-radio">
                                                                 Salaried
-                                                                <input type="radio" value="1" checked="checked" id="sal-1" name="co-emptype[1]" class="checkbox-input services">
+                                                                <input type="radio" value="1" checked="checked" id="sal-1" name="co-emptype[1]" class="checkbox-input services" checked>
                                                                 <span class="checkmark"></span>
                                                             </label>
                                                         </li>
@@ -165,39 +191,14 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         </div>
                                 </div>
 <!--                                parent co borower details end-->
-
-<!--                                Loan Type start-->
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label class="input-group-text" for="inputGroupSelect01">
-                                            Which Type Of Loan Is This ?
-                                        </label>
-                                        <ul class="displayInline">
-                                            <li>
-                                                <label class="container-radio">
-                                                    School Fee Loan
-                                                    <input type="radio" id="TypeSchool" value="1" onclick="showChildren(this)" name="applicantTypeRadio">
-                                                    <span class="checkmark"></span>
-                                                </label>
-                                            </li>
-                                            <li>
-                                                <label class="container-radio">
-                                                    College/University Fee Loan
-                                                    <input type="radio" id="TypeCollege" value="0" onclick="hideChildren(this)" name="applicantTypeRadio">
-                                                    <span class="checkmark"></span>
-                                                </label>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <span id="applicantTypeRadio"></span>
-                                </div>
-<!--                                Loan Type end-->
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label for="number" class="input-group-text">
-                                            Name of Customer/Student Name
-                                        </label>
-                                        <input value="<?= ($userDetail->first_name)?$userDetail->first_name . " " . $userDetail->last_name : "" ?>" type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                <div id="student_name_col">
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="number" class="input-group-text">
+                                                Name of The Student
+                                            </label>
+                                            <input value="<?= ($userDetail->first_name)?$userDetail->first_name . " " . $userDetail->last_name : "" ?>" type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                        </div>
                                     </div>
                                 </div>
 <!--                                College Informaton start-->
@@ -909,7 +910,7 @@ form label {
 #step2{
 	display:none;
 }
-.help-block-error
+.help-block-error,.errorMsg
 {
 color:#e65332;
 }
@@ -1558,12 +1559,30 @@ function ajaxSubmit()
     var loan_application_type = $('input[name="applicantTypeRadio"]:checked').val();
     let co_applicants = [];
     var obj = {};
-    obj['name'] = $('input[name="co-name[1]"]').val()
-    obj['relation'] = $('input[name="co-relation[1]"]:checked').val();
-    obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').val();
-    obj['annual_income'] = $('input[name="co-anualincome[1]"]').val(); 
+    if (applicantRadio==0){
+        obj['name'] = $('input[name="co-name[1]"]').not(':hidden').val()
+    obj['relation'] = $('input[name="co-relation[1]"]:checked').not(':hidden').val();
+    obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').not(':hidden').val();
+    obj['annual_income'] = $('input[name="co-anualincome[1]"]').not(':hidden').val(); 
     co_applicants.push(obj);
     if ($('input[name="co-name[2]"]').length>0){
+        if ($('input[name="co-name[2]"]').val().length!=0)
+        {
+        var objCoBorrower = {};
+        objCoBorrower['name'] = $('input[name="co-name[2]"]').not(':hidden').val()
+        objCoBorrower['relation'] = $('input[name="co-relation[2]"]:checked').not(':hidden').val();
+        objCoBorrower['employment_type'] = $('input[name="co-emptype[2]"]:checked').not(':hidden').val();
+        objCoBorrower['annual_income'] = $('input[name="co-anualincome[2]"]').not(':hidden').val();
+        co_applicants.push(objCoBorrower);
+        }
+    }
+    }else if (applicantRadio==1){
+         obj['name'] = $('input[name="co-name[1]"]').val()
+         obj['relation'] = $('input[name="co-relation[1]"]:checked').val();
+         obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').val();
+         obj['annual_income'] = $('input[name="co-anualincome[1]"]').val(); 
+         co_applicants.push(obj);
+        if ($('input[name="co-name[2]"]').length>0){
         if ($('input[name="co-name[2]"]').val().length!=0)
         {
         var objCoBorrower = {};
@@ -1573,6 +1592,7 @@ function ajaxSubmit()
         objCoBorrower['annual_income'] = $('input[name="co-anualincome[2]"]').val();
         co_applicants.push(objCoBorrower);
         }
+    }
     }
     var url = '';
     var data = {};
@@ -1630,8 +1650,14 @@ function ajaxSubmit()
         obj['child_loan_amount'] = $('#loanamount').val();
         child_information.push(obj);
     }
+    if (applicantRadio==1){
+        var applicant_name = $('input[name="co-name[1]"]').val();
+    }else{
+        var applicant_name = $('#applicant_name').val();
+    }
          data = {
-                applicant_name:$('#applicant_name').val(),
+                applicant_name:applicant_name,
+                co_applicants:co_applicants,
                 applicant_dob:$('#dob').val(),
                 is_applicant:applicantRadio,
                 applicant_current_city:$('#location').val(),
@@ -2137,14 +2163,14 @@ $this->registerJs($script);
 
         function showChildren(ths){
             const applicantRadio = $('input[name="applicantRadio"]:checked').val();
-            if (applicantRadio==null||applicantRadio==""||applicantRadio=='undefined'){
-                swal({
-                    title:"Warning",
-                    text: 'Please Select Relation First !!'
-                });
-                ths.checked = false;
-                return false;
-            }
+            // if (applicantRadio==null||applicantRadio==""||applicantRadio=='undefined'){
+            //     swal({
+            //         title:"Warning",
+            //         text: 'Please Select Relation First !!'
+            //     });
+            //     ths.checked = false;
+            //     return false;
+            // }
             let radioValue = ths.value;
             const countryName = document.getElementById('hideDiveChild');
             const schoolInfo = document.getElementById('schooInfo');
@@ -2156,6 +2182,7 @@ $this->registerJs($script);
                     $('#loanamount').attr('readonly','true');
                     $('#total_sec').show();
                     countryName.style.display = "block";
+                    document.getElementById('student_name_col').style.display = "none";
                     schoolInfo.innerHTML = "";
                     document.getElementById('noChild').value = "";
                 }else if (applicantRadio==0){
@@ -2163,6 +2190,7 @@ $this->registerJs($script);
                     $('#loanamount').removeAttr('readOnly');
                     $('#total_sec').hide();
                     countryName.style.display = "none";
+                    document.getElementById('student_name_col').style.display = "block";
                     schoolInfo.innerHTML = createChild();
                     let childFormBox = document.querySelectorAll('.childFormBox');
                     let num = 1;
@@ -2172,19 +2200,20 @@ $this->registerJs($script);
                 schoolInfo.innerHTML = "";
                 document.getElementById('noChild').value = "";
                 countryName.style.display = "none";
+                document.getElementById('student_name_col').style.display = "block";
                 collegeLoanBox.style.display = "block";
             }
         }
         function hideChildren(ths){
             const applicantRadio = $('input[name="applicantRadio"]:checked').val();
-            if (applicantRadio==null||applicantRadio==""||applicantRadio=='undefined'){
-                swal({
-                    title:"Warning",
-                    text: 'Please Select Relation First !!'
-                });
-                ths.checked = false;
-                return false;
-            }
+            // if (applicantRadio==null||applicantRadio==""||applicantRadio=='undefined'){
+            //     swal({
+            //         title:"Warning",
+            //         text: 'Please Select Relation First !!'
+            //     });
+            //     ths.checked = false;
+            //     return false;
+            // }
             let radioValue = ths.value;
             const countryName = document.getElementById('hideDiveChild');
             const schoolInfo = document.getElementById('schooInfo');
@@ -2195,6 +2224,7 @@ $this->registerJs($script);
                 schoolInfo.innerHTML = "";
                 document.getElementById('noChild').value = "";
                 countryName.style.display = "none";
+                document.getElementById('student_name_col').style.display = "block";
                 collegeLoanBox.style.display = "block";
                 let childFormBox = document.querySelectorAll('.childFormBox');
                 let num = 1;
@@ -2203,10 +2233,12 @@ $this->registerJs($script);
                 collegeLoanBox.style.display = "none";
                 if (applicantRadio==1){
                     countryName.style.display = "block";
+                    document.getElementById('student_name_col').style.display = "none";
                     schoolInfo.innerHTML = "";
                     document.getElementById('noChild').value = "";
                 }else if (applicantRadio==0){
                     countryName.style.display = "none";
+                    document.getElementById('student_name_col').style.display = "block";
                     schoolInfo.innerHTML = createChild();
                     let childFormBox = document.querySelectorAll('.childFormBox');
                     let num = 1;
@@ -2234,6 +2266,7 @@ $this->registerJs($script);
                         schoolInfo.innerHTML = "";
                         document.getElementById('noChild').value = "";
                         countryName.style.display = "none";
+                        document.getElementById('student_name_col').style.display = "block";
                         collegeLoanBox.style.display = "block";
                         let childFormBox = document.querySelectorAll('.childFormBox');
                         let num = 1;
@@ -2246,6 +2279,7 @@ $this->registerJs($script);
                         $('#parent_student_borrower').css('display','none');
                         collegeLoanBox.style.display = "none";
                         countryName.style.display = "block";
+                        document.getElementById('student_name_col').style.display = "none";
                         schoolInfo.innerHTML = "";
                         document.getElementById('noChild').value = "";
                     }
@@ -2270,6 +2304,7 @@ $this->registerJs($script);
                         schoolInfo.innerHTML = "";
                         document.getElementById('noChild').value = "";
                         countryName.style.display = "none";
+                        document.getElementById('student_name_col').style.display = "block";
                         collegeLoanBox.style.display = "block";
                         let childFormBox = document.querySelectorAll('.childFormBox');
                         let num = 1;
@@ -2281,6 +2316,7 @@ $this->registerJs($script);
                         $('#total_sec').hide();
                         $('#parent_student_borrower').css('display','block');
                         countryName.style.display = "none";
+                        document.getElementById('student_name_col').style.display = "block";
                         schoolInfo.innerHTML = createChild();
                         let childFormBox = document.querySelectorAll('.childFormBox');
                         let num = 1;
