@@ -223,7 +223,6 @@ $this->registerCss('
     border-radius: 4px !important;
     padding: 6px 12px;
     display: inline-block;
-    margin-top: -4px;
     background-color: #fff;
 }
 .j-grid > button:hover {
