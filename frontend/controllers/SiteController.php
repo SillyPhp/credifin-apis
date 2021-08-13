@@ -1056,6 +1056,9 @@ class SiteController extends Controller
             case 'getOurServices':
                 return $this->renderAjax('/widgets/our-services');
                 break;
+            case 'getDropResume':
+                return $this->renderAjax('/widgets/drop-resume-section');
+                break;
             case 'getShortcuts':
                 $job_profiles = AssignedCategories::find()
                     ->alias('a')
@@ -1283,16 +1286,6 @@ class SiteController extends Controller
     public function actionResumeBuilderLandingPage()
     {
         return $this->render('resume-builder-landing-page');
-    }
-
-    public function actionDropResumeLandingPage()
-    {
-        return $this->render('drop-resume-landing-page');
-    }
-
-    public function actionDropResumeCompanies()
-    {
-        return $this->render('drop-resume-companies');
     }
 
     public function actionEducationalInstitutionLoan()

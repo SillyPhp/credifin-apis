@@ -39,4 +39,12 @@ class DropResumeController extends Controller
         }
     }
 
+    public function actionIndex(){
+        if(Yii::$app->user->identity->organization){
+            return $this->render('drop-resume-companies');
+        }else{
+            return $this->render('drop-resume-landing-page');
+        }
+    }
+
 }
