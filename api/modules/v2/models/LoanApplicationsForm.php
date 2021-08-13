@@ -289,6 +289,23 @@ class LoanApplicationsForm extends LoanApplications
                             throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($this->errors, 0, false))." ".$this::tableName());
                         } else {
                             $loan_id[]=$this->loan_app_enc_id;
+                            $loanSchool = new LoanApplicationSchoolFee();
+                            $loanSchool->school_fee_enc_id = Yii::$app->security->generateRandomString(8);
+                            $loanSchool->loan_app_enc_id = $this->loan_app_enc_id;
+                            $loanSchool->student_name = $information['child_name'];
+                            $loanSchool->school_name = $information['child_school'];
+                            $loanSchool->loan_amount = $information['child_loan_amount'];
+                            $loanSchool->class = $information['child_class'];
+                            $loanSchool->created_by = (($userId) ? $userId : null);
+                            $loanSchool->created_on = date('Y-m-d H:i:s');
+                            if (!$loanSchool->save()) {
+                                $transaction->rollBack();
+                                $this->_flag = false;
+                                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanSchool->errors, 0, false))." ".$loanSchool::tableName());
+                            } else{
+                                $this->_flag = true;
+                            }
+
                             $loan_payment = new EducationLoanPayments();
                             $loan_payment->education_loan_payment_enc_id = Yii::$app->security->generateRandomString(8);
                             $loan_payment->loan_app_enc_id = $this->loan_app_enc_id;
@@ -311,26 +328,6 @@ class LoanApplicationsForm extends LoanApplications
                     $transaction->rollback();
                     $this->_flag = false;
                     throw new \Exception ("Child Information is Empty");
-                }
-            }
-            if ($this->_flag){
-                foreach ($params['child_information'] as $information){
-                    $loanSchool = new LoanApplicationSchoolFee();
-                    $loanSchool->school_fee_enc_id = Yii::$app->security->generateRandomString(8);
-                    $loanSchool->loan_app_enc_id = $this->loan_app_enc_id;
-                    $loanSchool->student_name = $information['child_name'];
-                    $loanSchool->school_name = $information['child_school'];
-                    $loanSchool->loan_amount = $information['child_loan_amount'];
-                    $loanSchool->class = $information['child_class'];
-                    $loanSchool->created_by = (($userId) ? $userId : null);
-                    $loanSchool->created_on = date('Y-m-d H:i:s');
-                    if (!$loanSchool->save()) {
-                        $transaction->rollBack();
-                        $this->_flag = false;
-                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanSchool->errors, 0, false))." ".$loanSchool::tableName());
-                    } else{
-                        $this->_flag = true;
-                    }
                 }
             }
              if ($this->_flag){
