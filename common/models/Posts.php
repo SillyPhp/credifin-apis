@@ -10,6 +10,7 @@ namespace common\models;
  * @property string $author_enc_id Foreign Key to Users Table
  * @property string $title Post Title
  * @property string $slug Post Slug
+ * @property string $link
  * @property string $excerpt Post Excerpt
  * @property string $description Post Description
  * @property string $post_type_enc_id Foreign Key to Post Types Table
@@ -50,7 +51,7 @@ class Posts extends \yii\db\ActiveRecord
     {
         return [
             [['post_enc_id', 'title', 'slug', 'post_type_enc_id', 'created_by'], 'required'],
-            [['title', 'excerpt', 'description', 'meta_keywords', 'status'], 'string'],
+            [['title', 'link', 'excerpt', 'description', 'meta_keywords', 'status'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted', 'is_visible'], 'integer'],
             [['post_enc_id', 'author_enc_id', 'post_type_enc_id', 'featured_image', 'featured_image_location', 'featured_image_title', 'featured_image_alt', 'created_by', 'last_updated_by'], 'string', 'max' => 100],

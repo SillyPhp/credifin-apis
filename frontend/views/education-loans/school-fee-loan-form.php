@@ -187,59 +187,89 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                     With the rise in school tuition expenses and overall cost of learning, we’re left seeking
                                     quality education without soaring education fees. Now, with our <span>School Fee Loan</span>
                                     you can conveniently pay your child’s school fees without any worry.</li>
+
                             </ul>
+                            <p class="lenders">More Than <span>20+</span> Lenders</p>
                             <div class="cl-icon">
-                                <p>Our Lenders</p>
-                                <ul>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?>">
-                                            </span>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="widget-benfit">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-minimal-paper-work.png') ?>">
+                                            <p>Minimal Paper Work</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?>">
-                                            </span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="widget-benfit">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-faster-processing-time.png') ?>">
+                                            <p>Faster Processing Time</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?>">
-                                            </span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="widget-benfit">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-approval-in-minutes.png') ?>">
+                                            <p>Approval In Minutes</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?>">
-                                            </span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="widget-benfit">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-quick-disbursement.png') ?>">
+                                            <p>Quick Disbursement</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span class="li-text">+10 More</span>
-                                        </div>
-                                    </li>
-                                </ul>
+                                    </div>
+                                </div>
                             </div>
+<!--                            <div class="cl-icon">-->
+<!--                                <p>Our Lenders</p>-->
+<!--                                <ul>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span class="li-text">+10 More</span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -248,6 +278,31 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
     </section>
 <?php
 $this->registerCss('
+.widget-benfit{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 30px;
+}
+.widget-benfit img{
+    max-width: 60px;
+    margin-bottom: 10px;
+}
+.widget-benfit p{
+    color: #fff;
+    font-size: 16px !important;
+    line-height: 20px;
+    font-weight: 400 !important;
+} 
+.lenders{
+    margin-top: 20px;
+    color: #f3f3f2;
+    font-size: 16px;
+}
+.lenders span{
+    font-weight: 600;
+}
 #loadBtn{
     display:none;
 }

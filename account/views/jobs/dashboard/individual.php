@@ -6,13 +6,52 @@ use yii\widgets\Pjax;
 
 ?>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-3">
+            <div class="portlet light nd-shadow">
+                <div class="portlet-title tabbable-line">
+                    <div class="caption set-center">
+                        <span class="caption-subject font-dark bold uppercase">Jobs Preferred by Location</span>
+                    </div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="row">
+                        <?= $this->render('/widgets/jobs/job-by-location', [
+                            'jobsByLocation' => $jobsByLocation,
+                        ]) ?>
+                        <div class="col-md-12 text-center">
+                            <a href="<?= Url::to('/jobs/list?location='.$preferredLocations)?>" class="jbl-viewall viewall-jobs">View All</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="portlet light nd-shadow">
+                <div class="portlet-title tabbable-line">
+                    <div class="caption set-center">
+                        <span class="caption-subject font-dark bold uppercase"> Jobs Matching Your Skills</span>
+                    </div>
+                </div>
+
+                <div class="portlet-body">
+                    <div class="row">
+                        <?= $this->render('/widgets/jobs/job-by-skills', [
+                            'jobsBySkills' => $jobsBySkills,
+                        ]) ?>
+                        <div class="col-md-12 text-center">
+                            <a href="<?= Url::to('/jobs/list?skills='.$preferredSkills)?>" class="jbl-viewall viewall-jobs">View All</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
             <div class="row">
                 <?php
                 Pjax::begin(['id' => 'widgets']);
                 ?>
                 <div class="widget-row">
-                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                         <a class="dashboard-stat dashboard-stat-v2 blue"
                            href="<?= Url::to('/account/jobs/reviewed') ?>">
                             <div class="visual">
@@ -26,7 +65,7 @@ use yii\widgets\Pjax;
                             </div>
                         </a>
                     </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                         <a class="dashboard-stat dashboard-stat-v2 red" href="<?= Url::to('/account/jobs/saved') ?>">
                             <div class="visual">
                                 <i class="fa fa-bar-chart-o"></i>
@@ -39,7 +78,7 @@ use yii\widgets\Pjax;
                             </div>
                         </a>
                     </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                         <a class="dashboard-stat dashboard-stat-v2 green"
                            href="<?= Url::to('/account/jobs/applied') ?>">
                             <div class="visual">
@@ -53,7 +92,7 @@ use yii\widgets\Pjax;
                             </div>
                         </a>
                     </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                         <a class="dashboard-stat dashboard-stat-v2 purple"
                            href="<?= Url::to('/account/jobs/accepted') ?>">
                             <div class="visual">
@@ -66,7 +105,7 @@ use yii\widgets\Pjax;
                             </div>
                         </a>
                     </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                         <a class="dashboard-stat dashboard-stat-v2 yellow"
                            href="<?= Url::to('/account/jobs/pending') ?>">
                             <div class="visual">
@@ -79,7 +118,7 @@ use yii\widgets\Pjax;
                             </div>
                         </a>
                     </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                         <a class="dashboard-stat dashboard-stat-v2 pink"
                            href="<?= Url::to('/account/organization/shortlisted') ?>">
                             <div class="visual">
@@ -151,7 +190,7 @@ use yii\widgets\Pjax;
                                 </ul>
                             </div>
                             <div class="actions col-lg-1">
-                                <a href="/account/jobs/reviewed" class="viewall-jobs" id="view-all">View All</a>
+                                <a href="/account/jobs/reviewed" class="ajr-jobs viewall-jobs" id="view-all">View All</a>
                             </div>
                         </div>
                         <div class="portlet-body">
@@ -166,7 +205,7 @@ use yii\widgets\Pjax;
 
                                                     foreach ($reviewlist as $review) {
                                                         ?>
-                                                        <div class="col-md-3 col-sm-6 hr-j-box rev_box"
+                                                        <div class="col-md-4 col-sm-6 hr-j-box rev_box"
                                                              id="<?= $review['application_enc_id']; ?>">
                                                             <div class="topic-con"
                                                                  data-key="<?= $review['application_enc_id']; ?>">
@@ -242,7 +281,7 @@ use yii\widgets\Pjax;
                                                 if ($shortlisted) {
                                                     foreach ($shortlisted as $shortlist) {
                                                         ?>
-                                                        <div class="col-md-3 hr-j-box">
+                                                        <div class="col-md-4 hr-j-box">
                                                             <div class="topic-con">
                                                                 <div class="hr-company-box">
                                                                     <div class="hr-com-icon">
@@ -313,7 +352,7 @@ use yii\widgets\Pjax;
                                                 if ($applied) {
                                                     foreach ($applied as $apply) {
                                                         ?>
-                                                        <div class="col-md-3">
+                                                        <div class="col-md-4">
                                                             <div class="topic-con">
                                                                 <div class="hr-company-box">
                                                                     <div class="hr-com-icon">
@@ -368,7 +407,7 @@ use yii\widgets\Pjax;
                                                 if ($accepted) {
                                                     foreach ($accepted as $accept) {
                                                         ?>
-                                                        <div class="col-md-3">
+                                                        <div class="col-md-4">
                                                             <div class="topic-con">
                                                                 <div class="hr-company-box">
                                                                     <div class="hr-com-icon">
@@ -423,7 +462,7 @@ use yii\widgets\Pjax;
                                                 if ($shortlist1) {
                                                     foreach ($shortlist1 as $shortlist) {
                                                         ?>
-                                                        <div class="col-md-3 hr-j-box">
+                                                        <div class="col-md-4 hr-j-box">
                                                             <div class="topic-con">
                                                                 <div class="hr-company-box">
                                                                     <div class="hr-com-icon">
@@ -524,10 +563,21 @@ use yii\widgets\Pjax;
 
 <?php
 $this->registerCss('
+.set-center{
+    width:100%;
+    text-align: center;
+}
+.jbl-viewall.viewall-jobs{
+    float: unset;
+    margin-left: 0px;
+}
 .font-dark > span > i {
     font-size: 13px;
     margin-left: 5px;
     color:darkgray;
+}
+.ajr-jobs.viewall-jobs{
+    padding: 8px 7px; 
 }
 .portlet.light > .portlet-title > .actions{
     padding:0px !important;
@@ -609,10 +659,10 @@ ul.tabs li{
     background: none;
     color: #222;
     display: inline-block;
-    padding: 10px 15px;
+    padding: 10px 0px;
     cursor: pointer;
     font-family: roboto;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 500;
 }
 .caption > ul.tabs > li.tab-link:hover{
@@ -688,7 +738,56 @@ a:hover{
       z-index:99;
       background-color:#fff;
       opacity:0.7;
-    }
+}
+/*Sidebar Jobs Cards*/
+.job-card-sidebar-candidate a{
+    margin-bottom: 15px;
+    width: 100%;
+    min-height: 120px;
+    border: 2px solid #eef1f5;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    padding: 10px;
+    border-radius:8px !important;
+    font-family: roboto;
+    color: #000;
+}
+.job-cat-icon{
+  flex-basis: 30%;
+  text-align: center;
+}
+.job-cat-icon img{
+  width: 80%;
+}
+.job-card-detail{
+  flex-basis: 70%;
+  padding: 0 0px 0 10px;
+  line-height: 19px;
+}
+.job-card-detail h3{
+  margin-top: 0px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+.job-card-detail p{
+    margin-bottom: 0px;
+}
+.jcc-location{
+  color: #ff7803;
+}
+.jcc-location, .company-name, .card-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.job-card-sidebar-candidate i{
+  margin-right: 5px;
+}    
 ');
 $script = <<<JS
 

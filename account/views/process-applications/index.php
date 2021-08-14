@@ -1,9 +1,9 @@
 <?php
 
-use yii\helpers\Url;
-use yii\widgets\Pjax;
 use borales\extensions\phoneInput\PhoneInput;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 $base_url = 'https://empoweryouth.com';
 switch ($application_name['application_type']) {
@@ -73,6 +73,18 @@ foreach ($fields as $f) {
         $hcount += 1;
     }
 }
+
+// grtting positions by location
+
+$locations = [];
+foreach ($application_name['applicationPlacementLocations'] as $apl) {
+    if (isset($locations[$apl['name']])) {
+        $locations[$apl['name']] += $apl['positions'];
+    } else {
+        $locations[$apl['name']] = $apl['positions'];
+    }
+}
+
 ?>
 <div class="bg-img"></div>
 <div class="hamburger-jobs">
@@ -261,7 +273,7 @@ foreach ($fields as $f) {
                         <span class="j-delt">
                             <a href="#" id="j-delete" data-toggle="tooltip"
                                title="Delete <?= $app_type ?>" value="<?= $application_id ?>"><i
-                                class="fa fa-trash-o"></i></a>
+                                        class="fa fa-trash-o"></i></a>
                         </span>
                         <span class="j-cls">
                             <a href="#" id="j-closed" data-toggle="tooltip"
@@ -277,28 +289,58 @@ foreach ($fields as $f) {
                 </div>
             </div>
             <div class="col-md-12 use-ff">
-                <div class="job-txt">Invite Candidates via:</div>
-                <div class="job-mail">
-                    <input type="email" class="form-control" id="email" name="email"
-                           placeholder="Email">
-                    <button class="redd" id="email-invitation"><i class="fa fa-envelope"></i></button>
+                <div class="col-md-6 col-sm-12">
+                    <div class="job-txt pos-left">Invite Candidates via</div>
+                    <div class="dis-flex">
+                        <div class="job-mail">
+                            <input type="email" class="form-control" id="email" name="email"
+                                   placeholder="Email">
+                            <button class="redd" id="email-invitation"><i class="fa fa-envelope"></i></button>
+                        </div>
+                        <div class="job-whatsapp">
+                            <?php
+                            $form = ActiveForm::begin([
+                                'id' => 'whatsapp-form',
+                                'fieldConfig' => [
+                                    'template' => '<div class="form-group">{input}{error}</div>',
+                                    'labelOptions' => ['class' => ''],
+                                ],
+                            ]);
+                            ?>
+                            <?=
+                            $form->field($whatsAppmodel, 'phone')->textInput(['id' => 'phone-input']);
+                            ?>
+                            <p id="phone-error" style="color:red;" class="help-block help-block-error"></p>
+                            <button class="grn" id="whatsapp-invitation"><i class="fa fa-whatsapp"></i></button>
+                            <?php ActiveForm::end(); ?>
+                        </div>
+                    </div>
                 </div>
-                <div class="job-whatsapp">
-                    <?php
-                    $form = ActiveForm::begin([
-                        'id' => 'whatsapp-form',
-                        'fieldConfig' => [
-                            'template' => '<div class="form-group">{input}{error}</div>',
-                            'labelOptions' => ['class' => ''],
-                        ],
-                    ]);
-                    ?>
-                    <?=
-                    $form->field($whatsAppmodel, 'phone')->textInput(['id' => 'phone-input']);
-                    ?>
-                    <p id="phone-error" style="color:red;" class="help-block help-block-error"></p>
-                    <button class="grn" id="whatsapp-invitation"><i class="fa fa-whatsapp"></i></button>
-                    <?php ActiveForm::end(); ?>
+                <div class="col-md-6 col-sm-12">
+                    <div class="job-txt pos-right">Openings By Locations</div>
+                    <div class="main-locations">
+                        <?php if ($application_name['applicationPlacementLocations']) { ?>
+                            <ul class="location-posts">
+                                <?php foreach ($locations as $key => $val) { ?>
+                                    <li><?= $key . '<span>' . $val . '</span>' ?></li>
+                                <?php } ?>
+                            </ul>
+                            <?php if (count($locations) > 3) { ?>
+                                <a href="javascript:;" class="and-more"> View All </a>
+                            <?php } ?>
+                        <?php } else { ?>
+                            <span class="work-home">Work From Home</span>
+                        <?php } ?>
+                        <div class="hidden-locations">
+                            <?php if ($application_name['applicationPlacementLocations']) { ?>
+                                <ul class="location-postss">
+                                    <?php foreach ($locations as $key => $val) { ?>
+                                        <li><?= $key . '<span>' . $val . '</span>' ?></li>
+                                    <?php } ?>
+                                </ul>
+                            <?php } ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -311,7 +353,7 @@ foreach ($fields as $f) {
     <div class="set-height">
         <ul class="nav nav-tabs pr-process-tab" id="myHeader">
             <li class="active" id=""
-                style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
+                style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 3; ?>)">
                 <a data-filter="*" href="#" onclick="roundClick()">All <span><?php
                         foreach ($user_pCount as $v) {
                             $pcnt += $v;
@@ -325,7 +367,7 @@ foreach ($fields as $f) {
                 $tooltipTitle = ($p['field_name'] == 'Get Applications') ? 'New Application' : $p['field_name'];
                 ?>
                 <li id="<?= 'nav' . $p['field_enc_id'] ?>"
-                    style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
+                    style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 3; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
                        title="" onclick="roundClick()" data-original-title="<?= $tooltipTitle ?>" href="#">
                         <i class="<?= $p['icon'] ?>"
@@ -336,12 +378,22 @@ foreach ($fields as $f) {
                 $k++;
             }
             ?>
-            <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 2; ?>)">
+            <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 3; ?>)">
                 <a data-filter=".result" data-toggle="tooltip" data-placement="bottom" data-original-title="Hired"
                    href="#" onclick="roundClick()">
                     <i class="fa fa-check-square-o"></i><span>
                     <?php
                     echo $hcount;
+                    ?>
+                </span>
+                </a>
+            </li>
+            <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 3; ?>)">
+                <a data-filter=".rejected" data-toggle="tooltip" data-placement="bottom" data-original-title="Rejeted"
+                   href="#" onclick="roundClick()">
+                    <i class="fas fa-times"></i><span>
+                    <?php
+                    echo $rejected_count;
                     ?>
                 </span>
                 </a>
@@ -358,6 +410,7 @@ foreach ($fields as $f) {
                     $tempfieldMain = "result";
                     $fieldName = "Hired";
                 } else if ($arr['status'] == 'Rejected') {
+                    $tempfieldMain = "rejected";
                     $fieldName = "Rejected";
                 } else {
                     $fieldName = "Applied";
@@ -441,7 +494,8 @@ foreach ($fields as $f) {
                                                        name="<?= $arr['applied_application_enc_id'] . 'rejectType' ?>"
                                                        id="<?= $arr['applied_application_enc_id'] . 'permanent' ?>"
                                                        class="">
-                                                <label for="<?= $arr['applied_application_enc_id'] . 'permanent' ?>">Blacklist Candidate</label>
+                                                <label for="<?= $arr['applied_application_enc_id'] . 'permanent' ?>">Blacklist
+                                                    Candidate</label>
                                             </div>
                                         </li>
                                         <li>
@@ -701,12 +755,14 @@ foreach ($fields as $f) {
                                         ?>
                                         <li>
                                             <?php
-                                            if(!empty($arr['phone']) && $arr['phone']){
-                                            ?>
-                                            <a href="https://api.whatsapp.com/send?phone=<?= $arr['phone'] ?>" target="_blank"
-                                               title="Contact Candidate" data-toggle="tooltip" class="shareBtn"><i class="fa fa-whatsapp"></i></a>
-                                            <?php
-                                                }
+                                            if (!empty($arr['phone']) && $arr['phone']) {
+                                                ?>
+                                                <a href="https://api.whatsapp.com/send?phone=<?= $arr['phone'] ?>"
+                                                   target="_blank"
+                                                   title="Contact Candidate" data-toggle="tooltip" class="shareBtn"><i
+                                                            class="fa fa-whatsapp"></i></a>
+                                                <?php
+                                            }
                                             ?>
                                         </li>
                                         <?php if ($arr['status'] != 'Hired' && $arr['status'] != 'Cancelled') { ?>
@@ -938,6 +994,35 @@ foreach ($fields as $f) {
 </div>
 <?php
 $this->registerCss('
+.has-success #phone-input {
+    border-color: #c2cad8;
+}
+.hidden-locations{
+    display:none;
+}
+.dis-flex {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.location-posts li {
+    background-color: #eee;
+    padding: 6px 10px 6px 10px;
+    display: inline-block;
+    border-radius: 4px;
+    font-family: Roboto;
+    margin: 0 5px 5px 0;
+}
+.location-posts li span, .location-postss li span {
+    background-color: #00a0e3;
+    color: #fff;
+    border-radius: 4px;
+    display: inline-block;
+    text-align: center;
+    margin-left: 5px;
+    padding: 0 5px;
+}
 #whatsapp-form .form-group{
     margin-bottom:0px;
 }
@@ -945,7 +1030,7 @@ $this->registerCss('
     margin:0px;
 }
 #phone-input{
-    width: 278px;
+    width: 100%;
 }
 //.job-whatsapp {
 //    margin-top: 10px !important;
@@ -1011,42 +1096,112 @@ $this->registerCss('
     display: block;
 }
 .redd{
-    background-color: #ea4335;
+    background-color:#f9938a;
 }
 .grn{
-    background-color: #43d854;
+    background-color:#63c56e;
 }
-.job-txt{
-    font-size: 16px;
-    color: #000;
-    font-weight: 600;
-    margin-right: 10px;
+.job-txt {
+    font-size: 14px;
+    position: absolute;
+    top: -21px;
+    font-weight: 500;
+    text-align: center;
+    font-family: roboto;
+    background-color: #fdfdfd;
+    padding: 0px 10px;
+}
+.pos-left{
+    left: 0px;
+}
+.pos-right{
+    right: 0px;
 }
 .use-ff {
-    border-top: 2px solid #bdb7b7;
-    padding-top: 20px;
+    border-top: 2px solid #e0e0e0;
+    padding-top: 10px;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    margin: 15px 0 10px;
+    margin: 15px 0 0px;
+    flex-wrap:wrap;
 }
 .job-mail, .job-whatsapp {
     position: relative;
-    flex-basis: 25%;
-    margin: 0 5px;
+    margin: 5px 10px 5px 0px;
+    flex-basis:45%;
 }
-.job-mail input, .job-whatsapp input {
+.location-posts {
     height: 36px;
+    overflow: hidden;
+    text-align:right;
+    padding:0;
+    margin:5px 0;
+    flex-basis: 85%;
+}
+.and-more {
+    /* background-color: #00a0e3; */
+    color: #00a0e3 !important;
+    padding: 6px 12px;
+    display: inline-block;
+    border-radius: 4px;
+    font-weight: 500;
+    width:80px;
+}
+.and-more:focus{text-decoration:none;}
+.main-locations {
+    text-align: right;
+    font-family: roboto;
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+}
+.work-home {
+    background-color: #b1b1b1;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 26px;
+    display: inline-block;
+    margin-top: 5px;
+}
+.location-postss {
+    max-height: 150px;
+    padding: 0;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    box-shadow: 1px 4px 10px 2px #d8d8d8;
+    transition: all .3s;
+    z-index: 2;
+    width: 180px;
+    text-align: center;
+    border-radius: 4px;
+}
+.location-postss li {
+    width: 100%;
+    margin: 0;
+    padding: 8px 5px;
+}
+.location-postss li:nth-child(even){
+    background-color:#f5f5f5;
+}
+.location-postss li:nth-child(odd){
+    background-color:#fff;
+}
+.iti{width:100%;}
+.job-mail input, .job-whatsapp input {
+    height: 34px;
     padding-right: 45px;
 }
 .job-whatsapp button, .job-mail button {
     position: absolute;
-    top: 1px;
-    right: 1px;
+    top: 0px;
+    right: 0px;
     width: 40px;
-    height: 34px;
+    height: 33px;
     border: none;
     font-size:20px;
+    border-radius:0px 4px 4px 0px;
     color: #fff;
 }
 .clipb i{
@@ -1606,6 +1761,7 @@ $this->registerCss('
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    height:15px;
 }
 .e-logo i {
     font-size: 22px;
@@ -1633,6 +1789,7 @@ $this->registerCss('
 	font-family: roboto;
 	padding: 8px 15px;
 	border-radius: 4px;
+	display:inline-block;
 }
 .without-q {
 	display: flex;
@@ -2105,6 +2262,13 @@ overflow: hidden;
         width: 100%;
     }
 }
+@media screen and (max-width: 992px){
+    .scd-btn a{margin-bottom:15px;}
+    .job-txt{position:relative;top:0;}
+    .dis-flex{margin-bottom:10px;}
+    .location-posts{text-align:center;}
+    .main-locations{height:auto;text-align:center;}
+}
 @media screen and (max-width: 768px){
     .loc{
         margin-bottom:22px;
@@ -2117,9 +2281,9 @@ overflow: hidden;
     top:0 !important;
     z-index:1;
     background: #fff;
-    padding:0px;
-    
+    padding:0px;   
 }
+.job-mail, .job-whatsapp{flex-basis:100%;}
 .sticky li{
     margin:0 0 15px 0 !important;
 }
@@ -2219,6 +2383,17 @@ $(document).on('keyup','input#email', function (e){
         $('#email-invitation').click();
     }
 })
+$('.and-more').click( function(e) {
+    e.preventDefault(); // stops link from making page jump to the top
+    e.stopPropagation(); // when you click the button, it stops the page from seeing it as clicking the body too
+    $('.hidden-locations').toggle();
+});
+$('.hidden-locations').click( function(e) {
+    e.stopPropagation(); // when you click within the content area, it stops the page from seeing it as clicking the body too 
+});
+$('body').click( function() {
+    $('.hidden-locations').hide();
+   });
 $(document).on('click', '#email-invitation', function(){
     var email_id = $(this).parent().find('input#email').val();
     if(email_id != "" && typeof email_id !== "undefined"){
@@ -2683,6 +2858,10 @@ $(document).on('click','.customJobBox', function(e) {
 });
 var ps = new PerfectScrollbar('#hamburgerJobs');
 var pa = new PerfectScrollbar('.modal-jobs');
+var locationPosts = $('.location-postss')
+if(locationPosts.length > 0){
+    var pj = new PerfectScrollbar('.location-postss');
+}
 var skillSet = $('#skill-sett')
 if(skillSet.length > 0){
    var pb = new PerfectScrollbar('#skill-sett');
@@ -2724,7 +2903,6 @@ $(document).on('click', '#whatsapp-invitation', function(e){
       }
   }
 })
-
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);

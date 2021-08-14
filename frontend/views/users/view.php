@@ -281,8 +281,7 @@ $this->params['header_dark'] = false;
                                             <!--                                    <img src="-->
                                             <?//= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?><!--"/>-->
                                             <canvas class="user-icon" name="<?= $edu['institute'] ?>" width="80"
-                                                    height="80"
-                                                    font="30px"></canvas>
+                                                    height="80" font="30px" color="<?= $edu['initials_color']; ?>"></canvas>
                                         </div>
                                         <div class="prof-inner">
                                             <div class="uni-name s-text"><?= $edu['institute'] ?>
@@ -309,8 +308,7 @@ $this->params['header_dark'] = false;
                                     <div class="set">
                                         <div class="prof-p">
                                             <canvas class="user-icon" name="<?= $exp['company'] ?>" width="80"
-                                                    height="80"
-                                                    font="30px"></canvas>
+                                                    height="80" font="30px" color="<?= $exp['initials_color']; ?>"></canvas>
                                         </div>
                                         <div class="prof-inner">
                                             <div class="uni-name s-text"><?= $exp['company'] . ', ' . $exp['city_name'] ?>
@@ -453,7 +451,7 @@ $this->params['header_dark'] = false;
                 </div>
                 <?php
             }
-            if ($userAppliedData) {
+            if ($userAppliedData && Yii::$app->user->identity->organization->organization_enc_id) {
                 ?>
                 <div class="col-md-4">
                     <div class="row">
@@ -626,6 +624,9 @@ $this->registerCss('
     height: 100%;
     object-fit: cover;
     object-position: center;
+}
+.prof-p canvas {
+    border-radius: 50%;
 }
 .prof-inner {
 	margin: 0 0 0 10px;
@@ -1266,7 +1267,7 @@ ul.status-detail li>strong {
         font-weight: 600;
         width: 70%;
         display: -webkit-box !important;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp:1;
         -webkit-box-orient: vertical;
         overflow: hidden;
         line-height: 20px;
@@ -1368,9 +1369,11 @@ $(document).on('click','.download-resume',function (e){
                     alert('an error occurerd')
                 }
             }
-        })    
+        })
 })
-var ps = new PerfectScrollbar('.over-scroll');
+if($('.over-scroll').length){
+    var ps = new PerfectScrollbar('.over-scroll');
+}
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');

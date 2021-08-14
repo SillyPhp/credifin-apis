@@ -127,4 +127,14 @@ $this->registerCss('
     text-transform: capitalise;
     line-height: 20px;
 }
+
+@media only screen and (max-width: 550px){
+    .displayFlex{
+        justify-content: space-around;
+    }
+    .displayFlex > div{
+        flex-basis: 50%;
+        margin-bottom: 25px;
+    }
+}
 ');

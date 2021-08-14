@@ -38,7 +38,7 @@ use borales\extensions\phoneInput\PhoneInput;
         <div class="row">
             <div class="col-md-5 tac">
                 <div class="whystudy">
-                    <img src="<?= Url::to('@eyAssets/images/pages/custom/canada.png')?>" alt="">
+                    <img src="<?= Url::to('@eyAssets/images/pages/custom/canada-flag.png')?>" alt="">
                 </div>
             </div>
             <div class="col-md-7">

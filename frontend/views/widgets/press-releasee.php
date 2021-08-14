@@ -10,11 +10,11 @@ use yii\helpers\Url;
 
                 ?>
                 <div class="row">
-                    <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="col-xs-7">
                         <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'As Seen In'); ?></h2>
                     </div>
 
-                    <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="col-xs-5">
                         <div class="type-1">
                             <div>
                                 <a href="<?= Url::to('/education-loans/press-releases'); ?>" class="btn btn-3">
@@ -38,8 +38,8 @@ use yii\helpers\Url;
                                 <a href="<?= $d['link'] ?>" target="_blank">
                                     <div class="press-release">
                                         <div class="press-img">
-                                            <img src="<?= Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->pressPublishers->logo . $d['logo_location'] . DIRECTORY_SEPARATOR . $d['logo'], 'https'); ?>"
-                                                 alt=""/>
+                                            <img class="load-later" data-src="<?= Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->pressPublishers->logo . $d['logo_location'] . DIRECTORY_SEPARATOR . $d['logo'], 'https'); ?>"
+                                                 src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt=""/>
                                         </div>
                                     </div>
                                     <div class="press-txt-hd"><?= $d['name'] ?></div>
@@ -172,4 +172,11 @@ $this->registerCss('
     text-align: center;
     height: 46px;
 }
+.press-bg .heading-style{
+    margin: 0 !important;
+}
 ');
+$script = <<<JS
+$('.load-later').Lazy();
+JS;
+$this->registerJs($script);

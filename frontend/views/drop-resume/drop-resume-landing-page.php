@@ -4,16 +4,11 @@ use yii\helpers\Url;
 
 ?>
     <section class="drop-resume-head">
-        <div class="drop-layer"></div>
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6 col-sm-12">
                     <div class="drop-resume-txt">
                         <h1><span class="og">Drop Resume<br></span> can help you to get your dream job.</h1>
-                        <!--                        <div class="txt-strip">-->
-                        <!--                            <img src="-->
-                        <? //= Url::to('@eyAssets/images/pages/custom/drop-resume-og.png') ?><!--"/>-->
-                        <!--                        </div>-->
                         <div class="search-container">
                             <form action="/organizations" id="form_search_cmp">
                                 <input id="company_search" type="text"
@@ -24,35 +19,32 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
-                <!--                <div class="col-md-6 col-sm-6">-->
-                <!--                    <div class="drop-resume-head-img">-->
-                <!--                        <img src="-->
-                <? //= Url::to('@eyAssets/images/pages/custom/drop-resume-hdrimgg.png') ?><!--"/>-->
-                <!--                    </div>-->
-                <!--                </div>-->
+                <div class="col-md-6 col-sm-6 drop-resume-img">
+                    <div class="drop-resume-head-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/custom/man-with-glasses.png') ?>" alt="">
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <section class="des-sec">
+    <section class="studyus-head">
         <div class="container">
-            <div class="row dis-flex">
-                <div class="col-md-4 col-sm-4">
-                    <div class="side-b">
-                        <img src="<?= Url::to('@eyAssets/images/pages/cv_templates/resume-hold.jpg') ?>" alt="">
+            <div class="row">
+                <div class="col-md-5 tac">
+                    <div class="whystudy">
+                        <img src="<?= Url::to('@eyAssets/images/pages/custom/drop-resume.png') ?>" alt="">
                     </div>
                 </div>
-                <div class="col-md-7 col-md-offset-1 col-sm-8">
-                    <div class="content-resume">
-                        <h3 class="drop-t">Drop in Your Resume</h3>
-                        <p class="description-set">This unique feature of ours can help you towards securing your dream
-                            job
-                            in your desired company much before the vacancy arises. It gives you an opportunity to drop
-                            in
-                            your resume in the Resume Box of your dream company to get noticed before other applicants.
-                            Drop
-                            in your resume and get chance to secure an interview for your dream job.</p>
-                    </div>
+                <div class="col-md-7">
+                    <h3 class="heading-style">Drop in Your Resume</h3>
+                    <p class="why-des">This unique feature of ours can help you towards securing your dream
+                        job
+                        in your desired company much before the vacancy arises. It gives you an opportunity to drop
+                        in
+                        your resume in the Resume Box of your dream company to get noticed before other applicants.
+                        Drop
+                        in your resume and get chance to secure an interview for your dream job.</p>
                 </div>
             </div>
         </div>
@@ -61,49 +53,50 @@ use yii\helpers\Url;
     <section class="drop-resume-in">
         <div class="container">
             <div class="row">
-                <h3 class="heading-style">Drop Your Resume In</h3>
+                <h3 class="heading-style white-font">Drop Your Resume In</h3>
             </div>
             <div class="row">
                 <div class="us-hover">
                     <div class="col-md-3 col-sm-4 col-xs-12">
-                        <a href="<?= Url::to('/organizations?keyword=college'); ?>" target="_blank">
+<!--                        <a href="" target="_blank">-->
                             <div class="college">
+                                <p class="name-drop">Banks And NBFCs</p>
                                 <div class="drop-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/university.png') ?>">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/NBFC.png') ?>">
                                 </div>
-                                <p class="name-drop">COLLEGE</p>
+
                             </div>
-                        </a>
+<!--                        </a>-->
                     </div>
                     <div class="col-md-3 col-sm-4 col-xs-12">
-                        <a href="<?= Url::to('/organizations?keyword=hospital'); ?>" target="_blank">
+<!--                        <a href="" target="_blank">-->
                             <div class="college">
+                                <p class="name-drop">Companies</p>
                                 <div class="drop-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/health-care.png') ?>">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/companies.png') ?>">
                                 </div>
-                                <p class="name-drop">HOSPITAL</p>
                             </div>
-                        </a>
+<!--                        </a>-->
                     </div>
                     <div class="col-md-3 col-sm-4 col-xs-12">
-                        <a href="<?= Url::to('/organizations?keyword=IT'); ?>" target="_blank">
+<!--                        <a href="" target="_blank">-->
                             <div class="college">
+                                <p class="name-drop">Universities/Colleges</p>
                                 <div class="drop-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/IT.png') ?>">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/universities.png') ?>">
                                 </div>
-                                <p class="name-drop">INFORMATION TECHNOLOGY</p>
                             </div>
-                        </a>
+<!--                        </a>-->
                     </div>
                     <div class="col-md-3 col-sm-4 col-xs-12">
-                        <a href="<?= Url::to('/organizations?keyword=finance'); ?>" target="_blank">
+<!--                        <a href="" target="_blank">-->
                             <div class="college">
+                                <p class="name-drop">Hospitals</p>
                                 <div class="drop-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/finance.png') ?>">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/hospital.png') ?>">
                                 </div>
-                                <p class="name-drop">FINANCE</p>
                             </div>
-                        </a>
+<!--                        </a>-->
                     </div>
                 </div>
             </div>
@@ -187,7 +180,7 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-6 col-sm-10 col-xs-12">
                     <div class="com-grid">
-                        <h3 class="mb-20 pb-10 heading-style">Top Banks To Drop Your Resume In</h3>
+                        <h3 class="mb-20 pb-10 heading-style white-font">Top Banks To Drop Your Resume In</h3>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-2 col-xs-12">
@@ -201,56 +194,51 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-            <div>
-                <div class="col-md-3 col-sm-4">
-                    <div class="company-box">
-                        <a href="<?= Url::to('/icicibank'); ?>" target="_blank">
-                            <div class="company-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png') ?>">
-                            </div>
-                            <div class="company-name">ICICI Bank</div>
-                        </a>
-                    </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-4 col-xs-6">
+                    <a href="<?= Url::to('/icicibank'); ?>" target="_blank" class="company-box">
+                        <div class="company-hover"></div>
+                        <div class="company-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png') ?>">
+                        </div>
+                        <div class="company-name">ICICI Bank</div>
+                    </a>
                 </div>
-                <div class="col-md-3 col-sm-4">
-                    <div class="company-box">
-                        <a href="<?= Url::to('/citizensbank'); ?>" target="_blank">
-                            <div class="company-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/citizens-bank.png') ?>">
-                            </div>
-                            <div class="company-name">Citizens Bank</div>
-                        </a>
-                    </div>
+                <div class="col-md-3 col-sm-4 col-xs-6">
+                    <a href="<?= Url::to('/citizensbank'); ?>" target="_blank" class="company-box">
+                        <div class="company-hover"></div>
+                        <div class="company-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/citizens-bank.png') ?>">
+                        </div>
+                        <div class="company-name">Citizens Bank</div>
+                    </a>
                 </div>
-                <div class="col-md-3 col-sm-4">
-                    <div class="company-box">
-                        <a href="<?= Url::to('/bankofbaroda'); ?>" target="_blank">
-                            <div class="company-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/bob-logo.png') ?>">
-                            </div>
-                            <div class="company-name">Bank Of Baroda</div>
-                        </a>
-                    </div>
+                <div class="col-md-3 col-sm-4 col-xs-6">
+                    <a href="<?= Url::to('/bankofbaroda'); ?>" target="_blank" class="company-box">
+                        <div class="company-hover"></div>
+                        <div class="company-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/bob-logo.png') ?>">
+                        </div>
+                        <div class="company-name">Bank Of Baroda</div>
+                    </a>
                 </div>
-                <div class="col-md-3 col-sm-4">
-                    <div class="company-box">
-                        <a href="<?= Url::to('/axisbank'); ?>" target="_blank">
-                            <div class="company-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/axis-bank.png') ?>">
-                            </div>
-                            <div class="company-name">Axis Bank</div>
-                        </a>
-                    </div>
+                <div class="col-md-3 col-sm-4 col-xs-6">
+                    <a href="<?= Url::to('/axisbank'); ?>" target="_blank" class="company-box">
+                        <div class="company-hover"></div>
+                        <div class="company-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/axis-bank.png') ?>">
+                        </div>
+                        <div class="company-name">Axis Bank</div>
+                    </a>
                 </div>
-                <div class="col-md-3 col-sm-4">
-                    <div class="company-box">
-                        <a href="<?= Url::to('/hsbcbankpvtltd3098/reviews'); ?>" target="_blank">
-                            <div class="company-logo">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/HSBC-log.png') ?>">
-                            </div>
-                            <div class="company-name">HSBC Bank Pvt. Ltd.</div>
-                        </a>
-                    </div>
+                <div class="col-md-3 col-sm-4 col-xs-6">
+                    <a href="<?= Url::to('/hsbcbankpvtltd3098/reviews'); ?>" target="_blank" class="company-box">
+                        <div class="company-hover"></div>
+                        <div class="company-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/HSBC-log.png') ?>">
+                        </div>
+                        <div class="company-name">HSBC Bank Pvt. Ltd.</div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -259,36 +247,38 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
-.content-resume{
-    padding: 40px;
-    box-shadow: 6px 6px 12px 0px rgb(0 0 0 / 30%);
-    background-color: #fff;
+.white-font {
+    color: #fff;
 }
-.des-sec {
-    background-image: linear-gradient(to right, #fff 50%, #a9a9a9 50%);
-    padding: 0px 0 20px;
-    margin:30px 0;
+.drop-resume-in {
+    background: linear-gradient(51.32deg, #50A7C2 58.67%, #B7F8DB 87.24%);
+    padding-bottom: 20px;
 }
-.side-b {
-    border: 2px solid #a9a9a9;
-    padding: 10px;
-    background-color: #fff;
+.studyus-head {
+    padding: 30px 0px 40px;
 }
-.side-b img {
+.whystudy {
     width: 100%;
-    height: 300px;
-    object-fit: cover;
+    text-align: center;
+    max-width: 300px;
+    margin: 0 auto;
 }
-.drop-t {
-    margin: 0px 0 5px 0;
-    font-family: \'Roboto\';
-    font-weight: 500;
+.whystudy img {
+    width: 100%;
 }
-p.description-set {
-    font-size: 16px;
-    font-family: \'Roboto\';
+.tac {
+    text-align: center;
+}
+.why-des{
+    letter-spacing: 0.3px;
+    font-size: 18px;
+    line-height: 28px;
+    color: #000;
+    font-family: roboto;
     text-align: justify;
-    letter-spacing: .5px;
+}
+.drop-resume-img {
+    align-self: flex-end;
 }
 .search-container {
     max-width: 600px;
@@ -318,9 +308,9 @@ p.description-set {
     right: -1px;
     border-radius: 0 8px 8px 0;
 }
-.us-hover:hover .college{
-    opacity:0.4;
-}
+//.us-hover:hover .college{
+//    opacity:0.4;
+//}
 .us-hover .college:hover{
     opacity:1;
 }
@@ -401,39 +391,27 @@ p.description-set {
     flex-wrap: wrap;
 }
 p.name-drop {
+    color: #000;
     text-align: center;
-    font-family: \'Roboto\';
+    font-family: roboto;
     font-weight: 500;
     margin: 10px 0 0;
-    font-size: 15px;
+    font-size: 18px;
     letter-spacing: 0.5px;
 }
-.drop-layer {
-    width: 100%;
-    height: 100%;
-    background-color: #0000006b;
-    position: absolute;
-}
 .og {
-    color: #ff7803;
+    color: #fff;
     text-transform: uppercase;
     font-family: \'Lobster\';
     font-size: 34px;
 }
 .drop-resume-head{
-    background:url(' . Url::to('@eyAssets/images/pages/education-loans/resume1.png') . ');
-    min-height:450px;
-    background-size:cover;
-    background-position: left;
-    background-repeat: no-repeat;
-}
-.drop-resume-head-img img {
-    height: 100%;
-    max-height: 450px;
-    max-width: 760px;
-}
-.drop-resume-txt {
-    padding-top: 150px;
+    background: url(' . Url::to('@eyAssets/images/pages/custom/color-circles.png') . ') 80% 5%, url(' . Url::to('@eyAssets/images/pages/custom/resume.png') . ') 55% 45%, linear-gradient(95.46deg, #50A7C2 8.49%, #B7F8DB 84.8%);
+    min-height: 550px;
+    background-size: 6%, 6%, cover !important;
+    background-repeat: no-repeat !important;
+    display: flex;
+    align-items: flex-end;
 }
 .drop-resume-txt h1 {
     font-size: 30px;
@@ -480,53 +458,38 @@ p.drop-hw-description {
     min-height: 92px;
     font-family: \'Roboto\';
 }
-.company-box a {
-    text-align: center;
-    padding: 10px;
-    margin-bottom: 30px;
-    border-radius: 4px;
-    box-shadow: 0 0 6px -1px rgb(0 0 0 / 20%);
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    border-left: 2px solid #ff7803;
-}
-.company-box a:hover{
-    box-shadow:0 0 12px -1px rgb(0 0 0 / 20%); 
-    border-left: 2px solid #00a0e3;
-}
+
 .company-logo {
-    width: 65px;
-    margin: auto;
-    height: 65px;
-    line-height: 60px;
-    border-radius: 2px;
+    background-color: #fff;
+    border-radius: 50%;
+    min-width: 80px;
+    max-width: 80px;
+    height: 80px;
+    line-height: 70px;
+    overflow: hidden;
     transition: all 0.2s;
-//    padding: 0 5px;
-//    box-shadow: 0 0 4px -1px rgb(0 0 0 / 30%);
 }
 .company-logo img {
-    width: 65px;
-    height: 65px;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
 }
 //.company-box:hover .company-logo{
 //    transform:scale(1.05);
 //}
 .company-name {
-    font-size: 15px;
+    font-size: 16px;
+    color: #fff;
+    font-weight: 600;
     font-family: roboto;
-    line-height: 22px;
     width: 80%;
-    font-weight: 500;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     text-align: left;
     overflow: hidden;
     padding-left: 15px;
+    z-index: 1;
 }
 .drop-text-btn {
     text-align: center;
@@ -551,97 +514,78 @@ p.drop-hw-description {
     border: 2px solid #ff7803;
 }
 .college {
-    padding: 15px;
+    padding: 15px 15px 0;
     background-color: #fff;
     border-radius: 4px;
-    margin-bottom:20px;
-    transition:all .3s;
+    margin-bottom: 20px;
+    transition: all .3s;
+    height: 175px;
 }
 .drop-img{
     text-align: center;
+    height: 120px;
+    width: 200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-end;
 }
-.drop-img img {
-    max-height: 128px;
-    max-width: 200px;
-    padding: 10px;
+.banks {
+    background: linear-gradient(51.32deg, #50A7C2 58.67%, #B7F8DB 87.24%);
 }
-@media screen and (max-width:500px) and (min-width:300px){
-.side-b{margin-bottom:25px;}
-.type-1{margin-bottom:15px;}
-    .drop-resume-head {
-        background-color: #ececec;
-    }
-    .drop-resume-txt {
-        padding-top: 90px;
-    }
-    .drop-resume-txt h1 {
-        font-size: 36px;
-        line-height: 43px;
-        margin: 0px 10px 0px 10px;
-    }
-    .txt-strip img {
-        max-height: 34px;
-    }
-     .drop-resume-head-img img {
-       display: none;
-     }
+.company-box {
+    position: relative;
+    z-index: 1;
+    transition: 0.5s all ease-out;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
 }
-@media screen and (max-width:750px) and (min-width:501px){
-    .drop-resume-head {
-        background-color: #ececec;
-    }
-    .drop-resume-head-img img{
+.company-hover {
+    width: 80px;
+    height: 80px;
+    background-color: #fff;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transition: all .5s;
+    border-radius: 40px;
+    transform: translatey(-50%);
+}
+.company-logo {
+    background-color: #fff;
+    border-radius: 50%;
+    min-width: 80px;
+    max-width: 80px;
+    height: 80px;
+    line-height: 70px;
+    overflow: hidden;
+    transition: all 0.2s;
+    z-index: 1;
+}
+.company-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 5px;
+}
+.company-box:hover .company-name {
+    color: #333;
+}
+.company-box:hover .company-hover {
+    width: 100%;
+    height: 100%;
+}
+.footer {
+    margin-top: 0px !important;
+}
+@media screen and (max-width:768px){
+    .drop-resume-img {
         display: none;
     }
-    .drop-resume-txt {
-        padding-top: 90px;
-    }
-    .drop-resume-txt h1 {
-        font-size: 42px;
-        line-height: 55px;
-        margin: 0px 20px 0px 20px;
-    }
-    .txt-strip img {
-        max-height: 42px;
-    }
-}
-@media screen and (max-width:1060px) and (min-width:859px){
-    .drop-resume-head-img img {
-        height: 100%;
-        max-height: 375px;
-        max-width: 590px;
-    }
-    .drop-resume-txt h1 {
-        font-size: 32px;
-        line-height: 45px;
-    }
-    .txt-strip img {
-        max-height: 36px;
-    }
-}
-@media screen and (max-width:858px) and (min-width:768px){
-    .drop-resume-head-img img {
-        height: 100%;
-        max-height: 350px;
-        max-width: 560px;
-    }
-    .drop-resume-txt h1 {
-        font-size: 28px;
-        line-height: 35px;
-    }
-    .txt-strip img {
-        max-height: 32px;
-    }
-}
-@media screen and (max-width: 990px) and (min-width: 320px) {
-    .drop-flex {
-        flex-direction: column;
-    }
-    .order2{
-        order: 1;
-    }
-    .order1{
-        order: 2;
+    .drop-resume-head {
+    background: url(' . Url::to('@eyAssets/images/pages/custom/color-circles.png') . ') 80% 5%, url(' . Url::to('@eyAssets/images/pages/custom/resume.png') . ') 6% 31%, linear-gradient(95.46deg, #50A7C2 8.49%, #B7F8DB 84.8%);
+        align-items: center;
     }
 }
 ');

@@ -22,7 +22,7 @@ $form = ActiveForm::begin([
 ?>
 <div class="row">
     <div class="col-md-4">
-        <?= $form->field($locationFormModel, 'name')->label('<i class="fa fa-building"></i> Location Name')->textInput(['autocomplete' => 'off']); ?>
+        <?= $form->field($locationFormModel, 'name')->label('<i class="fa fa-building"></i> Location Name*')->textInput(['autocomplete' => 'off']); ?>
     </div>
     <div class="col-md-4">
         <?=
@@ -39,7 +39,7 @@ $form = ActiveForm::begin([
         <?=
         $form->field($locationFormModel, 'country')->label('<i class="fa fa-location-arrow"></i> Country')->dropDownList(
             $countries, [
-            'prompt' => 'Select Country',
+            'prompt' => 'Select Country*',
             'id' => 'country_drp',
             'onchange' => '
                                     $("#states_drp").empty().append($("<option>", { 
@@ -62,7 +62,7 @@ $form = ActiveForm::begin([
         <?=
         $form->field($locationFormModel, 'state')->label('<i class="fa fa-location-arrow"></i> State')->dropDownList(
                  [],[
-            'prompt' => 'Select State',
+            'prompt' => 'Select State*',
             'id' => 'states_drp',
             'onchange' => '
                                     $("#cities_drp").empty().append($("<option>", { 
@@ -83,9 +83,9 @@ $form = ActiveForm::begin([
     </div>
     <div class="col-md-3">
         <?=
-        $form->field($locationFormModel, 'city')->label('<i class="fa fa-map-marker"></i> City')->dropDownList(
+        $form->field($locationFormModel, 'city')->label('<i class="fa fa-map-marker"></i> City*')->dropDownList(
                 [], [
-            'prompt' => 'Select City',
+            'prompt' => 'Select City*',
             'id' => 'cities_drp',
         ])->label(false);
         ?>
@@ -114,7 +114,7 @@ $form = ActiveForm::begin([
 </div>  
 <div class="row">
     <div class="col-md-10">
-        <?= $form->field($locationFormModel, 'address')->label('<i class="fa fa-map-marker"></i> Address')->textInput(['autocomplete' => 'off', 'id' => 'address']); ?>
+        <?= $form->field($locationFormModel, 'address')->label('<i class="fa fa-map-marker"></i> Address*')->textInput(['autocomplete' => 'off', 'id' => 'address']); ?>
     </div>
     <div class="col-md-2">
         <div class="form-group form-md-line-input">

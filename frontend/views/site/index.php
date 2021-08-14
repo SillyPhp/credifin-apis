@@ -1186,11 +1186,7 @@ $("html, body").animate({ scrollTop: 0 }, "slow");
 var load_content = true;
 var loadNth = 0;
 var errorNth = 0;
-// window.onscroll = function() {scrollFunction()};
 function scrollFunction() {
-     // var doc_height = $(document).height() - $(window).height();
-  // if (document.documentElement.scrollTop > doc_height - $('#footer').height()) {
-  // for(var l =0;l<loadElems.length;l++){
       if(load_content && loadElems[loadNth]){
         load_content = false;
         $('#sectionIsLoading').fadeIn(500);
@@ -1228,19 +1224,7 @@ function scrollFunction() {
       }
   // }
 // }
-    scrollFunction();    
-  jQuery(function($) {
-  $('.main-slider-sec').slick({
-	  slidesToShow: 1,
-	  slidesToScroll: 1,
-	  arrows: false,
-	  autoplay: true,
-	  slide: 'li',
-	  fade: false,
-	  infinite: true,
-	  dots: false
-	});
-});
+    scrollFunction();
 
 
 document.getElementById('search-submit').addEventListener('click',(evt)=> {
@@ -1260,6 +1244,7 @@ $(document).on('submit', '#search_jobs_internships', function() {
         return false;
     }
 });
+$('.load-later').Lazy();
 JS;
 if (!Yii::$app->user->isGuest) {
     $this->registerJs("
@@ -1269,16 +1254,12 @@ if (!Yii::$app->user->isGuest) {
         'getStats',
         'getProductOffering',
         'getTopCities',
-//        'getEduAndRedbull',
+        'getDropResume',
         'getGovernmentJobs',
         'getInternationalJobs',
         'getCompaniesWithUs',
         'getLearningTopics',
-//        'getOpportunities',
-//        'getSafetySigns',
-//        'getOnlineClasses',
         'getWhatsappCommunityj',
-//        'getNewsUpdate',
 //        'getTweets',
         'getStudentLoan',
         'getPressRelease',
@@ -1293,6 +1274,8 @@ if (!Yii::$app->user->isGuest) {
         'getFeaturedInternships',
         'getStats',
         'getProductOffering',
+        'getAiesec',
+        'getDropResume',
         'getTopCities',
 //        'getEduAndRedbull',
         'getGovernmentJobs',
@@ -1314,9 +1297,8 @@ if (!Yii::$app->user->isGuest) {
     
     ");
 }
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.9/jquery.lazy.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJs($script);
-$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
-//$this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet');
 $this->registerCssFile('@eyAssets/css/home-page-slider.css');
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
@@ -1379,24 +1361,4 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
     // let the browser natively reset defaults
     form[0].reset();
     });
-    var modal = document.getElementById("virusModal");
-    // Get the button that opens the modal
-    var btn = document.getElementsByClassName("collegeSignupModal");
-
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-
-    for (var i = 0; i < btn.length; i++) {
-        btn[i].onclick = function () {
-            modal.style.display = "block";
-        }
-    }
-    span.onclick = function () {
-        modal.style.display = "none";
-    }
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
 </script>

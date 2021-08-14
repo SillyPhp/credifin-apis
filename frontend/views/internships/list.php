@@ -72,6 +72,21 @@ $this->registerCss('
 .main-content{
     min-height:100vh !important;
 }
+
+.text-wrap-ellipsis{
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    padding: 0 8px 0 0!important;
+}
+@media screen and (max-width: 1250px) and (min-width: 992px) {
+    .ji-apply{padding:5px;}
+    .application-card-bottom a {
+        font-size: 11px;
+    }
+    .sharing-links{padding:4px;}
+}
 ');
 ?>
 
