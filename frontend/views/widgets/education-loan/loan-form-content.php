@@ -12,7 +12,34 @@
                     <li>- Loan will be <span>repaid</span> with in the semester</li>
                     <li>- More Than <span>20+</span> Lenders</li>
                 </ul>
-                <p></p>
+                <div class="cl-icon">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="widget-benfit">
+                                <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-minimal-paper-work.png') ?>">
+                                <p>Minimal Paper Work</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-benfit">
+                                <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-faster-processing-time.png') ?>">
+                                <p>Faster Processing Time</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-benfit">
+                                <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-approval-in-minutes.png') ?>">
+                                <p>Approval In Minutes</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-benfit">
+                                <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-quick-disbursement.png') ?>">
+                                <p>Quick Disbursement</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 <!--                <div class="cl-icon">-->
 <!--                    <p>Our Lenders</p>-->
 <!--                    <ul>-->
@@ -70,4 +97,23 @@
     </div>
 </div>
 <?php
+$this->registerCSS('
+.widget-benfit{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 30px;
+}
+.widget-benfit img{
+    max-width: 60px;
+    margin-bottom: 10px;
+}
+.widget-benfit p{
+    color: #fff;
+    font-size: 16px !important;
+    line-height: 20px;
+    font-weight: 500 !important;    
+} 
+')
 ?>
