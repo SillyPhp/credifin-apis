@@ -203,7 +203,7 @@ $this->registerCss('
     color: #999;
     font-weight: 500;
     display: inline-block;
-    margin: 0px 10px;
+    margin: 0px 5px;
 }
 //.hr-company-box {
 //    padding: 20px 10px 20px;
@@ -223,7 +223,6 @@ $this->registerCss('
     border-radius: 4px !important;
     padding: 6px 12px;
     display: inline-block;
-    margin-top: -4px;
     background-color: #fff;
 }
 .j-grid > button:hover {
