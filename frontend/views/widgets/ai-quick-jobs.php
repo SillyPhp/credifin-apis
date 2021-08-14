@@ -7,7 +7,7 @@ use yii\helpers\Url;
 <div class="container">
     <div class="row">
         <div class="ocl-md-12">
-            <div class="jobs-main-heading">jobs that can turn into a career</div>
+            <div class="jobs-main-heading">Hire Your Super Star Team</div>
         </div>
     </div>
     <div class="parent row">

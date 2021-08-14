@@ -1,7 +1,6 @@
 <?php
 
 use yii\helpers\Url;
-
 ?>
     <section>
         <div class="container">
@@ -9,12 +8,21 @@ use yii\helpers\Url;
                 <div class="col-md-7 col-sm-7">
                     <div class="drop-resume-text">
                         <h3>Drop Resume</h3>
-                        <p>It is often the best hire that sets the tone for the company's culture. Pick the best
-                            candidate
-                            for your team, your vision and the company as a whole.</p>
-                        <div class="drop-btn">
-<!--                            <a href="" class="activate-drop arrow">Activate</a>-->
-                            <a href="" class="detail-drop">View Detail</a>
+                    <?php
+                        if(Yii::$app->user->identity->organization || Yii::$app->request->url == '/employers'){
+                    ?>
+                            <p>It is often the best hire that sets the tone for the company's culture. Pick the best candidate
+                                for your team, your vision and the company as a whole.</p>
+                    <?php
+                        }else{
+                    ?>
+                            <p>Drop off your resume at the company you are interested in and help them see why you are the right one. Make it count by listing your top skills.</p>
+                            <?php
+                        }
+                    ?>
+                       <div class="drop-btn">
+                            <a href="<?= Url::to('/drop-resume'); ?>" class="activate-drop arrow">View Detail</a>
+<!--                            <a href="--><!--" class="detail-drop">View Detail</a>-->
                         </div>
                     </div>
                     <div class="dr-how-it-works">
@@ -26,28 +34,72 @@ use yii\helpers\Url;
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-3 col-sm-3">
+                            <div class="col-md-3 col-sm-3 col-xs-6">
                                 <div class="dr-box">
-                                    <i class="fas fa-briefcase"></i>
-                                    <p>Go to manage jobs/internships</p>
+                                    <?php
+                                        if(Yii::$app->user->identity->organization || Yii::$app->request->url == '/employers'){
+                                    ?>
+                                        <i class="fas fa-briefcase"></i>
+                                        <p>Go to manage jobs/internships</p>
+                                        <?php
+                                    }else{
+                                        ?>
+                                        <img src="<?= Url::to('@eyAssets/images/pages/drop-resume/search-profile.png')?>">
+                                        <p>Search for and open the organization's profile</p>
+                                        <?php
+                                    }
+                                        ?>
                                 </div>
                             </div>
-                            <div class="col-md-3 col-sm-3">
+                            <div class="col-md-3 col-sm-3 col-xs-6">
                                 <div class="dr-box">
+                                <?php
+                                if(Yii::$app->user->identity->organization || Yii::$app->request->url == '/employers'){
+                                    ?>
                                     <i class="fas fa-copy"></i>
                                     <p>Go to Resume<br> Bank</p>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <img src="<?= Url::to('@eyAssets/images/pages/drop-resume/click-on-cv-box.png')?>">
+                                    <p> Click on the CV box icon</p>
+                                    <?php
+                                }
+                                    ?>
                                 </div>
                             </div>
-                            <div class="col-md-3 col-sm-3">
+                            <div class="col-md-3 col-sm-3 col-xs-6">
                                 <div class="dr-box">
+                                <?php
+                                if(Yii::$app->user->identity->organization || Yii::$app->request->url == '/employers'){
+                                    ?>
                                     <i class="fas fa-user"></i>
                                     <p>Check profile for resumes</p>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <img src="<?= Url::to('@eyAssets/images/pages/drop-resume/choose-profile.png')?>">
+                                    <p>Apply for internships or jobs that suit your interests</p>
+                                    <?php
+                                }
+                                    ?>
                                 </div>
                             </div>
-                            <div class="col-md-3 col-sm-3">
+                            <div class="col-md-3 col-sm-3 col-xs-6">
                                 <div class="dr-box">
+                                <?php
+                                if(Yii::$app->user->identity->organization || Yii::$app->request->url == '/employers'){
+                                    ?>
                                     <i class="fas fa-check"></i>
                                     <p>Review the<br> resumes</p>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <img src="<?= Url::to('@eyAssets/images/pages/drop-resume/be-patient.png')?>">
+                                    <p>Be patient while the company responds</p>
+                                    <?php
+                                }
+                                    ?>
                                 </div>
                             </div>
                         </div>
@@ -92,7 +144,7 @@ $this->registerCss('
     border-radius: 4px;
     display: inline-block;
     transition: ease-in-out .2s;
-    width: 140px;
+    width: 145px;
 }
 .arrow {
   color: #fff;
@@ -111,20 +163,17 @@ $this->registerCss('
   background-color: #fff;
 }
 .arrow:hover::after {
-  transform: translateX(20px);
+  transform: translateX(10px);
 }
 .detail-drop {
     font-size: 16px;
     font-family: roboto;
     padding: 8px 15px;
+    transition: 0.5s;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
 }
-.detail-drop{
-  cursor: pointer;
-  display: inline-block;
-  position: relative;
-  transition: 0.5s;
-}
-
 .detail-drop:after {
     content: "»";
     position: absolute;

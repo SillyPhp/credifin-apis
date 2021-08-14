@@ -163,6 +163,10 @@ use yii\helpers\Url;
         </div>
     </section>
 
+<?= $this->render('/widgets/loan-form-detail', [
+    'model' => $model
+]); ?>
+
 <?= $this->render('/widgets/college-fee-apply-now') ?>
 <!--    <section class="other-loan">-->
 <!--        <div class="container">-->
@@ -245,6 +249,11 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.form-control {
+    border-radius: 0;
+    box-shadow: none;
+    height: 45px;
+}
 .loan-process, .table-view {
     margin: 40px 0;
 }

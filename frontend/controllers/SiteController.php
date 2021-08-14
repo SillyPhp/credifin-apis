@@ -1056,6 +1056,9 @@ class SiteController extends Controller
             case 'getOurServices':
                 return $this->renderAjax('/widgets/our-services');
                 break;
+            case 'getDropResume':
+                return $this->renderAjax('/widgets/drop-resume-section');
+                break;
             case 'getShortcuts':
                 $job_profiles = AssignedCategories::find()
                     ->alias('a')
@@ -1285,16 +1288,6 @@ class SiteController extends Controller
         return $this->render('resume-builder-landing-page');
     }
 
-    public function actionDropResumeLandingPage()
-    {
-        return $this->render('drop-resume-landing-page');
-    }
-
-    public function actionDropResumeCompanies()
-    {
-        return $this->render('drop-resume-companies');
-    }
-
     public function actionEducationalInstitutionLoan()
     {
         $this->layout = 'blank-layout';
@@ -1387,8 +1380,7 @@ class SiteController extends Controller
           $offset = Yii::$app->request->post('offset');
           $model = Posts::find()
               ->alias('z')
-              ->select(['z.post_enc_id','z.title','z.slug','z.post_type_enc_id','z.featured_image_alt',
-                  'CASE WHEN z.featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->posts->featured_image) . '", z.featured_image_location, "/", z.featured_image) ELSE NULL END featured_image'])
+              ->select(['z.*', 'CASE WHEN z.featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->posts->featured_image) . '", z.featured_image_location, "/", z.featured_image) ELSE NULL END featured_image'])
               ->joinWith(['postTypeEnc a' => function($a){
                   $a->andWhere(['a.post_type' => 'Social']);
               }], false)
