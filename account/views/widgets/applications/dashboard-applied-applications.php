@@ -75,7 +75,15 @@ if($loan && empty($loan['loanApplications'])) {
                                             </div>
                                         </div>
                                     </div>
-
+                                    <div class="col-md-12">
+                                        <?php
+                                        if($apply['reason']){
+                                            ?>
+                                            <p class="cand-rejection"><span>Rejection Reason:</span>  <?= $apply['reason']?></p>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
                                 </div>
                             <?php } ?>
                             <?php  ?>
@@ -255,6 +263,16 @@ if($loan && empty($loan['loanApplications'])) {
 <?php
     }
 $this->registerCss("
+.cand-rejection{
+    font-size: 13px;
+    font-family: 'Roboto';
+    text-align: center;
+    color: #333;
+}
+.cand-rejection span{
+    color: #e43a45;
+    font-weight: 500;
+}
 .show-btn-n {
 	background-color: #00a0e3;
 	border: none;

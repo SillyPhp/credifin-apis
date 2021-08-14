@@ -58,7 +58,7 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="us-hover">
                     <div class="col-md-3 col-sm-4 col-xs-12">
-                        <a href="" target="_blank">
+<!--                        <a href="" target="_blank">-->
                             <div class="college">
                                 <p class="name-drop">Banks And NBFCs</p>
                                 <div class="drop-img">
@@ -66,37 +66,37 @@ use yii\helpers\Url;
                                 </div>
 
                             </div>
-                        </a>
+<!--                        </a>-->
                     </div>
                     <div class="col-md-3 col-sm-4 col-xs-12">
-                        <a href="" target="_blank">
+<!--                        <a href="" target="_blank">-->
                             <div class="college">
                                 <p class="name-drop">Companies</p>
                                 <div class="drop-img">
                                     <img src="<?= Url::to('@eyAssets/images/pages/custom/companies.png') ?>">
                                 </div>
                             </div>
-                        </a>
+<!--                        </a>-->
                     </div>
                     <div class="col-md-3 col-sm-4 col-xs-12">
-                        <a href="" target="_blank">
+<!--                        <a href="" target="_blank">-->
                             <div class="college">
                                 <p class="name-drop">Universities/Colleges</p>
                                 <div class="drop-img">
                                     <img src="<?= Url::to('@eyAssets/images/pages/custom/universities.png') ?>">
                                 </div>
                             </div>
-                        </a>
+<!--                        </a>-->
                     </div>
                     <div class="col-md-3 col-sm-4 col-xs-12">
-                        <a href="" target="_blank">
+<!--                        <a href="" target="_blank">-->
                             <div class="college">
                                 <p class="name-drop">Hospitals</p>
                                 <div class="drop-img">
                                     <img src="<?= Url::to('@eyAssets/images/pages/custom/hospital.png') ?>">
                                 </div>
                             </div>
-                        </a>
+<!--                        </a>-->
                     </div>
                 </div>
             </div>
@@ -270,9 +270,9 @@ $this->registerCss('
     text-align: center;
 }
 .why-des{
-    letter-spacing: 0.5px;
-    font-size: 20px;
-    line-height: 32px;
+    letter-spacing: 0.3px;
+    font-size: 18px;
+    line-height: 28px;
     color: #000;
     font-family: roboto;
     text-align: justify;
@@ -308,9 +308,9 @@ $this->registerCss('
     right: -1px;
     border-radius: 0 8px 8px 0;
 }
-.us-hover:hover .college{
-    opacity:0.4;
-}
+//.us-hover:hover .college{
+//    opacity:0.4;
+//}
 .us-hover .college:hover{
     opacity:1;
 }
@@ -519,11 +519,11 @@ p.drop-hw-description {
     border-radius: 4px;
     margin-bottom: 20px;
     transition: all .3s;
-    height: 200px;
+    height: 175px;
 }
 .drop-img{
     text-align: center;
-    height: 145px;
+    height: 120px;
     width: 200px;
     margin: 0 auto;
     display: flex;
