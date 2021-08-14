@@ -28,10 +28,12 @@ use common\models\ReviewedApplications;
 use common\models\ShortlistedApplicants;
 use common\models\ShortlistedApplications;
 use common\models\UserCoachingTutorials;
+use common\models\UserPreferences;
 use common\models\Users;
 use common\models\UserSkills;
 use common\models\Utilities;
 use common\models\WidgetTutorials;
+use frontend\models\applications\ApplicationCards;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
@@ -1005,6 +1007,51 @@ class InternshipsController extends Controller
             ->asArray()
             ->all();
 
+        $userLocation = UserPreferences::find()
+            ->alias('a')
+            ->select(['a.preference_enc_id'])
+            ->joinWith(['userPreferredLocations pl' => function($pl){
+                $pl->select(['pl.preference_enc_id','pl.preferred_location_enc_id', 'pl.city_enc_id', 'c.name']);
+                $pl->joinWith(['cityEnc c'], false);
+                $pl->onCondition(['pl.is_deleted' => 0]);
+            }])
+            ->where([
+                'a.created_by' => Yii::$app->user->identity->user_enc_id,
+                'a.assigned_to' => 'Internships'
+            ])
+            ->asArray()
+            ->one();
+
+        $locations = [];
+        foreach ($userLocation['userPreferredLocations'] as $location){
+            array_push($locations, $location['name']);
+        }
+
+        $userSkills = UserSkills::find()
+            ->alias('a')
+            ->select(['a.user_skill_enc_id', 'a.skill_enc_id', 'se.skill'])
+            ->joinWith(['skillEnc se'], false)
+            ->where([
+                'a.created_by' => Yii::$app->user->identity->user_enc_id,
+                'a.is_deleted' => 0,
+            ])
+            ->asArray()
+            ->all();
+
+        $skills = [];
+        foreach ($userSkills as $skill){
+            array_push($skills, $skill['skill']);
+        }
+        $options['limit'] = 3;
+        $options['location'] = implode(',', $locations);
+        $options['skills'] = implode(',', $skills);
+//        $options['orderBy'] = new Expression('rand()');
+
+        $internshipsByLocation = ApplicationCards::internships($options);
+        unset($options['location']);
+        $internshipsBySkills = ApplicationCards::internships($options);
+
+
         return $this->render('dashboard/individual', [
             'shortlisted' => $shortlist_jobs,
             'applied' => $applied_applications,
@@ -1018,6 +1065,10 @@ class InternshipsController extends Controller
             'accepted_jobs' => $accepted_jobs,
             'total_accepted' => $total_accepted,
             'shortlist1' => $shortlist1,
+            'internshipsByLocation' => $internshipsByLocation,
+            'preferredLocations' => implode(',', $locations),
+            'internshipsBySkills' => $internshipsBySkills,
+            'preferredSkills' => implode(',', $skills),
         ]);
     }
 
