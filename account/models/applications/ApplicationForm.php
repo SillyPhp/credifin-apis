@@ -205,19 +205,18 @@ class ApplicationForm extends Model
             default:
                 $wage_type = 'Unpaid';
         }
-
+        if ($type=='Jobs'||$type == 'Internships'){
+            $session = Yii::$app->session;
+            if ($session->has('campusPlacementData')){
+                $session->remove('campusPlacementData');
+            }
+        }
         if ($type == 'Jobs' || $type == 'Clone_Jobs') {
             $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Jobs']);
             $type = 'Jobs';
         } else if (($type == 'Internships' || $type == 'Clone_Internships')) {
             $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Internships']);
             $type = 'Internships';
-        }
-        if ($type=='Jobs'){
-            $session = Yii::$app->session;
-            if ($session->has('campusPlacementData')){
-                $session->remove('campusPlacementData');
-            }
         }
         $employerApplicationsModel = new EmployerApplications();
         $utilitiesModel = new Utilities();
