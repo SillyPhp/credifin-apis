@@ -1752,4 +1752,29 @@ class InternshipsController extends Controller
 
         return ['data' => $shortlistedApplicants, 'count' => $count];
     }
+    public function actionAllClosedInternships(){
+        $model = new ExtendsJob();
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $params = Yii::$app->request->post();
+            $limit = 10;
+            $page = 1;
+            if(isset($params['limit'])){
+                $limit = $params['limit'];
+            }
+            if(isset($params['page'])){
+                $page = $params['page'];
+            }
+            $data = $this->__closedinternships($limit, $page);
+            if($data['total'] != 0){
+                return['status' => 200, 'data' => $data];
+            }
+            else{
+                return['status' => 404, 'message' => 'Page Not Found'];
+            }
+        }
+        return $this->render('all-closed-internships',[
+            'model' => $model
+        ]);
+    }
 }
