@@ -49,6 +49,7 @@ $this->registerCss('
     font-family: roboto;
     line-height: 48px;
     letter-spacing: 0.5px;
+    color: #000;
 }
 
 .interest-free-text p {

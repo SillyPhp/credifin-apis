@@ -135,7 +135,7 @@ use yii\helpers\Url;
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
 
-<section class="bgeEd">
+<section class="bgeEd partner-college">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -290,13 +290,11 @@ html{
     transition: ease-in all 300ms;
 }
 .benefit-heading h1{
-    font-size: 35px;
+    font-size: 28pt;
     font-family: Roboto;
     font-weight: 500;
-    margin: 20px 0;
-}
-.benefit-heading{
-    margin: 20px 0;
+    color: #000;
+    font-family: Lobster;
 }
 .footer{
     margin-top: 0px !important;
@@ -343,8 +341,8 @@ html{
     padding: 20px 0px 30px;
 }
 .bene-head {
-    margin: 20px 20px 60px;
     text-align: left;
+    color: #000;
 }
 .bene-head h2 {
     font-size: 28pt;
@@ -450,7 +448,6 @@ html{
     font-weight: 700;
     transition: .3s ease;
 }
-
 //.college-card-partner:hover{
 //  transform: scale(0.9);  
 //}
