@@ -11,6 +11,8 @@ use common\models\LoanSanctionReports;
 use common\models\Organizations;
 use common\models\SelectedServices;
 use common\models\Services;
+use common\models\User;
+use common\models\Usernames;
 use common\models\UserOtherDetails;
 use common\models\Users;
 use frontend\models\whatsAppShareForm;
@@ -513,25 +515,38 @@ class EducationLoansController extends Controller
 
     public function actionEmiDetails($id)
     {
-        setlocale(LC_MONETARY, 'en_IN');
-        $data = LoanSanctionReports::findOne(['report_enc_id' => $id]);
-        $model = LoanSanctionReports::find()
-            ->alias('z')
-            ->select(['z.report_enc_id','z.loan_app_enc_id','z.loan_amount','z.processing_fee','z.rate_of_interest'])
-            ->joinWith(['loanEmiStructures a' => function($a){
-                $a->addSelect(['a.sanction_report_enc_id','a.due_date','a.amount','a.is_advance']);
-            }])
-            ->joinWith(['createdBy b'])
-            ->joinWith(['loanAppEnc c' => function($c){
-                $c->addSelect(['c.loan_app_enc_id','c.applicant_name','c.phone','c.email','c.amount','c1.loan_name']);
-                $c->andWhere(['c.is_deleted' => 0]);
-                $c->joinWith(['loanTypeEnc c1'],false);
-            }])
-            ->andWhere(['z.report_enc_id' => $id])
-            ->asArray()->one();
-        return $this->render('emi-details', [
-            'data' => $data,
-            'model' => $model
-        ]);
+        if (!Yii::$app->user->isGuest) {
+            setlocale(LC_MONETARY, 'en_IN');
+            $data = LoanSanctionReports::find()
+                ->alias('z')
+                ->select(['z.report_enc_id', 'z.loan_app_enc_id', 'z.loan_amount', 'z.processing_fee', 'z.rate_of_interest'])
+                ->joinWith(['loanEmiStructures a' => function ($a) {
+                    $a->addSelect(['a.sanction_report_enc_id', 'a.due_date', 'a.amount', 'a.is_advance']);
+                    $a->orderBy(['a.is_advance' => SORT_DESC]);
+                }])
+                ->joinWith(['createdBy b'])
+                ->joinWith(['loanAppEnc c' => function ($c) {
+                    $c->addSelect(['c.loan_app_enc_id', 'c.applicant_name', 'c.phone', 'c.email', 'c.amount',
+                        'c.loan_type',
+                        '(CASE WHEN c.loan_type = "Education Loan" THEN "College Education Loan"
+                            WHEN c.loan_type = "School Fee Loan" THEN "School Fee Loan"
+                            WHEN c.loan_type = "Personal Loan" THEN "Personal Loan"
+                            WHEN c.loan_type = "Teacher Loan" THEN "Teacher Loan"
+                            END) as loan_type',
+                        'c.created_by']);
+                    $c->andWhere(['c.is_deleted' => 0]);
+                }])
+                ->andWhere(['z.report_enc_id' => $id])
+                ->asArray()->one();
+            if ($data['loanAppEnc']['created_by'] && $data['loanAppEnc']['created_by'] == Yii::$app->user->identity->user_enc_id) {
+                    return $this->render('emi-details', [
+                        'data' => $data
+                    ]);
+            } else {
+                throw new HttpException(404, Yii::t('account', 'Page not found.'));
+            }
+        } else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
     }
 }

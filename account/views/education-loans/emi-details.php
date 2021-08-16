@@ -1,7 +1,7 @@
 <?php
-$payable_interest = ($model['loan_amount'] / 100 * 15);
-$total_payment = (int)$payable_interest + (int)$model['loan_amount'] + (int)$model['processing_fee'];
-$emi_structures = $model['loanEmiStructures'];
+$payable_interest = ($data['loan_amount'] / 100 * $data['rate_of_interest']);
+$total_payment = (int)$payable_interest + (int)$data['loan_amount'] + (int)$data['processing_fee'];
+$emi_structures = $data['loanEmiStructures'];
 ?>
     <section>
         <div class="container">
@@ -20,7 +20,7 @@ $emi_structures = $model['loanEmiStructures'];
                             <div class="row">
                                 <div class="col-md-12">
 <!--                                    <p class="loanName">School Loan For Tarry</p>-->
-                                    <p class="loanName"><?= $model['loanAppEnc']['loan_name'] . ' for ' . $model['loanAppEnc']['applicant_name'] ?></p>
+                                    <p class="loanName"><?= $data['loanAppEnc']['loan_type'] . ' for ' . $data['loanAppEnc']['applicant_name'] ?></p>
                                 </div>
                             </div>
                             <div class="row">
@@ -33,19 +33,19 @@ $emi_structures = $model['loanEmiStructures'];
                                 <div class="col-md-3 col-sm-4 col-xs-6 text-sm-left borderRight">
                                     <div class="statsBox">
                                         <p class="mb0">Interest Payable</p>
-                                        <h3 class="mt10"><span><i class="fa fa-inr"></i></span> <?= money_format('%!i', $payable_interest) ?> <span><?= $data->rate_of_interest ?>%</span></h3>
+                                        <h3 class="mt10"><span><i class="fa fa-inr"></i></span> <?= money_format('%!i', $payable_interest) ?> <span><?= $data['rate_of_interest'] ?>%</span></h3>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-4 col-xs-6 text-sm-left borderRight">
                                     <div class="statsBox">
                                         <p class="mb0">Principle Amount</p>
-                                        <h3 class="mt10"><span><i class="fa fa-inr"></i></span> <?= money_format('%!i', $model['loan_amount']); ?></h3>
+                                        <h3 class="mt10"><span><i class="fa fa-inr"></i></span> <?= money_format('%!i', $data['loan_amount']); ?></h3>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-4 col-xs-6 text-sm-left borderRight">
                                     <div class="statsBox">
                                         <p class="mb0">Processing Fee</p>
-                                        <h3 class="mt10"><span><i class="fa fa-inr"></i></span> <?= money_format('%!i', $model['processing_fee']); ?></h3>
+                                        <h3 class="mt10"><span><i class="fa fa-inr"></i></span> <?= money_format('%!i', $data['processing_fee']); ?></h3>
                                     </div>
                                 </div>
                             </div>
