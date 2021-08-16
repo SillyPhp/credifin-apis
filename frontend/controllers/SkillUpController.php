@@ -64,6 +64,7 @@ class  SkillUpController extends Controller
             }], false)
             ->joinWith(['skillsUpPostAssignedSkills d' => function ($d) {
                 $d->joinWith(['skillEnc d1'], false);
+                $d->andWhere(['d.is_deleted' => 0]);
             }], false)
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0]);
 
@@ -125,6 +126,7 @@ class  SkillUpController extends Controller
             ->joinWith(['skillsUpPostAssignedSkills d' => function ($d) {
                 $d->select(['d.assigned_skill_enc_id', 'd.skill_enc_id', 'd.post_enc_id', 'd1.skill']);
                 $d->joinWith(['skillEnc d1'], false);
+                $d->andWhere(['d.is_deleted' => 0]);
             }])
             ->joinWith(['skillsUpPostAssignedEmbeds e' => function ($e) {
                 $e->joinWith(['embedEnc e1']);
@@ -134,7 +136,7 @@ class  SkillUpController extends Controller
             }], false);
         $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Skill-Up-Executive");
         if ($permissions) {
-            $postDetail->where(['a.slug' => $slug, 'a.is_deleted' => 0]);
+        $postDetail->where(['a.slug' => $slug, 'a.is_deleted' => 0]);
         } else {
             $postDetail->where(['a.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0]);
         }
@@ -143,19 +145,22 @@ class  SkillUpController extends Controller
         $postDetail = $postDetail->asArray()
             ->one();
 
-        $skills = [];
-        foreach ($postDetail['skillsUpPostAssignedSkills'] as $s) {
-            $skills[] = $s['skill'];
+        if (!empty($postDetail)) {
+            $skills = [];
+            foreach ($postDetail['skillsUpPostAssignedSkills'] as $s) {
+                $skills[] = $s['skill'];
+            }
+
+            $data['limit'] = 5;
+            $data['page'] = 1;
+            $data['post_id'] = $postDetail['post_enc_id'];
+            $data['skills'] = $skills;
+            $data['isRandom'] = true;
+            $related_posts = $this->feedsList($data);
+            return $this->render('feed-detail', ['detail' => $postDetail, 'related_posts' => $related_posts]);
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
-
-        $data['limit'] = 5;
-        $data['page'] = 1;
-        $data['post_id'] = $postDetail['post_enc_id'];
-        $data['skills'] = $skills;
-        $data['isRandom'] = true;
-        $related_posts = $this->feedsList($data);
-
-        return $this->render('feed-detail', ['detail' => $postDetail, 'related_posts' => $related_posts]);
     }
 
 }

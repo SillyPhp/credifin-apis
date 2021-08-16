@@ -23,18 +23,28 @@ class WebinarPayments extends \common\models\WebinarPayments
           ->one();
 
       if (!empty($webinar_amount)) {
+          $total_amount = $webinar_amount['price'];
+          $gst = $webinar_amount['gst'];
+          $percentage = ($total_amount * $gst) / 100;
+          $total_amount = $total_amount + $percentage;
+          $args = [];
+          $args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
+          $args['currency'] = "INR";
+          $args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
+          $response = PaymentsModule::_authPayToken($args);
+
           $this->payment_amount = $webinar_amount['price'];
           $this->payment_gst = $webinar_amount['gst'];
-          $percentage = ($this->payment_amount * $this->payment_gst) / 100;
-          $total_amount = $this->payment_amount + $percentage;
+//          $percentage = ($this->payment_amount * $this->payment_gst) / 100;
+//          $total_amount = $this->payment_amount + $percentage;
       }
       else{
           return false;
       }
-      $args = [];
-      $args['amount'] = $total_amount;
-      $args['currency'] = "INR";
-      $response = PaymentsModule::GetToken($args);
+//      $args = [];
+//      $args['amount'] = $total_amount;
+//      $args['currency'] = "INR";
+//      $response = PaymentsModule::GetToken($args);
       $transaction = Yii::$app->db->beginTransaction();
       try {
           $Registration = new WebinarRegistrations();
@@ -118,4 +128,10 @@ class WebinarPayments extends \common\models\WebinarPayments
       }
 
   }
+
+    private function floatPaisa($amount)
+    {
+        $c = $amount * 100;
+        return (int)$c;
+    }
 }

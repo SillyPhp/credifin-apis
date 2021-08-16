@@ -8,7 +8,7 @@ use kartik\select2\Select2;
 use yii\web\JsExpression;
 
 $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
-
+$description = $defaultData['description'];
 ?>
 
 <section class="feeds-form pt-100">
@@ -48,21 +48,20 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                     <div class="feeds-data row">
                         <div class="col-md-12">
                             <div class="content-t">Content Type</div>
-                            <?= $form->field($model, 'content_type')->radioList(['Video' => 'Video', 'Blog' => 'Blog', 'News' => 'News', 'Podcast' => 'Podcast', 'Article' => 'Article', 'Audio' => 'Audio', 'Case Study' => 'Case Study', 'Research Paper' => 'Research Paper', 'Vlog/Webinar' => 'Vlog/Webinar'])->label(false); ?>
+                            <?= $form->field($model, 'content_type')->radioList(['Video' => 'Video', 'Blog' => 'Blog', 'News' => 'News', 'Podcast' => 'Podcast', 'Article' => 'Article', 'Audio' => 'Audio', 'Case Study' => 'Case Study', 'Research Paper' => 'Research Paper', 'Vlog/Webinar' => 'Vlog/Webinar'],['disabled' => true])->label(false); ?>
                         </div>
-                        <div class="source-field hidden">
+                        <div class="source-field">
                             <div class="col-md-12">
                                 <div class="form-group form-md-line-input form-md-floating-label">
-                                    <?= $form->field($model, 'source_url', ['enableAjaxValidation' => true])->textInput(['placeholder' => 'Source Url', 'class' => 'form-control', 'id' => 'source_url'])->label(false); ?>
+                                    <?= $form->field($model, 'source_url')->textInput(['placeholder' => 'Source Url', 'class' => 'form-control', 'disabled' => true])->label(false); ?>
                                 </div>
                             </div>
                         </div>
-                        <div class="all-fields hidden">
+                        <div class="all-fields">
                             <div class="col-md-12 mb-30">
                                 <div class="content-t mb-20">Cover Image</div>
                                 <div id="image-preview">
-                                    <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image"
-                                         class="target set-w"/>
+                                    <img src="<?= (($defaultData['cover_image'] ? Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->skill_up->cover_image . $defaultData['cover_image_location'] . '/' . $defaultData['cover_image'] : (($defaultData['post_image_url']) ? $defaultData['post_image_url'] : 'https://via.placeholder.com/350x350?text=Cover+Image')))?>" alt="your image" class="target set-w"/>
                                 </div>
                                 <div class="custom-file">
                                     <label class="custom-file-label" for="file">Choose Image</label>
@@ -79,7 +78,8 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                 <div class="form-group form-md-line-input form-md-floating-label">
                                     <div class="form-group pt-20 mt-20">
                                         <input type="text" name="sourceElem" class="form-control" id="sourceInputElem"
-                                               placeholder="Enter Source Name"/>
+                                               placeholder="Enter Source Name"
+                                               value="<?= $defaultData['source_name']; ?>"/>
                                         <?= $form->field($model, 'source_id')->hiddenInput(['id' => 'source_id'])->label(false); ?>
                                     </div>
                                 </div>
@@ -90,7 +90,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
-                            <div class="col-md-12 embed_code_field hidden">
+                            <div class="col-md-12 embed_code_field <?= (($defaultData['content_type'] == 'Video') ? 'hidden' : '')?>">
                                 <div class="form-group form-md-line-input form-md-floating-label">
                                     <?= $form->field($model, 'embed_code')->textInput(['placeholder' => 'Embed Code', 'class' => 'form-control'])->label(false); ?>
                                 </div>
@@ -109,6 +109,20 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                 <?= $form->field($model, 'skills')->hiddenInput(['id' => 'skills-field']); ?>
                                 <div class="pf-field no-margin">
                                     <ul class="tags skill_tag_list">
+                                        <?php
+                                        foreach ($defaultData['skillsUpPostAssignedSkills'] as $sk) {
+                                            ?>
+                                            <li class="addedTag">
+                                                <?= $sk['skill'] ?>
+                                                <span class="tagRemove skillsremove"
+                                                      onclick="$(this).parent().remove();">
+                                                <i class="fa fa-times"></i>
+                                            </span>
+                                                <input type="hidden" value="<?= $sk['skill'] ?>" name="skills[]">
+                                            </li>
+                                            <?php
+                                        }
+                                        ?>
                                         <li class="tagAdd taglist">
                                             <div class="skill_wrapper">
                                                 <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
@@ -122,6 +136,19 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                                 <?= $form->field($model, 'industry')->hiddenInput(['id' => 'industry-field']); ?>
                                 <div class="pf-field no-margin">
                                     <ul class="tags languages_tag_list">
+                                        <?php
+                                        foreach ($defaultData['skillsUpPostAssignedIndustries'] as $in) {
+                                        ?>
+                                        <li class="addedTag">
+                                            <?= $in['industry']?>
+                                            <span class="tagRemove industryremove" onclick="$(this).parent().remove();">
+                                                <i class="fa fa-times"></i>
+                                            </span>
+                                            <input type="hidden" value="<?= $in['industry_enc_id']?>" name="industry[]">
+                                        </li>
+                                            <?php
+                                        }
+                                        ?>
                                         <li class="tagAdd taglist">
                                             <div class="language_wrapper">
                                                 <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
@@ -138,7 +165,6 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                             <div class="col-md-12">
                                 <div class="submit-b">
                                     <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']); ?>
-                                    <a href="javascript:;" id="preview-button">PREVIEW</a>
                                 </div>
                             </div>
                         </div>
@@ -150,22 +176,21 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                 <div class="feed-box dash-inner-box nd-shadow">
                     <!--                    <div class="rec-batch">Recommended</div>-->
                     <div class="feed-img">
-                        <img src="https://via.placeholder.com/350x350?text=Cover+Image" alt="your image"
-                             class="target"/>
+                        <img src="<?= (($defaultData['cover_image'] ? Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->skill_up->cover_image . $defaultData['cover_image_location'] . '/' . $defaultData['cover_image'] : (($defaultData['post_image_url']) ? $defaultData['post_image_url'] : 'https://via.placeholder.com/350x350?text=Cover+Image')))?>" alt="your image" class="target"/>
                     </div>
                     <h3 class="feed-heading">
-                        <a href="javascript:;" id="titleElem">Post Title</a>
+                        <a href="javascript:;" id="titleElem"><?= $defaultData['title']?></a>
                     </h3>
                     <div class="author-s">
                         <div class="author list-data">
-                            <i class="fa fa-user"></i><span id="authorElem"> Author</span>
+                            <i class="fa fa-user"></i><span id="authorElem"> <?= $defaultData['author']?></span>
                         </div>
                         <div class="source">
-                            <i class="fa fa-link"></i><span id="sourceElem"> Source</span>
+                            <i class="fa fa-link"></i><span id="sourceElem"> <?= $defaultData['source_name']?></span>
                         </div>
                     </div>
                     <p class="feed-content" id="descriptionElem">
-
+                        <?= $defaultData['short_description']?>
                     </p>
                     <div class="feed-btns">
                         <div class="like-dis disabled">
@@ -203,7 +228,6 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
     </div>
 </div>
 <?php
-$source_youtube_key = array_search('Youtube', $source_list);
 $this->registerCss('
 .has-error .help-block.help-block-error{
     opacity: 1 !important;
@@ -720,14 +744,8 @@ a.ui.active.label:hover, a.ui.labels .active.label:hover{
 }
 ');
 $script = <<<JS
-$(document).on('change','input[name=content_type]', function(e) {
-    $('.source-field').removeClass('hidden');
-    if($(this).val() != 'Video'){
-        $('.embed_code_field').removeClass('hidden');
-    } else {
-        $('.embed_code_field').addClass('hidden');
-    }
-})
+$('input[name=content_type]').prop('disabled', true);
+
 $(document).on('keypress','#search-skill',function(e){
     if(e.which==13) {
         e.preventDefault();
@@ -801,7 +819,7 @@ var sourceElem = $('#sourceInputElem').typeahead(null, {
    // $('.language_wrapper .Typeahead-spinner').hide();
   }).on('typeahead:selected',function(e, datum)
   {
-      $('#source_id').val(datum.source_enc_id)
+      $('#source_id').val(datum.source_enc_id);
       $('#sourceElem').html(datum.name);
   }).blur(validateSelection2);
    // });
@@ -886,7 +904,16 @@ function add_tags(thisObj,tag_class,name,id,duplicates){
     }
 }
 let description = '';
-
+if(document.getElementsByName('skills[]').length){
+    $('#skills-field').val('done');
+} else {
+    $('#skills-field').val('');
+}
+if(document.getElementsByName('industry[]').length){
+    $('#industry-field').val('done');
+} else {
+    $('#industry-field').val('');
+}
 $(document).on('click', '.tagRemove', function() {
     if(document.getElementsByName('skills[]').length){
         $('#skills-field').val('done');
@@ -956,79 +983,6 @@ $(document).on('change','select[name="source_id"]',function() {
         url(this);
     });
 
-function validURL(str) {
-  var regexp =  /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
-  return regexp.test(str);
-}
-
-$(document).on('change','#source_url',function (e){
-        e.preventDefault();
-        if(!validURL($(this).val())){
-            alert('Invalid URL');
-            return false;
-        }
-        $('.all-fields').removeClass('hidden');
-        let url = $(this).val();
-        $.ajax({
-            url:'/account/skill-up/validate-url',
-            data:{url:url},
-            method:'post',
-            success:function(res){
-                if(res['status'] === 200) {
-                    if(res['video_id'] !== ''){
-                        var id = res['video_id']
-                        var api_key = "AIzaSyDIZMbmF9Cl1thox_ok7a21r7FYVsQ4lyU";
-                        var snippet;
-                        $.ajax({
-                            type: 'GET',
-                            async: false,
-                            url: 'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=' + id + '&key=' + api_key,
-                            success: function(response) {
-                                snippet = response['items'][0]['snippet'];
-                                $('#title').val(snippet['title']);
-                                $('#titleElem').html(snippet['title']);
-                                CKEDITOR.instances.editor.setData(snippet['description']);
-                                $('input[name="content_type"]').each(function(){
-                                    if($(this).val() == 'Video'){
-                                        $(this).prop('checked',true);
-                                    }
-                                })
-                                $('.embed_code_field').addClass('hidden');
-                                $('#sourceElem').html('Youtube');
-                                $('#sourceInputElem').val('Youtube');
-                                $('#channel_id').val(snippet['channelId']);
-                                $('#channel_name').val(snippet['channelTitle']);
-                                $('#author').val(snippet['channelTitle']);
-                                $('#authorElem').html(snippet['channelTitle']);
-                                $('#video_duration').val(response['items'][0]['contentDetails']['duration']);
-                                $('#video_id').val(id);
-                                $('#video_tags').val(snippet['tags']);
-                                $('#source_id').val('$source_youtube_key');
-                                var imge = snippet['thumbnails']['high']['url'];
-                                // $('#image-preview').html('<img src="'+imge+'" height="100px" width="auto">');
-                                $(".target").attr("src", imge);
-                                $('#image_url').val(imge);
-                                $('#short_desc').val(snippet['description'] ? snippet['description'].substr(0,200) + '...' : "");
-                                $('#descriptionElem').html(CKEDITOR.instances.editor.getData());
-                                $('#editor').val(CKEDITOR.instances.editor.getData());
-                            }
-                        });
-                    }
-                } else if(res['status'] === 203){
-                    if(res['image']){
-                        $('#image_url').val(res['image']);
-                        $(".target").attr("src", res['image']);
-                    }
-                    CKEDITOR.instances.editor.setData("");
-                    $('#title').val(res['title']);
-                    $('#titleElem').html(res['title']);
-                    $('#short_desc').val(res['description']);
-                    $('#editor').val("");
-                }
-            }
-        })
-    })
-    
     document.querySelector("#file").addEventListener('change',function() {
       const reader = new FileReader();
       reader.addEventListener('load',()=>{
@@ -1061,9 +1015,6 @@ $(document).on('change','#source_url',function (e){
     })
     
     localStorage.removeItem("imgData");
-    
-    // $('.select2-search__field').css('width',$(".select2-selection__rendered").width());
-    // var ps = new PerfectScrollbar('.select2-selection.select2-selection--multiple');
 JS;
 $this->registerJS($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
