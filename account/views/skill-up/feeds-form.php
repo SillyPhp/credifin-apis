@@ -802,6 +802,7 @@ var sourceElem = $('#sourceInputElem').typeahead(null, {
   }).on('typeahead:selected',function(e, datum)
   {
       $('#source_id').val(datum.source_enc_id)
+      $('#sourceElem').html(datum.name);
   }).blur(validateSelection2);
    // });
 

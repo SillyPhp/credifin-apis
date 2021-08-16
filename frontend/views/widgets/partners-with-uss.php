@@ -79,33 +79,16 @@ $this->registerCss('
     background-size: 12%, 50% 100%; 
     height: 450px;
 }
-.img-top-left{
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-.img-top-left img{
-    width: 100%;
-    max-width: 150px;
-}
-.img-bottom-right{
-    position: absolute;
-    bottom: 0;
-    right: 0;
-}
-.img-bottom-right img{
-    width: 100%;
-    max-width: 740px
-}
 .partner-icon{
     text-align: right;
+    margin-top: 30px;
 }
 .partner-icon img {
     width: 100%;
     max-width: 500px;
 }
 .partner-text {
-    padding: 60px 0px 0px 100px;
+    padding: 110px 0px 0px 100px;
 }
 .partner-text h2 {
     font-family: lora;

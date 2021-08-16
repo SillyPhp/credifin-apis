@@ -9,7 +9,7 @@ use yii\widgets\Pjax;
         <div class="col-md-3">
             <div class="portlet light nd-shadow">
                 <div class="portlet-title tabbable-line">
-                    <div class="caption">
+                    <div class="caption set-center">
                         <span class="caption-subject font-dark bold uppercase">Jobs Preferred by Location</span>
                     </div>
                 </div>
@@ -28,7 +28,7 @@ use yii\widgets\Pjax;
 
             <div class="portlet light nd-shadow">
                 <div class="portlet-title tabbable-line">
-                    <div class="caption">
+                    <div class="caption set-center">
                         <span class="caption-subject font-dark bold uppercase"> Jobs Matching Your Skills</span>
                     </div>
                 </div>
@@ -563,6 +563,10 @@ use yii\widgets\Pjax;
 
 <?php
 $this->registerCss('
+.set-center{
+    width:100%;
+    text-align: center;
+}
 .jbl-viewall.viewall-jobs{
     float: unset;
     margin-left: 0px;
@@ -655,7 +659,7 @@ ul.tabs li{
     background: none;
     color: #222;
     display: inline-block;
-    padding: 6px 6px;
+    padding: 10px 0px;
     cursor: pointer;
     font-family: roboto;
     font-size: 13px;

@@ -88,9 +88,9 @@ class SkillsUpForm extends Model
             $model->post_source_url = $this->source_url;
             $model->post_image_url = $this->image_url;
             $model->source_enc_id = $this->source_id;
-            if ($this->content_type != 'Video') {
+//            if ($this->content_type != 'Video') {
                 $model->post_description = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->description);
-            }
+//            }
             $model->post_short_summery = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->short_description);
             $utilitiesModel->variables['name'] = $model->post_title;
             $utilitiesModel->variables['table_name'] = ExternalNewsUpdate::tableName();
