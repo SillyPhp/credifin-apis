@@ -5,79 +5,161 @@ use yii\helpers\Url;
 ?>
 
 <div class="container">
+
     <div class="row">
         <div class="ocl-md-12">
             <div class="jobs-main-heading">Hire Your Super Star Team</div>
         </div>
     </div>
-    <div class="parent row">
-        <div class="col-md-3 col-sm-6">
-            <div class="ai-job">
-                <a href="/account/jobs/create" class="ai-img" title="Create a Job">
-                    <img src="<?= Url::to('@eyAssets/images/pages/jobs/ai-jobs.png') ?>">
-                </a>
-                <div class="ai-point">
-                    <ul>
-                        <li>Application Tracking System</li>
-                        <li>Get Predefined Job descriptions</li>
-                        <li>Create your own questionare</li>
-                        <li>set predefined interview location</li>
-                        <li>Conduct campus placement</li>
-                    </ul>
+
+    <div class="ji-tabs">
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#jobs" aria-controls="jobs" role="tab" data-toggle="tab"><img src="<?= Url::to('@eyAssets/images/pages/jobs/job-icon.png') ?>">Jobs</a></li>
+            <li role="presentation"><a href="#internships" aria-controls="internships" role="tab" data-toggle="tab"><img src="<?= Url::to('@eyAssets/images/pages/jobs/internship-icon.png') ?>">Internships</a></li>
+        </ul>
+    </div>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="jobs">
+            <div class="parent row">
+                <div class="col-md-3 col-sm-6">
+                    <div class="ai-job">
+                        <a href="/account/jobs/create" class="ai-img" title="Create a Job">
+                            <img src="<?= Url::to('@eyAssets/images/pages/jobs/ai-jobs.png') ?>">
+                        </a>
+                        <div class="ai-point">
+                            <ul>
+                                <li>Application Tracking System</li>
+                                <li>Get Predefined Job descriptions</li>
+                                <li>Create your own Questionnaire</li>
+                                <li>set predefined interview location</li>
+                                <li>Conduct campus placement</li>
+                            </ul>
+                        </div>
+                        <a href="/account/jobs/create" class="create-btn ai">Create Now</a>
+                    </div>
                 </div>
-                <a href="/account/jobs/create" class="create-btn ai">Create a Job</a>
+                <div class="col-md-3 col-sm-6">
+                    <div class="ai-job ai-quick">
+                        <a href="/account/jobs/quick-job" class="ai-img" title="Create a Job">
+                            <img src="<?= Url::to('@eyAssets/images/pages/jobs/quick-jobs.png') ?>">
+                        </a>
+                        <div class="ai-point">
+                            <ul>
+                                <li>one minute process</li>
+                                <li>hassle free job creating</li>
+                                <li>fast recruitment process</li>
+                                <li>make your job more dynamic</li>
+                                <li>expedites the hiring process system</li>
+                            </ul>
+                        </div>
+                        <a href="/account/jobs/quick-job" class="create-btn quick">Create Now</a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="ai-job ai-quick">
+                        <a href="/tweets/job/create" class="ai-img" title="Create a Job">
+                            <img src="<?= Url::to('@eyAssets/images/pages/jobs/twitter-jobs.png') ?>">
+                        </a>
+                        <div class="ai-point">
+                            <ul>
+                                <li>one click procedure</li>
+                                <li>fast recruitment process</li>
+                                <li>post jobs directly from twitter</li>
+                                <li>post on Empower Youth, hire on your own platform</li>
+                            </ul>
+                        </div>
+                        <a href="/tweets/job/create" class="create-btn twitter">Create Now</a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="ai-job">
+                        <a href="/account/jobs/campus-placement"  class="ai-img" title="Create a Job">
+                            <img src="<?= Url::to('@eyAssets/images/pages/jobs/e-campus.png') ?>">
+                        </a>
+                        <div class="ai-point">
+                            <ul>
+                                <li>visit hundred of colleges just in a click</li>
+                                <li>most advanced recruiters process showcase your employer brand</li>
+                                <li>post all kind of job and opportunities</li>
+                            </ul>
+                        </div>
+                        <a href="/account/jobs/campus-placement" class="create-btn campus">Create Now</a>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="ai-job ai-quick">
-                <a href="/account/jobs/quick-job" class="ai-img" title="Create a Job">
-                    <img src="<?= Url::to('@eyAssets/images/pages/jobs/quick-jobs.png') ?>">
-                </a>
-                <div class="ai-point">
-                    <ul>
-                        <li>one minute process</li>
-                        <li>hassle free job creating</li>
-                        <li>fast recruitment process</li>
-                        <li>make your job more dynamic</li>
-                        <li>expedites the hiring process system</li>
-                    </ul>
+        <div role="tabpanel" class="tab-pane" id="internships">
+            <div class="parent row">
+                <div class="col-md-3 col-sm-6">
+                    <div class="ai-job">
+                        <a href="/account/jobs/create" class="ai-img" title="Create a Job">
+                            <img src="<?= Url::to('@eyAssets/images/pages/jobs/ai-internships.png') ?>">
+                        </a>
+                        <div class="ai-point">
+                            <ul>
+                                <li>Application Tracking System</li>
+                                <li>Get Predefined Internship descriptions</li>
+                                <li>Create your own Questionnaire</li>
+                                <li>set predefined interview location</li>
+                                <li>Conduct campus placement</li>
+                            </ul>
+                        </div>
+                        <a href="/account/jobs/create" class="create-btn ai">Create Now</a>
+                    </div>
                 </div>
-                <a href="/account/jobs/quick-job" class="create-btn quick">Create a Job</a>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="ai-job ai-quick">
-                <a href="/tweets/job/create" class="ai-img" title="Create a Job">
-                    <img src="<?= Url::to('@eyAssets/images/pages/jobs/twitter-jobs.png') ?>">
-                </a>
-                <div class="ai-point">
-                    <ul>
-                        <li>one minute process</li>
-                        <li>one click procedure</li>
-                        <li>fast recruitment process</li>
-                        <li>post jobs directly from twitter</li>
-                        <li>post on Empower Youth, hire on your own platform</li>
-                    </ul>
+                <div class="col-md-3 col-sm-6">
+                    <div class="ai-job ai-quick">
+                        <a href="/account/jobs/quick-job" class="ai-img" title="Create a Job">
+                            <img src="<?= Url::to('@eyAssets/images/pages/jobs/quick-internships.png') ?>">
+                        </a>
+                        <div class="ai-point">
+                            <ul>
+                                <li>one minute process</li>
+                                <li>hassle free internship creating</li>
+                                <li>fast recruitment process</li>
+                                <li>make your job more dynamic</li>
+                                <li>expedites the hiring process system</li>
+                            </ul>
+                        </div>
+                        <a href="/account/jobs/quick-job" class="create-btn quick">Create Now</a>
+                    </div>
                 </div>
-                <a href="/tweets/job/create" class="create-btn twitter">Create a Job</a>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="ai-job">
-                <a href="/account/jobs/campus-placement"  class="ai-img" title="Create a Job">
-                    <img src="<?= Url::to('@eyAssets/images/pages/jobs/e-campus.png') ?>">
-                </a>
-                <div class="ai-point">
-                    <ul>
-                        <li>visit hundred of colleges just in a click</li>
-                        <li>most advanced recruiters process showcase your employer brand</li>
-                        <li>post all kind of job and opportunities</li>
-                    </ul>
+                <div class="col-md-3 col-sm-6">
+                    <div class="ai-job ai-quick">
+                        <a href="/tweets/job/create" class="ai-img" title="Create a Job">
+                            <img src="<?= Url::to('@eyAssets/images/pages/jobs/twitter-internships.png') ?>">
+                        </a>
+                        <div class="ai-point">
+                            <ul>
+                                <li>one click procedure</li>
+                                <li>fast recruitment process</li>
+                                <li>post internships directly from twitter</li>
+                                <li>post on Empower Youth, hire on your own platform</li>
+                            </ul>
+                        </div>
+                        <a href="/tweets/job/create" class="create-btn twitter">Create Now</a>
+                    </div>
                 </div>
-                <a href="/account/jobs/campus-placement" class="create-btn campus">Create a Job</a>
+                <div class="col-md-3 col-sm-6">
+                    <div class="ai-job">
+                        <a href="/account/jobs/campus-placement"  class="ai-img" title="Create a Job">
+                            <img src="<?= Url::to('@eyAssets/images/pages/jobs/e-campus.png') ?>">
+                        </a>
+                        <div class="ai-point">
+                            <ul>
+                                <li>visit hundred of colleges just in a click</li>
+                                <li>most advanced recruiters process showcase your employer brand</li>
+                                <li>post all kind of internships and opportunities</li>
+                            </ul>
+                        </div>
+                        <a href="/account/jobs/campus-placement" class="create-btn campus">Create Now</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
 </div>
 
 <?php
@@ -92,7 +174,7 @@ $this->registerCss('
     margin:10px 0px;
 }
 .parent{
-    margin:80px 0px 40px 0;
+    margin:0 0 40px 0;
 }
 .ai-quick{
     margin-top: 90px !important;
@@ -149,6 +231,44 @@ $this->registerCss('
     color: #fff;
 }
 
+.tab-pane{
+    transition: .3s all ease-in;
+}
+.nav-tabs{
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    width: fit-content;
+    padding: 3px;
+    border-radius: 41px;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 7px rgb(0 0 0 / 25%);
+}
+.nav-tabs > li:nth-child(1) {
+    margin-right: 10px;
+}
+.nav-tabs > li.active a, .nav-tabs > li.active a:hover, .nav-tabs > li.active a:focus{
+    border: 1px solid #00a0e3 !important;
+    color: #fff;
+    border-radius: 20px;
+    background: linear-gradient(270deg, #00A0E3 -4.76%, #0177A8 100%);
+}
+.nav-tabs > li > a:hover{
+    color: #000;
+}
+.nav-tabs li a{
+    border: none;
+    padding: 5px 20px;
+    font-family: roboto;
+}
+.nav>li>a>img {
+    max-width: none;
+    margin-right: 9px;
+    margin-bottom: 1px;
+}
+.nav-tabs > li.active a img, .nav-tabs > li.active a:hover img, .nav-tabs > li.active a:focus img {
+    filter: brightness(0) invert(1);
+}
 @media only screen and (max-width: 768px){
     .ai-job{
         margin-bottom: 55px;
