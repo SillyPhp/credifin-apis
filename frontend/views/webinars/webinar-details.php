@@ -2005,7 +2005,7 @@ $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
-$this->registerCssFile('ps://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css');
+$this->registerCssFile('//code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 ?>
 <script>
