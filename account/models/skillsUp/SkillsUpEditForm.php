@@ -79,7 +79,7 @@ class SkillsUpEditForm extends Model
         return '';
     }
 
-    public function update($slugString)
+    public function update()
     {
 //        $this->image = UploadedFile::getInstanceByName('image');
 //        if (!$this->validate()) {
@@ -101,13 +101,12 @@ class SkillsUpEditForm extends Model
         try {
             $utilitiesModel = new Utilities();
             $model = SkillsUpPosts::findOne(['post_enc_id' => $this->post_enc_id]);
-                $utilitiesModel->variables['name'] = $this->title;
-                $utilitiesModel->variables['table_name'] = ExternalNewsUpdate::tableName();
-                $utilitiesModel->variables['field_name'] = 'slug';
-                $model->slug = $utilitiesModel->create_slug() . '-' . $slugString;
+//                $utilitiesModel->variables['name'] = $this->title;
+//                $utilitiesModel->variables['table_name'] = ExternalNewsUpdate::tableName();
+//                $utilitiesModel->variables['field_name'] = 'slug';
+//                $model->slug = $utilitiesModel->create_slug() . '-' . $slugString;
                 $model->last_updated_by = $this->user_id;
                 $model->last_updated_on = date('Y-m-d H:i:s');
-//            }
             if ($this->title) {
                 $title = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->title);
                 $model->post_title = $title;
@@ -217,17 +216,6 @@ class SkillsUpEditForm extends Model
                     break;
                 case  'Blog':
                 case 'Article':
-//                    $blogType = Categories::find()
-//                        ->alias('a')
-//                        ->select(['a.category_enc_id', 'a.name'])
-//                        ->joinWith(['assignedCategories b' => function ($b) {
-//                            $b->andWhere(['b.assigned_to' => 'Posts']);
-//                            $b->andWhere(['b.parent_enc_id' => null]);
-//                        }], false)
-//                        ->andWhere(['a.name' => 'Articles'])
-//                        ->asArray()
-//                        ->one();
-
                     $assignedBlogModel = SkillsUpPostAssignedBlogs::findOne(['post_enc_id' => $this->post_enc_id]);
                     $postModel = Posts::findOne(['post_enc_id' => $assignedBlogModel->blog_post_enc_id]);
                     $postModel->last_updated_by = $this->user_id;
@@ -247,38 +235,6 @@ class SkillsUpEditForm extends Model
                             'title' => 'postModel Table Error',
                         ];
                     }
-//                    $postCategoriesModel = PostCategories::findOne(['post_enc_id' => $postModel->post_enc_id]);
-//                    if ($postCategoriesModel) {
-//                        $postCategoriesModel->last_updated_by = $this->user_id;
-//                        $postCategoriesModel->last_updated_on = date('Y-m-d H:i:s');
-//                        $postCategoriesModel->category_enc_id = $blogType['category_enc_id'];
-//                        if (!$postCategoriesModel->validate() || !$postCategoriesModel->save()) {
-//                            $transaction->rollBack();
-//                            return [
-//                                'status' => 201,
-//                                'title' => 'postCategoriesModel Table Error',
-//                            ];
-//                        }
-//                    }
-//                    if (!$assignedBlogModel) {
-//                        $assignedBlogModel = new SkillsUpPostAssignedBlogs();
-//                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//                        $assignedBlogModel->assigned_enc_id = $utilitiesModel->encrypt();
-//                        $assignedBlogModel->created_by = $this->user_id;
-//                        $assignedBlogModel->created_on = date('Y-m-d H:i:s');
-//                    } else {
-//                        $assignedBlogModel->last_updated_by = $this->user_id;
-//                        $assignedBlogModel->last_updated_on = date('Y-m-d H:i:s');
-//                    }
-//                    $assignedBlogModel->blog_post_enc_id = $postModel->post_enc_id;
-//                    $assignedBlogModel->post_enc_id = $this->post_enc_id;
-//                    if (!$assignedBlogModel->validate() || !$assignedBlogModel->save()) {
-//                        $transaction->rollBack();
-//                        return [
-//                            'status' => 201,
-//                            'title' => 'assignedBlogModel Table Error',
-//                        ];
-//                    }
                     break;
                 case 'Course':
                     $skillsupCourse = SkillsUpPostAssignedCourses::findOne(['post_enc_id' => $this->post_enc_id]);
