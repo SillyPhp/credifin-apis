@@ -7,10 +7,10 @@ $this->params['header_dark'] = true;
 <section class="instagram-ey">
     <a href="https://www.empoweryouth.com/" class="company-logo" target="_blank">
         <div  class="logo">
-            <img src="https://user-images.githubusercontent.com/72601463/127449680-82f82f6c-947f-4180-94ad-bc2f37fd37ef.png">
+            <img src="https://user-images.githubusercontent.com/72601463/127449680-82f82f6c-947f-4180-94ad-bc2f37fd37ef.png" alt="Empoweryouth">
         </div>
         <div class="title">
-            <img src="https://www.empoweryouth.com/assets/common/logos/fg2.png">
+            <img src="https://www.empoweryouth.com/assets/common/logos/fg2.png" alt="Empoweryouth">
         </div>
     </a>
     <div class="insta-buttons">
@@ -115,7 +115,7 @@ $this->registerCSS('
 ?>
 <script id="insta_posts" type="text/template">
     {{#.}}
-    <a href="{{slug}}" class="post" target="_blank">
+    <a href="{{link}}" class="post" target="_blank">
         <img src="{{featured_image}}" alt="{{featured_image_alt}}">
     </a>
     {{/.}}

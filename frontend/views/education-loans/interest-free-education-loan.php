@@ -1,7 +1,34 @@
 <?php
 
 use yii\helpers\Url;
-
+$this->title = 'Interest Free Education Loan';
+$keywords = 'Interest Free Loans available for select colleges/Universities | Empower Youth';
+$description = 'Do Not let monetary constraints stop your from getting admission in your dream college/ university';
+$image = Url::to('@eyAssets/images/pages/education-loans/interest-free-education-loan.png', 'https');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 
     <section class="interest-free-header">
@@ -17,12 +44,12 @@ use yii\helpers\Url;
                         <h1>INTEREST FREE EDUCATION LOANS</h1>
                         <p>With our Interest Free Education Loan, we will make it simple and easier for you to fulfil your dream of studying in your desired College/University.</p>
                         <div class="header-btn">
-                            <a href="/education-loans/apply" class="apply-btn">APPLY NOW</a>
+                            <a href="/education-loans/apply" class="apply-btn">Apply Now</a>
                             <a href="#contact" class="enquire-btn">Enquire Now</a>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-5 col-sm-5">
+                <div class="col-md-5 col-sm-5 header-img-holder">
                     <div class="header-img">
                         <img class="main-img" src="<?= Url::to('@eyAssets/images/pages/education-loans/interest-free-img.png') ?>" alt="">
                     </div>
@@ -355,27 +382,32 @@ $this->registerCss('
 .interest-free-header{
   background: #FF7803;
   font-family: roboto;
-  padding: 0px 40px;
   display: flex;
   align-items: center;
   position: relative;
-  min-height: 350px;
-  height: 85vh;
+  min-height: 550px;
 }
-
+.interest-free-header .container{
+    min-height: inherit;
+}
+.interest-free-header .row{
+    min-height: inherit;
+    display: flex;
+    align-items: center;
+}
 .header-text{
   flex-basis: 50%;
   position: relative;
   z-index: 2;
 }
 .header-text h1 {
-    margin-top: 60px;
     font-size: 50px;
     font-family: roboto;
     font-weight: 600;
     color: #fff;
-    line-height: 65px;
+    line-height: 53px;
     letter-spacing: 0.5px;
+    max-width: 490px;
 }
 .header-text p {
     color: #0e0e0e;
@@ -392,6 +424,9 @@ $this->registerCss('
   text-align center;
   flex-basis: 50%;
   z-index: 1;
+}
+.header-img-holder{
+    align-self: flex-end;
 }
 .header-img img{
   max-width: 400px;
@@ -412,8 +447,8 @@ $this->registerCss('
 .apply-btn{
   background-color: #00A0E3;
   color: #fff;
-  box-shadow: 0 3px 2px #00000045;
   transition: 0.2s ease-in; 
+  margin-right: 10px;
 }
 
 .apply-btn:hover {
@@ -818,7 +853,7 @@ html {
     font-weight: 600;
 }
 .studyus-head {
-    padding: 30px;
+    padding: 30px 0;
 }
 .whystudy {
     text-align: center;
@@ -1107,21 +1142,11 @@ html {
         text-align: left;
     }
 }
-@media only screen and (max-width: 1326px) and (min-width: 1025px){
-  .interest-free-header {
-        height: 95vh;
-  }
-  .header-text {
-    padding-top: 40px;
-  }
-}
-@media only screen and (max-width: 1024px) and (min-width: 992px){
-  .interest-free-header {
-        height: 70vh;
-  }
-}
 
 @media only screen and (max-width: 992px) and (min-width: 768px){
+   .interest-free-header{
+        min-height: 500px;
+   }
    .header-text h1 {
         line-height: 40px;
         font-size: 30px;
@@ -1129,20 +1154,16 @@ html {
     .header-img {
         margin-top: 80px;
     }
-   
-    .interest-free-header {
-        height: 80vh;
-    }
     .header-img img {
         max-width: 300px;
     }
 }
-@media only screen and (max-width: 767px) and (min-width: 576px){
+@media only screen and (max-width: 767px){
    .header-text h1 {
         line-height: 40px;
         font-size: 30px;
     }
-    .header-img {
+    .header-img-holder {
         display: none;
     }
 }
@@ -1167,9 +1188,6 @@ html {
   .coins{
     width: 50px;
   }
-  .interest-free-header {
-    height: 80vh;
-    }
 }
 
 @media only screen and (max-width: 420px) and (min-width: 320px){
@@ -1193,9 +1211,14 @@ html {
     .enquire-btn {
         margin-left: 0px;
     }
-  .interest-free-header {
-    height: 80vh;
-}
-  
+    .tele-btn a {
+        padding: 10px 10px;
+    }
+    .whats-btn a {
+        padding: 10px 10px;
+    }
+    .chat{
+        padding: 30px 0;
+    }
 }
 ');

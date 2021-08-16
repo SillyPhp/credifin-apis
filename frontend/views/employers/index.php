@@ -50,6 +50,8 @@ if (Yii::$app->user->isGuest) {
     ]);
 } ?>
 
+<?php if(!Yii::$app->user->identity->organization){
+  ?>
     <section class="hwn">
         <div class="container">
             <div class="row">
@@ -93,7 +95,15 @@ if (Yii::$app->user->isGuest) {
             </div>
         </div>
     </section>
-<?= $this->render('/widgets/safety-signs') ?>
+<?php } ?>
+
+<?php if(Yii::$app->user->identity->organization){
+  ?>
+    <section>
+      <?= $this->render('/widgets/ai-quick-jobs'); ?>
+    </section>
+<?php } ?>
+
 <?php
 echo $this->render('/widgets/e-campus')
 ?>
@@ -102,7 +112,7 @@ echo $this->render('/widgets/e-campus')
         <div class="container">
             <div class="row">
                 <div class="head-about">
-                    <h3>What's Great About Us?</h3>
+                    <h3>What's Great About Empower Youth?</h3>
                 </div>
             </div>
             <div class="row">
@@ -150,7 +160,7 @@ echo $this->render('/widgets/e-campus')
                             <div class="bx-img">
                                 <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/free4all.png') ?>">
                             </div>
-                            <h4>Free For All</h4>
+                            <h4>Free Forever</h4>
                             <div class="about-text">You can apply for jobs and have your learning courses without giving
                                 any
                                 penny.
@@ -191,6 +201,9 @@ echo $this->render('/widgets/e-campus')
             </div>
         </div>
     </section>
+<?php
+echo $this->render('/widgets/drop-resume-section')
+?>
     <section class="fixed-bttn">
         <div class="container">
             <div class="row">
@@ -218,49 +231,50 @@ echo $this->render('/widgets/e-campus')
         </div>
     </section>
 
+<?php if(!Yii::$app->user->identity->organization){
+  ?>
     <section>
-        <?= $this->render('/widgets/ai-quick-jobs'); ?>
+      <?= $this->render('/widgets/ai-quick-jobs'); ?>
     </section>
+<?php } ?>
 
-    <Section class="information">
-        <div class="box-parent row">
-            <div class="bolls">
-                <div class="boll1 bol2"></div>
-                <div class="boll2 bol2"></div>
-                <div class="boll3 bol"></div>
-                <div class="boll4 bol"></div>
-                <div class="boll5 bol2"></div>
-                <div class="boll6 bol2"></div>
+    <section class="stats">
+        <div class="container">
+            <div class="row">
+                <h2>Empower Youth by Numbers</h2>
             </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="jobs-content">
-                    <div class="j-count">50 +</div>
-                    <div class="j-name">Colleges</div>
+            <div class="row">
+                <div class="col-sm-3 stat-card-holder">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-university"></i></div>
+                        <div class="stat-num">50+</div>
+                        <div class="stat-info">Colleges</div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="col-md-3 col-sm-6">
-                <div class="jobs-content">
-                    <div class="j-count">10k +</div>
-                    <div class="j-name">Freshers</div>
+                <div class="col-sm-3 stat-card-holder">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
+                        <div class="stat-num">10k+</div>
+                        <div class="stat-info">Freshers</div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="col-md-3 col-sm-6">
-                <div class="jobs-content">
-                    <div class="j-count">5k +</div>
-                    <div class="j-name">Experienced candidates</div>
+                <div class="col-sm-3 stat-card-holder">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-user"></i></div>
+                        <div class="stat-num">5k+</div>
+                        <div class="stat-info">Experienced Candidates</div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="col-md-3 col-sm-6">
-                <div class="jobs-content">
-                    <div class="j-count">20k +</div>
-                    <div class="j-name">Internship Candidates</div>
+                <div class="col-sm-3 stat-card-holder">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
+                        <div class="stat-num">15k+</div>
+                        <div class="stat-info">Internships</div>
+                    </div>
                 </div>
             </div>
         </div>
-    </Section>
+    </section>
 
     <section class="emp-back">
         <div class="container">
@@ -316,7 +330,8 @@ echo $this->render('/widgets/e-campus')
         </div>
     </section>
 
-    <section class="how-it-works">
+    <!-- How it Works Section-->
+    <!-- <section class="how-it-works">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -353,7 +368,7 @@ echo $this->render('/widgets/e-campus')
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
 <?= $this->render('/widgets/organizations/companies-with-us'); ?>
 
@@ -361,6 +376,9 @@ echo $this->render('/widgets/e-campus')
     'feedbackFormModel' => $feedbackFormModel,
     'partnerWithUsModel' => $partnerWithUsModel,
 ]); ?>
+
+
+<?= $this->render('/widgets/safety-signs') ?>
     <!--    <div class="bluebg"></div>-->
 <?php
 $this->registerCss('
@@ -540,6 +558,85 @@ $this->registerCss('
     font-weight: 300;
     font-family: roboto;
 }
+.stats{
+    background: #F5F5F5;
+    padding: 30px 0;
+}
+.stats .container{
+    padding: 0 15px !important;
+}
+.stats h2{
+    margin: 0 0 20px 0;
+    text-align: center; 
+    font-size: 30px;
+    font-weight: 900;  
+    font-family: roboto;
+}
+.stat-card{
+    box-shadow: 0px 0px 6.09259px 0.87037px rgb(0 0 0 / 25%);
+    border-radius: 8.7037px;
+    background: #fff;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+.stat-icon{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: auto;
+    position: relative;
+}
+.stat-card-holder:nth-child(1) .stat-icon{
+    background: #C4D9FC;
+}
+.stat-card-holder:nth-child(2) .stat-icon{
+    background: #E4FED3;
+}
+.stat-card-holder:nth-child(3) .stat-icon{
+    background: #FFCADB;
+}
+.stat-card-holder:nth-child(4) .stat-icon{
+    background: #FFD7BA;
+}
+.stat-card-holder:nth-child(1) .fas{
+    color: #7098DA;
+}
+.stat-card-holder:nth-child(2) .fas{
+    color: #B3E99C;
+}
+.stat-card-holder:nth-child(3) .fas{
+    color: #ED5485;
+}
+.stat-card-holder:nth-child(4) .fas{
+    color: #E3670C;
+}
+.stat-icon .fas{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 20px;
+}
+.stat-num {
+    font-size: 40px;
+    font-family: Open Sans;
+    text-align: center;
+    font-weight: bolder;
+    color: #000;
+}
+.stat-info {
+    text-align: center;
+    color: #A4A4A4;
+    font-size: 16px;
+    margin-top: -10px;
+    font-weight: 800;
+}
+@media (max-width:992px){
+    .stat-card{
+        min-height: 190px;
+    }
+}
 @media (max-width:768px){
     .box-parent{padding:20px 50px !important;}
     .jobs-content{margin-bottom:10px;}
@@ -593,7 +690,6 @@ $this->registerCss('
     top: 415px;
 }
 }
-
 .emp-main {
     text-align:center;
     margin: 0px 0px 30px 0px;
@@ -1091,6 +1187,9 @@ $this->registerCss('
     display: none;
   }
   .bg-line {width:100%;left:0;transform:translatey(0%);}
+  .waves{
+    height: 35px;
+  }
 }
 @media only screen and (max-width: 550px){
   .companies-header{

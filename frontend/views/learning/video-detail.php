@@ -53,7 +53,7 @@ $this->params['seo_tags'] = [
 
             <input type="hidden" id="video-id" value="<?= $video_detail['youtube_video_id']; ?>">
             <div class="col-md-7 white-bg">
-                <div class="row">
+                <div>
                     <div class="video-frame" id="ytplayer">
 
                     </div>
@@ -318,73 +318,29 @@ height: auto;
 font-weight:bold;
 color:#000;
 }
-.tg-widgetcategories .tg-widgetcontent ul{
-text-align: right;
-}
 .tg-widgetcategories .tg-widgetcontent ul li{
 position:relative;
 padding:8px 0px;
 font-family:roboto;
 }
-.tg-widgetcategories .tg-widgetcontent ul li a{
-width: 100%;
-position: relative;
-display:block;
-transition:.3s all;
-}
-.tg-widgetcategories .tg-widgetcontent ul li a:hover{
-padding: 0 0 0 15px;
-transition:.3s all;
-}
-.tg-widgetcategories .tg-widgetcontent ul li a:before{
-top: 0;
-left: 0;
-opacity: 0;
-color: #333;
-content: "\f105";
-position: absolute;
-font-size: inherit;
-visibility: hidden;
-line-height:inherit;
-font-family: "FontAwesome";
-}
-.tg-widgetcategories .tg-widgetcontent ul li a:hover:before{
-opacity: 1;
-visibility: visible;
-}
-.tg-widgetcontent ul li + li {
-border-top: 1px solid #e6e6e6;
-}
-.tg-widgetcontent ul li a span {
-float: left;
-}
+
 /*----------*/
 .video-frame{
     max-height: 480px;
-    width: calc(100% + 30px);
-    margin: 0px -15px;
-    margin-top: -20px;
+    width: 100%;
+    margin: 0px auto;
     border-radius: 4px 4px 0px 0px;
 }
 .fluid-width-video-wrapper {
 padding-top: 0px !important;
 height: 400px;
 }
-.white-bg{
-    background:#fff;
-    border-left:1px solid #eee;
-    border-right:1px solid #eee;
-    padding:20px 30px 30px 30px;
-    box-shadow: 0px 1px 10px 0px #ddd;
-    margin: 0px 0px 20px;
-    border-radius: 4px;
-}
+
 .video-options{
     padding:5px 10px;
     border:1px solid #262626;
     background:#262626;
-    width: calc(100% + 30px);
-    margin: 0px -15px;
+    width:100%;
     margin-top: -6px;
 }
 .flex-view{
@@ -617,7 +573,6 @@ font-weight:500;
     margin-bottom:20px;
 }
 .video-container2{
-//height:auto;
 background:#fff;
 }
 .video-container:hover{
@@ -883,6 +838,9 @@ color: #c12127;
 background: #c12127;
 }
 
+@media screen and (max-width: 550px){
+
+}
 @media screen and (max-width: 992px){
 .video-icon{
 max-width:100%;
@@ -895,10 +853,7 @@ padding-left: 15px !important;
 .tg-widgetcategories .tg-widgetcontent ul{
 text-align: right;
 }
-.tg-widgetcategories .tg-widgetcontent ul li{
-position:relative;
-padding:8px 0px;
-}
+
 .tg-widgetcategories .tg-widgetcontent ul li a{
 width: 100%;
 position: relative;
@@ -921,7 +876,8 @@ position: absolute;
 font-size: inherit;
 visibility: hidden;
 line-height:inherit;
-font-family: "FontAwesome";
+font-family: "Font Awesome 5 Free";
+font-weight: 900;
 }
 .tg-widgetcategories .tg-widgetcontent ul li a:hover:before{
 opacity: 1;
@@ -937,7 +893,6 @@ float: none !Important;
 .video-container2{
     box-shadow:0 0 10px rgba(0,0,0,0.1);
     border-radius:10px;
-//    height:300px;
     background:#fff;
     position:relative;
     margin-bottom:20px;
