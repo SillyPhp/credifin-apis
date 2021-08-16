@@ -172,6 +172,7 @@ $this->registerCss('
     font-weight: 700;
     word-spacing:3px;
     margin:10px 0px;
+    color: #000;
 }
 .parent{
     margin:0 0 40px 0;

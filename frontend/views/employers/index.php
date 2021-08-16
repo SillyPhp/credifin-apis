@@ -1134,6 +1134,7 @@ $this->registerCss('
     font-weight: 700;
     font-family: roboto;
     font-size: 30px;
+    color: #000;
 }
 .about-box {
     padding: 20px 10px;
