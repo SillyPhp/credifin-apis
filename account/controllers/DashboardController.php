@@ -5,10 +5,13 @@ namespace account\controllers;
 use account\models\applications\ApplicationReminderForm;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationReminder;
+use common\models\CandidateRejection;
+use common\models\CandidateRejectionReasons;
 use common\models\DropResumeApplications;
 use common\models\Interviewers;
 use common\models\LoanApplications;
 use common\models\OrganizationAssignedCategories;
+use common\models\RejectionReasons;
 use common\models\ReviewedApplications;
 use common\models\ShortlistedApplicants;
 use common\models\ShortlistedApplications;
@@ -103,7 +106,7 @@ class DashboardController extends Controller
         if (empty(Yii::$app->user->identity->organization)) {
             $applied_app = EmployerApplications::find()
                 ->alias('a')
-                ->select(['a.application_enc_id application_id', 'i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id applied_id', 'f.status', 'd.icon', 'g.name as org_name', 'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total', 'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
+                ->select(['a.application_enc_id application_id', 'e.rejection_type', 'rr.reason', 'i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id applied_id', 'f.status', 'd.icon', 'g.name as org_name', 'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total', 'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
                 ->innerJoin(ApplicationTypes::tableName() . 'as i', 'i.application_type_enc_id = a.application_type_enc_id')
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
                 ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -112,6 +115,9 @@ class DashboardController extends Controller
                 ->leftJoin(AppliedApplications::tableName() . 'as f', 'f.application_enc_id = a.application_enc_id')
                 ->where(['f.created_by' => Yii::$app->user->identity->user_enc_id])
                 ->leftJoin(AppliedApplicationProcess::tableName() . 'as h', 'h.applied_application_enc_id = f.applied_application_enc_id')
+                ->leftJoin(CandidateRejection::tableName() . 'as e', 'e.applied_application_enc_id = f.applied_application_enc_id')
+                ->leftJoin(CandidateRejectionReasons::tableName() . 'as crr', 'crr.candidate_rejection_enc_id = e.candidate_rejection_enc_id')
+                ->leftJoin(RejectionReasons::tableName() . 'as rr', 'rr.rejection_reason_enc_id = crr.rejection_reasons_enc_id')
                 ->groupBy(['h.applied_application_enc_id'])
                 ->orderBy([new \yii\db\Expression("FIELD (f.status,'Hired','Accepted','Incomplete','Pending','Rejected','Cancelled')")])
                 ->asArray()

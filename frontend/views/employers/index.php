@@ -112,7 +112,7 @@ echo $this->render('/widgets/e-campus')
         <div class="container">
             <div class="row">
                 <div class="head-about">
-                    <h3>What's Great About EmpowerYouth?</h3>
+                    <h3>What's Great About Empower Youth?</h3>
                 </div>
             </div>
             <div class="row">
@@ -201,7 +201,9 @@ echo $this->render('/widgets/e-campus')
             </div>
         </div>
     </section>
-
+<?php
+echo $this->render('/widgets/drop-resume-section')
+?>
     <section class="fixed-bttn">
         <div class="container">
             <div class="row">
@@ -236,52 +238,10 @@ echo $this->render('/widgets/e-campus')
     </section>
 <?php } ?>
 
-    <!-- Old Stats Section-->
-    <!-- <Section class="information">
-        <div class="box-parent row">
-            <div class="bolls">
-                <div class="boll1 bol2"></div>
-                <div class="boll2 bol2"></div>
-                <div class="boll3 bol"></div>
-                <div class="boll4 bol"></div>
-                <div class="boll5 bol2"></div>
-                <div class="boll6 bol2"></div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="jobs-content">
-                    <div class="j-count">50 +</div>
-                    <div class="j-name">Colleges</div>
-                </div>
-            </div>
-
-            <div class="col-md-3 col-sm-6">
-                <div class="jobs-content">
-                    <div class="j-count">10k +</div>
-                    <div class="j-name">Freshers</div>
-                </div>
-            </div>
-
-            <div class="col-md-3 col-sm-6">
-                <div class="jobs-content">
-                    <div class="j-count">5k +</div>
-                    <div class="j-name">Experienced candidates</div>
-                </div>
-            </div>
-
-            <div class="col-md-3 col-sm-6">
-                <div class="jobs-content">
-                    <div class="j-count">20k +</div>
-                    <div class="j-name">Internship Candidates</div>
-                </div>
-            </div>
-        </div>
-    </Section>-->
-
-    <!-- New Stats Section-->
-    <!--<section class="stats">
+    <section class="stats">
         <div class="container">
             <div class="row">
-                <h2>EmpowerYouth By Numbers</h2>
+                <h2>Empower Youth by Numbers</h2>
             </div>
             <div class="row">
                 <div class="col-sm-3 stat-card-holder">
@@ -314,7 +274,7 @@ echo $this->render('/widgets/e-campus')
                 </div>
             </div>
         </div>
-    </section>-->
+    </section>
 
     <section class="emp-back">
         <div class="container">
@@ -608,8 +568,9 @@ $this->registerCss('
 .stats h2{
     margin: 0 0 20px 0;
     text-align: center; 
-    font-size: 28pt;
-    font-weight: 700;  
+    font-size: 30px;
+    font-weight: 900;  
+    font-family: roboto;
 }
 .stat-card{
     box-shadow: 0px 0px 6.09259px 0.87037px rgb(0 0 0 / 25%);
@@ -658,7 +619,7 @@ $this->registerCss('
     font-size: 20px;
 }
 .stat-num {
-    font-size: 50px;
+    font-size: 40px;
     font-family: Open Sans;
     text-align: center;
     font-weight: bolder;
@@ -729,7 +690,6 @@ $this->registerCss('
     top: 415px;
 }
 }
-
 .emp-main {
     text-align:center;
     margin: 0px 0px 30px 0px;

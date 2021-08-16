@@ -86,7 +86,7 @@ use yii\helpers\Url;
                             desired education without getting worried about the money.
                         </p>
                         <div class="india-btn">
-                            <a href="/education-loans/apply">Apstudy-in-usa-bgply Now </a>
+                            <a href="/education-loans/apply">Apply Now </a>
                         </div>
                     </div>
                 </div>

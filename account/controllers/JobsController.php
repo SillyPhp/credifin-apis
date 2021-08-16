@@ -993,6 +993,9 @@ class JobsController extends Controller
                     if (!empty($session->get($session_token))) {
                         $session->remove($session_token);
                     }
+                    if ($session->has('campusPlacementData')){
+                        $session->remove('campusPlacementData');
+                    }
                     return $response = [
                         'status' => 200,
                         'title' => 'Success',

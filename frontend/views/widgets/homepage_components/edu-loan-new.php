@@ -107,9 +107,9 @@ $this->registerCss('
 }
 .heading-data-set h4 {
 	font-size: 20px;
-    font-family: lora;
+    font-family: roboto;
     color: #000;
-    font-weight: 600;
+    font-weight: 500;
     margin: 10px 0;
 }
 .heading-data-set p {

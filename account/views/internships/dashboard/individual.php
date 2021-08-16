@@ -2,89 +2,138 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 ?>
-<div class="loader"><!--<img src='https://image.ibb.co/c0WrEK/check1.gif'/>--></div>
-<div class="row">
-    <?php
-        Pjax::begin(['id' => 'widgets']);
-    ?>
-    <div class="widget-row">
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 blue" href="<?= Url::to('/account/internships/reviewed') ?>">
-                <div class="visual">
-                    <i class="fa fa-comments"></i>
-                </div>
-                <div class="details">
-                    <div class="number">
-                        <span data-counter="counterup" data-value="1349"><?= $total_reviews; ?></span>
+    <div class="loader"><!--<img src='https://image.ibb.co/c0WrEK/check1.gif'/>--></div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="portlet light nd-shadow">
+                <div class="portlet-title tabbable-line">
+                    <div class="caption set-center">
+                        <span class="caption-subject font-dark bold uppercase">Internships Preferred by Location</span>
                     </div>
-                    <div class="desc">Applications Reviewed  </div>
                 </div>
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 red" href="<?= Url::to('/account/internships/saved') ?>">
-                <div class="visual">
-                    <i class="fa fa-bar-chart-o"></i>
-                </div>
-                <div class="details">
-                    <div class="number">
-                        <span data-counter="counterup" data-value="12,5"><?= $total_shortlist; ?></span>
+
+                <div class="portlet-body">
+                    <div class="row">
+                        <?= $this->render('/widgets/jobs/job-by-location', [
+                            'jobsByLocation' => $internshipsByLocation,
+                        ]) ?>
+                        <div class="col-md-12 text-center">
+                            <a href="<?= Url::to('/internships/list?location='.$preferredLocations)?>" class="jbl-viewall viewall-jobs">View All</a>
+                        </div>
                     </div>
-                    <div class="desc">Applications Saved</div>
                 </div>
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 green" href="<?= Url::to('/account/internships/applied') ?>">
-                <div class="visual">
-                    <i class="fa fa-shopping-cart"></i>
-                </div>
-                <div class="details">
-                    <div class="number">
-                        <span data-counter="counterup" data-value="549"><?= $total_applied; ?></span>
+            </div>
+
+            <div class="portlet light nd-shadow">
+                <div class="portlet-title tabbable-line">
+                    <div class="caption set-center">
+                        <span class="caption-subject font-dark bold uppercase">Internships Matching Your Skills</span>
                     </div>
-                    <div class="desc"> Applications Applied </div>
                 </div>
-            </a>
+
+                <div class="portlet-body">
+                    <div class="row">
+                        <?= $this->render('/widgets/jobs/job-by-skills', [
+                            'jobsBySkills' => $internshipsBySkills,
+                        ]) ?>
+                        <div class="col-md-12 text-center">
+                            <a href="<?= Url::to('/internships/list?skills='.$preferredSkills)?>" class="jbl-viewall viewall-jobs">View All</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 purple" href="<?= Url::to('/account/internships/accepted') ?>">
-                <div class="visual">
-                    <i class="fa fa-globe"></i>
-                </div>
-                <div class="details">
-                    <div class="number"> 
-                        <span data-counter="counterup" data-value="89"><?= $total_accepted; ?></span> </div>
-                    <div class="desc"> Applications Accepted</div>
-                </div>
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 yellow" href="<?= Url::to('/account/internships/pending') ?>">
-                <div class="visual">
-                    <i class="fa fa-globe"></i>
-                </div>
-                <div class="details">
-                    <div class="number"> 
-                        <span data-counter="counterup" data-value="89"><?= $total_pending; ?></span> </div>
-                    <div class="desc">Applications Pending</div>
-                </div>
-            </a>
-        </div>
-        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <a class="dashboard-stat dashboard-stat-v2 pink" href="<?= Url::to('/account/organization/shortlisted') ?>">
-                <div class="visual">
-                    <i class="fa fa-building"></i>
-                </div>
-                <div class="details">
-                    <div class="number"> 
-                        <span data-counter="counterup" data-value="89"><?= $total_shortlist_org; ?></span> </div>
-                    <div class="desc">Followed Companies</div>
-                </div>
-            </a>
-        </div>
-<!--        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-md-9">
+            <div class="row">
+                <?php
+                Pjax::begin(['id' => 'widgets']);
+                ?>
+                <div class="widget-row">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <a class="dashboard-stat dashboard-stat-v2 blue"
+                           href="<?= Url::to('/account/internships/reviewed') ?>">
+                            <div class="visual">
+                                <i class="fa fa-comments"></i>
+                            </div>
+                            <div class="details">
+                                <div class="number">
+                                    <span data-counter="counterup" data-value="1349"><?= $total_reviews; ?></span>
+                                </div>
+                                <div class="desc">Applications Reviewed</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <a class="dashboard-stat dashboard-stat-v2 red"
+                           href="<?= Url::to('/account/internships/saved') ?>">
+                            <div class="visual">
+                                <i class="fa fa-bar-chart-o"></i>
+                            </div>
+                            <div class="details">
+                                <div class="number">
+                                    <span data-counter="counterup" data-value="12,5"><?= $total_shortlist; ?></span>
+                                </div>
+                                <div class="desc">Applications Saved</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <a class="dashboard-stat dashboard-stat-v2 green"
+                           href="<?= Url::to('/account/internships/applied') ?>">
+                            <div class="visual">
+                                <i class="fa fa-shopping-cart"></i>
+                            </div>
+                            <div class="details">
+                                <div class="number">
+                                    <span data-counter="counterup" data-value="549"><?= $total_applied; ?></span>
+                                </div>
+                                <div class="desc"> Applications Applied</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <a class="dashboard-stat dashboard-stat-v2 purple"
+                           href="<?= Url::to('/account/internships/accepted') ?>">
+                            <div class="visual">
+                                <i class="fa fa-globe"></i>
+                            </div>
+                            <div class="details">
+                                <div class="number">
+                                    <span data-counter="counterup" data-value="89"><?= $total_accepted; ?></span></div>
+                                <div class="desc"> Applications Accepted</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <a class="dashboard-stat dashboard-stat-v2 yellow"
+                           href="<?= Url::to('/account/internships/pending') ?>">
+                            <div class="visual">
+                                <i class="fa fa-globe"></i>
+                            </div>
+                            <div class="details">
+                                <div class="number">
+                                    <span data-counter="counterup" data-value="89"><?= $total_pending; ?></span></div>
+                                <div class="desc">Applications Pending</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <a class="dashboard-stat dashboard-stat-v2 pink"
+                           href="<?= Url::to('/account/organization/shortlisted') ?>">
+                            <div class="visual">
+                                <i class="fa fa-building"></i>
+                            </div>
+                            <div class="details">
+                                <div class="number">
+                                    <span data-counter="counterup" data-value="89"><?= $total_shortlist_org; ?></span>
+                                </div>
+                                <div class="desc">Followed Companies</div>
+                            </div>
+                        </a>
+                    </div>
+                    <!--        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <a class="dashboard-stat dashboard-stat-v2 lightpink" href="<?= Url::to('/account/shortlist-jobs') ?>">
                 <div class="visual">
                     <i class="fa fa-building"></i>
@@ -108,328 +157,400 @@ use yii\widgets\Pjax;
                 </div>
             </a>
         </div>-->
-    </div>
-    <?php
-        Pjax::end();
-    ?>
-</div>
-<div class="row">
-    <div class="col-lg-12 col-xs-12 col-sm-12">
-        <div class="portlet light nd-shadow">
-            <div class="portlet-title tabbable-line text-center">
-                <div class="caption col-lg-11">
-                    <ul class="tabs" id="head-tabs">
-                        <li data-tab="tab-1" data-url="/account/internships/reviewed" class="tab-link current caption-subject font-dark uppercase" >Review List</li>
-                        |
-                        <li data-tab="tab-2" data-url="/account/internships/saved" class="tab-link caption-subject font-dark  uppercase">Applications saved</li>
-                        |
-                        <li data-tab="tab-3" data-url="/account/internships/applied" class="tab-link caption-subject font-dark uppercase">Applications Applied</li>
-                        |
-                        <li data-tab="tab-4" data-url="/account/internships/accepted" class="tab-link caption-subject font-dark uppercase">Accepted Applications</li>
-                        |
-                        <li data-tab="tab-5" data-url="/account/internships/shortlisted-resume" class="tab-link caption-subject font-dark uppercase">Shortlisted Resume</li>
-                    </ul>
                 </div>
-                <div class="actions col-lg-1">
-                    <a href="/account/internships/reviewed" class="viewall-jobs" id="view-all">View All</a>
+                <?php
+                Pjax::end();
+                ?>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-xs-12 col-sm-12">
+                    <div class="portlet light nd-shadow">
+                        <div class="portlet-title tabbable-line text-center">
+                            <div class="caption col-lg-11">
+                                <ul class="tabs" id="head-tabs">
+                                    <li data-tab="tab-1" data-url="/account/internships/reviewed"
+                                        class="tab-link current caption-subject font-dark uppercase">Review List
+                                    </li>
+                                    |
+                                    <li data-tab="tab-2" data-url="/account/internships/saved"
+                                        class="tab-link caption-subject font-dark  uppercase">Applications saved
+                                    </li>
+                                    |
+                                    <li data-tab="tab-3" data-url="/account/internships/applied"
+                                        class="tab-link caption-subject font-dark uppercase">Applications Applied
+                                    </li>
+                                    |
+                                    <li data-tab="tab-4" data-url="/account/internships/accepted"
+                                        class="tab-link caption-subject font-dark uppercase">Accepted Applications
+                                    </li>
+                                    |
+                                    <li data-tab="tab-5" data-url="/account/internships/shortlisted-resume"
+                                        class="tab-link caption-subject font-dark uppercase">Shortlisted Resume
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="actions col-lg-1">
+                                <a href="/account/internships/reviewed" class="viewall-jobs" id="view-all">View All</a>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="tab_actions_pending">
+                                    <div class="row">
+                                        <div class="mt-actions">
+                                            <div id="tab-1" class="tab-con current">
+                                                <?php
+                                                Pjax::begin(['id' => 'pjax_review']);
+                                                if ($reviewlist) {
+
+                                                    foreach ($reviewlist as $review) {
+                                                        ?>
+                                                        <div class="col-md-4 col-sm-6 hr-j-box">
+                                                            <div class="topic-con"
+                                                                 data-key="<?= $review['application_enc_id']; ?>">
+                                                                <div class="hr-company-box">
+                                                                    <div class="hr-com-icon">
+                                                                        <img src="<?= Url::to('@commonAssets/categories/' . $review["icon"]); ?>"
+                                                                             class="img-responsive ">
+                                                                    </div>
+                                                                    <div class="hr-com-name">
+                                                                        <?= $review['title']; ?>
+                                                                    </div>
+                                                                    <div class="opening-txt">
+                                                                        <?= $review['positions']; ?> Openings
+                                                                    </div>
+                                                                    <div class="overlay">
+                                                                        <div class="col-md-12">
+                                                                            <div class="text-o col-md-5">
+                                                                                <?php if ($review['applied_application_enc_id']) { ?>
+                                                                                    <a class="over-bttn ob1"
+                                                                                       disabled="disabled">Applied</a>
+                                                                                <?php } else { ?>
+                                                                                    <a href="/internship/<?= $review['slug']; ?>"
+                                                                                       class="over-bttn ob1 hover_short apply-btn">Apply</a>
+                                                                                <?php } ?>
+                                                                            </div>
+                                                                            <div class="text-o col-md-7">
+                                                                                <a class="over-bttn ob2 shortlist"
+                                                                                   id="<?= $review['slug']; ?>"
+                                                                                   data-key="<?= $review['application_enc_id']; ?>">
+                                                                                <span class="hover-change"><i
+                                                                                            class="fa fa-heart-o"></i> Shortlist</span>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="hr-com-jobs">
+                                                                        <div class="row">
+                                                                            <div class="col-md-12 col-sm-12 minus-15-pad">
+                                                                                <div class="j-cross">
+                                                                                    <button value="<?= $review['application_enc_id']; ?>"
+                                                                                            class="rmv_review">
+                                                                                        <i class="fa fa-times"></i>
+                                                                                    </button>
+
+                                                                                </div>
+                                                                                <div class="j-grid">
+                                                                                    <a href="javascript:;"
+                                                                                       onclick="window.open('<?= Url::to('/internship/' . $review['slug']); ?>', '_blank');">VIEW
+                                                                                        INTERNSHIP</a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <?php
+                                                    }
+                                                } else {
+                                                    ?>
+                                                    <div class="tab-empty">
+                                                        <div class="tab-empty-icon">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/reviewlist.png'); ?>"
+                                                                 class="img-responsive" alt=""/>
+                                                        </div>
+                                                        <div class="tab-empty-text">
+                                                            <div class="">You haven't Select any internships for review.
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <?php
+                                                }
+                                                Pjax::end();
+                                                ?>
+                                            </div>
+                                            <div id="tab-2" class="tab-con">
+                                                <?php
+                                                Pjax::begin(['id' => 'pjax_shortlist']);
+                                                if ($shortlisted) {
+                                                    foreach ($shortlisted as $shortlist) {
+                                                        ?>
+                                                        <div class="col-md-4 hr-j-box">
+                                                            <div class="topic-con">
+                                                                <div class="hr-company-box">
+                                                                    <div class="hr-com-icon">
+                                                                        <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>"
+                                                                             class="img-responsive ">
+                                                                    </div>
+                                                                    <div class="hr-com-name">
+                                                                        <?= $shortlist['name']; ?>
+                                                                    </div>
+                                                                    <div class="opening-txt">
+                                                                        <?= $shortlist["positions"]; ?> Openings
+                                                                    </div>
+                                                                    <div class="overlay2">
+                                                                        <div class="text-o">
+                                                                            <?php if ($shortlist['applied_application_enc_id']) { ?>
+                                                                                <a class="over-bttn ob2 hover_short"
+                                                                                   disabled="disabled">
+                                                                                    <i class="fa fa-check"></i>Applied</a>
+                                                                            <?php } else { ?>
+                                                                                <a href="/internship/<?= $shortlist['slug']; ?>"
+                                                                                   class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                                            <?php } ?>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="hr-com-jobs">
+                                                                        <div class="row ">
+                                                                            <div class="col-md-12 col-sm-12 minus-15-pad">
+                                                                                <div class=" j-cross">
+                                                                                    <button value="<?= $shortlist['application_enc_id']; ?>"
+                                                                                            class="rmv_list">
+                                                                                        <i class="fa fa-times"></i>
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class=" j-grid">
+                                                                                    <a href="javascript:;"
+                                                                                       onclick="window.open('<?= Url::to('/internship/' . $shortlist['slug']); ?>', '_blank');">VIEW
+                                                                                        INTERNSHIP</a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <?php
+                                                    }
+                                                } else {
+                                                    ?>
+                                                    <div class="tab-empty">
+                                                        <div class="tab-empty-icon">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlist-icon.png'); ?>"
+                                                                 class="img-responsive" alt=""/>
+                                                        </div>
+                                                        <div class="tab-empty-text">
+                                                            <div class="">You haven't Saved any internships.</div>
+                                                        </div>
+                                                    </div>
+                                                    <?php
+                                                }
+                                                Pjax::end();
+                                                ?>
+                                            </div>
+                                            <div id="tab-3" class="tab-con">
+                                                <?php
+                                                if ($applied) {
+                                                    foreach ($applied as $apply) {
+                                                        ?>
+                                                        <div class="col-md-4 col-sm-6">
+                                                            <div class="topic-con">
+                                                                <div class="hr-company-box">
+                                                                    <div class="hr-com-icon">
+                                                                        <img src="<?= Url::to('@commonAssets/categories/' . $apply["icon"]); ?>"
+                                                                             class="img-responsive ">
+                                                                    </div>
+                                                                    <div class="hr-com-name">
+                                                                        <?= $apply['title']; ?>
+                                                                    </div>
+                                                                    <div class="opening-txt">
+                                                                        <?= $apply['positions']; ?> Openings
+                                                                    </div>
+                                                                    <div class="overlay1">
+                                                                        <div class="text-o">
+                                                                            <a class="over-bttn ob1"
+                                                                               href="/account/process-applications/<?= $apply['app_id']; ?>">View
+                                                                                Application</a>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="hr-com-jobs">
+                                                                        <div class="row minus-15-pad">
+                                                                            <div class="j-grid">
+                                                                                <a href="javascript:;"
+                                                                                   onclick="window.open('<?= Url::to('/internship/' . $apply['slug']); ?>', '_blank');">VIEW
+                                                                                    INTERNSHIP</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <?php
+                                                    }
+                                                } else {
+                                                    ?>
+                                                    <div class="tab-empty">
+                                                        <div class="tab-empty-icon">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/appliedapplication.png'); ?>"
+                                                                 class="img-responsive" alt=""/>
+                                                        </div>
+                                                        <div class="tab-empty-text">
+                                                            <div class="">You haven't Applied any internships.</div>
+                                                        </div>
+                                                    </div>
+                                                <?php } ?>
+                                            </div>
+                                            <div id="tab-4" class="tab-con">
+                                                <?php
+                                                if ($accepted_jobs) {
+                                                    foreach ($accepted_jobs as $accept) {
+                                                        ?>
+                                                        <div class="col-md-4 col-sm-6">
+                                                            <div class="topic-con">
+                                                                <div class="hr-company-box">
+                                                                    <div class="hr-com-icon">
+                                                                        <img src="<?= Url::to('@commonAssets/categories/' . $accept["job_icon"]); ?>"
+                                                                             class="img-responsive ">
+                                                                    </div>
+                                                                    <div class="hr-com-name">
+                                                                        <?= $accept['org_name']; ?>
+                                                                    </div>
+                                                                    <div class="hr-com-field">
+                                                                        <?= $accept['title']; ?>
+                                                                    </div>
+                                                                    <div class="opening-txt">
+                                                                        <?= $accept['positions']; ?> Openings
+                                                                    </div>
+                                                                    <div class="overlay1">
+                                                                        <div class="text-o"><a class="over-bttn ob2"
+                                                                                               href="/account/process-applications/<?= $accept['app_id']; ?>">View
+                                                                                Application</a></div>
+                                                                    </div>
+                                                                    <div class="hr-com-jobs">
+                                                                        <div class="row minus-15-pad">
+                                                                            <div class="j-grid">
+                                                                                <a href="javascript:;"
+                                                                                   onclick="window.open('<?= Url::to('/internship/' . $accept['slug']); ?>', '_blank');">VIEW
+                                                                                    INTERNSHIP</a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <?php
+                                                    }
+                                                } else {
+                                                    ?>
+                                                    <div class="tab-empty">
+                                                        <div class="tab-empty-icon">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/acceptedapplication.png'); ?>"
+                                                                 class="img-responsive" alt=""/>
+                                                        </div>
+                                                        <div class="tab-empty-text">
+                                                            <div class="">You haven't any accepted internships.</div>
+                                                        </div>
+                                                    </div>
+                                                <?php } ?>
+                                            </div>
+                                            <div id="tab-5" class="tab-con">
+                                                <?php
+                                                if ($shortlist1) {
+                                                    foreach ($shortlist1 as $shortlist) {
+                                                        ?>
+                                                        <div class="col-md-4 col-sm-6 hr-j-box">
+                                                            <div class="topic-con">
+                                                                <div class="hr-company-box">
+                                                                    <div class="hr-com-icon">
+                                                                        <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>"
+                                                                             class="img-responsive ">
+                                                                    </div>
+                                                                    <div class="hr-com-name">
+                                                                        <?= $shortlist['org_name'] ?>
+                                                                    </div>
+                                                                    <div class="hr-com-field">
+                                                                        <?= $shortlist['name'] ?>
+                                                                    </div>
+                                                                    <div class="overlay2">
+                                                                        <div class="text-o">
+                                                                            <?php if ($shortlist['appliedApplications']) { ?>
+                                                                                <a class="over-bttn ob2 hover_short"
+                                                                                   disabled="disabled">
+                                                                                    <i class="fa fa-check"></i>Applied</a>
+                                                                            <?php } else { ?>
+                                                                                <a href="/internship/<?= $shortlist['slug']; ?>"
+                                                                                   class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                                            <?php } ?>
+                                                                        </div>
+
+                                                                    </div>
+                                                                    <div class="hr-com-jobs">
+                                                                        <div class="row ">
+                                                                            <div class="col-md-12 col-sm-12 minus-15-pad">
+                                                                                <div class=" j-grid">
+                                                                                    <a href="javascript:;"
+                                                                                       onclick="window.open('<?= Url::to('/internship/' . $shortlist['slug']); ?>', '_blank');">VIEW
+                                                                                        INTERNSHIP</a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <?php
+                                                    }
+                                                } else {
+                                                    ?>
+                                                    <div class="tab-empty">
+                                                        <div class="tab-empty-icon">
+                                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlistresume.png'); ?>"
+                                                                 class="img-responsive" alt=""/>
+                                                        </div>
+                                                        <div class="tab-empty-text">
+                                                            <div class="">You haven't Shortlisted in any internship
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <?php
+                                                } ?>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="portlet-body">
-                <div class="tab-content">
-                    <div class="tab-pane active" id="tab_actions_pending">
-                        <div class="row">
-                            <div class="mt-actions">
-                                <div id="tab-1" class="tab-con current">
-                                    <?php
-                                    Pjax::begin(['id' => 'pjax_review']);
-                                    if ($reviewlist) {
-
-                                        foreach ($reviewlist as $review) {
-                                            ?>
-                                            <div class="col-md-3 col-sm-6 hr-j-box">
-                                                <div class="topic-con" data-key="<?= $review['application_enc_id']; ?>"> 
-                                                    <div class="hr-company-box">
-                                                        <div class="hr-com-icon">
-                                                            <img src="<?= Url::to('@commonAssets/categories/' . $review["icon"]); ?>" class="img-responsive ">
-                                                        </div>
-                                                        <div class="hr-com-name">
-                                                            <?= $review['title']; ?>
-                                                        </div>
-                                                        <div class="opening-txt">
-                                                            <?= $review['positions']; ?> Openings
-                                                        </div>
-                                                        <div class="overlay">
-                                                            <div class="col-md-12">
-                                                                <div class="text-o col-md-5">
-                                                                    <?php if($review['applied_application_enc_id']){?>
-                                                                        <a class="over-bttn ob1" disabled="disabled">Applied</a>
-                                                                    <?php }else{?>
-                                                                        <a href="/internship/<?= $review['slug']; ?>" class="over-bttn ob1 hover_short apply-btn">Apply</a>
-                                                                    <?php } ?>
-                                                                </div>
-                                                                <div class="text-o col-md-7">
-                                                                    <a class="over-bttn ob2 shortlist" id="<?= $review['slug'];?>" data-key="<?= $review['application_enc_id']; ?>" >
-                                                                        <span class="hover-change"><i class="fa fa-heart-o"></i> Shortlist</span>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="hr-com-jobs">
-                                                            <div class="row">
-                                                                <div class="col-md-12 col-sm-12 minus-15-pad">
-                                                                    <div class="j-cross">
-                                                                        <button value="<?= $review['application_enc_id']; ?>" class="rmv_review">
-                                                                            <i class="fa fa-times"></i>
-                                                                        </button>
-
-                                                                    </div>
-                                                                    <div class="j-grid">
-                                                                        <a href="javascript:;"
-                                                                           onclick="window.open('<?= Url::to('/internship/' . $review['slug']); ?>', '_blank');">VIEW
-                                                                            INTERNSHIP</a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>  
-                                            <?php
-                                        }
-                                    } else {
-                                        ?>
-                                            <div class="tab-empty"> 
-                                                <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/reviewlist.png'); ?>" class="img-responsive" alt=""/>
-                                                </div>
-                                                <div class="tab-empty-text">
-                                                    <div class="">You haven't Select any internships for review.</div>
-                                                </div>
-                                            </div>
-                                        <?php
-                                    }
-                                    Pjax::end();
-                                    ?>
-                                </div>
-                                <div id="tab-2" class="tab-con" > 
-                                    <?php
-                                    Pjax::begin(['id' => 'pjax_shortlist']);
-                                    if ($shortlisted) {
-                                        foreach ($shortlisted as $shortlist) {
-                                            ?>
-                                            <div class="col-md-3 hr-j-box">
-                                                <div class="topic-con"> 
-                                                    <div class="hr-company-box">
-                                                        <div class="hr-com-icon">
-                                                            <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
-                                                        </div>
-                                                        <div class="hr-com-name">
-                                                            <?= $shortlist['name']; ?>
-                                                        </div>
-                                                        <div class="opening-txt">
-                                                            <?= $shortlist["positions"]; ?> Openings
-                                                        </div>
-                                                        <div class="overlay2">
-                                                            <div class="text-o">
-                                                                <?php if($shortlist['applied_application_enc_id']){?>
-                                                                    <a class="over-bttn ob2 hover_short" disabled="disabled">
-                                                                        <i class="fa fa-check"></i>Applied</a>
-                                                                <?php }else{?>
-                                                                    <a href="/internship/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
-                                                                <?php } ?>
-                                                            </div>
-                                                        </div>
-                                                        <div class="hr-com-jobs">
-                                                            <div class="row ">
-                                                                <div class="col-md-12 col-sm-12 minus-15-pad">
-                                                                    <div class=" j-cross">
-                                                                        <button value="<?= $shortlist['application_enc_id']; ?>" class="rmv_list">
-                                                                            <i class="fa fa-times"></i>
-                                                                        </button>
-                                                                    </div> 
-                                                                    <div class=" j-grid">
-                                                                        <a href="javascript:;"
-                                                                           onclick="window.open('<?= Url::to('/internship/' . $shortlist['slug']); ?>', '_blank');">VIEW
-                                                                            INTERNSHIP</a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div> 
-                                            <?php
-                                        }
-                                    } else {
-                                        ?>
-                                            <div class="tab-empty"> 
-                                                <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlist-icon.png'); ?>" class="img-responsive" alt=""/>
-                                                </div>
-                                                <div class="tab-empty-text">
-                                                    <div class="">You haven't Saved any internships.</div>
-                                                </div>
-                                            </div>
-                                        <?php
-                                    }
-                                    Pjax::end();
-                                    ?>
-                                </div>
-                                <div id="tab-3" class="tab-con" > 
-                                    <?php
-                                    if ($applied) {
-                                        foreach ($applied as $apply) {
-                                            ?>  
-                                            <div class="col-md-3">
-                                                <div class="topic-con"> 
-                                                    <div class="hr-company-box">
-                                                        <div class="hr-com-icon">
-                                                            <img src="<?= Url::to('@commonAssets/categories/' . $apply["icon"]); ?>" class="img-responsive ">
-                                                        </div>
-                                                        <div class="hr-com-name">
-                                                            <?= $apply['title']; ?>
-                                                        </div>
-                                                        <div class="opening-txt">
-                                                            <?= $apply['positions']; ?> Openings
-                                                        </div>
-                                                        <div class="overlay1">
-                                                            <div class="text-o">
-                                                                <a class="over-bttn ob1" href="/account/process-applications/<?= $apply['app_id']; ?>">View Application</a>
-                                                            </div>
-                                                        </div>
-                                                        <div class="hr-com-jobs">
-                                                            <div class="row minus-15-pad">
-                                                                <div class="j-grid">
-                                                                    <a href="javascript:;"
-                                                                       onclick="window.open('<?= Url::to('/internship/' . $apply['slug']); ?>', '_blank');">VIEW
-                                                                        INTERNSHIP</a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <?php
-                                        }
-                                    } else {
-                                        ?>
-                                            <div class="tab-empty"> 
-                                                <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/appliedapplication.png'); ?>" class="img-responsive" alt=""/>
-                                                </div>
-                                                <div class="tab-empty-text">
-                                                    <div class="">You haven't Applied any internships.</div>
-                                                </div>
-                                            </div>
-                                    <?php } ?>
-                                </div>
-                                <div id="tab-4" class="tab-con" > 
-                                    <?php
-                                    if ($accepted_jobs) {
-                                        foreach ($accepted_jobs as $accept) {
-                                            ?>  
-                                            <div class="col-md-3">
-                                                <div class="topic-con"> 
-                                                    <div class="hr-company-box">
-                                                        <div class="hr-com-icon">
-                                                            <img src="<?= Url::to('@commonAssets/categories/' . $accept["job_icon"]); ?>" class="img-responsive ">
-                                                        </div>
-                                                        <div class="hr-com-name">
-                                                            <?= $accept['org_name']; ?>
-                                                        </div>
-                                                        <div class="hr-com-field">
-                                                            <?= $accept['title']; ?>
-                                                        </div>
-                                                        <div class="opening-txt">
-                                                            <?= $accept['positions']; ?> Openings
-                                                        </div>
-                                                        <div class="overlay1">
-                                                            <div class="text-o"><a class="over-bttn ob2" href="/account/process-applications/<?= $accept['app_id']; ?>">View Application</a></div>
-                                                        </div>
-                                                        <div class="hr-com-jobs">
-                                                            <div class="row minus-15-pad">
-                                                                <div class="j-grid">
-                                                                    <a href="javascript:;"
-                                                                       onclick="window.open('<?= Url::to('/internship/' . $accept['slug']); ?>', '_blank');">VIEW
-                                                                        INTERNSHIP</a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <?php
-                                        }
-                                    } else {
-                                        ?>
-                                            <div class="tab-empty"> 
-                                                <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/acceptedapplication.png'); ?>" class="img-responsive" alt=""/>
-                                                </div>
-                                                <div class="tab-empty-text">
-                                                    <div class="">You haven't any accepted internships.</div>
-                                                </div>
-                                            </div>
-                                    <?php } ?>
-                                </div>
-                                <div id="tab-5" class="tab-con">
-                                    <?php
-                                    if ($shortlist1) {
-                                        foreach ($shortlist1 as $shortlist) {
-                                            ?>
-                                            <div class="col-md-3 hr-j-box">
-                                                <div class="topic-con">
-                                                    <div class="hr-company-box">
-                                                        <div class="hr-com-icon">
-                                                            <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
-                                                        </div>
-                                                        <div class="hr-com-name">
-                                                            <?= $shortlist['org_name'] ?>
-                                                        </div>
-                                                        <div class="hr-com-field">
-                                                            <?= $shortlist['name']?>
-                                                        </div>
-                                                        <div class="overlay2">
-                                                            <div class="text-o">
-                                                                <?php if($shortlist['appliedApplications']){?>
-                                                                    <a class="over-bttn ob2 hover_short" disabled="disabled">
-                                                                        <i class="fa fa-check"></i>Applied</a>
-                                                                <?php }else{?>
-                                                                    <a href="/internship/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
-                                                                <?php } ?>
-                                                            </div>
-
-                                                        </div>
-                                                        <div class="hr-com-jobs">
-                                                            <div class="row ">
-                                                                <div class="col-md-12 col-sm-12 minus-15-pad">
-                                                                    <div class=" j-grid">
-                                                                        <a href="javascript:;"
-                                                                           onclick="window.open('<?= Url::to('/internship/' . $shortlist['slug']); ?>', '_blank');">VIEW
-                                                                            INTERNSHIP</a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <?php
-                                        }
-                                    } else {
-                                        ?>
-                                            <div class="tab-empty">
-                                                <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlistresume.png'); ?>" class="img-responsive" alt=""/>
-                                                </div>
-                                                <div class="tab-empty-text">
-                                                    <div class="">You haven't Shortlisted in any internship</div>
-                                                </div>
-                                            </div>
-                                        <?php
-                                    } ?>
-
-                                </div>
+            <div class="row">
+                <div class="col-lg-12 col-xs-12 col-sm-12">
+                    <div class="portlet light nd-shadow">
+                        <div class="portlet-title tabbable-line">
+                            <div class="caption">
+                                <i class=" icon-social-twitter font-dark hide"></i>
+                                <span class="caption-subject font-dark bold uppercase">Followed Companies<span
+                                            data-toggle="tooltip"
+                                            title="Here you will find all companies that you are following"><i
+                                                class="fa fa-info-circle"></i></span>
+                    </span>
+                            </div>
+                            <div class="actions">
+                                <a href="<?= Url::to('/account/organization/shortlisted') ?>" title=""
+                                   class="viewall-jobs">View
+                                    All</a>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="row">
+                                <?=
+                                $this->render('/widgets/organization/card', [
+                                    'organization_data' => $shortlist_org,
+                                    'for' => 'Internships'
+                                ]);
+                                ?>
                             </div>
                         </div>
                     </div>
@@ -437,35 +558,12 @@ use yii\widgets\Pjax;
             </div>
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-lg-12 col-xs-12 col-sm-12">
-        <div class="portlet light nd-shadow">
-            <div class="portlet-title tabbable-line">
-                <div class="caption">
-                    <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase">Followed Companies<span data-toggle="tooltip" title="Here you will find all companies that you are following"><i class="fa fa-info-circle"></i></span>
-                    </span>
-                </div>
-                <div class="actions">
-                    <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View All</a>
-                </div>
-            </div>
-            <div class="portlet-body">
-                <div class="row">
-                    <?=
-                    $this->render('/widgets/organization/card', [
-                        'organization_data' => $shortlist_org,
-                        'for' => 'Internships'
-                    ]);
-                    ?>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 <?php
 $this->registerCss('
+.set-center{
+    width:100%;
+    text-align: center;
+}
 .font-dark > span > i {
     font-size: 13px;
     margin-left: 5px;
@@ -550,10 +648,10 @@ ul.tabs li{
     background: none;
     color: #222;
     display: inline-block;
-    padding: 10px 15px;
+    padding: 10px 0px;
     cursor: pointer;
     font-family: roboto;
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 500;
 }
 .caption > ul.tabs > li.tab-link:hover{
@@ -604,6 +702,60 @@ li.current{
 }
 a:hover{
     text-decoration:none;
+}
+.viewall-jobs{padding:8px;}
+/*Sidebar Jobs Cards*/
+.job-card-sidebar-candidate a{
+    margin-bottom: 15px;
+    width: 100%;
+    min-height: 120px;
+    border: 2px solid #eef1f5;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    padding: 10px;
+    border-radius:8px !important;
+    font-family: roboto;
+    color: #000;
+}
+.job-cat-icon{
+  flex-basis: 30%;
+  text-align: center;
+}
+.job-cat-icon img{
+  width: 80%;
+}
+.job-card-detail{
+  flex-basis: 70%;
+  padding: 0 0px 0 10px;
+  line-height: 19px;
+}
+.job-card-detail h3{
+  margin-top: 0px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+.job-card-detail p{
+    margin-bottom: 0px;
+}
+.jcc-location{
+  color: #ff7803;
+}
+.jcc-location, .company-name, .card-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.job-card-sidebar-candidate i{
+  margin-right: 5px;
+}   
+.jbl-viewall.viewall-jobs{
+    float: unset;
+    margin-left: 0px;
 }
 ');
 $script = <<<JS
