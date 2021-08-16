@@ -205,7 +205,7 @@ use yii\widgets\Pjax;
 
                                                     foreach ($reviewlist as $review) {
                                                         ?>
-                                                        <div class="col-md-3 col-sm-6 hr-j-box">
+                                                        <div class="col-md-4 col-sm-6 hr-j-box">
                                                             <div class="topic-con"
                                                                  data-key="<?= $review['application_enc_id']; ?>">
                                                                 <div class="hr-company-box">
@@ -286,7 +286,7 @@ use yii\widgets\Pjax;
                                                 if ($shortlisted) {
                                                     foreach ($shortlisted as $shortlist) {
                                                         ?>
-                                                        <div class="col-md-3 hr-j-box">
+                                                        <div class="col-md-4 hr-j-box">
                                                             <div class="topic-con">
                                                                 <div class="hr-company-box">
                                                                     <div class="hr-com-icon">
@@ -354,7 +354,7 @@ use yii\widgets\Pjax;
                                                 if ($applied) {
                                                     foreach ($applied as $apply) {
                                                         ?>
-                                                        <div class="col-md-3">
+                                                        <div class="col-md-4 col-sm-6">
                                                             <div class="topic-con">
                                                                 <div class="hr-company-box">
                                                                     <div class="hr-com-icon">
@@ -406,7 +406,7 @@ use yii\widgets\Pjax;
                                                 if ($accepted_jobs) {
                                                     foreach ($accepted_jobs as $accept) {
                                                         ?>
-                                                        <div class="col-md-3">
+                                                        <div class="col-md-4 col-sm-6">
                                                             <div class="topic-con">
                                                                 <div class="hr-company-box">
                                                                     <div class="hr-com-icon">
@@ -459,7 +459,7 @@ use yii\widgets\Pjax;
                                                 if ($shortlist1) {
                                                     foreach ($shortlist1 as $shortlist) {
                                                         ?>
-                                                        <div class="col-md-3 hr-j-box">
+                                                        <div class="col-md-4 col-sm-6 hr-j-box">
                                                             <div class="topic-con">
                                                                 <div class="hr-company-box">
                                                                     <div class="hr-com-icon">

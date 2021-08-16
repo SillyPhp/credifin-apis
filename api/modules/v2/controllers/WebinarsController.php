@@ -492,7 +492,7 @@ class WebinarsController extends ApiBaseController
             }
             $args = [
                 'payment_enc_id' => $params['payment_enc_id'],
-                'payment_status' => $params['status'],
+                'payment_status' => $params['payment_status'],
                 'registration_enc_id' => $params['registration_enc_id'],
                 'payment_id' => $params['payment_id']
             ];
