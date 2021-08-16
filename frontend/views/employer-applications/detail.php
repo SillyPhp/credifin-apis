@@ -607,8 +607,7 @@ if (!empty($data2) && Yii::$app->params->options->showSchema) {
 echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/mustache/courses-card');
 $app_profile = (($data1['name']) ? $data1['name'] : $data2['name']);
-$keywords = str_replace(",", "%2C", $searchItems);
-$keywords = str_replace(" ", "+", $keywords);
+$keywords = urlencode($searchItems);
 $this->registerCss("
 .new-row{
 	padding: 0;
