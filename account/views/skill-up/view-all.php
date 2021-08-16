@@ -34,6 +34,7 @@ use yii\helpers\Url;
                                 <th class="w300">Source Link</th>
                                 <th class="w300">Skills</th>
                                 <th class="w200">Industries</th>
+                                <th class="w200">Actions</th>
                             </tr>
                             </thead>
                             <tbody id="feeds">
@@ -100,6 +101,15 @@ use yii\helpers\Url;
             <td>
                 <ul>
                     <li>{{industries}}</li>
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li>
+                        {{#status}}
+                        <a href="/account/skill-up/edit?slug={{slug}}">Edit</a>
+                        {{/status}}
+                    </li>
                 </ul>
             </td>
         </tr>

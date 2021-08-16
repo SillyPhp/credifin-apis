@@ -1384,7 +1384,7 @@ class SiteController extends Controller
               ->joinWith(['postTypeEnc a' => function($a){
                   $a->andWhere(['a.post_type' => 'Social']);
               }], false)
-              ->andWhere(['z.is_deleted' => 0,'z.is_visible' => 1])
+              ->andWhere(['z.is_deleted' => 0,'z.is_visible' => 1,'z.status'=>'Active'])
               ->orderBy(['z.created_on' => SORT_DESC]);
           $totalData = $model->count();
           $dataDetail = $model->limit($limit)
