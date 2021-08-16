@@ -46,15 +46,15 @@ class NewsController extends Controller
             $offset = Yii::$app->request->post('offset');
             $newsDetail = ExternalNewsUpdate::find()
                 ->alias('z')
-                ->select(['z.news_enc_id', 'z.title','z.link', 'z.downvote', 'z.upvote', 'z.created_on', 'z.slug', 'z.description', 'z.image', 'z.image_location', 'z.status', 'z.is_deleted'])
+                ->select(['z.news_enc_id', 'z.title', 'z.link', 'z.downvote', 'z.upvote', 'z.created_on', 'z.slug', 'z.description', 'z.image', 'z.image_location', 'z.status', 'z.is_deleted'])
                 ->where(['z.is_deleted' => 0, 'z.status' => 1])
-                ->joinWith(['newsTags a'=> function($a){
-                    $a->select(['a.news_tag_enc_id','a.news_enc_id','a.assigned_tag_enc_id','c.name tag_name']);
+                ->joinWith(['newsTags a' => function ($a) {
+                    $a->select(['a.news_tag_enc_id', 'a.news_enc_id', 'a.assigned_tag_enc_id', 'c.name tag_name']);
                     $a->andWhere(['a.is_deleted' => 0]);
-                    $a->joinWith(['assignedTagEnc b'=>function($b){
-                        $b->joinWith(['tagEnc c'=>function($c){
-                        }],false);
-                    }],false);
+                    $a->joinWith(['assignedTagEnc b' => function ($b) {
+                        $b->joinWith(['tagEnc c' => function ($c) {
+                        }], false);
+                    }], false);
                 }])
                 ->asArray()
                 ->distinct()
@@ -65,8 +65,8 @@ class NewsController extends Controller
                 ->all();
             if ($dataDetail) {
                 array_walk($dataDetail, function (&$item) {
-                    $item['rand_upvote'] = rand(40,100) + $item['upvote'];
-                    $item['rand_downvote'] = rand(0,40) + $item['downvote'];
+                    $item['rand_upvote'] = rand(40, 100) + $item['upvote'];
+                    $item['rand_downvote'] = rand(0, 40) + $item['downvote'];
                     $item['news_slug'] = Url::to('/news/' . $item['slug']);
                     $item['news_time'] = date('d M Y', strtotime($item['created_on']));
                     $item['news_title'] = Url::to('/news/' . $item['title']);
@@ -144,12 +144,12 @@ class NewsController extends Controller
                 $a->andWhere(['a.is_deleted' => 0]);
             }])
             ->andWhere(['not', ['in', 'z.slug', $slug]])
-            ->andWhere(['z.is_deleted' => 0])
+            ->andWhere(['z.is_deleted' => 0, 'z.is_visible' => 1])
             ->groupBy('z.news_enc_id')
             ->limit(5)
             ->all();
         $latestNews = ExternalNewsUpdate::find()
-            ->where(['is_deleted' => 0, 'status' => 1])
+            ->where(['is_deleted' => 0, 'status' => 1, 'is_visible' => 1])
             ->orderBy(['created_on' => SORT_DESC])
             ->limit(5)
             ->all();
