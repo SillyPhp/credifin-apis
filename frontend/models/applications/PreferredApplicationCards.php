@@ -26,6 +26,7 @@ class PreferredApplicationCards
         $dataProvider = $modelSearch->search(Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['z.is_deleted' => 0, 'a.name' => $type, 'e.assigned_to' => $type]);
         $dataProvider->query->andWhere(['z.application_for' => 1]);
+        $dataProvider->query->andWhere(['>=', 'z.last_date', date('Y-m-d')]);
         $dataProvider->query->select([
             'z.application_enc_id application_id', 'z.type',
             'n1.html_code',

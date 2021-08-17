@@ -3,6 +3,7 @@
 namespace account\controllers;
 
 use account\models\skillsUp\AddSourceForm;
+use account\models\skillsUp\SkillsUpEditForm;
 use account\models\skillsUp\SkillsUpForm;
 use common\models\Industries;
 use common\models\Skills;
@@ -15,6 +16,7 @@ use yii\web\UploadedFile;
 use yii\web\Response;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
 
 class SkillUpController extends Controller
 {
@@ -54,7 +56,7 @@ class SkillUpController extends Controller
         $feedList = SkillsUpPosts::find()
             ->alias('a')
             ->select(['a.post_enc_id', 'a.post_title', 'b1.name author_name', 'a.post_source_url', 'c.name source', 'a.content_type', "DATE_FORMAT(a.created_on, '%d/%m/%Y') date",
-                'GROUP_CONCAT(DISTINCT(d1.skill) SEPARATOR ",") skills', 'GROUP_CONCAT(DISTINCT(e1.industry) SEPARATOR ",") industries', 'a.slug'])
+                'GROUP_CONCAT(DISTINCT(d1.skill) SEPARATOR ",") skills', 'GROUP_CONCAT(DISTINCT(e1.industry) SEPARATOR ",") industries', 'a.slug', 'IF(a.status != "Active", 1, NULL) as status'])
             ->joinWith(['skillsUpAuthors b' => function ($b) {
                 $b->joinWith(['authorEnc b1']);
             }], false)
@@ -130,6 +132,67 @@ class SkillUpController extends Controller
         } else {
             $sources = SkillsUpSources::find()->where(['is_deleted' => 0])->asArray()->all();
             return $this->render('feeds-form', ['model' => $model, 'sources' => $sources]);
+        }
+    }
+
+    public function actionEdit($slug)
+    {
+        $fullSlug = explode('-', $slug);
+        $model = new SkillsUpEditForm();
+        $defaultData = SkillsUpPosts::find()
+            ->alias('a')
+            ->select(['a.post_enc_id', 'a.post_title title', 'a.post_source_url source_url', 'a.source_enc_id source_id', 'a.content_type',
+                'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->skill_up->cover_image, 'https') . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image',
+                'a.post_image_url', 'a.slug', 'a.post_description description', 'a.post_short_summery short_description', 'b.name source_name', 'c1.name author', 'e1.body embed_code',
+                'f1.youtube_video_id'])
+            ->joinWith(['sourceEnc b'], false)
+            ->joinWith(['skillsUpAuthors c' => function ($c) {
+                $c->joinWith(['authorEnc c1']);
+            }], false)
+            ->joinWith(['skillsUpPostAssignedSkills d' => function ($d) {
+                $d->select(['d.assigned_skill_enc_id', 'd.skill_enc_id', 'd.post_enc_id', 'd1.skill']);
+                $d->joinWith(['skillEnc d1'], false);
+                $d->andWhere(['d.is_deleted' => 0]);
+            }])
+            ->joinWith(['skillsUpPostAssignedEmbeds e' => function ($e) {
+                $e->joinWith(['embedEnc e1']);
+            }], false)
+            ->joinWith(['skillsUpPostAssignedVideos f' => function ($f) {
+                $f->joinWith(['videoEnc f1']);
+            }], false)
+            ->joinWith(['skillsUpPostAssignedIndustries g' => function ($g) {
+                $g->select(['g.post_enc_id', 'g.industry_enc_id', 'g1.industry']);
+                $g->joinWith(['industryEnc g1'], false);
+                $g->andWhere(['g.is_deleted' => 0]);
+            }])
+            ->where(['a.slug' => $slug, 'a.is_deleted' => 0])
+            ->andWhere(['not', ['a.status' => 'Active']])
+            ->asArray()
+            ->one();
+        if (!empty($defaultData)) {
+            if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+                $model->image = UploadedFile::getInstance($model, 'image');
+                $assignedIndustries = ArrayHelper::getColumn($defaultData['skillsUpPostAssignedIndustries'], 'industry_enc_id');
+                $assignedSkills = ArrayHelper::getColumn($defaultData['skillsUpPostAssignedSkills'], 'skill');
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $model->post_enc_id = $defaultData['post_enc_id'];
+                $model->content_type = $defaultData['content_type'];
+                $model->source_url = $defaultData['source_url'];
+                $model->assigned_skills = $assignedSkills;
+                $model->assigned_industries = $assignedIndustries;
+                $data = $model->update();
+                if ($data['status'] == 200) {
+                    $this->redirect('/account/skill-up/view-all');
+                } else {
+//                    return $data;
+                    Yii::$app->session->setFlash('error', 'An error has occurred');
+                }
+            }
+            $model->load($defaultData);
+            $sources = SkillsUpSources::find()->where(['is_deleted' => 0])->asArray()->all();
+            return $this->render('feeds-form-edit', ['model' => $model, 'sources' => $sources, 'defaultData' => $defaultData]);
+        } else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 
@@ -279,39 +342,8 @@ class SkillUpController extends Controller
     {
         if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $url = Yii::$app->request->post('url');
-            $data = $this->youTubeVideoID($url);
-
-            if ($data['status'] === 200) {
-                return $data;
-            } else {
-                return $this->getMetaInfo(Yii::$app->request->post('url'));
-            }
+            return $this->getMetaInfo(Yii::$app->request->post('url'));
         }
-    }
-
-    private function youTubeVideoID($url)
-    {
-        $queryString = parse_url($url, PHP_URL_QUERY);
-        parse_str($queryString, $params);
-        $id = "";
-        if (isset($params['v']) && strlen($params['v']) > 0) {
-            $id = $params['v'];
-            if ($id != "") {
-                return [
-                    'status' => 200,
-                    'title' => 'success!',
-                    'video_id' => $id,
-                    'message' => 'Successfully',
-                ];
-            }
-        }
-
-        return [
-            'status' => 201,
-            'title' => 'LearningVideo',
-            'message' => 'Video id not Found..',
-        ];
     }
 
     public function actionAddSource()

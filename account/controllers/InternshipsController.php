@@ -28,10 +28,12 @@ use common\models\ReviewedApplications;
 use common\models\ShortlistedApplicants;
 use common\models\ShortlistedApplications;
 use common\models\UserCoachingTutorials;
+use common\models\UserPreferences;
 use common\models\Users;
 use common\models\UserSkills;
 use common\models\Utilities;
 use common\models\WidgetTutorials;
+use frontend\models\applications\ApplicationCards;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
@@ -231,6 +233,9 @@ class InternshipsController extends Controller
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
                         $session->remove($session_token);
+                    }
+                    if ($session->has('campusPlacementData')){
+                        $session->remove('campusPlacementData');
                     }
                     return $response = [
                         'status' => 200,
@@ -1005,6 +1010,51 @@ class InternshipsController extends Controller
             ->asArray()
             ->all();
 
+        $userLocation = UserPreferences::find()
+            ->alias('a')
+            ->select(['a.preference_enc_id'])
+            ->joinWith(['userPreferredLocations pl' => function($pl){
+                $pl->select(['pl.preference_enc_id','pl.preferred_location_enc_id', 'pl.city_enc_id', 'c.name']);
+                $pl->joinWith(['cityEnc c'], false);
+                $pl->onCondition(['pl.is_deleted' => 0]);
+            }])
+            ->where([
+                'a.created_by' => Yii::$app->user->identity->user_enc_id,
+                'a.assigned_to' => 'Internships'
+            ])
+            ->asArray()
+            ->one();
+
+        $locations = [];
+        foreach ($userLocation['userPreferredLocations'] as $location){
+            array_push($locations, $location['name']);
+        }
+
+        $userSkills = UserSkills::find()
+            ->alias('a')
+            ->select(['a.user_skill_enc_id', 'a.skill_enc_id', 'se.skill'])
+            ->joinWith(['skillEnc se'], false)
+            ->where([
+                'a.created_by' => Yii::$app->user->identity->user_enc_id,
+                'a.is_deleted' => 0,
+            ])
+            ->asArray()
+            ->all();
+
+        $skills = [];
+        foreach ($userSkills as $skill){
+            array_push($skills, $skill['skill']);
+        }
+        $options['limit'] = 3;
+        $options['location'] = implode(',', $locations);
+        $options['skills'] = implode(',', $skills);
+//        $options['orderBy'] = new Expression('rand()');
+
+        $internshipsByLocation = ApplicationCards::internships($options);
+        unset($options['location']);
+        $internshipsBySkills = ApplicationCards::internships($options);
+
+
         return $this->render('dashboard/individual', [
             'shortlisted' => $shortlist_jobs,
             'applied' => $applied_applications,
@@ -1018,6 +1068,10 @@ class InternshipsController extends Controller
             'accepted_jobs' => $accepted_jobs,
             'total_accepted' => $total_accepted,
             'shortlist1' => $shortlist1,
+            'internshipsByLocation' => $internshipsByLocation,
+            'preferredLocations' => implode(',', $locations),
+            'internshipsBySkills' => $internshipsBySkills,
+            'preferredSkills' => implode(',', $skills),
         ]);
     }
 
@@ -1237,10 +1291,10 @@ class InternshipsController extends Controller
         return $applications->getApplications($options);
     }
 
-    private function __closedinternships($limit = NULL)
+    private function __closedinternships($limit = NULL,$page = 1)
     {
         $options = [
-            'applicationType' => 'internships',
+            'applicationType' => 'Internships',
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Closed',
@@ -1252,6 +1306,7 @@ class InternshipsController extends Controller
                 'a.published_on' => SORT_DESC,
             ],
             'limit' => $limit,
+            'pageNumber' => $page,
         ];
 
         $applications = new \account\models\applications\Applications();
@@ -1697,5 +1752,30 @@ class InternshipsController extends Controller
         }
 
         return ['data' => $shortlistedApplicants, 'count' => $count];
+    }
+    public function actionAllClosedInternships(){
+        $model = new ExtendsJob();
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $params = Yii::$app->request->post();
+            $limit = 10;
+            $page = 1;
+            if(isset($params['limit'])){
+                $limit = $params['limit'];
+            }
+            if(isset($params['page'])){
+                $page = $params['page'];
+            }
+            $data = $this->__closedinternships($limit, $page);
+            if($data['total'] != 0){
+                return['status' => 200, 'data' => $data];
+            }
+            else{
+                return['status' => 404, 'message' => 'Page Not Found'];
+            }
+        }
+        return $this->render('all-closed-internships',[
+            'model' => $model
+        ]);
     }
 }

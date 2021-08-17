@@ -69,8 +69,10 @@ class CareerAdviceController extends Controller
             ->joinWith(['postCategories b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false);
             }], false)
+            ->joinWith(['postTypeEnc d'], false)
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['c.name' => null])
+            ->andWhere(['<>', 'd.post_type', 'Social'])
             ->groupBy(['a.post_enc_id'])
             ->orderby(new Expression('rand()'))
             ->limit(6)
@@ -88,7 +90,7 @@ class CareerAdviceController extends Controller
     {
         $careerBlog = CareerAdvisePosts::find()
             ->alias('a')
-            ->select(['a.title', 'a.slug', 'a.description', 'a.link', 'c.slug category','c.name cat', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image) . '", a.image_location, "/", a.image) ELSE CONCAT("' . Url::to('@eyAssets/images/pages/locations/goa.png') . '") END image'])
+            ->select(['a.title', 'a.slug', 'a.description', 'a.link', 'c.slug category', 'c.name cat', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image) . '", a.image_location, "/", a.image) ELSE CONCAT("' . Url::to('@eyAssets/images/pages/locations/goa.png') . '") END image'])
             ->joinWith(['assignedCategoryEnc b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false);
             }

@@ -12,10 +12,9 @@ use yii\helpers\Url;
                         <div class="row">
                             <div class="col-md-11 col-md-offset-1 col-sm-12">
                                 <div class="heading-data-set">
-                                    <h3>DON'T WORRY ABOUT PAYING YOUR <br> COLLEGE FEES ALL AT ONCE.</h3>
-                                    <h4>Choose our easy loan schemes with low interest rate.</h4>
-                                    <p>Apply in colleges across India & Abroad<br>
-                                        Interest Free Loans available for select colleges/universities
+                                    <h3>Everyone deserves access to education<br> and with our help, it's just a couple of clicks away.</h3>
+                                    <h4>EmpowerYouth believes in funding dreams by helping youth fulfill their career potentials.</h4>
+                                    <p>Interested? Get started today!</p>
                                     <div class="loan-btn">
                                         <a href="/education-loans/apply">Apply Now!</a>
                                         <a href="/site/admission-form">Enquire Now!</a>
@@ -99,18 +98,19 @@ $this->registerCss('
     padding-right: 0px;
 }
 .heading-data-set h3 {
-	font-size: 28px;
+	font-size: 26px;
     color: #ED6D1E;
     font-family: roboto;
     font-weight: 600;
     line-height: 40px;
+    text-transform: uppercase;
 }
 .heading-data-set h4 {
 	font-size: 20px;
-    font-family: lora;
+    font-family: roboto;
     color: #000;
-    font-weight: 600;
-    margin: 0;
+    font-weight: 500;
+    margin: 10px 0;
 }
 .heading-data-set p {
     font-size: 18px;
@@ -142,7 +142,7 @@ $this->registerCss('
 }
 @media screen and (max-width: 992px) and (min-width: 768px) {
     .heading-data-set h3 {
-        font-size: 27px;
+        font-size: 22px;
         margin-left: 30px;
         line-height: 38px;
     }
@@ -225,7 +225,7 @@ $this->registerCss('
 .heading-data-set h4 {
     padding: 8px;
     font-size: 18px;
-    line-height: 22px;
+    line-height: 24px;
 }
 .heading-data-set p {
     font-size: 16px;

@@ -607,6 +607,7 @@ if (!empty($data2) && Yii::$app->params->options->showSchema) {
 echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/mustache/courses-card');
 $app_profile = (($data1['name']) ? $data1['name'] : $data2['name']);
+$keywords = urlencode($searchItems);
 $this->registerCss("
 .new-row{
 	padding: 0;
@@ -1878,7 +1879,7 @@ button.lc-item-video-menu {
 ");
 $script = <<<JS
 var type = "$type";
-var keyword = "$searchItems";
+var keyword = "$keywords";
 var cat = '$app_profile';
 var slugg = '$slug'
 
@@ -1886,7 +1887,7 @@ function getCourseList(keyword=null,cat=null){
     $.ajax({
         method: "POST",
         url : '/courses/courses-list',
-        data:{keyword:keyword,cat:cat,page:1,limit:1},
+        data:{keyword:keyword,cat:cat,page:1,limit:6},
         beforeSend: function(){
            $('.load-more-text').css('visibility', 'hidden');
            $('.load-more-spinner').css('visibility', 'visible');
@@ -1929,10 +1930,9 @@ function getCourseList(keyword=null,cat=null){
         }
     });
 }
-getCourseList(keyword,cat);
+getCourseList(keyword ? keyword : cat);
 
- $(document).on('click','#close_btn',function()
- {
+ $(document).on('click','#close_btn',function(){
     $('.fader').css('display','none');
     $(this).parent().removeClass('show');
 });

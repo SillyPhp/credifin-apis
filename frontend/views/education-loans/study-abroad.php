@@ -4,7 +4,37 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
+
+$this->title = 'Study In Abroad';
+$keywords = 'Study In Abroad | Empower Youth';
+$description = 'Do not let financial burden stop you from fulfilling your desire to study in your dream college.';
+$image = Url::to('@eyAssets/images/pages/education-loans/study-in-abroad.png', 'https');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
+
 <section class="study-in-usa-bg">
 <!--    <div class="opacity-div"></div>-->
     <div class="container">
@@ -141,15 +171,12 @@ $this->registerCss('
     font-size: 25px;
     color: #fff;
 }
-.study-in-usa-bg{
-    padding-top: 100px;
-}
 .study-in-usa-bg ul li{
     display: inline;
     margin-right: 10px;
 }
 .apply-now{
-    padding: 10px 15px;
+    padding: 10px 20px;
 	background: #00A0E3;
 	color: #fff;
 	border: 1px solid #00A0E3;
@@ -158,8 +185,6 @@ $this->registerCss('
 	font-family: roboto;
 	border-radius: 4px;
 	display: inline-block;
-	width: 150px;
-	text-align: center;
 }
 .btn-orange{
     background: #ff7803 !important;
@@ -221,9 +246,8 @@ $this->registerCss('
 	background-repeat: no-repeat;
 	background-size: cover;
 	display: flex;
-//	align-items: center;
+	align-items: center;
 	position: relative;
-	text-align: left;
 	min-height: 550px;
 }
 .opacity-div{
@@ -234,12 +258,8 @@ $this->registerCss('
 	height: 100%;
 	background: rgba(0,0,0,.4);
 }
-.abroad-vector {
-    padding-left: 40px;
-}
 .abroad-vector img {
     max-width: 100%;
-    transform: scale(1.3);
 }
 .study-in-usa-bg p{
     font-size: 24px;
@@ -534,10 +554,26 @@ label {
     top:10px !important;
 }
 
-
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 1024px) and (min-width: 992px){
+    .study-in-usa-bg p {
+        font-size: 21px;
+        line-height: 28px;
+    }
+}
+@media only screen and (max-width: 768px) {
+.study-in-usa-bg {
+    text-align: center;
+}
 .study-in-usa-bg h1{
     font-size: 30px;
+}
+.study-map-box{
+    width:50%;
+    border: none;
+    margin-bottom: 20px;
+}
+.study-maps-sec{
+    margin-top:30px;
 }
 .h-point1 {
     width: 50%;
@@ -548,21 +584,12 @@ label {
 .course-box:nth-child(3n+0){
     margin-right:1%;
 }
+.abroad-vector img {
+    display: none;
+}   
 }
-@media only screen and (max-width: 768px) and (min-width: 320px){
-    .abroad-vector img {
-        display: none;
-    }
-    .study-in-usa-bg {
-        text-align: center;
-    }
-}
-@media only screen and (max-width: 1024px) and (min-width: 992px){
-    .study-in-usa-bg p {
-        font-size: 21px;
-        line-height: 28px;
-    }
-}
+@media only screen and (max-width: 500px) {
+.study-map-box{width:100%;}
 ');
 $script = <<<JS
 setTimeout(function (){

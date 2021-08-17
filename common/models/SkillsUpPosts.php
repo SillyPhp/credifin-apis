@@ -23,8 +23,8 @@ use Yii;
  * @property string $created_by By which User  information was added
  * @property string $last_updated_on On which date  information was updated
  * @property string $last_updated_by By which User  information was updated
- * @property string $status Status  Active, Inactive, Pending,  Rejected
- * @property int $is_incompleted Is Incompleted (0 as False, 1 as True)
+ * @property string $status Active as Accept, Rejected as Reject, On Hold as On Hold, Inactive as Review, Pending as Check
+ * @property int $is_completed Is completed (1 as False, 2 as True)
  * @property int $is_deleted Is Deleted (0 as False, 1 as True)
  *
  * @property SkillsUpAuthors[] $skillsUpAuthors
@@ -61,7 +61,7 @@ class SkillsUpPosts extends \yii\db\ActiveRecord
             [['post_enc_id', 'post_title', 'source_enc_id', 'content_type', 'slug', 'created_by'], 'required'],
             [['post_source_url', 'content_type', 'post_image_url', 'post_description', 'post_short_summery', 'status'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['is_incompleted', 'is_deleted'], 'integer'],
+            [['is_completed', 'is_deleted'], 'integer'],
             [['post_enc_id', 'source_enc_id', 'cover_image', 'cover_image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['post_title', 'slug'], 'string', 'max' => 255],
             [['post_enc_id'], 'unique'],

@@ -10,6 +10,13 @@ use common\models\OrganizationAssignedCategories;
 class DropResumeController extends Controller
 {
 
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
+    }
+
     public function actionCheckResume()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -36,6 +43,15 @@ class DropResumeController extends Controller
                     'message' => 'no',
                 ];
             }
+        }
+    }
+
+    public function actionIndex(){
+        $refer = explode('/', Yii::$app->request->referrer);
+        if(Yii::$app->user->identity->organization || $refer[3] == 'employers' ){
+            return $this->render('drop-resume-companies');
+        }else{
+            return $this->render('drop-resume-landing-page');
         }
     }
 

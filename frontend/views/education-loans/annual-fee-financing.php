@@ -1,28 +1,84 @@
 <?php
 use yii\helpers\Url;
 ?>
-<section class="study-in-usa-bg">
+
+<section class="annual-fee-header">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <h1>
+            <div class="col-sm-6">
+                <div class="header-text">
+                    <h1>
                     <span class="typewrite" data-period="2000"
                           data-type='["Annual Fee Financing.", "Easy Monthly Installment.", "Easy Repayment." ]'>
                         <span class="wrap"></span>
                     </span>
-                </h1>
-                <p>Our annual fee financing solution  provides loan to parents and students on annual
-                    basis with easy monthly installments designed in a way to make it easier
-                    for the borrowers to repay.</p>
-                <ul>
-                    <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
-                    <!--                    <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>-->
-                </ul>
+                    </h1>
+                    <p>Our annual fee financing solution provides loan to parents and students on annual basis with easy monthly installments designed in a way to make it easier for the borrowers to repay.</p>
+                    <div class="header-btn">
+                        <a href="/education-loans/apply" class="apply-now btn-orange">Apply Now</a>
+                        <a href="#contact" class="enq-now">Enquire Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="header-img">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/annual-fee-header-img.png')?>">
+                </div>
             </div>
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/annual-fee-finance-benefits') ?>
+
+<section class="annual-fee-benefits">
+    <div class="container">
+        <div class="row benefit-heading">
+            <h1 class="heading-style">Benefits Of Annual Fee Financing</h1>
+        </div>
+        <div class="row benefits">
+            <div class="col-md-3 col-sm-6">
+                <div class="benefit">
+                    <div class="bg-circle"></div>
+                    <div class="benefit-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/disbursement-icon.png')?>">
+                    </div>
+                    <h3>Quick Disbursement</h3>
+                    <p>With our state of the art system we strive to complete the disbursement of loan in less than 10 days</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="benefit">
+                    <div class="bg-circle"></div>
+                    <div class="benefit-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/document-icon.png')?>">
+                    </div>
+                    <h3>Easy Documentation</h3>
+                    <p>The documentation process is fairly simple and basic documents are needed for sanction of loan</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="benefit">
+                    <div class="bg-circle"></div>
+                    <div class="benefit-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/online-icon.png')?>">
+                    </div>
+                    <h3>Online Application</h3>
+                    <p>The Candidates can apply for loan online using the tools provided by our technology partners.</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="benefit">
+                    <div class="bg-circle"></div>
+                    <div class="benefit-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/track-icon.png')?>">
+                    </div>
+                    <h3>Live Track</h3>
+                    <p>The college gets a live tracking on status of the loan application for all candidates.</p>
+                </div>
+            </div>
+            </div>
+    </div>
+</section>
+
 <section class="benefit-bg">
     <div class="container">
         <div class="row">
@@ -74,11 +130,12 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
 <section class="bg-blue pb10">
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
 
-<section class="bgeEd">
+<section class="bgeEd partner-college">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -107,8 +164,11 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
 <?= $this->render('/widgets/Our-lending-partners');?>
+
 <?= $this->render('/widgets/education-loan-faqs');?>
+
 <?php
 if($blogs['blogs']){
     echo $this->render('/widgets/education-loan/blogs',[
@@ -117,16 +177,125 @@ if($blogs['blogs']){
     ]);
 };
 ?>
+
 <?= $this->render('/widgets/loan-form-detail',[
     'model' => $model
 ]); ?>
+
 <?= $this->render('/widgets/press-releasee',[
     'data' => $data,
     'viewBtn' => true
 ]) ?>
+
 <?= $this->render('/widgets/loan-strip') ?>
+
 <?php
 $this->registerCss('
+html{
+    scroll-behavior: smooth;
+}
+.header-benefit{
+}
+.annual-fee-header{
+    min-height: 500px;
+    position: relative;
+    background: url(' . Url::to('@eyAssets/images/pages/education-loans/annual-fee-header-bg.png') . ');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+.annual-fee-header .container{
+    min-height: 500px;
+}
+.annual-fee-header .row{
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+}
+.header-text h1{
+    font-size: 45px;
+    color: #00a0e3;
+    font-family: Roboto;
+    min-height: 64px;
+}
+.header-text p{
+    font-size: 18px;
+    line-height: 21px;
+    color: #2e2e2e;
+    font-family: Roboto;
+    font-weight: 400;
+    word-spacing: 2px;
+}
+
+.header-img{
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    margin-top: 100px;    
+}
+.header-img img{
+    width: 90%;
+}
+.benefit{
+    box-shadow: 0px 2px 8px rgb(0 0 0 / 45%);
+    border-radius: 3px;
+    padding: 15px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    transition: ease-in all 300ms;
+    min-height: 232px;
+    position: relative;
+    z-index: 1;
+}
+.benefit h3{
+    font-size: 20px;
+    color: #00A0E3;
+    font-weight: 600;
+    margin: 10px 0;
+    height: 46px;
+}
+.benefit p{
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 14px;
+    letter-spacing: 0.03em;
+}
+.benefits{
+    margin: 20px 0;
+}
+.benefit-img{
+    position: relative;
+}
+.benefit-img img{
+    margin: 10px 0 0 10px;
+}
+.bg-circle{
+    width: 45px;
+    height: 45px;
+    background: #E1F6FF;
+    position: absolute;
+    border-radius: 50%;
+    z-index: -1;
+    left: 30px;
+    top: 40px;
+    transform: translate(-50%, -50%);
+    transition: 300ms ease-out all;
+}
+.benefit:hover .bg-circle{
+    width: 250%;
+    height: 250%;
+    transition: 300ms ease-in all;
+}
+.benefit:hover{
+    transform: scale(1.05);
+    transition: ease-in all 300ms;
+}
+.benefit-heading h1{
+    font-size: 28pt;
+    font-family: Roboto;
+    font-weight: 500;
+    color: #000;
+    font-family: Lobster;
+}
 .footer{
     margin-top: 0px !important;
 }
@@ -135,65 +304,6 @@ $this->registerCss('
 }
 .pb10{
     padding-bottom: 15px;
-}
-.study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/finance.png') . ');
-	min-height: 500px;
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: right bottom;
-	display: flex;
-	align-items: center;
-	position: relative;
-//	text-align: center;
-	height: 100vh;
-	max-height: 700px;
-}
-.study-in-usa-bg h1 {
-	font-size: 35px;
-	margin-bottom: 10px;
-	color: #ff7803;
-	font-weight: bold;
-	font-family: lora;
-}
-.study-in-usa-bg p {
-	font-size: 18px;
-	font-family: roboto;
-	color: #fff;
-	padding: 0 0 18px;
-	line-height: 30px;
-	max-width: 500px;
-}
-.study-in-usa-bg ul li{
-    display: inline;
-    margin-right: 10px;
-}
-.apply-now {
-	padding: 10px 15px;
-	background: #00A0E3;
-	color: #fff;
-	border: 1px solid #00A0E3;
-	box-shadow: 0 5px 10px rgba(0,0,0,.3);
-	font-size: 16px;
-	font-family: roboto;
-	border-radius: 4px;
-	display: inline-block;
-	width: 150px;
-	text-align:center;
-}
-.btn-orange{
-    background: #ff7803 !important;
-    border: 1px solid #ff7803 !important;
-}
-.apply-now:hover{
-    background: #ff7803; 
-    color: #fff;
-    border: 1px solid #ff7803;
-    transition: .3s ease;
-}
-.btn-orange:hover{
-    background: #00a0e3 !important;
-    border: 1px solid #00a0e3 !important;
 }
 .pb3{
     padding-bottom: 30px;
@@ -231,8 +341,8 @@ $this->registerCss('
     padding: 20px 0px 30px;
 }
 .bene-head {
-    margin: 20px 20px 60px;
-    text-align: center;
+    text-align: left;
+    color: #000;
 }
 .bene-head h2 {
     font-size: 28pt;
@@ -303,8 +413,41 @@ $this->registerCss('
   z-index: 1;
   transition: 300ms all linear;
 }
-
-
+.header-btn{
+    margin-top: 30px;
+}
+.enq-now, .apply-now{
+    padding: 8px 20px;
+	background: #00A0E3;
+	color: #fff;
+	border: 1px solid #00A0E3;
+	box-shadow: 0 5px 10px rgba(0,0,0,.3);
+	font-size: 16px;
+	font-family: roboto;
+	border-radius: 4px;
+	display: inline-block;
+}
+.btn-orange{
+    background: #ff7803 !important;
+    border: 1px solid #ff7803 !important;
+    margin-right: 10px;
+    transition: .3s ease;
+}
+.enq-now:hover{
+    background: #fff; 
+    color: #00a0e3;
+    border: 1px solid #fff;
+    transition: .3s ease;
+    font-weight: 700;
+    
+}
+.btn-orange:hover{
+    background: #fff !important;
+    border: 1px solid #fff !important;
+    color: #ff7803;
+    font-weight: 700;
+    transition: .3s ease;
+}
 //.college-card-partner:hover{
 //  transform: scale(0.9);  
 //}
@@ -331,7 +474,34 @@ $this->registerCss('
 .college-card-partner:hover > p{
   color: #fff;
 }
-')
+
+@media only screen and (max-width: 768px){
+    .header-img{
+    display: none;
+    }
+}
+@media only screen and (max-width: 550px){
+    .header-text h1{
+        font-size: 35px;
+        min-height: 50px;
+    }
+    .header-text p{
+        font-size: 14px;
+    }
+}
+');
+$script = <<<JS
+$("a[href^='#']").click(function(e) {
+        e.preventDefault();
+
+        var position = $($(this).attr("href")).offset().top;
+        $("body, html").animate({
+            scrollTop: position
+        }, 1500 );
+    });
+JS;
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.9/jquery.lazy.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJS($script);
 ?>
 <script>
     var TxtType = function(el, toRotate, period) {
