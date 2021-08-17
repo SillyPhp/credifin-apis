@@ -29,7 +29,7 @@ class OrganizationsList
                 '(CASE WHEN count(CASE WHEN le.name = "New" THEN "1" ELSE NULL END) = 0  THEN "0" ELSE "1" END) as is_new',
                 '(CASE WHEN count(CASE WHEN le.name = "Promoted" THEN "1" ELSE NULL END) = 0  THEN "0" ELSE "1" END) as is_promoted',
                 '(CASE WHEN count(CASE WHEN le.name = "Hot" THEN "1" ELSE NULL END) = 0  THEN "0" ELSE "1" END) as is_hot',
-                'a.created_on', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo',
+                'a.created_on', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=true&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo',
                 'y.business_activity', 'COUNT(distinct z.review_enc_id) total_reviews',
                 'a.slug profile_link', 'CONCAT(a.slug, "/reviews") review_link',
                 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating',
@@ -113,7 +113,7 @@ class OrganizationsList
                 '(CASE WHEN count(CASE WHEN le.name = "Promoted" THEN "1" ELSE NULL END) = 0  THEN "0" ELSE "1" END) as is_promoted',
                 '(CASE WHEN count(CASE WHEN le.name = "Hot" THEN "1" ELSE NULL END) = 0  THEN "0" ELSE "1" END) as is_hot',
                 'a.created_on',
-                'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo',
+                'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=true&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo',
                 'y.business_activity', 'COUNT(distinct z.review_enc_id) total_reviews',
                 'CONCAT(a.slug, "/reviews") profile_link', 'CONCAT(a.slug, "/reviews") review_link',
                 'ROUND(average_rating) rating', 'IFNULL(u.positions, 0) total_vacancy'])

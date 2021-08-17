@@ -180,7 +180,7 @@ class SkillUpController extends Controller
                 $model->source_url = $defaultData['source_url'];
                 $model->assigned_skills = $assignedSkills;
                 $model->assigned_industries = $assignedIndustries;
-                $data = $model->update($fullSlug[count($fullSlug) - 1]);
+                $data = $model->update();
                 if ($data['status'] == 200) {
                     $this->redirect('/account/skill-up/view-all');
                 } else {
@@ -342,39 +342,8 @@ class SkillUpController extends Controller
     {
         if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $url = Yii::$app->request->post('url');
-            $data = $this->youTubeVideoID($url);
-
-            if ($data['status'] === 200) {
-                return $data;
-            } else {
-                return $this->getMetaInfo(Yii::$app->request->post('url'));
-            }
+            return $this->getMetaInfo(Yii::$app->request->post('url'));
         }
-    }
-
-    private function youTubeVideoID($url)
-    {
-        $queryString = parse_url($url, PHP_URL_QUERY);
-        parse_str($queryString, $params);
-        $id = "";
-        if (isset($params['v']) && strlen($params['v']) > 0) {
-            $id = $params['v'];
-            if ($id != "") {
-                return [
-                    'status' => 200,
-                    'title' => 'success!',
-                    'video_id' => $id,
-                    'message' => 'Successfully',
-                ];
-            }
-        }
-
-        return [
-            'status' => 201,
-            'title' => 'LearningVideo',
-            'message' => 'Video id not Found..',
-        ];
     }
 
     public function actionAddSource()
