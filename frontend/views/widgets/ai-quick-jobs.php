@@ -24,7 +24,7 @@ use yii\helpers\Url;
             <div class="parent row">
                 <div class="col-md-3 col-sm-6">
                     <div class="ai-job">
-                        <a href="/account/jobs/create" class="ai-img" title="Create a Job">
+                        <a href="/account/jobs/create" class="ai-img" title="Create AI Job">
                             <img src="<?= Url::to('@eyAssets/images/pages/jobs/ai-jobs.png') ?>">
                         </a>
                         <div class="ai-point">
@@ -41,7 +41,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-3 col-sm-6">
                     <div class="ai-job ai-quick">
-                        <a href="/account/jobs/quick-job" class="ai-img" title="Create a Job">
+                        <a href="/account/jobs/quick-job" class="ai-img" title="Create Quick Job">
                             <img src="<?= Url::to('@eyAssets/images/pages/jobs/quick-jobs.png') ?>">
                         </a>
                         <div class="ai-point">
@@ -58,7 +58,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-3 col-sm-6">
                     <div class="ai-job ai-quick">
-                        <a href="/tweets/job/create" class="ai-img" title="Create a Job">
+                        <a href="/tweets/job/create" class="ai-img" title="Create Twitter Job">
                             <img src="<?= Url::to('@eyAssets/images/pages/jobs/twitter-jobs.png') ?>">
                         </a>
                         <div class="ai-point">
@@ -74,7 +74,7 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-3 col-sm-6">
                     <div class="ai-job">
-                        <a href="/account/jobs/campus-placement"  class="ai-img" title="Create a Job">
+                        <a href="/account/jobs/campus-placement"  class="ai-img" title="Create Ecampus Job">
                             <img src="<?= Url::to('@eyAssets/images/pages/jobs/e-campus.png') ?>">
                         </a>
                         <div class="ai-point">
@@ -93,7 +93,7 @@ use yii\helpers\Url;
             <div class="parent row">
                 <div class="col-md-3 col-sm-6">
                     <div class="ai-job">
-                        <a href="/account/jobs/create" class="ai-img" title="Create a Job">
+                        <a href="/account/internships/create" class="ai-img" title="Create AI Internship">
                             <img src="<?= Url::to('@eyAssets/images/pages/jobs/ai-internships.png') ?>">
                         </a>
                         <div class="ai-point">
@@ -105,12 +105,12 @@ use yii\helpers\Url;
                                 <li>Conduct campus placement</li>
                             </ul>
                         </div>
-                        <a href="/account/jobs/create" class="create-btn ai">Create Now</a>
+                        <a href="/account/internships/create" class="create-btn ai">Create Now</a>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6">
                     <div class="ai-job ai-quick">
-                        <a href="/account/jobs/quick-job" class="ai-img" title="Create a Job">
+                        <a href="/account/internships/quick-internship" class="ai-img" title="Create Quick Internship">
                             <img src="<?= Url::to('@eyAssets/images/pages/jobs/quick-internships.png') ?>">
                         </a>
                         <div class="ai-point">
@@ -122,12 +122,12 @@ use yii\helpers\Url;
                                 <li>expedites the hiring process system</li>
                             </ul>
                         </div>
-                        <a href="/account/jobs/quick-job" class="create-btn quick">Create Now</a>
+                        <a href="/account/internships/quick-internship" class="create-btn quick">Create Now</a>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6">
                     <div class="ai-job ai-quick">
-                        <a href="/tweets/job/create" class="ai-img" title="Create a Job">
+                        <a href="/tweets/internship/create" class="ai-img" title="Create Twitter Internship">
                             <img src="<?= Url::to('@eyAssets/images/pages/jobs/twitter-internships.png') ?>">
                         </a>
                         <div class="ai-point">
@@ -138,12 +138,12 @@ use yii\helpers\Url;
                                 <li>post on Empower Youth, hire on your own platform</li>
                             </ul>
                         </div>
-                        <a href="/tweets/job/create" class="create-btn twitter">Create Now</a>
+                        <a href="/tweets/internship/create" class="create-btn twitter">Create Now</a>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6">
                     <div class="ai-job">
-                        <a href="/account/jobs/campus-placement"  class="ai-img" title="Create a Job">
+                        <a href="/account/internships/campus-placement"  class="ai-img" title="Create Ecampus Internship">
                             <img src="<?= Url::to('@eyAssets/images/pages/jobs/e-campus.png') ?>">
                         </a>
                         <div class="ai-point">
@@ -153,7 +153,7 @@ use yii\helpers\Url;
                                 <li>post all kind of internships and opportunities</li>
                             </ul>
                         </div>
-                        <a href="/account/jobs/campus-placement" class="create-btn campus">Create Now</a>
+                        <a href="/account/internships/campus-placement" class="create-btn campus">Create Now</a>
                     </div>
                 </div>
             </div>
