@@ -1630,10 +1630,12 @@ class CollegeProfileController extends ApiBaseController
                 ->one();
 
             if ($org) {
-                $org->description = $params['description'];
-                $org->website = $params['website'];
-                if (!$org->update()) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                if(isset($params['description']) || isset($params['website'])) {
+                    $org->description = $params['description'] ? $params['description'] : $org->description;
+                    $org->website = $params['website'] ? $params['website'] : $org->website;
+                    if (!$org->update()) {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
                 }
             }
 
@@ -1650,6 +1652,10 @@ class CollegeProfileController extends ApiBaseController
                 $org_other_detail->popular_course = $params['popular_course'];
                 $org_other_detail->top_recruiter = $params['top_recruiter'];
                 $org_other_detail->brochure = $params['brochure'];
+                $org_other_detail->established_in = $params['established_in'];
+                $org_other_detail->university_type = $params['university_type'];
+                $org_other_detail->application_mode = $params['application_mode'];
+                $org_other_detail->fees = $params['fees'];
                 $org_other_detail->updated_on = date('Y-m-d H:i:s');
                 if (!$org_other_detail->save()) {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
@@ -1664,6 +1670,10 @@ class CollegeProfileController extends ApiBaseController
             $org_other_detail->popular_course = $params['popular_course'] ? $params['popular_course'] : $org_other_detail->popular_course;
             $org_other_detail->top_recruiter = $params['top_recruiter'] ? $params['top_recruiter'] : $org_other_detail->top_recruiter;
             $org_other_detail->brochure = $params['brochure'] ? $params['brochure'] : $org_other_detail->brochure;
+            $org_other_detail->established_in = $params['established_in'] ? $params['established_in'] : $org_other_detail->established_in;
+            $org_other_detail->university_type = $params['university_type'] ? $params['university_type'] : $org_other_detail->university_type;
+            $org_other_detail->application_mode = $params['application_mode'] ? $params['application_mode'] : $org_other_detail->application_mode;
+            $org_other_detail->fees = $params['fees'] ? $params['fees'] : $org_other_detail->fees;
             $org_other_detail->updated_on = date('Y-m-d H:i:s');
             if (!$org_other_detail->update()) {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
@@ -1671,6 +1681,32 @@ class CollegeProfileController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
         }
         return $this->response(401, ['status' => 401, 'unauthorized']);
+    }
+
+    public function actionGetInfo()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $info = OrganizationOtherDetails::find()
+                ->alias('a')
+                ->select(['a.organization_other_details_enc_id', 'a.organization_enc_id',
+                    'a.total_programs', 'a.established_in', 'a.application_mode', 'a.affiliated_to', 'a.accredited_to',
+                    'a.entrance_exam', 'a.popular_course', 'a.top_recruiter', 'a.brochure', 'a.university_type',
+                    'b.description', 'b.website'])
+                ->joinWith(['organizationEnc b'], false)
+                ->where(['a.organization_enc_id' => $this->getOrgId()])
+                ->asArray()
+                ->one();
+
+            if ($info) {
+                return $this->response(200, ['status' => 200, 'org_info' => $info]);
+            }
+
+            return $this->response(404, ['status' => 401, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 
     public function actionSaveScholarships()
