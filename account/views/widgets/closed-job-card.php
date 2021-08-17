@@ -11,8 +11,7 @@ use yii\helpers\Url;
             <div class="closed-icon">
                 {{#icon}}
                 <a href="/{{link}}">
-                    <img src="<?= Url::to('@commonAssets/categories/'); ?>{{icon}}" width="50px" height="50"
-                         class="img-circle"/>
+                    <img src="<?= Url::to('@commonAssets/categories/'); ?>{{icon}}" width="50px" height="50"/>
                 </a>
                 {{/icon}}
                 {{^icon}}
