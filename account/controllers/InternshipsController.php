@@ -1291,10 +1291,10 @@ class InternshipsController extends Controller
         return $applications->getApplications($options);
     }
 
-    private function __closedinternships($limit = NULL)
+    private function __closedinternships($limit = NULL,$page = 1)
     {
         $options = [
-            'applicationType' => 'internships',
+            'applicationType' => 'Internships',
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Closed',
@@ -1306,6 +1306,7 @@ class InternshipsController extends Controller
                 'a.published_on' => SORT_DESC,
             ],
             'limit' => $limit,
+            'pageNumber' => $page,
         ];
 
         $applications = new \account\models\applications\Applications();
