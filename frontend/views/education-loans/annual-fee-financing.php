@@ -1,5 +1,34 @@
 <?php
 use yii\helpers\Url;
+
+$this->title = 'Annual Fee Financing';
+$keywords = 'Annual Fee Financing | Empower Youth';
+$description = 'Our annual fee financing solution provides loan to parents and students on annual basis with easy monthly installments designed in a way to make it easier for the borrowers to repay.';
+$image = Url::to('@eyAssets/images/pages/education-loans/annual-fee-financing.png', 'https');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 
 <section class="annual-fee-header">
@@ -135,7 +164,7 @@ use yii\helpers\Url;
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
 
-<section class="bgeEd">
+<section class="bgeEd partner-college">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -290,13 +319,11 @@ html{
     transition: ease-in all 300ms;
 }
 .benefit-heading h1{
-    font-size: 35px;
+    font-size: 28pt;
     font-family: Roboto;
     font-weight: 500;
-    margin: 20px 0;
-}
-.benefit-heading{
-    margin: 20px 0;
+    color: #000;
+    font-family: Lobster;
 }
 .footer{
     margin-top: 0px !important;
@@ -343,8 +370,8 @@ html{
     padding: 20px 0px 30px;
 }
 .bene-head {
-    margin: 20px 20px 60px;
     text-align: left;
+    color: #000;
 }
 .bene-head h2 {
     font-size: 28pt;
@@ -450,7 +477,6 @@ html{
     font-weight: 700;
     transition: .3s ease;
 }
-
 //.college-card-partner:hover{
 //  transform: scale(0.9);  
 //}

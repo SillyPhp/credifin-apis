@@ -2,7 +2,7 @@
 
 use yii\helpers\Url;
 ?>
-    <section>
+    <section class="drop-resume">
         <div class="container">
             <div class="row">
                 <div class="col-md-7 col-sm-7">
@@ -21,7 +21,7 @@ use yii\helpers\Url;
                         }
                     ?>
                        <div class="drop-btn">
-                            <a href="<?= Url::to('/drop-resume'); ?>" class="activate-drop arrow">View Detail</a>
+                            <a href="<?= Url::to('/drop-resume'); ?>" class="activate-drop arrow">View Details</a>
 <!--                            <a href="--><!--" class="detail-drop">View Detail</a>-->
                         </div>
                     </div>
@@ -137,10 +137,10 @@ $this->registerCss('
 .activate-drop {
     color: #fff;
     background-color: #00a0e3;
-    font-size: 16px;
+    font-size: 14px;
     font-family: roboto;
     border: 2px solid #00a0e3;
-    padding: 8px 15px;
+    padding: 3px 15px;
     border-radius: 4px;
     display: inline-block;
     transition: ease-in-out .2s;
@@ -199,10 +199,11 @@ $this->registerCss('
 }
 .dr-box i {
     background: linear-gradient(180deg, #93C7FF 0%, #298EF9 100%);
-    font-size: 36px;
+    font-size: 25px;
     color: #fff;
-    padding: 12px 16px;
+    padding: 16px 18px;
     border-radius: 16px;
+    margin-bottom: -3px;
 }
 .dr-how-text {
     margin-bottom: 20px;
@@ -211,13 +212,15 @@ $this->registerCss('
     margin-top: 10px;
     font-family: roboto;
     letter-spacing: 0.3px;
-    line-height: 20px;
+    line-height: 16px;
     text-transform: capitalize;
-    color: #000;
+    color: #6f6f6f;
+    font-size: 13px;
+    font-weight: 500;
 }
 .dr-how-text h3:after {
-    width: 60px;
-    height: 2px;
+    width: 40px;
+    height: 3px;
     background-color: #00a0e3;
     content: "";
     position: absolute;
@@ -231,6 +234,7 @@ $this->registerCss('
 .dr-how-text h3 {
     font-family: roboto;
     font-weight: 500;
+    font-size: 20pt;
 }
 @media screen and (max-width: 1200px) and (min-width: 1000px) {
     .drop-image {

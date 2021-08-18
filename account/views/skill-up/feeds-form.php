@@ -969,64 +969,67 @@ $(document).on('change','#source_url',function (e){
         }
         $('.all-fields').removeClass('hidden');
         let url = $(this).val();
-        $.ajax({
-            url:'/account/skill-up/validate-url',
-            data:{url:url},
-            method:'post',
-            success:function(res){
-                if(res['status'] === 200) {
-                    if(res['video_id'] !== ''){
-                        var id = res['video_id']
-                        var api_key = "AIzaSyDIZMbmF9Cl1thox_ok7a21r7FYVsQ4lyU";
-                        var snippet;
-                        $.ajax({
-                            type: 'GET',
-                            async: false,
-                            url: 'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=' + id + '&key=' + api_key,
-                            success: function(response) {
-                                snippet = response['items'][0]['snippet'];
-                                $('#title').val(snippet['title']);
-                                $('#titleElem').html(snippet['title']);
-                                CKEDITOR.instances.editor.setData(snippet['description']);
-                                $('input[name="content_type"]').each(function(){
-                                    if($(this).val() == 'Video'){
-                                        $(this).prop('checked',true);
-                                    }
-                                })
-                                $('.embed_code_field').addClass('hidden');
-                                $('#sourceElem').html('Youtube');
-                                $('#sourceInputElem').val('Youtube');
-                                $('#channel_id').val(snippet['channelId']);
-                                $('#channel_name').val(snippet['channelTitle']);
-                                $('#author').val(snippet['channelTitle']);
-                                $('#authorElem').html(snippet['channelTitle']);
-                                $('#video_duration').val(response['items'][0]['contentDetails']['duration']);
-                                $('#video_id').val(id);
-                                $('#video_tags').val(snippet['tags']);
-                                $('#source_id').val('$source_youtube_key');
-                                var imge = snippet['thumbnails']['high']['url'];
-                                // $('#image-preview').html('<img src="'+imge+'" height="100px" width="auto">');
-                                $(".target").attr("src", imge);
-                                $('#image_url').val(imge);
-                                $('#short_desc').val(snippet['description'] ? snippet['description'].substr(0,200) + '...' : "");
-                                $('#descriptionElem').html(CKEDITOR.instances.editor.getData());
-                                $('#editor').val(CKEDITOR.instances.editor.getData());
+        if (url != undefined || url != '') {
+            var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\?v=)([^#\&\?]*).*/;
+            var match = url.match(regExp);
+            if (match && match[2].length == 11) {
+                var id = match[2];
+                var api_key = "AIzaSyDIZMbmF9Cl1thox_ok7a21r7FYVsQ4lyU";
+                var snippet;
+                $.ajax({
+                    type: 'GET',
+                    async: false,
+                    url: 'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=' + match[2] + '&key=' + api_key,
+                    success: function(response) {
+                        snippet = response['items'][0]['snippet'];
+                        $('#title').val(snippet['title']);
+                        $('#titleElem').html(snippet['title']);
+                        CKEDITOR.instances.editor.setData(snippet['description']);
+                        $('input[name="content_type"]').each(function(){
+                            if($(this).val() == 'Video'){
+                                $(this).prop('checked',true);
                             }
-                        });
+                        })
+                        $('.embed_code_field').addClass('hidden');
+                        $('#sourceElem').html('Youtube');
+                        $('#sourceInputElem').val('Youtube');
+                        $('#channel_id').val(snippet['channelId']);
+                        $('#channel_name').val(snippet['channelTitle']);
+                        $('#author').val(snippet['channelTitle']);
+                        $('#authorElem').html(snippet['channelTitle']);
+                        $('#video_duration').val(response['items'][0]['contentDetails']['duration']);
+                        $('#video_id').val(id);
+                        $('#video_tags').val(snippet['tags']);
+                        $('#source_id').val('$source_youtube_key');
+                        var imge = snippet['thumbnails']['high']['url'];
+                        // $('#image-preview').html('<img src="'+imge+'" height="100px" width="auto">');
+                        $(".target").attr("src", imge);
+                        $('#image_url').val(imge);
+                        $('#short_desc').val(snippet['description'] ? snippet['description'].substr(0,200) + '...' : "");
+                        $('#descriptionElem').html(CKEDITOR.instances.editor.getData());
+                        $('#editor').val(CKEDITOR.instances.editor.getData());
                     }
-                } else if(res['status'] === 203){
-                    if(res['image']){
-                        $('#image_url').val(res['image']);
-                        $(".target").attr("src", res['image']);
+                });
+            } else {
+                $.ajax({
+                    url:'/account/skill-up/validate-url',
+                    data:{url:url},
+                    method:'post',
+                    success:function(res){
+                        if(res['status'] === 203){
+                            $('#image_url').val(res['image']);
+                            $(".target").attr("src", res['image'] ? res['image'] : 'https://via.placeholder.com/350x350?text=Cover+Image');
+                            CKEDITOR.instances.editor.setData("");
+                            $('#title').val(res['title']);
+                            $('#titleElem').html(res['title']);
+                            $('#short_desc').val(res['description']);
+                            $('#editor').val("");
+                        }
                     }
-                    CKEDITOR.instances.editor.setData("");
-                    $('#title').val(res['title']);
-                    $('#titleElem').html(res['title']);
-                    $('#short_desc').val(res['description']);
-                    $('#editor').val("");
-                }
+                })
             }
-        })
+        }        
+        
     })
     
     document.querySelector("#file").addEventListener('change',function() {
@@ -1061,9 +1064,6 @@ $(document).on('change','#source_url',function (e){
     })
     
     localStorage.removeItem("imgData");
-    
-    // $('.select2-search__field').css('width',$(".select2-selection__rendered").width());
-    // var ps = new PerfectScrollbar('.select2-selection.select2-selection--multiple');
 JS;
 $this->registerJS($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
