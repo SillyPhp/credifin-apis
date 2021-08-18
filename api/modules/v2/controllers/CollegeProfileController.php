@@ -17,6 +17,8 @@ use common\models\CollegeCutoff;
 use common\models\CollegeFaculty;
 use common\models\CollegeInfrastructure;
 use common\models\CollegeInfrastructureDetail;
+use common\models\CollegePlacementHighlights;
+use common\models\CollegeRecruitmentByCourse;
 use common\models\CollegeScholarships;
 use common\models\CollegeSections;
 use common\models\CollegeSettings;
@@ -1630,7 +1632,7 @@ class CollegeProfileController extends ApiBaseController
                 ->one();
 
             if ($org) {
-                if(isset($params['description']) || isset($params['website'])) {
+                if (isset($params['description']) || isset($params['website'])) {
                     $org->description = $params['description'] ? $params['description'] : $org->description;
                     $org->website = $params['website'] ? $params['website'] : $org->website;
                     if (!$org->update()) {
@@ -2474,5 +2476,179 @@ class CollegeProfileController extends ApiBaseController
         }
     }
 
+    public function actionAddPlacementHighlights()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            $highlights = CollegePlacementHighlights::findOne(['college_enc_id' => $this->getOrgId()]);
+
+            if (!$highlights) {
+                $highlights = new CollegePlacementHighlights();
+                $highlights->college_placement_highlight_enc_id = Yii::$app->security->generateRandomString();
+                $highlights->college_enc_id = $this->getOrgId();
+                $highlights->companies_visited = $params['companies_visited'];
+                $highlights->top_recruiter = $params['top_recruiter'];
+                $highlights->companies_offering_dream_packages = $params['dream_packages'];
+                $highlights->highest_stipend_offered = $params['highest_stipend_offered'];
+                $highlights->highest_placement_package = $params['highest_placement_package'];
+                $highlights->created_by = $user->user_enc_id;
+                $highlights->created_on = date('Y-m-d H:i:s');
+                if (!$highlights->save()) {
+                    print_r($highlights->getErrors());
+                    die();
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'data saved']);
+            }
+
+            $highlights->companies_visited = $params['companies_visited'] ? $params['companies_visited'] : $highlights->companies_visited;
+            $highlights->top_recruiter = $params['top_recruiter'] ? $params['top_recruiter'] : $highlights->top_recruiter;
+            $highlights->companies_offering_dream_packages = $params['dream_packages'] ? $params['dream_packages'] : $highlights->companies_offering_dream_packages;
+            $highlights->highest_stipend_offered = $params['highest_stipend_offered'] ? $params['highest_stipend_offered'] : $highlights->highest_stipend_offered;
+            $highlights->highest_placement_package = $params['highest_placement_package'] ? $params['highest_placement_package'] : $highlights->highest_placement_package;
+            $highlights->updated_by = $user->user_enc_id;
+            $highlights->updated_on = date('Y-m-d H:i:s');
+            if (!$highlights->update()) {
+                print_r($highlights->getErrors());
+                die();
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'data updated']);
+
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionShowPlacementHighlights()
+    {
+        if ($user = $this->isAuthorized()) {
+            $highlights = CollegePlacementHighlights::find()
+                ->select(['college_placement_highlight_enc_id', 'companies_visited', 'top_recruiter', 'companies_offering_dream_packages',
+                    'highest_stipend_offered', 'highest_placement_package'])
+                ->where(['college_enc_id' => $this->getOrgId()])
+                ->asArray()
+                ->one();
+
+            if ($highlights) {
+                return $this->response(200, ['status' => 200, 'highlights' => $highlights]);
+            }
+
+            return $this->response(404, ['status' => 404, 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAddCourseRecruitment()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            $recruitment = new CollegeRecruitmentByCourse();
+            $recruitment->college_recruitment_by_course_enc_id = Yii::$app->security->generate_random_string();
+            $recruitment->college_enc_id = $this->getOrgId();
+            $recruitment->assigned_course_enc_id = $params['assigned_course_enc_id'];
+            $recruitment->average_package = $params['average_package'];
+            $recruitment->highest_package = $params['highest_package'];
+            $recruitment->total_offers = $params['total_offers'];
+            $recruitment->students_placed = $params['students_placed'];
+            $recruitment->companies_visiting = $params['companies_visiting'];
+            $recruitment->created_by = $user->user_enc_id;
+            $recruitment->created_on = date('Y-m-d H:i:s');
+            if (!$recruitment->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $recruitment->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'saved']);
+        } else {
+            return $this->response(401, ['status' => 401, 'mesasge' => 'unauthorized']);
+        }
+    }
+
+    public function actionUpdateCourseRecruitment()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['recruitment_id']) || empty($params['recruitment_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "recruitment_id"']);
+            }
+
+            $recruitment = CollegeRecruitmentByCourse::findOne(['college_recruitment_by_course_enc_id' => $params['recruitment_id']]);
+
+            $recruitment->average_package = $params['average_package'] ? $params['average_package'] : $recruitment->average_package;
+            $recruitment->highest_package = $params['highest_package'] ? $params['highest_package'] : $recruitment->highest_package;
+            $recruitment->total_offers = $params['total_offers'] ? $params['total_offers'] : $recruitment->total_offers;
+            $recruitment->students_placed = $params['students_placed'] ? $params['students_placed'] : $recruitment->students_placed;
+            $recruitment->companies_visiting = $params['companies_visiting'] ? $params['companies_visiting'] : $recruitment->companies_visiting;
+            $recruitment->updated_by = $user->user_enc_id;
+            $recruitment->updated_on = date('Y-m-d H:i:s');
+            if (!$recruitment->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $recruitment->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'updated']);
+        } else {
+            return $this->response(401, ['status' => 401, 'mesasge' => 'unauthorized']);
+        }
+    }
+
+    public function actionShowCourseRecruitments()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $recruitments = CollegeRecruitmentByCourse::find()
+                ->alias('a')
+                ->select(['college_recruitment_by_course_enc_id', 'assigned_course_enc_id', 'average_package', 'highest_package', 'total_offers',
+                    'students_placed', 'companies_visiting', 'c.course_name'])
+                ->joinWith(['assignedCourseEnc b' => function ($b) {
+                    $b->joinWith(['courseEnc b1'], false);
+                }], false)
+                ->where(['is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            if ($recruitments) {
+                return $this->response(200, ['status' => 200, 'recruitments' => $recruitments]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionRemoveCourseRecruitment()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['recruitment_id']) || empty($params['recruitment_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "recruitment_id"']);
+            }
+
+            $recruitment = CollegeRecruitmentByCourse::findOne(['college_recruitment_by_course_enc_id' => $params['recruitment_id']]);
+
+            $recruitment->is_deleted = 1;
+            $recruitment->updated_by = $user->user_enc_id;
+            $recruitment->updated_on = date('Y-m-d H:i:s');
+            if (!$recruitment->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $recruitment->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'removed']);
+        } else {
+            return $this->response(401, ['status' => 401, 'mesasge' => 'unauthorized']);
+        }
+    }
 
 }
