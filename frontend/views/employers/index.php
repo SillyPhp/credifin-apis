@@ -16,12 +16,12 @@ $this->params['header_dark'] = false;
                     <?php if (Yii::$app->user->identity->organization) { ?>
                         <div class="buttonss">
                             <a href="/account/jobs/create" class="post-btn">Post a Job</a>
-                            <a href="/candidates" class="view-btn">View Candidate</a>
+                            <a href="/candidates" class="view-btn">View Candidates</a>
                         </div>
                     <?php } elseif(Yii::$app->user->isGuest) { ?>
                         <div class="buttonss">
                             <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="post-btn">Post a Job</a>
-                            <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="view-btn">View Candidate</a>
+                            <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="view-btn">View Candidates</a>
                         </div>
                     <?php } ?>
                 </div>
