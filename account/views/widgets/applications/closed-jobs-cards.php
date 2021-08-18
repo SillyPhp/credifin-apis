@@ -22,9 +22,7 @@ if (!empty($total_applications)) {
                         <?php foreach ($applications as $application) { ?>
                             <div class="mt-action">
                                 <div class="mt-action-img" style="width: auto">
-                                    <a href="<?= $application['link'] ?>">
-                                            <img src="<?= Url::to('@commonAssets/categories/' . $application["icon"]); ?>" width="50px" height="50" class="img-circle"/>
-                                    </a>
+                                    <img src="<?= Url::to('@commonAssets/categories/' . $application["icon"]); ?>" width="50px" height="50" class="img-circle"/>
                                 </div>
                                 <div class="mt-action-body">
                                     <div class="mt-action-row">
