@@ -28,7 +28,7 @@ if (!empty($total_applications)) {
                                     <div class="mt-action-row">
                                         <div class="mt-action-info ">
                                             <div class="mt-action-details ">
-                                                <span class="mt-action-author"><a href="<?= $application['link'] ?>"><?= $application['name']; ?></a></span>
+                                                <span class="mt-action-author"><?= $application['name']; ?></span>
                                                 <p class="mt-action-desc">Expired On <?= date("d-m-Y", strtotime($application['last_date'])); ?></p>
                                             </div>
                                         </div>
