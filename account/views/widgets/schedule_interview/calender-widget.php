@@ -38,6 +38,9 @@ button.icon-button>span.bars{
         padding:0px;
         line-height: 40px;
     }
+    .calendar-inner{
+        padding: 80px 30px;
+    }
 }
 @media screen and (max-width: 1375px) {
     tr.calendar-header .calendar-header-day {
@@ -67,6 +70,9 @@ button.icon-button>span.bars{
     }
     tr.calendar-header .calendar-header-day {
         font-size: 14px;
+    }
+    .calendar-inner {
+        padding: 70px 20px 105px 20px;
     }
 }
 ');
