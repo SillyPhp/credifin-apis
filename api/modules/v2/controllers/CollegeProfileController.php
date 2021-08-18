@@ -2496,9 +2496,7 @@ class CollegeProfileController extends ApiBaseController
                 $highlights->created_by = $user->user_enc_id;
                 $highlights->created_on = date('Y-m-d H:i:s');
                 if (!$highlights->save()) {
-                    print_r($highlights->getErrors());
-                    die();
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $highlights->getErrors()]);
                 }
 
                 return $this->response(200, ['status' => 200, 'message' => 'data saved']);
@@ -2512,9 +2510,7 @@ class CollegeProfileController extends ApiBaseController
             $highlights->updated_by = $user->user_enc_id;
             $highlights->updated_on = date('Y-m-d H:i:s');
             if (!$highlights->update()) {
-                print_r($highlights->getErrors());
-                die();
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $highlights->getErrors()]);
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'data updated']);
