@@ -1,5 +1,8 @@
 <?php
+
 namespace common\models;
+
+use Yii;
 
 /**
  * This is the model class for table "{{%assigned_college_courses}}".
@@ -22,6 +25,9 @@ namespace common\models;
  * @property Users $updatedBy
  * @property CollegeCoursesPool $courseEnc
  * @property Organizations $organizationEnc
+ * @property CollegeAdmissionDetail[] $collegeAdmissionDetails
+ * @property CollegeCutoff[] $collegeCutoffs
+ * @property CollegeRecruitmentByCourse[] $collegeRecruitmentByCourses
  * @property CollegeSections[] $collegeSections
  * @property MockQuizzes[] $mockQuizzes
  * @property OnlineClasses[] $onlineClasses
@@ -31,7 +37,7 @@ namespace common\models;
 class AssignedCollegeCourses extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -39,16 +45,17 @@ class AssignedCollegeCourses extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['assigned_college_enc_id', 'organization_enc_id', 'course_enc_id', 'created_by', 'created_on'], 'required'],
+            [['assigned_college_enc_id', 'organization_enc_id', 'course_enc_id', 'created_by'], 'required'],
             [['course_duration', 'years', 'semesters', 'is_deleted'], 'integer'],
             [['type'], 'string'],
             [['created_on', 'updated_on'], 'safe'],
             [['assigned_college_enc_id', 'organization_enc_id', 'course_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['assigned_college_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeCoursesPool::className(), 'targetAttribute' => ['course_enc_id' => 'course_enc_id']],
@@ -86,6 +93,30 @@ class AssignedCollegeCourses extends \yii\db\ActiveRecord
     public function getOrganizationEnc()
     {
         return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeAdmissionDetails()
+    {
+        return $this->hasMany(CollegeAdmissionDetail::className(), ['assigned_course_id' => 'assigned_college_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeCutoffs()
+    {
+        return $this->hasMany(CollegeCutoff::className(), ['assgined_course_enc_id' => 'assigned_college_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeRecruitmentByCourses()
+    {
+        return $this->hasMany(CollegeRecruitmentByCourse::className(), ['assigned_course_enc_id' => 'assigned_college_enc_id']);
     }
 
     /**

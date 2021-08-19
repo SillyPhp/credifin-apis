@@ -10,18 +10,14 @@ use yii\helpers\Url;
         <div class="closed-card-main">
             <div class="closed-icon">
                 {{#icon}}
-                <a href="/{{link}}">
                     <img src="<?= Url::to('@commonAssets/categories/'); ?>{{icon}}" width="50px" height="50"/>
-                </a>
                 {{/icon}}
                 {{^icon}}
-                <a href="/{{slug}}">
                     <canvas class="user-icon" name="{{name}}" width="50" height="50"
                             color="{{color}}" font="22px"></canvas>
-                </a>
                 {{/icon}}
             </div>
-            <div class="closed-name"><a href="{{link}}">{{name}}</a></div>
+            <div class="closed-name">{{name}}</div>
             <div class="closed-date">{{last_date}}</div>
             <div class="closed-buttons">
                 <a href="" data-id="{{application_enc_id}}" class="modify-app-date">RE-OPEN</a>
