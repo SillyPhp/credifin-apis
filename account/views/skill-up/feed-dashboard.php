@@ -101,6 +101,7 @@ use yii\helpers\Url;
                                 <th class="w300">Source Link</th>
                                 <th class="w300">Skills</th>
                                 <th class="w200">Industries</th>
+                                <th class="w200">Actions</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -124,6 +125,19 @@ use yii\helpers\Url;
                                         <td>
                                             <ul>
                                                 <li><?= $f['industries'] ?></li>
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <ul>
+                                                <li>
+                                                    <?php
+                                                    if($f['status']){
+                                                    ?>
+                                                    <a href="/account/skill-up/edit?slug=<?= $f['slug'];?>">Edit</a>
+                                                    <?php
+                                                    }
+                                                    ?>
+                                                </li>
                                             </ul>
                                         </td>
                                     </tr>
