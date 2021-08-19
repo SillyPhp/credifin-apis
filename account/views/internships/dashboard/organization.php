@@ -363,6 +363,10 @@ use yii\widgets\Pjax;
                                                 title="Here you will find all companies that you are following"><i
                                                     class="fa fa-info-circle"></i></span></span>
                                 </div>
+                                <div class="actions">
+                                    <a href="<?= Url::toRoute('/internships/all-closed-internships'); ?>" data-toggle="tooltip" title="View All">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                </div>
                             </div>
                             <div class="portlet-body">
                                 <?php

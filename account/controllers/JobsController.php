@@ -640,7 +640,7 @@ class JobsController extends Controller
         }
     }
 
-    private function __closedjobs($limit = NULL)
+    private function __closedjobs($limit = NULL,$page = 1)
     {
         $options = [
             'applicationType' => 'Jobs',
@@ -655,6 +655,7 @@ class JobsController extends Controller
                 'a.published_on' => SORT_DESC,
             ],
             'limit' => $limit,
+            'pageNumber' => $page,
         ];
 
         $applications = new \account\models\applications\Applications();
@@ -2411,5 +2412,30 @@ class JobsController extends Controller
                 return $error;
             }
         }
+    }
+    public function actionAllClosedJobs(){
+        $model = new ExtendsJob();
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $params = Yii::$app->request->post();
+            $limit = 10;
+            $page = 1;
+            if(isset($params['limit'])){
+                $limit = $params['limit'];
+            }
+            if(isset($params['page'])){
+                $page = $params['page'];
+            }
+            $data = $this->__closedjobs($limit, $page);
+            if($data['total'] != 0){
+                return['status' => 200, 'data' => $data];
+            }
+            else{
+                return['status' => 404, 'message' => 'Page Not Found'];
+            }
+        }
+        return $this->render('all-closed-jobs',[
+            'model' => $model
+        ]);
     }
 }

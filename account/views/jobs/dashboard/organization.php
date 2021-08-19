@@ -431,7 +431,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                             class="fa fa-info-circle"></i></span></span>
                                 </div>
                                 <div class="actions">
-                                    <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All">
+                                    <a href="<?= Url::toRoute('/jobs/all-closed-jobs'); ?>" data-toggle="tooltip" title="View All">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                                 </div>
                             </div>
