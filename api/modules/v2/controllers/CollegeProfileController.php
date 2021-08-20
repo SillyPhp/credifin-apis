@@ -57,6 +57,8 @@ class CollegeProfileController extends ApiBaseController
             'actions' => [
                 'get-image' => ['POST', 'OPTIONS'],
                 'upload-logo' => ['POST', 'OPTIONS'],
+                'add-course-recruitment' => ['POST', 'OPTIONS'],
+                'update-course-recruitment' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -2545,10 +2547,11 @@ class CollegeProfileController extends ApiBaseController
     public function actionAddCourseRecruitment()
     {
         if ($user = $this->isAuthorized()) {
+
             $params = Yii::$app->request->post();
 
             $recruitment = new CollegeRecruitmentByCourse();
-            $recruitment->college_recruitment_by_course_enc_id = Yii::$app->security->generate_random_string();
+            $recruitment->college_recruitment_by_course_enc_id = Yii::$app->security->generateRandomString();
             $recruitment->college_enc_id = $this->getOrgId();
             $recruitment->assigned_course_enc_id = $params['assigned_course_enc_id'];
             $recruitment->average_package = $params['average_package'];
@@ -2564,7 +2567,7 @@ class CollegeProfileController extends ApiBaseController
 
             return $this->response(200, ['status' => 200, 'message' => 'saved']);
         } else {
-            return $this->response(401, ['status' => 401, 'mesasge' => 'unauthorized']);
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -2603,12 +2606,12 @@ class CollegeProfileController extends ApiBaseController
 
             $recruitments = CollegeRecruitmentByCourse::find()
                 ->alias('a')
-                ->select(['college_recruitment_by_course_enc_id', 'assigned_course_enc_id', 'average_package', 'highest_package', 'total_offers',
-                    'students_placed', 'companies_visiting', 'c.course_name'])
+                ->select(['a.college_recruitment_by_course_enc_id', 'a.assigned_course_enc_id', 'a.average_package', 'a.highest_package', 'a.total_offers',
+                    'a.students_placed', 'a.companies_visiting', 'b1.course_name'])
                 ->joinWith(['assignedCourseEnc b' => function ($b) {
                     $b->joinWith(['courseEnc b1'], false);
                 }], false)
-                ->where(['is_deleted' => 0])
+                ->where(['a.is_deleted' => 0, 'a.college_enc_id' => $this->getOrgId()])
                 ->asArray()
                 ->all();
 
