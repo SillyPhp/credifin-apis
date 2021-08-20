@@ -94,62 +94,137 @@ use yii\helpers\Url;
                             <thead>
                             <tr>
                                 <th class="w100">Date</th>
-                                <th class="w250">Title</th>
-                                <th class="w200">Author Name</th>
-                                <th class="w150">Source Name</th>
-                                <th class="w150">Content Type</th>
+                                <th class="w250">
+                                    <div class="search-description">Title <a class="underSearch pull-right showSearch"><i class="fas fa-search"></i> </a> </div>
+                                    <div class="search-menu hide-elem">
+                                        <input type="text" class="form-control contributionSearch validateEnterKey" placeholder="Enter Title" data-name="title"/>
+                                        <a class="underSearch pull-right hideSearch">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </th>
+                                <th class="w200">
+                                    <div class="search-description">Author Name <a class="underSearch pull-right showSearch"><i class="fas fa-search"></i> </a> </div>
+                                    <div class="search-menu hide-elem">
+                                        <input type="text" class="form-control contributionSearch validateEnterKey" placeholder="Enter Author Name" data-name="author_name"/>
+                                        <a class="underSearch pull-right hideSearch">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </th>
+                                <th class="w200">
+                                    <div class="search-description">Source Name <a class="underSearch pull-right showSearch"><i class="fas fa-search"></i> </a> </div>
+                                    <div class="search-menu hide-elem">
+                                        <input type="text" class="form-control contributionSearch validateEnterKey" placeholder="Enter Source Name" data-name="source"/>
+                                        <a class="underSearch pull-right hideSearch">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </th>
+                                <th class="w200">
+                                    <div class="search-description">Content Type <a class="underSearch pull-right showSearch"><i class="fas fa-search"></i> </a> </div>
+                                    <div class="search-menu hide-elem">
+                                        <input type="text" class="form-control contributionSearch validateEnterKey" placeholder="Enter Content Type" data-name="content_type"/>
+                                        <a class="underSearch pull-right hideSearch">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </th>
                                 <th class="w300">Source Link</th>
                                 <th class="w300">Skills</th>
                                 <th class="w200">Industries</th>
+                                <th class="w200">Status</th>
                                 <th class="w200">Actions</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <?php if ($feeds) {
-                                foreach ($feeds as $f) { ?>
-                                    <tr>
-                                        <td><?= $f['date'] ?></td>
-                                        <td><a href="/skill-up/detail/<?= $f['slug'] ?>"
-                                               target="_blank"><?= $f['post_title'] ?></a></td>
-                                        <td><?= $f['author_name'] ?></td>
-                                        <td><?= $f['source'] ?></td>
-                                        <td><?= $f['content_type'] ?></td>
-                                        <td><a href="<?= $f['post_source_url'] ?>"
-                                               class="src-link" target="_blank"><?= $f['post_source_url'] ?></a>
-                                        </td>
-                                        <td>
-                                            <ul>
-                                                <li><?= $f['skills'] ?></li>
-                                            </ul>
-                                        </td>
-                                        <td>
-                                            <ul>
-                                                <li><?= $f['industries'] ?></li>
-                                            </ul>
-                                        </td>
-                                        <td>
-                                            <ul>
-                                                <li>
-                                                    <?php
-                                                    if($f['status']){
-                                                    ?>
-                                                    <a href="/account/skill-up/edit?slug=<?= $f['slug'];?>">Edit</a>
-                                                    <?php
-                                                    }
-                                                    ?>
-                                                </li>
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                <?php }
-                            } ?>
+                            <tbody id="feeds">
+
                             </tbody>
+<!--                            <tbody>-->
+<!--                            --><?php //if ($feeds) {
+//                                foreach ($feeds as $f) { ?>
+<!--                                    <tr>-->
+<!--                                        <td>--><?//= $f['date'] ?><!--</td>-->
+<!--                                        <td><a href="/skill-up/detail/--><?//= $f['slug'] ?><!--"-->
+<!--                                               target="_blank">--><?//= $f['post_title'] ?><!--</a></td>-->
+<!--                                        <td>--><?//= $f['author_name'] ?><!--</td>-->
+<!--                                        <td>--><?//= $f['source'] ?><!--</td>-->
+<!--                                        <td>--><?//= $f['content_type'] ?><!--</td>-->
+<!--                                        <td><a href="--><?//= $f['post_source_url'] ?><!--"-->
+<!--                                               class="src-link" target="_blank">--><?//= $f['post_source_url'] ?><!--</a>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <ul>-->
+<!--                                                <li>--><?//= $f['skills'] ?><!--</li>-->
+<!--                                            </ul>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <ul>-->
+<!--                                                <li>--><?//= $f['industries'] ?><!--</li>-->
+<!--                                            </ul>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <ul>-->
+<!--                                                <li>-->
+<!--                                                    --><?php
+//                                                    if($f['status']){
+//                                                    ?>
+<!--                                                    <a href="/account/skill-up/edit?slug=--><?//= $f['slug'];?><!--">Edit</a>-->
+<!--                                                    --><?php
+//                                                    }
+//                                                    ?>
+<!--                                                </li>-->
+<!--                                            </ul>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+<!--                                --><?php //}
+//                            } ?>
+<!--                            </tbody>-->
                         </table>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <script id="feed-list" type="text/template">
+        {{#.}}
+        <tr>
+            <td>{{date}}</td>
+            <td><a href="/skill-up/detail/{{slug}}" target="_blank">{{post_title}}</a></td>
+            <td>{{author_name}}</td>
+            <td>{{source}}</td>
+            <td>{{content_type}}</td>
+            <td><a href="{{post_source_url}}"
+                   class="src-link" target="_blank">{{post_source_url}}</a>
+            </td>
+            <td>
+                <ul>
+                    <li>{{skills}}</li>
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li>{{industries}}</li>
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li>{{post_status}}</li>
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li>
+                        {{#status}}
+                        <a href="/account/skill-up/edit?slug={{slug}}">Edit</a>
+                        {{/status}}
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        {{/.}}
+    </script>
 
 <?php
 $this->registerCss('
@@ -233,6 +308,7 @@ $this->registerCss('
   border: 1px solid #eee; 
   text-align: center; 
   font-family:roboto;
+  position:relative;
 }
 .my-leadd td ul {
     display: flex;
@@ -315,10 +391,85 @@ Label the data
     top:0;
 }
 }
+.underSearch{
+    padding: 0px 15px;
+    position: absolute;
+    right: 0;
+    top: 7.5px;
+    cursor: pointer;
+}
+.search-description .underSearch{
+    top: 0;
+}
+.showSearch{color: #fff;}
+.search-menu, .search-description{
+    position: relative;
+    transition: transform 400ms ease 0ms;
+    transform: scaleY(1);
+}
+.search-menu.hide-elem, .search-description.hide-elem{
+    transform: scaleY(0);
+}
+.search-menu {
+    position: absolute !important;
+    top: 3px;
+    width: 95%;
+}
 ');
 $script = <<<JS
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
+});
+let page = 1;
+let limit = 20;
+
+function feeds(){
+    var elementsMultiple = document.querySelectorAll('.contributionSearch');
+    var appObj = {}
+    for (var i = 0; i < elementsMultiple.length; i++) {
+        var el = elementsMultiple[i];
+        var item = el.getAttribute('data-name');
+        var itemVal = el.value;
+        if(el.value){
+            appObj[item] = itemVal;
+        }
+    }
+    appObj['limit'] = limit;
+    appObj['page'] = page;
+    $.ajax({
+        url: 'get-list',
+        type: 'post',
+        data: appObj,
+        beforeSend: function(){
+            $('#feeds').html('<tr class="loading-text text-left"><td colspan="10">Loading Please Wait...</td></tr>');
+        },
+        success: function (response) {
+            if(response['status'] !== 200){
+                $('#feeds').html('<tr class="loading-text text-left"><td colspan="10">No result Found 😟</td></tr>');
+            }else{
+                var template = $('#feed-list').html();
+                var rendered = Mustache.render(template,response['data']);
+                $('#feeds').html(rendered);
+            }
+        }
+    })
+}
+feeds();
+$(document).on('click','.showSearch', function() {
+    $(this).parent().addClass('hide-elem');
+    $(this).parent().next().removeClass('hide-elem');
+});
+$(document).on('click','.hideSearch', function() {
+    $(this).prev('input').val('');
+    $(this).parent().addClass('hide-elem');
+    $(this).parent().prev().removeClass('hide-elem');
+    feeds();
+});
+
+$(document).on('keyup','.validateEnterKey', function(e) {
+    if(e.keyCode === 13){
+        feeds();
+    }
 });
 var pa = new PerfectScrollbar('.my-leads-view');
 JS;
