@@ -66,165 +66,9 @@ use yii\helpers\Url;
         </div>
     </section>
 
-    <section>
-        <div class="col-md-12">
-            <div class="portlet light nd-shadow">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase">My Contributions</span>
-                    </div>
-                    <div class="actions">
-                        <div class="set-im">
-                            <a href="<?= Url::to('create'); ?>" data-toggle="tooltip"
-                               title="Add More"
-                               class="add-lead">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
-                            <a href="<?= Url::to('view-all'); ?>" data-toggle="tooltip"
-                               title="View All"
-                               class="add-lead">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                        </div>
+<?= $this->render('/widgets/skill-up/my-contributions',[
 
-                    </div>
-                </div>
-                <div class="portlet-body">
-                    <div class="my-leads-view">
-                        <table class="my-leadd">
-                            <thead>
-                            <tr>
-                                <th class="w100">Date</th>
-                                <th class="w250">
-                                    <div class="search-description">Title <a class="underSearch pull-right showSearch"><i class="fas fa-search"></i> </a> </div>
-                                    <div class="search-menu hide-elem">
-                                        <input type="text" class="form-control contributionSearch validateEnterKey" placeholder="Enter Title" data-name="title"/>
-                                        <a class="underSearch pull-right hideSearch">
-                                            <i class="fas fa-times"></i>
-                                        </a>
-                                    </div>
-                                </th>
-                                <th class="w200">
-                                    <div class="search-description">Author Name <a class="underSearch pull-right showSearch"><i class="fas fa-search"></i> </a> </div>
-                                    <div class="search-menu hide-elem">
-                                        <input type="text" class="form-control contributionSearch validateEnterKey" placeholder="Enter Author Name" data-name="author_name"/>
-                                        <a class="underSearch pull-right hideSearch">
-                                            <i class="fas fa-times"></i>
-                                        </a>
-                                    </div>
-                                </th>
-                                <th class="w200">
-                                    <div class="search-description">Source Name <a class="underSearch pull-right showSearch"><i class="fas fa-search"></i> </a> </div>
-                                    <div class="search-menu hide-elem">
-                                        <input type="text" class="form-control contributionSearch validateEnterKey" placeholder="Enter Source Name" data-name="source"/>
-                                        <a class="underSearch pull-right hideSearch">
-                                            <i class="fas fa-times"></i>
-                                        </a>
-                                    </div>
-                                </th>
-                                <th class="w200">
-                                    <div class="search-description">Content Type <a class="underSearch pull-right showSearch"><i class="fas fa-search"></i> </a> </div>
-                                    <div class="search-menu hide-elem">
-                                        <input type="text" class="form-control contributionSearch validateEnterKey" placeholder="Enter Content Type" data-name="content_type"/>
-                                        <a class="underSearch pull-right hideSearch">
-                                            <i class="fas fa-times"></i>
-                                        </a>
-                                    </div>
-                                </th>
-                                <th class="w300">Source Link</th>
-                                <th class="w300">Skills</th>
-                                <th class="w200">Industries</th>
-                                <th class="w200">Status</th>
-                                <th class="w200">Actions</th>
-                            </tr>
-                            </thead>
-                            <tbody id="feeds">
-
-                            </tbody>
-<!--                            <tbody>-->
-<!--                            --><?php //if ($feeds) {
-//                                foreach ($feeds as $f) { ?>
-<!--                                    <tr>-->
-<!--                                        <td>--><?//= $f['date'] ?><!--</td>-->
-<!--                                        <td><a href="/skill-up/detail/--><?//= $f['slug'] ?><!--"-->
-<!--                                               target="_blank">--><?//= $f['post_title'] ?><!--</a></td>-->
-<!--                                        <td>--><?//= $f['author_name'] ?><!--</td>-->
-<!--                                        <td>--><?//= $f['source'] ?><!--</td>-->
-<!--                                        <td>--><?//= $f['content_type'] ?><!--</td>-->
-<!--                                        <td><a href="--><?//= $f['post_source_url'] ?><!--"-->
-<!--                                               class="src-link" target="_blank">--><?//= $f['post_source_url'] ?><!--</a>-->
-<!--                                        </td>-->
-<!--                                        <td>-->
-<!--                                            <ul>-->
-<!--                                                <li>--><?//= $f['skills'] ?><!--</li>-->
-<!--                                            </ul>-->
-<!--                                        </td>-->
-<!--                                        <td>-->
-<!--                                            <ul>-->
-<!--                                                <li>--><?//= $f['industries'] ?><!--</li>-->
-<!--                                            </ul>-->
-<!--                                        </td>-->
-<!--                                        <td>-->
-<!--                                            <ul>-->
-<!--                                                <li>-->
-<!--                                                    --><?php
-//                                                    if($f['status']){
-//                                                    ?>
-<!--                                                    <a href="/account/skill-up/edit?slug=--><?//= $f['slug'];?><!--">Edit</a>-->
-<!--                                                    --><?php
-//                                                    }
-//                                                    ?>
-<!--                                                </li>-->
-<!--                                            </ul>-->
-<!--                                        </td>-->
-<!--                                    </tr>-->
-<!--                                --><?php //}
-//                            } ?>
-<!--                            </tbody>-->
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <script id="feed-list" type="text/template">
-        {{#.}}
-        <tr>
-            <td>{{date}}</td>
-            <td><a href="/skill-up/detail/{{slug}}" target="_blank">{{post_title}}</a></td>
-            <td>{{author_name}}</td>
-            <td>{{source}}</td>
-            <td>{{content_type}}</td>
-            <td><a href="{{post_source_url}}"
-                   class="src-link" target="_blank">{{post_source_url}}</a>
-            </td>
-            <td>
-                <ul>
-                    <li>{{skills}}</li>
-                </ul>
-            </td>
-            <td>
-                <ul>
-                    <li>{{industries}}</li>
-                </ul>
-            </td>
-            <td>
-                <ul>
-                    <li>{{post_status}}</li>
-                </ul>
-            </td>
-            <td>
-                <ul>
-                    <li>
-                        {{#status}}
-                        <a href="/account/skill-up/edit?slug={{slug}}">Edit</a>
-                        {{/status}}
-                    </li>
-                </ul>
-            </td>
-        </tr>
-        {{/.}}
-    </script>
+])?>
 
 <?php
 $this->registerCss('
@@ -415,64 +259,14 @@ Label the data
     top: 3px;
     width: 95%;
 }
+.loading-text > td{
+    text-align: left;
+}
 ');
 $script = <<<JS
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-});
-let page = 1;
-let limit = 20;
 
-function feeds(){
-    var elementsMultiple = document.querySelectorAll('.contributionSearch');
-    var appObj = {}
-    for (var i = 0; i < elementsMultiple.length; i++) {
-        var el = elementsMultiple[i];
-        var item = el.getAttribute('data-name');
-        var itemVal = el.value;
-        if(el.value){
-            appObj[item] = itemVal;
-        }
-    }
-    appObj['limit'] = limit;
-    appObj['page'] = page;
-    $.ajax({
-        url: 'get-list',
-        type: 'post',
-        data: appObj,
-        beforeSend: function(){
-            $('#feeds').html('<tr class="loading-text text-left"><td colspan="10">Loading Please Wait...</td></tr>');
-        },
-        success: function (response) {
-            if(response['status'] !== 200){
-                $('#feeds').html('<tr class="loading-text text-left"><td colspan="10">No result Found 😟</td></tr>');
-            }else{
-                var template = $('#feed-list').html();
-                var rendered = Mustache.render(template,response['data']);
-                $('#feeds').html(rendered);
-            }
-        }
-    })
-}
+
 feeds();
-$(document).on('click','.showSearch', function() {
-    $(this).parent().addClass('hide-elem');
-    $(this).parent().next().removeClass('hide-elem');
-});
-$(document).on('click','.hideSearch', function() {
-    $(this).prev('input').val('');
-    $(this).parent().addClass('hide-elem');
-    $(this).parent().prev().removeClass('hide-elem');
-    feeds();
-});
 
-$(document).on('keyup','.validateEnterKey', function(e) {
-    if(e.keyCode === 13){
-        feeds();
-    }
-});
-var pa = new PerfectScrollbar('.my-leads-view');
 JS;
 $this->registerJS($script);
-$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
-$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
