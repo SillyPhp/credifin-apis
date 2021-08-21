@@ -408,7 +408,11 @@ function feeds(){
                 $('.loading-text').hide();
                 var template = $('#feed-list').html();
                 var rendered = Mustache.render(template,response['data']);
-                $('#feeds').append(rendered);
+                if(page === 1){
+                    $('#feeds').html(rendered);
+                } else{
+                    $('#feeds').append(rendered);
+                }
                 if(pagination == 1){
                     page += 1
                     if(response['data'].length < limit){
@@ -461,7 +465,7 @@ $(window).scroll(function() { //detact scroll
             setTimeout(
                 function(){
                     loading = true;
-            }, 500);
+            }, 1200);
         }
     }
 });
