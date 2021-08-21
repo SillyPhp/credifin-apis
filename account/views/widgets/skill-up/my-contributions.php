@@ -368,7 +368,7 @@ $(function () {
 });
 let pagination = $pagination;
 let page = 1;
-let limit = 2;
+let limit = 20;
 let loadmore = true;
 let loading = true;
 let searchData = {};
@@ -438,6 +438,7 @@ $(document).on('click','.hideSearch', function() {
         page = 1;
         searchData[$(this).attr('data-name')] = "";
         feeds();
+        loadmore = false;
     }
 });
 
@@ -446,6 +447,7 @@ $(document).on('keyup','.validateEnterKey', function(e) {
         page = 1;
         searchData[$(this).attr('data-name')] = $(this).val();
         feeds();
+        loadmore = false;
     }
 });
 
