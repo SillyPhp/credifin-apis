@@ -40,7 +40,7 @@ $uId = $user['user_enc_id'];
                 </div>
                 <div class="modal-body">
                     <?php
-                    if (count($available_applications) > 0) {
+                    if ($available_applications && count($available_applications) > 0) {
                         foreach ($available_applications as $a) {
                             ?>
                             <div class="row padd10">
@@ -64,7 +64,7 @@ $uId = $user['user_enc_id'];
                 </div>
 
                 <div class="modal-footer">
-                    <?php if (count($available_applications) > 0) { ?>
+                    <?php if ($available_applications && count($available_applications) > 0) { ?>
                         <button id="submitData" type="submit" class="btn btn-primary" data-dismiss="modal">Submit
                         </button>
                     <?php } else { ?>
@@ -122,6 +122,15 @@ $uId = $user['user_enc_id'];
                                     <div class="progress-bar <?= $processClr ?>"
                                          style="width:<?= $profileProcess ?>%"></div>
                                 </div>
+                                <?php
+                                if ($profileProcess < 100) {
+                                    ?>
+                                    <p class="progress-bar-description">To complete your profile and to make it more
+                                        impressive, fill Educational Details in Resume Builder, Skills, Experience and
+                                        Job Profile in Edit Profile.</p>
+                                    <?php
+                                }
+                                ?>
                             </div>
                             <?php
                         }
@@ -249,18 +258,18 @@ $uId = $user['user_enc_id'];
                         ?>
                         <div class="down-res">
                             <?php
-                            if($user['is_shortlisted'] == "true"){
-                            ?>
-                            <a href="javascript:;" title="Shortlist" class="shortlist-main">
-                                Shortlisted<i class="fas fa-heart"></i>
-                            </a>
+                            if ($user['is_shortlisted'] == "true") {
+                                ?>
+                                <a href="javascript:;" title="Shortlist" class="shortlist-main">
+                                    Shortlisted<i class="fas fa-heart"></i>
+                                </a>
                                 <?php
-                            } else{
+                            } else {
                                 ?>
                                 <a href="javascript:;" title="Shortlist" class="shortlist-main">
                                     Shortlist<i class="far fa-heart"></i>
                                 </a>
-                            <?php
+                                <?php
                             }
                             if (!empty($userApplied) && !empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
                                 if (!empty($userCv['resume_location']) && !empty($userCv['resume'])) {
@@ -348,7 +357,8 @@ $uId = $user['user_enc_id'];
                                             <!--                                    <img src="-->
                                             <?//= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?><!--"/>-->
                                             <canvas class="user-icon" name="<?= $edu['institute'] ?>" width="80"
-                                                    height="80" font="30px" color="<?= $edu['initials_color']; ?>"></canvas>
+                                                    height="80" font="30px"
+                                                    color="<?= $edu['initials_color']; ?>"></canvas>
                                         </div>
                                         <div class="prof-inner">
                                             <div class="uni-name s-text"><?= $edu['institute'] ?>
@@ -375,7 +385,8 @@ $uId = $user['user_enc_id'];
                                     <div class="set">
                                         <div class="prof-p">
                                             <canvas class="user-icon" name="<?= $exp['company'] ?>" width="80"
-                                                    height="80" font="30px" color="<?= $exp['initials_color']; ?>"></canvas>
+                                                    height="80" font="30px"
+                                                    color="<?= $exp['initials_color']; ?>"></canvas>
                                         </div>
                                         <div class="prof-inner">
                                             <div class="uni-name s-text"><?= $exp['company'] . ', ' . $exp['city_name'] ?>
@@ -1446,6 +1457,12 @@ ul.status-detail li>strong {
 	transform: translateY(-50%);
 	cursor: pointer;
 	transition: all 200ms ease-in;
+}
+.progress-bar-description{
+    font-size: 12px !important;
+    color: #777;
+    font-weight: 500;
+    font-style: italic;
 }
 @media screen and (max-width: 525px){
     .header-details {
