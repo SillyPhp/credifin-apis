@@ -66,7 +66,14 @@ class SkillUpController extends Controller
         $feedList = SkillsUpPosts::find()
             ->alias('a')
             ->select(['a.post_enc_id', 'a.post_title', 'b1.name author_name', 'a.post_source_url', 'c.name source', 'a.content_type', "DATE_FORMAT(a.created_on, '%d/%m/%Y') date",
-                'GROUP_CONCAT(DISTINCT(d1.skill) SEPARATOR ",") skills', 'GROUP_CONCAT(DISTINCT(e1.industry) SEPARATOR ",") industries', 'a.slug', 'IF(a.status != "Active", 1, NULL) as status', 'a.status as post_status'])
+                'GROUP_CONCAT(DISTINCT(d1.skill) SEPARATOR ",") skills', 'GROUP_CONCAT(DISTINCT(e1.industry) SEPARATOR ",") industries', 'a.slug', 'IF(a.status != "Active", 1, NULL) as status',
+                '(CASE
+                    WHEN a.status = "Active" THEN "Accept"
+                    WHEN a.status = "Rejected" THEN "Reject"
+                    WHEN a.status = "On Hold" THEN "On Hold"
+                    WHEN a.status = "Inactive" THEN "Review"
+                    WHEN a.status = "Pending" THEN "Check"
+                    END) as post_status',])
             ->joinWith(['skillsUpAuthors b' => function ($b) {
                 $b->joinWith(['authorEnc b1']);
             }], false)
@@ -95,6 +102,10 @@ class SkillUpController extends Controller
 
         if (isset($data['content_type']) && !empty($data['content_type'])) {
             $feedList->andFilterWhere(['like', 'a.content_type', $data['content_type']]);
+        }
+
+        if (isset($data['status']) && !empty($data['status'])) {
+            $feedList->andWhere(['a.status' => $data['status']]);
         }
 
         if ($limit != null && $page != null) {
