@@ -90,7 +90,22 @@ if(!$pagination){
                                 <th class="w300">Source Link</th>
                                 <th class="w300">Skills</th>
                                 <th class="w200">Industries</th>
-                                <th class="w200">Status</th>
+                                <th class="w200">
+                                    <div class="search-description">Status <a class="underSearch pull-right showSearch"><i class="fas fa-search"></i></a></div>
+                                    <div class="search-menu hide-elem">
+                                        <select class="form-control validateChange contributionSearch" data-name="status">
+                                            <option value="">Select Status</option>
+                                            <option value="Active">Accept</option>
+                                            <option value="Inactive">Review</option>
+                                            <option value="Pending">Check</option>
+                                            <option value="Rejected">Reject</option>
+                                            <option value="On Hold">On Hold</option>
+                                        </select>
+                                        <a class="underSearch pull-right hideSearch">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    </div>
+                                </th>
                                 <th class="w200">Actions</th>
                             </tr>
                             </thead>
@@ -430,15 +445,16 @@ $(document).on('click','.showSearch', function() {
     $(this).parent().next().children('input').focus();
 });
 $(document).on('click','.hideSearch', function() {
-    var inputElem = $(this).prev('input'); 
-    $(this).prev('input').val('');
+    var inputElem = $(this).prev('.form-control'); 
+    $(this).prev('.form-control').val('');
     $(this).parent().addClass('hide-elem');
     $(this).parent().prev().removeClass('hide-elem');
+    searchData[$(this).attr('data-name')] = "";
     if(searchData[inputElem.attr('data-name')] && searchData[inputElem.attr('data-name')] != inputElem.val()){
         page = 1;
-        searchData[$(this).attr('data-name')] = "";
         feeds();
-        loadmore = false;
+        $('#loadMore').show();
+        loadmore = true;
     }
 });
 
@@ -447,7 +463,17 @@ $(document).on('keyup','.validateEnterKey', function(e) {
         page = 1;
         searchData[$(this).attr('data-name')] = $(this).val();
         feeds();
-        loadmore = false;
+        $('#loadMore').show();
+        loadmore = true;
+    }
+});
+$(document).on('change','.validateChange', function(e) {
+    if($(this).val() && (!searchData[$(this).attr('data-name')] || searchData[$(this).attr('data-name')] != $(this).val())){
+        page = 1;
+        searchData[$(this).attr('data-name')] = $(this).val();
+        feeds();
+        $('#loadMore').show();
+        loadmore = true;
     }
 });
 
