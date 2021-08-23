@@ -20,7 +20,7 @@ if(!$pagination){
                                class="add-lead">
                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
                             <?php
-                            if ($for == 'all') {
+                            if ($for !== 'all') {
                                 ?>
                                 <a href="<?= Url::to('view-all'); ?>" data-toggle="tooltip"
                                    title="View All"

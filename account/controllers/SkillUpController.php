@@ -46,13 +46,23 @@ class SkillUpController extends Controller
         $counts['research_paper'] = $this->getFeedCounts('Research Paper');
         $counts['vlog_webinar'] = $this->getFeedCounts('Vlog/Webinar');
 
-        $feedList = $this->getFeedsList(10);
-
-        return $this->render('feed-dashboard', ['counts' => $counts, 'feeds' => $feedList]);
+        return $this->render('feed-dashboard', ['counts' => $counts,]);
     }
 
-    private function getFeedsList($limit = null, $page = null)
+    private function getFeedsList($data)
     {
+
+        $limit = 10;
+        $page = 1;
+
+        if (isset($data['limit']) && !empty($data['limit'])) {
+            $limit = $data['limit'];
+        }
+
+        if (isset($data['page']) && !empty($data['page'])) {
+            $page = $data['page'];
+        }
+
         $feedList = SkillsUpPosts::find()
             ->alias('a')
             ->select(['a.post_enc_id', 'a.post_title', 'b1.name author_name', 'a.post_source_url', 'c.name source', 'a.content_type', "DATE_FORMAT(a.created_on, '%d/%m/%Y') date",
@@ -70,6 +80,23 @@ class SkillUpController extends Controller
                 $e->joinWith(['industryEnc e1'], false);
             }], false)
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0]);
+
+        if (isset($data['title']) && !empty($data['title'])) {
+            $feedList->andFilterWhere(['like', 'a.post_title', $data['title']]);
+        }
+
+        if (isset($data['author_name']) && !empty($data['author_name'])) {
+            $feedList->andFilterWhere(['like', 'b1.name', $data['author_name']]);
+        }
+
+        if (isset($data['source']) && !empty($data['source'])) {
+            $feedList->andFilterWhere(['like', 'c.name', $data['source']]);
+        }
+
+        if (isset($data['content_type']) && !empty($data['content_type'])) {
+            $feedList->andFilterWhere(['like', 'a.content_type', $data['content_type']]);
+        }
+
         if ($limit != null && $page != null) {
             $feedList->limit($limit)
                 ->offset(($page - 1) * $limit);
@@ -101,7 +128,7 @@ class SkillUpController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             $params = Yii::$app->request->post();
-            $feeds = $this->getFeedsList($params['limit'], $params['page']);
+            $feeds = $this->getFeedsList($params);
             if ($feeds) {
                 return [
                     'status' => 200,
