@@ -21,6 +21,11 @@ use yii\helpers\Url;
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link collegeLink courses" href="javascript:;" data-key="courses">
+                    Courses
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link collegeLink loans" href="javascript:;" data-key="loans">
                     loans
                 </a>
@@ -572,7 +577,7 @@ function removeActive(){
         $('.nav-item').removeClass('cActive');
     }
 }
-var baseUrl = '';
+var baseUrl = 'https://ravinder.eygb.me';
 function getDetails(){
     $.ajax({
         url: baseUrl+"/api/v3/ey-college-profile/college-detail",
@@ -603,6 +608,7 @@ function collegeInfo(res) {
                      </div>`;
     return collegeInfo;
 }
+
 $('.collegeLink').on('click', function (){
   var dataKey = $(this).attr('data-key'); 
   var url = window.location.pathname.split('/');
@@ -612,7 +618,6 @@ $('.collegeLink').on('click', function (){
   if(subUrl && subUrl != dataKey && dataKey != "overview"){
       history.replaceState({}, '', dataKey);
   }else if(dataKey == "overview"){
-      console.log('oo'); 
       history.replaceState({}, '', '/'+slugg);
   }else{
      history.pushState({}, '', '/'+slugg+"/"+dataKey);

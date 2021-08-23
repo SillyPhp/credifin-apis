@@ -188,6 +188,19 @@ class OrganizationsController extends Controller
         ]);
     }
 
+    public function actionCollegeCourses($organization){
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('profile-components/courses',[
+                   "isAjax" => 1
+                ]);
+        }
+
+        return $this->render('college-profile', [
+            "component" => "courses",
+            "isAjax" => 0
+        ]);
+    }
+
     public function actionProfile($organization)
     {
         $is_claim = 1;
@@ -1127,7 +1140,6 @@ class OrganizationsController extends Controller
             $model->load(Yii::$app->request->post());
             return ActiveForm::validate($model);
         }
-
         if (Yii::$app->request->isAjax) {
             return $this->renderAjax('profile-components/loans', [
                 "isAjax" => 1,

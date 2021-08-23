@@ -460,7 +460,7 @@ function showAllCourses(){
 }
 showAllCourses();
 
-var baseUrl = '';
+var baseUrl = 'https://ravinder.eygb.me';
 function getCollegeStats(){
     $.ajax({
         url: baseUrl+"/api/v3/ey-college-profile/college-detail",
