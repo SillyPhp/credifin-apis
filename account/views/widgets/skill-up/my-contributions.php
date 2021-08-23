@@ -445,13 +445,13 @@ $(document).on('click','.showSearch', function() {
     $(this).parent().next().children('input').focus();
 });
 $(document).on('click','.hideSearch', function() {
-    var inputElem = $(this).prev('input'); 
-    $(this).prev('input').val('');
+    var inputElem = $(this).prev('.form-control'); 
+    $(this).prev('.form-control').val('');
     $(this).parent().addClass('hide-elem');
     $(this).parent().prev().removeClass('hide-elem');
+    searchData[$(this).attr('data-name')] = "";
     if(searchData[inputElem.attr('data-name')] && searchData[inputElem.attr('data-name')] != inputElem.val()){
         page = 1;
-        searchData[$(this).attr('data-name')] = "";
         feeds();
         $('#loadMore').show();
         loadmore = true;
