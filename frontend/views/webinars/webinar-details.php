@@ -6,18 +6,6 @@ $cookies_request = Yii::$app->request->cookies;
 $refcode = $cookies_request->get('ref_csrf-webinar');
 $promo = false;
 $promo = \frontend\models\referral\PromoCodes::getVarify($refcode);
-if (Yii::$app->params->paymentGateways->mec->icici) {
-    $configuration = Yii::$app->params->paymentGateways->mec->icici;
-    if ($configuration->mode === "production") {
-        $access_key = $configuration->credentials->production->access_key;
-        $secret_key = $configuration->credentials->production->secret_key;
-        $url = $configuration->credentials->production->url;
-    } else {
-        $access_key = $configuration->credentials->sandbox->access_key;
-        $secret_key = $configuration->credentials->sandbox->secret_key;
-        $url = $configuration->credentials->sandbox->url;
-    }
-}
 $time = date('Y/m/d H:i:s', strtotime($nextEvent['start_datetime']));
 $registeration_status = $webResig['status'];
 $interest_status = $userInterest['interest_status'];
@@ -52,12 +40,12 @@ $this->params['seo_tags'] = [
 ];
 Yii::$app->view->registerJs('var webinar_id = "' . $webinar['webinar_enc_id'] . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var user_id = "' . Yii::$app->user->identity->user_enc_id . '"', \yii\web\View::POS_HEAD);
-Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->prod->apiKey . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var registeration_status = "' . $registeration_status . '"', \yii\web\View::POS_HEAD);
 ?>
-<script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <section>
     <div class="full-width-light"
          style="">
@@ -1807,7 +1795,8 @@ $(document).on('click','#paidRegisterBtn',function(event){
                 var payment_enc_id = callback.payment_enc_id;
                 var reg_id = callback.registration_enc_id;
                 if (ptoken!=null || ptoken !=""){
-                    processPayment(ptoken,payment_enc_id,webinar_id,reg_id);
+                    //processPayment(ptoken,payment_enc_id,webinar_id,reg_id);
+                    _razoPay(ptoken,payment_enc_id,webinar_id);
                 } else{
                     swal({
                         title:"Error",
@@ -1925,61 +1914,45 @@ $(document).on('click','#joinBtn', function (e){
         }   
     }
 });  
-
-function processPayment(ptoken,payment_enc_id,webinar_id,reg_id)
-{
-    Layer.checkout({ 
-        token: ptoken,
-        accesskey: access_key
-    }, 
-    function(response) {
-          // response.payment_token_id
-           // response.payment_id  
-        if (response.status == "captured") {
-            updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
-               swal({
-                    title: "",
-                    text: "Your Registration Successfully",
-                    type:'success',
-                    showCancelButton: false,  
-                    confirmButtonClass: "btn-primary",
-                    confirmButtonText: "Close",
-                    closeOnConfirm: true, 
-                    closeOnCancel: true
-                     },
-                        function (isConfirm) { 
-                         location.reload(true);
-                     }
-                );
-        } else if (response.status == "created") {
-            updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
-        } else if (response.status == "pending") {
-          updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
-        } else if (response.status == "failed") { 
-           updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
-        } else if (response.status == "cancelled") {
-          updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
-        }
+function _razoPay(ptoken,payment_enc_id,webinar_id){
+    var options = {
+    "key": access_key, 
+    "name": "Empower Youth",
+    "description": "Application Processing Fee",
+    "image": "/assets/common/logos/logo.svg",
+    "order_id": ptoken, 
+    "handler": function (response){
+        updateStatus(payment_enc_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
     },
-    function(err) { 
-        swal({ 
-                title:"Error",
-                text: "Some Internal Server Error, Please Try After Some Time",
-         });
+    "prefill": {
+        "name": $('#applicant_name').val(),
+        "email": $('#email').val(),
+        "contact": $('#mobile').val()
+    },
+    "theme": {
+        "color": "#ff7803"
     }
-);
-} 
-
-function updateStatus(payment_enc_id, payment_id, status,reg_id)
+};
+     var rzp1 = new Razorpay(options);
+     rzp1.open();
+     rzp1.on('payment.failed', function (response){
+         updateStatus(payment_enc_id,null,"failed");
+      swal({
+      title:"Error",
+      text: response.error.description,
+      });
+});
+}
+function updateStatus(payment_enc_id,payment_id=null,status,signature=null)
 {
     $.ajax({
         url : '/api/v3/webinar/update-status',
         method : 'POST', 
         data : {
-          payment_status:status,
           payment_enc_id:payment_enc_id,
           payment_id: payment_id, 
-          registration_enc_id: reg_id, 
+          signature:signature,
+          status:status, 
         },
         success:function(resp)
         {
