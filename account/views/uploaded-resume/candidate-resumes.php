@@ -15,7 +15,7 @@ Yii::$app->view->registerJs('var profile = "' . Yii::$app->getRequest()->getQuer
                     </div>
                     <div class="actions">
                         <div id="btn-group2" class="btn-group dashboard-button btns2 ">
-                            <button class="viewall-jobs" data-toggle="modal" data-target="#shortList">Shortlist</button>
+<!--                            <button class="viewall-jobs" data-toggle="modal" data-target="#shortList">Shortlist</button>-->
                             <button class="viewall-jobs" onclick="rejection()">Reject</button>
                         </div>
                     </div>

@@ -11,10 +11,11 @@ use Yii;
  * @property string $college_faculty_enc_id
  * @property string $college_enc_id
  * @property string $image
+ * @property string $image_location
  * @property string $faculty_name
  * @property string $designation_enc_id
- * @property string $department
- * @property double $experience
+ * @property string $department_enc_id
+ * @property string $experience
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_on
@@ -24,6 +25,7 @@ use Yii;
  * @property Designations $designationEnc
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
+ * @property Departments $departmentEnc
  */
 class CollegeFaculty extends \yii\db\ActiveRecord
 {
@@ -41,15 +43,16 @@ class CollegeFaculty extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['college_faculty_enc_id', 'college_enc_id', 'image', 'faculty_name', 'designation_enc_id', 'department', 'experience', 'created_by'], 'required'],
-            [['experience'], 'number'],
+            [['college_faculty_enc_id', 'college_enc_id', 'faculty_name', 'created_by'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['college_faculty_enc_id', 'college_enc_id', 'image', 'faculty_name', 'designation_enc_id', 'department', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['college_faculty_enc_id', 'college_enc_id', 'image', 'image_location', 'faculty_name', 'designation_enc_id', 'department_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['experience'], 'string', 'max' => 250],
             [['college_faculty_enc_id'], 'unique'],
             [['designation_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Designations::className(), 'targetAttribute' => ['designation_enc_id' => 'designation_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
+            [['department_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Departments::className(), 'targetAttribute' => ['department_enc_id' => 'department_enc_id']],
         ];
     }
 
@@ -75,5 +78,13 @@ class CollegeFaculty extends \yii\db\ActiveRecord
     public function getLastUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDepartmentEnc()
+    {
+        return $this->hasOne(Departments::className(), ['department_enc_id' => 'department_enc_id']);
     }
 }

@@ -1291,10 +1291,10 @@ class InternshipsController extends Controller
         return $applications->getApplications($options);
     }
 
-    private function __closedinternships($limit = NULL)
+    private function __closedinternships($limit = NULL,$page = 1)
     {
         $options = [
-            'applicationType' => 'internships',
+            'applicationType' => 'Internships',
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Closed',
@@ -1306,6 +1306,7 @@ class InternshipsController extends Controller
                 'a.published_on' => SORT_DESC,
             ],
             'limit' => $limit,
+            'pageNumber' => $page,
         ];
 
         $applications = new \account\models\applications\Applications();
@@ -1751,5 +1752,30 @@ class InternshipsController extends Controller
         }
 
         return ['data' => $shortlistedApplicants, 'count' => $count];
+    }
+    public function actionAllClosedInternships(){
+        $model = new ExtendsJob();
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $params = Yii::$app->request->post();
+            $limit = 10;
+            $page = 1;
+            if(isset($params['limit'])){
+                $limit = $params['limit'];
+            }
+            if(isset($params['page'])){
+                $page = $params['page'];
+            }
+            $data = $this->__closedinternships($limit, $page);
+            if($data['total'] != 0){
+                return['status' => 200, 'data' => $data];
+            }
+            else{
+                return['status' => 404, 'message' => 'Page Not Found'];
+            }
+        }
+        return $this->render('all-closed-internships',[
+            'model' => $model
+        ]);
     }
 }

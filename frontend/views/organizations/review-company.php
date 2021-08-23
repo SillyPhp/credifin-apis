@@ -309,6 +309,17 @@ echo $this->render('/widgets/drop_resume', [
                     </div>
                 <?php } ?>
             </div>
+            <div class="col-md-12">
+                <div id="organizations-cards-main" class="row">
+                    <div class="heading-style">Similar Organizations</div>
+                    <div class="divider"></div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="companies-card" class="row"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-12 set-mar">
                 <?=
                 $this->render('/widgets/new-position', [
@@ -526,6 +537,9 @@ echo $this->render('/widgets/drop_resume', [
 <input type="hidden" name="hidden_city_location" class="hidden_city_location">
 </div>
 <?php
+echo $this->render('/widgets/mustache/companies-card',[
+       'hideDropResume' => true,
+]);
 echo $this->render('/widgets/mustache/application-card');
 
 if ($review_type == 'claimed') {
@@ -1299,7 +1313,45 @@ border: 2px solid #cadfe8 !important;
 }
 ');
 $script = <<< JS
-
+function getCompanies(template=$("#companies-card")) {
+        let params = {};
+        params['page'] = 1;
+        $.ajax({
+            url:window.location.href,
+            method:"POST",
+            data:{'params':params},
+            dataType:'JSON',
+            success:function (response) {
+                if(response.status == 200){
+                    for (var i = 0; i < response.cards.length; i++) {
+                        response.cards[i]['jobs_cnt'] = 0;
+                        response.cards[i]['internships_cnt'] = 0;
+                        for(var j=0; j < response.cards[i]['employerApplications'].length; j++){
+                            if(response.cards[i]['employerApplications'][j]['name'] == 'Jobs'){
+                               response.cards[i]['jobs_cnt'] =  response.cards[i]['employerApplications'][j]['total_application'];
+                            }else if(response.cards[i]['employerApplications'][j]['name'] == 'Internships'){
+                               response.cards[i]['internships_cnt'] =  response.cards[i]['employerApplications'][j]['total_application'];
+                            }
+                        }
+                    }
+                    var get_companies = $('#companies-card-all').html();
+                    template.append(Mustache.render(get_companies, response.cards));
+                    $('[data-toggle="tooltip"]').tooltip();
+                    utilities.initials(); 
+                    $.fn.raty.defaults.path = '/assets/common/new_stars'; 
+                    $('.average-star').raty({
+                    readOnly: true, 
+                    hints:['','','','',''], 
+                    score: function() {
+                        return $(this).attr('data-score');
+                    }
+                });
+                } else{
+                    $('#organizations-cards-main').remove();
+                }
+            }
+        })
+    } 
 $(document).on("click", ".star-rating1 label", function(e){
     e.preventDefault();
     var id = "#" + $(this).attr("for");
@@ -1533,6 +1585,7 @@ document.getElementById("wr").addEventListener("click", function(e){
 }
 getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=$slug');
 getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=$slug');
+getCompanies();
 JS;
 $headScript = <<< JS
 function review_post_ajax(data) {
@@ -1565,6 +1618,8 @@ $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');
+$this->registerJsFile('@root/assets/vendor/raty-master/js/jquery.raty.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script id="review-cards" type="text/template">
 
