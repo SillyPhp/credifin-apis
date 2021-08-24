@@ -197,7 +197,7 @@ echo $this->render('/widgets/e-campus')
                 </div>
             </div>
             <div class="great-red">
-                <a href="/candidates/features">View All Features</a>
+                <a href="/employers/features">View All Features</a>
             </div>
         </div>
     </section>
