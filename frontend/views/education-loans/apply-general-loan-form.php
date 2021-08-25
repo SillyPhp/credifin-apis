@@ -31,6 +31,7 @@ $this->params['seo_tags'] = [
     ],
 ];
 Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->prod->apiKey. '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var getLender = "' .$getLender. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View::POS_HEAD);
@@ -1618,6 +1619,7 @@ function ajaxSubmit()
                 co_applicants:co_applicants,
                 college_course_info:college_course_info,
                 userID:userID, 
+                getLender:getLender, 
                 is_india:$('input[name="countryRadio"]:checked').val(),
                 is_addmission_taken:$('input[name="college_taken"]:checked').val(),
                 country_enc_id:$('#country_name').val(),
@@ -1666,7 +1668,8 @@ function ajaxSubmit()
                 amount:$('#loanamount').val(),   
                 yearly_income:$('#salary').val(),   
                 child_information:child_information,
-                userID:userID
+                userID:userID,
+                getLender:getLender
                 }
         url = '/api/v3/education-loan/save-school-fee-loan';
     }
