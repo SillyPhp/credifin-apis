@@ -69,9 +69,4 @@ class FramedWidgetsController extends Controller
             return 'Unauthorized';
         }
     }
-
-    public function actionTest(){
-        return $this->render('test');
-    }
-
 }
