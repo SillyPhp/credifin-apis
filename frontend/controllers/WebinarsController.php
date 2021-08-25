@@ -102,7 +102,7 @@ class WebinarsController extends Controller
             $share_link = 'view';
         }
 
-        $webinarEvents = self::getWebianrDetail($slug, false);;
+        $webinarEvents = self::getWebianrDetail($slug, false);
         $dateEvents = ArrayHelper::index($webinar['webinarEvents'], null, 'event_date');
         $event_ids = ArrayHelper::getColumn($webinar['webinarEvents'], 'event_enc_id');
 
@@ -141,10 +141,6 @@ class WebinarsController extends Controller
             if ($assignSpeaker) {
                 array_walk($assignSpeaker, function (&$item) {
                     if ($item['image']) {
-//                        $image_path = Yii::$app->params->upload_directories->users->image_path . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
-//                        if (file_exists($image_path)) {
-//                            $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
-//                        }
                         $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $item['image_location'] . DIRECTORY_SEPARATOR . $item['image'];
                     }
                     $item['speaker_image'] = $image;

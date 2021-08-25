@@ -46,17 +46,34 @@ class SkillUpController extends Controller
         $counts['research_paper'] = $this->getFeedCounts('Research Paper');
         $counts['vlog_webinar'] = $this->getFeedCounts('Vlog/Webinar');
 
-        $feedList = $this->getFeedsList(10);
-
-        return $this->render('feed-dashboard', ['counts' => $counts, 'feeds' => $feedList]);
+        return $this->render('feed-dashboard', ['counts' => $counts,]);
     }
 
-    private function getFeedsList($limit = null, $page = null)
+    private function getFeedsList($data)
     {
+
+        $limit = 10;
+        $page = 1;
+
+        if (isset($data['limit']) && !empty($data['limit'])) {
+            $limit = $data['limit'];
+        }
+
+        if (isset($data['page']) && !empty($data['page'])) {
+            $page = $data['page'];
+        }
+
         $feedList = SkillsUpPosts::find()
             ->alias('a')
             ->select(['a.post_enc_id', 'a.post_title', 'b1.name author_name', 'a.post_source_url', 'c.name source', 'a.content_type', "DATE_FORMAT(a.created_on, '%d/%m/%Y') date",
-                'GROUP_CONCAT(DISTINCT(d1.skill) SEPARATOR ",") skills', 'GROUP_CONCAT(DISTINCT(e1.industry) SEPARATOR ",") industries', 'a.slug', 'IF(a.status != "Active", 1, NULL) as status'])
+                'GROUP_CONCAT(DISTINCT(d1.skill) SEPARATOR ",") skills', 'GROUP_CONCAT(DISTINCT(e1.industry) SEPARATOR ",") industries', 'a.slug', 'IF(a.status != "Active", 1, NULL) as status',
+                '(CASE
+                    WHEN a.status = "Active" THEN "Accept"
+                    WHEN a.status = "Rejected" THEN "Reject"
+                    WHEN a.status = "On Hold" THEN "On Hold"
+                    WHEN a.status = "Inactive" THEN "Review"
+                    WHEN a.status = "Pending" THEN "Check"
+                    END) as post_status',])
             ->joinWith(['skillsUpAuthors b' => function ($b) {
                 $b->joinWith(['authorEnc b1']);
             }], false)
@@ -70,6 +87,27 @@ class SkillUpController extends Controller
                 $e->joinWith(['industryEnc e1'], false);
             }], false)
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0]);
+
+        if (isset($data['title']) && !empty($data['title'])) {
+            $feedList->andFilterWhere(['like', 'a.post_title', $data['title']]);
+        }
+
+        if (isset($data['author_name']) && !empty($data['author_name'])) {
+            $feedList->andFilterWhere(['like', 'b1.name', $data['author_name']]);
+        }
+
+        if (isset($data['source']) && !empty($data['source'])) {
+            $feedList->andFilterWhere(['like', 'c.name', $data['source']]);
+        }
+
+        if (isset($data['content_type']) && !empty($data['content_type'])) {
+            $feedList->andFilterWhere(['like', 'a.content_type', $data['content_type']]);
+        }
+
+        if (isset($data['status']) && !empty($data['status'])) {
+            $feedList->andWhere(['a.status' => $data['status']]);
+        }
+
         if ($limit != null && $page != null) {
             $feedList->limit($limit)
                 ->offset(($page - 1) * $limit);
@@ -101,7 +139,7 @@ class SkillUpController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             $params = Yii::$app->request->post();
-            $feeds = $this->getFeedsList($params['limit'], $params['page']);
+            $feeds = $this->getFeedsList($params);
             if ($feeds) {
                 return [
                     'status' => 200,
@@ -180,7 +218,7 @@ class SkillUpController extends Controller
                 $model->source_url = $defaultData['source_url'];
                 $model->assigned_skills = $assignedSkills;
                 $model->assigned_industries = $assignedIndustries;
-                $data = $model->update($fullSlug[count($fullSlug) - 1]);
+                $data = $model->update();
                 if ($data['status'] == 200) {
                     $this->redirect('/account/skill-up/view-all');
                 } else {
@@ -342,39 +380,8 @@ class SkillUpController extends Controller
     {
         if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $url = Yii::$app->request->post('url');
-            $data = $this->youTubeVideoID($url);
-
-            if ($data['status'] === 200) {
-                return $data;
-            } else {
-                return $this->getMetaInfo(Yii::$app->request->post('url'));
-            }
+            return $this->getMetaInfo(Yii::$app->request->post('url'));
         }
-    }
-
-    private function youTubeVideoID($url)
-    {
-        $queryString = parse_url($url, PHP_URL_QUERY);
-        parse_str($queryString, $params);
-        $id = "";
-        if (isset($params['v']) && strlen($params['v']) > 0) {
-            $id = $params['v'];
-            if ($id != "") {
-                return [
-                    'status' => 200,
-                    'title' => 'success!',
-                    'video_id' => $id,
-                    'message' => 'Successfully',
-                ];
-            }
-        }
-
-        return [
-            'status' => 201,
-            'title' => 'LearningVideo',
-            'message' => 'Video id not Found..',
-        ];
     }
 
     public function actionAddSource()

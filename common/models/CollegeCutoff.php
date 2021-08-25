@@ -17,6 +17,7 @@ use Yii;
  * @property double $st
  * @property double $pwd
  * @property double $ews
+ * @property int $mode 0 percentage, 1 percentile
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_on
@@ -46,8 +47,8 @@ class CollegeCutoff extends \yii\db\ActiveRecord
         return [
             [['college_cut_off_enc_id', 'assgined_course_enc_id', 'college_enc_id', 'created_by'], 'required'],
             [['general', 'obc', 'sc', 'st', 'pwd', 'ews'], 'number'],
+            [['mode', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['is_deleted'], 'integer'],
             [['college_cut_off_enc_id', 'assgined_course_enc_id', 'college_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['college_cut_off_enc_id'], 'unique'],
             [['assgined_course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedCollegeCourses::className(), 'targetAttribute' => ['assgined_course_enc_id' => 'assigned_college_enc_id']],

@@ -9,17 +9,15 @@ use Yii;
  *
  * @property int $id
  * @property string $college_infrastructure_enc_id
- * @property string $college_enc_id
  * @property string $infra_name
- * @property string $logo
- * @property string $logo_location
+ * @property string $icon
+ * @property string $icon_location
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_on
  * @property string $last_updated_by
  * @property int $is_deleted 0 as False, 1 as True
  *
- * @property Organizations $collegeEnc
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  * @property CollegeInfrastructureDetail[] $collegeInfrastructureDetails
@@ -40,23 +38,14 @@ class CollegeInfrastructure extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['college_infrastructure_enc_id', 'college_enc_id', 'infra_name', 'logo', 'logo_location', 'created_by'], 'required'],
+            [['college_infrastructure_enc_id', 'infra_name', 'icon', 'icon_location', 'created_by'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['college_infrastructure_enc_id', 'college_enc_id', 'infra_name', 'logo', 'logo_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['college_infrastructure_enc_id', 'infra_name', 'icon', 'icon_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['college_infrastructure_enc_id'], 'unique'],
-            [['college_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['college_enc_id' => 'organization_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCollegeEnc()
-    {
-        return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'college_enc_id']);
     }
 
     /**

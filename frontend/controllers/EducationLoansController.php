@@ -471,6 +471,9 @@ class EducationLoansController extends Controller
             ->innerJoinWith(['postTags b' => function($b){
                 $b->joinWith(['tagEnc c']);
             }],false)
+            ->joinWith(['postTypeEnc e' => function($e){
+                $e->andWhere(['not',['e.post_type' => 'Social']]);
+            }],false)
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['c.name' => $tags])
             ->groupBy(['a.post_enc_id']);
