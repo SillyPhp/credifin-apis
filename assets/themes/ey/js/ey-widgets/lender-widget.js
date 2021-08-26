@@ -57,7 +57,7 @@
 // script can have query parameters and need to get those query params -
 // not using raw would evaluate an `&` to a `&amp;`
     script = document.querySelector("script[src$='/assets/themes/ey/js/ey-widgets/lender-widget.js']");
-    var src = "https://sneh.eygb.me/framed-widgets/lender"
+    var src = "https://www.empoweryouth.com/framed-widgets/lender"
     var title = null;
     // src = addQueryParam(src, "parent_page_referrer", encodeURIComponent(document.referrer));
     iframe = document.createElement("iframe");
