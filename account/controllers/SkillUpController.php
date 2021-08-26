@@ -267,13 +267,34 @@ class SkillUpController extends Controller
             }
         }
 
+        $domain = $this->get_domain($url);
+
+        $source = SkillsUpSources::find()
+            ->select(['source_enc_id', 'name',
+                "SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(url, '/', 3), '://', -1), '/', 1), '?', 1),'www.',-1) domain"
+            ])
+            ->where(["SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(SUBSTRING_INDEX(url, '/', 3), '://', -1), '/', 1), '?', 1),'www.',-1)" => $domain])
+            ->asArray()
+            ->one();
+
         return [
             'status' => 203,
             'title' => $title,
             'keywords' => $keywords,
             'image' => $image,
             'description' => $description,
+            'source' => $source
         ];
+    }
+
+    private function get_domain($url)
+    {
+        $pieces = parse_url($url);
+        $domain = isset($pieces['host']) ? $pieces['host'] : $pieces['path'];
+        if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
+            return $regs['domain'];
+        }
+        return false;
     }
 
     private function getCurlData($url)
