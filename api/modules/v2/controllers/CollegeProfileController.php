@@ -2193,6 +2193,7 @@ class CollegeProfileController extends ApiBaseController
                 $assigned_college_courses->course_enc_id = $course->course_enc_id;
                 $assigned_college_courses->organization_enc_id = $this->getOrgId();
                 $assigned_college_courses->course_duration = $params['duration'];
+                $assigned_college_courses->type = $params['type'];
                 $assigned_college_courses->created_by = $user->user_enc_id;
                 $assigned_college_courses->created_on = date('Y-m-d H:i:s');
                 if (!$assigned_college_courses->save()) {
@@ -2238,8 +2239,14 @@ class CollegeProfileController extends ApiBaseController
             $admissionDetail = CollegeAdmissionDetail::findOne(['assigned_course_id' => $params['college_course_id']]);
 
             if (isset($params['duration']) && !empty($params['duration'])) {
-                $assignedCourse = AssignedCollegeCourses::findOne(['assigned_course_id' => $params['college_course_id']]);
-                $assignedCourse->duration = '';
+                $assignedCourse = AssignedCollegeCourses::findOne(['assigned_college_enc_id' => $params['college_course_id']]);
+                $assignedCourse->course_duration = $params['duration'];
+                $assignedCourse->type = $params['type'];
+                $assignedCourse->updated_by = $user->user_enc_id;
+                $assignedCourse->updated_on = date('Y-m-d H:i:s');
+                if(!$assignedCourse->update()){
+                    return $this->response(500, ['status' => 500, 'message' => $assignedCourse->getErrors()]);
+                }
             }
 
             if ($admissionDetail) {
@@ -2291,7 +2298,7 @@ class CollegeProfileController extends ApiBaseController
 
             $courses = AssignedCollegeCourses::find()
                 ->alias('a')
-                ->select(['a.assigned_college_enc_id', 'a.course_enc_id', 'b.course_name', 'a.course_duration', 'b1.course_name stream',
+                ->select(['a.assigned_college_enc_id', 'a.course_enc_id', 'b.course_name', 'a.course_duration', 'a.type', 'b1.course_name stream',
                     'c.selection_process', 'c.eligibility_criteria', 'c.other_details', 'c.fees', 'c.assigned_course_id', 'c.scholarship_enc_id', 'c1.title scholarship_title'])
                 ->joinWith(['courseEnc b' => function ($b) {
                     $b->joinWith(['parentEnc b1']);
