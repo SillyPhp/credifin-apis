@@ -1011,9 +1011,10 @@ $(document).on('change','#source_url',function (e){
                     }
                 });
             } else {
+                let domain = new URL(url).hostname.split('.');
                 $.ajax({
                     url:'/account/skill-up/validate-url',
-                    data:{url:url},
+                    data:{url:url,source:domain.slice(0).slice(-(domain.length === 4 ? 3 : 2)).join('.')},
                     method:'post',
                     success:function(res){
                         if(res['status'] === 203){
@@ -1024,6 +1025,11 @@ $(document).on('change','#source_url',function (e){
                             $('#titleElem').html(res['title']);
                             $('#short_desc').val(res['description']);
                             $('#editor').val("");
+                            if(res['source']){
+                                $('#sourceElem').html(res['source'].name);
+                                $('#sourceInputElem').val(res['source'].name);
+                                $('#source_id').val(res['source'].source_enc_id);
+                            }
                         }
                     }
                 })
