@@ -29,11 +29,10 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
             }
 
             if (empty($image)) :
-                ?>
-                <canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="100"
-                        height="100" font="40px"></canvas>
-            <?php else: ?>
-                <img src="<?= Url::to($image); ?>" title="<?= $name; ?>" alt="<?= $name; ?>"/>
+            ?>
+                <canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="100" height="100" font="40px"></canvas>
+            <?php else : ?>
+                <img src="<?= Url::to($image); ?>" title="<?= $name; ?>" alt="<?= $name; ?>" />
             <?php endif; ?>
         </div>
         <div class="profile-info">
@@ -52,8 +51,7 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
                 <div class="card card-accordion card-accordion-first">
                     <div class="card-header border-bottom-0">
                         <h4 class="card-title">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion"
-                               href="#collapse1One">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse1One">
                                 <i class="fa fa-tasks"></i> Tasks
                             </a>
                         </h4>
@@ -63,8 +61,7 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
                     </div>
                     <div id="collapse1One" class="accordion-body collapse show">
                         <div class="card-body padding-0" style="text-align:center">
-                            <form id="task-form" method="post" action="<?= Url::to('/account/tasks/create'); ?>"
-                                  class="form-horizontal form-bordered">
+                            <form id="task-form" method="post" action="<?= Url::to('/account/tasks/create'); ?>" class="form-horizontal form-bordered">
                                 <div class="form-group row">
                                     <div class="col-sm-12">
                                         <div class="input-group mb-3">
@@ -90,8 +87,7 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
-                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
-                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
                     <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
                 </div>
             </div>
@@ -628,25 +624,23 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/crop
 
 <script type="text/template" id="todo-template">
     {{#.}}
-    <li>
-        <div class="checkbox-custom checkbox-default text-left">
-            <input type="checkbox" name="task" id="{{task_id}}{{id}}"
-                   class="{{#is_completed}} uncheck {{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}"
-                   {{#is_completed}} checked {{/is_completed}} />
-            <label class="todo-label {{#is_completed}} line-pass {{/is_completed}}" data-type="text">{{name}}</label>
-        </div>
-        <div class="todo-actions">
-            <a class="todo-remove" href="#">
-                <i class="fa fa-times"></i>
-            </a>
-        </div>
-    </li>
+        <li>
+            <div class="checkbox-custom checkbox-default text-left">
+                <input type="checkbox" name="task" id="{{task_id}}{{id}}" class="{{#is_completed}} uncheck {{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}" {{#is_completed}} checked {{/is_completed}} />
+                <label class="todo-label {{#is_completed}} line-pass {{/is_completed}}" data-type="text">{{name}}</label>
+            </div>
+            <div class="todo-actions">
+                <a class="todo-remove" href="#">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </li>
     {{/.}}
 </script>
 
 <script>
     const getTasksByCountByClassName = (className) => {
         const tasks = document.querySelectorAll(className);
-            document.getElementById('pt-number').innerHTML = tasks.length
+        document.getElementById('pt-number').innerHTML = tasks.length
     };
 </script>

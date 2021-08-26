@@ -31,19 +31,26 @@ $this->params['seo_tags'] = [
     ],
 ];
 ?>
+
 <section class="ep-header">
-    <div class="opacity-div"></div>
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <h1>Be our e-Partner</h1>
-                <div><p>Do you have a strong network among students ?</p>
-                    <p>Do you love to interact and counsel them ?</p></div>
-                <div><p>If your answer is "Yes", join Career Launcher as our official e-Partner.</p></div>
+            <div class="col-md-6 col-sm-6">
+                <div class="ep-text">
+                    <h1>Be our e-Partner</h1>
+                    <p>Do you have a strong network among students? <br>Do you love to interact and counsel them?</p>
+                    <div><p>If your answer is "Yes",<br> join Career Launcher as our official e-Partner.</p></div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="ep-vector">
+                    <img src="<?= Url::to('@eyAssets/images/pages/custom/ep-vector.png') ?>">
+                </div>
             </div>
         </div>
     </div>
 </section>
+
 <section class="ptb30">
     <div class="container">
         <div class="row">
@@ -237,32 +244,36 @@ $this->registerCss('
     padding-bottom: 30px;
 }
 .ep-header{
-    background: url('. Url::to('@eyAssets/images/pages/custom/partner-hdr.png') .');
+    background: url('. Url::to('@eyAssets/images/pages/custom/ep-header-bg.png') .');
     background-size: cover;
     background-repeat: no-repeat;
 	display: flex;
 	align-items: center;
 	position: relative;
-	text-align: center;
-	min-height: 500px;
+	min-height: 580px;
 }
-.opacity-div{
-    position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0,0,0,.4);
+.ep-vector {
+    text-align: center;
 }
-.ep-header h1{
-    color: #ff7803;
+.ep-vector img {
+    width: 100%;
+    max-width: 370px;
 }
-.ep-header p{
-    font-size: 24px;
+.ep-text {
+    margin-top: 80px;
+}
+.ep-text h1 {
+    font-size: 46px;
     font-family: roboto;
-    color: #fff;
-    line-height:25px;
-}    
+    letter-spacing: 0.3px;
+}
+.ep-text p {
+    font-family: roboto;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 32px;
+    letter-spacing: 0.3px;
+} 
 .ptb30{
     padding: 15px 0 30px;
 }
@@ -489,6 +500,37 @@ $this->registerCss('
     background-color: #fff;
     text-decoration: none;
     transition: .3s ease-in-out;
+}
+@media screen and (max-width: 992px) and (min-width:768px) {
+    .ep-text h1 {
+        font-size: 38px;
+        }
+    .ep-text p {
+        font-size: 18px;
+        line-height: 30px;
+        }
+    .ep-vector img {
+        max-width: 350px;
+    }
+    .ep-header {
+        min-height: 520px;
+    }
+}
+@media screen and (max-width: 767px) and (min-width:320px) {
+    .ep-text h1 {
+        font-size: 32px;
+        }
+    .ep-text p {
+        font-size: 16px;
+        line-height: 24px;
+        }
+    .ep-vector img {
+        max-width: 250px;
+    }
+    .ep-text {
+        margin-top: 0px;
+        text-align: center;
+    }
 }
 ');
 $script = <<<JS
