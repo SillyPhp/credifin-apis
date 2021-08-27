@@ -98,46 +98,11 @@ class TestCacheController extends Controller
         return $k;
     }
 
-    public function actionEmailBulk($get=null,$start=null,$end=null){
-        $file1 = Url::to('@rootDirectory/files/temp/EdTech-Loan-Proposal.pdf');
-        $file2 = Url::to('@rootDirectory/files/temp/College-Proposal.pdf');
-           $csv = [];
-           $i = 0;
-           if (($handle = fopen(Url::to('@rootDirectory/files/temp/list.csv'), "r")) !== false) {
-               $columns = fgetcsv($handle, 1000, ",");
-               while (($row = fgetcsv($handle, 1000, ",")) !== false) {
-                   $csv[$i] = array_combine($columns, $row);
-                   $i++;
-               }
-               fclose($handle);
-           }
-           $start = $start;
-           $end = $end;
-           for ($i=$start;$i<=$end;$i++){
-               if (!empty($csv[$i]['Email'])){
-                   Yii::$app->mailer->htmlLayout = 'layouts/email';
-                   $mail = Yii::$app->mailer->compose(
-                       ['html' => 'Partnership'],['data'=>'']
-                   )
-                       ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
-                       ->setTo([$csv[$i]['Email'] => $csv[$i]['Name']])
-                       ->setSubject('EmpowerYouth Partnership Proposal')
-                       ->setReplyTo('sumit@empoweryouth.com')
-                       ->attach($file1)
-                       ->attach($file2);
-                   if ($mail->send()) {
-                       echo $i.'<br>';
-                   }
-               }
-           }
-       }
 
     public function actionEmailTest($get=null,$start=null,$end=null){
-        $file1 = Url::to('@rootDirectory/files/temp/EdTech-Loan-Proposal.pdf');
-        $file2 = Url::to('@rootDirectory/files/temp/College-Proposal.pdf');
             $csv = [];
             $i = 0;
-            if (($handle = fopen(Url::to('@rootDirectory/files/temp/list1.csv'), "r")) !== false) {
+            if (($handle = fopen(Url::to('@rootDirectory/files/temp/dav.csv'), "r")) !== false) {
                 $columns = fgetcsv($handle, 1000, ",");
                 while (($row = fgetcsv($handle, 1000, ",")) !== false) {
                     $csv[$i] = array_combine($columns, $row);
@@ -147,18 +112,30 @@ class TestCacheController extends Controller
             }
             $start = $start;
             $end = $end;
+            $data = [];
+        $data['slug'] = 'marketing-executive-marketing-executive-52101628924998';
+        $data['cat_name'] = 'Marketing Executive';
+        $data['organization_logo'] = 'https://eycdn.ams3.digitaloceanspaces.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/Knsww6dU-GqWw97vqQGrox62CaBfwYze/XGpD9mA68oPv0g01X6rOQBVl4kwJne.png';
+        $data['organization_name'] = 'Empower Youth';
+        $data['application_type'] = 'Job';
+        $data['name'] = 'Marketing';
+        $data['industry'] = 'Same Industry';
+        $data['designation'] = 'Marketing Executive';
+        $data['amount'] = '180000 p.a';
+        $data['icon_png'] = 'marketing.png';
+        $data['preferred_gender'] = 0;
+        $data['experience'] = null;
+        $data['applicationEmployeeBenefits']=null;
+        $data['working_days'] = [1,2,3,4,5,6];
             for ($i=$start;$i<=$end;$i++){
                 if (!empty($csv[$i]['Email'])){
                     Yii::$app->mailer->htmlLayout = 'layouts/email';
                     $mail = Yii::$app->mailer->compose(
-                        ['html' => 'Partnership'],['data'=>'']
+                        ['html' => 'job-detail-email-myecampus-demo.php'],['data'=>$data]
                     )
-                        ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+                        ->setFrom(['no-reply@myecampus.in'=>'MyECampus'])
                         ->setTo([$csv[$i]['Email'] => $csv[$i]['Name']])
-                        ->setSubject('EmpowerYouth Partnership Proposal')
-                        ->setReplyTo('sumit@empoweryouth.com')
-                        ->attach($file1)
-                        ->attach($file2);
+                        ->setSubject('Empower Youth has shortlisted you for Marketing Executive');
                     if ($mail->send()) {
                         echo $i.'<br>';
                     }
