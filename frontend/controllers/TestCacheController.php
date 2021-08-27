@@ -117,6 +117,7 @@ class TestCacheController extends Controller
         $data['cat_name'] = 'Marketing Executive';
         $data['organization_logo'] = 'https://eycdn.ams3.digitaloceanspaces.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/Knsww6dU-GqWw97vqQGrox62CaBfwYze/XGpD9mA68oPv0g01X6rOQBVl4kwJne.png';
         $data['organization_name'] = 'Empower Youth';
+        $data['org_name'] = 'Empower Youth';
         $data['application_type'] = 'Job';
         $data['name'] = 'Marketing';
         $data['industry'] = 'Same Industry';
