@@ -47,7 +47,7 @@ $this->registerCss('
 }
 .marg-top{margin-top:50px;}
 .heading-s {
-    margin: 0 0 50px;
+    margin: 0 20px 50px;
     font-family: lobster;
     font-size: 34px;
 }
