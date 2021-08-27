@@ -373,7 +373,7 @@ if ($blogs['blogs']) {
             </div>
         </div>
     </section>
-
+<?= $this->render('/widgets/college-widgets/college-scholarship') ?>
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
