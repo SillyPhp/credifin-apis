@@ -249,7 +249,7 @@ if ($type == 'Internships') {
                                 </ul>
                                 </p>
                             </div>
-                            <div class="read-more col-md-12 p-0"><a href="<?= $application_details['link'] ?>" class="showmore">Read More......</a>
+                            <div class="read-more col-md-12 p-0"><a href="<?= $application_details['link'] ?>" target="_blank" class="showmore">Read More......</a>
                             </div>
                         <?php
                         }
@@ -603,7 +603,7 @@ h3.job-detail {
     padding: 20px 0;
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
+    flex-basis: 70%;
 }
 .job-details-header {
     background: #fff;
@@ -620,11 +620,11 @@ h3.job-detail {
     overflow: hidden;
     box-shadow: 0 0 10px 0px rgb(0 0 0 / 30%);
     border-radius: 70px;
+    min-width: 70px;
 }
 .company-logo img {
-    width: 100px;
-    height: 100px;
-    max-width: 100%;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
     margin: 0 !important;
 }
@@ -663,6 +663,10 @@ h3.job-detail {
 .buttons{
     display: flex;
     align-items: center;
+    flex-basis: 30%;
+}
+.buttons .view-detail-btn{
+    margin-left: auto;
 }
 .view-detail{
     margin-right: 15px;
@@ -740,6 +744,7 @@ h3.job-detail {
 .job-overviews li{flex-basis:100%;}
 .com-initials {
 	text-align: center;
+    flex-direction: column;
 }
 }
 ');
