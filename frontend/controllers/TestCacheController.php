@@ -122,7 +122,7 @@ class TestCacheController extends Controller
         $data['industry'] = 'Same Industry';
         $data['designation'] = 'Marketing Executive';
         $data['amount'] = '180000 p.a';
-        $data['icon_png'] = 'marketing.png';
+        $data['profile_icon'] = 'marketing.png';
         $data['preferred_gender'] = 0;
         $data['experience'] = null;
         $data['applicationEmployeeBenefits']=null;
