@@ -115,7 +115,6 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
-
 <?= $this->render('/widgets/interest-free-loan-process') ?>
 
     <section class="benefit-bg">
@@ -373,7 +372,7 @@ if ($blogs['blogs']) {
             </div>
         </div>
     </section>
-<?= $this->render('/widgets/college-widgets/college-scholarship') ?>
+
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
