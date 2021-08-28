@@ -4,7 +4,7 @@ use yii\helpers\Url;
     <section class="loan-process">
         <div class="container">
             <div class="row">
-                <h3 class="heading-s">Loan Process</h3>
+                <div class="heading-style bene-head">Loan Process</div>
             </div>
             <div class="row flex-process">
                 <div class="col-md-2 col-md-offset-1 col-sm-4 col-xs-12">
