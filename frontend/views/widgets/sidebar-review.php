@@ -360,7 +360,7 @@ function widget(selector) {
     var company = $.trim(selector.find('.org_name').text());
     var location = $.trim(selector.find('.location').text());
     var period = $.trim(selector.find('.period').text());
-    var slug = $.trim(selector.find('.application-card-description').attr('data-slug'));
+    var slug = $.trim(selector.find('.side-description').attr('data-slug'));
     var lastDate = $.trim(selector.find('.lastDate').text());
     var lat = $.trim(selector.find('.location').attr('data-lat'));
     var long = $.trim(selector.find('.location').attr('data-long'));

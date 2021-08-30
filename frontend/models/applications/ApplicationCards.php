@@ -5,6 +5,7 @@ namespace frontend\models\applications;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationSkills;
 use common\models\ApplicationUnclaimOptions;
+use common\models\AppliedApplications;
 use common\models\BusinessActivities;
 use common\models\Countries;
 use common\models\Currencies;
@@ -248,6 +249,7 @@ class ApplicationCards
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city',
                 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ", ") skills',
+                'ap.application_enc_id as applied',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -268,6 +270,7 @@ class ApplicationCards
             ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->leftJoin(ApplicationSkills::tableName() . 'as sy', 'sy.application_enc_id = a.application_enc_id')
+            ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
             ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = sy.skill_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['a.application_for' => 1])
@@ -325,6 +328,7 @@ class ApplicationCards
                 ELSE g.name
                END) as city',
                 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ", ") skills',
+                'ap.application_enc_id as applied',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->leftJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -338,6 +342,7 @@ class ApplicationCards
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->leftJoin(ApplicationSkills::tableName() . 'as sy', 'sy.application_enc_id = a.application_enc_id')
+            ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
             ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = sy.skill_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['a.application_for' => 1])
@@ -358,7 +363,6 @@ class ApplicationCards
                 ['in', 'i.name', $profiles],
             ]);
         }
-
 
         if (isset($industries) && !empty($industries)) {
             $cards1->orWhere(['in', 'h.industry', $industries]);
@@ -672,6 +676,7 @@ class ApplicationCards
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("internship/", a.slug) share_link',
                 'CONCAT("/", d.slug) organization_link',
+                'a.slug application_slug',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -683,7 +688,8 @@ class ApplicationCards
                 'm.wage_duration as salary_duration',
                 'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
-                '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
+                '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city',
+                'ap.application_enc_id as applied',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -702,6 +708,7 @@ class ApplicationCards
             ->leftJoin(States::tableName() . 'as v', 'v.state_enc_id = x.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
+            ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['a.application_for' => 1])
@@ -718,6 +725,7 @@ class ApplicationCards
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("internship/", a.slug) share_link',
                 'CONCAT("/internship/", a.slug) organization_link',
+                'a.slug application_slug',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -729,7 +737,8 @@ class ApplicationCards
                 'v.wage_duration as salary_duration',
                 'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
-                'g.name city'
+                'g.name city',
+                'ap.application_enc_id as applied',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -742,6 +751,7 @@ class ApplicationCards
             ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
+            ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['a.application_for' => 1])
             ->groupBy(['g.city_enc_id', 'a.application_enc_id'])

@@ -132,30 +132,6 @@ use yii\widgets\Pjax;
                             </div>
                         </a>
                     </div>
-                    <!--        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <a class="dashboard-stat dashboard-stat-v2 lightpink" href="<?= Url::to('/account/shortlist-jobs') ?>">
-                        <div class="visual">
-                            <i class="fa fa-building"></i>
-                        </div>
-                        <div class="details">
-                            <div class="number">
-                                <span data-counter="counterup" data-value="89">0</span> </div>
-                            <div class="desc">Suggested Jobs</div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                    <a class="dashboard-stat dashboard-stat-v2 claygreen" href="#">
-                        <div class="visual">
-                            <i class="fa fa-building"></i>
-                        </div>
-                        <div class="details">
-                            <div class="number">
-                                <span data-counter="counterup" data-value="89">0</span> </div>
-                            <div class="desc">Alerts</div>
-                        </div>
-                    </a>
-                </div>-->
                 </div>
                 <?php
                 Pjax::end();
