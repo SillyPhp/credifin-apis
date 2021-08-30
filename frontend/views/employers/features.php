@@ -310,7 +310,7 @@ $this->params['header_dark'] = false;
                     Connect with the applicants with the chat box. You can have a smooth conversation with the
                     applicants
                     anytime. You can save more and speed up the recruiting process and it makes approaching applicants
-                    easier and also you can applicants updated with all the information.
+                    easier and also you can keep applicants updated with all the information.
                     <ul>
                         <li>Chat with your applicants</li>
                         <li>Easily take queries</li>
