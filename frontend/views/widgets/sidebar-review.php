@@ -188,6 +188,13 @@ li.draggable-item.ui-sortable-placeholder {
 }
 .secondary-top-header{display:none !important;}
 .review-list-hint, .review-list-toggler{display:none;}
+.text-wrap-ellipsis{
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    padding: 0 8px 0 0!important;
+}
 @media only screen and (max-width: 991px) and (min-width: 768px)  {
     .profile-sidebar {
         margin-top: 40px;
@@ -523,7 +530,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                 <p class="mb-0 text-wrap-ellipsis">
                     <strong>{{title}}</strong>
                 </p>
-                <p class="mb-5 text-wrap-ellipsis">{{org_name}}</p>
+                <p class="mb-5 text-wrap-ellipsis">{{{org_name}}}</p>
             </div>
         </div>
     </li>
