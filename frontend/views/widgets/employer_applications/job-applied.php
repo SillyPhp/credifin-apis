@@ -9,8 +9,8 @@ $location = ArrayHelper::map($locations, 'city_enc_id', 'name');
 Yii::$app->view->registerJs('var btn_class = "' . $btn_class . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->controller->id) . '"', \yii\web\View::POS_HEAD);
 ?>
-    <div class="modal fade bs-modal-md in" id="modal" aria-hidden="true">
-        <div class="modal-dialog modal-md">
+    <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <?php $form = ActiveForm::begin(['id' => 'resume_form']); ?>
                 <div class="modal-header">

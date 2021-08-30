@@ -162,8 +162,8 @@ switch ([$controller_id, $action_id]) {
         </div>
         {{/.}}
     </script>
-    <div class="modal fade bs-modal-md in" id="job-apply-widget-modal" aria-hidden="true">
-        <div class="modal-dialog modal-md">
+    <div class="modal fade bs-modal-lg in" id="job-apply-widget-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content" id="applyModalData">
 
             </div>

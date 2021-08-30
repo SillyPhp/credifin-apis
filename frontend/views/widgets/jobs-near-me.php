@@ -103,7 +103,13 @@ if ($type == 'jobs') {
         </div>
     </div>
 </div>
+<div class="modal fade bs-modal-lg in" id="job-apply-widget-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="applyModalData">
 
+        </div>
+    </div>
+</div>
 <script id="cards" type="text/template">
     {{#.}}
     <div class="col-md-12 col-sm-6 col-xs-12">
@@ -1210,6 +1216,21 @@ $(document).on('click', '.share-b', function(){
 $(document).on('mouseleave', '.app-box', function(){
     $(this).find('.sharing-links').removeClass('moveright');
 });
+
+$(document).on('click', '.applyApplicationNow', function() {
+    $('#applyModalData').html('<div class="p-20"><i class="fas fa-circle-notch fa-spin fa-fw"></i> Loading...</div>')
+    let app_id = $(this).attr('data-app');
+    let org_id = $(this).attr('data-org');
+    $('#job-apply-widget-modal').modal('show');
+     $.ajax({
+            method: "POST",
+            url : "/jobs/application-apply-modal",
+            data:{app_id:app_id,org_id:org_id},
+            success: function(response) {
+                $('#applyModalData').html(response);
+            }
+    })
+})
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
