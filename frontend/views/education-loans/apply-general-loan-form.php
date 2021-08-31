@@ -1,10 +1,11 @@
 <?php
 use yii\helpers\Url;
+$userDetail = \common\models\Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
 $this->title = 'Education Loan';
 $this->params['header_dark'] = true;
 $keywords = 'Interest Free Loans available for select colleges/Universities | Empower Youth';
 $description = 'Do Not let monetary constraints stop your from getting admission in your dream college/ university';
-$image = Url::to('@eyAssets/images/pages/education-loans/edu-loan-p1.png', 'https');
+$image = Url::to('@eyAssets/images/pages/education-loans/apply-for-education-loan.png', 'https');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
@@ -30,6 +31,7 @@ $this->params['seo_tags'] = [
     ],
 ];
 Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->prod->apiKey. '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var getLender = "' .$getLender. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View::POS_HEAD);
@@ -40,43 +42,168 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-start">
-                        <form action="" id="myForm">
+                        <form action="" id="myForm" autocomplete="off">
                             <div class="tab" id="step1">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <h1 class="heading-style">Education Loan</h1>
+                                <div class="row m-0">
+                                    <div class="col-md-12 mt-40">
+                                        <h1 class="heading-style"><?php
+                                            if($action_name == 'interest-free'){
+                                                echo 'Interest Free Education Loan';
+                                            }else if($action_name == 'study-abroad'){
+                                                echo 'StudyAbroad Education Loan';
+                                            }else{ echo 'Education Loan';}  ?></h1>
                                     </div>
                                 </div>
+                                <!--Loan Type start-->
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
-                                        <label for="number" class="input-group-text">
-                                            Name of Applicant (Student Name)
+                                        <label class="input-group-text" for="inputGroupSelect01">
+                                            Which Type Of Loan Is This ?
                                         </label>
-                                        <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
+                                        <ul class="displayInline">
+                                            <li>
+                                                <label class="container-radio">
+                                                    School Fee Loan
+                                                    <input type="radio" id="TypeSchool" value="1" onclick="showChildren(this)" name="applicantTypeRadio">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </li>
+                                            <li>
+                                                <label class="container-radio">
+                                                    College/University Fee Loan
+                                                    <input type="radio" id="TypeCollege" value="0" onclick="hideChildren(this)" name="applicantTypeRadio">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </li>
+                                        </ul>
                                     </div>
+                                    <span id="applicantTypeRadio"></span>
                                 </div>
+                                <!--Loan Type end-->
+<!--                                parent co borower details start-->
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
-                                        <label for="number" class="input-group-text">
-                                            Date Of Birth (mm/dd/yyyy)
+                                        <label class="input-group-text" for="inputGroupSelect01">
+                                            Filling Application As ?
                                         </label>
-                                        <div class="input-group date" data-provide="datepicker" class="datepicker3">
-                                            <input type="text" class="form-control" name="dob" id="dob" placeholder="Date Of Birth">
-                                            <div class="input-group-addon">
-                                                <span class=""><i class="fas fa-calendar-alt"></i></span>
+                                        <ul class="displayInline">
+                                            <li>
+                                                <label class="container-radio"><input type="radio" id="parent" value="1" onclick="showRelation(this)" name="applicantRadio"> Parent / Guardian<span class="checkmark"></span></label>
+                                            </li>
+                                            <li>
+                                                <label class="container-radio"><input type="radio" id="applicant" value="0" onclick="hideRelation(this)" name="applicantRadio"> Student<span class="checkmark"></span></label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <span id="applicantRadio"></span>
+                                </div>
+                                <div id="parent_co_borrower">
+                                        <div class="coapplicant">
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <div class="radio-heading input-group-text">
+                                                        Relation With Student
+                                                    </div>
+                                                    <ul id="co-relation-ul-1" class="displayInline">
+                                                        <li>
+                                                            <label for="co-father-1" class="container-radio">
+                                                                Father
+                                                                <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-1" class="checkbox-input services" checked>
+                                                                <span class="checkmark"></span>
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <label for="co-mother-1" class="container-radio">
+                                                                Mother
+                                                                <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-1" class="checkbox-input services">
+                                                                <span class="checkmark"></span>
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <label for="co-brother-1" class="container-radio">
+                                                                Brother
+                                                                <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-1" class="checkbox-input services">
+                                                                <span class="checkmark"></span>
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <label for="co-sister-1" class="container-radio">
+                                                                Sister
+                                                                <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-1" class="checkbox-input services">
+                                                                <span class="checkmark"></span>
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <label for="co-guardian-1" class="container-radio">
+                                                                Guardian
+                                                                <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-1" class="checkbox-input services">
+                                                                <span class="checkmark"></span>
+                                                            </label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <label for="co-name[]" class="input-group-text">
+                                                       Your Name
+                                                    </label>
+                                                    <input type="text" name="co-name[1]" class="form-control text-capitalize" id="co-name" placeholder="Enter Your Full Name">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <div class="radio-heading input-group-text">
+                                                        Employment type ?
+                                                    </div>
+                                                    <ul class="displayInline">
+                                                        <li>
+                                                            <label for="sal-1" class="container-radio">
+                                                                Salaried
+                                                                <input type="radio" value="1" checked="checked" id="sal-1" name="co-emptype[1]" class="checkbox-input services" checked>
+                                                                <span class="checkmark"></span>
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <label for="self-1" class="container-radio">
+                                                                Self-Employed
+                                                                <input type="radio" value="2" id="self-1" name="co-emptype[1]" class="checkbox-input services">
+                                                                <span class="checkmark"></span>
+                                                            </label>
+                                                        </li>
+                                                        <li>
+                                                            <label for="non-1" class="container-radio">
+                                                                Non-Working
+                                                                <input type="radio" value="3" id="non-1" name="co-emptype[1]" class="checkbox-input services">
+                                                                <span class="checkmark"></span>
+                                                            </label>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12 padd-20">
+                                                <div class="form-group">
+                                                    <label for="co-anualincome" class="input-group-text">
+                                                        Annual Income
+                                                    </label>
+                                                    <input type="text" name="co-anualincome[1]" minlength="3" maxlength="7" class="form-control" id="co-anualincome" placeholder="Enter Annual Income">
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+<!--                                parent co borower details end-->
+                                <div id="student_name_col">
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="number" class="input-group-text">
+                                                Name of The Student
+                                            </label>
+                                            <input value="<?= ($userDetail->first_name)?$userDetail->first_name . " " . $userDetail->last_name : "" ?>" type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label class="input-group-text" for="inputGroupSelect02">
-                                            Current city where you live
-                                        </label>
-                                        <input type="text" name="location" id="location" class="form-control text-capitalize"
-                                               autocomplete="off" placeholder="City"/>
-                                    </div>
-                                </div>
+<!--                                College Informaton start-->
+                                <div id="collegeLoanBox">
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label class="input-group-text" for="inputGroupSelect01">
@@ -118,15 +245,6 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label for="annulIncome" class="input-group-text">
-                                            Loan Amount Required (<i class="fa fa-inr" id="rp_symbol" aria-hidden="true"></i>)
-                                        </label>
-                                        <input type="text" class="form-control" minlength="3" maxlength="7" id="loanamount" name="loanamount"
-                                               placeholder="Enter Loan Amount">
-                                    </div>
-                                </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <div class="radio-heading input-group-text">
@@ -134,104 +252,94 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         </div>
                                         <ul class="displayInline">
                                             <li>
-                                                <input type="radio" value="1"  id="yc" name="college_taken" class="checkbox-input services">
-                                                <label for="yc">Yes</label>
+                                                <label for="yc" class="container-radio">
+                                                    Yes
+                                                    <input type="radio" value="1"  id="yc" name="college_taken" class="checkbox-input services">
+                                                    <span class="checkmark"></span>
+                                                </label>
                                             </li>
                                             <li>
-                                                <input type="radio" value="0" id="nc" name="college_taken" class="checkbox-input services">
-                                                <label for="nc">No</label>
+                                                <label for="nc" class="container-radio">
+                                                    No
+                                                    <input type="radio" value="0" id="nc" name="college_taken" class="checkbox-input services">
+                                                    <span class="checkmark"></span>
+                                                </label>
                                             </li>
                                         </ul>
                                         <span id="college_taken_error"></span>
                                     </div>
                                 </div>
-                                    <div id="college_box">
-                                        <div class="col-md-12 padd-20">
-                                                <label for="course_name" class="input-group-text">
-                                                    College / University Name (You Can Add Custom If Not Available in List)
-                                                </label>
-                                                <select  id="college_name" name="college_name">
-
-                                                </select>
-                                        </div>
-                                        <div class="col-md-6 padd-20">
-                                            <div class="form-group">
-                                                <div class="radio-heading input-group-text">
-                                                    Year
-                                                </div>
-                                                <select class="form-control" name="years" id="years">
-                                                    <option value="1">1st Year</option>
-                                                    <option value="2">2st Year</option>
-                                                    <option value="3">3rd Year</option>
-                                                    <option value="4">4th Year</option>
-                                                    <option value="5">5th Year</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 padd-20">
-                                            <div class="form-group">
-                                                <div class="radio-heading input-group-text">
-                                                    Semester
-                                                </div>
-                                                <select class="form-control" value="semesters" id="semesters">
-                                                    <option value="1">1st Semester</option>
-                                                    <option value="2">2st Semester</option>
-                                                    <option value="3">3rd Semester</option>
-                                                    <option value="4">4th Semester</option>
-                                                    <option value="5">5th Semester</option>
-                                                    <option value="6">6th Semester</option>
-                                                    <option value="7">7th Semester</option>
-                                                    <option value="8">8th Semester</option>
-                                                    <option value="9">9th Semester</option>
-                                                    <option value="10">10th Semester</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div id="college_preference_box">
-                                        <div class="col-md-12 padd-20">
+                                <div id="college_box">
+                                    <div class="col-md-12 padd-20">
                                         <label for="course_name" class="input-group-text">
-                                           Any College Preference ?
+                                            College / University Name (You Can Add Custom If Not Available in List)
                                         </label>
-                                        </div>
-                                        <div class="col-md-12 padd-20">
-                                            <div class="form-group">
-                                                <div id="the-basics-college">
-                                                    <input type="text" placeholder="Enter College Name (Optional, Preference 1)" class="typeahead form-control text-capitalize"  name="college_name_pref[]">
-                                                </div>
+                                        <select  id="college_name" name="college_name">
+
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 padd-20">
+                                        <div class="form-group">
+                                            <div class="radio-heading input-group-text">
+                                                Year
                                             </div>
-                                        </div>
-                                        <div class="col-md-12 padd-20">
-                                            <div class="form-group">
-                                                <div id="the-basics-college">
-                                                    <input type="text" placeholder="Enter College Name (Optional, Preference 2)" class="typeahead form-control text-capitalize"  name="college_name_pref[]">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12 padd-20">
-                                            <div class="form-group">
-                                                <div id="the-basics-college">
-                                                    <input type="text" placeholder="Enter College Name (Optional, Preference 3)" class="typeahead form-control text-capitalize"  name="college_name_pref[]">
-                                                </div>
-                                            </div>
+                                            <select class="form-control" name="years" id="years">
+                                                <option value="1">1st Year</option>
+                                                <option value="2">2st Year</option>
+                                                <option value="3">3rd Year</option>
+                                                <option value="4">4th Year</option>
+                                                <option value="5">5th Year</option>
+                                            </select>
                                         </div>
                                     </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label for="number" class="input-group-text">
-                                            Phone Number (WhatsApp & Call)
-                                        </label>
-                                        <input type="text" class="form-control" id="mobile" name="mobile"
-                                               placeholder="Enter Phone Number">
+                                    <div class="col-md-6 padd-20">
+                                        <div class="form-group">
+                                            <div class="radio-heading input-group-text">
+                                                Semester
+                                            </div>
+                                            <select class="form-control" value="semesters" id="semesters">
+                                                <option value="1">1st Semester</option>
+                                                <option value="2">2nd Semester</option>
+                                                <option value="3">3rd Semester</option>
+                                                <option value="4">4th Semester</option>
+                                                <option value="5">5th Semester</option>
+                                                <option value="6">6th Semester</option>
+                                                <option value="7">7th Semester</option>
+                                                <option value="8">8th Semester</option>
+                                                <option value="9">9th Semester</option>
+                                                <option value="10">10th Semester</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
+                                </div>
+<!--                                College Informaton end-->
+
+<!--                                School Informaton start-->
+                                <div id="schooInfo">
+
+                                </div>
+                                <div id="hideDiveChild">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="input-group-text" for="inputGroupSelect02">
+                                                Number Of Children (Applying Loan For)
+                                            </label>
+                                            <input type="text" class="form-control" id="noChild" name="noChild"
+                                                   onkeyup="checkChildInfo(this)" maxlength="1"  placeholder="Enter Number Of Children">
+                                            <p class="errorMsg"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="child-info-div"></div>
+<!--                                School Informaton end-->
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
-                                        <label for="email" class="input-group-text">
-                                            Email Address
+                                        <label for="annulIncome" class="input-group-text">
+                                            <span id="total_sec" style="display: none;">Total</span> Loan Amount Required (<i class="fa fa-inr" id="rp_symbol" aria-hidden="true"></i>)
                                         </label>
-                                        <input type="text" class="form-control" id="email" name="email"
-                                               placeholder="Enter Email Address">
+                                        <input type="text" class="form-control" minlength="3" maxlength="7" id="loanamount" name="loanamount"
+                                               placeholder="Enter Loan Amount">
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -245,79 +353,145 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                 </div>
                             </div>
                             <div class="tab" id="step2">
-                                <div class="row">
+                                <div class="row m-0">
                                     <div class="col-md-12">
-                                        <h1 class="heading-style">Additional Details</h1>
+                                        <h1 class="heading-style">Contact Details</h1>
                                     </div>
                                 </div>
+                                <!--                                contact details start-->
                                 <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label class="input-group-text" for="inputGroupSelect02">
+                                            Current city where you live
+                                        </label>
+                                        <div id="the-basics-city">
+                                            <input value="<?= ($userDetail->cityEnc->name)?$userDetail->cityEnc->name : "" ?>" type="text" name="location" id="location" class="typeahead form-control text-capitalize"
+                                                   autocomplete="off" placeholder="City"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="number" class="input-group-text">
+                                            Phone Number (WhatsApp & Call)
+                                        </label>
+                                        <input value="<?= ($userDetail->phone)? substr($userDetail->phone, -10) : "" ?>" type="text" class="form-control" id="mobile" name="mobile"
+                                               placeholder="Enter Phone Number">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="email" class="input-group-text">
+                                            Email Address
+                                        </label>
+                                        <input value="<?= ($userDetail->email)? $userDetail->email : "" ?>" type="text" class="form-control" id="email" name="email"
+                                               placeholder="Enter Email Address">
+                                    </div>
+                                </div>
+                                <!--                                contact details end-->
+                                <div class="row m-0">
+                                    <div class="col-md-12">
+                                        <h1 class="heading-style">Borrowers Details</h1>
+                                    </div>
+                                </div>
+                                <!--                                Borrowers details start-->
+                                <div class="row">
+                                    <div class="col-md-12 padd-20">
                                     <div id="addAnotherCo">
-                                        <div class="coapplicant"><div class="col-md-12 padd-20 display-flex"><span class="input-group-text">Borrower's Details</span>
-                                            </div>
-                                            <div class="col-md-12 padd-20">
-                                                <div class="form-group">
-                                                    <label for="co-name[]" class="input-group-text">
-                                                        Name
-                                                    </label>
-                                                    <input type="text" name="co-name[1]" class="form-control text-capitalize" id="co-name" placeholder="Enter Full Name">
+                                        <div id="parent_student_borrower">
+                                            <div class="coapplicant"><div class="col-md-12 padd-20 display-flex"><span class="input-group-text">Borrower's Details</span>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-12 padd-20">
-                                                <div class="form-group">
-                                                    <div class="radio-heading input-group-text">
-                                                        Relation
+                                                <div class="col-md-12 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="co-name" class="input-group-text">
+                                                            Name
+                                                        </label>
+                                                        <input type="text" name="co-name[1]" class="form-control text-capitalize" id="co-name" placeholder="Enter Full Name">
                                                     </div>
-                                                    <ul id="co-relation-ul-1" class="displayInline">
-                                                        <li>
-                                                            <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-1" class="checkbox-input services">
-                                                            <label for="co-father-1">Father</label>
-                                                        </li>
-                                                        <li>
-                                                            <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-1" class="checkbox-input services">
-                                                            <label for="co-mother-1">Mother</label>
-                                                        </li>
-                                                        <li>
-                                                            <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-1" class="checkbox-input services">
-                                                            <label for="co-brother-1">Brother</label>
-                                                        </li>
-                                                        <li>
-                                                            <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-1" class="checkbox-input services">
-                                                            <label for="co-sister-1">Sister</label>
-                                                        </li>
-                                                        <li>
-                                                            <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-1" class="checkbox-input services">
-                                                            <label for="co-guardian-1">Guardian</label>
-                                                        </li>
-                                                    </ul>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-12 padd-20">
-                                                <div class="form-group">
-                                                    <div class="radio-heading input-group-text">
-                                                        Employment type ?
+                                                <div class="col-md-12 padd-20">
+                                                    <div class="form-group">
+                                                        <div class="radio-heading input-group-text">
+                                                            Relation
+                                                        </div>
+                                                        <ul id="co-relation-ul-1" class="displayInline">
+                                                            <li>
+                                                                <label for="co-father-z" class="container-radio">
+                                                                    Father
+                                                                    <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-z" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label for="co-mother-z" class="container-radio">
+                                                                    Mother
+                                                                    <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-z" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label for="co-brother-z" class="container-radio">
+                                                                    Brother
+                                                                    <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-z" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label for="co-sister-z" class="container-radio">
+                                                                    Sister
+                                                                    <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-z" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label for="co-guardian-z" class="container-radio">
+                                                                    Guardian
+                                                                    <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-z" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                        </ul>
                                                     </div>
-                                                    <ul class="displayInline">
-                                                        <li>
-                                                            <input type="radio" value="1" checked="checked" id="sal-1" name="co-emptype[1]" class="checkbox-input services">
-                                                            <label for="sal-1">Salaried</label>
-                                                        </li>
-                                                        <li>
-                                                            <input type="radio" value="2" id="self-1" name="co-emptype[1]" class="checkbox-input services">
-                                                            <label for="self-1">Self-Employed</label>
-                                                        </li>
-                                                        <li>
-                                                            <input type="radio" value="3" id="non-1" name="co-emptype[1]" class="checkbox-input services">
-                                                            <label for="non-1">Non-Working</label>
-                                                        </li>
-                                                    </ul>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-12 padd-20">
-                                                <div class="form-group">
-                                                    <label for="co-anualincome" class="input-group-text">
-                                                        Annual Income
-                                                    </label>
-                                                    <input type="text" name="co-anualincome[1]" minlength="3" maxlength="7" class="form-control" id="co-anualincome" placeholder="Enter Annual Income">
+                                                <div class="col-md-12 padd-20">
+                                                    <div class="form-group">
+                                                        <div class="radio-heading input-group-text">
+                                                            Employment type ?
+                                                        </div>
+                                                        <ul class="displayInline">
+                                                            <li>
+                                                                <label for="sal-z" class="container-radio">
+                                                                    Salaried
+                                                                    <input type="radio" value="1" checked="checked" id="sal-z" name="co-emptype[1]" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label for="self-z" class="container-radio">
+                                                                    Self-Employed
+                                                                    <input type="radio" value="2" id="self-z" name="co-emptype[1]" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label for="non-z" class="container-radio">
+                                                                    Non-Working
+                                                                    <input type="radio" value="3" id="non-z" name="co-emptype[1]" class="checkbox-input services">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="co-anualincome" class="input-group-text">
+                                                            Annual Income
+                                                        </label>
+                                                        <input type="text" name="co-anualincome[1]" minlength="3" maxlength="7" class="form-control" id="co-anualincome" placeholder="Enter Annual Income">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -325,6 +499,12 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                     <div class="col-md-12 padd-20 displayFlex" id="addAnotherButton">
                                         <button type="button" class="addAnotherCo input-group-text" onclick="addAnotherCo(randomVal())"> <i class="fas fa-plus-square"></i> Add Another Co-Borrower (Optional, You Can Add Multiple If You Want)</button>
                                     </div>
+                                    <!--                                Borrowers details end-->
+
+                                    <div class="col-md-12 padd-20">
+                                        <p class="termsText">By clicking submit you agree to our <a href="<?= Url::to('terms-and-conditions')?>">terms and conditions</a> </p>
+                                    </div>
+                                </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="input-group padd-20">
@@ -348,79 +528,13 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
             </div>
         </div>
         <div class="college-logo" id="cl">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="el-pos-rel">
-                        <div class="max-300">
-                            <div class="cl-heading">Get the Best Education Loan</div>
-                            <ul class="loan-benefits">
-                                <li>- <span>100% Financing</span> will be provided which includes all expenses borne by
-                                    the students in a particular <span>academic year</span>.</li>
-                                <li>- Loan will be <span>repaid</span> with in the semester</li>
-                            </ul>
-                            <div class="cl-icon">
-                                <p>Our Lenders</p>
-                                <ul>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span class="li-text">+10 More</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php
+                if($action_name == 'interest-free'){
+                    echo $this->render('/widgets/education-loan/interest-free-loan-content');
+                }else{
+                    echo $this->render('/widgets/education-loan/loan-form-content');
+                }
+            ?>
         </div>
     </section>
 <input type="hidden" name="colg_text" id="colg_text">
@@ -428,12 +542,37 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
 <input type="hidden" name="pulled_from" id="pulled_from">
 <?php
 $this->registerCss('
+.child-info-div{
+    padding: 0px 15px;
+}
+.childFormBox > div:first-child{
+    margin-top:20px;
+}
 #loadBtn{
     display:none;
 }
+.termsText{
+    font-size: 12px;
+    font-family: roboto;
+    text-align: center;
+}
+.termsText a{
+    color: #00a0e3;
+}
 
+.termsText a:hover{
+    color: #ff7803;
+    transition: .3s ease;
+}
 .padd-20{
-    padding-bottom: 20px;
+    padding-bottom: 10px;
+}
+.heading-style{
+    font-size: 24px;
+    margin-top: 0;
+}
+.heading-style:before {
+    top: -4px;
 }
 .loan-benefits li{
     color:#f3f3f2;
@@ -496,14 +635,14 @@ border: 1px solid #ddd !important;
 .cl-icon p{
     color:#fff;
     font-size:20px;
-    padding-top:10px;
+    padding-top:5px;
     font-weight:bold;
-    padding-bottom:10px;
+//    padding-bottom:10px;
 }
 .cl-icon ul li{
     display: inline-grid;
     background: #fff;
-    height: 100px;
+    height: 100px; 
     width: 100px; 
     border-radius: 10px; 
     margin:0 5px 15px;
@@ -557,7 +696,7 @@ border: 1px solid #ddd !important;
     margin:0 auto;
 }
 .sign-up-details {
-    padding: 60px 25px 0 25px;
+    padding: 30px 25px 0 25px;
     background: linear-gradient(to bottom, #e9f5f5 0%, #fefefe 100%);
     min-height: 100%;
     width:50vw;
@@ -772,7 +911,7 @@ form label {
 #step2{
 	display:none;
 }
-.help-block-error
+.help-block-error,.errorMsg
 {
 color:#e65332;
 }
@@ -928,17 +1067,60 @@ width:100% !important;
         padding-inline-start: 0px;
     }
 }
-
+#collegeLoanBox,#hideDiveChild,#parent_co_borrower{
+display:none;
+}
 ');
 $script = <<< JS
+function getCities()
+    {
+        var _cities = [];
+         $.ajax({     
+            url : '/api/v3/countries-list/get-cities', 
+            method : 'GET',
+            data:{'country':'India'},
+            success : function(res) {
+            if (res.response.status==200){
+                 res = res.response.cities;
+                $.each(res,function(index,value) 
+                  {   
+                   _cities.push(value.value);
+                  }); 
+               } else
+                {
+                   console.log('cities could not fetch');
+                }
+            } 
+        });
+        $('#the-basics-city .typeahead').typeahead({
+             hint: true, 
+             highlight: true,
+             minLength: 1
+            },
+        {
+         name: '_cities',
+         source: substringMatcher(_cities)
+        }); 
+    }
+getCities();  
+function timer(time,update,complete) {
+    var start = new Date().getTime();
+    var interval = setInterval(function() {
+        var now = time-(new Date().getTime()-start);
+        if( now <= 0) {
+            clearInterval(interval);
+            complete();
+        }
+        else update(Math.floor(now/1000));
+    },100); // the smaller this number, the more accurate the timer will be
+}
+var global_r = false;
 $(document).on('click','input[name="college_taken"]',function(e) {
   var val = $(this).val();
   if (val==1){
       $('#college_box').show();
-      $('#college_preference_box').hide();
   }else if (val==0){
       $('#college_box').hide();
-      $('#college_preference_box').show();
   }
 })
 function substringMatcher (strs) {
@@ -1139,7 +1321,20 @@ function substringMatcher (strs) {
     }
     return true;
 });
+jQuery.validator.addClassRules('child_name', {
+        required: true
+    });
+jQuery.validator.addClassRules('child_class', {
+        required: true 
+    });
+jQuery.validator.addClassRules('child_school', {
+        required: true 
+    });
+jQuery.validator.addClassRules('child_loan', {
+        required: true 
+    });
     $('#mobile, #loanamount').mask("#", {reverse: true});
+    $('#co-anualincome').mask("#", {reverse: true});
     $("#nextBtn, #subBtn").click(function(){
        var form = $("#myForm");  
        var error = $('.alert-danger', form);
@@ -1156,6 +1351,9 @@ function substringMatcher (strs) {
 				    required:true,
 				},
 				'college_taken':{
+				    required:true,
+				},
+				'noChild':{
 				    required:true,
 				},
 				'dob':{
@@ -1177,6 +1375,9 @@ function substringMatcher (strs) {
 				'college_name':{
 				    required:true,
 				},
+				'applicantRadio':{
+				    required:true,
+				},
 				'course_name_text':{
 				    required:true,
 				},
@@ -1185,15 +1386,18 @@ function substringMatcher (strs) {
 				},
 				'loanamount':{ 
 				    required:true,
-				    min:10000,
+				    min:1000,
 				    max:5000000
 				},
 				'co-name[1]':{
 				    required:true,
 				},
+				'co-relation':{
+				    required:true,
+				},
 				'co-anualincome[1]':{
 				    required:true,
-				    min:10000,
+				    min:1000,
 				    max:5000000
 				},
 				'co-relation[1]':{ 
@@ -1209,11 +1413,25 @@ function substringMatcher (strs) {
 				},
 				'co-relation[2]':{ 
 				    required:true,
-				}
+				},
+				'applicantTypeRadio':{ 
+				    required:true,
+				},
+				'salary':{ 
+				    required:true,
+				    min:5000,
+				    max:5000000
+				},
 			},
 			messages: {
+           'salary':{
+				    required:'Salary Amount Cannot Be Blank',
+				},
 				'applicant_name': {
 					required: "Applicant Name Required",
+				},
+				'applicantRadio': {
+					required: "Please Select Option",
 				},
 				'course_name_text': {
 					required: "Course Name Cannot Be Blank",
@@ -1258,8 +1476,13 @@ function substringMatcher (strs) {
 				'co-anualincome[2]':{
 				    required:'Enter Annual income',
 				},
-				
+				'applicantTypeRadio':{
+				    required:'Please Select Loan Type',
+				},
 				'co-relation[2]':{
+				    required:'Select Relation',
+				}, 
+				'co-relation':{
 				    required:'Select Relation',
 				}, 
 				
@@ -1285,6 +1508,18 @@ function substringMatcher (strs) {
                     else if (element.attr("name") == "college_taken")
                     { 
                          error.insertAfter("#college_taken_error");   
+                    }
+                    else if (element.attr("name") == "co-relation")
+                    { 
+                         error.insertAfter("#co-relation-ul");   
+                    }
+                    else if (element.attr("name") == "applicantRadio")
+                    { 
+                         error.insertAfter("#applicantRadio");   
+                    } 
+                    else if (element.attr("name") == "applicantTypeRadio")
+                    { 
+                         error.insertAfter("#applicantTypeRadio");   
                     }
                     else if (element.attr("name") == element.attr("name"))
                     { 
@@ -1321,21 +1556,34 @@ function substringMatcher (strs) {
     
 function ajaxSubmit()
 {
+    var applicantRadio = $('input[name="applicantRadio"]:checked').val();
+    var loan_application_type = $('input[name="applicantTypeRadio"]:checked').val();
     let co_applicants = [];
-    let college_course_info = [];
     var obj = {};
-    var object = {};  
-    object['pulled_from'] = $('#pulled_from').val();
-    object['course_text'] = $('#course_name_text').val();
-    object['colg_text'] = $('#colg_text').val();
-    object['colg_id'] = $('#colg_id').val();
-    college_course_info.push(object);
-    obj['name'] = $('input[name="co-name[1]"]').val()
-    obj['relation'] = $('input[name="co-relation[1]"]:checked').val();
-    obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').val();
-    obj['annual_income'] = $('input[name="co-anualincome[1]"]').val(); 
+    if (applicantRadio==0){
+        obj['name'] = $('input[name="co-name[1]"]').not(':hidden').val()
+    obj['relation'] = $('input[name="co-relation[1]"]:checked').not(':hidden').val();
+    obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').not(':hidden').val();
+    obj['annual_income'] = $('input[name="co-anualincome[1]"]').not(':hidden').val(); 
     co_applicants.push(obj);
     if ($('input[name="co-name[2]"]').length>0){
+        if ($('input[name="co-name[2]"]').val().length!=0)
+        {
+        var objCoBorrower = {};
+        objCoBorrower['name'] = $('input[name="co-name[2]"]').not(':hidden').val()
+        objCoBorrower['relation'] = $('input[name="co-relation[2]"]:checked').not(':hidden').val();
+        objCoBorrower['employment_type'] = $('input[name="co-emptype[2]"]:checked').not(':hidden').val();
+        objCoBorrower['annual_income'] = $('input[name="co-anualincome[2]"]').not(':hidden').val();
+        co_applicants.push(objCoBorrower);
+        }
+    }
+    }else if (applicantRadio==1){
+         obj['name'] = $('input[name="co-name[1]"]').val()
+         obj['relation'] = $('input[name="co-relation[1]"]:checked').val();
+         obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').val();
+         obj['annual_income'] = $('input[name="co-anualincome[1]"]').val(); 
+         co_applicants.push(obj);
+        if ($('input[name="co-name[2]"]').length>0){
         if ($('input[name="co-name[2]"]').val().length!=0)
         {
         var objCoBorrower = {};
@@ -1346,15 +1594,22 @@ function ajaxSubmit()
         co_applicants.push(objCoBorrower);
         }
     }
-    var clg_pref = $('input[name="college_name_pref[]"]').map(function () {
-    return this.value;
-        }).get();
-    $.ajax({
-            url : '/api/v3/education-loan/save-application',
-            method : 'POST', 
-            data : {
+    }
+    var url = '';
+    var data = {};
+    if(loan_application_type==0){
+        let college_course_info = [];
+        var object = {};  
+        object['pulled_from'] = $('#pulled_from').val();
+        object['course_text'] = $('#course_name_text').val();
+        object['colg_text'] = $('#colg_text').val();
+        object['colg_id'] = $('#colg_id').val();
+        college_course_info.push(object);
+        url = '/api/v3/education-loan/save-application';
+        data = {
                 applicant_name:$('#applicant_name').val(),
                 applicant_dob:$('#dob').val(),
+                is_applicant:applicantRadio,                
                 applicant_current_city:$('#location').val(),
                 years:$('#years').val(),
                 semesters:$('#semesters').val(),
@@ -1364,12 +1619,64 @@ function ajaxSubmit()
                 co_applicants:co_applicants,
                 college_course_info:college_course_info,
                 userID:userID, 
+                getLender:getLender, 
                 is_india:$('input[name="countryRadio"]:checked').val(),
                 is_addmission_taken:$('input[name="college_taken"]:checked').val(),
-                clg_pref:clg_pref,
                 country_enc_id:$('#country_name').val(),
                 refferal_id : refferal_id
-                },  
+                };
+    }else if (loan_application_type==1){
+        let child_information = [];
+    var obj = {};
+    if (applicantRadio=='1'){
+        for (var i= 0; i<$('#noChild').val();i++){
+        obj['child_loan_amount'] =  $('.child_loan:eq('+i+')').val();
+        obj['child_name'] = $('.child_name:eq('+i+')').val();
+        obj['child_class'] = $('.child_class:eq('+i+')').val();
+        if (document.getElementById("checkmark")){
+            if (document.getElementById("checkmark").checked===true){
+                obj['child_school'] = $('.child_school:eq(0)').val();
+            }else{
+                obj['child_school'] = $('.child_school:eq('+i+')').val();
+            }
+        }else{
+            obj['child_school'] = $('.child_school:eq('+i+')').val();
+        }
+        child_information.push(obj);
+        obj = {};
+    }
+    }else{
+        obj['child_name'] = $('#applicant_name').val();
+        obj['child_class'] = $('.child_class:eq(0)').val();
+        obj['child_school'] = $('.child_school:eq(0)').val();
+        obj['child_loan_amount'] = $('#loanamount').val();
+        child_information.push(obj);
+    }
+    if (applicantRadio==1){
+        var applicant_name = $('input[name="co-name[1]"]').val();
+    }else{
+        var applicant_name = $('#applicant_name').val();
+    }
+         data = {
+                applicant_name:applicant_name,
+                co_applicants:co_applicants,
+                applicant_dob:$('#dob').val(),
+                is_applicant:applicantRadio,
+                applicant_current_city:$('#location').val(),
+                phone:$('#mobile').val(),
+                email:$('#email').val(),
+                amount:$('#loanamount').val(),   
+                yearly_income:$('#salary').val(),   
+                child_information:child_information,
+                userID:userID,
+                getLender:getLender
+                }
+        url = '/api/v3/education-loan/save-school-fee-loan';
+    }
+    $.ajax({
+            url : url,
+            method : 'POST', 
+            data : data,  
             beforeSend:function(e)
             {  
                 $('#subBtn').hide();     
@@ -1422,23 +1729,6 @@ function _razoPay(ptoken,loan_id,education_loan_id){
     "order_id": ptoken, 
     "handler": function (response){
         updateStatus(education_loan_id,loan_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
-                  swal({
-                        title: "",
-                        text: "Your Application Is Submitted Successfully",
-                        type:'success',
-                        showCancelButton: false,  
-                        showConfirmButton: false,  
-                        confirmButtonClass: "btn-primary",
-                        confirmButtonText: "Close",
-                        closeOnConfirm: true, 
-                        closeOnCancel: true
-                         },
-                            function (isConfirm) { 
-                             location.reload(true);
-                         });
-          if (userID==''){
-            window.location.replace('/signup/individual?loan_id_ref='+loan_id);
-          }     
     },
     "prefill": {
         "name": $('#applicant_name').val(),
@@ -1501,8 +1791,7 @@ function processPayment(ptoken,loan_id,education_loan_id)
                      });
     }
 );
-} 
-
+}
 function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,signature=null)
 {
     $.ajax({
@@ -1515,12 +1804,78 @@ function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,s
               status:status, 
               signature:signature,
             },
+            beforeSend:function(e){
+                $('#subBtn').hide();     
+                $('#prevBtn').hide();     
+                $('#loadBtn').show();   
+            },
             success:function(e)
             {
-                //console.log(e);
+                if (status=="captured"){
+                    if (e.response.status=='200'){
+                         if (userID==''){
+                          swal({
+                            title: "",
+                            text: "Your Application Is Submitted Successfully Please Sign Up To Track and Process Your Application Further, You Can Then Check Status Of Your Application On Dashboard",
+                            type:'success',
+                            showCancelButton: false,  
+                            confirmButtonClass: "btn-primary",
+                            confirmButtonText: "Proceed To Sign Up",
+                            closeOnConfirm: false, 
+                        },
+                            function (isConfirm) { 
+                                 if (isConfirm==true){
+                                     window.location.replace('/signup/individual?loan_id_ref='+loan_app_enc_id);
+                                 }
+                            }
+                        );
+                        } else {
+                        timer(
+                         8000, // milliseconds
+                         function(timeleft) { // called every step to update the visible countdown
+                         document.getElementById('timer').innerHTML = "<b style='color:#00A0E3 !important'>"+timeleft+"</b> second(s)";
+                        },
+                        function() { // what to do after
+                     window.location.replace('/account/education-loans/candidate-dashboard/'+loan_app_enc_id);
+                    }
+                        );     
+                          swal({
+                                title: "",
+                                html: true,  
+                                text: "Your Application Is Submitted Successfully, You Will Redirected To Dashboard in <span id='timer'></span> For Document and Information Processing on Further Stage, Don't Close The Page",
+                                type:'success',
+                                showCancelButton: false,  
+                                confirmButtonClass: "btn-primary",
+                                confirmButtonText: "Proceed To Dashboard",
+                                closeOnConfirm: false, 
+                            },
+                                function (isConfirm) { 
+                                  if (isConfirm==true){
+                                     window.location.replace('/account/education-loans/candidate-dashboard/'+loan_app_enc_id);
+                                    }
+                                  }
+                            );
+                        }
+                    } else {
+                        swal({
+                         title:"Payment Error",
+                         text: 'Your Payment Status Will Be Update In 1-2 Business Day',
+                      });
+                    }
+                }
+                $('#subBtn').show();     
+                $('#prevBtn').show();     
+                $('#loadBtn').hide();
             }
     })
 }
+$(document).on('keyup','.child_loan',function(e) {
+   var sum = 0;
+    $('.child_loan').each(function(){
+    sum += !isNaN(parseFloat(this.value)) ? parseFloat(this.value) : 0;
+    $('#loanamount').val(sum);
+});
+})
 JS;
 $this->registerJs($script);
 ?>
@@ -1568,6 +1923,144 @@ $this->registerJs($script);
                 return false;
             }
             showTab(currentTab);
+        }
+        function createChild()
+        {
+            let child = '<div class="col-md-12 padd-20 schoolNameField">\n' +
+                '                                        <div class="form-group">\n' +
+                '                                            <label for="school_name_1" class="input-group-text">\n' +
+                '                                                School Name\n' +
+                '                                            </label>\n' +
+                '                                            <input type="text" minlength="3" class="form-control text-capitalize child_school" id="school_name_1" name="school_name_1" placeholder="School Name">\n' +
+                '                                        </div>\n' +
+                '                                    </div>\n' +
+                '                                    <div class="col-md-12 padd-20">\n' +
+                '                                        <div class="form-group">\n' +
+                '                                            <label for="class_name_1" class="input-group-text">\n' +
+                '                                                Class\n' +
+                '                                            </label>\n' +
+                '                                            <input type="text" minlength="2" class="form-control text-capitalize child_class" id="class_name_1" name="class_name_1" placeholder="Class Name">\n' +
+                '                                        </div>\n' +
+                '                                    </div>'
+            return child;
+        }
+        function removeChild() {
+
+        }
+        showChildInfo = (event) =>{
+            let eventValue  = event.currentTarget.value;
+            if(eventValue == 1){
+                document.querySelector('.child-info-div').style.display = 'block';
+                document.querySelector('#childTwo').style.display = 'none';
+                document.querySelector('#schoolAttend').style.display = 'none';
+            }else if(eventValue == 2){
+                document.querySelector('.child-info-div').style.display = 'block';
+                document.querySelector('#childTwo').style.display = 'block';
+                document.querySelector('#schoolAttend').style.display = 'block';
+            }
+        }
+        showSchoolField = () => {
+            let schoolNameField = document.querySelectorAll('.schoolNameField')
+            if(event.target.checked){
+                for(let i = 0; i < schoolNameField.length; i++){
+                    schoolNameField[i].classList.add('displayNone');
+                }
+                schoolNameField[0].classList.remove('displayNone');
+            }else {
+                for(let i = 0; i < schoolNameField.length; i++){
+                    schoolNameField[i].classList.remove('displayNone');
+                }
+            };
+        }
+        checkChildInfo = (event) => {
+            let num = parseInt(event.value);
+            let parentElem = event.parentElement;
+            let childFormBox = document.querySelectorAll('.childFormBox');
+            if (!/^\+?([0-9]{1}){1}$/.test(num) || num > 9 || num == '') {
+                parentElem.querySelector('.errorMsg').style.display = "block";
+                parentElem.querySelector('.errorMsg').innerHTML = errorMsgText(num);
+                removeChildFormBox(num, childFormBox)
+            } else  {
+                parentElem.querySelector('.errorMsg').style.display = "none";
+                let childDiv = document.querySelector('.child-info-div');
+                childDiv.innerHTML = '';
+                let count = 1;
+                for (let i = 1; i <= num; i++) {
+                    let childForm = childrenInfoForm(count, num);
+                    childDiv.innerHTML += childForm;
+                    count++;
+                    $('.child_loan').mask("#", {reverse: true});
+                }
+            }
+        }
+        errorMsgText = (num) => {
+            switch (num){
+                case (num > 9):
+                    return 'Number Should Be Less Than 9';
+                    break;
+                case 0:
+                    return 'Number Should Be Greater Than 0';
+                    break;
+                case NaN:
+                    return 'This Field Can Not Be Empty';
+                    break;
+                default:
+                    return 'Please Enter A Number';
+            }
+        }
+        removeChildFormBox = (num, childFormBox) => {
+            if(childFormBox.length > 0){
+                for(let i=0; i<childFormBox.length; i++){
+                    childFormBox[i].remove();
+                }
+            }
+        }
+        childrenInfoForm = (count, num) => {
+            let childInfoForm = `<div class="row childFormBox">
+            <div class="col-md-12">
+                <h6 class="heading-style">${count}${count == 1 ? 'st' : count == 2 ? 'nd' : count == 3 ? 'rd' : 'th'} Child's Information</h6>
+            </div>
+            <div class="col-md-12 padd-20">
+                <div class="form-group">
+                    <label for="applicant_name_${count}" class="input-group-text">
+                      Child Name
+                    </label>
+                    <input type="text" minlength="3" minlength="50" class="form-control text-capitalize child_name" id="applicant_name_${count}"
+                     name="applicant_name_${count}" placeholder="Full Name">
+                </div>
+            </div>
+            <div class="col-md-12 padd-20 schoolNameField">
+                <div class="form-group">
+                    <label for="school_name_${count}" class="input-group-text">
+                        School Name
+                    </label>
+                    <input type="text" minlength="3" minlength="255" class="form-control text-capitalize child_school" id="school_name_${count}"
+                        name="school_name_${count}" placeholder="School Name">
+                </div>
+                ${num > 1 && count == 1 ? `
+
+                `: ''}
+            </div>
+            <div class="col-md-12 padd-20">
+                <div class="form-group">
+                    <label for="class_name_${count}" class="input-group-text">
+                        Class
+                    </label>
+                    <input type="text" minlength="2" minlength="255" class="form-control text-capitalize child_class" id="class_name_${count}"
+                        name="class_name_${count}" placeholder="Class Name">
+                </div>
+            </div>
+         <div class="col-md-12 padd-20">
+                <div class="form-group">
+                    <label for="loan_amount_${count}" class="input-group-text">
+                        Loan Amount For Student ${count}
+                    </label>
+                    <input type="text" min="1000" max="5000000" class="form-control text-capitalize child_loan" id="child_loan_${count}"
+                        name="loan_amount_${count}" placeholder="Loan Amount">
+                </div>
+            </div>
+        </div>`
+            return childInfoForm;
         }
         function addAnotherCo(randomVal){
             var coApplicant = ['<div class="col-md-12 padd-20 display-flex"><span class="input-group-text">Other Co-Borrower\'s Details (Optional)</span><button type="button" class="addAnotherCo input-group-text float-right" onclick="RemoveAnotherCo(this)"> Remove</button>\n' +
@@ -1668,6 +2161,171 @@ $this->registerJs($script);
                 countryName.style.display = "block";
             }else{
                 countryName.style.display = "none";
+            }
+        }
+
+        function showChildren(ths){
+            const applicantRadio = $('input[name="applicantRadio"]:checked').val();
+            // if (applicantRadio==null||applicantRadio==""||applicantRadio=='undefined'){
+            //     swal({
+            //         title:"Warning",
+            //         text: 'Please Select Relation First !!'
+            //     });
+            //     ths.checked = false;
+            //     return false;
+            // }
+            let radioValue = ths.value;
+            const countryName = document.getElementById('hideDiveChild');
+            const schoolInfo = document.getElementById('schooInfo');
+            const collegeLoanBox = document.getElementById('collegeLoanBox');
+            if(radioValue == '1'){
+                collegeLoanBox.style.display = "none";
+                if (applicantRadio==1){
+                    //alert('parent as school');
+                    $('#loanamount').attr('readonly','true');
+                    $('#total_sec').show();
+                    countryName.style.display = "block";
+                    document.getElementById('student_name_col').style.display = "none";
+                    schoolInfo.innerHTML = "";
+                    document.getElementById('noChild').value = "";
+                }else if (applicantRadio==0){
+                    //alert('student as school');
+                    $('#loanamount').removeAttr('readOnly');
+                    $('#total_sec').hide();
+                    countryName.style.display = "none";
+                    document.getElementById('student_name_col').style.display = "block";
+                    schoolInfo.innerHTML = createChild();
+                    let childFormBox = document.querySelectorAll('.childFormBox');
+                    let num = 1;
+                    removeChildFormBox(num, childFormBox);
+                }
+            }else{
+                schoolInfo.innerHTML = "";
+                document.getElementById('noChild').value = "";
+                countryName.style.display = "none";
+                document.getElementById('student_name_col').style.display = "block";
+                collegeLoanBox.style.display = "block";
+            }
+        }
+        function hideChildren(ths){
+            const applicantRadio = $('input[name="applicantRadio"]:checked').val();
+            // if (applicantRadio==null||applicantRadio==""||applicantRadio=='undefined'){
+            //     swal({
+            //         title:"Warning",
+            //         text: 'Please Select Relation First !!'
+            //     });
+            //     ths.checked = false;
+            //     return false;
+            // }
+            let radioValue = ths.value;
+            const countryName = document.getElementById('hideDiveChild');
+            const schoolInfo = document.getElementById('schooInfo');
+            const collegeLoanBox = document.getElementById('collegeLoanBox');
+            if(radioValue == '0'){
+                $('#loanamount').removeAttr('readOnly');
+                $('#total_sec').hide();
+                schoolInfo.innerHTML = "";
+                document.getElementById('noChild').value = "";
+                countryName.style.display = "none";
+                document.getElementById('student_name_col').style.display = "block";
+                collegeLoanBox.style.display = "block";
+                let childFormBox = document.querySelectorAll('.childFormBox');
+                let num = 1;
+                removeChildFormBox(num, childFormBox);
+            }else{
+                collegeLoanBox.style.display = "none";
+                if (applicantRadio==1){
+                    countryName.style.display = "block";
+                    document.getElementById('student_name_col').style.display = "none";
+                    schoolInfo.innerHTML = "";
+                    document.getElementById('noChild').value = "";
+                }else if (applicantRadio==0){
+                    countryName.style.display = "none";
+                    document.getElementById('student_name_col').style.display = "block";
+                    schoolInfo.innerHTML = createChild();
+                    let childFormBox = document.querySelectorAll('.childFormBox');
+                    let num = 1;
+                    removeChildFormBox(num, childFormBox);
+                }
+            }
+        }
+        function showRelation(ths){
+            const applicantRadio = $('input[name="applicantTypeRadio"]:checked').val();
+            let radioValue = ths.value;
+            const countryName = document.getElementById('hideDiveChild');
+            const schoolInfo = document.getElementById('schooInfo');
+            const collegeLoanBox = document.getElementById('collegeLoanBox');
+            const ParentCoBorrower = document.getElementById('parent_co_borrower');
+            if(radioValue == '1'){
+                //alert('parent');
+                $('#parent_student_borrower').css('display','none');
+                ParentCoBorrower.style.display = "block";
+                if (applicantRadio!=''||applicantRadio!=null){
+                    if (applicantRadio=='0') {
+                       // alert('parent college');
+                        $('#loanamount').removeAttr('readOnly');
+                        $('#total_sec').hide();
+                        $('#parent_student_borrower').css('display','none');
+                        schoolInfo.innerHTML = "";
+                        document.getElementById('noChild').value = "";
+                        countryName.style.display = "none";
+                        document.getElementById('student_name_col').style.display = "block";
+                        collegeLoanBox.style.display = "block";
+                        let childFormBox = document.querySelectorAll('.childFormBox');
+                        let num = 1;
+                        removeChildFormBox(num, childFormBox);
+                    }
+                    else if (applicantRadio=='1'){
+                        //alert('parent school');
+                        $('#loanamount').attr('readonly','true');
+                        $('#total_sec').show();
+                        $('#parent_student_borrower').css('display','none');
+                        collegeLoanBox.style.display = "none";
+                        countryName.style.display = "block";
+                        document.getElementById('student_name_col').style.display = "none";
+                        schoolInfo.innerHTML = "";
+                        document.getElementById('noChild').value = "";
+                    }
+                }
+            }
+        }
+        function hideRelation(ths){
+            const applicantRadio = $('input[name="applicantTypeRadio"]:checked').val();
+            let radioValue = ths.value;
+            const countryName = document.getElementById('hideDiveChild');
+            const schoolInfo = document.getElementById('schooInfo');
+            const collegeLoanBox = document.getElementById('collegeLoanBox');
+            const ParentCoBorrower = document.getElementById('parent_co_borrower');
+            if(radioValue == '0'){
+               // alert('student');
+                $('#parent_student_borrower').css('display','block');
+                ParentCoBorrower.style.display = "none";
+                if (applicantRadio!=''||applicantRadio!=null){
+                    if (applicantRadio=='0') {
+                        //alert('student college');
+                        $('#parent_student_borrower').css('display','block');
+                        schoolInfo.innerHTML = "";
+                        document.getElementById('noChild').value = "";
+                        countryName.style.display = "none";
+                        document.getElementById('student_name_col').style.display = "block";
+                        collegeLoanBox.style.display = "block";
+                        let childFormBox = document.querySelectorAll('.childFormBox');
+                        let num = 1;
+                        removeChildFormBox(num, childFormBox);
+                    }
+                    else if (applicantRadio=='1'){
+                        //alert('student school');
+                        $('#loanamount').removeAttr('readOnly');
+                        $('#total_sec').hide();
+                        $('#parent_student_borrower').css('display','block');
+                        countryName.style.display = "none";
+                        document.getElementById('student_name_col').style.display = "block";
+                        schoolInfo.innerHTML = createChild();
+                        let childFormBox = document.querySelectorAll('.childFormBox');
+                        let num = 1;
+                        removeChildFormBox(num, childFormBox);
+                    }
+                }
             }
         }
     </script>

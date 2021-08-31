@@ -1,8 +1,6 @@
 <?php
 
-
 namespace api\modules\v1\models;
-
 
 use common\models\Organizations;
 use common\models\UnclaimedOrganizations;
@@ -23,19 +21,19 @@ class OrganizationsList
             ->distinct()
             ->alias('a')
             ->select([new Expression(' "1" as is_claimed'), '(CASE
-                WHEN fo.followed = "1" THEN fo.followed ELSE NULL
+                WHEN fo.followed = "1" THEN fo.followed ELSE "0"
                END) as is_followed', 'a.slug',
                 'a.organization_enc_id', 'a.name', 'a.initials_color color',
-                '(CASE WHEN count(CASE WHEN le.name = "Featured" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_featured',
-                '(CASE WHEN count(CASE WHEN le.name = "Trending" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_trending',
-                '(CASE WHEN count(CASE WHEN le.name = "New" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_new',
-                '(CASE WHEN count(CASE WHEN le.name = "Promoted" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_promoted',
-                '(CASE WHEN count(CASE WHEN le.name = "Hot" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_hot',
-                'a.created_on', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
+                '(CASE WHEN count(CASE WHEN le.name = "Featured" THEN "1" ELSE NULL END) = 0  THEN "0" ELSE "1" END) as is_featured',
+                '(CASE WHEN count(CASE WHEN le.name = "Trending" THEN "1" ELSE NULL END) = 0  THEN "0" ELSE "1" END) as is_trending',
+                '(CASE WHEN count(CASE WHEN le.name = "New" THEN "1" ELSE NULL END) = 0  THEN "0" ELSE "1" END) as is_new',
+                '(CASE WHEN count(CASE WHEN le.name = "Promoted" THEN "1" ELSE NULL END) = 0  THEN "0" ELSE "1" END) as is_promoted',
+                '(CASE WHEN count(CASE WHEN le.name = "Hot" THEN "1" ELSE NULL END) = 0  THEN "0" ELSE "1" END) as is_hot',
+                'a.created_on', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=true&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo',
                 'y.business_activity', 'COUNT(distinct z.review_enc_id) total_reviews',
                 'a.slug profile_link', 'CONCAT(a.slug, "/reviews") review_link',
                 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating',
-                '(SUM(IFNULL(e.positions, 0))+IFNULL(ab.positions, 0)) as total_vaccency'])
+                '(SUM(IFNULL(e.positions, 0))+IFNULL(ab.positions, 0)) as total_vacancy'])
             ->joinWith(['businessActivityEnc y'], false)
             ->joinWith(['organizationReviews z'], false)
             ->joinWith(['employerApplications b' => function ($x) {
@@ -53,7 +51,7 @@ class OrganizationsList
                     $x->groupBy(['h.name']);
                     $x->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
                 }], false);
-                $x->onCondition(['b.is_deleted' => 0]);
+                $x->onCondition(['b.is_deleted' => 0, 'b.application_for' => 1, 'b.status' => 'ACTIVE']);
                 $x->groupBy(['b.organization_enc_id']);
             }], true)
             ->joinWith(['followedOrganizations fo' => function ($x) use ($options) {
@@ -106,19 +104,19 @@ class OrganizationsList
             ->distinct()
             ->alias('a')
             ->select([new Expression(' "0" as is_claimed'), '(CASE
-                WHEN fo.followed = "1" THEN fo.followed ELSE NULL
+                WHEN fo.followed = "1" THEN fo.followed ELSE "0"
                END) as is_followed', 'a.slug',
                 'a.organization_enc_id', 'a.name', 'a.initials_color color',
-                '(CASE WHEN count(CASE WHEN le.name = "Featured" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_featured',
-                '(CASE WHEN count(CASE WHEN le.name = "Trending" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_trending',
-                '(CASE WHEN count(CASE WHEN le.name = "New" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_new',
-                '(CASE WHEN count(CASE WHEN le.name = "Promoted" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_promoted',
-                '(CASE WHEN count(CASE WHEN le.name = "Hot" THEN "1" ELSE NULL END) = 0  THEN NULL ELSE "1" END) as is_hot',
+                '(CASE WHEN count(CASE WHEN le.name = "Featured" THEN "1" ELSE NULL END) = 0  THEN "0" ELSE "1" END) as is_featured',
+                '(CASE WHEN count(CASE WHEN le.name = "Trending" THEN "1" ELSE NULL END) = 0  THEN "0" ELSE "1" END) as is_trending',
+                '(CASE WHEN count(CASE WHEN le.name = "New" THEN "1" ELSE NULL END) = 0  THEN "0" ELSE "1" END) as is_new',
+                '(CASE WHEN count(CASE WHEN le.name = "Promoted" THEN "1" ELSE NULL END) = 0  THEN "0" ELSE "1" END) as is_promoted',
+                '(CASE WHEN count(CASE WHEN le.name = "Hot" THEN "1" ELSE NULL END) = 0  THEN "0" ELSE "1" END) as is_hot',
                 'a.created_on',
-                'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
+                'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=true&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo',
                 'y.business_activity', 'COUNT(distinct z.review_enc_id) total_reviews',
                 'CONCAT(a.slug, "/reviews") profile_link', 'CONCAT(a.slug, "/reviews") review_link',
-                'ROUND(average_rating) rating', 'IFNULL(u.positions, 0) total_vaccency'])
+                'ROUND(average_rating) rating', 'IFNULL(u.positions, 0) total_vacancy'])
             ->joinWith(['organizationTypeEnc y'], false)
             ->joinWith(['newOrganizationReviews z' => function ($b) {
                 $b->joinWith(['cityEnc d'], false);
@@ -133,7 +131,7 @@ class OrganizationsList
                 $x->joinWith(['applicationPlacementCities t' => function ($x) {
                     $x->joinWith(['cityEnc x'], false);
                 }], false);
-                $x->onCondition(['b.is_deleted' => 0]);
+                $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE']);
                 $x->groupBy('b.organization_enc_id');
             }], true)
             ->joinWith(['unclaimedFollowedOrganizations fo' => function ($x) use ($options) {
@@ -189,6 +187,18 @@ class OrganizationsList
             ->distinct()
             ->asArray()
             ->all();
+
+        foreach ($q as $key => $val) {
+            $q[$key]['Jobs'] = '0';
+            $q[$key]['Internships'] = '0';
+            foreach ($val['employerApplications'] as $t) {
+                $q[$key][$t['name']] = $t['total_application'];
+            }
+            unset($q[$key]['employerApplications']);
+            if ($q[$key]['rating'] == null) {
+                $q[$key]['rating'] = '0';
+            }
+        }
 
         return $q;
     }

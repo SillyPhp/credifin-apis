@@ -20,11 +20,14 @@ use yii\bootstrap\ActiveForm;
                 <?php
                     $gform = ActiveForm::begin([
                         'id' => 'upload-gallary-image',
+                        'fieldConfig' => [
+                            'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}{error}</div>",
+                        ]
                     ]);
 
                     echo $gform->field($companyImagesForm, 'image', [
-                        'template' => '{input}',
-                        'options' => ['tag' => false]])->fileInput(['class' => '', 'id' => 'gImageUpload', 'accept' => '.png, .jpg, .jpeg']);
+                        'template' => '{error}{input}',
+                        ])->fileInput(['class' => '', 'id' => 'gImageUpload', 'accept' => '.png, .jpg, .jpeg']);
                 ?>
                 <label for="gImageUpload">Select Image</label>
                 <?= Html::submitbutton('Upload Image', ['class' => 'btn btn-primary custom-buttons2 sav_benft']); ?>
@@ -55,6 +58,7 @@ $this->registerCss('
 .office-gallery .g-image-edit input {
     display: none;
 }
+.office-gallery .g-image-edit label,
 .office-gallery .g-image-edit input + label {
     display: inline-block;
     width: 124px;

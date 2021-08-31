@@ -27,10 +27,7 @@
                 </div>
                 <div class="paid-candidate-box-extra">
                     <ul>
-                        <li class="skills-h">Location :</li>
-                        {{#city_name}}
-                        {{{.}}}
-                        {{/city_name}}
+                        <li class="skills-h">Location :<span style="font-weight: 400;">{{#city_name}} {{{.}}}{{/city_name}}</span></li>
                     </ul>
 <!--                    <div class="desination"><i class="fa fa-map-marker-alt"></i> {{city_name}}</div>-->
                 </div>
@@ -41,7 +38,12 @@
                     <a href="/{{username}}" class="btn btn-paid-candidate bt-1">View Detail</a>
                 </span>
                 <span class="short-btn">
-                    <a href="javascript:;" class="btn btn-paid-candidate bt-1 shortlist-main" id="{{user_enc_id}}">Shortlist</a>
+                    {{#is_shortlisted}}
+                    <a href="javascript:;" class="btn btn-paid-candidate bt-1 shortlist-main" id="{{user_enc_id}}">Shortlisted</a>
+                    {{/is_shortlisted}}
+                    {{^is_shortlisted}}
+                        <a href="javascript:;" class="btn btn-paid-candidate bt-1 shortlist-main" id="{{user_enc_id}}">Shortlist</a>
+                    {{/is_shortlisted}}
                 </span>
                 <?php } else{ ?>
                 <span class="v-detail full-wi">

@@ -148,6 +148,7 @@ Yii::$app->view->registerJs('var _experience = '.json_encode($exp).'', \yii\web\
                             $this->render('/widgets/employer-applications/job-description', [
                                 'form' => $form,
                                 'model' => $model,
+                                'type' => $type,
                             ]);
                             ?>
                             <div class="divider"></div>
@@ -170,6 +171,7 @@ Yii::$app->view->registerJs('var _experience = '.json_encode($exp).'', \yii\web\
                                 'form' => $form,
                                 'model' => $model,
                                 'benefits' => $benefits,
+                                'type' => $type,
                             ]);
                             ?>
                             <?=
@@ -264,6 +266,33 @@ body {
     background-size: cover !important;
     background-attachment: fixed !important;
     background-repeat: no-repeat !important;
+}
+.select2{
+    background: 0 0;
+    border: 0;
+    border-bottom: 1px solid #c2cad8;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    -ms-border-radius: 0;
+    -o-border-radius: 0;
+    border-radius: 0;
+    color: #555;
+    box-shadow: none;
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 14px;
+}
+.select2-container--krajee .select2-selection{
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+}
+.select2-container--krajee.select2-container--open .select2-selection, 
+.select2-container--krajee .select2-selection:focus{
+    box-shadow: none;
+}
+.select2-dropdown{
+    z-index: 3;
 }
 .page-container-bg-solid .page-content{
     background: transparent !important;
@@ -1162,11 +1191,12 @@ q:before, q:after, blockquote:before, blockquote:after {
 .checkbox-input:checked + .checkbox-label .checkbox-text--description .un {
   display: inline-block;
 }
-.state_city_tag
-{font-size:14px;}
-
-.address_tag
-{font-size: 13px;}
+.state_city_tag{
+    font-size:14px;
+}
+.address_tag{
+    font-size: 13px;
+}
 .materialize-tags ~ input ~ label {
   color: #999 !important;
   padding: 1rem !important;
@@ -1659,6 +1689,9 @@ height:17px !important;
 .load-suggestions span:nth-child(3){
   animation: bounce 1s ease-in-out 0.66s infinite;
 }
+.md-radio{    
+    z-index: 0;
+}
 #wh_vacancy{display:none}
 #wage_type-error .color_red
 {font-size:13px}
@@ -1836,13 +1869,6 @@ function work_from_home(job_type_str) {
         $('#wh_type').addClass('col-md-12');
          }
 }
- function ChildFunction()
-     {
-       
-       $.pjax.reload({container: '#pjax_questionnaire', async: false});
-       $.pjax.reload({container: '#pjax_process', async: false});
-     }
-window.ChildFunction = ChildFunction;
         $(document).on('click','.button-submit',function(event)
             {
             event.preventDefault();

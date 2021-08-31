@@ -15,6 +15,7 @@ use common\models\LeadsApplications;
 use common\models\LeadsCollegePreference;
 use common\models\OrganizationLocations;
 use common\models\OrganizationTypes;
+use common\models\PressReleasePubliser;
 use common\models\Quiz;
 use common\models\SocialGroups;
 use common\models\SocialPlatforms;
@@ -34,6 +35,7 @@ use frontend\widgets\Login;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
+use yii\web\HttpException;
 use yii\web\Controller;
 use yii\helpers\Url;
 use yii\web\Response;
@@ -188,6 +190,16 @@ class SiteController extends Controller
         return parent::beforeAction($action);
     }
 
+    private function getPressReleasData($option = []){
+        $data = PressReleasePubliser::find()
+            ->andWhere(['is_deleted' => 0])
+            ->orderBy(['sequence' => SORT_ASC]);
+        if($option['limit']){
+            $data->limit($option['limit']);
+        }
+        return $data->asArray()->all();
+    }
+
     public function actionIndex()
     {
         $model = new ClassEnquiryForm();
@@ -198,7 +210,9 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index', ['model' => $model]);
+        return $this->render('index', [
+            'model' => $model,
+        ]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
@@ -942,9 +956,6 @@ class SiteController extends Controller
             case 'getGovernmentJobs':
                 return $this->renderAjax('/widgets/usa_and_govt_jobs');
                 break;
-            case 'getEduAndRedbull':
-                return $this->renderAjax('/widgets/edupreneur_and_redbull');
-                break;
             case 'getTopCities':
                 $other_jobs = (new \yii\db\Query())
                     ->distinct()
@@ -998,11 +1009,14 @@ class SiteController extends Controller
                     'cities_jobs' => $cities_jobs
                 ]);
                 break;
-            case 'getOpportunities':
-                return $this->renderAjax('/widgets/homepage_components/featured_opportunities');
+            case 'getAiesec':
+                return $this->renderAjax('/widgets/homepage_components/aiesec-feature');
                 break;
             case 'getLearningTopics':
                 return $this->renderAjax('/widgets/homepage_components/learning_topics');
+                break;
+            case 'getProductOffering':
+                return $this->renderAjax('/widgets/product-offerings');
                 break;
             case 'getWhatsappCommunity':
                 return $this->renderAjax('/widgets/whatsapp-widget');
@@ -1010,13 +1024,11 @@ class SiteController extends Controller
             case 'getInternationalJobs':
                 return $this->renderAjax('/widgets/international-jobs');
                 break;
-            case 'getSafetySigns':
-                return $this->renderAjax('/widgets/safety-signs');
-                break;
-            case 'getOnlineClasses':
-                $model = new ClassEnquiryForm();
-                return $this->renderAjax('/widgets/online-classes', [
-                    'model' => $model,
+            case 'getPressRelease':
+                $data = self::getPressReleasData(['limit' => 6]);
+                return $this->renderAjax('/widgets/press-releasee', [
+                    'data' => $data,
+                    'viewBtn' => true,
                 ]);
                 break;
             case 'getStats':
@@ -1025,9 +1037,6 @@ class SiteController extends Controller
             case 'getFeaturedApplications':
                 return $this->renderAjax('/widgets/employer_applications/preferred-applications');
                 break;
-//            case 'getFeaturedJobs':
-//                return $this->renderAjax('/widgets/employer_applications/preferred-jobs');
-//                break;
             case 'getHowItWorks':
                 if (Yii::$app->user->isGuest) {
                     return $this->renderAjax('/widgets/homepage_components/how-it-works');
@@ -1047,11 +1056,8 @@ class SiteController extends Controller
             case 'getOurServices':
                 return $this->renderAjax('/widgets/our-services');
                 break;
-            case 'getNewsUpdate':
-                return $this->renderAjax('/widgets/news-update');
-                break;
-            case 'getTweets':
-                return $this->renderAjax('/widgets/homepage_components/tweets');
+            case 'getDropResume':
+                return $this->renderAjax('/widgets/drop-resume-section');
                 break;
             case 'getShortcuts':
                 $job_profiles = AssignedCategories::find()
@@ -1194,6 +1200,26 @@ class SiteController extends Controller
         return $this->render('teachers-handbook');
     }
 
+    public function actionAnsileryDetail()
+    {
+        return $this->render('ansilery-detail');
+    }
+
+    public function actionFeedsForm()
+    {
+        return $this->render('feeds-form');
+    }
+
+    public function actionFeedPreview()
+    {
+        return $this->render('feed-preview');
+    }
+
+    public function actionFeedTimeline()
+    {
+        return $this->render('feed-timeline');
+    }
+
     public function actionAdmissionForm()
     {
         $this->layout = 'blank-layout';
@@ -1262,11 +1288,6 @@ class SiteController extends Controller
         return $this->render('resume-builder-landing-page');
     }
 
-    public function actionDropResumeLandingPage()
-    {
-        return $this->render('drop-resume-landing-page');
-    }
-
     public function actionEducationalInstitutionLoan()
     {
         $this->layout = 'blank-layout';
@@ -1329,4 +1350,54 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionAsSeenInIndex()
+    {
+        return $this->render('as-seen-in-index');
+    }
+
+    public function actionPlModal(){
+        return $this->render('pl-modal');
+    }
+
+    public function actionRankedCollege(){
+        return $this->render('ranked-college');
+    }
+
+    public function actionEnigma21(){
+        return $this->render('aiesec-main');
+    }
+  public function actionLinkInBio(){
+      $this->layout = 'widget-layout';
+    return $this->render('instagram-ey');
+  }
+    public function actionLinkDetail(){
+        return $this->render('insta-detail');
+    }
+  public function actionGetInstagram(){
+      if (Yii::$app->request->isAjax) {
+          Yii::$app->response->format = Response::FORMAT_JSON;
+          $limit = Yii::$app->request->post('limit');
+          $offset = Yii::$app->request->post('offset');
+          $model = Posts::find()
+              ->alias('z')
+              ->select(['z.*', 'CASE WHEN z.featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->posts->featured_image) . '", z.featured_image_location, "/", z.featured_image) ELSE NULL END featured_image'])
+              ->joinWith(['postTypeEnc a' => function($a){
+                  $a->andWhere(['a.post_type' => 'Social']);
+              }], false)
+              ->andWhere(['z.is_deleted' => 0,'z.is_visible' => 1,'z.status'=>'Active'])
+              ->orderBy(['z.created_on' => SORT_DESC]);
+          $totalData = $model->count();
+          $dataDetail = $model->limit($limit)
+              ->offset($offset)
+              ->all();
+          return [
+            'status' => 200,
+            'cards' => $dataDetail,
+            'total' => $totalData,
+            'count' => sizeof($dataDetail)
+          ];
+      } else {
+          throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+      }
+  }
 }

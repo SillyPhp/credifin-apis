@@ -25,7 +25,9 @@ use yii\helpers\Url;
                                     rounds!
                                     Here's hoping you get selected.
                                 </div>
-                                <div class="note">Your profile seems to be incomplete it would be recomended to complete your profile to enhance your selection</div>
+                                <div class="note">Your profile seems to be incomplete it would be recomended to complete
+                                    your profile to enhance your selection
+                                </div>
                                 <div class="applied-btns">
                                     <ul>
                                         <li>
@@ -33,7 +35,11 @@ use yii\helpers\Url;
                                                 Profile</a>
                                         </li>
                                         <li>
-                                            <a href="<?= "/account/jobs/applied" ?>">View Application</a>
+                                            <?php if ($applicationType == 'Internships') { ?>
+                                                <a href="<?= "/account/internships/applied" ?>">View Application</a>
+                                            <?php } else { ?>
+                                                <a href="<?= "/account/jobs/applied" ?>">View Application</a>
+                                            <?php } ?>
                                         </li>
                                     </ul>
                                 </div>

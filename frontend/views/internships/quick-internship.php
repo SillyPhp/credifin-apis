@@ -10,6 +10,7 @@ $url2 = \yii\helpers\Url::to(['/cities/country-list']);
 Yii::$app->view->registerJs('var doc_type = "'. $doc_type.'"',  \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var typ = "'. $typ.'"',  \yii\web\View::POS_HEAD);
 $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector-form-job.png';
+$primary_cat = \yii\helpers\ArrayHelper::map($primary_cat,'category_enc_id','name');
 Yii::$app->view->registerJs('var cid = "' . \common\models\Countries::findOne(['name' => $model->country])->country_enc_id . '"', \yii\web\View::POS_HEAD);
 $Initscript = <<< JS
 function cities_url(){
@@ -20,9 +21,9 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
 ?>
 <div class="col-md-12 set-overlay">
     <div class="row">
-        <h1 class="quick-internship-heading"> Post a Quick Internship !!</h1>
-        <h3 class="quick-internship-sub-heading">Quick Internship, Free Internship Vacancy Posting With your Valid Company and Job Details
-        </h3>
+        <h1 class="quick-internship-heading"> Post a Quick Internship Vacancy !!</h1>
+        <h2 class="quick-internship-sub-heading">Quick Internship, Free Internship Vacancy Posting With your Valid Company and Job Details
+        </h2>
         <?php
         if (Yii::$app->session->hasFlash('success')):
             echo "<div class='m-cover hidden'></div>
@@ -236,7 +237,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title"><?= Yii::t('frontend', 'Create Company'); ?></h4>
+                    <h3 class="modal-title"><?= Yii::t('frontend', 'Create Company'); ?></h3>
                 </div>
                 <div class="modal-body">
                     <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"

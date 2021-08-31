@@ -3,113 +3,174 @@
 use yii\helpers\Url;
 
 ?>
-    <div class="container">
-        <div class="col-md-12">
-            <div class="set-sticky">
-                <h3 class="ou-head">Highlights</h3>
-                <div class="placement-points">
-                    <div class="place-point">
-                        <div class="fa-icon"><i class="fas fa-university"></i></div>
-                        <div class="fa-text">
-                            <h3>No. of Companies visited</h3>
-                            <p>AAA</p>
-                        </div>
+<div class="container">
+    <div class="col-md-12">
+        <div class="set-sticky">
+            <h3 class="ou-head">Highlights</h3>
+            <div class="placement-points">
+                <div class="place-point">
+                    <div class="fa-icon"><i class="fas fa-university"></i></div>
+                    <div class="fa-text">
+                        <h3>No. of Companies visited</h3>
+                        <p>AAA</p>
                     </div>
-                    <div class="place-point">
-                        <div class="fa-icon"><i class="fab fa-affiliatetheme"></i></div>
-                        <div class="fa-text">
-                            <h3>Top Recruiters</h3>
-                            <p>AAA</p>
-                        </div>
+                </div>
+                <div class="place-point">
+                    <div class="fa-icon"><i class="fab fa-affiliatetheme"></i></div>
+                    <div class="fa-text">
+                        <h3>Top Recruiters</h3>
+                        <p>AAA</p>
                     </div>
-                    <div class="place-point">
-                        <div class="fa-icon"><i class="fas fa-scroll"></i></div>
-                        <div class="fa-text">
-                            <h3>Highest Stipend Offered</h3>
-                            <p>AAA</p>
-                        </div>
+                </div>
+                <div class="place-point">
+                    <div class="fa-icon"><i class="fas fa-scroll"></i></div>
+                    <div class="fa-text">
+                        <h3>Highest Stipend Offered</h3>
+                        <p>AAA</p>
                     </div>
-                    <div class="place-point">
-                        <div class="fa-icon"><i class="fas fa-microchip"></i></div>
-                        <div class="fa-text">
-                            <h3>Highest placement package</h3>
-                            <p>AAA</p>
-                        </div>
+                </div>
+                <div class="place-point">
+                    <div class="fa-icon"><i class="fas fa-microchip"></i></div>
+                    <div class="fa-text">
+                        <h3>Highest placement package</h3>
+                        <p>AAA</p>
                     </div>
-                    <div class="place-point">
-                        <div class="fa-icon"><i class="fas fa-clipboard-check"></i></div>
-                        <div class="fa-text">
-                            <h3>No. of Companies Offering Dream Packages</h3>
-                            <p>AAA</p>
-                        </div>
+                </div>
+                <div class="place-point">
+                    <div class="fa-icon"><i class="fas fa-clipboard-check"></i></div>
+                    <div class="fa-text">
+                        <h3>No. of Companies Offering Dream Packages</h3>
+                        <p>AAA</p>
                     </div>
                 </div>
             </div>
-            <div class="set-sticky">
-                <h3 class="ou-head">Top Recruiters</h3>
-                <div class="recruit-box-main">
-                    <div class="recruiter-box">
-                        <div class="recruit-logo"><img src="<?= Url::to('/assets/common/logos/logo.svg') ?>"></div>
-                        <div class="recrt-content">
-                            <div class="recruit-name">EmpowerYouth</div>
-                            <div class="recruit-count">50+ Recruitments</div>
-                            <div class="recruit-package">50k - 100k Package offered</div>
-                        </div>
-                    </div>
-                    <div class="recruiter-box">
-                        <div class="recruit-logo"><img src="<?= Url::to('/assets/common/logos/logo.svg') ?>"></div>
-                        <div class="recrt-content">
-                            <div class="recruit-name">EmpowerYouth</div>
-                            <div class="recruit-count">50+ Recruitments</div>
-                            <div class="recruit-package">50k - 100k Package offered</div>
-                        </div>
-                    </div>
-                    <div class="recruiter-box">
-                        <div class="recruit-logo"><img src="<?= Url::to('/assets/common/logos/logo.svg') ?>"></div>
-                        <div class="recrt-content">
-                            <div class="recruit-name">EmpowerYouth</div>
-                            <div class="recruit-count">50+ Recruitments</div>
-                            <div class="recruit-package">50k - 100k Package offered</div>
-                        </div>
-                    </div>
-                    <div class="recruiter-box">
-                        <div class="recruit-logo"><img src="<?= Url::to('/assets/common/logos/logo.svg') ?>"></div>
-                        <div class="recrt-content">
-                            <div class="recruit-name">EmpowerYouth</div>
-                            <div class="recruit-count">50+ Recruitments</div>
-                            <div class="recruit-package">50k - 100k Package offered</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="set-sticky row">
-                <h3 class="ou-head">Recruitment By Course</h3>
-                <div class="course-outer">
-                    <div class="by-course-main">
-                        <div class="by-course-name">B-tech</div>
-                        <div class="by-data">
-                            <div class="avg-pack">50k Average Package</div>
-                            <div class="high-pack">50k Highest Package</div>
-                            <div class="comp-visit">50+ Companies Visit</div>
-                            <div class="total-offers">50+ Total offers</div>
-                            <div class="student-offer">50+ Student Offers</div>
-                        </div>
-                    </div>
-                    <div class="by-course-main">
-                        <div class="by-course-name">B-tech</div>
-                        <div class="by-data">
-                            <div class="avg-pack">50k Average Package</div>
-                            <div class="high-pack">50k Highest Package</div>
-                            <div class="comp-visit">50+ Companies Visit</div>
-                            <div class="total-offers">50+ Total offers</div>
-                            <div class="student-offer">50+ Student Offers</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4"></div>
         </div>
+        <div class="set-sticky">
+            <h3 class="ou-head">Top Recruiters</h3>
+            <div class="recruit-box-main">
+                <div class="recruiter-box">
+                    <div class="recruit-logo"><img src="<?= Url::to('/assets/common/logos/logo.svg') ?>"></div>
+                    <div class="recrt-content">
+                        <div class="recruit-name">EmpowerYouth</div>
+                        <div class="recruit-count">50+ Recruitments</div>
+                        <div class="recruit-package">50k - 100k Package offered</div>
+                    </div>
+                </div>
+                <div class="recruiter-box">
+                    <div class="recruit-logo"><img src="<?= Url::to('/assets/common/logos/logo.svg') ?>"></div>
+                    <div class="recrt-content">
+                        <div class="recruit-name">EmpowerYouth</div>
+                        <div class="recruit-count">50+ Recruitments</div>
+                        <div class="recruit-package">50k - 100k Package offered</div>
+                    </div>
+                </div>
+                <div class="recruiter-box">
+                    <div class="recruit-logo"><img src="<?= Url::to('/assets/common/logos/logo.svg') ?>"></div>
+                    <div class="recrt-content">
+                        <div class="recruit-name">EmpowerYouth</div>
+                        <div class="recruit-count">50+ Recruitments</div>
+                        <div class="recruit-package">50k - 100k Package offered</div>
+                    </div>
+                </div>
+                <div class="recruiter-box">
+                    <div class="recruit-logo"><img src="<?= Url::to('/assets/common/logos/logo.svg') ?>"></div>
+                    <div class="recrt-content">
+                        <div class="recruit-name">EmpowerYouth</div>
+                        <div class="recruit-count">50+ Recruitments</div>
+                        <div class="recruit-package">50k - 100k Package offered</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="set-sticky row">
+            <h3 class="ou-head">Recruitment By Course</h3>
+            <div class="course-outer">
+                <div class="col-md-4 col-sm-6">
+                    <div class="by-course-main">
+                        <div class="by-course-name">B-tech</div>
+                        <div class="by-data">
+                            <div class="avg-pack">
+                                <h6>Average Package</h6>
+                                <h2>2,50,000</h2>
+                            </div>
+                            <div class="high-pack">
+                                <h6>Highest Package</h6>
+                                <h2>5,00,000</h2>
+                            </div>
+                            <div class="comp-visit">
+                                <h6>Companies Visited</h6>
+                                <h2>15</h2>
+                            </div>
+                            <div class="total-offers">
+                                <h6>Total Offers</h6>
+                                <h2>65</h2>
+                            </div>
+                            <div class="student-offer">
+                                <h6>Student Placed</h6>
+                                <h2>45</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="by-course-main">
+                        <div class="by-course-name">B-tech</div>
+                        <div class="by-data">
+                            <div class="avg-pack">
+                                <h6>Average Package</h6>
+                                <h2>2,50,000</h2>
+                            </div>
+                            <div class="high-pack">
+                                <h6>Highest Package</h6>
+                                <h2>5,00,000</h2>
+                            </div>
+                            <div class="comp-visit">
+                                <h6>Companies Visited</h6>
+                                <h2>15</h2>
+                            </div>
+                            <div class="total-offers">
+                                <h6>Total Offers</h6>
+                                <h2>65</h2>
+                            </div>
+                            <div class="student-offer">
+                                <h6>Student Placed</h6>
+                                <h2>45</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="by-course-main">
+                        <div class="by-course-name">B-tech</div>
+                        <div class="by-data">
+                            <div class="avg-pack">
+                                <h6>Average Package</h6>
+                                <h2>2,50,000</h2>
+                            </div>
+                            <div class="high-pack">
+                                <h6>Highest Package</h6>
+                                <h2>5,00,000</h2>
+                            </div>
+                            <div class="comp-visit">
+                                <h6>Companies Visited</h6>
+                                <h2>15</h2>
+                            </div>
+                            <div class="total-offers">
+                                <h6>Total Offers</h6>
+                                <h2>65</h2>
+                            </div>
+                            <div class="student-offer">
+                                <h6>Student Placed</h6>
+                                <h2>45</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4"></div>
     </div>
+</div>
 <?php
 $this->registerCss('
 .placement-points {
@@ -178,24 +239,35 @@ $this->registerCss('
 .by-course-name {
 	font-size: 20px;
 	color:#00a0e3;
+    font-weight: 700;
 }
 .by-data {
 	display: flex;
 	flex-wrap: wrap;
 }
 .by-data div {
+    margin-bottom: 10px;
+}
+.by-data h6 {
+    font-weight: 700;
+    font-family: Roboto;
+    line-height: 15px;
+    color: #7E7E7E;
+    margin: 0;
+}
+.by-data h2 {
+    margin: 0;
+    font-size: 21px;
+    font-family: Roboto;
+    font-weight: 700;
+}
+.by-data div {
 	flex-basis: 50%;
 }
-.course-outer {
-	display: flex;
-	justify-content: center;
-	flex-wrap: wrap;
-}
 .by-course-main {
-	flex-basis: 49.5%;
 	box-shadow: 0 0 3px 0 rgba(0,0,0,0.2);
-	margin: 0 1% 15px 0;
-	padding: 15px;
+	padding: 2px 15px;
+    margin-bottom: 10px;
 }
 .by-course-main:nth-child(2) {
 	margin-right: 0;

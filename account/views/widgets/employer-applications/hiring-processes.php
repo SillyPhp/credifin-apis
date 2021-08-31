@@ -64,7 +64,33 @@ use yii\helpers\URL;
 </div>
 <input type="text" name="process_calc" id="process_calc" readonly>
 <?php
+$this->registerCSS('
+.proCount{
+    background: #eee;
+    height: 32px;
+    float: right;
+    border-radius: 50%;
+    width: 32px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+}
+');
 $script = <<< JS
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+let process_radio = document.querySelectorAll('.process_radio');
+if(process_radio.length){
+    process_radio[0].querySelector('input[type=radio]').checked = true
+}
+
+$('.process_radio')
 $(document).on('click','.process_display',function(e) {
     e.preventDefault();
     var data = $(this).attr('data-id');

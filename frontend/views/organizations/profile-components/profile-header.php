@@ -12,8 +12,8 @@ use yii\helpers\Url;
     </div>
 </section>
 <section>
+    <button class="ajBtn" onclick="showJobsSidebar()"><i class="fa fa-bars"></i></button>
     <div class="tile hamburger-jobs" id="tile-1">
-        <button class="ajBtn" onclick="showJobsSidebar()"><i class="fa fa-bars"></i></button>
         <ul class="nav nav-tabs nav-justified" id="hamburgerJobs">
             <li class="nav-item cActive">
                 <a class="nav-link collegeLink overview" href="javascript:;" data-key="overview">
@@ -41,7 +41,7 @@ if(!Yii::$app->user->isGuest){
 }
 $this->registerCss('
 .college-header {
-	background-image: url('. Url::to("@eyAssets/images/pages/college-new-module/lpu.jpg") .');
+	background-image: url('. Url::to("@eyAssets/images/pages/college-new-module/colg-campus.png") .');
 	min-height: 400px;
 	background-position: top right;
 	background-repeat: no-repeat;
@@ -83,11 +83,15 @@ $this->registerCss('
 	color: #fff;
 	font-family: roboto;
 	font-weight: 600;
+	margin-bottom: 5px;
 }
 .c-location {
 	color: #fff;
 	font-size: 18px;
 	font-family: roboto;
+}
+.c-location i{
+    padding-right: 5px;
 }
 .tile {
     width: 100%;
@@ -455,60 +459,8 @@ label {
     .course-box:nth-child(3n+0){
         margin-right:1%;
     }
-    .loanProviderIcon{
-        float: right;
-        margin: unset;
-    }
-    table, thead, tbody, th, td, tr { 
-        display: block; 
-    }
-            
-    /* Hide table headers (but not display: none;, for accessibility) */
-    thead tr { 
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
-    tr {
-        border: 1px solid #ccc; 
-        margin-bottom: 10px;
-    }
-    td { 
-        /* Behave  like a "row" */
-        border: none;
-        border-bottom: 1px solid #eee; 
-        position: relative;
-        padding-left: 50% !important;
-        min-height: 70px;
-        height: auto; 
-    }
-    td:last-child{
-        border-bottom: none;
-    }
-    td:before { 
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        left: 3px;
-        width: 45%; 
-        padding-right: 10px;
-    }
-    td:nth-of-type(1):before { 
-        content: "Bank/Financier"; 
-    }
-    td:nth-of-type(2):before { 
-        content: "ROI"; 
-    }
-    td:nth-of-type(3):before { 
-        content: "Loan Amount Available"; 
-    }
-    td:nth-of-type(4):before { 
-        content: "Collateral"; 
-    }
-    td:nth-of-type(5):before { 
-        content: "Processing Fees"; 
-    }
-}
+   
+ 
 @media only screen and (max-width: 1311px) {
 #tile-1 .nav-tabs li a{
     font-size:14px !important;
@@ -546,11 +498,12 @@ label {
     box-shadow: 0 0 10px rgba(0,0,0,.2);
     z-index: 999;
     display:block;
+    overflow: hidden;
 }
 .ajBtn {
-	position: absolute;
-	top: 40vh;
-	right: -46px;
+	position: fixed;
+	top: 100px;
+    left: 0px;
 	background: #00a0e3;
 	border: 1px solid #00a0e3;
 	color: #fff;
@@ -559,6 +512,7 @@ label {
 	width: 45px;
 	font-size: 18px;
 	display:block;
+	z-index: 9;
 }
 .pa-sidebar{
     width: 100%;
@@ -570,6 +524,10 @@ label {
     width: 300px;
     transition: .3s ease;
     padding: 10px;
+}
+.aj-show{
+    left: 300px;
+    transition: .3s ease;
 }
 .hamburger-btn{
     position: absolute;
@@ -602,7 +560,6 @@ $('.nav-link').on('click', function (){
         })     
     }
 });
-console.log(subUrl);
 function changeActive(){
     if(subUrl){
         $('.cActive').removeClass('cActive');
@@ -626,7 +583,6 @@ function getDetails(){
                 var response = res.response.data;
                 let collegeDet = collegeInfo(res);
                 $('.college-main').append(collegeDet);
-                
             }
         },
         complete: function (){
@@ -643,11 +599,27 @@ function collegeInfo(res) {
                     </div>
                     <div class="college-info">
                         <h3 data-id="`+organization_enc_id+`" id="orgDetail">`+name+`</h3>
-                        <div class="c-location"><i class="fas fa-map-marker-alt"></i> `+city_name+`</div>
-                    </div>`;
+                        `+(city_name ? `<div class="c-location"><i class="fas fa-map-marker-alt"></i>` +city_name+`</div>` : '')+`    
+                     </div>`;
     return collegeInfo;
 }
-
+$('.collegeLink').on('click', function (){
+  var dataKey = $(this).attr('data-key'); 
+  var url = window.location.pathname.split('/');
+  var slugg = url[1];
+  var subUrl = url[2];
+  console.log(dataKey);
+  if(subUrl && subUrl != dataKey && dataKey != "overview"){
+      history.replaceState({}, '', dataKey);
+  }else if(dataKey == "overview"){
+      console.log('oo'); 
+      history.replaceState({}, '', '/'+slugg);
+  }else{
+     history.pushState({}, '', '/'+slugg+"/"+dataKey);
+  }
+  removeActive();
+  $(this).parent().addClass('cActive');
+});
 JS;
 $this->registerJS($script);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -665,8 +637,10 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         let clickedBtn = this.event.currentTarget;
         if(paSidebar[0].classList.contains('pa-sidebar-show')){
             clickedBtn.innerHTML = "<i class='fa fa-times'></i>";
+            clickedBtn.classList.add('aj-show');
         }else {
             clickedBtn.innerHTML = "<i class='fa fa-bars'></i>";
+            clickedBtn.classList.remove('aj-show');
         }
     }
 </script>

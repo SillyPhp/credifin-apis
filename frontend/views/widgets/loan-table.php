@@ -18,31 +18,6 @@ use yii\helpers\Url;
                         </tr>
                         </thead>
                         <tbody>
-<!--                        <tr>-->
-<!--                            <td>-->
-<!--                                <div class="loanProviderIcon">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/Bank_of_Baroda_logo.png') ?><!--">-->
-<!--                                </div>-->
-<!--                            </td>-->
-<!--                            <td>8% To 12% p.a.</td>-->
-<!--                            <td>Listed Universities: Rs.80 lakh<br>-->
-<!--                                Unlisted Universities: Rs.60 lakh-->
-<!--                            </td>-->
-<!--                            <td>Loan With & Without Collateral <br>Available +  Moratorium period</td>-->
-<!--                            <td>Rs.10,000 + GST <br>(Rs.10,000 refundable)</td>-->
-<!--                        </tr>-->
-                        <tr>
-                            <td>
-                                <div class="loanProviderIcon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png') ?>">
-                                </div>
-                            </td>
-                            <td>8% To 12% p.a.</td>
-                            <td>Rs.1 crore (With Collateral)<br>
-                                Rs. 40 Lakhs (Without Collateral)</td>
-                            <td>Loan With & Without Collateral <br>Available +  Moratorium period</td>
-                            <td>1 % of Loan Amount + GST</td>
-                        </tr>
                         <tr>
                             <td>
                                 <div class="loanProviderIcon">
@@ -89,6 +64,7 @@ use yii\helpers\Url;
                             <td>With Collateral - <br>Without Moratorium</td>
                             <td>4% + GST</td>
                         </tr>
+            <?php if ($is_show==1): ?>
                         <tr>
                             <td>
                                 <div class="loanProviderIcon">
@@ -100,6 +76,7 @@ use yii\helpers\Url;
                             <td>Without Collateral - <br> 10 Months Repayment</td>
                             <td>Up To - 5% + GST</td>
                         </tr>
+             <?php endif; ?>
                         </tbody>
                     </table>
                 </div>

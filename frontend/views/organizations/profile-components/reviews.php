@@ -412,54 +412,78 @@ function getReviews(){
             if(res.response.status == 200){
                 let overall_rating = res.response.data.overall_rating;
                 let reviewSideStats = reviewStats(overall_rating);
-                $('#reviewSum').append(reviewSideStats);
+                if(reviewSideStats){
+                    $('#reviewSum').append(reviewSideStats);
+                }
             }
         }
     })
 }
 getReviews();
+$('.showReviews').on('click', function (e){
+   getUserReviews(3,"",e.target.getAttribute('data-id')); 
+});
 var count = 0;
 var page = 1;
-function getUserReviews(limit=3, page=null){
+function getUserReviews(limit=3, page=null, type){
     var org_enc_id = $('#orgDetail').attr('data-id');
     $.ajax({
         url: baseUrl+'/api/v3/ey-college-profile/user-reviews',
         method: 'POST',
-        data: {org_enc_id:org_enc_id, limit:limit, page:page},
+        data: {org_enc_id:org_enc_id, limit:limit, page:page, type:type, user_enc_id:user_id},
         success: function (res){
-            var reviews_data = $('#organization-reviews').html();
-            $("#org-reviews").append(Mustache.render(reviews_data, res.response.data.reviews));
-            $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
-            $('.average-star').raty({
-                readOnly: true,
-                hints:['','','','',''],
-                score: function() {
-                    return $(this).attr('data-score');
+            if(res.response.status == 200){
+                var reviews_data = $('#organization-reviews').html();
+                $("#org-reviews").html('')
+                let dataRev = res.response.data.reviews
+                for(var i = 0; i < dataRev.length; i++){
+                    if(dataRev[i]['feedback_type'] == 1){
+                        dataRev[i].feedback_type_in = true;
+                    }else if(dataRev[i]['feedback_type'] == 0){
+                        dataRev[i].feedback_type_not = true;
+                    }
                 }
-            });
-            if(res.response.data.reviews.length+count == res.response.data.count){
-                $('#load_more_btn').hide()  
+                $("#org-reviews").append(Mustache.render(reviews_data, dataRev));
+                $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
+                $('.average-star').raty({
+                    readOnly: true,
+                    hints:['','','','',''],
+                    score: function() {
+                        return $(this).attr('data-score');
+                    }
+                });
+                if(res.response.data.reviews.length+count == res.response.data.count){
+                    $('#load_more_btn').hide()  
+                }
+                if($("#org-reviews").children().length == 0){
+                    $('#load_more_btn').hide(); 
+                    $("#org-reviews").html("<p class='noReview'>No Review's To Display</p>");
+                }
+                console.log($("#org-reviews").children().length)
+                count = count+limit;
+            }else if(res.response.status == 404){
+                   $('#load_more_btn').hide(); 
+                   $("#org-reviews").html("<p class='noReview'>No Review's To Display</p>");
             }
-            if($("#org-reviews").children().length == 0){
-                $('#load_more_btn').hide(); 
-                $("#org-reviews").html("<p class='noReview'>No Review's To Display</p>");
-            }
-            count = count+limit;
         }
     })
 }
-getUserReviews();
+getUserReviews(3,"",'employee');
+
 $(document).on('click','#load_more_btn',function(e){
     e.preventDefault();
     page = page + 1;
     getUserReviews(limit=3, page=page)
 });
-function reviewStats(overall_rating{
+function reviewStats(overall_rating){
+    const {average_count, Job_Security, Career_Growth, Company_Culture, Salary_And_Benefits, 
+      Work_Satisfaction, Work_Life_Balance, Skill_Development} = overall_rating;
+    
     let reviewStat = ` <div class="row">
         <div class="col-md-12 col-sm-4">
             <div class="rs-main">
-                <div class="rating-large">`+overall_rating['average_count']+`/5</div>
-                <div class="com-rating-1">`+ showStars(overall_rating['average_count']) +`</div>
+                <div class="rating-large">`+showRatingNum(average_count)+`/5</div>
+                <div class="com-rating-1">`+ showStars(average_count) +`</div>
             </div>
         </div>
     </div>
@@ -468,8 +492,8 @@ function reviewStats(overall_rating{
             <div class="rs1">
                 <div class="re-heading">Job Security</div>
                 <div class="summary-box">
-                    <div class="sr-rating">`+overall_rating['Job_Security']+`</div>
-                    <div class="fourstar-box com-rating-2">`+  showStars(overall_rating['Job_Security']) +`</div>
+                    <div class="sr-rating">`+showRatingNum(Job_Security)+`</div>
+                    <div class="fourstar-box com-rating-2">`+  showStars(Job_Security) +`</div>
                 </div>
             </div>
         </div>
@@ -477,8 +501,8 @@ function reviewStats(overall_rating{
             <div class="rs1">
                 <div class="re-heading">Career Growth</div>
                 <div class="summary-box">
-                    <div class="sr-rating">`+overall_rating['Career_Growth']+`</div>
-                    <div class="fourstar-box com-rating-2">`+ showStars(overall_rating['Career_Growth'])+`</div>
+                    <div class="sr-rating">`+showRatingNum(Career_Growth)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Career_Growth)+`</div>
                 </div>
             </div>
         </div>
@@ -486,8 +510,8 @@ function reviewStats(overall_rating{
             <div class="rs1">
                 <div class="re-heading">Company Culture</div>
                 <div class="summary-box">
-                    <div class="sr-rating">`+overall_rating['Company_Culture']+`</div>
-                    <div class="fourstar-box com-rating-2">`+ showStars(overall_rating['Company_Culture'])+`</div>
+                    <div class="sr-rating">`+showRatingNum(Company_Culture)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Company_Culture)+`</div>
                 </div>
             </div>
         </div>
@@ -495,8 +519,8 @@ function reviewStats(overall_rating{
             <div class="rs1">
                 <div class="re-heading">Salary & Benefits</div>
                 <div class="summary-box">
-                    <div class="sr-rating">`+overall_rating['Salary_And_Benefits']+`</div>
-                    <div class="fourstar-box com-rating-2">`+ showStars(overall_rating['Salary_And_Benefits'])+`</div>
+                    <div class="sr-rating">`+showRatingNum(Salary_And_Benefits)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Salary_And_Benefits)+`</div>
                 </div>
             </div>
         </div>
@@ -504,8 +528,8 @@ function reviewStats(overall_rating{
             <div class="rs1">
                 <div class="re-heading">Work Satisfaction</div>
                 <div class="summary-box">
-                    <div class="sr-rating">`+overall_rating['Work_Satisfaction']+`</div>
-                    <div class="fourstar-box com-rating-2">`+ showStars(overall_rating['Work_Satisfaction'])+`</div>
+                    <div class="sr-rating">`+showRatingNum(Work_Satisfaction)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Work_Satisfaction)+`</div>
                 </div>
             </div>
         </div>
@@ -513,8 +537,8 @@ function reviewStats(overall_rating{
             <div class="rs1">
                 <div class="re-heading">Work Life Balance</div>
                 <div class="summary-box">
-                    <div class="sr-rating">`+overall_rating['Work_Life_Balance']+`</div>
-                    <div class="fourstar-box com-rating-2">`+ showStars(overall_rating['Work_Life_Balance'])+`</div>
+                    <div class="sr-rating">`+showRatingNum(Work_Life_Balance)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Work_Life_Balance)+`</div>
                 </div>
             </div>
         </div>
@@ -522,14 +546,17 @@ function reviewStats(overall_rating{
             <div class="rs1">
                 <div class="re-heading">Skill Development</div>
                 <div class="summary-box">
-                    <div class="sr-rating">`+overall_rating['Skill_Development']+`</div>
-                    <div class="fourstar-box com-rating-2">`+ showStars(overall_rating['Skill_Development'])+`</div>
+                    <div class="sr-rating">`+showRatingNum(Skill_Development)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Skill_Development)+`</div>
                 </div>
             </div>
         </div>
     </div>`;
     return reviewStat;
 }
+function showRatingNum(count){
+    return (count == null ? 0 : count)
+} 
 function showStars(count){
     let stars = '';
     for (var i = 1; i <= 5; i++) {
@@ -540,19 +567,40 @@ function showStars(count){
 $(document).on('click','.btn_usefull',function() {
   var id = $(this).attr('value');
   var r_id = $(this).attr('data-key');
+  let newUsefulNum;
   if (id=='one'){
       if ($(this).hasClass('usefull_btn_color'))
           {
               return false;
           }
+      let notusefull_btn_color = $(this).closest('.usefull-bttn').find('.notusefull_btn_color');
+      if(notusefull_btn_color.length > 0){
+          let useNum = parseInt(notusefull_btn_color.find('.notUsefulNum').html());
+          newUsefulNum = useNum - 1;
+          notusefull_btn_color.find('.notUsefulNum').html(newUsefulNum);
+      }
+      let useFulBtn = $(this).find('.usefulNum')
+      let useFulNum = parseInt(useFulBtn.html());
+      newUsefulNum =  useFulNum + 1;
+      useFulBtn.html(newUsefulNum);
       $(this).addClass('usefull_btn_color');
       $(this).closest('.usefull-bttn').find('.notuse-bttn button').removeClass('notusefull_btn_color');
   }
   else if(id=='zero'){
       if ($(this).hasClass('notusefull_btn_color'))
-          {
-              return false;
-          }
+        {
+          return false;
+        }
+      let usefull_btn_color = $(this).closest('.usefull-bttn').find('.usefull_btn_color');
+      if(usefull_btn_color.length > 0){  
+         let useNum = parseInt(usefull_btn_color.find('.usefulNum').html());
+         newUsefulNum = useNum - 1;
+         usefull_btn_color.find('.usefulNum').html(newUsefulNum);
+      }
+        let notUseBtn = $(this).find('.notUsefulNum')
+        let notUseNum = parseInt(notUseBtn.html())
+        newUsefulNum = notUseNum + 1
+        notUseBtn.html(newUsefulNum)
       $(this).addClass('notusefull_btn_color');
       $(this).closest('.usefull-bttn').find('.use-bttn button').removeClass('usefull_btn_color');
   }
@@ -569,7 +617,7 @@ $(document).on('click','.btn_usefull',function() {
 $(document).on('click','input[name="reporting_radio"]',function() {
   var r_id = $('#review_enc_id').val();
   var id = $(this).val();
-    $.ajax({
+     $.ajax({
         url:baseUrl+'/api/v3/ey-college-profile/report',
         data:{review_enc_id:r_id, value:id, user_enc_id: user_id},                         
         method: 'post',
@@ -591,23 +639,6 @@ $(document).on('click','#report_btn',function() {
   $('#review_enc_id').val($(this).attr('data-key'));
 });
 
-$('.collegeLink').on('click', function (){
-     var dataKey = $(this).attr('data-key'); 
-     var url = window.location.pathname.split('/');
-     var slugg = url[1];
-     var subUrl = url[2];
-     console.log(dataKey);
-     if(subUrl && subUrl != dataKey){
-         history.replaceState({}, '', dataKey);
-     }else if(dataKey == "overview" || subUrl == "overview"){
-         console.log('oo'); 
-         history.replaceState({}, '', '/'+slugg);
-     }else{
-        history.pushState({}, '', '/'+slugg+"/"+dataKey);
-     }
-     // removeActive();
-     $(this).parent().addClass('cActive');
- })
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
@@ -617,3 +648,6 @@ $this->registerJsFile('@root/assets/vendor/raty-master/js/jquery.raty.js', ['dep
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 
 ?>
+<script>
+
+</script>

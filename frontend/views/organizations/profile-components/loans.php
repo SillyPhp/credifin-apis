@@ -6,10 +6,6 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
 
-//if(!$isAjax) {
-//    echo $this->render("profile-header");
-//}
-//print_r($isAjax);
 ?>
     <div class="container">
         <div class="set-sticky">
@@ -26,32 +22,6 @@ use borales\extensions\phoneInput\PhoneInput;
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>
-                            <div class="loanProviderIcon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/Bank_of_Baroda_logo.png') ?>">
-                            </div>
-                        </td>
-                        <td>8% To 12% p.a.</td>
-                        <td>Listed Universities: Rs.80 lakh<br>
-                            Unlisted Universities: Rs.60 lakh
-                        </td>
-                        <td>Loan With & Without Collateral <br>Available + Moratorium period</td>
-                        <td>Rs.10,000 + GST <br>(Rs.10,000 refundable)</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="loanProviderIcon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png') ?>">
-                            </div>
-                        </td>
-                        <td>8% To 12% p.a.</td>
-                        <td>Rs.1 crore (With Collateral)<br>
-                            Rs. 40 Lakhs (Without Collateral)
-                        </td>
-                        <td>Loan With & Without Collateral <br>Available + Moratorium period</td>
-                        <td>1 % of Loan Amount + GST</td>
-                    </tr>
                     <tr>
                         <td>
                             <div class="loanProviderIcon">
@@ -1157,27 +1127,6 @@ $(document).on('click', '.scroll-to-sec', function(e) {
 setTimeout(function() {
   initializePosSticky();
 },700);
-
- $('.collegeLink').on('click', function (){
-     var dataKey = $(this).attr('data-key'); 
-     var url = window.location.pathname.split('/');
-     var slugg = url[1];
-     var subUrl = url[2];
-     console.log(dataKey);
-     if(subUrl && subUrl != dataKey){
-         history.replaceState({}, '', dataKey);
-     }else if(dataKey == "overview" || subUrl == "overview"){
-         console.log('oo'); 
-          history.replaceState({}, '', '/'+slugg);
-     }else{
-           history.pushState({}, '', '/'+slugg+"/"+dataKey);
-     }
-     // removeActive();
-     $(this).parent().addClass('cActive');
- })
-
-
-
 JS;
 $this->registerJS($script);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

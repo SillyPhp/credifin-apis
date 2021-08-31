@@ -98,7 +98,7 @@ if (isset($_GET['filter'])) {
             </div>
 
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 heading-filters-container">
                     <?php
                     $filterList = [
                         'all' => 'All',
@@ -133,6 +133,7 @@ if (isset($_GET['filter'])) {
                         }
                         ?>
                     </ul>
+                    <div id="search-filter-span"><input style="height: 35px" class="form-control-static" id="search-filter" type="text" placeholder="Type to search..." value="<?= $_GET['search'] ?>" /><button id="search-filter-btn" class="btn btn-primary">Search</button></button></div>
                 </div>
             </div>
         </div>
@@ -395,10 +396,13 @@ if (isset($_GET['filter'])) {
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <div class="col-md-6 col-sm-6 padd-20">
+                                <div class="col-md-4 col-sm-4 padd-20">
+                                    <?= $form->field($model, 'rate_of_interest')->textInput(['autocomplete' => 'off', 'type' => 'number']); ?>
+                                </div>
+                                <div class="col-md-4 col-sm-4 padd-20">
                                     <?= $form->field($model, 'approved_by')->textInput(['autocomplete' => 'off']); ?>
                                 </div>
-                                <div class="col-md-6 col-sm-6 padd-20">
+                                <div class="col-md-4 col-sm-4 padd-20">
                                     <?= $form->field($model, 'fldg')->textInput(['autocomplete' => 'off', 'type' => 'number', 'placeholder' => 'in %'])->label('FLDG'); ?>
                                 </div>
                             </div>
@@ -449,6 +453,26 @@ if (isset($_GET['filter'])) {
 </div>
 <?php
 $this->registerCss('
+.heading-filters-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+#search-filter-span{
+    display: flex;
+    margin-bottom: 10px;
+}
+#search-filter-span input{
+    border: 1px solid #ddd;
+    padding: 0px 15px;
+    margin-right: 10px;
+    border-radius: 2px;
+}
+#search-filter-span input, #search-filter-span button{
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
 .form-group{
     margin-bottom: 5px;
 }
@@ -940,6 +964,9 @@ input.checkbox:checked + label:before {
     }
 }
 
+span#search-filter-span {
+    float: right;
+}
 ');
 
 $script = <<<JS
@@ -954,6 +981,20 @@ $(function () {
 var filterList = $jsonFilterList;
 $(document).on('change', '.status_filters', function(e) {
     var ths = $(this);
+    filterState(ths, false);
+});
+$(document).on('keyup', '#search-filter', function(e) {
+    var ths = $(this);
+    if(e.keyCode === 13){
+        filterState(ths, true);
+    }
+});
+$(document).on('click', '#search-filter-btn', function(e) {
+    var ths = $(this);
+    filterState(ths, true);
+});
+function filterState(ths, searchFilter){
+    var searchValue = $('#search-filter').val();
     var thsValue = ths.val();
     var obj = $('#status_filters').find('.status_filters');
     var len = obj.length;
@@ -977,15 +1018,15 @@ $(document).on('change', '.status_filters', function(e) {
             }
         }
     });
-    var cur_params = '/account/education-loans/dashboard';
+    var cur_params = '/account/education-loans/dashboard?search='+searchValue;
     if(list){
-        history.pushState('data', 'title', cur_params + '?filter=' + list);
+        history.pushState('data', 'title', cur_params +'&filter=' + list);
     } else {
         history.pushState('data', 'title', cur_params);
         $('#list_all').prop('checked', true);
     }
     $.pjax.reload({container: '#list-container', async: false});
-});
+}
 JS;
 $this->registerJS($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');

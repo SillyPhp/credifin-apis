@@ -11,12 +11,12 @@ use yii\helpers\Html;
                 <div class="safety">
                     <div class="tab" id="step-1">
                         <div class="row safety-inner">
-                            <div class="col-md-5">
+                            <div class="col-md-12">
                                 <div class="safety-img">
                                     <img src="<?= Url::to('@eyAssets/images/pages/safety-posters/posters-logo.png'); ?>">
                                 </div>
                             </div>
-                            <div class="col-md-7">
+                            <div class="col-md-12">
                                 <h2 class="text-h">Start Customizing Posters with your own Company's Name & Logo</h2>
                                 <div class="row">
                                     <?php $form = ActiveForm::begin([
@@ -24,12 +24,12 @@ use yii\helpers\Html;
                                         'options' => ['enctype' => 'multipart/form-data'],
                                         'action' => '/jobs/image-script'
                                     ]); ?>
-                                    <div class="col-md-6 mb-15">
+                                    <div class="col-md-12 mb-15">
                                         <label class="cmp-name for-text">Enter Company Name</label>
                                         <!--                                        <input type="text" class="form-control for-n-cmp">-->
                                         <?= $form->field($scriptModel, 'company_name', ['template' => '{input}{error}'])->textInput(['class' => 'capitalize form-control for-n-cmp', 'id' => 'company_name', 'placeholder' => 'Company Name'])->label(false); ?>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-12">
                                         <label class="choose-logo for-text">Choose Your Logo (.png)</label>
                                         <?= $form->field($scriptModel, 'logo')->fileInput(['autocomplete' => 'off', 'class' => 'form-control for-choose', 'id' => 'logo', 'accept' => '.png'])->label(false); ?>
                                         <!--                                        <input type="file" class="form-control for-choose" id="FileAttachment"-->
@@ -151,8 +151,7 @@ $this->registerCss('
 }
 .safety-links-share{
     text-align: center;
-    padding:20px 0 20px 0;
-    margin: 0 0 20px 0; 
+    margin: 0 0 10px 0; 
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -160,7 +159,7 @@ $this->registerCss('
 }
 .safety-links-share h4{
     font-size: 18px;
-    margin: 0px;
+    margin-bottom: 10px;
     font-family: roboto;
     font-weight: 500;
     color:#000;
@@ -168,7 +167,7 @@ $this->registerCss('
 .safety-links-share a{
     color:#000;
     font-size: 22px;
-    margin: 0 10px 
+    margin: 5px 10px 65px;
 }
 .safety-links-share a:hover{
     color: #fff;
@@ -206,7 +205,7 @@ $this->registerCss('
    text-align: center;
     font-size: 18px;
     font-family: roboto;
-    margin: 0 auto 20px;
+    margin: 15px auto 20px;
     line-height: 25px;
     border-bottom: none;
     font-weight: 500;

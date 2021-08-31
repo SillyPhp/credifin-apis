@@ -4,33 +4,69 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
+
+$this->title = 'Study in Europe';
+$keywords = 'Study in Europe | Empower Youth';
+$description = 'Do not let financial burden stop you from fulfilling your desire to study in your dream college.';
+$image = Url::to('@eyAssets/images/pages/education-loans/study-in-europe.png', 'https');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
-<section class="study-in-usa-bg">
-    <div class="opacity-div"></div>
+
+<section class="study-in-europe-bg">
+        <img class="europe-img" src="<?= Url::to('@eyAssets/images/pages/education-loans/europe.png')?>" alt="">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <h1>
-                    <span class="typewrite" data-period="2000"
-                          data-type='["Study In EUROPE.", "Education Loan.", "Easy Apply.", "Easy EMIs To Pay.", "Less Paperwork." ]'>
+            <div class="col-md-7 col-sm-7">
+                <div class="europe-text">
+                    <h1>
+                        <span class="typewrite" data-period="2000"
+                              data-type='["Study In EUROPE.", "Education Loan.", "Easy Apply.", "Easy EMIs To Pay.", "Less Paperwork." ]'>
                         <span class="wrap"></span>
-                    </span>
-                </h1>
-                <p>Don't let financial burden stop you from fulfilling <br> your desire to study in your dream college.</p>
-                <ul>
-                    <li><a href="#contact" class="apply-now btn-orange">Reach Us</a></li>
-                    <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
-                </ul>
+                        </span>
+                    </h1>
+                    <p>Don't let <span class="bold-fontt">financial burden stop you</span> from fulfilling <br>
+                        your desire to <span class="bold-fontt">study in your dream college<span class="bold-fontt">.</p>
+                    <ul>
+                        <li><a href="#contact" class="apply-now btn-orange">Reach Us</a></li>
+                        <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-5 col-sm-5">
             </div>
         </div>
     </div>
 </section>
+
 <section class="studyus-head">
     <div class="container">
         <div class="row">
             <div class="col-md-5 tac">
                 <div class="whystudy">
-                    <img src="<?= Url::to('@eyAssets/images/pages/custom/europe.png')?>" alt="">
+                    <img src="<?= Url::to('@eyAssets/images/pages/custom/europe-eiffel-tower.png')?>" alt="">
                 </div>
             </div>
             <div class="col-md-7">
@@ -79,225 +115,101 @@ use borales\extensions\phoneInput\PhoneInput;
 </section>
 <?= $this->render('/widgets/loan-process-ease') ?>
 <?= $this->render('/widgets/europe-course')?>
-<?= $this->render('/widgets/loan-table')?>
+<?php $is_show = 0; ?>
+<?= $this->render('/widgets/loan-table',['is_show'=>$is_show])?>
 <section class="bg-blue">
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
 <?= $this->render('/widgets/education-loan-faqs');?>
-<section class="bg-caller padd30" id="contact">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-5 tc">
-                <div class="le-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/call-us1.png') ?>">
-                </div>
-            </div>
-            <div class="col-md-7">
-                <h3 class="heading-style">Get In Touch With Our Loan Expert</h3>
-                <div class="right-sec">
-                    <div class="ls-box-shadow">
-                        <?php $form = ActiveForm::begin([
-                            'id' => 'application_form',
-                            'options' => [
-                                'class' => 'clearfix',
-                            ],
-                            'fieldConfig' => [
-                                'template' => '',
-                                'labelOptions' => ['class' => ''],
-                            ],
-                        ]); ?>
-                        <div class="form-group tab" data-id="step1">
-                            <div class="form-flex">
-                                <?= $form->field($model, 'first_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field blurInput', 'placeholder' => 'First Name', 'data-field' => 'first_name', 'data-type' => 'leadApplication'])->label(false); ?>
-                                <?= $form->field($model, 'last_name', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field blurInput', 'placeholder' => 'Last Name', 'data-field' => 'last_name', 'data-type' => 'leadApplication'])->label(false); ?>
-                            </div>
-
-                            <div class="form-flex">
-                                <?= $form->field($model, 'email', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'form-control req_field blurInput', 'placeholder' => 'Email', 'data-field' => 'student_email', 'data-type' => 'leadApplication'])->label(false); ?>
-                                <?= $form->field($model, 'phone', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput()->widget(PhoneInput::className(), [
-                                    'jsOptions' => [
-                                        'allowExtensions' => true,
-                                        'preferredCountries' => ['in'],
-                                        'nationalMode' => true,
-                                    ],
-                                    'options' => [
-                                        'class' => 'form-control req_field blurInput phoneInput',
-                                        'data-field' => 'student_mobile_number',
-                                        'data-type' => 'leadApplication'
-                                    ]
-                                ])->label(false); ?>
-                            </div>
-
-                            <div class="form-flex">
-                                <?= $form->field($model, 'course', ['template' => '<div class="ff-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize blurInput', 'placeholder' => 'Course Name', 'autocomplete' => 'off', 'id' => 'course_name', 'data-field' => 'course_name', 'data-type' => 'leadApplication'])->label(false); ?>
-                            </div>
-                        </div>
-
-                        <section data-for="step2">
-                            <div class="form-group tab" data-id="step2">
-                                <section data-type="loan_interest">
-                                    <div class="form-flex-2">
-                                        <div class="font14">Would you like to take education loan for :</div>
-                                        <div class="radio-container">
-                                            <input type="radio" name="interestLoanFor" id="uni_college" data-field="loan_for" value="1">
-                                            <label for="uni_college">
-                                                <svg class="check" viewbox="0 0 40 40">
-                                                    <defs>
-                                                        <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
-                                                            <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                            <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <circle id="border" r="18px" cx="20px" cy="20px"></circle>
-                                                    <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
-                                                </svg>
-                                                University/College
-                                            </label>
-                                            <input type="radio" name="interestLoanFor" id="school" data-field="loan_for" value="2">
-                                            <label for="school">
-                                                <svg class="check" viewbox="0 0 40 40">
-                                                    <defs>
-                                                        <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
-                                                            <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                            <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <circle id="border" r="18px" cx="20px" cy="20px"></circle>
-                                                    <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
-                                                </svg>
-                                                School
-                                            </label>
-                                            <input type="radio" name="interestLoanFor" id="otherInstitute" data-field="loan_for" value="3">
-                                            <label for="otherInstitute">
-                                                <svg class="check" viewbox="0 0 40 40">
-                                                    <defs>
-                                                        <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
-                                                            <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                            <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <circle id="border" r="18px" cx="20px" cy="20px"></circle>
-                                                    <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
-                                                </svg>
-                                                Other Institute
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <section data-type="collegeApplied" class="hideRow">
-                                        <div class="form-flex-2">
-                                            <div class="font14">Have You Already Taken Admission?</div>
-                                            <div class="radio-container">
-                                                <input type="radio" name="appliedCollege" id="yes" data-field="admission_taken" value="1">
-                                                <label for="yes">
-                                                    <svg class="check" viewbox="0 0 40 40">
-                                                        <defs>
-                                                            <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
-                                                                <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                                <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                            </linearGradient>
-                                                        </defs>
-                                                        <circle id="border" r="18px" cx="20px" cy="20px"></circle>
-                                                        <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
-                                                    </svg>
-                                                    Yes
-                                                </label>
-                                                <input type="radio" name="appliedCollege" id="no" data-field="admission_taken" value="0">
-                                                <label for="no">
-                                                    <svg class="check" viewbox="0 0 40 40">
-                                                        <defs>
-                                                            <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
-                                                                <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                                <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                            </linearGradient>
-                                                        </defs>
-                                                        <circle id="border" r="18px" cx="20px" cy="20px"></circle>
-                                                        <circle id="dot" r="8px" cx="20px" cy="20px"></circle>
-                                                    </svg>
-                                                    No
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="form-group hideRow" id="appliedYes">
-                                            <div class="form-flex">
-                                                <?= $form->field($model, 'college', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name blurInput', 'placeholder' => 'College Or University Name', 'autocomplete' => 'off', 'id' => 'college_name', 'data-field' => 'college_name', 'data-type' => 'leadApplication'])->label(false); ?>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group hideRow" id="appliedNo">
-                                            <p>Please Mention Your Three Preferred Colleges</p>
-                                            <div class="form-flex">
-                                                <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name blurInput', 'placeholder' => 'College Or University Name Preference 1', 'autocomplete' => 'off', 'id' => 'college_preference1', 'data-field' => 'college_name', 'data-type' => 'leadCollegePreference', 'data-sequence' => 'first'])->label(false); ?>
-                                            </div>
-                                            <div class="form-flex">
-                                                <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name blurInput', 'placeholder' => 'College Or University Name Preference 2', 'autocomplete' => 'off', 'id' => 'college_preference2', 'data-field' => 'college_name', 'data-type' => 'leadCollegePreference', 'data-sequence' => 'second'])->label(false); ?>
-                                            </div>
-                                            <div class="form-flex">
-                                                <?= $form->field($model, 'preference_college1[]', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'typeahead form-control text-capitalize college_name blurInput', 'placeholder' => 'College Or University Name Preference 3', 'autocomplete' => 'off', 'id' => 'college_preference3', 'data-field' => 'college_name', 'data-type' => 'leadCollegePreference', 'data-sequence' => 'third'])->label(false); ?>
-                                            </div>
-                                        </div>
-                                    </section>
-                                </section>
-
-
-                                <div class="form-group">
-                                    <div class="form-flex-2">
-                                        <div class="font14">Do You want to apply for Education Loan Now?</div>
-                                        <div class="radio-container">
-                                            <input type="radio" name="loan" id="LoanYes" value="Loanyes">
-                                            <label for="LoanYes">
-                                                <svg class="check" viewbox="0 0 40 40">
-                                                    <defs>
-                                                        <linearGradient id="gradient2" x1="0" y1="0" x2="0" y2="100%">
-                                                            <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                            <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <circle id="border2" r="18px" cx="20px" cy="20px"></circle>
-                                                    <circle id="dot2" r="8px" cx="20px" cy="20px"></circle>
-                                                </svg>
-                                                Yes
-                                            </label>
-                                            <input type="radio" name="loan" id="LoanNo" value="LoanNo">
-                                            <label for="LoanNo">
-                                                <svg class="check" viewbox="0 0 40 40">
-                                                    <defs>
-                                                        <linearGradient id="gradient2" x1="0" y1="0" x2="0" y2="100%">
-                                                            <stop offset="0%" stop-color="#0db6fc"></stop>
-                                                            <stop offset="100%" stop-color="#00a0e3"></stop>
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <circle id="border2" r="18px" cx="20px" cy="20px"></circle>
-                                                    <circle id="dot2" r="8px" cx="20px" cy="20px"></circle>
-                                                </svg>
-                                                No, I am Just Inquiring.
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div id="loanFields" class="hideRow">
-                                        <div class="form-flex">
-                                            <?= $form->field($model, 'amount', ['template' => '<div class="fw-input">{input}{error}</div>'])->textInput(['class' => 'form-control blurInput', 'placeholder' => 'Loan Amount', 'type' => 'text', 'autocomplete' => 'off', 'id' => 'amount', 'data-field' => 'loan_amount', 'data-type' => 'leadApplication'])->label(false); ?>
-                                            <input type="text" name="amountValidation" style="display:none;">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-                        <div class="button-form">
-                            <button type="button" id="prevBtn" class="btn-frm">Previous</button>
-                            <button type="button" id="nextBtn" class="btn-frm">Next</button>
-                            <?= Html::button('Submit', ['class' => 'btn-frm', 'id' => 'submitBtn']) ?>
-                        </div>
-
-                        <?php ActiveForm::end(); ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<?= $this->render('/widgets/press-releasee') ?>
+<?php
+if($blogs['blogs']){
+    echo $this->render('/widgets/education-loan/blogs',[
+        'blogs' => $blogs,
+        'param' => 'study-in-europe'
+    ]);
+};
+?>
+<?= $this->render('/widgets/loan-form-detail',[
+    'model' => $model
+]); ?>
+<?= $this->render('/widgets/press-releasee',[
+    'data' => $data,
+    'viewBtn' => true,
+]) ?>
+<?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+/* study in australia header css */
+
+.bold-fontt {
+    font-weight: bold;
+}
+.study-in-europe-bg {
+    background: url(' . Url::to('@eyAssets/images/pages/education-loans/europe-map.png') . ') top right, linear-gradient(90deg, #D9FFFE -2.4%, #FFFFFF 61.98%);
+	background-repeat: no-repeat;
+    background-size: 50%, 100%;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    text-align: left;
+    height: 90vh;
+    max-height: 700px;
+}
+.europe-img {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 60%;
+}
+.europe-text h1{
+    font-size: 45px;
+	margin-bottom: 20px;
+	color: #FF7803;
+	font-weight: 700;
+	font-family: roboto;
+}
+.europe-text p{
+    font-size: 24px;
+	font-family: roboto;
+	color: #000;
+	padding: 0 0 18px;
+	line-height: 30px;
+}
+.europe-text ul li{
+    display: inline;
+    margin-right: 10px;
+}
+.apply-now{
+    padding: 10px 15px;
+	background: #00A0E3;
+	color: #fff;
+	border: 1px solid #00A0E3;
+	box-shadow: 0 5px 10px rgba(0,0,0,.3);
+	font-size: 16px;
+	font-family: roboto;
+	border-radius: 4px;
+	display: inline-block;
+	width: 150px;
+	text-align: center;
+}
+.btn-orange{
+    background: #ff7803 !important;
+    border: 1px solid #ff7803 !important;
+}
+.apply-now:hover{
+    background: #ff7803; 
+    color: #fff;
+    border: 1px solid #ff7803;
+    transition: .3s ease;
+}
+.btn-orange:hover{
+    background: #00a0e3 !important;
+    border: 1px solid #00a0e3 !important;
+}
+
+/* css ends */
+
 .studyus-head {
     padding: 30px;
 }
@@ -338,46 +250,19 @@ $this->registerCss('
     font-weight: 600;
 }
 .padd30{
+    padding-top: 30px;
     padding-bottom: 30px;
 }
 .le-img img{
-    border-radius: 15px;
+    height: 100%;
+    max-height: 300px;
+    border-radius: 10px;
+    padding: 15px;
 }
 #typed{
     font-size: 25px;
     color: #fff;
 }
-.study-in-usa-bg ul li{
-    display: inline;
-    margin-right: 10px;
-}
-.apply-now{
-    padding: 10px 15px;
-	background: #00A0E3;
-	color: #fff;
-	border: 1px solid #00A0E3;
-	box-shadow: 0 5px 10px rgba(0,0,0,.3);
-	font-size: 16px;
-	font-family: roboto;
-	border-radius: 4px;
-	display: inline-block;
-	width: 150px;
-}
-.btn-orange{
-    background: #ff7803 !important;
-    border: 1px solid #ff7803 !important;
-}
-.apply-now:hover{
-    background: #ff7803; 
-    color: #fff;
-    border: 1px solid #ff7803;
-    transition: .3s ease;
-}
-.btn-orange:hover{
-    background: #00a0e3 !important;
-    border: 1px solid #00a0e3 !important;
-}
-
 .padd-15{
     padding: 0 15px;
 }
@@ -415,41 +300,6 @@ $this->registerCss('
 .cus-number a:hover{
     box-shadow: 0 0 10px rgba(0,0,0,.3);
     transition: .3s ease;
-}
-
-.study-in-usa-bg{
-       background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-u.png') . ');
-       min-height: 500px;
-	   background-repeat: no-repeat;
-	   background-size: cover;
-	   display: flex;
-	   align-items: center;
-	   position: relative;
-	   text-align: center;
-	   height: 100vh;
-	   max-height: 700px;
-}
-.opacity-div{
-    position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0,0,0,.4);
-}
-.study-in-usa-bg p{
-    font-size: 24px;
-	font-family: roboto;
-	color: #fff;
-	padding: 0 0 18px;
-	line-height: 30px;
-}
-.study-in-usa-bg h1{
-    font-size: 45px;
-	margin-bottom: 20px;
-	color: #FF7803;
-	font-weight: 700;
-	font-family: roboto;
 }
 .footer{
     margin-top: 0px !important;
@@ -732,9 +582,6 @@ label {
 
 
 @media only screen and (max-width: 767px) {
-.study-in-usa-bg h1{
-    font-size: 30px;
-}
 .h-point1 {
     width: 50%;
 }
@@ -743,6 +590,66 @@ label {
 }
 .course-box:nth-child(3n+0){
     margin-right:1%;
+}
+}
+
+@media only screen and (max-width: 991px) and (min-width:768px){
+    .europe-text h1 {
+        font-size: 36px;
+    }
+    .europe-text p {
+        font-size: 18px;
+        line-height: 24px;
+     }
+     .apply-now {
+        width: 130px;
+     }
+     .europe-img {
+        width: 65%;
+    }
+}
+
+@media only screen and (max-width: 767px) and (min-width:454px){
+    .europe-text {
+        text-align: center;
+    }
+    .europe-text h1 {
+        font-size: 32px;
+    }
+    .europe-text p {
+        font-size: 20px;
+        line-height: 28px;
+    }
+    .apply-now {
+        font-size: 14px;
+        width: 130px;
+    }
+    .europe-img {
+        left: 50%;
+        transform: translate(-50%);
+        width: 70%;
+    }
+}
+@media only screen and (max-width: 453px) and (min-width:320px){
+    .europe-text {
+        text-align: center;
+    }
+    .europe-text h1 {
+        font-size: 32px;
+    }
+    .europe-text p {
+        font-size: 18px;
+        line-height: 25px;
+    }
+    .apply-now {
+        font-size: 14px;
+        width: 130px;
+    }
+    .europe-img {
+        left: 50%;
+        transform: translate(-50%);
+        width: 70%;
+    }
 }
 
 ');

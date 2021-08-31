@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Users;
 use Yii;
 use yii\web\Controller;
 use yii\web\HttpException;

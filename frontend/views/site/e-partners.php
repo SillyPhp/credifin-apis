@@ -2,20 +2,55 @@
 
 use yii\helpers\Url;
 
+$this->title = 'E-Partners';
+$keywords = 'Be our E-Partners | Empower Youth';
+$description = 'Do you have a strong network among students ? | Do you love to interact and counsel them ? | If your answer is "Yes", join Career Launcher as our official e-Partner.';
+$image = Url::to('@eyAssets/images/pages/education-loans/e-partners.png', 'https');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
+
 <section class="ep-header">
-    <div class="opacity-div"></div>
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <h1>Be our e-Partner</h1>
-                <div><p>Do you have a strong network among students ?</p>
-                    <p>Do you love to interact and counsel them ?</p></div>
-                <div><p>If your answer is "Yes", join Career Launcher as our official e-Partner.</p></div>
+            <div class="col-md-6 col-sm-6">
+                <div class="ep-text">
+                    <h1>Be our e-Partner</h1>
+                    <p>Do you have a strong network among students? <br>Do you love to interact and counsel them?</p>
+                    <div><p>If your answer is "Yes",<br> join Career Launcher as our official e-Partner.</p></div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="ep-vector">
+                    <img src="<?= Url::to('@eyAssets/images/pages/custom/ep-vector.png') ?>">
+                </div>
             </div>
         </div>
     </div>
 </section>
+
 <section class="ptb30">
     <div class="container">
         <div class="row">
@@ -25,7 +60,7 @@ use yii\helpers\Url;
             <div class="col-md-4">
                 <div class="eP-benefit">
                     <div class="eP-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/Tech-driven-platform.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/Tech-Driven-Platform.png') ?>">
                     </div>
                     <h3>Tech Driven Platform</h3>
                     <p>We embrace change and innovation for developing creative solutions for all your needs.</p>
@@ -34,7 +69,7 @@ use yii\helpers\Url;
             <div class="col-md-4">
                 <div class="eP-benefit">
                     <div class="eP-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/dashboard1.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/Personalized-Dashboard.png') ?>">
                     </div>
                     <h3>Personalized Dashboard</h3>
                     <p>With a personalized dashboard, you will be be able to customized it as per your needs and requirements.</p>
@@ -43,7 +78,7 @@ use yii\helpers\Url;
             <div class="col-md-4">
                 <div class="eP-benefit">
                     <div class="eP-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/transparency.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/Transparent-Process.png') ?>">
                     </div>
                     <h3>Transparent Process </h3>
                     <p>Our operations are open, honest and straight forward.</p>
@@ -52,7 +87,7 @@ use yii\helpers\Url;
             <div class="col-md-4">
                 <div class="eP-benefit">
                     <div class="eP-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/Attractive-incentives.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/dsa/Attractive-Incentives.png') ?>">
                     </div>
                     <h3>Attractive Incentives</h3>
                     <p>Attractive incentives will be given on your every sale.</p>
@@ -155,85 +190,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-<section class="ptb30 bg-gray">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h2 class="heading-style"><?= Yii::t('frontend', 'Our Lending Partners'); ?></h2>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png') ?>"
-                             alt="ICICI Bank">
-                    </div>
-                    <div class="lp-name">ICICI Bank</div>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
-                             alt="Avanse Financial Services">
-                    </div>
-                    <div class="lp-name">Avanse Financial Services</div>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png') ?>"
-                             alt="InCred">
-                    </div>
-                    <div class="lp-name">InCred</div>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>"
-                             alt="Exclusive Leasing & Finance">
-                    </div>
-                    <div class="lp-name">Exclusive Leasing & Finance</div>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="Agile Finserv">
-                    </div>
-                    <div class="lp-name">Agile Finserv</div>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png') ?>" alt="EZ Capital">
-                    </div>
-                    <div class="lp-name">EZ Capital</div>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>" alt="PHF Leasing">
-                    </div>
-                    <div class="lp-name">PHF Leasing</div>
-                </div>
-            </div>
-            <div class="col-md-2 col-sm-3">
-                <div class="lp-box">
-                    <div class="loan-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png') ?>" alt="Amrit Malwa Private Limtied">
-                    </div>
-                    <div class="lp-name">We Pay India</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<?= $this->render('/widgets/Our-lending-partners') ?>
 <section class="ptb30">
     <div class="container">
         <h2 class="heading-style ">Need More Help</h2>
@@ -287,38 +244,42 @@ $this->registerCss('
     padding-bottom: 30px;
 }
 .ep-header{
-    background: url('. Url::to('@eyAssets/images/pages/custom/partner-hdr.png') .');
+    background: url('. Url::to('@eyAssets/images/pages/custom/ep-header-bg.png') .');
     background-size: cover;
     background-repeat: no-repeat;
 	display: flex;
 	align-items: center;
 	position: relative;
-	text-align: center;
-	min-height: 500px;
+	min-height: 580px;
 }
-.opacity-div{
-    position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0,0,0,.4);
+.ep-vector {
+    text-align: center;
 }
-.ep-header h1{
-    color: #ff7803;
+.ep-vector img {
+    width: 100%;
+    max-width: 370px;
 }
-.ep-header p{
-    font-size: 24px;
+.ep-text {
+    margin-top: 80px;
+}
+.ep-text h1 {
+    font-size: 46px;
     font-family: roboto;
-    color: #fff;
-    line-height:25px;
-}    
+    letter-spacing: 0.3px;
+}
+.ep-text p {
+    font-family: roboto;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 32px;
+    letter-spacing: 0.3px;
+} 
 .ptb30{
     padding: 15px 0 30px;
 }
 .eP-benefit{
     text-align: center;
-    box-shadow: 17px 17px 0px -11px #00a0e4;
+    box-shadow: 17px 17px 0px -11px #eee;
     min-height: 240px;
     margin-bottom: 30px;
     display: flex;
@@ -375,7 +336,7 @@ $this->registerCss('
 }
 .conRelative{
     position: relative;
-    background: url('. Url::to('@eyAssets/images/pages/education-loans/fin-img.png') .');
+    background: url('. Url::to('@eyAssets/images/pages/education-loans/education-loan-refinance.png') .');
     padding: 50px 40px 50px 0;
     background-repeat: no-repeat;
     background-position: right;
@@ -539,6 +500,37 @@ $this->registerCss('
     background-color: #fff;
     text-decoration: none;
     transition: .3s ease-in-out;
+}
+@media screen and (max-width: 992px) and (min-width:768px) {
+    .ep-text h1 {
+        font-size: 38px;
+        }
+    .ep-text p {
+        font-size: 18px;
+        line-height: 30px;
+        }
+    .ep-vector img {
+        max-width: 350px;
+    }
+    .ep-header {
+        min-height: 520px;
+    }
+}
+@media screen and (max-width: 767px) and (min-width:320px) {
+    .ep-text h1 {
+        font-size: 32px;
+        }
+    .ep-text p {
+        font-size: 16px;
+        line-height: 24px;
+        }
+    .ep-vector img {
+        max-width: 250px;
+    }
+    .ep-text {
+        margin-top: 0px;
+        text-align: center;
+    }
 }
 ');
 $script = <<<JS

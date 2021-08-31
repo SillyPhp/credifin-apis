@@ -6,11 +6,12 @@ use yii\helpers\Url;
 ?>
 
     <section class="study-in-usa-bg">
+        <div class="bg-overlay"></div>
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <h1>Education Institution Loan</h1>
-                    <p>To Lead the Way to A Brighter Future.</p>
+                    <p>To Support Your Vision of A Better Tomorrow.</p>
                     <ul>
                         <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
                         <!--                    <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>-->
@@ -24,7 +25,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="how-works-heading">Education Institution Loan</div>
+                    <div class="heading-style edu-ins">Education Institution Loan</div>
                 </div>
                 <div class="loan-data-set">
                     <p>A vision to change the education system is what you need to have in order to collaborate with us!
@@ -69,12 +70,12 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-
+    <?= $this->render('/widgets/loan-why-empower-youth')?>
     <section class="works-sec">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="how-works-heading">How It Works</div>
+                    <div class="heading-style edu-ins">How It Works</div>
                 </div>
                 <div class="works-set">
                     <div class="col-md-4 col-sm-6 col-xs-12">
@@ -122,15 +123,66 @@ use yii\helpers\Url;
         </div>
     </section>
 
-
-<?= $this->render('/widgets/loan-table') ?>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style"><?= Yii::t('frontend', 'Our Lending Partners'); ?></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="Agile Finserv">
+                        </div>
+                        <div class="lp-name">Agile Finserv</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
+                                 alt="Avanse Financial Services">
+                        </div>
+                        <div class="lp-name">Avanse Financial Services</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png') ?>"
+                                 alt="InCred">
+                        </div>
+                        <div class="lp-name">InCred</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    <div class="lp-box">
+                        <div class="loan-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ezcapital.png') ?>" alt="EZ Capital">
+                        </div>
+                        <div class="lp-name">EZ Capital</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 <?= $this->render('/widgets/education-loan-faqs'); ?>
 <?= $this->render('/widgets/loan-form-detail',[
         'model' =>$model
 ]); ?>
+<?= $this->render('/widgets/press-releasee') ?>
+<?= $this->render('/widgets/loan-strip') ?>
 
 <?php
 $this->registerCss('
+.footer {
+    margin-top: 0px !important;
+}
+.edu-ins {
+    text-align: center;
+}
 .study-in-usa-bg {
 	background: url(' . Url::to('@eyAssets/images/pages/education-loans/edu-in.png') . ');
 	min-height: 550px;
@@ -139,24 +191,34 @@ $this->registerCss('
 	display: flex;
 	align-items: center;
 	position: relative;
-//	text-align: center;
+	text-align: center;
 	max-height: 700px;
 	background-position:left bottom;
 }
+.bg-overlay{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    background: rgb(16 15 15 / 40%);
+}
 .study-in-usa-bg h1 {
-	font-size: 35px;
-	margin-bottom: 10px;
-	color: #fff;
+	font-size: 40px;
+	color: #ff7803;
+	letter-spacing: .5px;
 	font-weight: bold;
-	font-family: lora;
+	font-family: roboto;
+	line-height: 30px;
 }
 .study-in-usa-bg p {
-	font-size: 20px;
+	font-size: 22px;
 	font-family: roboto;
 	color: #fff;
 	padding: 0 0 18px;
 	line-height: 30px;
 	max-width: 500px;
+	margin: 10px auto 20px;
 }
 .study-in-usa-bg ul li{
     display: inline;
@@ -194,6 +256,33 @@ $this->registerCss('
 	font-size: 16px;
 	font-family: roboto;
 	margin-bottom: 40px;
+}
+.lp-box {
+    box-shadow: 0 0 5px rgba(0,0,0,.3);
+    text-align: center;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    padding: 20px 10px 10px;
+}
+.loan-logo img {
+    max-width: 80px;
+    max-height: 80px;
+    height: 65px;
+    object-fit: contain;
+}
+.lp-name {
+    text-transform: capitalize;
+    font-weight: 500;
+    font-family: roboto;
+    padding: 5px 0 0 0;
+    color: #333;
+    line-height: 20px;
+    min-height: 45px;
+    max-height: 45px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 .works-sec, .edu-sec{
     margin:30px 0;
@@ -279,7 +368,7 @@ $this->registerCss('
 }
 .why-back {
 	background-color: #00a0e3;
-	padding: 35px;
+	padding: 2px 35px 35px;
 }
 .why-back h1 {
 	font-size: 45px;
@@ -287,9 +376,9 @@ $this->registerCss('
 	font-family: lora;
 }
 .why-points {
-	margin-top: 70px;
+	margin-top: 100px;
 	background-color: #fff;
-	margin-left: -70px;
+	margin-left: -100px;
 }
 .why-p {
 	border: 1px solid #eee;

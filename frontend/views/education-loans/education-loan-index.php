@@ -5,160 +5,12 @@
 use yii\helpers\Url;
 
 ?>
-<!--    <section class="backgrounds">-->
-<!--        <div class="container">-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-6 col-sm-6">-->
-<!--                    <div class="loan-text">-->
-<!--                        <h1>Education Loan With Lower Interest Rates.</h1>-->
-<!--                        <h2>Apply for a Student Loan at <span class="blue1">a low rate of interest.</span> <br>-->
-<!--                            <span class="blue1"> 0% interest rate </span> only for selected colleges and universities!!-->
-<!--                        </h2>-->
-<!--                                             <h3 class="mb1">We Work With You To Turn Your Dreams Into Reality</h3>-->
-<!--                        <a href="--><?//= Url::to('/education-loans/apply') ?><!--"-->
-<!--                           class="hvr-sweep-to-bottom-2">-->
-<!--                            Apply Now-->
-<!--                        </a>-->
-<!--                        <a href="--><?//= Url::to('/site/admission-form') ?><!--"-->
-<!--                           class="hvr-sweep-to-bottom-3">-->
-<!--                            Enquire Now-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6 col-sm-6 clouds">-->
-<!--                    <div class="loan-image">-->
-<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/loan-hdr-icn.png') ?><!--"/>-->
-<!--                    </div>-->
-<!--                    <div class="cloud moving">-->
-<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/c1.png') ?><!--"/>-->
-<!--                    </div>-->
-<!--                    <div class="cloud1 moving1">-->
-<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/c2.png') ?><!--"/>-->
-<!--                    </div>-->
-<!--                    <div class="cloud2 moving">-->
-<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/c3.png') ?><!--"/>-->
-<!--                    </div>-->
-<!--                    <div class="cloud3 moving1">-->
-<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/c4.png') ?><!--"/>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
 
 <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
-
     <div class="clearfix"></div>
-
-    <section class="edu-with-us">
-        <div class="container">
-            <div class="row mt-20">
-                <div class="col-md-12">
-                    <h2 class="mb-20 pb-10 heading-style"><?= Yii::t('frontend', 'Why Empower Youth'); ?></h2>
-                </div>
-            </div>
-            <div class="row-mt10">
-                <div class="col-md-3 col-sm-4 col-xs-12">
-                    <div class="finance">
-                        <div class="finance-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/up-to-100-financing.png'); ?>"/>
-                        </div>
-                        <div class="finance-text">100% Financing</div>
-                        <div class="overlay">
-                            <div class="overlay-txt">Loans covering all the student expenses like tution fees, hostel
-                                fees, transportation expenses etc.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-12">
-                <div class="finance">
-                    <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/customized-loan.png'); ?>"/>
-                    </div>
-                    <div class="finance-text">Customized Loans</div>
-                    <div class="overlay">
-                        <div class="overlay-txt">Personalized loans as per the students needs and requirements.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-12">
-                <div class="finance">
-                    <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/quick-sanction.png'); ?>"/>
-                    </div>
-                    <div class="finance-text">Quick Sanctions</div>
-                    <div class="overlay">
-                        <div class="overlay-txt">Easy and fast loan approvals for your dream education.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-12">
-                <div class="finance">
-                    <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/minimal-documentation.png'); ?>"/>
-                    </div>
-                    <div class="finance-text">Minimal Documentation</div>
-                    <div class="overlay">
-                        <div class="overlay-txt">Hassle free loan application process with less or minimal paperwork.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-12">
-                <div class="finance">
-                    <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/flexible-repayment-option.png'); ?>"/>
-                    </div>
-                    <div class="finance-text">Flexible Repayment Options</div>
-                    <div class="overlay">
-                        <div class="overlay-txt">Student can select a repayment option that best suits his/her needs.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-12">
-                <div class="finance">
-                    <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/get-loan-to-study-abroad.png'); ?>"/>
-                    </div>
-                    <div class="finance-text">Get Loan To Study Abroad</div>
-                    <div class="overlay">
-                        <div class="overlay-txt">Providing easy and interest free education loan for study abroad
-                            programs.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-12">
-                <div class="finance">
-                    <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-admission-loan.png'); ?>"/>
-                    </div>
-                    <div class="finance-text">Pre-Admission Loan</div>
-                    <div class="overlay">
-                        <div class="overlay-txt">Get your loan approved before your admission in college or university.
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-12">
-                <div class="finance">
-                    <div class="finance-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/pre-visa-loan.png'); ?>"/>
-                    </div>
-                    <div class="finance-text">Pre-Visa Loan</div>
-                    <div class="overlay">
-                        <div class="overlay-txt">Now you can get your loan sanctioned before your visa gets approved.
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </section>
-
+<?= $this->render('/widgets/loan-products') ?>
+<?= $this->render('/widgets/loan-why-empower-youth') ?>
+<?= $this->render('/widgets/education-loan-internship') ?>
     <section class="edu-with-sec">
         <div class="container">
             <div class="row mt-20">
@@ -167,20 +19,21 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="row">
-                <div class="loansWorks col-md-3 col-sm-6">
+                <div class="loansWorks col-md-3 col-xs-6">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/apply-loan.png') ?>">
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Apply Online'); ?></h4>
                 </div>
-                <div class="loansWorks col-md-3 col-sm-6">
+                <div class="loansWorks col-md-3 col-xs-6">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/suggest-loan.png') ?>">
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'We Will Suggest The Best Suitable Loan'); ?></h4>
                 </div>
-                <div class="loansWorks col-md-3 col-sm-6">
+                <div class="loansWorks col-md-3 col-xs-6">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/share-docs.png') ?>" alt="share-docs">
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Share Relevant Documents'); ?></h4>
                 </div>
-                <div class="loansWorks col-md-3 col-sm-6">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/sanctioned-loan.png') ?>" alt="sanctioned-loan">
+                <div class="loansWorks col-md-3 col-xs-6">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/sanctioned-loan.png') ?>"
+                         alt="sanctioned-loan">
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Loan Sanctioned'); ?></h4>
                 </div>
             </div>
@@ -228,7 +81,8 @@ use yii\helpers\Url;
                             universities
                             are offering a variety of study programs and courses in almost every niche - You Name It And
                             You
-                            Have It. Here, Empoweryouth with their <a href="/education-loans">online education loan in India</a> will help you to pursue your
+                            Have It. Here, Empoweryouth with their <a href="/education-loans">online education loan in
+                                India</a> will help you to pursue your
                             desired education without getting worried about the money.
                         </p>
                         <div class="india-btn">
@@ -257,7 +111,7 @@ use yii\helpers\Url;
                             provides financial help to the educational insitutes for their growth.
                         </p>
                         <div class="institution-btn">
-                            <a href="/educational-institution-loan">Apply Now </a>
+                            <a href="/educational-institution-loan"> Apply Now </a>
                         </div>
                     </div>
                 </div>
@@ -265,115 +119,11 @@ use yii\helpers\Url;
         </div>
     </section>
 
+<?= $this->render('/widgets/Our-lending-partners') ?>
 
-    <section class="bgeEd">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style"><?= Yii::t('frontend', 'Partner Colleges'); ?></div>
-                </div>
-            </div>
-            <div class="row">
-                <?php
-                foreach ($loan_org as $l) {
-                    ?>
-                    <div class="col-md-3 col-sm-4">
-                        <a href="<?= Url::to('/education-loans/apply-loan/' . $l['organization_enc_id'], true) ?>"
-                           target="_blank">
-                            <div class="loan-college">
-                                <div class="loan-college-img">
-                                    <img src="<?= $l['org_logo'] ?>" alt="org-logo">
-                                </div>
-                                <p><?= $l['name'] ?></p>
-                            </div>
-                        </a>
-                    </div>
-                    <?php
-                }
-                ?>
-            </div>
-        </div>
+    <section class="bg-blue pb10">
+        <?= $this->render('/widgets/choose-education-loan') ?>
     </section>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style"><?= Yii::t('frontend', 'Our Lending Partners'); ?></div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="Agile Finserv">
-                        </div>
-                        <div class="lp-name">Agile Finserv</div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png') ?>"
-                                 alt="ICICI Bank">
-                        </div>
-                        <div class="lp-name">ICICI Bank</div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
-                                 alt="Avanse Financial Services">
-                        </div>
-                        <div class="lp-name">Avanse Financial Services</div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png') ?>"
-                                 alt="InCred">
-                        </div>
-                        <div class="lp-name">InCred</div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>"
-                                 alt="Exclusive Leasing & Finance">
-                        </div>
-                        <div class="lp-name">Exclusive Leasing & Finance</div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/ezcapital.png') ?>" alt="EZ Capital">
-                        </div>
-                        <div class="lp-name">EZ Capital</div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>" alt="PHF Leasing">
-                        </div>
-                        <div class="lp-name">PHF Leasing</div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <div class="lp-box">
-                        <div class="loan-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png') ?>" alt="Amrit Malwa Private Limtied">
-                        </div>
-                        <div class="lp-name">We Pay India</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <section class="faq-s">
         <div class="faq-s-bg"></div>
         <div class="container">
@@ -383,28 +133,30 @@ use yii\helpers\Url;
                         <h2>Frequently Asked Questions</h2>
                         <ul class="questions-faq">
                             <li>
-                                <a class="faqs" data-toggle="collapse" data-target="#documents">1. What all documents are required for the approval of loan via EmpowerYouth?
+                                <a class="faqs" data-toggle="collapse" data-target="#documents">1. What all documents
+                                    are required for the approval of loan via EmpowerYouth?
                                     <div class="collaspe-trigger">
                                         <span class="collaspe-icon"></span>
                                     </div>
                                 </a>
                                 <div id="documents" class="collapse using-pd">
                                     The following documents will be required to submit for loan approval.<br>
-                                        - AADHAR CARD<br>
-                                        - PAN CARD (mandatory in certain Banks/NBFC's)<br>
-                                        - PHOTO<br>
-                                        - PASSPORT<br>
-                                        - 10TH to Last Qualification<br>
-                                        - COLLEGE ADMISSION LETTER<br>
-                                        - ENTRANCE EXAM SCORE CARD (if any)<br>
-                                        - IELTS SCORE CARD<br>
-                                        - OFFER LETTER (mandatory in certain Banks/NBFC's)<br>
-                                        - MOBILE NUMBER<br>
-                                        - EMAIL ID<br>
+                                    - AADHAR CARD<br>
+                                    - PAN CARD (mandatory in certain Banks/NBFC's)<br>
+                                    - PHOTO<br>
+                                    - PASSPORT<br>
+                                    - 10TH to Last Qualification<br>
+                                    - COLLEGE ADMISSION LETTER<br>
+                                    - ENTRANCE EXAM SCORE CARD (if any)<br>
+                                    - IELTS SCORE CARD<br>
+                                    - OFFER LETTER (mandatory in certain Banks/NBFC's)<br>
+                                    - MOBILE NUMBER<br>
+                                    - EMAIL ID<br>
                                 </div>
                             </li>
                             <li>
-                                <a class="faqs" data-toggle="collapse" data-target="#abroad">2. Is the loan available for abroad studies too?
+                                <a class="faqs" data-toggle="collapse" data-target="#abroad">2. Is the loan available
+                                    for abroad studies too?
                                     <div class="collaspe-trigger">
                                         <span class="collaspe-icon"></span>
                                     </div>
@@ -414,7 +166,8 @@ use yii\helpers\Url;
                                 </div>
                             </li>
                             <li>
-                                <a class="faqs" data-toggle="collapse" data-target="#repay">3. When do we have to start to repay the loan?
+                                <a class="faqs" data-toggle="collapse" data-target="#repay">3. When do we have to start
+                                    to repay the loan?
                                     <div class="collaspe-trigger">
                                         <span class="collaspe-icon"></span>
                                     </div>
@@ -425,7 +178,8 @@ use yii\helpers\Url;
                                 </div>
                             </li>
                             <li>
-                                <a class="faqs" data-toggle="collapse" data-target="#expenses">4. What all expenses will be covered in the loan?
+                                <a class="faqs" data-toggle="collapse" data-target="#expenses">4. What all expenses will
+                                    be covered in the loan?
                                     <div class="collaspe-trigger">
                                         <span class="collaspe-icon"></span>
                                     </div>
@@ -436,31 +190,43 @@ use yii\helpers\Url;
                                     Examination/ library/ laboratory fee <br>
                                     Travel expenses/ passage money for studies overseas <br>
                                     Insurance premium for student borrower<br>
-                                    Caution deposit, building fund/ refundable deposit supported by institution bills/ receipts<br>
+                                    Caution deposit, building fund/ refundable deposit supported by institution bills/
+                                    receipts<br>
                                     Purchase of books/ equipment/ uniforms/ instruments<br>
                                     Purchase of computer at reasonable cost if required for completion of the course<br>
-                                    Any other expense required to complete the course like study tour, project work, thesis.
+                                    Any other expense required to complete the course like study tour, project work,
+                                    thesis.
                                 </div>
                             </li>
                             <li>
-                                <a class="faqs" data-toggle="collapse" data-target="#collateral">5. Is there any collateral required to secure the loan?
+                                <a class="faqs" data-toggle="collapse" data-target="#collateral">5. Is there any
+                                    collateral required to secure the loan?
                                     <div class="collaspe-trigger">
                                         <span class="collaspe-icon"></span>
                                     </div>
                                 </a>
                                 <div id="collateral" class="collapse using-pd">
-                                    The collateral for security will depend from case to case. We will study your case and inform accordingly.
+                                    The collateral for security will depend from case to case. We will study your case
+                                    and inform accordingly.
                                 </div>
                             </li>
                         </ul
                     </div>
-<!--                    <div class="faq-btn">-->
-<!--                        <a href="#"> View More </a>-->
-<!--                    </div>-->
+                    <!--                    <div class="faq-btn">-->
+                    <!--                        <a href="#"> View More </a>-->
+                    <!--                    </div>-->
                 </div>
             </div>
         </div>
     </section>
+<?php
+if ($blogs['blogs']) {
+    echo $this->render('/widgets/education-loan/blogs', [
+        'blogs' => $blogs,
+        'param' => 'education-loan'
+    ]);
+};
+?>
     <section class="">
         <div class="container">
             <div class="heading-style ">Need More Help</div>
@@ -493,21 +259,26 @@ use yii\helpers\Url;
                     <div class="l-help-block1">
                         <div class="l-help-title"><img
                                     src="<?= Url::to('@eyAssets/images/pages/educational-loans/chat-with-us.png') ?>"
-                                    alt=""/> Chat With Us
+                                    alt=""> Chat With Us
                         </div>
                         <div class="chat">
-                        <div class="whats-btn"><a href="https://api.whatsapp.com/send?phone=+918727985888" target="_blank"><i class="fab fa-whatsapp"></i>  Whatsapp</a></div>
-                        <div class="tele-btn"><a href="https://t.me/feefinancing" target="_blank"><i class="fab fa-telegram-plane"></i>  Telegram</a></div>
+                            <div class="whats-btn"><a href="https://api.whatsapp.com/send?phone=+918727985888"
+                                                      target="_blank"><i class="fab fa-whatsapp"></i> Whatsapp</a></div>
+                            <div class="tele-btn"><a href="https://t.me/feefinancing" target="_blank"><i
+                                            class="fab fa-telegram-plane"></i> Telegram</a></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
 <?= $this->render('/widgets/institutional-loan') ?>
+<?= $this->render('/widgets/press-releasee', [
+    'data' => $data,
+    'viewBtn' => true
+]) ?>
+<?= $this->render('/widgets/loan-strip') ?>
 
-<?= $this->render('/widgets/press-releasee') ?>
 
 <?php
 $script = <<<JS
@@ -573,6 +344,9 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.heading-style {
+    color: #000;
+}
 .abroad-btn a, .india-btn a, .institution-btn a {
 	color: #fff;
 	background-color:#00a0e3;
@@ -708,7 +482,7 @@ $this->registerCss('
 .questions-faq li {
     background-color: #fff;
     margin-bottom: 7px;
-    padding: 8px 20px;
+    padding: 8px 27px;
     font-family: roboto;
     border-radius: 4px;
     cursor: pointer;
@@ -726,7 +500,7 @@ $this->registerCss('
 .collaspe-trigger {
     position: absolute;
     top: 18px;
-    right: 10px;
+    right: -2px;
     cursor: pointer;
 }
 .collaspe-icon {
@@ -813,7 +587,7 @@ $this->registerCss('
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: #00A0E3;
+    background-color: #ed6d1e;
     overflow: hidden;
     width: 100%;
     height: 0;
@@ -834,41 +608,8 @@ $this->registerCss('
     font-weight: 500;
     line-height: 20px;
 }
-.finance-text{
-    font-size: 15px;
-    font-family: roboto;
-    font-weight: 700;
-    text-align: center;
-    color:#333;
-}
-.finance-icon{
-    text-align: center;
-    width: 100%;
-    display: inline-block;
-    margin: 0 0 20px;
-    margin-top: 40px;
-}
-.finance{
-    width: 100%;
-    height: 200px;
-    box-shadow: 0 0 11px -4px #999;
-    margin-bottom: 20px;
-    background-color: #fff;
-    transition: all .2s;
-    position:relative;
-}
 .rupe-img img{
     width:300px;
-}
-.callNumber{
-    color: #666;
-    font-size: 18px;
-    margin-top: 10px;
-    font-family: roboto;
-    text-align: center;
-}
-.callNumber i{
-    color: #1b4145;
 }
 .edu-flex{
     display: flex;
@@ -1012,6 +753,7 @@ $this->registerCss('
     font-size: 20px;
     font-family: lora;
     margin-bottom: 20px;
+    display:inline-block;
 }
 .loan-text h3{
     margin: 10px 0 20px;
@@ -1047,9 +789,9 @@ $this->registerCss('
     overflow: hidden;
 }
 .lp-box {
-    box-shadow: 0 0 5px rgba(0,0,0,.3);
+    box-shadow: 0 0 5px rgba(0,0,0,.1);
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 30px;
     border-radius: 5px;
     padding: 10px;
 }
@@ -1068,6 +810,10 @@ $this->registerCss('
     padding-bottom: 35px;
     background-color: #bae6f8;
 }
+.mt0{
+    margin-top: 0px !important;
+    margin-bottom: 0px !important; 
+}
 @media screen and (max-width:768px){
     .loan-text {
         padding-top: 70px;
@@ -1078,6 +824,13 @@ $this->registerCss('
     }
     .loan-image img{
         max-width: 300px;
+    }
+    .loansWorks img{
+        width: 100px;
+        heigth: 100px;
+    }
+    .loansWorks{
+        margin-bottom: 25px;
     }
 }
 @media (max-width:415px){
@@ -1399,8 +1152,13 @@ $this->registerCss('
          line-height: 30px;
      }
 }
-@media screen and (max-width: 768px) and (min-width:600px) {
-   
+@media only screen and (max-width: 375px) {
+   .whats-btn a{
+    padding: 10px 7px;
+   }
+   .tele-btn a{
+    padding: 10px 7px;
+   }
 }
 @media screen and (max-width: 590px) and (min-width:320px) {
     
@@ -1409,19 +1167,14 @@ $this->registerCss('
     .loan-image img {
         margin-top: 100px;
     }
-    
-    .edu-flex{
-        flex-direction: column;
-    }
-    .order2{
-        order: 1;
-    }
-    .order1{
-        order: 2;
-    }
 }
-@media screen and (max-width:768px) and (min-width:200px){
-    
+@media only screen and (max-width:768px){
+    .edu-flex{
+        display: block;
+    }    
+    .edu-hw-icon img{
+        width: 60%;
+    }
 }
 @media screen and (max-width:998px) and (min-width:774px){
     .moving1 img,.moving img{

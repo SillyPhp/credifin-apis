@@ -12,14 +12,14 @@ $base_url = 'https://empoweryouth.com';
     ?>
     <ul class="hiring_process_list gallery_zoom content-stick">
         <?php
-        if(!empty($fields)){
+        if (!empty($fields)) {
             $app_type_link = rtrim($fields['type'], 's');
             $app_type = strtolower($app_type_link);
             ?>
             <div class="jobsBoxes">
                 <div class="row">
                     <div class="col-md-10">
-                        <h3 class="job-title"> <?= $app_type_link . ': '.'<a class="url-forward" data-id="/'. $app_type .'/'. $fields['slug'].'" href="javascript:;" target="_blank">' . $fields['job_title'].'</a>'?></h3>
+                        <h3 class="job-title"> <?= $app_type_link . ': ' . '<a class="url-forward" data-id="/' . $app_type . '/' . $fields['slug'] . '" href="javascript:;" target="_blank">' . $fields['job_title'] . '</a>' ?></h3>
                     </div>
                 </div>
                 <?php
@@ -52,13 +52,14 @@ $base_url = 'https://empoweryouth.com';
                         <div class="row pr-user-main">
                             <div class="reject-box" <?= (($arr['rejection_window'] == 1) ? 'style="display: flex;"' : '') ?>>
                                 <div class="pr-top-actions text-right">
-                                    <a class="url-forward" data-id="<?= Url::to($arr['username'] . '?id=' . $arr['applied_application_enc_id'], true) ?>" href="javascript:;"
+                                    <a class="url-forward"
+                                       data-id="<?= Url::to($arr['username'] . '?id=' . $arr['applied_application_enc_id'], true) ?>"
+                                       href="javascript:;"
                                        target="_blank">View Profile</a>
-                                    <?php
-                                    $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
-                                    ?>
 
-                                    <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+                                    <a href="javascript:;" class="download-resume" target="_blank"
+                                       data-key="<?= $arr['resume_location'] ?>" data-id="<?= $arr['resume'] ?>">Download
+                                        Resume</a>
                                     <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                     <!--                                            <a href="#">Request to Complete Profile</a>-->
                                 </div>
@@ -67,7 +68,8 @@ $base_url = 'https://empoweryouth.com';
 
                                 <div class="rejectReason rejectRea"
                                      id="rejectReason" <?= $rejectionType ? 'style="display: none"' : '' ?>>
-                                    <form class="reasonsForm" id="<?= $p['applied_application_enc_id'] . 'reasonForm' ?>">
+                                    <form class="reasonsForm"
+                                          id="<?= $p['applied_application_enc_id'] . 'reasonForm' ?>">
                                         <p>Reason for rejection</p>
                                         <ul class="rejectReasonsList">
                                             <?php
@@ -101,7 +103,8 @@ $base_url = 'https://empoweryouth.com';
                                 </div>
                                 <div class="rejectReason rejectType"
                                      id="rejectType" <?= $rejectionType ? 'style="display: none"' : '' ?>>
-                                    <form class="reasonsType" id="<?= $p['applied_application_enc_id'] . 'reasonType' ?>">
+                                    <form class="reasonsType"
+                                          id="<?= $p['applied_application_enc_id'] . 'reasonType' ?>">
                                         <p>Rejection Type</p>
                                         <ul>
                                             <li>
@@ -131,8 +134,10 @@ $base_url = 'https://empoweryouth.com';
                                                 <div class="reasonsReject">
                                                     <input type="radio" value="3"
                                                            name="<?= $p['applied_application_enc_id'] . 'rejectType' ?>"
-                                                           id="<?= $p['applied_application_enc_id'] . 'save' ?>" class="">
-                                                    <label for="<?= $p['applied_application_enc_id'] . 'save' ?>">Save For Later</label>
+                                                           id="<?= $p['applied_application_enc_id'] . 'save' ?>"
+                                                           class="">
+                                                    <label for="<?= $p['applied_application_enc_id'] . 'save' ?>">Save
+                                                        For Later</label>
                                                 </div>
                                             </li>
                                         </ul>
@@ -162,31 +167,35 @@ $base_url = 'https://empoweryouth.com';
                                         ?>
                                         <p><?= $msg ?></p>
                                         <?php
-                                        if($arr['candidateRejections'][0]['candidateConsiderJobs']){
+                                        if ($arr['candidateRejections'][0]['candidateConsiderJobs']) {
                                             ?>
                                             <div class="sr-jobs">
                                                 <?php
                                                 $cCount = count($arr['candidateRejections'][0]['candidateConsiderJobs']);
                                                 $cCount -= 2;
-                                                $i=0;
+                                                $i = 0;
                                                 foreach ($arr['candidateRejections'][0]['candidateConsiderJobs'] as $crj) {
-                                                    if($i==2){
+                                                    if ($i == 2) {
                                                         break;
                                                     }
                                                     ?>
-                                                    <a class="url-forward" data-id="/<?= $app_type ."/". $crj['applicationEnc']['slug']?>" href="javascript:;" target="_blank">
+                                                    <a class="url-forward"
+                                                       data-id="/<?= $app_type . "/" . $crj['applicationEnc']['slug'] ?>"
+                                                       href="javascript:;" target="_blank">
                                                         <div class="customJobBox">
                                                             <div class="jc-icon">
                                                                 <img src="<?= Url::to('@commonAssets/categories/' . $crj['applicationEnc']['icon']); ?>">
                                                             </div>
-                                                            <p><?= $crj['applicationEnc']['job_title']?></p>
+                                                            <p><?= $crj['applicationEnc']['job_title'] ?></p>
                                                         </div>
                                                     </a>
                                                     <?php
                                                     $i++;
                                                 }
                                                 ?>
-                                                <p id="<?= $arr['candidateRejections'][0]['candidate_rejection_enc_id'] ?>" class="cCount" <?= (($cCount >= 1) ? 'style="display: block"' : 'style="display: none"') ?>> <?= $cCount ?> More</p>
+                                                <p id="<?= $arr['candidateRejections'][0]['candidate_rejection_enc_id'] ?>"
+                                                   class="cCount" <?= (($cCount >= 1) ? 'style="display: block"' : 'style="display: none"') ?>> <?= $cCount ?>
+                                                    More</p>
                                             </div>
                                             <?php
                                         }
@@ -314,15 +323,17 @@ $base_url = 'https://empoweryouth.com';
                                 <div class="col-md-3 pl-0">
                                     <div class="pr-user-actions">
                                         <div class="pr-top-actions text-right">
-                                            <a class="url-forward" data-id="<?= Url::to($arr['username'] . '?id=' . $arr['applied_application_enc_id'], true) ?>" href="javascript:;"
+                                            <a class="url-forward"
+                                               data-id="<?= Url::to($arr['username'] . '?id=' . $arr['applied_application_enc_id'], true) ?>"
+                                               href="javascript:;"
                                                target="_blank">View Profile</a>
                                             <?php
-                                            if (!empty($arr['resume_location'])||!empty($arr['resume'])){
-                                                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                                                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                                                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'], "15 minutes");
+                                            if (!empty($arr['resume_location']) || !empty($arr['resume'])) {
                                                 ?>
-                                                <a href="<?= Url::to($cv, true); ?>" target="_blank">Download Resume</a>
+                                                <a href="javascript:;" class="download-resume"
+                                                   target="_blank"
+                                                   data-key="<?= $arr['resume_location'] ?>"
+                                                   data-id="<?= $arr['resume'] ?>">Download Resume</a>
                                             <?php } ?>
                                             <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                             <!--                                            <a href="#">Request to Complete Profile</a>-->
@@ -1676,6 +1687,10 @@ overflow: hidden;
         border-radius: 0px;
     }
 }
+.disabled-elem{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 ');
 $script = <<<JS
 window.onscroll = function() {myFunction()};
@@ -2041,6 +2056,34 @@ $(document).on('click','.url-forward',function (e){
 });
 function disable(thisObj){thisObj.html('APPROVE');thisObj.removeAttr("disabled");}
 
+$(document).on('click','.download-resume',function (e){
+    e.preventDefault();
+    let btnElem = $(this);
+    let resume_location = $(this).attr('data-key');
+    let resume = $(this).attr('data-id');
+    let htmldata = $(this).html();
+    btnElem.addClass('disabled-elem');
+    btnElem.html('<i class="fa fa-circle-o-notch fa-spin fa-fw p-0"></i>');
+    $.ajax({
+            url: '/users/resume-link',
+            type: 'POST',
+            data: {
+                resume_location: resume_location,
+                resume: resume
+            },
+            success:function(res){
+                btnElem.removeClass('disabled-elem');
+                btnElem.html(htmldata);
+                if(res['status'] == 200){
+                    let cv_link = res['cv_link'];
+                    window.open(cv_link);
+                }else if(res['status'] == 500){
+                    alert('an error occurerd')
+                }
+            }
+        })    
+})
+
 // var ps = new PerfectScrollbar('#hamburgerJobs');
 // var pa = new PerfectScrollbar('.modal-jobs');
 JS;
@@ -2065,6 +2108,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             clickedBtn.innerHTML = "<i class='fa fa-bars'></i>";
         }
     }
+
     function roundClick() {
         let hp = document.querySelector('.hiring_process_list');
         let hpChild = hp.children;
@@ -2131,19 +2175,23 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         modal.style.display = "none";
         bdy[0].classList.remove('modal-open');
     }
+
     let openConJob = document.getElementById('conjobs');
-    function openConJobs(){
+
+    function openConJobs() {
         openConJob.style.display = "block";
         bdy[0].classList.remove('modal-open');
     }
-    function closeConJobsModal(){
+
+    function closeConJobsModal() {
         openConJob.style.display = "none";
         bdy[0].classList.remove('modal-open');
     }
+
     window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
-        } else if(event.target == openConJob){
+        } else if (event.target == openConJob) {
             openConJob.style.display = "none";
         }
     }
@@ -2151,10 +2199,10 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 <script id="modalJobCards" type="text/template">
     {{#.}}
     <div class="col-md-3">
-        <a href="/<?= $app_type?>/{{slug}}" target="_blank">
+        <a href="/<?= $app_type ?>/{{slug}}" target="_blank">
             <div class="customJobBox">
                 <div class="jc-icon">
-                    <img src="<?= Url::to('@commonAssets/categories/')?>{{icon}}">
+                    <img src="<?= Url::to('@commonAssets/categories/') ?>{{icon}}">
                 </div>
                 <div class="jc-details-con">
                     <p>{{job_title}}</p>

@@ -41,7 +41,7 @@ class CareerAdviceController extends Controller
             ->asArray()
             ->all();
         $articalsPosts = $postsModel->find()->alias('a')
-            ->select(['a.*', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'd.first_name', 'd.last_name'])
+            ->select(['a.*', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'd.first_name', 'd.last_name', 'a.featured_image_location', 'a.featured_image'])
             ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
@@ -69,8 +69,10 @@ class CareerAdviceController extends Controller
             ->joinWith(['postCategories b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false);
             }], false)
+            ->joinWith(['postTypeEnc d'], false)
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['c.name' => null])
+            ->andWhere(['<>', 'd.post_type', 'Social'])
             ->groupBy(['a.post_enc_id'])
             ->orderby(new Expression('rand()'))
             ->limit(6)
@@ -88,7 +90,7 @@ class CareerAdviceController extends Controller
     {
         $careerBlog = CareerAdvisePosts::find()
             ->alias('a')
-            ->select(['a.title', 'a.slug', 'a.description', 'a.link', 'c.slug category','c.name cat', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image) . '", a.image_location, "/", a.image) ELSE CONCAT("' . Url::to('@eyAssets/images/pages/locations/goa.png') . '") END image'])
+            ->select(['a.title', 'a.slug', 'a.description', 'a.link', 'c.slug category', 'c.name cat', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image) . '", a.image_location, "/", a.image) ELSE CONCAT("' . Url::to('@eyAssets/images/pages/locations/goa.png') . '") END image'])
             ->joinWith(['assignedCategoryEnc b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false);
             }

@@ -516,7 +516,7 @@ class LearningController extends Controller
                 ->andWhere(['a.status' => 1])
                 ->andWhere(['a.is_deleted' => 0])
                 ->andWhere(['!=', 'a.video_enc_id', $current_video_id['video_enc_id']])
-                ->limit(10)
+                ->limit(6)
                 ->asArray()
                 ->all();
             $top_videos = LearningVideos::find()
@@ -1061,6 +1061,11 @@ class LearningController extends Controller
                 return ['status' => 201];
             }
         }
+    }
+
+    public function actionOurContributors()
+    {
+        return $this->render('our-contributors');
     }
 
 }

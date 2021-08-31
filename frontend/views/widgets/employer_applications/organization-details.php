@@ -17,7 +17,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                 } else {
                     ?>
                     <canvas class="user-icon" name="<?= $org_name; ?>" width="125" height="125"
-                            color="<?= $initial_color; ?>" font="60px"></canvas>
+                            color="<?= $initial_color; ?>" font="48px"></canvas>
                     <?php
                 }
                 ?>
@@ -25,18 +25,14 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
         </div>
         <div class="job-head-info">
             <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
-            <div class="organization-details">
-                <?php if ($website): ?>
-                    <a href="<?= $website ?>">
-                        <i class="fas fa-unlink"> Visit on Website</i>
-                    </a>
-                <?php endif; ?>
-            </div>
         </div>
         <div class="actions-main">
             <?php if (Yii::$app->user->isGuest): ?>
-                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="apply-job-btn single-btn"><i
-                            class="fas fa-paper-plane"></i>Apply</a>
+                <div class="btn-parent">
+                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                       class="apply-job-btn single-btn"><i
+                                class="fas fa-paper-plane"></i>Apply</a>
+                </div>
                 <div class="sub-actions">
                     <?php
                     if ($type == 'Internship'): ?>
@@ -50,12 +46,14 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                     <?php endif; ?>
                     <a href="#"
                        data-toggle="modal" data-target="#loginModal"
-                       class="add-or-compare hvr-icon-pulse"><i class="far fa-heart hvr-icon"></i>Save</a>
+                       class="add-or-compare hvr-icon-pulse"><i class="far fa-heart hvr-icon"></i>Shortlist</a>
                 </div>
             <?php else: ?>
                 <?php if ($applied): ?>
-                    <a href="#" title="" class="apply-job-btn single-btn" disabled="disabled"><i
-                                class="fas fa-check"></i>Applied</a>
+                    <div class="btn-parent">
+                        <a href="#" title="" class="apply-job-btn single-btn" disabled="disabled"><i
+                                    class="fas fa-check"></i>Applied</a>
+                    </div>
                     <div class="sub-actions">
                         <?php
                         if ($type == 'Internship'): ?>
@@ -199,6 +197,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
             <h3>Download Sharing Image</h3>
             <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size (1250*650)</a>
             <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>
+            <a href="<?= $Storyimage; ?>" download target="_blank"><i class="fa fa-download"></i> Story Size (Default)</a>
         </div>
     </div>
 <?php
@@ -240,6 +239,11 @@ $('.send').click(function () {
 JS;
 
 $this->registerCss('
+.job-thumb canvas {
+    border-radius: 50%;
+    width: 125px;
+    height: 125px;
+}
 .organization-details p{
     display: flex;
     align-items: center;
@@ -323,16 +327,21 @@ $this->registerCss('
     text-align: center;
 }
 .follow-btn:hover{color:#fff;}
-.job-thumb a{
+.job-thumb{
     width: 125px !Important;
     height: 125px !Important;
     background-color: #fff;
     display: block;
+    overflow: hidden;
+    line-height: 125px;
     margin: auto;
     border-radius: 50%;
 }
-.job-thumb a img{
-    margin:5px;
+#logo_img {
+    max-width: 100px !Important;
+    max-height: 100px !Important;
+    background-color: #fff;
+    object-fit: contain;
 }
 .overlay-top{
     width: 80% !Important;
@@ -343,10 +352,6 @@ $this->registerCss('
     z-index: 9;
     padding-top: 20px;
     padding-bottom: 50px;
-}
-#logo_img {
-    width: 85px !Important;
-    height: 100px !Important;
 }
 .organization-details{
     display: block;
@@ -428,13 +433,13 @@ a.add-or-compare:hover, a.add-or-compare:focus {
 	height: 32px;
 	display: inline-block;
 	border-radius: 50%;
-	margin: 0 5px;
+	margin: 0 5px 5px;
 	font-size: 17px;
 	overflow: hidden;
 	position: relative;
 	color: #fff;
 	border: 2px solid #fff;
-	line-height: 24px;
+	line-height: 26px;
 }
 .effect a i {
 	font-size: 14px;
@@ -502,28 +507,18 @@ a.add-or-compare:hover, a.add-or-compare:focus {
         margin-top: 0;
         width: 100% !important;
     }
-    .job-single-head.style2 .job-thumb{
-        margin-top:0px;
-        margin-left:10px;
-    }
     .overlay-top{
         padding-bottom:10px;
     }
-    .job-thumb{
-        max-width: 125px;
-    }
     .job-head-info{
-        max-width: 275px;
-        text-align: left;
-    }
-    .job-head-info h4{
-        margin-left:25px !Important;
+//        max-width: 275px;
+        text-align: center;
     }
     .job-head-info .organization-details h4{
         margin-left:0px !Important;
     }
     .actions-main{
-        float: left;
+//        float: left;
         display: inline-block;
         width: 42%;
     }
@@ -566,11 +561,11 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     .actions-main {
         width: 100%;
     }
+    .btn-parent{
+        left:28px;
+        }
 }
 @media only screen and (max-width: 430px) {
-    .job-thumb {
-        max-width: inherit;
-    }
     .job-head-info {
         max-width: inherit;
         text-align: center;
@@ -584,7 +579,11 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     .btn-parent{
         position: fixed;
         bottom:0px;
-        left: 0px;
+    }
+}
+@media only screen and (max-width: 380px) {
+.btn-parent{
+    left:0px;
     }
 }
 ');

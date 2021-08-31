@@ -1,12 +1,14 @@
 <?php
 
 use yii\helpers\Url;
+
+
 ?>
 
     <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <div class="set-sticky">
+            <div class="set-sticky mt-sm-30">
                 <h3 class="heading-style">Highlights</h3>
                 <div class="h-points">
 
@@ -122,31 +124,6 @@ use yii\helpers\Url;
                         </tr>
                         </thead>
                         <tbody>
-                        <!--                        <tr>-->
-                        <!--                            <td>-->
-                        <!--                                <div class="loanProviderIcon">-->
-                        <!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/Bank_of_Baroda_logo.png') ?><!--">-->
-                        <!--                                </div>-->
-                        <!--                            </td>-->
-                        <!--                            <td>8% To 12% p.a.</td>-->
-                        <!--                            <td>Listed Universities: Rs.80 lakh<br>-->
-                        <!--                                Unlisted Universities: Rs.60 lakh-->
-                        <!--                            </td>-->
-                        <!--                            <td>Loan With & Without Collateral <br>Available +  Moratorium period</td>-->
-                        <!--                            <td>Rs.10,000 + GST <br>(Rs.10,000 refundable)</td>-->
-                        <!--                        </tr>-->
-                        <tr>
-                            <td>
-                                <div class="loanProviderIcon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/icici_bank_logo.png') ?>">
-                                </div>
-                            </td>
-                            <td>8% To 12% p.a.</td>
-                            <td>Rs.1 crore (With Collateral)<br>
-                                Rs. 40 Lakhs (Without Collateral)</td>
-                            <td>Loan With & Without Collateral <br>Available +  Moratorium period</td>
-                            <td>1 % of Loan Amount + GST</td>
-                        </tr>
                         <tr>
                             <td>
                                 <div class="loanProviderIcon">
@@ -381,6 +358,11 @@ td p{
     margin-right:1%;
 }
 }
+@media only screen and (max-width: 768px){
+    .mt-sm-30{
+        margin-top: 30px;
+    }
+}
 @media only screen and (max-width: 767px) {
 .h-point1 {
     width: 50%;
@@ -392,7 +374,7 @@ td p{
     margin-right:1%;
 }
  .loanProviderIcon{
-        float: right;
+        float: unset;
         margin: unset;
     }
     table, thead, tbody, th, td, tr { 
@@ -514,7 +496,7 @@ function overviewTemp(res){
         mainTemp += affiliatedTemp;
     }
     
-    if(res.response.data['website']){
+    if(website){
         var websiteTemp= `<div class="h-point1">
                             <div class="fa-icon"><i class="fas fa-link"></i></div>
                             <div class="fa-text">
@@ -536,9 +518,14 @@ function getCourses() {
     success: function(res) {
         if(res.response.status == 200){
             for(var i = 0; i < res.response.courses.length; i++ ){
-               courseCard(res.response.courses[i]); 
+                let courseData = res.response.courses[i];
+                courseCard(courseData); 
             }
            initCourse();
+        }else{
+            var collegeCard = `<p class="noResults">No Courses To Display</p>`
+            $('.course-main').append(collegeCard); 
+            $('.view-btn').hide();
         }
     }
   })
@@ -550,28 +537,12 @@ function courseCard(res) {
     let Cduration = course_duration == 1 ? course_duration+'Year' : course_duration+'Years';
     var collegeCard = `<div class="course-box" >
                         <a href="">
-                            <h3>`+course_name+`</h3>
+                            <h3>`+course_name.replace(/</g, '&lt;').replace(/>/g, '&gt;')+`</h3>
                             <div class="seats">Duration : <span>`+Cduration+`</span></div>
                         </a>
                     </div>`;
     $('.course-main').append(collegeCard);
     
 }
-
-$('.collegeLink').on('click', function (){
-     var dataKey = $(this).attr('data-key'); 
-     var url = window.location.pathname.split('/');
-     var slugg = url[1];
-     var subUrl = url[2];
-     if(subUrl && subUrl != dataKey){
-         history.replaceState({}, '', dataKey);
-     }else if(dataKey == "overview" || subUrl == "overview"){
-         history.replaceState({}, '', '/'+slugg);
-     }else{
-        history.pushState({}, '', '/'+slugg+"/"+dataKey);
-     }
-     // removeActive();
-     $(this).parent().addClass('cActive');
- })
 JS;
 $this->registerJS($script);

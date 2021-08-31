@@ -10,6 +10,7 @@ namespace common\models;
  * @property string $author_enc_id Foreign Key to Users Table
  * @property string $title Post Title
  * @property string $slug Post Slug
+ * @property string $link
  * @property string $excerpt Post Excerpt
  * @property string $description Post Description
  * @property string $post_type_enc_id Foreign Key to Post Types Table
@@ -18,6 +19,7 @@ namespace common\models;
  * @property string $featured_image_location Location of the Featured Image
  * @property string $featured_image_title Featured Image Title
  * @property string $featured_image_alt Alternative Text of Featured Image
+ * @property int $is_visible 0 as false, 1 as true
  * @property string $created_on On which date Post information was added to database
  * @property string $created_by By which User Post information was added
  * @property string $last_updated_on On which date Post information was updated
@@ -48,10 +50,10 @@ class Posts extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['post_enc_id', 'author_enc_id', 'title', 'slug', 'post_type_enc_id', 'created_by'], 'required'],
-            [['title', 'excerpt', 'description', 'meta_keywords', 'status'], 'string'],
+            [['post_enc_id', 'title', 'slug', 'post_type_enc_id', 'created_by'], 'required'],
+            [['title', 'link', 'excerpt', 'description', 'meta_keywords', 'status'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['is_deleted'], 'integer'],
+            [['is_deleted', 'is_visible'], 'integer'],
             [['post_enc_id', 'author_enc_id', 'post_type_enc_id', 'featured_image', 'featured_image_location', 'featured_image_title', 'featured_image_alt', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['slug'], 'string', 'max' => 255],
             [['slug'], 'unique'],

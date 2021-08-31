@@ -7,7 +7,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
-
+$primary_cat = \yii\helpers\ArrayHelper::map($primary_cat,'category_enc_id','name');
 $url2 = \yii\helpers\Url::to(['/cities/country-list']);
 Yii::$app->view->registerJs('var cid = "' . \common\models\Countries::findOne(['name' => $model->country])->country_enc_id . '"', \yii\web\View::POS_HEAD);
 $Initscript = <<< JS

@@ -15,7 +15,7 @@ Yii::$app->view->registerJs('var profile = "' . Yii::$app->getRequest()->getQuer
                     </div>
                     <div class="actions">
                         <div id="btn-group2" class="btn-group dashboard-button btns2 ">
-                            <button class="viewall-jobs" data-toggle="modal" data-target="#shortList">Shortlist</button>
+<!--                            <button class="viewall-jobs" data-toggle="modal" data-target="#shortList">Shortlist</button>-->
                             <button class="viewall-jobs" onclick="rejection()">Reject</button>
                         </div>
                     </div>
@@ -69,7 +69,7 @@ Yii::$app->view->registerJs('var profile = "' . Yii::$app->getRequest()->getQuer
         <div class="paid-candidate-inner--box">
         <div class="paid-candidate-box-thumb">
             {{#logo}}
-        <img src="" alt="" class="img-responsive img-circle"/>
+        <img src="{{logo}}" alt="" class="img-responsive img-circle"/>
             {{/logo}}
             {{^logo}}
         <canvas class="user-icon img-circle img-responsive" name="{{name}}" color="{{initials_color}}" width="140" height="140" font="70px"></canvas>
@@ -215,6 +215,7 @@ text-transform: capitalize;
 }
 .paid-candidate-box-thumb img{
     height:100%;
+    width:100%;
 }
 .com-load-more-btn{
     max-width:150px;

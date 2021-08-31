@@ -63,6 +63,9 @@ function random_fn(t) {
         }
         var that = this;
         that.reviewModal.classList.remove('i-opened');
+        if(document.getElementsByTagName('body')[0].classList.contains('modal-open')){
+            document.getElementsByTagName('body')[0].classList.remove('modal-open');
+        }
         that.reviewModal.classList.add('i-close-animation');
         setTimeout(function () {
             that.reviewModal.classList.remove('i-close-animation');
@@ -93,6 +96,7 @@ function random_fn(t) {
             setTimeout(function () {
                 that.reviewModal.classList.add('i-opened');
                 that.reviewModal.classList.remove('i-open-animation');
+                document.getElementsByTagName('body')[0].classList.add('modal-open');
                 showStartPage.call(that);
                 if (typeof that.options.onOpen === 'function') {
                     that.options.onOpen.call(that);

@@ -62,18 +62,14 @@ class WebinarController extends ApiBaseController
     public function actionUpdateStatus()
     {
         $args = Yii::$app->request->post();
-        if ($args['payment_enc_id']&&$args['payment_status'])
+        if ($args['payment_enc_id'])
         {
             $payment = new \common\models\extended\WebinarPayments();
-            if ($payment->load($args,''))
-            {
-                $payment->registration_enc_id = $args['registration_enc_id'];
-                if ($payment->updateStatus()) {
+                if ($payment->updateStatus($args)) {
                     return $this->response(200, ['status' => 200, 'message' => 'success']);
                 } else {
                     return $this->response(500, ['status' => 500, 'message' => 'Something Went Wrong On Server Side..']);
                 }
-            }
         }else{
             return $this->response(422, ['status' => 422, 'message' => 'Missing Arguments']);
         }

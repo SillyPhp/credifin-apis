@@ -82,7 +82,7 @@ class VideosController extends Controller
                     'a.slug' => $slug,
                     'b.assigned_to' => 'Videos',
                 ])
-                ->andWhere([
+                ->andFilterWhere([
                     'or',
                     ['not', ['b.parent_enc_id' => NULL]],
                     ['not', ['b.parent_enc_id' => ""]]

@@ -17,7 +17,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                 <div class="padding-left set-overlay">
                     <?= $this->render("@common/widgets/candidate-actions-navbar");?>
                     <?php Pjax::begin(['id' => 'profile_icon_pjax']) ?>
-                    <?php $form = ActiveForm::begin(['id' => 'userProfilePicture', 'action' => '/users/update-profile-picture']) ?>
+                    <?php $form = ActiveForm::begin(['id' => 'userProfilePicture']) ?>
                     <div class="profile-title" id="mp">
                         <h3>My Profile</h3>
                         <a class="view_profile_btn pull-right" href="javascript:;" target="_blank">
@@ -49,7 +49,6 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                         $uname = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                                         ?>
                                         <h3 class="capitalize mt-0"><?= $uname;?></h3>
-                                        <?= Html::submitButton('Update Picture', ['class' => 'btn_pink btn_submit_picture', 'id' => 'picture_submit']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -125,14 +124,14 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                 <div class="col-lg-8">
                                     <span class="pf-title">Pick Some Languages You Can Read,Write,Speak</span>
                                     <div class="pf-field no-margin">
+                                        <input type="hidden" name="languages" value=""/>
                                         <ul class="tags languages_tag_list">
                                             <?php if (!empty($userLanguage)) {
                                                 foreach ($userLanguage as $language) { ?>
-                                                    <li class="addedTag"><?= $language['language'] ?><span
-                                                                onclick="$(this).parent().remove();"
-                                                                class="tagRemove">x</span><input type="hidden"
-                                                                                                 name="languages[]"
-                                                                                                 value="<?= $language['language'] ?>">
+                                                    <li class="addedTag">
+                                                        <?= $language['language'] ?>
+                                                        <span onclick="$(this).parent().remove();" class="tagRemove">x</span>
+                                                        <input type="hidden" name="languages[]" value="<?= $language['language'] ?>">
                                                     </li>
                                                 <?php }
                                             } ?>
@@ -149,8 +148,9 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                             </div>
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <span class="pf-title">Pick a few tags that You Have Skills</span>
+                                    <span class="pf-title">Pick the Skills You Have</span>
                                     <div class="pf-field no-margin">
+                                        <input type="hidden" name="skills" value=""/>
                                         <ul class="tags skill_tag_list">
                                             <?php if (!empty($userSkills)) {
                                                 foreach ($userSkills as $skill) { ?>
@@ -207,7 +207,6 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                             <?= Html::submitButton('Update', ['class' => 'btn_pink btn_submit_basic', 'id' => 'basic_detail_submit']); ?>
                         </div>
                     </div>
-                </div>
                 <?php ActiveForm::end(); ?>
                 <div class="social-edit" id="sn">
                     <h3>Social Edit</h3>
@@ -226,10 +225,32 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                     <?php ActiveForm::end(); ?>
                 </div>
             </div>
+            </div>
+        </div>
+        </div>
+    <div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">
+                </div>
+                <div class="modal-body">
+                    <div id="demo"></div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary custom-buttons2 vanilla-result">Done</button>
+                    <button type="button" class="btn btn-default mr-10" data-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 <?php
 $this->registerCss("
+
 .taglist
 {
 float:left !important;
@@ -593,6 +614,11 @@ content: attr(data-text);
     height: 154px;
     margin-bottom: 45px;
 }
+.upload-img-bar > span img {
+    float: left;
+    width: 100%;
+    height: 107%;
+}
 .tg-fileuploadlabel .field-tg-photogallery{
     width:300px;
 }
@@ -725,15 +751,15 @@ function add_tags(thisObj,tag_class,name,duplicates)
 {
     var duplicates = [];
     $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
-                        {
-                         duplicates.push($.trim($(this).val()).toUpperCase());
-                        });
+        {
+         duplicates.push($.trim($(this).val()).toUpperCase());
+        });
     if(thisObj.val() == '' || jQuery.inArray($.trim(thisObj.val()).toUpperCase(), duplicates) != -1) {
-                thisObj.val('');
-                    } else {
-                     $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
-                     thisObj.val('');
-                }
+        thisObj.val('');
+            } else {
+             $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
+             thisObj.val('');
+        }
 }    
 $(document).on('submit','#basicDetailForm',function(event)
 {
@@ -907,18 +933,40 @@ $('#job_title').typeahead(null, {
    global = [];
   }
   }
-
+var el = document.getElementById('demo');
+var vanilla = new Croppie(el, {
+    viewport: { width: 400, height: 400 },
+    boundary: { width: 500, height: 500 },
+    enforceBoundary: false,
+    showZoomer: true,
+    enableZoom: true,
+    // enableExif: true,
+    mouseWheelZoom: true,
+    maxZoomedCropWidth: 10,
+    // enableOrientation: true
+});
 function readURL(input) {
 
   if (input.files && input.files[0]) {
     var reader = new FileReader();
     reader.onload = function(e) {
-      $('.preview_img').attr('src', e.target.result);
+        $('#cropImagePop').modal('show');
+        var rawImg = e.target.result;
+        setTimeout(function() {
+            renderCrop(rawImg);
+        }, 500);
+      // $('.preview_img').attr('src', e.target.result);
     }
     reader.readAsDataURL(input.files[0]);
   }
 }
-
+function renderCrop(img){
+    vanilla.bind({
+        url: img,
+        // points: [20,20,20,20]
+        // orientation: 4
+    });
+}
 $(".tg-fileinput").change(function() {
   readURL(this);
 });
@@ -929,6 +977,34 @@ $(document).on("change", ".file-upload-wrapper input", function(){
     if(file_name == ""){
         $('.file-upload-wrapper').attr('data-text', 'No file chosed');
     }
+});
+
+document.querySelector('.vanilla-result').addEventListener('click', function (ev) {
+    vanilla.result({
+        type: 'base64',
+        // format:'jpeg',
+    }).then(function (data) {
+        $.ajax({
+            url: "/users/update-profile-picture",
+            method: "POST",
+            data: {data:data},
+            beforeSend:function(){
+                $('.vanilla-result').html("<i class='fas fa-circle-notch fa-spin fa-fw'></i>");
+                $('.vanilla-result').prop('disabled', true);
+            },
+            success: function (response) {
+                $('.vanilla-result').html('Done');
+                $('.vanilla-result').prop('disabled', false);
+                $('#cropImagePop').modal('hide');
+                if (response.title == 'Success') {
+                    toastr.success(response.message, response.title);
+                    $('.preview_img').attr('src', data);
+                } else {
+                    toastr.error(response.message, response.title);
+                }
+            }
+        });
+    });
 });
 var ps = new PerfectScrollbar('.perfect_scroll');
 JS;
@@ -955,6 +1031,8 @@ $this->registerCssFile("@web/assets/themes/jobhunt/css/icons.css");
 $this->registerCssFile("@web/assets/themes/jobhunt/css/style.css");
 $this->registerCssFile("@web/assets/themes/jobhunt/css/chosen.css");
 $this->registerCssFile("@web/assets/themes/jobhunt/css/colors/colors.css");
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.min.css');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile("@web/assets/themes/jobhunt/js/select-chosen.js", ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

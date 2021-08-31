@@ -96,6 +96,22 @@ class GovtJobsController extends ApiBaseController
                 $get[$i]['JobCategory'] = $desc['JobCategory'][0]['Code'];
                 $get[$i]['MatchedObjectId'] = $val['MatchedObjectId'];
                 $get[$i]['Duration'] = $pos['RateIntervalCode'];
+                $get[$i]['salary'] = 'View in Details';
+                if ($pos['MinimumRange'] || $pos['MaximumRange']) {
+                    $get[$i]['salary'] = '';
+                    if ($pos['MinimumRange']) {
+                        $get[$i]['salary'] .= '$' . $pos['MinimumRange'];
+                    }
+                    if ($pos['MinimumRange'] && $pos['MaximumRange']) {
+                        $get[$i]['salary'] .= ' - ';
+                    }
+                    if ($pos['MinimumRange']) {
+                        $get[$i]['salary'] .= '$' . $pos['MinimumRange'];
+                    }
+                    if ($pos['RateIntervalCode']) {
+                        $get[$i]['salary'] .= ' ' . $pos['RateIntervalCode'];
+                    }
+                }
                 $data = UsaDepartments::find()
                     ->select(['image', 'image_location'])
                     ->where(['Value' => $get[$i]['DepartmentName']])
@@ -205,16 +221,34 @@ class GovtJobsController extends ApiBaseController
         $v = json_decode($result, true);
         $i = 0;
         foreach ($v['SearchResult']['SearchResultItems'] as $key => $val) {
-            $get[$i]['DepartmentName'] = $val['MatchedObjectDescriptor']['OrganizationName'];
-            $get[$i]['PositionTitle'] = $val['MatchedObjectDescriptor']['PositionTitle'];
-            $get[$i]['MinimumRange'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['MinimumRange'];
-            $get[$i]['MaximumRange'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['MaximumRange'];
-            $get[$i]['ApplicationCloseDate'] = date("d-m-Y", strtotime($val['MatchedObjectDescriptor']['ApplicationCloseDate']));
-            $get[$i]['PositionLocation'] = $this->getCityName($val['MatchedObjectDescriptor']['PositionLocationDisplay']);
-            $get[$i]['Location'] = $val['MatchedObjectDescriptor']['PositionLocationDisplay'];
-            $get[$i]['JobCategory'] = $val['MatchedObjectDescriptor']['JobCategory'][0]['Code'];
+            $desc = $val['MatchedObjectDescriptor'];
+            $pos = $desc['PositionRemuneration'][0];
+            $get[$i]['DepartmentName'] = $desc['OrganizationName'];
+            $get[$i]['PositionTitle'] = $desc['PositionTitle'];
+            $get[$i]['MinimumRange'] = $pos['MinimumRange'];
+            $get[$i]['MaximumRange'] = $pos['MaximumRange'];
+            $get[$i]['ApplicationCloseDate'] = date("d-m-Y", strtotime($desc['ApplicationCloseDate']));
+            $get[$i]['PositionLocation'] = $this->getCityName($desc['PositionLocationDisplay']);
+            $get[$i]['Location'] = $desc['PositionLocationDisplay'];
+            $get[$i]['JobCategory'] = $desc['JobCategory'][0]['Code'];
             $get[$i]['MatchedObjectId'] = $val['MatchedObjectId'];
-            $get[$i]['Duration'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['RateIntervalCode'];
+            $get[$i]['Duration'] = $pos['RateIntervalCode'];
+            $get[$i]['salary'] = 'View in Details';
+            if ($pos['MinimumRange'] || $pos['MaximumRange']) {
+                $get[$i]['salary'] = '';
+                if ($pos['MinimumRange']) {
+                    $get[$i]['salary'] .= '$' . $pos['MinimumRange'];
+                }
+                if ($pos['MinimumRange'] && $pos['MaximumRange']) {
+                    $get[$i]['salary'] .= ' - ';
+                }
+                if ($pos['MinimumRange']) {
+                    $get[$i]['salary'] .= '$' . $pos['MinimumRange'];
+                }
+                if ($pos['RateIntervalCode']) {
+                    $get[$i]['salary'] .= ' ' . $pos['RateIntervalCode'];
+                }
+            }
             $data = UsaDepartments::find()
                 ->select(['image', 'image_location'])
                 ->where(['Value' => $get[$i]['DepartmentName']])
@@ -232,6 +266,29 @@ class GovtJobsController extends ApiBaseController
             return $this->response(200, $get);
         } else {
             return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionUsDeptDetail()
+    {
+
+        $params = Yii::$app->request->post();
+        if (isset($params['slug']) && !empty($params['slug'])) {
+            $slug = $params['slug'];
+        } else {
+            return $this->response(422, 'missing information "slug"');
+        }
+
+        $d = UsaDepartments::find()
+            ->select(['Value', 'slug', 'total_applications', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE CONCAT("https://ui-avatars.com/api/?name=", value, "&size=200&rounded=false&background=random&color=ffffff") END logo'])
+            ->where(['slug' => $slug])
+            ->asArray()
+            ->one();
+
+        if ($d) {
+            return $this->response(200, $d);
+        } else {
+            return $this->response(404, 'Not Found');
         }
     }
 
@@ -320,6 +377,30 @@ class GovtJobsController extends ApiBaseController
         }
     }
 
+    public function actionInDeptDetail()
+    {
+        $params = Yii::$app->request->post();
+
+        if (isset($params['dept_id']) && !empty($params['dept_id'])) {
+            $dept_id = $params['dept_id'];
+        } else {
+            return $this->response(422, 'missing information "dept_id"');
+        }
+
+        $data = IndianGovtDepartments::find()
+            ->select(['dept_enc_id dept_id', 'Value', 'total_applications', 'slug', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE CONCAT("https://ui-avatars.com/api/?name=", value, "&size=200&rounded=false&background=random&color=ffffff") END logo'])
+            ->Where(['or', ['dept_enc_id' => $dept_id], ['slug' => $dept_id]])
+            ->asArray()
+            ->one();
+
+        if ($data) {
+            return $this->response(200, $data);
+        } else {
+            return $this->response(404, 'not found');
+        }
+
+    }
+
     public function actionInJobs()
     {
 
@@ -342,7 +423,9 @@ class GovtJobsController extends ApiBaseController
         $search_pattern = $this->makeSQL_search_pattern($search);
         $data = IndianGovtJobs::find()
             ->alias('a')
-            ->select(['a.job_id id', 'c.slug company_slug', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.Position, "&size=200&rounded=false&background=random&color=ffffff") END logo', 'a.slug', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
+            ->select(['a.job_id id', 'c.slug company_slug',
+//                'CASE WHEN a.image IS NOT NULL THEN CONCAT("https://eycdn.ams3.digitaloceanspaces.com/' . Yii::$app->params->upload_directories->indian_jobs->departments->image . '", a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.Position, "&size=200&rounded=false&background=random&color=ffffff") END logo',
+                'a.slug', 'a.image_location', 'a.image', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
             ->andWhere(['a.is_deleted' => 0])
             ->andFilterWhere([
                 'or',
@@ -361,20 +444,24 @@ class GovtJobsController extends ApiBaseController
             ->all();
 
         if ($data) {
-            $i = 0;
-            foreach ($data as $d) {
+            foreach ($data as $i => $d) {
                 if (!$d['Eligibility']) {
                     $data[$i]['Eligibility'] = 'View In Details';
                 }
-                $i++;
+                if (!empty($d['image']) && !empty($d['image_location'])) {
+                    $logo = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
+                    if (file_exists($logo)) {
+                        $data[$i]['logo'] = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
+                    } else {
+                        $data[$i]['logo'] = "https://ui-avatars.com/api/?name=" . $d['Position'] . "&size=200&rounded=false&background=random&color=ffffff";
+                    }
+                } else {
+                    $data[$i]['logo'] = "https://ui-avatars.com/api/?name=" . $d['Position'] . "&size=200&rounded=false&background=random&color=ffffff";
+                }
             }
-        }
-
-        if ($data) {
             return $this->response(200, $data);
-        } else {
-            return $this->response(404, 'not found');
         }
+        return $this->response(404, 'not found');
     }
 
     public function actionInDeptJobs()
@@ -402,10 +489,13 @@ class GovtJobsController extends ApiBaseController
 
         $data = IndianGovtJobs::find()
             ->alias('a')
-            ->select(['a.job_enc_id id', 'a.slug', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.Position, "&size=200&rounded=false&background=random&color=ffffff") END logo', 'c.Value Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
+            ->select(['a.job_enc_id id', 'a.slug',
+//                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.Position, "&size=200&rounded=false&background=random&color=ffffff") END logo',
+                'c.Value Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
             ->joinWith(['assignedIndianJobs b' => function ($b) use ($dept_id) {
                 $b->joinWith(['deptEnc c'], false);
-                $b->andWhere(['b.dept_enc_id' => $dept_id]);
+                $b->andWhere(['or', ['b.dept_enc_id' => $dept_id],
+                    ['c.slug' => $dept_id]]);
             }], false, 'LEFT JOIN')
             ->limit($limit)
             ->orderBy(['a.created_on' => SORT_DESC])
@@ -414,12 +504,20 @@ class GovtJobsController extends ApiBaseController
             ->all();
 
         if ($data) {
-            $i = 0;
-            foreach ($data as $d) {
+            foreach ($data as $i => $d) {
                 if (!$d['Eligibility']) {
                     $data[$i]['Eligibility'] = 'View In Details';
                 }
-                $i++;
+                if (!empty($d['image']) && !empty($d['image_location'])) {
+                    $logo = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
+                    if (file_exists($logo)) {
+                        $data[$i]['logo'] = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
+                    } else {
+                        $data[$i]['logo'] = "https://ui-avatars.com/api/?name=" . $d['Position'] . "&size=200&rounded=false&background=random&color=ffffff";
+                    }
+                } else {
+                    $data[$i]['logo'] = "https://ui-avatars.com/api/?name=" . $d['Position'] . "&size=200&rounded=false&background=random&color=ffffff";
+                }
             }
         }
 

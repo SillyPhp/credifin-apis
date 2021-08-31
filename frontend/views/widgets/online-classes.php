@@ -110,7 +110,7 @@ use borales\extensions\phoneInput\PhoneInput;
                     <?=
                     $form->field($model, 'phone')->widget(PhoneInput::className(), [
                         'jsOptions' => [
-                            'allowExtensions' => false,
+                            'allowExtensions' => true,
                             'preferredCountries' => ['in'],
                             'nationalMode' => false,
                         ],

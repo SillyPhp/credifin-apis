@@ -1,10 +1,10 @@
 <?php
 
-use yii\helpers\Url;
 use borales\extensions\phoneInput\PhoneInput;
-use yii\bootstrap\ActiveForm;
 use common\models\RandomColors;
 use frontend\models\script\ImageScript;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Url;
 
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
@@ -55,6 +55,12 @@ if (empty($app['square_image']) || $app['square_image'] == 1) {
 } else {
     $Instaimage = Yii::$app->params->digitalOcean->sharingImageUrl . $app['square_image'];
 }
+
+if (empty($app['story_image']) || $app['story_image'] == 1) {
+    $Storyimage = \frontend\models\script\StoriesImageScript::widget(['content' => $content]);
+} else {
+    $Storyimage = Yii::$app->params->digitalOcean->sharingImageUrl . $app['story_image'];
+}
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
@@ -103,12 +109,12 @@ if (!Yii::$app->user->isGuest) {
                         <?php if ($get['type']): ?>
                             <div class="job-time"><?= ucwords($get['type']) ?></div>
                         <?php endif; ?>
-                        <?php if ($get['location']) { ?>
-                            <div class="job-location"><i class="fas fa-map-marker-alt marg"></i>
-                                <?= $location ?>
-                            </div>
-                        <?php } ?>
                     </div>
+                    <?php if ($get['location']) { ?>
+                        <div class="job-location"><i class="fas fa-map-marker-alt marg"></i>
+                             <?= $location ?>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>
@@ -139,27 +145,33 @@ if (!Yii::$app->user->isGuest) {
                         <?php if ($get['company_logo']) { ?>
                             <img src="<?= $get['company_logo']; ?>" id="logo_img" alt=""/>
                         <?php } else { ?>
-                            <canvas class="user-icon" name="<?= $get['company'] ?>" width="100" height="100"
+                            <canvas class="user-icon" name="<?= $get['company'] ?>" width="125" height="125"
                                     color="#73ef9c" font="48px"></canvas>
                         <?php } ?>
                     </div>
                     <div class="job-head-info">
                         <h4><?= $get['company'] ?></h4>
-                        <div class="organization-details">
-                            <?php if ($get['company_url']): ?>
-                                <p><i class="fas fa-unlink"></i><a href="<?= $get['company_url'] ?>"
-                                                                   target="_blank"><?= $get['company_url'] ?></a></p>
-                            <?php endif; ?>
-                        </div>
+                        <!--                        <div class="organization-details">-->
+                        <!--                            --><?php //if ($get['company_url']): ?>
+                        <!--                                <p><i class="fas fa-unlink"></i><a href="-->
+                        <? //= $get['company_url'] ?><!--"-->
+                        <!--                                                                   target="_blank">-->
+                        <? //= $get['company_url'] ?><!--</a></p>-->
+                        <!--                            --><?php //endif; ?>
+                        <!--                        </div>-->
                     </div>
                     <div class="actions-main">
                         <?php if (Yii::$app->user->isGuest): ?>
-                            <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
-                               class="apply-job-btn single-btn"><i
-                                        class="fas fa-paper-plane"></i>Login to apply</a>
+                            <div class="btn-parent">
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                                   class="apply-job-btn single-btn"><i
+                                            class="fas fa-paper-plane"></i>Login to apply</a>
+                            </div>
                         <?php else: ?>
-                            <a href="<?= $get['url'] ?>" target="_blank" class="apply-job-btn hvr-icon-pulse"><i
-                                        class="fas fa-paper-plane hvr-icon"></i>Apply On Website</a>
+                            <div class="btn-parent">
+                                <a href="<?= $get['url'] ?>" target="_blank" class="apply-job-btn hvr-icon-pulse"><i
+                                            class="fas fa-paper-plane hvr-icon"></i>Apply On Website</a>
+                            </div>
                         <?php endif; ?>
                         <a href="/jobs/list" title="" class="view-all-a">View all
                             Jobs</a>
@@ -168,25 +180,29 @@ if (!Yii::$app->user->isGuest) {
                     <div class="effect thurio">
                         <h3 class="text-white">Share</h3>
                         <div class="buttons">
-                            <a href="#"
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-facebook-f"></i>
                             </a>
-                            <a href="#"
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $this->title . '&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-twitter"></i>
                             </a>
-                            <a href="#"
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link . '&title=' . $this->title . '&summary=' . $this->title . '&source=' . Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                            <a href="#"
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-whatsapp"></i>
                             </a>
-                            <a href="#"
+                            <a href="javascript:;"
                                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fas fa-envelope"></i>
+                            </a>
+                            <a href="javascript:;" class="tg-tele"
+                               onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                <i class="fab fa-telegram-plane"></i>
                             </a>
                         </div>
                         <div class="wts-ap">
@@ -233,6 +249,8 @@ if (!Yii::$app->user->isGuest) {
                             (1250*650)</a>
                         <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square
                             Size (800*800)</a>
+                        <a href="<?= $Storyimage; ?>" download target="_blank"><i class="fa fa-download"></i> Story
+                            Size (Default)</a>
                     </div>
                 </div>
                 <!--  org details-->
@@ -281,7 +299,7 @@ if (Yii::$app->params->options->showSchema) {
             "@context" : "https://schema.org/",
             "@type" : "JobPosting",
             "title" : "<?= $get['title']; ?>",
-            "description" : "<?= $get['description'] ?>",
+            "description" : "<?= str_replace('"', "" ,str_replace("'","",$get['description'])) ?>",
             "datePosted" : "<?= $get['created_at'] ?>",
             "employmentType" : "<?= $get['type'] ?>",
             "hiringOrganization" : {
@@ -298,6 +316,7 @@ if (Yii::$app->params->options->showSchema) {
                 }
             }
         }
+
     </script>
     <?php
 }
@@ -313,6 +332,19 @@ if (Yii::$app->params->options->showSchema) {
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.job-location {
+    width: 40%;
+    display: block;
+    margin-top: 20px !important;
+    margin: 0 auto;
+}
+.job-thumb canvas {
+    border-radius: 50%;
+    width: 125px;
+    height: 125px;
+}
+.iti{width:100%;}
+.intl-tel-input{width:100%;}
 .form-whats {
 	position: relative;
 }
@@ -339,6 +371,7 @@ $this->registerCss('
 	border-radius:6px;
 	display: inline-block;
     margin: 5px 0px;
+    width:230px;
 }
 .form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
     margin-bottom:0;
@@ -422,17 +455,24 @@ border: 1px solid #eee;
     font-size: 13px;
     font-family: roboto;
 }
-.job-thumb a{
-    width: 100px;
-    height: 100px;
+.job-thumb{
+    width: 125px !Important;
+    height: 125px !Important;
     background-color: #fff;
     display: block;
+    overflow: hidden;
+    line-height: 125px;
     margin: auto;
     border-radius: 50%;
 }
-.job-thumb a img{margin:5px;}
+.job-thumb img{
+    max-width: 100px !Important;
+    max-height: 100px !Important;
+    background-color: #fff;
+    object-fit: contain;
+}
 .overlay-top{
-    width: 70%;
+    width: 80%;
     margin: auto;
     margin-top: -150px;
     float: none;
@@ -515,33 +555,28 @@ a.add-or-compare:hover, a.add-or-compare:focus {
   padding: 10px 0px;
 }
 .effect a {
-  text-decoration: none !important;
-  width: 40px;
-  height: 40px;
-  display: inline-block;
-  border-radius: 50%;
-  margin-right: 15px;
-  font-size: 17px;
-  overflow: hidden;
-  position: relative;
-  color: #fff;
-  border: 2px solid #fff;
+    text-decoration: none !important;
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    border-radius: 50%;
+    margin: 0 5px;
+    font-size: 17px;
+    overflow: hidden;
+    position: relative;
+    color: #fff;
+    border: 2px solid #fff;
+    line-height: 26px;
 }
 .effect a i {
-  position: relative;
-  z-index: 3;
-}
-.effect a i {
-  display: inline-block;
-  vertical-align: middle;
-  margin-left: -2px;
-  margin-top: 3px;
+  font-size: 14px;
+  text-align: center;
 }
 /* thurio effect */
 .effect.thurio a {
   transition: border-radius 0.2s linear 0s;
   -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
+          transform: rotate(45deg);`
 }
 .effect.thurio a i {
   transition: -webkit-transform 0.01s linear 0s;
@@ -563,24 +598,26 @@ a.add-or-compare:hover, a.add-or-compare:focus {
         margin-top: 0;
         width: 100%;
     }
-    .job-thumb{max-width: 125px;}
     .job-head-info{
         max-width: 275px;
         text-align: left;
     }
-    .job-head-info h4{
-        margin-left:25px !Important;
-    }
+    
     .job-head-info .organization-details h4{
         margin-left:0px !Important;
     }
     .actions-main{
-        float: left;
+//        float: left;
         display: inline-block;
         width: 42%;
     }
     a.add-or-compare{padding: 10px 5px;}
     .effect.thurio{clear:both;}
+}
+@media only screen and (max-width: 768px) {
+.job-location {
+    width: 100%;
+}
 }
 @media only screen and (max-width: 720px) {
     .actions-main{
@@ -604,9 +641,6 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     }
 }
 @media only screen and (max-width: 430px) {
-    .job-thumb {
-        max-width: inherit;
-    }
     .job-head-info {
         max-width: inherit;
         text-align: center;
@@ -748,17 +782,6 @@ $this->registerCss("
     #new_resume,#use_existing{
         display:none;
     }
-    #logo_img{
-        width: 115px;
-        height: 115px;
-        background-color:#fff;
-        object-fit: contain;
-    }
-    .block .container{padding:0}
-    .block.remove-top{padding-top:0}
-    .block.no-padding{padding-top:0; padding-bottom:0; }
-    .block.dark{background:#111111}
-    .block.remove-bottom{padding-bottom:0}
     .block.overlape {
         z-index: 2;
     }
@@ -824,7 +847,7 @@ $this->registerCss("
         text-align: center;
         position: relative;
         margin-top: 20px;
-        margin-bottom: 50px;
+//        margin-bottom: 50px;
         z-index: 1;
         color: #fff;
         font-size: 18px;
@@ -860,7 +883,6 @@ $this->registerCss("
     }
     .container.fluid{ max-width: 100%; width: 100%; }
     .block .container{padding:0}
-    .container{padding:0}
     .inner-header .container {
         position: relative;
         z-index: 1;
@@ -1178,30 +1200,14 @@ $this->registerCss("
         text-align: center;
         border: none;
     }
-    .job-single-head.style2 .job-thumb {
-        float: left;
-        width: 100%;
-        text-align: center;
-        margin-top:20px;
-    }
-    .job-single-head.style2 .job-thumb img, .job-single-head.style2 .job-thumb canvas {
-        float: none;
-        display: inline-block;
-        width: auto;
-        border: none;
-        -webkit-border-radius: 50%;
-        -moz-border-radius: 50%;
-        -ms-border-radius: 50%;
-        -o-border-radius: 50%;
-        border-radius: 50%;
-    }
     .job-single-head.style2 .job-head-info {
-        float: left;
         width: 100%;
         display: inherit;
         padding: 0;
-        margin-top: 10px;
-        margin-bottom: 18px;
+        margin-top: 15px !important;
+        margin: 0 auto;
+        text-align: center;
+        margin-bottom: 15px;
     }
     .job-single-head.style2 .job-head-info p {
         float: left;
@@ -1232,35 +1238,18 @@ $this->registerCss("
         border-radius: 8px;
         color: #ffffff;
     }
-    .job-thumb {
-        display: table-cell;
-        vertical-align: top;
-        width: 107px;
-    }
-    .job-thumb img {
-        float: left;
-        width: 100%;
-        border: 2px solid #e8ecec;
-        -webkit-border-radius: 8px;
-        -moz-border-radius: 8px;
-        -ms-border-radius: 8px;
-        -o-border-radius: 8px;
-        border-radius: 8px;
-    }
     .job-head-info {
         display: table-cell;
         vertical-align: middle;
         padding-left: 25px;
     }
     .job-head-info h4 {
-        float: left;
         width: 100%;
-        font-family: Open Sans;
+        font-family: 'Roboto';
         font-size: 17px;
         font-weight: 600;
         color: #fff;
         margin: 0;
-        margin-bottom: 0px;
         margin-bottom: 10px;
     }
     .job-head-info span {
@@ -1448,6 +1437,35 @@ $this->registerCss("
         color: #848484;
         line-height: 56px;
         cursor: pointer;
+    }
+    
+    @media screen and (max-width: 991px) {
+      .btn-parent{
+        position: fixed;
+        bottom:28px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9;
+        background: rgba(0,0,0,.1);
+        padding: 7px;
+    }
+    }
+    @media only screen and (max-width: 649px) {
+      .btn-parent{
+            left: 28px;
+            transform: unset;
+            border-radius: 0px 10px 0 0;
+      }
+    }
+    @media only screen and (max-width: 430px) {
+    .btn-parent{
+        position: fixed;
+        }
+    }
+     @media only screen and (max-width: 380px) {
+    .btn-parent{
+        left:0px;
+        }
     }
     @media only screen and (max-width: 575px) {
         .job-overview ul li{

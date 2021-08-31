@@ -26,7 +26,7 @@ if ($type == "internships"){
             </div>
             <div id="review-internships" style="background-color: #fff;" class="font-georgia">
                 <span class="review-list-hint">Drop here to add to review list</span>
-                <a href="#" class="review-list-toggler"><i class="fas fa-chevron-up"></i></a>
+                <a href="javascript:;" class="review-list-toggler"><i class="fas fa-chevron-up"></i></a>
                 <ul id="ilist" class="drop-options connected-sortable droppable-area">
                     <div class="loader-inner-main pt-0">
                         <div class="col-md-3 col-xs-3 pt-10 p-0">
@@ -64,10 +64,12 @@ if ($type == "internships"){
 $c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
 .sidebar-logo-main{
+    padding:0 !important;
     box-shadow:0px 0px 10px -2px rgba(0,0,0,0.2);
     margin:auto;
+    overflow:hidden;
 }
-.product{padding:5px 0 !important;}
+.product{padding:5px 0 5px 2px !important;}
 #header > div{width:100% !important;}
 .highlight{
     background-color: #CCC !important;
@@ -101,6 +103,11 @@ $this->registerCss('
         width:175px; 
     }
 }
+@media screen and (max-width: 991px){
+    #review-internships{
+        width:100%; 
+    }
+}
 .paid {
     border-bottom: 2px solid #FF4500 !important;
 }
@@ -122,6 +129,7 @@ body {
 }
 .side-menu {
     position: fixed;
+    width:25%;
     height: 100%;
 //    background-color: #f8f8f8;
 //    border-right: 1px solid #e7e7e7;
@@ -174,12 +182,19 @@ li.draggable-item.ui-sortable-placeholder {
 }
 .sidebar-logo-main{margin-top:0;}
 .sidebar-logo-main > canvas{
-    margin-left: -5px;
-    margin-top: -5px;
+    margin-left: 0px;
+    margin-top: 0px;
     border-radius: 50%;
 }
 .secondary-top-header{display:none !important;}
 .review-list-hint, .review-list-toggler{display:none;}
+.text-wrap-ellipsis{
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    padding: 0 8px 0 0!important;
+}
 @media only screen and (max-width: 991px) and (min-width: 768px)  {
     .profile-sidebar {
         margin-top: 40px;
@@ -269,16 +284,6 @@ li.draggable-item.ui-sortable-placeholder {
     #review-internships.drop-on{
         height: 294px !important;
     }
-//    *::-webkit-scrollbar {
-//        width: 2em !important;
-//    }
-//    *::-webkit-scrollbar-track {
-//        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3) !important;
-//    }
-//    *::-webkit-scrollbar-thumb {
-//      background-color: darkgrey !important;
-//      outline: 1px solid slategrey !important;
-//    }
 }
 li.draggable-item {
 	position: relative;
@@ -292,6 +297,7 @@ li.draggable-item {
 	right: 2px !important;
 	top: 2px !important;
 	z-index: 99999;
+	line-height:13px;
 }
 @media only screen and (max-width: 550px) {
   .application-card-main {
@@ -361,13 +367,13 @@ function widget(selector) {
     var company = $.trim(selector.find('.org_name').text());
     var location = $.trim(selector.find('.location').text());
     var period = $.trim(selector.find('.period').text());
-    var slug = $.trim(selector.find('.application-card-description a').attr('href'));
+    var slug = $.trim(selector.find('.side-description').attr('data-slug'));
     var lastDate = $.trim(selector.find('.lastDate').text());
     var lat = $.trim(selector.find('.location').attr('data-lat'));
     var long = $.trim(selector.find('.location').attr('data-long'));
     var dataId = $.trim(selector.attr("data-id"));
     var dataKey = $.trim(selector.attr("data-key"));
-    slug = slug.split('/')[2];
+    // slug = slug.split('/')[2];
     if(!logo){
        logo = '<canvas class="user-icon image-partners" name="'+company+'" color="'+logo_color+'" width="40" height="40" font="18px"></canvas>';
     }else{
@@ -524,7 +530,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                 <p class="mb-0 text-wrap-ellipsis">
                     <strong>{{title}}</strong>
                 </p>
-                <p class="mb-5 text-wrap-ellipsis">{{org_name}}</p>
+                <p class="mb-5 text-wrap-ellipsis">{{{org_name}}}</p>
             </div>
         </div>
     </li>

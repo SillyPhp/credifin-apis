@@ -6,7 +6,7 @@ use yii\helpers\Url;
 
 $this->title = $video_detail['title'];
 $this->params['header_dark'] = true;
-
+$link = Yii::$app->request->getAbsoluteUrl("https");
 $keywords = 'Learning';
 $description = $video_detail['description'];
 $image = $video_detail['cover_image'];
@@ -35,7 +35,6 @@ $this->params['seo_tags'] = [
     ],
 ];
 ?>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <section class="bg-blue">
     <div class="large-container">
         <div class="row">
@@ -50,26 +49,13 @@ $this->params['seo_tags'] = [
                     <div id="top-category"></div>
 
                 </div>
-                <br/>
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-2186770765824304"
-                     data-ad-slot="5305796212"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
             </div>
 
             <input type="hidden" id="video-id" value="<?= $video_detail['youtube_video_id']; ?>">
             <div class="col-md-7 white-bg">
-                <div class="row">
+                <div>
                     <div class="video-frame" id="ytplayer">
-                        <!--                        <iframe id="yt-video-frame" onclick="iframeClick(this);" width="100%" height="480"-->
-                        <!--                                src="https://www.youtube.com/embed/-->
-                        <? //= $video_detail['youtube_video_id']; ?><!--"-->
-                        <!--                                frameborder="0" allowfullscreen></iframe>-->
+
                     </div>
                     <div class="video-options">
                         <div class="row">
@@ -183,7 +169,12 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                     <div class="divider"></div>
-                    <?= $this->render('/widgets/mustache/skills/discussion-box'); ?>
+
+
+                    <?= $this->render('/widgets/mustache/skills/discussion-box',[
+                            'commentBoxClasses' => 'for-videos',
+                            'grid'=>'col-md-12'
+                    ]); ?>
 
 
                     <div class="divider"></div>
@@ -197,49 +188,9 @@ $this->params['seo_tags'] = [
             </div>
 
             <div class="col-md-3 blue-bg">
-                <?= $this->render('/widgets/sharing-box'); ?>
-                <!--                <div class="rate-video">-->
-                <!--                    <div class="row">-->
-                <!--                        <div class="col-md-12">-->
-                <!--                            <h1 class="chan-heading">Rate this Video</h1>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                    <div class="cntr">-->
-                <!--                        <label for="rdo-1" class="btn-radio">-->
-                <!--                            <input type="radio" id="rdo-1" name="radio-grp">-->
-                <!--                            <svg width="20px" height="20px" viewBox="0 0 20 20">-->
-                <!--                                <circle cx="10" cy="10" r="9"></circle>-->
-                <!--                                <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z"-->
-                <!--                                      class="inner"></path>-->
-                <!--                                <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z"-->
-                <!--                                      class="outer"></path>-->
-                <!--                            </svg>-->
-                <!--                            <span>Beginner</span>-->
-                <!--                        </label>-->
-                <!--                        <label for="rdo-2" class="btn-radio">-->
-                <!--                            <input type="radio" id="rdo-2" name="radio-grp">-->
-                <!--                            <svg width="20px" height="20px" viewBox="0 0 20 20">-->
-                <!--                                <circle cx="10" cy="10" r="9"></circle>-->
-                <!--                                <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z"-->
-                <!--                                      class="inner"></path>-->
-                <!--                                <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z"-->
-                <!--                                      class="outer"></path>-->
-                <!--                            </svg>-->
-                <!--                            <span>Intermediate</span>-->
-                <!--                        </label>-->
-                <!--                        <label for="rdo-3" class="btn-radio">-->
-                <!--                            <input type="radio" id="rdo-3" name="radio-grp">-->
-                <!--                            <svg width="20px" height="20px" viewBox="0 0 20 20">-->
-                <!--                                <circle cx="10" cy="10" r="9"></circle>-->
-                <!--                                <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z"-->
-                <!--                                      class="inner"></path>-->
-                <!--                                <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z"-->
-                <!--                                      class="outer"></path>-->
-                <!--                            </svg>-->
-                <!--                            <span>Pro</span>-->
-                <!--                        </label>-->
-                <!--                    </div>-->
-                <!--                </div>-->
+                <?= $this->render('/widgets/sharing-box', [
+                        'link' => $link,
+                    ]); ?>
                 <div class="top-video">
                     <div class="row">
                         <div class="col-md-12">
@@ -253,16 +204,16 @@ $this->params['seo_tags'] = [
                     <div class="row" id="r-videos">
                     </div>
                 </div>
-                <br/>
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-2186770765824304"
-                     data-ad-slot="6492214366"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
+<!--                <br/>-->
+<!--                <ins class="adsbygoogle"-->
+<!--                     style="display:block"-->
+<!--                     data-ad-client="ca-pub-2186770765824304"-->
+<!--                     data-ad-slot="6492214366"-->
+<!--                     data-ad-format="auto"-->
+<!--                     data-full-width-responsive="true"></ins>-->
+<!--                <script>-->
+<!--                    (adsbygoogle = window.adsbygoogle || []).push({});-->
+<!--                </script>-->
             </div>
         </div>
     </div>
@@ -273,6 +224,7 @@ $this->params['seo_tags'] = [
 <?php
 
 $this->registerCss('
+.for-videos{height:70px;}
 .comment-text{
     word-break: break-all;
 }
@@ -313,6 +265,7 @@ padding-left:0px;
 }
 .bg-blue{
 //background:#ecf5fe;
+margin-top:20px;
 }
 .color-bg{
 padding-top:0px;
@@ -327,9 +280,10 @@ padding-left:0px !important;
 }
 .chan-heading{
 font-size:18px;
-font-weight:bold;
+font-weight:500;
 text-transform: capitalize;
-padding:0px 0px 5px 0;
+margin:10px 0 5px 0;
+font-family:roboto;
 }
 .trending-posts{
 padding:0px 10px;
@@ -364,72 +318,29 @@ height: auto;
 font-weight:bold;
 color:#000;
 }
-.tg-widgetcategories .tg-widgetcontent ul{
-text-align: right;
-}
 .tg-widgetcategories .tg-widgetcontent ul li{
 position:relative;
 padding:8px 0px;
+font-family:roboto;
 }
-.tg-widgetcategories .tg-widgetcontent ul li a{
-width: 100%;
-position: relative;
-display:block;
-transition:.3s all;
-}
-.tg-widgetcategories .tg-widgetcontent ul li a:hover{
-padding: 0 0 0 15px;
-transition:.3s all;
-}
-.tg-widgetcategories .tg-widgetcontent ul li a:before{
-top: 0;
-left: 0;
-opacity: 0;
-color: #333;
-content: "\f105";
-position: absolute;
-font-size: inherit;
-visibility: hidden;
-line-height:inherit;
-font-family: "FontAwesome";
-}
-.tg-widgetcategories .tg-widgetcontent ul li a:hover:before{
-opacity: 1;
-visibility: visible;
-}
-.tg-widgetcontent ul li + li {
-border-top: 1px solid #e6e6e6;
-}
-.tg-widgetcontent ul li a span {
-float: left;
-}
+
 /*----------*/
 .video-frame{
     max-height: 480px;
-    width: calc(100% + 30px);
-    margin: 0px -15px;
-    margin-top: -20px;
-    border-radius: 10px 10px 0px 0px;
+    width: 100%;
+    margin: 0px auto;
+    border-radius: 4px 4px 0px 0px;
 }
 .fluid-width-video-wrapper {
 padding-top: 0px !important;
 height: 400px;
 }
-.white-bg{
-    background:#fff;
-    border-left:1px solid #eee;
-    border-right:1px solid #eee;
-    padding:20px 30px 30px 30px;
-    box-shadow: 0px 1px 10px 0px #ddd;
-    margin: 20px 0px;
-    border-radius: 10px;
-}
+
 .video-options{
     padding:5px 10px;
     border:1px solid #262626;
     background:#262626;
-    width: calc(100% + 30px);
-    margin: 0px -15px;
+    width:100%;
     margin-top: -6px;
 }
 .flex-view{
@@ -456,6 +367,7 @@ font-size:15px;
 .views, .likes, .comms{
     display:inline-block;
     margin-right:10px;
+    font-family:roboto;
 }
 .dislikeGray{
 background:url(' . Url::to('@eyAssets/images/pages/learning-corner/dislike1.png') . ');
@@ -510,6 +422,7 @@ margin-left:5px;
 background:none;
 border:none;
 color:#dfdedc;
+font-family:roboto;
 }
 .sbtn:hover{
 color:#00a0e3;
@@ -567,9 +480,11 @@ font-weight:bold;
 text-transform:capitalize;
 color:#000;
 line-height:24px;
+font-family:roboto;
 }
 .v-disc{
 padding-top:30px
+font-family:roboto;
 }
 #smoreDiv{
 display:none;
@@ -588,6 +503,7 @@ font-size:13px;
 .v-category{
 padding-top:10px;
 font-weight:bold
+font-family:roboto;
 }
 .v-category ul li{
 display:inline;
@@ -597,19 +513,6 @@ color:#000;
 .v-category span{
 font-weight:500;
 }
-//.v-tags{
-//padding:20px 0 20px;
-//}
-//.v-tags ul li{
-//display:inline-block;
-//padding:5px 10px;
-//border:1px solid #999;
-//border-radius:8px;
-//margin:3px;
-//}
-//.v-tags ul a li{
-//margin-bottom:10px;
-//}
 .v-tags {
   list-style: none;
   margin: 0;
@@ -632,6 +535,7 @@ font-weight:500;
   margin: 0 10px 10px 0;
   text-decoration: none;
   -webkit-transition: color 0.2s;
+  font-family:roboto;
 }
 .v-tag::before {
   background: #fff;
@@ -669,7 +573,6 @@ font-weight:500;
     margin-bottom:20px;
 }
 .video-container2{
-//height:auto;
 background:#fff;
 }
 .video-container:hover{
@@ -704,12 +607,13 @@ background:#fff;
 }
 .r-v-name{
     font-size:14px;
-    font-weight:bold;
+    font-weight:500;
     display:-webkit-box;
     -webkit-line-clamp:2;
     -webkit-box-orient:vertical;
     overflow:hidden;
     text-overflow:ellipsis;
+    font-family:roboto;
 }
 .r-ch-name{
 position:absolute;
@@ -805,9 +709,9 @@ padding:5px 0;
 border-radius:10px;
 }
 .re-v-name{
-font-size:11px;
-font-weight:bold;
+font-size:12px;
 line-height:20px;
+font-family:roboto;
 }
 
 /*------*/
@@ -934,6 +838,9 @@ color: #c12127;
 background: #c12127;
 }
 
+@media screen and (max-width: 550px){
+
+}
 @media screen and (max-width: 992px){
 .video-icon{
 max-width:100%;
@@ -946,10 +853,7 @@ padding-left: 15px !important;
 .tg-widgetcategories .tg-widgetcontent ul{
 text-align: right;
 }
-.tg-widgetcategories .tg-widgetcontent ul li{
-position:relative;
-padding:8px 0px;
-}
+
 .tg-widgetcategories .tg-widgetcontent ul li a{
 width: 100%;
 position: relative;
@@ -972,7 +876,8 @@ position: absolute;
 font-size: inherit;
 visibility: hidden;
 line-height:inherit;
-font-family: "FontAwesome";
+font-family: "Font Awesome 5 Free";
+font-weight: 900;
 }
 .tg-widgetcategories .tg-widgetcontent ul li a:hover:before{
 opacity: 1;
@@ -988,7 +893,6 @@ float: none !Important;
 .video-container2{
     box-shadow:0 0 10px rgba(0,0,0,0.1);
     border-radius:10px;
-//    height:300px;
     background:#fff;
     position:relative;
     margin-bottom:20px;

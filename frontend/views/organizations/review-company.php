@@ -42,7 +42,7 @@ $this->params['seo_tags'] = [
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'company',
-    'slug'=>$slug
+    'slug' => $slug
 ]);
 ?>
 <section class="rh-header">
@@ -50,7 +50,9 @@ echo $this->render('/widgets/drop_resume', [
         <div class="row">
             <div class=" col-md-2 col-md-offset-0 col-sm-4 col-sm-offset-2 col-xs-12">
                 <div class="logo-box">
-                    <img src="<?= $logo_image; ?>" class="do-image" data-name="<?= $org_details['name']; ?>" data-color="<?= $org_details['initials_color'] ?>" data-width="150" data-height="150" data-font="70px">
+                    <img src="<?= $logo_image; ?>" class="do-image" data-name="<?= $org_details['name']; ?>"
+                         data-color="<?= $org_details['initials_color'] ?>" data-width="150" data-height="150"
+                         data-font="70px">
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
@@ -160,7 +162,7 @@ echo $this->render('/widgets/drop_resume', [
                 <div class="review-summary">
                     <h1 class="heading-style" style="text-align: center !important;">Overall Ratings</h1>
                     <div class="row">
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-12">
                             <div class="rs-main <?= (($reviews) ? '' : 'fade_background') ?>">
                                 <div class="rating-large"><?= $round_avg ?>/5</div>
                                 <div class="com-rating-1">
@@ -169,10 +171,10 @@ echo $this->render('/widgets/drop_resume', [
                                     <?php } ?>
                                 </div>
                             </div>
-                        </div>n1
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-6">
                             <div class="rs1">
                                 <div class="re-heading">Job Security</div>
                                 <div class="summary-box">
@@ -185,7 +187,7 @@ echo $this->render('/widgets/drop_resume', [
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-6">
                             <div class="rs1">
                                 <div class="re-heading">Career growth</div>
                                 <div class="summary-box">
@@ -198,7 +200,7 @@ echo $this->render('/widgets/drop_resume', [
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-6">
                             <div class="rs1">
                                 <div class="re-heading">Company culture</div>
                                 <div class="summary-box">
@@ -211,7 +213,7 @@ echo $this->render('/widgets/drop_resume', [
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-6">
                             <div class="rs1">
                                 <div class="re-heading">Salary & Benefits</div>
                                 <div class="summary-box">
@@ -224,7 +226,7 @@ echo $this->render('/widgets/drop_resume', [
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-6">
                             <div class="rs1">
                                 <div class="re-heading">Work Satisfaction</div>
                                 <div class="summary-box">
@@ -237,7 +239,7 @@ echo $this->render('/widgets/drop_resume', [
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-6">
                             <div class="rs1">
                                 <div class="re-heading">Work-Life Balance</div>
                                 <div class="summary-box">
@@ -250,7 +252,7 @@ echo $this->render('/widgets/drop_resume', [
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 col-sm-4">
+                        <div class="col-md-12 col-sm-6">
                             <div class="rs1">
                                 <div class="re-heading">Skill development</div>
                                 <div class="summary-box">
@@ -307,6 +309,17 @@ echo $this->render('/widgets/drop_resume', [
                     </div>
                 <?php } ?>
             </div>
+            <div class="col-md-12">
+                <div id="organizations-cards-main" class="row">
+                    <div class="heading-style">Similar Organizations</div>
+                    <div class="divider"></div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="companies-card" class="row"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-12 set-mar">
                 <?=
                 $this->render('/widgets/new-position', [
@@ -341,209 +354,181 @@ echo $this->render('/widgets/drop_resume', [
                 ]);
                 ?>
                 <div class="row">
-                    <div class="col-md-6 col-md-offset-1">
-                        <?= $form->field($editReviewForm, 'identity')->dropDownList([0 => 'Anonymous', 1 => Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name])->label('Post As'); ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Career Growth</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'career_growth', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="career' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="career' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Company Culture</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'compnay_culture', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="compnay_culture' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="compnay_culture' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Salary Benefits</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'salary_benefits', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="salary_benefits' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="salary_benefits' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Work satisfaction</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'work_satisfaction', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="work_satisfaction' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="work_satisfaction' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Work-Life Balance</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'work_life', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="work_life' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="work_life' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Skill Development</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'skill_devel', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="skill_devel' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="skill_devel' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-1">
-                        <label class="control-label padding_top">Job Security</label>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="star-rating1">
-                            <fieldset>
-                                <?=
-                                $form->field($editReviewForm, 'job_security', ['template' => '{input}{error}'])->inline()->radioList([
-                                    5 => '5 stars',
-                                    4 => '4 stars',
-                                    3 => '3 stars',
-                                    2 => '2 stars',
-                                    1 => '1 stars',
-                                ], [
-                                    'item' => function ($index, $label, $name, $checked, $value) {
-                                        $return = '<input type="radio" id="job_security' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
-                                        $return .= '<label for="job_security' . $index . '" title="' . $label . '">"' . $label . '"</label>';
-                                        return $return;
-                                    }
-                                ])->label(false);
-                                ?>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
                     <div class="col-md-12">
-                        <?= $form->field($editReviewForm, 'likes')->textArea(['rows' => 4])->label('Likes'); ?>
-                    </div>
-                    <div class="col-md-12">
-                        <?= $form->field($editReviewForm, 'dislikes')->textArea(['rows' => 4])->label('Dislikes'); ?>
+                        <div class="col-md-12">
+                            <?= $form->field($editReviewForm, 'identity')->dropDownList([0 => 'Anonymous', 1 => Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name])->label('Post As'); ?>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <label class="control-label padding_top">Job Security</label>
+                            <div class="star-rating1">
+                                <fieldset>
+                                    <?=
+                                    $form->field($editReviewForm, 'job_security', ['template' => '{input}{error}'])->inline()->radioList([
+                                        5 => '5 stars',
+                                        4 => '4 stars',
+                                        3 => '3 stars',
+                                        2 => '2 stars',
+                                        1 => '1 stars',
+                                    ], [
+                                        'item' => function ($index, $label, $name, $checked, $value) {
+                                            $return = '<input type="radio" id="job_security' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                            $return .= '<label for="job_security' . $index . '" title="' . $label . '">"' . $label . '"</label>';
+                                            return $return;
+                                        }
+                                    ])->label(false);
+                                    ?>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <label class="control-label padding_top">Career Growth</label>
+                            <div class="star-rating1">
+                                <fieldset>
+                                    <?=
+                                    $form->field($editReviewForm, 'career_growth', ['template' => '{input}{error}'])->inline()->radioList([
+                                        5 => '5 stars',
+                                        4 => '4 stars',
+                                        3 => '3 stars',
+                                        2 => '2 stars',
+                                        1 => '1 stars',
+                                    ], [
+                                        'item' => function ($index, $label, $name, $checked, $value) {
+                                            $return = '<input type="radio" id="career' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                            $return .= '<label for="career' . $index . '" title="' . $label . '">"' . $label . '"</label>';
+                                            return $return;
+                                        }
+                                    ])->label(false);
+                                    ?>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <label class="control-label padding_top">Company Culture</label>
+                            <div class="star-rating1">
+                                <fieldset>
+                                    <?=
+                                    $form->field($editReviewForm, 'compnay_culture', ['template' => '{input}{error}'])->inline()->radioList([
+                                        5 => '5 stars',
+                                        4 => '4 stars',
+                                        3 => '3 stars',
+                                        2 => '2 stars',
+                                        1 => '1 stars',
+                                    ], [
+                                        'item' => function ($index, $label, $name, $checked, $value) {
+                                            $return = '<input type="radio" id="compnay_culture' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                            $return .= '<label for="compnay_culture' . $index . '" title="' . $label . '">"' . $label . '"</label>';
+                                            return $return;
+                                        }
+                                    ])->label(false);
+                                    ?>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <label class="control-label padding_top">Salary Benefits</label>
+                            <div class="star-rating1">
+                                <fieldset>
+                                    <?=
+                                    $form->field($editReviewForm, 'salary_benefits', ['template' => '{input}{error}'])->inline()->radioList([
+                                        5 => '5 stars',
+                                        4 => '4 stars',
+                                        3 => '3 stars',
+                                        2 => '2 stars',
+                                        1 => '1 stars',
+                                    ], [
+                                        'item' => function ($index, $label, $name, $checked, $value) {
+                                            $return = '<input type="radio" id="salary_benefits' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                            $return .= '<label for="salary_benefits' . $index . '" title="' . $label . '">"' . $label . '"</label>';
+                                            return $return;
+                                        }
+                                    ])->label(false);
+                                    ?>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <label class="control-label padding_top">Work satisfaction</label>
+                            <div class="star-rating1">
+                                <fieldset>
+                                    <?=
+                                    $form->field($editReviewForm, 'work_satisfaction', ['template' => '{input}{error}'])->inline()->radioList([
+                                        5 => '5 stars',
+                                        4 => '4 stars',
+                                        3 => '3 stars',
+                                        2 => '2 stars',
+                                        1 => '1 stars',
+                                    ], [
+                                        'item' => function ($index, $label, $name, $checked, $value) {
+                                            $return = '<input type="radio" id="work_satisfaction' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                            $return .= '<label for="work_satisfaction' . $index . '" title="' . $label . '">"' . $label . '"</label>';
+                                            return $return;
+                                        }
+                                    ])->label(false);
+                                    ?>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <label class="control-label padding_top">Work-Life Balance</label>
+                            <div class="star-rating1">
+                                <fieldset>
+                                    <?=
+                                    $form->field($editReviewForm, 'work_life', ['template' => '{input}{error}'])->inline()->radioList([
+                                        5 => '5 stars',
+                                        4 => '4 stars',
+                                        3 => '3 stars',
+                                        2 => '2 stars',
+                                        1 => '1 stars',
+                                    ], [
+                                        'item' => function ($index, $label, $name, $checked, $value) {
+                                            $return = '<input type="radio" id="work_life' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                            $return .= '<label for="work_life' . $index . '" title="' . $label . '">"' . $label . '"</label>';
+                                            return $return;
+                                        }
+                                    ])->label(false);
+                                    ?>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <label class="control-label padding_top">Skill Development</label>
+                            <div class="star-rating1">
+                                <fieldset>
+                                    <?=
+                                    $form->field($editReviewForm, 'skill_devel', ['template' => '{input}{error}'])->inline()->radioList([
+                                        5 => '5 stars',
+                                        4 => '4 stars',
+                                        3 => '3 stars',
+                                        2 => '2 stars',
+                                        1 => '1 stars',
+                                    ], [
+                                        'item' => function ($index, $label, $name, $checked, $value) {
+                                            $return = '<input type="radio" id="skill_devel' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                            $return .= '<label for="skill_devel' . $index . '" title="' . $label . '">"' . $label . '"</label>';
+                                            return $return;
+                                        }
+                                    ])->label(false);
+                                    ?>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12">
+                            <?= $form->field($editReviewForm, 'likes')->textArea(['rows' => 4])->label('Likes'); ?>
+                        </div>
+                        <div class="col-md-12 col-sm-12">
+                            <?= $form->field($editReviewForm, 'dislikes')->textArea(['rows' => 4])->label('Dislikes'); ?>
+                        </div>
+                        <div class="col-md-12 col-sm-12">
+                            <?= $form->field($editReviewForm, 'org_id', ['template' => '{input}'])->hiddenInput()->label(false); ?>
+                        </div>
+                        <div class="col-md-12 text-center mt-10 col-sm-12">
+                            <div class="btn-footer">
+                                <?= Html::submitButton('Update', ['class' => 'btn btn-primary']); ?>
+                                <?= Html::button('Close', ['class' => 'btn default custom-buttons2', 'data-dismiss' => 'modal']); ?>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <?= $form->field($editReviewForm, 'org_id', ['template' => '{input}'])->hiddenInput()->label(false); ?>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <?= Html::submitButton('Update', ['class' => 'btn btn-primary']); ?>
-                <?= Html::button('Close', ['class' => 'btn default custom-buttons2', 'data-dismiss' => 'modal']); ?>
             </div>
             <?php ActiveForm::end(); ?>
         </div>
@@ -552,6 +537,9 @@ echo $this->render('/widgets/drop_resume', [
 <input type="hidden" name="hidden_city_location" class="hidden_city_location">
 </div>
 <?php
+echo $this->render('/widgets/mustache/companies-card',[
+       'hideDropResume' => true,
+]);
 echo $this->render('/widgets/mustache/application-card');
 
 if ($review_type == 'claimed') {
@@ -563,6 +551,21 @@ if ($review_type == 'claimed') {
 }
 
 $this->registerCss('
+.control-label{
+    font-size:16px !important;
+    font-family:roboto;
+    font-weight:500;
+}
+.edited{margin:20px 0 35px;}
+.btn-footer button {
+    background-color: #00a0e3 !important;
+    color: #fff !important;
+    width: 150px;
+    border: none;
+    margin: 0 5px;
+    display: inline-block;
+    height: 40px;
+}
 #jobs-cards-main{
     margin-top: 30px;
     margin-bottom: 20px;
@@ -625,11 +628,17 @@ $this->registerCss('
 display:none;
 }
 .star-rating1 {
-  font-family: "FontAwesome";
+    font-family: "FontAwesome";
+    border: 2px solid #00a0e3;
+    border-radius: 0 4px 4px 4px;
+    text-align: center;
+    margin-bottom:20px;
 }
+.form-group{margin:0;}
 .star-rating1 > fieldset {
   border: none;
   display: inline-block;
+  margin:0;
 }
 .star-rating1 fieldset:not(:checked) input {
   position: absolute;
@@ -638,22 +647,23 @@ display:none;
 }
 .star-rating1 fieldset:not(:checked) label {
   float: right;
-  width: 1em;
+  width: 32px;
   padding: 0 0.05em;
   overflow: hidden;
   white-space: nowrap;
   cursor: pointer;
   font-size: 200%;
-  color: #36c6d3;
+  color:#fa8f01;
   font-family: "FontAwesome";
+  margin:0;
 }
 .star-rating1 fieldset:not(:checked) label:before {
   content: "\f006  ";
 }
 .star-rating1 fieldset:not(:checked) label:hover,
 .star-rating1 fieldset:not(:checked) label:hover ~ label {
-  color:#36c6d3;
-  text-shadow: 0 0 3px #36c6d3;
+  color:#fa8f01;
+  text-shadow: 0 0 3px #fa8f01;
 }
 .star-rating1 fieldset:not(:checked) label:hover:before,
 .star-rating1 fieldset:not(:checked) label:hover ~ label:before {
@@ -691,9 +701,13 @@ display:none;
     padding: 20px 0 0 0;
     justify-content:center;
 }
-.padding_top
-{
-padding:16px 0px;
+.padding_top {
+    padding: 4px 13px;
+    background-color: #00a0e3;
+    margin: 0;
+    border-radius: 4px 4px 0 0;
+    color: #fff;
+    font-size:14px !important;
 }
 .follow-bttn button ,.wr-bttn button, .cp-bttn a{
     background:#fff;
@@ -1244,6 +1258,21 @@ border: 2px solid #cadfe8 !important;
     .oa-review{
         padding-bottom:20px;
     }
+        .user-rating{
+        display: block !important;
+        justify-content: normal !important;
+    }
+    .ur-bg{
+        display: inline-block;
+        margin-bottom: 5px;
+    }
+    .refirst {
+        border-bottom: 2px solid #ccc;
+        margin-bottom: 20px !important;
+    }
+    .user-review-main {
+        border-left: 0px;
+    }
 }
 
 @media only screen and (max-width: 767px){
@@ -1284,7 +1313,45 @@ border: 2px solid #cadfe8 !important;
 }
 ');
 $script = <<< JS
-
+function getCompanies(template=$("#companies-card")) {
+        let params = {};
+        params['page'] = 1;
+        $.ajax({
+            url:window.location.href,
+            method:"POST",
+            data:{'params':params},
+            dataType:'JSON',
+            success:function (response) {
+                if(response.status == 200){
+                    for (var i = 0; i < response.cards.length; i++) {
+                        response.cards[i]['jobs_cnt'] = 0;
+                        response.cards[i]['internships_cnt'] = 0;
+                        for(var j=0; j < response.cards[i]['employerApplications'].length; j++){
+                            if(response.cards[i]['employerApplications'][j]['name'] == 'Jobs'){
+                               response.cards[i]['jobs_cnt'] =  response.cards[i]['employerApplications'][j]['total_application'];
+                            }else if(response.cards[i]['employerApplications'][j]['name'] == 'Internships'){
+                               response.cards[i]['internships_cnt'] =  response.cards[i]['employerApplications'][j]['total_application'];
+                            }
+                        }
+                    }
+                    var get_companies = $('#companies-card-all').html();
+                    template.append(Mustache.render(get_companies, response.cards));
+                    $('[data-toggle="tooltip"]').tooltip();
+                    utilities.initials(); 
+                    $.fn.raty.defaults.path = '/assets/common/new_stars'; 
+                    $('.average-star').raty({
+                    readOnly: true, 
+                    hints:['','','','',''], 
+                    score: function() {
+                        return $(this).attr('data-score');
+                    }
+                });
+                } else{
+                    $('#organizations-cards-main').remove();
+                }
+            }
+        })
+    } 
 $(document).on("click", ".star-rating1 label", function(e){
     e.preventDefault();
     var id = "#" + $(this).attr("for");
@@ -1518,6 +1585,7 @@ document.getElementById("wr").addEventListener("click", function(e){
 }
 getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=$slug');
 getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=$slug');
+getCompanies();
 JS;
 $headScript = <<< JS
 function review_post_ajax(data) {
@@ -1545,17 +1613,20 @@ $this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto+Slab:400,
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
+$this->registerCssFile('https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');
+$this->registerJsFile('@root/assets/vendor/raty-master/js/jquery.raty.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script id="review-cards" type="text/template">
 
 </script>
 
 <script>
-    if(document.getElementById('sb')) {
+    if (document.getElementById('sb')) {
         document.getElementById('sb').addEventListener("click", function () {
             var sharecom = document.querySelector('.sd-btns');
             sharecom.classList.toggle('share-hidden');

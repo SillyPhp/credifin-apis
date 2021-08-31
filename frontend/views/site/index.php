@@ -17,33 +17,64 @@ $this->params['header_dark'] = false;
                                      alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                             </li>
                         </ul>
-                        <div class="job-search-sec">
-                            <div class="job-search style2">
-                                <h3>The World's First Integrated Career Platform</h3>
-                                <span>The Easiest Way to Build Your Career</span>
-                                <div class="search-job2">
-                                    <form id="search_jobs_internships" action="<?= Url::to('/search'); ?>">
-                                        <div class="row no-gape">
-                                            <div class="col-lg-10 col-md-9 col-sm-8 col-xs-7">
-                                                <div class="job-field">
-                                                    <input id="search-input" type="text" name="keyword"
-                                                           placeholder="Keywords"/>
+                        <div class="job-search-sec headerContent">
+                            <div class="job-search style2" >
+                                <div class="hcHidden hcActive">
+                                    <h1>The World's First Integrated Career Platform</h1>
+                                    <h2>The Easiest Way to Build Your Career</h2>
+                                </div>
+                                <div class="hcHidden" id="jobHeaderContent">
+                                    <h1>Thousands Of Jobs In Just One Click.</h1>
+                                    <h2>Get into your dream job and build a strong business network</h2>
+                                </div>
+                                <div class="hcHidden" id="internshipHeaderContent">
+                                    <h1>Gain Experience with The Best Internships</h1>
+                                    <h2>Build your skills by interning with the best companies.</h2>
+                                </div>
+                                <div class="hcHidden" id="learningHeaderContent">
+                                    <h1>Creative and Innovative Learning Environment</h1>
+                                    <h2>Videos, blogs, and articles to boost your knowledge.</h2>
+                                </div>
+                                <div class="hcHidden" id="reviewsHeaderContent">
+                                    <h1>Get Invaluable source of feedback</h1>
+                                    <h2>Know everything about Schools, Colleges, Universities and Companies.</h2>
+                                </div>
+                                <div class="hcHidden" id="coursesHeaderContent">
+                                    <h1>Top Courses To Develop Your Skills</h1>
+                                    <h2>Improve your performance at your workspace by learning new things.</h2>
+                                </div>
+                                <div class="hcHidden" id="loanHeaderContent">
+                                    <h1>Education Loan To Fulfil Your Dreams</h1>
+                                    <h2>Get personalized Education loan at lower interest rates for all your educational needs.</h2>
+                                </div>
+                                <div class="header-search-bar">
+                                    <div class="search-job2">
+                                        <form id="search_jobs_internships"
+                                              action="<?= Url::to('/search'); ?>">
+                                            <div class="row no-gape">
+                                                <div class="col-lg-10 col-md-9 col-sm-8 col-xs-7">
+                                                    <div class="job-field">
+                                                        <input id="search-input" type="text" name="keyword"
+                                                               placeholder="Keywords"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-2  col-md-3 col-sm-4 col-xs-5">
+                                                    <button type="submit" id="search-submit">Search <i
+                                                                class="fas fa-search"></i></button>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-2  col-md-3 col-sm-4 col-xs-5">
-                                                <button type="submit" id="search-submit">Search <i
-                                                            class="fas fa-search"></i></button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div><!-- Job Search 2 -->
-                                <span class="feature-links">Search For: <a href="/jobs">Jobs</a>,
-                                    <a href="/internships">Internships</a>, <a href="/training-programs">Training Courses</a>,
-                                    <a href="/reviews">Reviews</a>, <a href="/learning">Learning Content</a>, <a
-                                            href="/blog">Blogs</a>
+                                        </form>
+                                    </div><!-- Job Search 2 -->
+                                    <span class="feature-links">Search For: <a href="/organizations">Companies,</a>
+                                    <a href="/jobs">Jobs,</a> <a href="/internships">Internships,</a>
+                                    <a href="/reviews">Reviews,</a> <a href="/learning">Learning Hub,</a> <a
+                                            href="/courses">Courses,</a> <a href="/career-advice">Career Advice,</a>
+                                    <a href="/education-loans">Education Loans</a>
                                 </span>
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -53,7 +84,8 @@ $this->params['header_dark'] = false;
     <div class="header-row">
         <div class="container">
             <div class="header-boxs">
-                <div class="box-border fade-in one">
+                <div class="box-border fade-in one" data-name="jobHeaderContent"
+                     onmouseover="showHeaderContent(this)">
                     <a href="<?= Url::to('/jobs'); ?>">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/jobs-blue.png') ?>" title="Jobs" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
@@ -63,7 +95,8 @@ $this->params['header_dark'] = false;
                         <h3 class="h-heading">Jobs</h3>
                     </a>
                 </div>
-                <div class="box-border fade-in two">
+                <div class="box-border fade-in two" data-name="internshipHeaderContent"
+                     onmouseover="showHeaderContent(this)">
                     <a href="<?= Url::to('/internships'); ?>">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/internship-blue.png') ?>" title="Internships" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
@@ -74,7 +107,8 @@ $this->params['header_dark'] = false;
                         <h3 class="h-heading">Internships</h3>
                     </a>
                 </div>
-                <div class="box-border fade-in two">
+                <div class="box-border fade-in two" data-name="learningHeaderContent"
+                     onmouseover="showHeaderContent(this)">
                     <a href="<?= Url::to('/learning'); ?>">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-blue.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
@@ -85,7 +119,8 @@ $this->params['header_dark'] = false;
                         <h3 class="h-heading">Learning Hub</h3>
                     </a>
                 </div>
-                <div class="box-border fade-in three">
+                <div class="box-border fade-in three" data-name="reviewsHeaderContent"
+                     onmouseover="showHeaderContent(this)">
                     <a href="<?= Url::to('/reviews'); ?>">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/review-blue.png') ?>" title="Reviews" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
@@ -96,7 +131,8 @@ $this->params['header_dark'] = false;
                         <h3 class="h-heading">Reviews</h3>
                     </a>
                 </div>
-                <div class="box-border fade-in three">
+                <div class="box-border fade-in three" data-name="coursesHeaderContent"
+                     onmouseover="showHeaderContent(this)">
                     <a href="<?= Url::to('/courses'); ?>">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-blue.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
@@ -107,7 +143,8 @@ $this->params['header_dark'] = false;
                         <h3 class="h-heading">Courses</h3>
                     </a>
                 </div>
-                <div class="box-border fade-in four">
+                <div class="box-border fade-in four" data-name="loanHeaderContent"
+                     onmouseover="showHeaderContent(this)">
                     <a href="<?= Url::to('/education-loans'); ?>">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-bluee.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
@@ -126,27 +163,64 @@ $this->params['header_dark'] = false;
 <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
 
 <div id="app-data"></div>
-<div id="sectionIsLoading">
-    <svg style="margin:auto;background:#fff;display:block;" width="101px" height="101px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
-        <circle cx="50" cy="50" r="15" fill="#00a0e3">
-            <animate attributeName="cx" values="65.55634918610404;34.44365081389595;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
-            <animate attributeName="cy" values="65.55634918610404;34.44365081389596;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
-            <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1" dur="1.3157894736842106s" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
-        </circle>
-        <circle cx="50" cy="50" r="15" fill="#ff7803">
-            <animate attributeName="cx" values="34.44365081389596;65.55634918610404;34.44365081389596" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="0s"></animate>
-            <animate attributeName="cy" values="65.55634918610404;34.44365081389595;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="0s"></animate>
-            <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1" dur="1.3157894736842106s" repeatCount="indefinite" begin="0s"></animate>
-        </circle>
+<div id="sectionIsLoading" class="sectionLoad">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;background:transparent;display:block;" width="60px" height="60px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+        <g transform="translate(50,50)">
+            <g transform="scale(0.9)">
+                <g transform="translate(-50,-50)">
+                    <g>
+                        <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" values="360 50 50;0 50 50" keyTimes="0;1" dur="0.9900990099009901s" keySplines="0.7 0 0.3 1" calcMode="spline"></animateTransform>
+                        <path fill="#00a0e3" d="M42.9,17.8c-1.4-5.4,1.9-11,7.3-12.4c0.6-0.2,1.3-0.3,1.9-0.3l0.8,0l0,0c4-0.2,8,0.1,11.9,1.1 c3.6,0.9,7.2,2.5,10.6,4.7c3.3,2.2,6.2,4.8,8.4,7.6c2.3,3,4.2,6.2,5.4,9.7c0.3,0.9,0.6,1.8,0.9,2.7c0.2,0.9,0.4,1.8,0.6,2.7l0.1,0.6 l0.4,3.4c0,0.3,0,0.6,0,0.9l0,1.8c0,0.4,0,0.8,0,1.2c-0.1,0.9-0.2,1.8-0.2,2.7c-0.3,2-0.6,3.6-1.2,5.2c-1.1,3.5-2.6,6.6-4.6,9.3 c-2,2.8-4.4,5.2-7.1,7.2c-0.2,0.2-0.5,0.3-0.7,0.5c-0.5,0.3-1,0.7-1.4,0.9l-2.3,1.3c-1.6,0.7-3.1,1.4-4.6,1.8 c-3.3,1-6.6,1.5-9.6,1.4c-3.2-0.1-6.4-0.7-9.3-1.7c-2.9-1.1-5.6-2.6-8-4.5l-1.1-0.9c-0.2-0.2-0.4-0.3-0.6-0.5l-1.6-1.6 c-1.6-1.8-3-3.8-4.1-5.9c1.4,1.9,3.1,3.5,4.9,5c0.8,0.6,1.7,1.3,2.6,1.8l1.1,0.6c2.5,1.3,5.1,2.2,7.9,2.8c2.6,0.4,5.4,0.4,8,0 c2.4-0.3,5-1.2,7.5-2.4c1.1-0.5,2-1.1,2.9-1.7l1.9-1.5c0.3-0.3,0.6-0.6,0.9-0.8c0.1-0.1,0.3-0.3,0.4-0.4l0.1-0.1 c1.7-1.8,3.1-3.8,4.2-6.1c1-2.1,1.6-4.4,1.9-6.8c0.2-1,0.2-2,0.1-2.8l0-0.6l0-0.3c-0.1-0.5-0.1-1-0.1-1.4c0-0.4-0.1-0.8-0.2-1.1 l-0.2-1c0-0.2-0.1-0.3-0.1-0.5L78,37.7l-0.4-1c-0.2-0.4-0.4-0.9-0.6-1.3L77,35.1c-0.2-0.4-0.5-0.8-0.7-1.2l-0.1-0.1 c-1.1-1.8-2.5-3.5-4.1-4.9c-1.5-1.3-3.2-2.4-5.4-3.2c-2.1-0.8-4-1.2-5.8-1.3C53.9,24.2,45.5,27.5,42.9,17.8z"></path>
+                        <path fill="#ff7803" d="M33.2,74.3c-2.1-0.9-3.9-1.9-5.4-3.2c-1.6-1.4-3-3-4.1-4.9l-0.1-0.1c-0.2-0.4-0.4-0.8-0.7-1.2l-0.1-0.3 c-0.2-0.4-0.4-0.9-0.6-1.3c-3.2-8.4-0.9-17.9,5.7-24.1c9-8.4,22.7-8,32.3-0.9c1.8,1.5,3.5,3.1,4.9,5c-1.1-2.2-2.5-4.1-4.1-5.9 C44.8,20.4,17,28.7,10.2,50.4c-0.5,1.6-0.8,3.2-1.2,5.2c-0.1,0.9-0.2,1.8-0.2,2.7c0,0.4,0,0.8,0,1.2l0,1.9c0,0.3,0,0.6,0,0.9 l0.4,3.4l0.1,0.6c0.2,0.9,0.4,1.8,0.6,2.7c0.3,0.9,0.6,1.8,0.9,2.7c1.3,3.5,3.1,6.7,5.4,9.7c2.2,2.9,5.1,5.4,8.4,7.6 c3.4,2.2,7,3.8,10.6,4.7c3.8,1,7.8,1.4,11.9,1.1l0,0l0.8,0c0.6,0,1.3-0.1,1.9-0.3c2.6-0.7,4.8-2.4,6.2-4.7c1.4-2.3,1.8-5.1,1.1-7.7 c-1.4-5.4-7-8.7-12.4-7.3c-1.9,0.5-3.7,0.7-5.6,0.6C37.3,75.5,35.3,75.1,33.2,74.3z"></path>
+                    </g></g></g></g>
     </svg>
 </div>
 
-<?= $this->render('/widgets/press-releasee') ?>
-
 <?php
 $this->registerCss('
+.headerContent .job-search .feature-links{
+    float: left;
+    width: 100%;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 400;
+    color: #d5d8f3;
+    text-align: center;
+    margin-top: 10px;
+}
+.job-search-sec .job-search.style2 span {
+    opacity: 1;
+}
+.headerContent .job-search h1 {
+    float: left;
+    width: 100%;
+    font-family: Quicksand;
+    font-size: 46px;
+    font-weight: normal;
+    color: #ffffff;
+    letter-spacing: 0px;
+    text-align: center;
+    line-height: 50px;
+    margin-bottom: 13px;
+}
+.headerContent .job-search h2 {
+    float: left;
+    width: 100%;
+    font-family: Quicksand;
+    font-size: 30px;
+    font-weight: 400;
+    color: #ffffff;
+    text-align: center;
+    margin-top: 10px;
+}
 #app-data{
     overflow-x: hidden;
+}
+.hcHidden{
+    display: none;
+}
+.hcActive{
+    display: block;
 }
 .loan{
     margin-top: 0px !important;
@@ -168,13 +242,9 @@ $this->registerCss('
 .h-text{
     color:#ff7803;
 }
-//.sectionIsLoading {
-//    display: none;
-//    position: relative;
-//    width: 80px;
-//    height: 80px;
-//    margin: auto;
-//}
+.sectionLoad {
+    margin:20px 0
+}
 //.sectionIsLoading div {
 //  position: absolute;
 //  border: 4px solid #00a0e3;
@@ -246,9 +316,7 @@ $this->registerCss('
 .tweet-btn button:hover{
     color:#00a0e3;
 }
-.job-search > span{
-    color:#fff !important;
-}
+
 .feature-links a{
     color: #d5d8f3;
     padding-right: 5px;    
@@ -1087,19 +1155,38 @@ how-icon{
         float: left;
         width: 100%;
     }
+    .headerContent .job-search h1{
+        font-size: 26px;
+        line-height: 30px;
+        padding: 0 15px;
+        
+    }
+    .headerContent .job-search h2{
+        font-size: 20px;
+        margin-top: 0px;
+        margin-bottom: 0px;    
+    }
 }
-
+@media only screen and (max-width: 520px) and (min-width: 360px) {
+    .job-search > h1 {
+        font-size: 24px;
+        line-height: 30px;
+        padding: 0px 11px 0px;
+    }
+    .search-job2 {
+        padding: 4px 40px;
+    }
+    .feature-links {
+        padding: 0 14px;
+    }  
+} 
 ');
 $script = <<< JS
 $("html, body").animate({ scrollTop: 0 }, "slow");
 var load_content = true;
 var loadNth = 0;
 var errorNth = 0;
-// window.onscroll = function() {scrollFunction()};
 function scrollFunction() {
-     // var doc_height = $(document).height() - $(window).height();
-  // if (document.documentElement.scrollTop > doc_height - $('#footer').height()) {
-  // for(var l =0;l<loadElems.length;l++){
       if(load_content && loadElems[loadNth]){
         load_content = false;
         $('#sectionIsLoading').fadeIn(500);
@@ -1137,19 +1224,7 @@ function scrollFunction() {
       }
   // }
 // }
-    scrollFunction();    
-  jQuery(function($) {
-  $('.main-slider-sec').slick({
-	  slidesToShow: 1,
-	  slidesToScroll: 1,
-	  arrows: false,
-	  autoplay: true,
-	  slide: 'li',
-	  fade: false,
-	  infinite: true,
-	  dots: false
-	});
-});
+    scrollFunction();
 
 
 document.getElementById('search-submit').addEventListener('click',(evt)=> {
@@ -1159,6 +1234,17 @@ document.getElementById('search-submit').addEventListener('click',(evt)=> {
       return false; 
   }
 });
+
+$(document).on('submit', '#search_jobs_internships', function() {
+    if($(this).attr('action') === '/jobs'){
+        window.location.href = $('#search-input').val().replace(/\s+/g, '-').toLowerCase() + '-jobs';
+        return false;
+    }else if($(this).attr('action') === '/internships'){
+        window.location.href = $('#search-input').val().replace(/\s+/g, '-').toLowerCase() + '-internships';
+        return false;
+    }
+});
+$('.load-later').Lazy();
 JS;
 if (!Yii::$app->user->isGuest) {
     $this->registerJs("
@@ -1166,19 +1252,17 @@ if (!Yii::$app->user->isGuest) {
         'getOurServices',
         'getFeaturedApplications',
         'getStats',
+        'getProductOffering',
         'getTopCities',
-//        'getEduAndRedbull',
+        'getDropResume',
         'getGovernmentJobs',
         'getInternationalJobs',
         'getCompaniesWithUs',
         'getLearningTopics',
-//        'getOpportunities',
-//        'getSafetySigns',
-//        'getOnlineClasses',
         'getWhatsappCommunityj',
-//        'getNewsUpdate',
 //        'getTweets',
         'getStudentLoan',
+        'getPressRelease',
         'getShortcuts'
     ];
     ");
@@ -1189,6 +1273,9 @@ if (!Yii::$app->user->isGuest) {
         'getFeaturedApplications',
         'getFeaturedInternships',
         'getStats',
+        'getProductOffering',
+        'getAiesec',
+        'getDropResume',
         'getTopCities',
 //        'getEduAndRedbull',
         'getGovernmentJobs',
@@ -1203,14 +1290,15 @@ if (!Yii::$app->user->isGuest) {
 //        'getNewsUpdate',
 //        'getTweets',
         'getStudentLoan',
+        'getPressRelease',
         'getNewsletter',
         'getShortcuts'
     ];
+    
     ");
 }
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.9/jquery.lazy.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJs($script);
-$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
-//$this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet');
 $this->registerCssFile('@eyAssets/css/home-page-slider.css');
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
@@ -1219,24 +1307,58 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
 ?>
 <script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <script>
-    var modal = document.getElementById("virusModal");
-    // Get the button that opens the modal
-    var btn = document.getElementsByClassName("collegeSignupModal");
-
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-
-    for (var i = 0; i < btn.length; i++) {
-        btn[i].onclick = function () {
-            modal.style.display = "block";
+    function showHeaderContent(e){
+        let showDiv = e.getAttribute('data-name');
+        let headerContent = document.querySelector('.headerContent');
+        let divActive = headerContent.querySelector('#'+showDiv);
+        let hcActive = headerContent.getElementsByClassName('hcActive')
+        let searchForm = headerContent.querySelector('#search_jobs_internships');
+        let searchInput = document.getElementById('search-input')
+        if(hcActive.length > 0){
+            hcActive[0].classList.remove('hcActive');
+        }
+        console.log(searchForm.values);
+        if(divActive.classList.contains('hcActive')){
+           return false
+        }else{
+           divActive.classList.add('hcActive');
+            switch (showDiv) {
+                case 'jobHeaderContent':
+                    searchForm.setAttribute('action', '/jobs')
+                    searchInput.setAttribute('placeholder', 'Search Jobs');
+                    break;
+                case 'internshipHeaderContent':
+                    searchForm.setAttribute('action', '/internships');
+                    searchInput.setAttribute('placeholder', 'Search Internships');
+                    break;
+                case 'learningHeaderContent':
+                    searchForm.setAttribute('action', '/learning/search-video');
+                    searchInput.setAttribute('placeholder', 'Search Learning Videos');
+                    break;
+                case 'reviewsHeaderContent':
+                    searchForm.setAttribute('action', '/reviews/search');
+                    searchInput.setAttribute('placeholder', 'Search School, College, University or Company Name');
+                    break;
+                case 'coursesHeaderContent':
+                    searchForm.setAttribute('action', '/courses/courses-list');
+                    searchInput.setAttribute('placeholder', 'Search Courses');
+                    break;
+                default:
+                    searchForm.setAttribute('action', '/search');
+                    searchInput.setAttribute('placeholder', 'Keyword');
+                    console.log(showDiv);
+            }
+           if(showDiv == 'loanHeaderContent') {
+               headerContent.querySelector('.header-search-bar').style.display = 'none';
+           }else{
+               headerContent.querySelector('.header-search-bar').style.display = 'block';
+           }
         }
     }
-    span.onclick = function () {
-        modal.style.display = "none";
-    }
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
+
+    window.addEventListener("pageshow", function() {
+    var form = document.getElementsByTagName("form");
+    // let the browser natively reset defaults
+    form[0].reset();
+    });
 </script>

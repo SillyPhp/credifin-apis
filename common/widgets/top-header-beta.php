@@ -4,7 +4,7 @@
         if ($data) {
             foreach ($data as $grandParents) {
                 ?>
-                <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+                <li class="ey-nav-item ey-header-item ey-header-item-is-menu <?= $grandParents['value']['css_class']; ?>">
                     <a href="<?= $grandParents['value']['route']; ?>">
                         <?= $grandParents['value']['name']; ?>
                         <?php
@@ -28,6 +28,7 @@
                                                 ?>
                                                 <li class="
                                             <?php
+                                                echo ' ' . $parents['value']['css_class'] . ' ';
                                                 if ($parents['childs']) {
                                                     foreach ($parents['childs'] as $children) {
                                                         if ($children) {
@@ -48,7 +49,7 @@
                                                                 if ($parents['childs']) {
                                                                     foreach ($parents['childs'] as $children) {
                                                                         ?>
-                                                                        <li class="ey-head-sub-menu-icon">
+                                                                        <li class="ey-head-sub-menu-icon <?= $children['value']['css_class']?>">
                                                                             <a href="<?= $children['value']['route']; ?>">
                                                                                 <div>
                                                                                     <span class="ey-services-icons ai"
@@ -328,6 +329,7 @@ $this->registerCss('
     -ms-flex: 16;
     flex: 16;
     margin: 0 30px;
+    margin-right:0px;
 }
 
 .ey-head-main .ey-main-menu-nav,
@@ -348,12 +350,12 @@ $this->registerCss('
 
 .ey-head-main .ey-menu-inner-main {
     list-style: none;
-//    margin: auto;
+    margin: 0;
     padding: 0;
 }
 .ey-head-main .ey-nav-item, .ey-head-main .ey-nav-actions .ey-menu-login {
-    font: 500 14px/16px Roboto, Arial, sans-serif;
-    margin: 0 20px 0 0;
+    font: 500 13px/15px Roboto, Arial, sans-serif;
+    margin: 0 15px 0 0;
     padding: 7px 0px;
 }
 
@@ -363,7 +365,7 @@ $this->registerCss('
 .ey-head-main .ey-header-item i {
     font-size: 12px;
     line-height: 1em;
-    padding-left: 4px;
+    padding-left: 0px;
     -webkit-transform: rotate(0);
     -ms-transform: rotate(0);
     transform: rotate(0);
@@ -519,9 +521,9 @@ $this->registerCss('
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -webkit-box-flex: 1.2;
-    -ms-flex: 1.2;
-    flex: 1.2;
+    -webkit-box-flex: 0.75;
+    -ms-flex: 0.75;
+    flex: 0.75;
     -webkit-box-pack: end;
     -ms-flex-pack: end;
     justify-content: flex-end;
@@ -531,7 +533,7 @@ $this->registerCss('
     left: 50%;
     position: absolute;
     right: 0;
-    top: 63px;
+    top: 62px;
     z-index: 4;
     height:0px;
     width: 100vw;
@@ -693,6 +695,7 @@ $this->registerCss('
     flex: 1 0 100%;
     max-width: 100%;
     padding: 30px;
+    padding-top: 50px;
 }
 
 .ey-mobile-menu .ey-mobile-menu-inner-content nav {
@@ -1029,8 +1032,8 @@ $this->registerCss('
 }
 @media screen and (max-width: 1400px) and (min-width: 1080px){
     .ey-head-main .ey-nav-item, .ey-head-main .ey-nav-actions .ey-menu-login {
-        font: 500 13px/16px Roboto, Arial, sans-serif;
-        margin: 0 15px 0 0;
+        font: 500 12px/14px Roboto, Arial, sans-serif;
+        margin: 0 12px 0 0;
     }    
     .ey-menu-main {
         margin: 0 15px 0 30px;
@@ -1050,6 +1053,19 @@ $this->registerCss('
 .ey-main-menu-nav > .ey-menu-inner-main > .ey-nav-item.ey-header-item.ey-header-item-is-menu:hover > a{
     color:#00a0e3 !important;
 }
-
+.ey-menu-login {
+    margin: 0px !important;
+}
+.highlight-item{
+    background-color: #f07704;
+    padding: 5px 15px !Important;
+    z-index: 9;
+}
+.highlight-item a{
+    color:#fff !important;
+}
+.highlight-item:hover a{
+    color: #444 !important;
+}
 ');
 ?>

@@ -5,6 +5,7 @@ use yii\helpers\Url;
 ?>
     <section class="e-background">
         <h2>Join Our Campus Placement Programme Today!</h2>
+        <div class="bg-overlay"></div>
     </section>
     <div class="container">
         <div class="row">
@@ -67,6 +68,15 @@ use yii\helpers\Url;
     </div>
 <?php
 $this->registercss('
+.bg-overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    opacity: 0.5;
+}
 .e-background{
     background-image: url("' . Url::to("@eyAssets/images/pages/employers/bg.png") . '");
     min-height: 400px;
@@ -77,9 +87,11 @@ $this->registercss('
     text-align: center;
     padding-top: 20px;
     font-size: 35px;
-    font-family: lobster;
+    font-family: roboto;
     color:#fff;
-    margin-top: 0px;
+    margin-top: 0;
+    position: relative;
+    z-index:1;
 }
 .e-parent {
     height: 125px;
