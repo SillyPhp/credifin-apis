@@ -1102,7 +1102,7 @@ class OrganizationsController extends Controller
             if ($org['city_name']) {
                 $options['city'] = $org['city_name'];
             }
-            $options['limit'] = 6;
+            $options['limit'] = 3;
             $cards = $get->getAllCompanies($options);
             if ($cards) {
                 $cards['status'] = 200;

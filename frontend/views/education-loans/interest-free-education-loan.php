@@ -115,6 +115,7 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+<?= $this->render('/widgets/interest-free-loan-process') ?>
 
     <section class="benefit-bg">
         <div class="container">
