@@ -57,7 +57,7 @@ class EyCollegeProfileController extends ApiBaseController
             ->alias('a')
             ->select(['a.organization_enc_id', 'a.email', 'a.name', 'a.website website_link', 'b.affiliated_to', 'b1.name city_name', 'a.phone',
                 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo',
-                'b.accredited_to', 'b.entrance_exam', 'b.total_programs', 'b.popular_course', 'b.top_recruiter', 'b.brochure', 'b.established_in', 'b.university_type', 'b.application_mode'
+                'b.accredited_to', 'b.entrance_exam', 'b.total_programs', 'b.popular_course', 'b.top_recruiter', 'b.brochure', 'b.established_in', 'b.university_type', 'b.application_mode', 'b.fees','a.description'
             ])
             ->joinWith(['organizationOtherDetails b' => function ($b) {
                 $b->joinWith(['locationEnc b1']);
