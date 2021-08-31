@@ -9,6 +9,34 @@ $salary = $_GET['salary'];
 $salary_exp = explode(",", $salary);
 $salary_from = $salary_exp[0];
 $salary_to = $salary_exp[1];
+$this->title = 'Check the Candidates Profiles to be Selected by Companies';
+$keywords = 'student employment, select candidates, candidates profile, registered candidates, office training jobs, student jobs near me, desired candidates';
+$description = 'Search for Desired Candidates Profiles to be Selected by Companies - New Opportunities for Candidates as well as for Recruiters.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('assets/themes/ey/images/pages/candidate-profile/candidates.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 
 <!--Modal-->
@@ -123,7 +151,7 @@ $salary_to = $salary_exp[1];
             echo $this->render('/widgets/users/preloaders/candidates');
             ?>
         </div>
-        <div class="col-md-12 col-sm-12">
+        <div class="col-md-10 col-sm-12 col-md-offset-2">
             <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
             <a href="#" id="loadMore"
                class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
@@ -162,6 +190,16 @@ $salary_to = $salary_exp[1];
 </section>
 <?php
 $this->registerCss('
+.btns-b {
+    display: flex;
+    justify-content: center;
+}
+.v-detail, .short-btn {
+    flex-basis:50%;
+}
+.full-wi{
+    flex-basis:100%;
+}
 #filters {
 	height: 100vh;
 	position: sticky;
@@ -228,6 +266,13 @@ button.viewall-jobs {
 	position: relative;
 	transition: .4s;
 	border: 1px solid #eaeff5;
+	box-shadow: 0 0px 14px rgba(0, 0, 0, 0.1);
+}
+.paid-candidate-inner--box {
+    display: flex;
+    justify-content:flex-start;
+    align-items: center;
+    margin-bottom:5px;
 }
 .paid-candidate-container:hover,
 .paid-candidate-container:focus {
@@ -236,7 +281,9 @@ button.viewall-jobs {
 	cursor: pointer;
 }
 .paid-candidate-box-thumb img {
-	height: 100%;
+    width: 100%;
+    object-fit: cover;
+    height: 100%;
 }
 .com-load-more-btn {
 	max-width: 150px;
@@ -246,7 +293,7 @@ button.viewall-jobs {
 }
 .paid-candidate-box {
 	text-align: center;
-	padding: 20px 10px 15px;
+	padding: 20px 15px 10px;
 }
 .paid-candidate-status {
 	position: absolute;
@@ -259,24 +306,32 @@ button.viewall-jobs {
 	font-weight: 500;
 }
 .paid-candidate-box-thumb {
-	margin-bottom: 30px;
-	width: 120px;
-	height: 120px;
-	margin: 0 auto 25px auto;
-	border-radius: 50% !important;
-	overflow: hidden;
-	box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
-	-webkit-box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
-	-moz-box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
+//    margin-bottom: 30px;
+    width: 80px;
+    height: 80px;
+//    margin: 0 auto 25px auto;
+    border-radius: 50% !important;
+    overflow: hidden;
+    box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
+    -webkit-box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
+    -moz-box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
+//    flex-basis: 30%;
+}
+.paid-candidate-box-detail {
+    flex-basis: 70%;
+    text-align: left;
+    margin: 0 0 0 10px;
 }
 .paid-candidate-box-detail h4 {
 	margin-bottom: 4px;
-	font-size: 20px;
+	margin-top:0;
+	font-size: 18px;
 	text-overflow: ellipsis;
 	-webkit-line-clamp: 1;
 	-webkit-box-orient: vertical;
 	display: -webkit-inline-box;
 	overflow: hidden;
+	text-transform: capitalize
 }
 .paid-candidate-box-exp {
 	display: flex;
@@ -289,7 +344,7 @@ button.viewall-jobs {
 	font-size: 15px;
 	color: #677484;
 	height: 27px;
-	padding: 5px 20px 0;
+//	padding: 5px 20px 0;
 	text-overflow: ellipsis;
 	-webkit-line-clamp: 1;
 	-webkit-box-orient: vertical;
@@ -297,25 +352,30 @@ button.viewall-jobs {
 	overflow: hidden;
 }
 .paid-candidate-box-extra ul {
-	margin: 10px 0;
+//	margin: 10px 0;
 	padding: 0;
-	min-height: 74px;
-	height: 112px;
+	min-height: 28px;
+	height: 28px;
 	overflow: hidden;
+	text-align:left;
 }
 .paid-candidate-box-extra ul li {
 	list-style: none;
-	padding: 3px 15px;
-	border: 1px solid #b9c5ce;
+	padding: 1px 5px;
+//	border: 1px solid #b9c5ce;
 	border-radius: 50px !important;
 	margin: 1px 0;
-	font-weight: 500;
+	font-weight: 400;
 	color: #657180;
 	text-overflow: ellipsis;
 	-webkit-line-clamp: 1;
 	-webkit-box-orient: vertical;
 	display: -webkit-inline-box;
 	overflow: hidden;
+	font-family:roboto;
+}
+.skills-h {
+    font-weight: 500 !important;
 }
 .paid-candidate-box-extra ul li.more-skill {
 	color: #ffffff;
@@ -919,7 +979,7 @@ $(document).on('change', 'input[type=checkbox]', function() {
     var cls_sk = params.match(/skills=/g);
     var cls_sal = params.match(/salary=/g);
     if(!cls_loc && !cls_jt && !cls_sk){
-        params = params+'&locations=&job_titles=&skills=';
+        params = params+'locations=&job_titles=&skills=';
     }
     var p = [];
     $.each(params.split("&"),function(index,value) {

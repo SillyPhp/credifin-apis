@@ -51,15 +51,15 @@ $form = ActiveForm::begin([
     </div>
     <div class="row">
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'organization_name')->textInput(['class' => 'capitalize form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_name')]); ?>
+            <?= $form->field($model, 'organization_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_name')]); ?>
         </div>
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'organization_email', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_email')]); ?>
+            <?= $form->field($model, 'organization_email', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control text-lowercase', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_email')]); ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'organization_website')->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_website')]); ?>
+            <?= $form->field($model, 'organization_website')->textInput(['class' => 'text-lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_website')]); ?>
         </div>
         <div class="col-md-6 col-sm-6">
             <?=
@@ -93,15 +93,15 @@ $form = ActiveForm::begin([
     </div>
     <div class="row">
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'first_name')->textInput(['class' => 'capitalize form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('first_name')]); ?>
+            <?= $form->field($model, 'first_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('first_name')]); ?>
         </div>
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'last_name')->textInput(['class' => 'capitalize form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('last_name')]); ?>
+            <?= $form->field($model, 'last_name')->textInput(['class' => 'capitalize form-control text-capitalize', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('last_name')]); ?>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6 col-sm-6">
-            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('email')]); ?>
+            <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->textInput(['class' => 'text-lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('email')]); ?>
         </div>
         <div class="col-md-6 col-sm-6">
             <?=
@@ -124,7 +124,6 @@ $form = ActiveForm::begin([
 
 <?php
 $this->registerCss('
-
 .intl-tel-input, .iti {
     width: 100%;
 }
@@ -132,5 +131,5 @@ $this->registerCss('
     color: #555 !Important;
     background-color: #eee !Important;
 }
-.country-list{z-index:99 !important;}
+.country-list, .iti__country-list{z-index:99 !important;}
 ');

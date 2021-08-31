@@ -21,6 +21,7 @@ class CompaniesController extends ApiBaseController
             'class' => VerbFilter::className(),
             'actions' => [
                 'list-companies' => ['POST', 'OPTIONS'],
+                'organization-list' => ['GET'],
             ]
         ];
         return $behaviors;
@@ -59,6 +60,17 @@ class CompaniesController extends ApiBaseController
             {
                 return ActiveForm::validate($model);
             }
+        }
+    }
+
+    public function actionOrganizationList()
+    {
+        $args = Yii::$app->request->get();
+        $get = OrganizationList::get($args);
+        if ($get) {
+            return $this->response(200, ['status' => 200,'results' => $get]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
     }
 }

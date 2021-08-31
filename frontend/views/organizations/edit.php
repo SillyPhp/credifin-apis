@@ -7,11 +7,7 @@ use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 if ($organization['logo']) {
-    $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
-    $image = Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
-    if (!file_exists($image_path)) {
-        $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
-    }
+    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
 } else {
     $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 }
@@ -79,7 +75,7 @@ $industries = Json::encode($industries);
                             <div class="logo-absolute">
                                 <div class="logo-box">
                                     <div class="logo">
-                                        <img id="logo-img" src="<?= Url::to($image); ?>">
+                                        <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image" data-name="<?= $organization['name'] ?>" data-width="110" data-height="110" data-color="<?= $organization['initials_color'] ?>" data-font="45px">
                                         <?php
                                         $form = ActiveForm::begin([
                                             'id' => 'upload-logo',
@@ -161,7 +157,7 @@ $industries = Json::encode($industries);
                     <div class="social-btns">
                         <a href="javascript:;" data-pk="facebook" data-name="facebook" data-type="url"
                            data-value="<?= htmlspecialchars_decode($organization['facebook']) ?>"
-                           class="facebook model-link"><i
+                           class="facebook-social model-link"><i
                                     class="fab fa-facebook-f"></i> </a>
                         <a href="javascript:;" data-pk="twitter" data-name="twitter" data-type="url"
                            data-value="<?= htmlspecialchars_decode($organization['twitter']) ?>"
@@ -169,7 +165,7 @@ $industries = Json::encode($industries);
                                     class="fab fa-twitter"></i> </a>
                         <a href="javascript:;" data-pk="linkedin" data-name="linkedin" data-type="url"
                            data-value="<?= htmlspecialchars_decode($organization['linkedin']) ?>"
-                           class="linkedin model-link"><i
+                           class="linkedin-social model-link"><i
                                     class="fab fa-linkedin-in"></i> </a>
                         <a href="javascript:;" data-pk="website" data-name="website" data-type="url"
                            data-value="<?= htmlspecialchars_decode($organization['website']) ?>" class="web model-link"><i
@@ -597,8 +593,8 @@ $industries = Json::encode($industries);
                 </div>
             </div>
         </div>
-        </div>
-        </div>
+<!--        </div>-->
+<!--        </div>-->
     </section>
     <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -912,19 +908,19 @@ a.twitter{
     background:#1da1f2;
     color:#fff;
 }
-a.facebook{
+a.facebook-social{
     padding:8px 9px 8px 12px;
     color:#3C5A99;   
 }
-.facebook:hover{
+.facebook-social:hover{
     background:#3c5a99;
     color:#fff;
 }
-a.linkedin{
+a.linkedin-social{
     padding:8px 9px 8px 11px;
      color:#0077B5;
 }
-.linkedin:hover{
+.linkedin-social:hover{
     background:#0077b5;
     color:#fff;
 }
@@ -951,8 +947,8 @@ a.web{
     background:#00a0e3;
     color:#fff;
 }
-#enable, #enable:hover, a.facebook, .facebook:hover,
-a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
+#enable, #enable:hover, a.facebook-social, .facebook-social:hover,
+a.twitter, .twitter:hover, a.linkedin-social, .linkedin-social:hover, a.web, .web:hover{
     transition:.3s all;
 }
 /*----follow btn ends----*/
@@ -1267,15 +1263,16 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
   font-weight: 400;
   margin-bottom:0px;
 }
-.p-category img, .checkbox-text--title img{
-    width: 80px;
-    height: 50px;
+.p-category img, .checkbox-text--title img {
+	width: 60px !important;
+	height: 60px !important;
+	object-fit: contain;
 }
 .checkbox-label-v2:before {
   content: \'\';
   position: absolute;
   top: 80px;
-  right: 16px;
+  right: 10px;
   width: 40px;
   height: 40px;
   opacity: 0;
@@ -1290,7 +1287,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
   transition: all 0.4s ease;
 }
 .checkbox-input:checked + .checkbox-label-v2:before {
-  top: 0;
+  top: 30px;
   opacity: 1;
 }
 .checkbox-input:checked + .checkbox-label-v2 .checkbox-text span {
@@ -1306,11 +1303,11 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     width: 100%;
 }
 .p-category {
-    float: left;
-    width: 100%;
-    z-index: 1;
-    position: relative;
-    display:flex;
+	height: 152px;
+	border-bottom: 1px solid #e8ecec;
+	border-right: 1px solid #e8ecec;
+	text-align: center;
+	padding: 20px;
 }
 .p-category, .p-category *{
     -webkit-transition: all 0.4s ease 0s;
@@ -1319,13 +1316,14 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     -o-transition: all 0.4s ease 0s;
     transition: all 0.4s ease 0s;
 }
-.p-category .checkbox-text {
-    float: left;
-    width: 100%;
-    text-align: center;
-    padding-bottom: 30px;
-    border-bottom: 1px solid #e8ecec;
-    border-right: 1px solid #e8ecec;
+.checkbox-text--description2 {
+	display: block;
+	height: 51px;
+	margin-top: 8px;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }
 .p-category .checkbox-text span i {
     float: left;
@@ -1336,32 +1334,23 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     line-height: initial !important;
 }
 .p-category .checkbox-text span {
-    float: left;
-    width: 100%;
-    font-family: Open Sans;
-    font-size: 15px;
-    color: #202020;
-    margin-top: 10px;
+	font-family: roboto;
+	font-size: 15px;
+	color: #202020;
 }
 .p-category:hover {
-    background: #ffffff;
-    -webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-    width: 104%;
-    margin-left: -2%;
-    height: 102%;
-    z-index: 10;
-}
-.p-category:hover .checkbox-text {
-    border-color: #ffffff;
+	background: #ffffff;
+	-webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-ms-border-radius: 8px;
+	-o-border-radius: 8px;
+	border-radius: 4px;
+	border-color: #fff;
 }
 .p-category:hover .checkbox-label-v2 i{
     color: #f07d1d;

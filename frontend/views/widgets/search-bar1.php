@@ -214,32 +214,36 @@ $this->registerCss('
         padding-right: 30px;
     }
 }
-@media screen and (max-width: 1160px) and (min-width: 992px) {
-    .twitter-typeahead input{
-        max-width:165px;
-    }
-    .twitter-typeahead .tt-menu{
-        max-width:165px;
-    }
-}
+//@media screen and (max-width: 1160px) and (min-width: 992px) {
+//    .twitter-typeahead input{
+//        max-width:165px;
+//    }
+//    .twitter-typeahead .tt-menu{
+//        max-width:165px;
+//    }
+//}
 ');
 $script = <<< JS
 $(document).on('submit','#search_bar_form',function(e) {
   e.preventDefault();
   var cname = $('#cities').val().trim().replace(/[^a-z0-9\s]/gi, ''); 
   var kname = $('#keywords').val().trim().replace(/[^a-z0-9\s]/gi, '');
-  if (cname&&kname) 
+  if (cname =="" && kname =="")
+      {
+          window.location.assign('/jobs/list');
+      }
+  if (cname&&kname)  
       {
           window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type+'-in-'+cname.replace(/\s+/g, '-'));
       }
-  else if (cname)
+  else if (cname) 
       {
           window.location.assign('/'+_type+'-in-'+cname.replace(/\s+/g, '-'));
       }
   else if (kname)
       {
           window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type);
-      }
+      } 
 })     
 var searchelem = document.getElementById("search_preview");    
 var getParams = function (url) {

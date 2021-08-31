@@ -43,7 +43,7 @@ $this->beginPage();
                                             <a class="ey-logo" href="/">
                                                 <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>"
                                                      src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
-                                                <span class="logo_beta">Beta</span>
+<!--                                                <span class="logo_beta">Beta</span>-->
                                             </a>
                                         </div>
                                         <div class="ey-menu-main">
@@ -58,13 +58,13 @@ $this->beginPage();
                                                 $name = $image = $color = NULL;
                                                 if (Yii::$app->user->identity->organization->organization_enc_id) {
                                                     if (Yii::$app->user->identity->organization->logo) {
-                                                        $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                                        $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                                                     }
                                                     $name = Yii::$app->user->identity->organization->name;
                                                     $color = Yii::$app->user->identity->organization->initials_color;
                                                 } else {
                                                     if (Yii::$app->user->identity->image) {
-                                                        $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                                        $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                                                     }
                                                     $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                                                     $color = Yii::$app->user->identity->initials_color;
@@ -110,13 +110,13 @@ $this->beginPage();
                                                 $name = $image = $color = NULL;
                                                 if (Yii::$app->user->identity->organization->organization_enc_id) {
                                                     if (Yii::$app->user->identity->organization->logo) {
-                                                        $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                                        $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                                                     }
                                                     $name = Yii::$app->user->identity->organization->name;
                                                     $color = Yii::$app->user->identity->organization->initials_color;
                                                 } else {
                                                     if (Yii::$app->user->identity->image) {
-                                                        $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                                        $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                                                     }
                                                     $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                                                     $color = Yii::$app->user->identity->initials_color;
@@ -171,7 +171,8 @@ $this->beginPage();
         <?= $this->render('/widgets/common/sidebar/user-profile-sidebar-right'); ?>
     </div>
     <?php
-    echo $this->render('/widgets/chat/main');
+    echo $this->render('@common/widgets/chat-main');
+//    echo $this->render('/widgets/chat/main');
     $this->registerCss('
             .logo_beta{font-size: 11px;position: absolute;bottom: -2px;right: -22px;color: #fff;}
             .page-loading {

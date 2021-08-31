@@ -2,7 +2,7 @@
 $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
-
+$this->registerCssFile('@eyAssets/css/blog-main.css');
 $careerAdviceCategories = [
     [
         "name" => "How To Write Cover Letter",
@@ -81,11 +81,268 @@ $careerAdviceCategories = [
     <section class="career-advice-header">
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6 col-sm-6">
+                    <div class="career-txt">
+                        <h1>Develop Your Skills With<br> Expert Career Advice</h1>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+    <section class="background-mirror blog-section-0">
+        <div class="container">
+            <div class="row">
+                <div class="row">
+                    <div class="col-md-9 col-xs-9">
+                        <h1 class="heading-style"><?= Yii::t('frontend', 'Informative Blogs to Read'); ?></h1>
+                    </div>
+                    <div class="col-md-3 col-xs-3">
+                        <!-- Controls -->
+                        <div class="controls pull-right">
+                            <a class="left fas fa-chevron-left bttn-left" href="#carousel-example"
+                               data-slide="prev"></a>
+                            <a class="right fas fa-chevron-right bttn-right" href="#carousel-example"
+                               data-slide="next"></a>
+                        </div>
+                    </div>
+                </div>
+                <div id="carousel-example" class="carousel slide" data-ride="carousel">
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner">
+                        <?php
+                        $rows = ceil(count($posts) / 4);
+                        $next = 0;
+                        for ($i = 0; $i < $rows; $i++) {
+                            ?>
+                            <div class="item <?php echo $next == 0 ? 'active' : '' ?>">
+                                <div class="row">
+                                    <?php
+                                    for ($j = 0; $j < 4; $j++) {
+                                        $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $posts[$next]['featured_image_location'] . DIRECTORY_SEPARATOR . $posts[$next]['featured_image'];
+                                        $image = Yii::$app->params->upload_directories->posts->featured_image . $posts[$next]['featured_image_location'] . DIRECTORY_SEPARATOR . $posts[$next]['featured_image'];
+                                        if (!file_exists($image_path)) {
+                                            $image = '//placehold.it/570x390';
+                                        }
+                                        ?>
+                                        <div class="col-sm-3">
+                                            <a href="<?= Url::to('/blog/' . $posts[$next]['slug']); ?>">
+                                                <div class="col-item">
+                                                    <div class="photo">
+                                                        <img src="<?= $image; ?>" class=""
+                                                             alt="<?= $posts[$next]['featured_image_alt']; ?>"
+                                                             title="<?= $posts[$next]['featured_image_title']; ?>"/>
+                                                    </div>
+                                                    <div class="info">
+                                                        <div class="row">
+                                                            <div class="price col-md-12">
+                                                                <h5> <?= $posts[$next]['title']; ?></h5>
+                                                            </div>
+                                                        </div>
+                                                        <div class="clearfix">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <?php
+                                        $next++;
+                                    }
+                                    ?>
+                                </div>
+
+                            </div>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="view-all-articles">
+                    <a href="<?= Url::to('/blog/category/articles'); ?>" class="artic">view all</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="blog-section-2">
+        <div class="container">
+            <div class="col-md-3 col-sm-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="whats-block-heading">What's New</div>
+                    </div>
+                </div>
+                <div id="whats-new" class="row">
+
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="whats-popular-heading">What's Popular</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="popular-blog" class="col-md-12 col-sm-12">
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="col-md-12 row">
+                    <div class="trending-posts">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <?= $this->render('/widgets/follow-widget') ?>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="trending-heading">Trending Posts</div>
+                            </div>
+                        </div>
+                        <div id="trending-post">
+
+                        </div>
+                    </div>
+                </div>
+<!--                <div class="col-md-12 row">-->
+<!--                    <div class="infographics">-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-md-12">-->
+<!--                                <div class="info-head">-->
+<!--                                    Infographics-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="row">-->
+<!--                            <div class="info-g">-->
+<!--                                --><?php
+//                                $i = 1;
+//                                if ($infographicsPosts) {
+//                                    foreach ($infographicsPosts as $post) {
+//                                        $new_row = ($i % 4 == 0) ? true : false;
+//                                        if ($new_row) {
+//                                            ?>
+<!--                                            <div class="row">-->
+<!--                                            --><?php
+//                                        }
+//                                        $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
+//                                        $image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
+//                                        if (!file_exists($image_path)) {
+//                                            $image = '//placehold.it/330x200';
+//                                        }
+//                                        ?>
+<!--                                        <div class="col-md-12">-->
+<!--                                            <div class="whats-new-box">-->
+<!--                                                <div class="wn-box-icon">-->
+<!--                                                    <a href="--><?//= Url::to('/blog/' . $post['slug']); ?><!--">-->
+<!--                                                        <img src="--><?//= $image; ?><!--" alt="--><?//= $post['title']; ?><!--"/>-->
+<!--                                                    </a>-->
+<!--                                                </div>-->
+<!--                                                <div class="wn-box-details">-->
+<!--                                                    <a href="--><?//= Url::to('/blog/' . $post['slug']); ?><!--">-->
+<!--                                                        <div class="wn-box-title">-->
+<!--                                                            --><?//= $post['title']; ?>
+<!--                                                        </div>-->
+<!--                                                    </a>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        --><?php
+//                                        if ($new_row) {
+//                                            ?>
+<!--                                            </div>-->
+<!--                                            --><?php
+//                                        }
+//                                        $i++;
+//                                    }
+//                                }
+//                                ?>
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-md-12">-->
+<!--                                <div class="info-btn">-->
+<!--                                    <a href="--><?//= Url::to('/blog/category/infographics'); ?><!--" target="_blank">-->
+<!--                                        View All-->
+<!--                                    </a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+                <div class="col-md-12 row">
+                    <div class="articles">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="articles-head">
+                                    Articles
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="articles-g">
+                                <?php
+                                $i = 1;
+                                if ($articalsPosts) {
+                                    foreach ($articalsPosts as $post) {
+                                        $new_row = ($i % 4 == 0) ? true : false;
+                                        if ($new_row) {
+                                            ?>
+                                            <div class="row">
+                                            <?php
+                                        }
+                                        $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
+                                        $image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
+                                        if (!file_exists($image_path)) {
+                                            $image = '//placehold.it/330x200';
+                                        }
+                                        ?>
+                                        <div class="col-md-12">
+                                            <div class="whats-new-box">
+                                                <div class="wn-box-icon">
+                                                    <a href="<?= Url::to('/blog/' . $post['slug']); ?>">
+                                                        <img src="<?= $image; ?>" alt="<?= $post['title']; ?>"/>
+                                                    </a>
+                                                </div>
+                                                <div class="wn-box-details">
+                                                    <a href="<?= Url::to('/blog/' . $post['slug']); ?>">
+                                                        <div class="wn-box-title">
+                                                            <?= $post['title']; ?>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php
+                                        if ($new_row) {
+                                            ?>
+                                            </div>
+                                            <?php
+                                        }
+                                        $i++;
+                                    }
+                                }
+                                ?>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="articles-btn">
+                                    <a href="<?= Url::to('/blog/category/articles'); ?>" target="_blank">
+                                        View All
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -120,30 +377,68 @@ $careerAdviceCategories = [
             </div>
         </div>
     </div>
-<!--    <section class="ca-coming-soon-sec">-->
-<!--        <div class="row">-->
-<!--            <div class="col-md-12">-->
-<!--                <div class="col-md-5 col-md-offset-1">-->
-<!--                    <div class="ca-coming-pos-rel">-->
-<!--                        <div class="max-500">-->
-<!--                            <div class="ca-coming-text">Hey There,</div>-->
-<!--                            <div class="ca-soon-text">-->
-<!--                                We are launching a detailed space for you to understand the in and out of each-->
-<!--                                profession.-->
-<!--                            </div>-->
-<!--                            <div class="ca-coming-text">Be exited</div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6">-->
-<!--                    <div class="ca-comming-soon-icon">-->
-<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/custom/career-advice-vector.png') ?><!--" alt="">-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
+<?= $this->render('/widgets/news-update') ?>
+    <!--    <section class="ca-coming-soon-sec">-->
+    <!--        <div class="row">-->
+    <!--            <div class="col-md-12">-->
+    <!--                <div class="col-md-5 col-md-offset-1">-->
+    <!--                    <div class="ca-coming-pos-rel">-->
+    <!--                        <div class="max-500">-->
+    <!--                            <div class="ca-coming-text">Hey There,</div>-->
+    <!--                            <div class="ca-soon-text">-->
+    <!--                                We are launching a detailed space for you to understand the in and out of each-->
+    <!--                                profession.-->
+    <!--                            </div>-->
+    <!--                            <div class="ca-coming-text">Be exited</div>-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--                <div class="col-md-6">-->
+    <!--                    <div class="ca-comming-soon-icon">-->
+    <!--                        <img src="--><? //= Url::to('@eyAssets/images/pages/custom/career-advice-vector.png') ?><!--" alt="">-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </section>-->
     <section>
+
+        <section class="blog-mirror">
+            <div class="my-container">
+                <div class="container pt-20 pb-5">
+                    <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
+                    <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Food for Thoughts'); ?></h3>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <article class="post clearfix">
+                                <div class="entry-header">
+                                    <div class="post-thumb">
+                                        <div id="slider1" class="owl-carousel-4col" data-nav="true">
+                                            <?php
+                                            foreach ($quotes as $post) {
+                                                ?>
+                                                <div class="zoom">
+                                                    <img class="imgsdds" src="<?= Url::to($post['image']); ?>"
+                                                         width="570"
+                                                         height="133" alt="<?= $post['featured_image_alt']; ?>"
+                                                         title="<?= $post['featured_image_title']; ?>"
+                                                         url="<?= Yii::$app->urlManager->createAbsoluteUrl('/blog/' . $post['slug']); ?>">
+                                                    <div class="carousel-content">
+                                                        <a href="<?= Url::to('/blog/' . $post['slug']); ?>"></a>
+                                                    </div>
+                                                </div>
+                                                <?php
+                                            }
+                                            ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         <div class="container-fluid no-padd">
             <div class="row mar-0">
                 <div class="col-md-6 col-sm-6 no-padd">
@@ -177,7 +472,195 @@ if (Yii::$app->user->isGuest) {
     <!--Subscribe Widget ends-->
 
 <?php
+echo $this->render('/widgets/blogs/whats-new');
+echo $this->render('/widgets/blogs/popular-blogs');
+echo $this->render('/widgets/blogs/trending-posts');
 $this->registerCss('
+.info-head, .articles-head {
+    font-size: 20px;
+    font-family: \'Lobster\';
+    color: #000;
+    text-align: center;
+    padding: 15px;
+}
+.info-btn, .articles-btn {
+    text-align: center;
+    margin-top: -15px;
+}
+.info-btn a, .articles-btn a{
+    background-color: #00a0e3;
+    border-radius: 5px;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 13px;
+    padding: 8px 15px;
+    transition: all 0.3s;
+    cursor: pointer;
+    margin-top: 15px;
+    display: inline-block;
+}
+.info-btn a:hover, .articles-btn a:hover{
+    background-color: #fff;
+    border: 1px solid #00a0e3;
+    color: #00a0e3;
+}
+.whats-new-box {
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+.whats-new-box:hover{
+    box-shadow:0 0 15px rgba(73, 72, 72, 0.28);
+}
+.whats-new-box:hover .wn-box-icon img{
+     -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    opacity: 1; 
+}
+.whats-new-box:hover > .wn-box-icon > .middle{
+    opacity:1 !important;
+}
+.whats-new-box:hover >.wn-box-icon > .middle > a > img{
+    opacity:1 !important;
+}
+.wn-box-icon {
+    max-width: 100% !important;
+}
+.wn-box-icon {
+    max-width: 255px;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 5px 5px 0 0;
+    position: relative;
+    }
+.wn-box-icon img {
+    height: 200px !important;
+    object-fit: fill;
+}
+.wn-box-icon img {
+    border-radius: 5px 5px 0 0;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+    opacity: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: .5s ease;
+    backface-visibility: hidden;
+}
+.wn-box-details {
+    min-height: 100px !important;
+}
+.wn-box-details {
+    border-top: none;
+    padding: 5px 10px 10px 8px;
+    border: 1px solid rgba(230, 230, 230, .3);
+    border-radius: 0 0 5px 5px;
+}
+.blog-mirror {
+    background: linear-gradient(180deg, #2b2d32 60%, #fff 40%);
+}
+.whats-block-heading, .popular-heading, .trending-heading{
+    position:relative;
+    text-align:right;
+    font-size:14px;
+    text-transform: uppercase;
+    padding: 0px 25px 2px 0px;
+    font-weight: bold;
+}
+.whats-block-heading:before{
+    content: "";
+    position: absolute;
+    border-color: #000;
+    border-style: solid;
+    border-width: 1px 130px 0px 0px;
+    top: 11px;
+    left: 5px;
+}
+.whats-block-heading:after, .popular-heading:after, .trending-heading:after{
+    content: "";
+    position: absolute;
+    border-color: #000;
+    border-style: solid;
+    border-width: 1px 18px 0px 0px;
+    top: 11px;
+    right: 5px;
+}
+.whats-popular-heading{
+   position:relative;
+   font-size:14px;
+    text-align:right;
+    text-transform: uppercase;
+    padding: 0px 25px 2px 0px;
+    font-weight: bold; 
+}
+.whats-popular-heading:before{
+    content: "";
+    position: absolute;
+    border-color: #000;
+    border-style: solid;
+    border-width: 1px 380px 0px 0px;
+    top: 11px;
+    left: 5px;
+}
+.whats-popular-heading:after{
+    content: "";
+    position: absolute;
+    border-color: #000;
+    border-style: solid;
+    border-width: 1px 18px 0px 0px;
+    top: 12px;
+    right: 5px;
+}
+.trending-heading:before{
+    content: "";
+    position: absolute;
+    border-color: #000;
+    border-style: solid;
+    border-width: 1px 107px 0px 0px;
+    top: 11px;
+    left: 5px;
+}
+.popular-heading:before{
+    content: "";
+    position: absolute;
+    border-color: #000;
+    border-style: solid;
+    border-width: 1px 73px 0px 0px;
+    top: 11px;
+    left: 5px;
+}
+.view-all-articles {
+	text-align: center;
+	margin: 25px 0 0;
+}
+.artic {
+    border:2px solid transparent;
+	background-color: #00a0e3;
+	color: #fff;
+	font-size: 18px;
+	font-family: roboto;
+	padding: 7px 30px;
+	border-radius: 4px;
+	text-transform: capitalize;
+	transition: all .3s;
+}
+.artic:hover{
+    background-color:#fff;
+    color:#00a0e3;
+    border:2px solid #00a0e3;
+}
+.career-txt h1 {
+    font-size: 42px;
+    font-family: lobster;
+    min-height: 370px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    color: #000;
+}
 .ca-comming-soon-icon{
     text-align:right
 }
@@ -193,9 +676,11 @@ $this->registerCss('
     margin-top:40px;
 }
 .career-advice-header{
-    background:url(' . Url::to('@eyAssets/images/pages/custom/career-advice-header.png') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/custom/careeradvice-hdr-bg.png') . ');
     min-height:500px;
     background-size:cover;
+    background-position: left;
+    background-repeat: no-repeat;
 }
 body {
   background-color:#fefefe;
@@ -317,8 +802,11 @@ body {
 } 
 @media only screen and (max-width: 992px){
     .career-advice-header{
-        background-size: contain;
         min-height:300px;
+    }
+    .career-txt h1{
+    font-size: 35px;
+    min-height: 260px;
     }
 }
 .card:hover::before{
@@ -412,20 +900,19 @@ body {
   transform: translateY(.25rem);
 }
 
-.button {
-  background-color: #000000;
-  border: 1px solid #000000;
-  box-shadow: 0 3px 0 #000000;
-  border-radius: 10px;
-  cursor: pointer;
-  color: #ffffff;
-  font-family: var(--font-family-primary);
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: .15rem;
-  padding: .75rem 1.5rem;
-}
-
+//.button {
+//  background-color: #000000;
+//  border: 1px solid #000000;
+//  box-shadow: 0 3px 0 #000000;
+//  border-radius: 10px;
+//  cursor: pointer;
+//  color: #ffffff;
+//  font-family: var(--font-family-primary);
+//  font-size: 1rem;
+//  font-weight: bold;
+//  letter-spacing: .15rem;
+//  padding: .75rem 1.5rem;
+//}
 .button--primary {
   background-color: hsl(210, 5%, 41%);
   border-color: hsl(210, 5%, 36%);
@@ -459,4 +946,167 @@ body {
   height: 25px;
   width: 25px;
 } 
+@media only screen and (max-width: 600px) and (min-width:320px){
+.career-txt h1 {
+    font-size: 30px;
+    min-height:190px;
+    }
+}
+@media only screen and (max-width: 1200px) and (min-width: 992px){
+    .blog-img img{
+        height:220px;
+        object-fit:cover;
+    }
+    .whats-block-heading:before{
+        content: "";
+        position: absolute;
+        border-color: #000;
+        border-style: solid;
+        border-width: 1px 87px 0px 0px;
+        top: 11px;
+        left: 5px;
+    }
+    .whats-popular-heading:before {
+        content: "";
+        position: absolute;
+        border-color: #000;
+        border-style: solid;
+        border-width: 1px 290px 0px 0px;
+        top: 11px;
+        left: 5px
+    }
+}
+@media only screen and (max-width: 991px){
+    .blog-box{
+        margin-top:15px;
+        box-shadow:0 0 10px rgba(0,0,0,.5);
+    }
+    .blog-discription{
+        height:200px;
+    }
+    .blog-img img{
+        height:210px;
+        object-fit:cover;
+    }
+    .whats-block-heading:before {
+        content: "";
+        position: absolute;
+        border-color: #000;
+        border-style: solid;
+        border-width: 1px 521px 0px 0px;
+        top: 11px;
+        left: 5px;
+    }
+    .whats-block-heading {
+        position: relative;
+        text-align: right;
+        text-transform: uppercase;
+        padding: 0px 70px 2px 0px;
+        font-weight: bold;
+    }
+    .whats-block-heading:after {
+        content: "";
+        position: absolute;
+        border-color: #000;
+        border-style: solid;
+        border-width: 1px 58px 0px 0px;
+        top: 11px;
+        right: 5px;
+    }
+    .whats-popular-heading {
+        position: relative;
+        text-align: right;
+        text-transform: uppercase;
+        padding: 0px 70px 2px 0px;
+        font-weight: bold;  
+    }
+     .whats-popular-heading:before {
+        content: "";
+        position: absolute;
+        border-color: #000;
+        border-style: solid;
+        border-width: 1px 290px 0px 0px;
+        top: 11px;
+        left: 5px
+    }
+    .whats-popular-heading:before {
+        content: "";
+        position: absolute;
+        border-color: #000;
+        border-style: solid;
+        border-width: 1px 490px 0px 0px;
+        top: 11px;
+        left: 5px;
+    }
+    .whats-popular-heading:after {
+        content: "";
+        position: absolute;
+        border-color: #000;
+        border-style: solid;
+        border-width: 1px 58px 0px 0px;
+        top: 12px;
+        right: 5px;
+    }
+    .section-1-shadow {
+        box-shadow: none;
+    }
+ }
+ a.button {
+  display: inline-block;
+  background-color: #00a0e3;
+  border-radius: 5px;
+  border:none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 13px;
+  padding: 8px 15px;
+//  width: 200px;
+  transition: all 0.3s;
+  cursor: pointer;
+  margin-top:15px;
+}
+a.button span {
+  color:#fff;
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  transition: 0.3s;
+}
+a.button span:after {
+  content: "\00bb";
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  color:#fff;
+  right: -20px;
+  transition: 0.5s;
+}
+a.button:hover span {
+  padding-right: 20px;
+}
+
+a.button:hover span:after {
+  opacity: 1;
+  right: 0;
+}
+
 ');
+$script = <<<JS
+$.ajax({
+    method: "POST",
+    url : '/blog/trending-posts',
+    success: function(response) {
+    if(response.status === 200) {
+        var wn_data = $('#whats-new-blog').html();
+        $("#whats-new").html(Mustache.render(wn_data, response.whats_new_posts));
+        var pb_data = $('#trending-blog').html();
+        $("#trending-post").html(Mustache.render(pb_data, response.trending_posts));
+        var tb_data = $('#popular-blog-post').html();
+        $("#popular-blog").html(Mustache.render(tb_data, response.popular_posts));
+    }
+}
+});
+JS;
+$this->registerJs($script);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');

@@ -3,9 +3,9 @@
 namespace api\modules\v2\controllers;
 
 use common\models\AssignedCategories;
+use common\models\AssignedCollegeCourses;
 use common\models\Categories;
 use common\models\Cities;
-use common\models\CollegeCourses;
 use common\models\Countries;
 use common\models\EmailLogs;
 use common\models\Organizations;
@@ -23,10 +23,10 @@ class UtilitiesController extends ApiBaseController
         if ($ref != null && $invitation != null) {
             $organization = Referral::find()
                 ->alias('a')
-                ->select(['a.referral_enc_id', 'b.organization_enc_id','c.business_activity', 'b.name', '(CASE
+                ->select(['a.referral_enc_id', 'b.organization_enc_id', 'c.business_activity', 'b.name', '(CASE
                 WHEN b.logo IS NULL OR b.logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") ELSE
-                CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) END
+                CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) END
                 ) organization_logo'])
                 ->joinWith(['organizationEnc b' => function ($b) {
                     $b->joinWith(['businessActivityEnc c'], false);
@@ -36,20 +36,22 @@ class UtilitiesController extends ApiBaseController
                     'b.status' => 'Active',
                     'b.is_deleted' => 0,
                     'a.code' => $ref,
-                    'c.business_activity' => ['College','School']
+                    'c.business_activity' => ['College', 'School']
                 ])
                 ->asArray()
                 ->one();
 
-            $courses = CollegeCourses::find()
+            $courses = AssignedCollegeCourses::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['courseEnc c'], false)
                 ->joinWith(['collegeSections b' => function ($b) {
-                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
-                ->where(['a.organization_enc_id' => $organization['organization_enc_id']])
-                ->groupBy(['a.course_name'])
+                ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
+//                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 
@@ -73,7 +75,7 @@ class UtilitiesController extends ApiBaseController
                 ->select(['a.referral_enc_id', 'b.organization_enc_id', 'b.name', '(CASE
                 WHEN b.logo IS NULL OR b.logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") ELSE
-                CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) END
+                CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) END
                 ) organization_logo'])
                 ->joinWith(['organizationEnc b' => function ($b) {
                     $b->joinWith(['businessActivityEnc c'], false);
@@ -88,15 +90,17 @@ class UtilitiesController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $courses = CollegeCourses::find()
+            $courses = AssignedCollegeCourses::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['courseEnc c'], false)
                 ->joinWith(['collegeSections b' => function ($b) {
-                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
-                ->where(['a.organization_enc_id' => $organization['organization_enc_id']])
-                ->groupBy(['a.course_name'])
+                ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
+//                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 
@@ -107,8 +111,42 @@ class UtilitiesController extends ApiBaseController
         }
     }
 
-    public function actionGetCompanies($search = null)
+    public function actionGetStates($search = null)
     {
+        $states = States::find()
+            ->select(['state_enc_id', 'name'])
+            ->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09']);
+        if ($search != null && $search != '') {
+            $states->andWhere(['like', 'name', $search]);
+        }
+        $states = $states->limit(10)->asArray()
+            ->all();
+
+        return $states;
+    }
+
+    public function actionGetCities($search = null)
+    {
+        $cities = Cities::find()
+            ->alias('a')
+            ->select(['a.city_enc_id', 'a.name'])
+            ->joinWith(['stateEnc b'], false)
+            ->where(['b.country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09']);
+        if ($search != null && $search != '') {
+            $cities->andWhere(['like', 'a.name', $search]);
+        }
+        $cities = $cities->limit(10)->asArray()
+            ->all();
+
+        return $cities;
+    }
+
+    public function actionGetCompanies($search = null, $filterby = null, $limit = null)
+    {
+        $l = 20;
+        if ($limit) {
+            $l = $limit;
+        }
         $organizations = Organizations::find()
             ->select([
                 'organization_enc_id',
@@ -117,15 +155,15 @@ class UtilitiesController extends ApiBaseController
                 '(CASE
                 WHEN logo IS NULL OR logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=", REPLACE(initials_color, "#", ""), "&color=ffffff") ELSE
-                CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) END
+                CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) END
                 ) organization_logo'
             ])
-            ->joinWith(['businessActivityEnc b'],false)
+            ->joinWith(['businessActivityEnc b'], false)
             ->where([
                 'is_erexx_registered' => 1,
                 'status' => 'Active',
                 'is_deleted' => 0,
-                'b.business_activity' => ['College','School']
+                'b.business_activity' => ['College', 'School']
             ]);
         if ($search) {
             $organizations->
@@ -135,20 +173,25 @@ class UtilitiesController extends ApiBaseController
                 ['like', 'slug', $search]
             ]);
         }
-        $organizations = $organizations->asArray()
+        if ($filterby) {
+            $organizations->andWhere(['like', 'name', $filterby . '%', false]);
+        }
+        $organizations = $organizations->limit($l)->asArray()
             ->all();
 
         $i = 0;
         foreach ($organizations as $o) {
-            $courses = CollegeCourses::find()
+            $courses = AssignedCollegeCourses::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['courseEnc c'], false)
                 ->joinWith(['collegeSections b' => function ($b) {
-                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
-                ->where(['a.organization_enc_id' => $o['organization_enc_id']])
-                ->groupBy(['a.course_name'])
+                ->where(['a.organization_enc_id' => $o['organization_enc_id'], 'a.is_deleted' => 0])
+//                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 
@@ -194,6 +237,26 @@ class UtilitiesController extends ApiBaseController
             ->asArray()
             ->all();
         return $this->response(200, $cities);
+    }
+
+    public function actionFeaturedCompanies()
+    {
+        $org = Organizations::find()
+            ->select(['name', '(CASE
+                WHEN logo IS NULL OR logo = "" THEN
+                CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=", REPLACE(initials_color, "#", ""), "&color=ffffff") ELSE
+                CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) END
+                ) organization_logo'])
+            ->where(['is_deleted' => 0, 'status' => 'Active', 'is_featured' => 1])
+            ->limit(12)
+            ->asArray()
+            ->all();
+
+        if ($org) {
+            return $this->response(200, ['status' => 200, 'org' => $org]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
     }
 
 }

@@ -30,15 +30,15 @@ class ReviewedApplicationsController extends Controller{
     public function actionReviewList()
     {
         if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
             if (!Yii::$app->user->isGuest) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
                 $sidebarpage = Yii::$app->getRequest()->getQueryParam('sidebarpage');
                 $l = 20;
                 $o = ($sidebarpage-1)*$l;
                 $type = ucfirst(Yii::$app->request->post('type'));
                 $review_list = ReviewedApplications::find()
                     ->alias('a')
-                    ->select(['a.review_enc_id', 'a.application_enc_id as application_id', 'CONCAT(a.application_enc_id, "-", f.location_enc_id) data_key', 'a.review', 'd.name as title', 'b.slug', 'e.initials_color color', '(CASE WHEN e.name IS NOT NULL THEN e.name ELSE i.name END) as org_name', 'CASE WHEN e.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", e.logo_location, "/", e.logo) ELSE NULL END logo'])
+                    ->select(['a.review_enc_id', 'a.application_enc_id as application_id', 'CONCAT(a.application_enc_id, "-", f.location_enc_id) data_key', 'a.review', 'd.name as title', 'b.slug', '(CASE WHEN e.initials_color IS NOT NULL THEN e.initials_color ELSE i.initials_color END) as color', '(CASE WHEN e.name IS NOT NULL THEN e.name ELSE i.name END) as org_name', 'CASE WHEN e.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", e.logo_location, "/", e.logo) ELSE CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", i.logo_location, "/", i.logo) END logo'])
                     ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
                     ->andwhere(['a.review' => 1])
                     ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')

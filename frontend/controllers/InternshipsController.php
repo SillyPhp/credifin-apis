@@ -10,9 +10,11 @@ use common\models\Cities;
 use common\models\LearningVideos;
 use common\models\OrganizationLocations;
 use common\models\States;
+use frontend\models\whatsAppShareForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\Response;
 use yii\helpers\Url;
 use yii\db\Expression;
@@ -240,6 +242,7 @@ class InternshipsController extends Controller
                 ->where(['category_enc_id' => $object->primaryfield])
                 ->asArray()
                 ->one();
+            $whatsAppForm = new whatsAppShareForm();
             if ($object->benefit_selection == 1) {
                 foreach ($object->emp_benefit as $benefit) {
                     $benefits[] = EmployeeBenefits::find()
@@ -257,7 +260,8 @@ class InternshipsController extends Controller
                 'industry' => $industry,
                 'primary_cat' => $primary_cat,
                 'benefits' => $benefits,
-                'type' => $type
+                'type' => $type,
+                'whatsAppmodel' => $whatsAppForm,
             ]);
         } else {
             return false;
@@ -326,7 +330,8 @@ class InternshipsController extends Controller
         $application_details = EmployerApplications::find()
             ->where([
                 'slug' => $eaidk,
-                'is_deleted' => 0
+                'is_deleted' => 0,
+                'application_for' => 1,
             ])
             ->joinWith(['applicationTypeEnc b' => function ($b) {
                 $b->andWhere(['b.name' => 'internships']);
@@ -334,7 +339,7 @@ class InternshipsController extends Controller
             ->one();
         $type = 'Internship';
         if (empty($application_details)) {
-            return 'Application Not found';
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
         $object = new \account\models\applications\ApplicationForm();
         if (!empty($application_details->unclaimed_organization_enc_id)) {
@@ -417,6 +422,7 @@ class InternshipsController extends Controller
                     ->limit(6);
                 $popular_videos = $xyz->asArray()->all();
             }
+            $whatsAppForm = new whatsAppShareForm();
 
             return $this->render('/employer-applications/detail', [
                 'application_details' => $application_details,
@@ -431,6 +437,7 @@ class InternshipsController extends Controller
                 'shortlist' => $shortlist,
                 'popular_videos' => $popular_videos,
                 'cat_name' => $cat_name,
+                'whatsAppmodel' => $whatsAppForm,
             ]);
         } else {
             return 'Not Found';
@@ -439,6 +446,7 @@ class InternshipsController extends Controller
 
     public function actionTemplate($view){
         if(Yii::$app->user->identity->organization) {
+            $whatsAppmodel = new whatsAppShareForm();
             $application = ApplicationTemplates::find()
                 ->alias('a')
                 ->select(['a.application_enc_id', 'a.description', 'a.title', 'a.designation_enc_id', 'a.type', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.experience', 'a.preferred_gender', 'zz.name as cat_name', 'zx.name as profile', 'y.designation', 'v.industry'])
@@ -468,7 +476,8 @@ class InternshipsController extends Controller
 
             return $this->render('/employer-applications/template-preview', [
                 'data' => $application,
-                'type' => 'Internship'
+                'type' => 'Internship',
+                'whatsAppmodel' => $whatsAppmodel,
             ]);
         }
     }
@@ -917,7 +926,7 @@ class InternshipsController extends Controller
     {
         $tweets1 = (new \yii\db\Query())
             ->distinct()
-            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
             ->from(\common\models\TwitterJobs::tableName() . 'as a')
             ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
             ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
@@ -940,7 +949,7 @@ class InternshipsController extends Controller
 
         $tweets2 = (new \yii\db\Query())
             ->distinct()
-            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
             ->from(\common\models\TwitterJobs::tableName() . 'as a')
             ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
             ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')

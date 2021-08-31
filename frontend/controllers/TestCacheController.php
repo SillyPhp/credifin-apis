@@ -1,92 +1,49 @@
 <?php
 
 namespace frontend\controllers;
+
+use common\models\AppliedApplicationProcess;
+use common\models\AppliedApplications;
+use common\models\AssignedCategories;
+use common\models\Auth;
+use common\models\CollegeCoursesPool;
+use common\models\CollegeSettings;
+use common\models\CollegeStreams;
+use common\models\EmployerApplications;
+use common\models\ErexxSettings;
+use common\models\InterviewProcessFields;
+use common\models\Organizations;
+use common\models\User;
+use common\models\UserAccessTokens;
+use common\models\Usernames;
 use common\models\UserOtherDetails;
-use frontend\models\applications\PreferencesCards;
-use Yii;
-use yii\web\Controller;
+use common\models\UserResume;
+use common\models\Users;
+use common\models\Utilities;
 use yii\helpers\Url;
-use yii\web\Response;
+use yii\web\Controller;
+use Yii;
 
 class TestCacheController extends Controller
 {
-    public function actionIndex()
-    {
-        $data = new PreferencesCards();
-        print_r($data->getPreferenceCards());
-    }
-
     public function actionTest()
     {
-        $candidates = UserOtherDetails::find()
-            ->alias('a')
-            ->distinct()
-            ->where(['a.organization_enc_id' => 'RXVWV1duTFYwZTRJZmsyVUJuMGFVUT09'])
-            //->select([
-//                    'a.user_other_details_enc_id',
-//                    'a.user_enc_id',
-//                    'b.email',
-//                    'b.phone',
-//                    'a.university_roll_number',
-//                    'c.name department',
-//                    'b.first_name',
-//                    'b.last_name',
-//                    'a.starting_year',
-//                    'a.ending_year',
-//                    'a.semester',
-//                    'c.name',
-//                    'cc.educational_requirement course_name',
-//                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
-    //])
-            ->joinWith(['userEnc b' => function ($b) {
-                $b->select(['b.user_enc_id']);
-                $b->joinWith(['appliedApplications ccc' => function ($c) {
-                   $c->select(['ccc.created_by','applied_application_enc_id','d.application_enc_id','application_for']);
-//                       // $c->select(['ccc.created_by','ccc.application_enc_id','e.organization_enc_id','e.name company_name','f.name','ccc.applied_application_enc_id','COUNT(CASE WHEN g.is_completed = 1 THEN 1 END) as active', 'COUNT(g.is_completed) total']);
-////                    $c->joinWith(['appliedApplicationProcesses g' => function ($g) {
-////                        $g->select(['g.applied_application_enc_id', 'h.field_enc_id']);
-////                        $g->joinWith(['fieldEnc h' => function ($h) {
-////                            $h->select(['h.field_enc_id', 'h.field_name', 'h.sequence']);
-////                        }]);
-////                    }],false);
-                    $c->joinWith(['applicationEnc d' => function ($d) {
-                        $d->onCondition(['or',
-                            ['d.application_for'=>0],
-                            ['d.application_for'=>2]
-                        ]);
-//////                        $d->joinWith(['title ee' => function ($ee) {
-//////                            $ee->joinWith(['categoryEnc f']);
-//////                        }]);
-//////                        $d->joinWith(['organizationEnc e']);
-//                        $d->andWhere([
-//                            'd.status' => 'Active',
-//                            'd.is_deleted' => 0,
-//                        ])
-                        //$d->andOnCondition(['in','d.application_for',[0,2]]);
-                    }], false,'LEFT JOIN');
-//                    $c->groupBy(['ccc.applied_application_enc_id','ccc.created_by']);
-                }],true);
-            }], true,'LEFT JOIN')
-            ->joinWith(['educationalRequirementEnc cc'], false)
-            ->joinWith(['departmentEnc c'], false);
-        print_r($candidates->createCommand()->getRawSql());
-       // print_r($candidates->asArray()->all());
-        exit;
+        try {
+            $model = new Auth();
+            $model->user_id = 12;
+            if (!$model->save()) //model errors
+            {
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
+            }
+
+            //some kind of err
+        } catch (\Exception $exception) {
+            return $exception->getMessage(); //final messege for user
+        }
     }
 
-    public function actionScript()
-    {
-        $output_image = 'image_final.png';
-        $company_name = 'Capital Bank';
-        $font = Url::to('@rootDirectory/assets/common/image/image_script/GeoSlb712MdBTBold.ttf');
-        $font2 = Url::to('@rootDirectory/assets/common/image/image_script/Gelasio-Regular.ttf');
-        $font3 = Url::to('@rootDirectory/assets/common/image/image_script/GeoSlb712MdBTBold.ttf');
-        $script_path = Url::to('@rootDirectory/assets/common/image/image_script/image_genrate_script.py');
-        $job_title = 'Full Stack Developer s';
-        $canvas_name = 'A';
-        $icon_path = Url::to('@rootDirectory/assets/common/image/image_script/icon.png');
-        $temp_image = Url::to('@rootDirectory/assets/common/image/image_script/share-orignal-image.png');
-        $res = exec('python "'.$script_path.'" "'.$company_name.'" "'.$job_title.'" "'.$canvas_name.'" "'.$temp_image.'" "'.$font.'" "'.$font2.'" "'.$font3.'" "'.$output_image.'" "'.$icon_path.'" ',$output, $return_var);
-        echo $res;
+    public function actionSms(){
+        return Yii::$app->sms->send('7814871632','EYOUTH','hello');
     }
+
 }

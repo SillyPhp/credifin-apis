@@ -13,6 +13,11 @@ use yii\helpers\Url;
                 </span>
             </span>
         </div>
+        <div class="actions">
+            <a href="<?= Url::toRoute('/'.$type.'/applied-applications'); ?>" data-toggle="tooltip"
+               title="View All Applicants">
+                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+        </div>
     </div>
 <div class="portlet-body">
     <div class="row">
@@ -25,7 +30,7 @@ use yii\helpers\Url;
                             <div class="mt-action-img" style="width: auto">
                                 <a href="/<?= $candiates['username'] ?>">
                                     <?php if (!empty($candiates['image_location']) && !empty($candiates['image'])) { ?>
-                                        <?php $user_img = Yii::$app->params->upload_directories->users->image . $candiates['image_location'] . DIRECTORY_SEPARATOR . $candiates['image']; ?>
+                                        <?php $user_img = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $candiates['image_location'] . DIRECTORY_SEPARATOR . $candiates['image']; ?>
                                         <img src="<?= $user_img; ?>" width="50px" height="50" class="img-circle"/>
 
                                         <?php

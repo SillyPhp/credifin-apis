@@ -3,13 +3,13 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 $this->title = 'News';
-$keywords = 'Empower Youth News: Get Latest and Breaking News Updates of world';
-$description = 'Get Latest and Breaking News Updates of India and world, live world and India news headlines, and Read all latest India and world news & top news on Empower Youth.
+$keywords = 'Get Latest and Breaking News Updates of India and world, live world and India news headlines, and Read all latest India and world news & top news on Empower Youth.
 breaking news updates in hindi,breaking news updates india, 24/7 latest breaking news update,www breaking news,News Updates.';
+$description = 'Empower Youth News: Get Latest and Breaking News Updates of world';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/themes/ey/images/pages/landing/news_update.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -24,7 +24,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -37,7 +37,7 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6">
-                    <div class="get-latest">Get Latest News Updates</div>
+                    <h1 class="get-latest">Get Latest News Updates</h1>
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <div class="get-logo">

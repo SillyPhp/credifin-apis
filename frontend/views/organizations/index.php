@@ -1,6 +1,8 @@
 <?php
 $this->params['header_dark'] = false;
+
 use yii\helpers\Url;
+
 ?>
     <section class="headerbg">
         <div class="bg-vector"></div>
@@ -9,10 +11,14 @@ use yii\helpers\Url;
                 <div class="col-md-12">
                     <div class="main-heading">
                         <div class="pos-center">
-                            <div class="main-text mt-50">Explore All Companies</div>
+                            <h1 class="main-text mt-50 pt-90">Explore All Companies</h1>
+                            <h3 class="main-sub-text mb-20">Top companies are searching for candidates just like you.
+                                Explore the profile of the companies, follow the best ones and give your reviews. </h3>
                             <div class="search-container">
                                 <form action="" id="form_search_cmp">
-                                    <input id="company_search" type="text" value="<?= ((Yii::$app->request->get('keyword'))?Yii::$app->request->get('keyword'):'') ?>" placeholder="Search Companies" name="keyword">
+                                    <input id="company_search" type="text"
+                                           value="<?= ((Yii::$app->request->get('keyword')) ? Yii::$app->request->get('keyword') : '') ?>"
+                                           placeholder="Search Companies" name="keyword">
                                     <button id="search"><i class="fas fa-search"></i></button>
                                 </form>
                             </div>
@@ -25,7 +31,7 @@ use yii\helpers\Url;
 
     <div class="container">
         <div class="row">
-            <?php echo $this->render('/widgets/sorting-filters')?>
+            <?php echo $this->render('/widgets/sorting-filters') ?>
         </div>
     </div>
 
@@ -34,12 +40,77 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="padd-top-20">
                     <div id="loading_img">
-                        <img src="/assets/themes/ey/images/loader/91.gif">
+                        <svg style="margin:auto;background:#fff;display:block;" width="101px" height="101px"
+                             viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                            <circle cx="50" cy="50" r="15" fill="#00a0e3">
+                                <animate attributeName="cx"
+                                         values="65.55634918610404;34.44365081389595;65.55634918610404"
+                                         keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                         keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                         begin="-0.32894736842105265s"></animate>
+                                <animate attributeName="cy"
+                                         values="65.55634918610404;34.44365081389596;65.55634918610404"
+                                         keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                         keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                         begin="-0.32894736842105265s"></animate>
+                                <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1"
+                                         dur="1.3157894736842106s" repeatCount="indefinite"
+                                         begin="-0.32894736842105265s"></animate>
+                            </circle>
+                            <circle cx="50" cy="50" r="15" fill="#ff7803">
+                                <animate attributeName="cx"
+                                         values="34.44365081389596;65.55634918610404;34.44365081389596"
+                                         keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                         keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                         begin="0s"></animate>
+                                <animate attributeName="cy"
+                                         values="65.55634918610404;34.44365081389595;65.55634918610404"
+                                         keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                         keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                         begin="0s"></animate>
+                                <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1"
+                                         dur="1.3157894736842106s" repeatCount="indefinite" begin="0s"></animate>
+                            </circle>
+                        </svg>
                     </div>
-                    <div id="companies-card"></div>
-                    <div class="col-md-12">
-                        <div class="load-more-bttn">
-                            <button type="button" id="load_review_card_btn">Load More</button>
+                    <div id="companies-card" class="row"></div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="load-more-bttn">
+                                <svg style="margin:auto;background:#fff;display:block;" width="101px" height="101px"
+                                     viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+                                    <circle cx="50" cy="50" r="15" fill="#00a0e3">
+                                        <animate attributeName="cx"
+                                                 values="65.55634918610404;34.44365081389595;65.55634918610404"
+                                                 keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                                 keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                                 begin="-0.32894736842105265s"></animate>
+                                        <animate attributeName="cy"
+                                                 values="65.55634918610404;34.44365081389596;65.55634918610404"
+                                                 keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                                 keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                                 begin="-0.32894736842105265s"></animate>
+                                        <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1"
+                                                 dur="1.3157894736842106s" repeatCount="indefinite"
+                                                 begin="-0.32894736842105265s"></animate>
+                                    </circle>
+                                    <circle cx="50" cy="50" r="15" fill="#ff7803">
+                                        <animate attributeName="cx"
+                                                 values="34.44365081389596;65.55634918610404;34.44365081389596"
+                                                 keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                                 keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                                 begin="0s"></animate>
+                                        <animate attributeName="cy"
+                                                 values="65.55634918610404;34.44365081389595;65.55634918610404"
+                                                 keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline"
+                                                 keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite"
+                                                 begin="0s"></animate>
+                                        <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1"
+                                                 dur="1.3157894736842106s" repeatCount="indefinite"
+                                                 begin="0s"></animate>
+                                    </circle>
+                                </svg>
+                            </div>
                         </div>
                     </div>
                     <div class="empty">
@@ -57,6 +128,7 @@ use yii\helpers\Url;
 <?php
 echo $this->render('/widgets/mustache/companies-card');
 $this->registerCss('
+.fab-btn-hide{display:none !important;}
 .load-more-bttn
 {
 display:none;
@@ -126,7 +198,7 @@ background-color: #228b22;
     background-size:cover;
     background-repeat:no-repeat;
     position:relative;
-    min-height:300px !important;
+    min-height:350px !important;
 }
 .bg-vector{
     background:url(' . Url::to('@eyAssets/images/pages/company-and-candidate/all-com-bg-text.png') . ');
@@ -147,8 +219,14 @@ background-color: #228b22;
 .main-text{
      font-size:40px;
      color:#f2f2f5;
-     font-family:lobster;  
+     font-family:lobster; 
+     line-height:42px; 
 }
+.main-sub-text{
+         font-size: 18px;
+         color: #f2f2f5;
+}
+
 .pos-center{
     position:absolute;
     top:50%;
@@ -342,6 +420,7 @@ form {
   background-color: #3498db;
   margin: 20px 1px;
 }
+
 .load-suggestions span:nth-child(1){
   animation: bounce 1s ease-in-out infinite;
 }
@@ -370,10 +449,19 @@ form {
     .bg-vector{
         background-size: auto 124px;
     }
-}   
+} 
+@media only screen and (max-width: 500px) {
+    .headerbg{
+    min-height:390px !important;
+    }
+}  
+@media only screen and (max-width:1200px) and (min-width: 992px){
+.flw-rvw a{font-size:11px;}
+}
 ');
 
 $script = <<<JS
+let loadmorecards = true;
 let page = 0;
 let total=0;
 function getCompanies(params={'business_activity':activities},template=$("#companies-card"),loader=true,is_clear=false,loader_btn=false) {
@@ -407,6 +495,17 @@ function getCompanies(params={'business_activity':activities},template=$("#compa
                  $('#load_review_card_btn').removeAttr('disabled');
                  $('#loading_img').css('display','none');
                 if(response.status == 200){
+                    for (var i = 0; i < response.cards.length; i++) {
+                        response.cards[i]['jobs_cnt'] = 0;
+                        response.cards[i]['internships_cnt'] = 0;
+                        for(var j=0; j < response.cards[i]['employerApplications'].length; j++){
+                            if(response.cards[i]['employerApplications'][j]['name'] == 'Jobs'){
+                               response.cards[i]['jobs_cnt'] =  response.cards[i]['employerApplications'][j]['total_application'];
+                            }else if(response.cards[i]['employerApplications'][j]['name'] == 'Internships'){
+                               response.cards[i]['internships_cnt'] =  response.cards[i]['employerApplications'][j]['total_application'];
+                            }
+                        }
+                    }
                     total=total+response.cards.length;
                     var get_companies = $('#companies-card-all').html();
                     template.append(Mustache.render(get_companies, response.cards));
@@ -422,6 +521,7 @@ function getCompanies(params={'business_activity':activities},template=$("#compa
                 });
                     if (total==response.total){
                         $('.load-more-bttn').hide();
+                        loadmorecards = false;
                     }
                 }
                 else
@@ -430,6 +530,7 @@ function getCompanies(params={'business_activity':activities},template=$("#compa
                         $('.empty').css('display','block');
                     }
                     $('.load-more-bttn').hide();
+                    loadmorecards = false;
                     }
             }
         })
@@ -465,6 +566,29 @@ $(document).on('click','#load_review_card_btn',function(e) {
   e.preventDefault();
   getCompanies(params={'business_activity':activities},template=$("#companies-card"),loader=false,is_clear=false,loader_btn=true); 
 })
+let loading = true
+$(window).animate({scrollTop:0}, '300');
+$('body').css('overflow','hidden');
+setTimeout(
+    function(){
+    $('body').css('overflow','inherit');
+}, 1300);
+$(window).scroll(function() { //detact scroll
+    
+			if($(window).scrollTop() + $(window).height() >= $(document).height() - ($('#footer').height() + 80)){ //scrolled to bottom of the page
+                if(loading && loadmorecards){
+                    loading = false;
+                    $('#loadMore').removeClass("loading_more");
+                    $('.load-more-text').css('visibility', 'hidden');
+                    $('.load-more-spinner').css('visibility', 'visible');
+				    getCompanies();
+                    setTimeout(
+                        function(){
+				            loading = true;
+				    }, 1500);
+                }
+			}
+		});
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');

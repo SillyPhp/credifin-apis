@@ -31,7 +31,7 @@ $form = ActiveForm::begin([
         <?=
         $form->field($locationFormModel, 'phone')->widget(PhoneInput::className(), [
             'jsOptions' => [
-                'allowExtensions' => false,
+                'allowExtensions' => true,
                 'onlyCountries' => ['in'],
                 'nationalMode' => false,
             ]
@@ -128,7 +128,6 @@ $form->field($locationFormModel, 'longitude', [
 
 <div class="modal-footer">
     <?= Html::submitbutton('update', ['class' => 'btn btn-primary custom-buttons2']); ?>
-    <?= Html::button('Close', ['class' => 'btn default custom-buttons2', 'data-dismiss' => 'modal']); ?>
 </div>
 <?php ActiveForm::end(); ?>
 <?php
@@ -137,6 +136,12 @@ $this->registerCss('
     opacity: 1 !important;
     color: #e73d4a !important;
     filter: alpha(opacity=100);
+}
+.iti{
+    width: 100% !important;
+}
+.iti input{
+    padding-left: 46px !important;
 }
 ');
 $script = <<<JS
@@ -246,15 +251,17 @@ function floatingLabel() {
                     toastr.success(response.message, response.title);
                     // $("#location-form")[0].reset();
                     $("#page-loading").css("display", "none");
-                    if (tab_count == 'tab1') {
+                    if (tab_count && tab_count == 'tab1') {
                         $.pjax.reload({container: '#pjax_locations1', async: false});
                         $.pjax.reload({container: '#pjax_locations2', async: false});
-                    } else if (tab_count == 'tab4')
+                    } else if (tab_count && tab_count == 'tab4')
                     {
                         $.pjax.reload({container: '#pjax_locations2', async: false});
-                    } else{
+                    } else if($('#pjax_locations1').length||$('#location_map').length){
                         $.pjax.reload({container: '#pjax_locations1', async: false});
                         $.pjax.reload({container: '#location_map', async: false});
+                    } else {
+                        location.reload();
                     }
                     $('#modal').modal('hide');
                 } else {

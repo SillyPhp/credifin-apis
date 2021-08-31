@@ -6,9 +6,12 @@ use common\models\ApplicationOptions;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationSkills;
+use common\models\ApplicationTemplates;
 use common\models\ApplicationTypes;
 use common\models\ApplicationUnclaimOptions;
 use common\models\Cities;
+use common\models\CollegeCourses;
+use common\models\Courses;
 use common\models\Designations;
 use common\models\EmailLogs;
 use common\models\IndianGovtDepartments;
@@ -28,10 +31,12 @@ use frontend\models\curl\RollingRequest;
 use frontend\models\script\Box;
 use frontend\models\script\Color;
 use frontend\models\script\scriptModel;
+use frontend\models\whatsAppShareForm;
 use frontend\models\xml\ApplicationFeeds;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
+use yii\web\HttpException;
 use yii\web\Response;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
@@ -57,6 +62,7 @@ use yii\db\Query;
 use common\models\Utilities;
 use common\models\RandomColors;
 use yii\db\Expression;
+use yii\widgets\ActiveForm;
 
 class JobsController extends Controller
 {
@@ -361,7 +367,7 @@ class JobsController extends Controller
                 $options['page'] = 1;
             }
 
-            $options['limit'] = 9;
+            $options['limit'] = 27;
 
             if ($parameters['location'] && !empty($parameters['location'])) {
                 $options['location'] = $parameters['location'];
@@ -381,19 +387,12 @@ class JobsController extends Controller
             if ($parameters['slug'] && !empty($parameters['slug'])) {
                 $options['slug'] = $parameters['slug'];
             }
-            $cardsDb = ApplicationCards::jobs($options);
-            if (!empty($options['company']) || !empty($options['slug'])) {
-                $merg = $cardsDb;
-            } else {
-                $cardsApi = ApplicationCards::gitjobs($options['page'], $options['keyword'], $options['location']);
-                $merg = array_merge($cardsDb, $cardsApi);
-                $merg = array_slice($merg, 0, 27);
-            }
-            if (count($merg) > 0) {
+            $cards = ApplicationCards::jobs($options);
+            if (count($cards) > 0) {
                 $response = [
                     'status' => 200,
                     'title' => 'Success',
-                    'cards' => $merg,
+                    'cards' => $cards,
                 ];
             } else {
                 $response = [
@@ -405,25 +404,120 @@ class JobsController extends Controller
         return $this->render('list');
     }
 
+    public function actionApi($source = '', $slugparams = null, $eaidk = null)
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $keywords = '';
+            if ($slugparams != null) {
+                $keywords = str_replace("-", " ", $slugparams);
+            }
+            $options['limit'] = 6;
+            if ($keywords && !empty($keywords)) {
+                $options['keyword'] = $keywords;
+            }
+            $cards = ApplicationCards::jobs($options);
+            if (count($cards) > 0) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'cards' => $cards,
+                ];
+            } else {
+                unset($options['keyword']);
+                $cards = ApplicationCards::jobs($options);
+                if ($cards) {
+                    $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'cards' => $cards,
+                    ];
+                } else {
+                    $response = [
+                        'status' => 201
+                    ];
+                }
+
+            }
+            return $response;
+        }
+
+        if ($source == 'git-hub') {
+            $get = $this->gitjobs($eaidk);
+        } else if ($source == 'muse') {
+            $get = $this->musejobs($eaidk);
+        }
+        $app = EmployerApplications::find()
+            ->alias('a')
+            ->select(['a.application_enc_id','l.name profile_name','a.square_image','l.category_enc_id profile_id','a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
+            ->where(['a.unique_source_id' => $eaidk])
+            ->joinwith(['title k' => function ($b) {
+                $b->joinWith(['parentEnc l'], false);
+                $b->joinWith(['categoryEnc m'], false);
+            }], false)
+            ->asArray()->one();
+        if ($get['title']) {
+            $whatsAppForm = new whatsAppShareForm();
+            return $this->render('api-jobs',
+                [
+                    'get' => $get, 'slugparams' => $slugparams,
+                    'source' => $source, 'id' => $eaidk, 'app' => $app,
+                    'whatsAppmodel' => $whatsAppForm,
+                ]);
+        } else {
+            return $this->render('expired-jobs');
+        }
+    }
+
+    private function musejobs($id)
+    {
+        $url = "https://www.themuse.com/api/public/jobs/" . $id;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        $header = [
+            'Accept: application/json, text/plain, */*',
+            'Content-Type: application/json;charset=utf-8',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $result = curl_exec($ch);
+        $result = json_decode($result, true);
+        if ($result) {
+            $result['title'] = $result['name'];
+            $result['company'] = $result['company']['name'];
+            $result['created_at'] = $result['publication_date'];
+            $result['url'] = $result['refs']['landing_page'];
+            $result['description'] = $result['contents'];
+            $result['location'] = $result['locations'];
+            unset($result['name']);
+            unset($result['publication_date']);
+            unset($result['refs']);
+            unset($result['contents']);
+            unset($result['locations']);
+        }
+        return $result;
+    }
+
     public function actionDetail($eaidk)
     {
         $application_details = EmployerApplications::find()
             ->where([
                 'slug' => $eaidk,
-                'is_deleted' => 0
+                'is_deleted' => 0,
+                'application_for' => 1
             ])
             ->one();
-
-        if (!$application_details) {
-            return 'Not Found';
+        if (empty($application_details)) {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
         $type = 'Job';
         $object = new \account\models\applications\ApplicationForm();
         if (!empty($application_details->unclaimed_organization_enc_id)) {
-            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id', 'name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
             $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = 'Jobs');
         } else {
-            $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id', 'name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id', 'REPLACE(name, "&amp;", "&") as org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
             $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = 'Jobs');
         }
         if (!Yii::$app->user->isGuest) {
@@ -450,21 +544,21 @@ class JobsController extends Controller
             ->orderBy(new Expression('rand()'))
             ->limit(6);
 
-        $popular_videos =  $related_videos
-               ->joinWith(['assignedCategoryEnc a'=>function($a){
-                   $a->joinWith(['parentEnc a1'],false);
-                   $a->joinWith(['categoryEnc a2'],false);
-                   $a->joinWith(['employerApplications b' => function($b){
-                       $b->joinWith(['designationEnc c'],false);
-                   }],false);
-               }],false)
-             ->andFilterWhere(['or',
-                 ['like','c.designation',$desi_name],
-                 ['like','a1.name',$pro_name],
-                 ['like','a2.name',$cat_name],
-             ])
-               ->asArray()->all();
-        if(count($popular_videos) < 6) {
+        $popular_videos = $related_videos
+            ->joinWith(['assignedCategoryEnc a' => function ($a) {
+                $a->joinWith(['parentEnc a1'], false);
+                $a->joinWith(['categoryEnc a2'], false);
+                $a->joinWith(['employerApplications b' => function ($b) {
+                    $b->joinWith(['designationEnc c'], false);
+                }], false);
+            }], false)
+            ->andFilterWhere(['or',
+                ['like', 'c.designation', $desi_name],
+                ['like', 'a1.name', $pro_name],
+                ['like', 'a2.name', $cat_name],
+            ])
+            ->asArray()->all();
+        if (count($popular_videos) < 6) {
             $limit = 6 - count($popular_videos);
             $xyz = LearningVideos::find()
                 ->alias('z')
@@ -475,17 +569,28 @@ class JobsController extends Controller
             $xz = $xyz->asArray()->all();
             $popular_videos = array_merge($popular_videos, $xz);
         }
-           if (empty($popular_videos) )
-           {
-               $xyz = LearningVideos::find()
-                   ->alias('z')
-                   ->where(['z.is_deleted' => 0,
-                       'z.status' => 1])
-                   ->orderBy(new Expression('rand()'))
-                   ->limit(6);
-               $popular_videos = $xyz->asArray()->all();
-           }
-
+        if (empty($popular_videos)) {
+            $xyz = LearningVideos::find()
+                ->alias('z')
+                ->where(['z.is_deleted' => 0,
+                    'z.status' => 1])
+                ->orderBy(new Expression('rand()'))
+                ->limit(6);
+            $popular_videos = $xyz->asArray()->all();
+        }
+        $app_title = $application_details->title0->categoryEnc->name;
+        $skills = ApplicationSkills::find()
+            ->alias('a')
+            ->select(['a.skill_enc_id', 'b.skill'])
+            ->joinWith(['skillEnc b'], false)
+            ->where(['a.application_enc_id' => $application_details->application_enc_id, 'a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+        $searchItems = ArrayHelper::getColumn($skills, 'skill');
+        $industry = $application_details->preferredIndustry->industry;
+        array_push($searchItems, $app_title, $industry);
+        $searchItems = implode(',', $searchItems);
+        $whatsAppForm = new whatsAppShareForm();
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
@@ -496,7 +601,9 @@ class JobsController extends Controller
             'model' => $model,
             'shortlist' => $shortlist,
             'popular_videos' => $popular_videos,
+            'searchItems' => $searchItems,
             'cat_name' => $cat_name,
+            'whatsAppmodel' => $whatsAppForm,
         ]);
     }
 
@@ -532,6 +639,13 @@ class JobsController extends Controller
         if ($createCompany->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $createCompany->logo = UploadedFile::getInstance($createCompany, 'logo');
+            if (!$createCompany->validate()) {
+                return [
+                    'status' => 'error',
+                    'message' => json_encode(ActiveForm::validate($createCompany)),
+                    'title' => 'Error',
+                ];
+            }
             if ($createCompany->save()) {
                 return [
                     'status' => 'success',
@@ -601,6 +715,7 @@ class JobsController extends Controller
             if (empty($object)) {
                 return 'Opps Session expired..!';
             }
+            $whatsAppForm = new whatsAppShareForm();
             $industry = Industries::find()
                 ->where(['industry_enc_id' => $object->industry])
                 ->select(['industry'])
@@ -629,7 +744,8 @@ class JobsController extends Controller
                     'industry' => $industry,
                     'primary_cat' => $primary_cat,
                     'benefits' => $benefits,
-                    'type' => $type
+                    'type' => $type,
+                    'whatsAppmodel' => $whatsAppForm,
                 ]);
         } else {
             return false;
@@ -1180,7 +1296,7 @@ class JobsController extends Controller
     {
         $tweets1 = (new \yii\db\Query())
             ->distinct()
-            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
             ->from(\common\models\TwitterJobs::tableName() . 'as a')
             ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
             ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
@@ -1203,7 +1319,7 @@ class JobsController extends Controller
 
         $tweets2 = (new \yii\db\Query())
             ->distinct()
-            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
             ->from(\common\models\TwitterJobs::tableName() . 'as a')
             ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
             ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
@@ -1271,6 +1387,44 @@ class JobsController extends Controller
                         'cards' => ['jobs' => $total_jobs['total_applications'], 'internships' => $total_internships['total_applications'], 'location' => $total['locations'], 'companies' => $total_jobs['org']]
                     ];
             }
+        }
+    }
+
+    public function actionTemplate($view){
+        if(Yii::$app->user->identity->organization) {
+            $whatsAppmodel = new whatsAppShareForm();
+            $application = ApplicationTemplates::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.description', 'a.title', 'a.designation_enc_id', 'a.type', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.experience', 'a.preferred_gender', 'zz.name as cat_name', 'zx.name as profile', 'y.designation', 'v.industry'])
+                ->joinWith(['title0 z' => function ($z) {
+                    $z->joinWith(['categoryEnc zz']);
+                    $z->joinWith(['parentEnc zx']);
+                }], false)
+                ->joinWith(['designationEnc y'])
+                ->joinWith(['preferredIndustry v'], false)
+                ->joinWith(['applicationEduReqTemplates b' => function ($b) {
+                    $b->select(['b.educational_requirement_enc_id', 'b.application_enc_id', 'i.educational_requirement']);
+                    $b->joinWith(['educationalRequirementEnc i'], false);
+                }])
+                ->joinWith(['applicationOptionsTemplates c'])
+                ->joinWith(['applicationSkillsTemplates d' => function ($d) {
+                    $d->select(['d.application_enc_id', 'd.skill_enc_id', 'g.skill']);
+                    $d->joinWith(['skillEnc g'], false);
+                }])
+                ->joinWith(['applicationTemplateJobDescriptions e' => function ($e) {
+                    $e->select(['e.job_description_enc_id', 'e.application_enc_id', 'h.job_description']);
+                    $e->joinWith(['jobDescriptionEnc h'], false);
+                }])
+                ->joinWith(['applicationTypeEnc f'], false)
+                ->where(['a.application_enc_id' => $view, 'f.name' => 'Jobs'])
+                ->asArray()
+                ->one();
+
+            return $this->render('/employer-applications/template-preview', [
+                'data' => $application,
+                'type' => 'Job',
+                'whatsAppmodel' => $whatsAppmodel,
+            ]);
         }
     }
 
@@ -1366,14 +1520,6 @@ class JobsController extends Controller
         return $result;
     }
 
-    public function actionApi($comp, $eaidk)
-    {
-        $get = $this->gitjobs($eaidk);
-        if ($get) {
-            return $this->render('git-api-jobs', ['get' => $get, 'slug' => $comp]);
-        }
-    }
-
     public function actionImageScript()
     {
         $model = new scriptModel();
@@ -1404,63 +1550,16 @@ class JobsController extends Controller
             }
         }
     }
-   public function actionTest($offset = 0, $limit = 3000,$type='Jobs')
-   {
-       $params = [];
-       $params['limit'] = $limit;
-       $params['offset'] = $offset;
-       $params['type'] = $type;
-       $obj = new ApplicationFeeds();
-       $objects = $obj->getApplications($params);
-       $dom = new \DOMDocument();
-       $dom->encoding = 'utf-8';
-       $dom->xmlVersion = '1.0';
-       $dom->formatOutput = true;
-       $base_path = Url::to('@rootDirectory/files/xml');
-       $xml_file_name = $type.'-Feeds.xml';
-       $root = $dom->createElement('jobs');
-       $i = time().rand(100, 100000);
-       foreach ($objects as $object)
-       {
-           $node = $dom->createElement('job');
-           $attr_node_id = new \DOMAttr('id', $i++);
-           $node->setAttributeNode($attr_node_id);
-           $name = $node->appendChild($dom->createElement('link'));
-           $name->appendChild($dom->createCDATASection($object['link']));
 
-           $name = $node->appendChild($dom->createElement('name'));
-           $name->appendChild($dom->createCDATASection($object['name']));
+    public function actionClearMyCache()
+    {
+        $cache = Yii::$app->cache->flush();
 
-           $name = $node->appendChild($dom->createElement('region'));
-           $name->appendChild($dom->createCDATASection($object['city'].', '.$object['country']));
-
-           $name = $node->appendChild($dom->createElement('salary'));
-           $name->appendChild($dom->createCDATASection($object['salary']));
-
-           $name = $node->appendChild($dom->createElement('description'));
-           $name->appendChild($dom->createCDATASection($object['description'].'<br>'.$object['education_req']));
-
-           $name = $node->appendChild($dom->createElement('apply_url'));
-           $name->appendChild($dom->createCDATASection($object['link']));
-
-           $name = $node->appendChild($dom->createElement('company'));
-           $name->appendChild($dom->createCDATASection($object['organization_name']));
-
-           $name = $node->appendChild($dom->createElement('pubdate'));
-           $name->appendChild($dom->createCDATASection($object['pubdate']));
-
-           $name = $node->appendChild($dom->createElement('updated'));
-           $name->appendChild($dom->createCDATASection($object['updated']));
-
-           $name = $node->appendChild($dom->createElement('expire'));
-           $name->appendChild($dom->createCDATASection($object['expire']));
-
-           $name = $node->appendChild($dom->createElement('type'));
-           $name->appendChild($dom->createCDATASection($object['type']));
-           $root->appendChild($node);
-       }
-       $dom->appendChild($root);
-       $dom->save($base_path.DIRECTORY_SEPARATOR.$xml_file_name);
-       echo "$xml_file_name has been successfully created";
-   }
+        if ($cache) {
+            $this->redirect(Yii::$app->request->referrer);
+        } else {
+            $this->redirect('/jobs/clear-my-cache');
+            return 'something went wrong...! please try again later';
+        }
+    }
 }

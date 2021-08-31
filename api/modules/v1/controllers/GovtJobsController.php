@@ -48,7 +48,7 @@ class GovtJobsController extends ApiBaseController
         }
 
         $d = UsaDepartments::find()
-            ->select(['Value', 'slug', 'total_applications', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE NULL END logo'])
+            ->select(['Value', 'slug', 'total_applications', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE CONCAT("https://ui-avatars.com/api/?name=", value, "&size=200&rounded=false&background=random&color=ffffff") END logo'])
             ->asArray()
             ->orderBy(['total_applications' => SORT_DESC])
             ->limit($limit)
@@ -79,22 +79,23 @@ class GovtJobsController extends ApiBaseController
         }
 
         $e = fopen(Yii::$app->params->upload_directories->jsonFiles->file_path . DIRECTORY_SEPARATOR . 'updated.json', 'r');
-//            $e = fopen('updated.json', 'r');
         $v = fgets($e);
         $v = json_decode($v, true);
         $i = 0;
         foreach ($v['SearchResult']['SearchResultItems'] as $key => $val) {
             if ($key >= $min && $key <= $max) {
-                $get[$i]['DepartmentName'] = $val['MatchedObjectDescriptor']['OrganizationName'];
-                $get[$i]['PositionTitle'] = $val['MatchedObjectDescriptor']['PositionTitle'];
-                $get[$i]['MinimumRange'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['MinimumRange'];
-                $get[$i]['MaximumRange'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['MaximumRange'];
-                $get[$i]['ApplicationCloseDate'] = date("d-m-Y", strtotime($val['MatchedObjectDescriptor']['ApplicationCloseDate']));
-                $get[$i]['PositionLocation'] = $this->getCityName($val['MatchedObjectDescriptor']['PositionLocationDisplay']);
-                $get[$i]['Location'] = $val['MatchedObjectDescriptor']['PositionLocationDisplay'];
-                $get[$i]['JobCategory'] = $val['MatchedObjectDescriptor']['JobCategory'][0]['Code'];
+                $desc = $val['MatchedObjectDescriptor'];
+                $pos = $desc['PositionRemuneration'][0];
+                $get[$i]['DepartmentName'] = $desc['OrganizationName'];
+                $get[$i]['PositionTitle'] = $desc['PositionTitle'];
+                $get[$i]['MinimumRange'] = $pos['MinimumRange'];
+                $get[$i]['MaximumRange'] = $pos['MaximumRange'];
+                $get[$i]['ApplicationCloseDate'] = date("d-m-Y", strtotime($desc['ApplicationCloseDate']));
+                $get[$i]['PositionLocation'] = $this->getCityName($desc['PositionLocationDisplay']);
+                $get[$i]['Location'] = $desc['PositionLocationDisplay'];
+                $get[$i]['JobCategory'] = $desc['JobCategory'][0]['Code'];
                 $get[$i]['MatchedObjectId'] = $val['MatchedObjectId'];
-                $get[$i]['Duration'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['RateIntervalCode'];
+                $get[$i]['Duration'] = $pos['RateIntervalCode'];
                 $data = UsaDepartments::find()
                     ->select(['image', 'image_location'])
                     ->where(['Value' => $get[$i]['DepartmentName']])
@@ -103,7 +104,7 @@ class GovtJobsController extends ApiBaseController
                 if (!empty($data['image']) && !empty($data['image_location'])) {
                     $get[$i]['logo'] = Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image . $data['image_location'] . DIRECTORY_SEPARATOR . $data['image'], 'https');
                 } else {
-                    $get[$i]['logo'] = null;
+                    $get[$i]['logo'] = "https://ui-avatars.com/api/?name=" . $get[$i]['DepartmentName'] . "&size=200&rounded=false&background=random&color=ffffff";
                 }
                 $i++;
             }
@@ -222,7 +223,7 @@ class GovtJobsController extends ApiBaseController
             if (!empty($data['image']) && !empty($data['image_location'])) {
                 $get[$i]['logo'] = Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image, 'https') . $data['image_location'] . DIRECTORY_SEPARATOR . $data['image'];
             } else {
-                $get[$i]['logo'] = null;
+                $get[$i]['logo'] = "https://ui-avatars.com/api/?name=" . $get[$i]['DepartmentName'] . "&size=200&rounded=false&background=random&color=ffffff";;
             }
             $i++;
         }
@@ -277,7 +278,7 @@ class GovtJobsController extends ApiBaseController
             if (!empty($data['image']) && !empty($data['image_location'])) {
                 $get[$i]['logo'] = Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image, 'https') . $data['image_location'] . DIRECTORY_SEPARATOR . $data['image'];
             } else {
-                $get[$i]['logo'] = null;
+                $get[$i]['logo'] = "https://ui-avatars.com/api/?name=" . $get[$i]['DepartmentName'] . "&size=200&rounded=false&background=random&color=ffffff";;
             }
             $i++;
         }
@@ -306,7 +307,7 @@ class GovtJobsController extends ApiBaseController
         }
 
         $data = IndianGovtDepartments::find()
-            ->select(['dept_enc_id dept_id', 'Value', 'total_applications', 'slug', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE NULL END logo'])
+            ->select(['dept_enc_id dept_id', 'Value', 'total_applications', 'slug', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE CONCAT("https://ui-avatars.com/api/?name=", value, "&size=200&rounded=false&background=random&color=ffffff") END logo'])
             ->asArray()
             ->orderBy(['total_applications' => SORT_DESC])
             ->limit($limit)
@@ -341,7 +342,7 @@ class GovtJobsController extends ApiBaseController
         $search_pattern = $this->makeSQL_search_pattern($search);
         $data = IndianGovtJobs::find()
             ->alias('a')
-            ->select(['job_id id', 'c.slug company_slug', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE NULL END logo', 'a.slug', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
+            ->select(['a.job_id id', 'c.slug company_slug', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.Position, "&size=200&rounded=false&background=random&color=ffffff") END logo', 'a.slug', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
             ->andWhere(['a.is_deleted' => 0])
             ->andFilterWhere([
                 'or',
@@ -355,11 +356,11 @@ class GovtJobsController extends ApiBaseController
             }], false, 'LEFT JOIN')
             ->limit($limit)
             ->offset(($page - 1) * $limit)
-            ->orderBy(['job_id' => SORT_DESC])
+            ->orderBy(['a.job_id' => SORT_DESC])
             ->asArray()
             ->all();
 
-        if($data) {
+        if ($data) {
             $i = 0;
             foreach ($data as $d) {
                 if (!$d['Eligibility']) {
@@ -401,7 +402,7 @@ class GovtJobsController extends ApiBaseController
 
         $data = IndianGovtJobs::find()
             ->alias('a')
-            ->select(['a.job_enc_id id', 'a.slug', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE NULL END logo', 'c.Value Organizations', 'Location', 'Position', 'Eligibility', 'Last_date'])
+            ->select(['a.job_enc_id id', 'a.slug', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.Position, "&size=200&rounded=false&background=random&color=ffffff") END logo', 'c.Value Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
             ->joinWith(['assignedIndianJobs b' => function ($b) use ($dept_id) {
                 $b->joinWith(['deptEnc c'], false);
                 $b->andWhere(['b.dept_enc_id' => $dept_id]);
@@ -412,7 +413,7 @@ class GovtJobsController extends ApiBaseController
             ->asArray()
             ->all();
 
-        if($data) {
+        if ($data) {
             $i = 0;
             foreach ($data as $d) {
                 if (!$d['Eligibility']) {

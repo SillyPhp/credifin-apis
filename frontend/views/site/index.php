@@ -14,12 +14,12 @@ $this->params['header_dark'] = false;
                         <ul class="main-slider-sec style2 text-arrows">
                             <li class="slideHome">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
-                                     alt="marketing internships, machine learning internship, hr internships, software jobs, best online course sites, website design jobs"/>
+                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                             </li>
                         </ul>
                         <div class="job-search-sec">
                             <div class="job-search style2">
-                                <h3>Discover a New Career Specially Designed For You</h3>
+                                <h3>The World's First Integrated Career Platform</h3>
                                 <span>The Easiest Way to Build Your Career</span>
                                 <div class="search-job2">
                                     <form id="search_jobs_internships" action="<?= Url::to('/search'); ?>">
@@ -53,139 +53,106 @@ $this->params['header_dark'] = false;
     <div class="header-row">
         <div class="container">
             <div class="header-boxs">
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
                 <div class="box-border fade-in one">
-                    <a href="/employers">
+                    <a href="<?= Url::to('/jobs'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/employer.png') ?>"
-                                 alt="Employers" title="Employers"></div>
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/jobs-blue.png') ?>" title="Jobs" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
+                        </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/employerw.png') ?>"
-                                 alt="Employers" title="Employers"></div>
-                        <div class="h-heading">Employers</div>
-                        <!--                            <div class="h-text">I want to recruit talent</div>-->
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/jobs-white.png') ?>" title="Jobs" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/></div>
+                        <h3 class="h-heading">Jobs</h3>
                     </a>
                 </div>
-                <!--                </div>-->
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
                 <div class="box-border fade-in two">
-                    <a href="/candidates/features">
+                    <a href="<?= Url::to('/internships'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/candidate.png') ?>"
-                                 alt="Candidates" title="Candidates">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/internship-blue.png') ?>" title="Internships" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/candidatew.png') ?>"
-                                 alt="Employers" title="Candidates"></div>
-                        <div class="h-heading">Candidates</div>
-                        <!--                            <div class="h-text">I'm the talent</div>-->
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/internship-white.png') ?>" title="Internships" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
+                        </div>
+                        <h3 class="h-heading">Internships</h3>
                     </a>
                 </div>
-                <!--                </div>-->
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
                 <div class="box-border fade-in two">
-                    <a href="/schools">
+                    <a href="<?= Url::to('/learning'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/school.png') ?>"
-                                 alt="Candidates" title="schools">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-blue.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/schoolw.png') ?>"
-                                 alt="Employers" title="schools"></div>
-                        <div class="h-heading">Schools</div>
-                        <!--                            <div class="h-text">COVID-19 <br>(Online Classes)</div>-->
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-white.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                        </div>
+                        <h3 class="h-heading">Learning Hub</h3>
                     </a>
                 </div>
-                <!--                </div>-->
                 <div class="box-border fade-in three">
-                    <a href="/training-programs">
+                    <a href="<?= Url::to('/reviews'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/educational-institute-blue.png') ?>"
-                                 alt="Candidates" title="Educational Institute">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/review-blue.png') ?>" title="Reviews" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/educational-institute-white.png') ?>"
-                                 alt="Employers" title="Educational Institute"></div>
-                        <div class="h-heading">Educational Institute</div>
-                        <!--                            <div class="h-text">COVID-19 <br>(Online Classes)</div>-->
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/review-white.png') ?>" title="Reviews" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
+                        </div>
+                        <h3 class="h-heading">Reviews</h3>
                     </a>
                 </div>
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
                 <div class="box-border fade-in three">
-                    <!--                        <div class="box-overlay">-->
-                    <a href="/colleges">
+                    <a href="<?= Url::to('/courses'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/colg.png') ?>"
-                                 alt="Universities & Colleges" title="Colleges">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-blue.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/colgw.png') ?>"
-                                 alt="Employers" title="Colleges"></div>
-                        <div class="h-heading">Colleges</div>
-                        <!--                                <div class="h-text">I'm the future</div>-->
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-white.png') ?>" title="Colleges" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                        </div>
+                        <h3 class="h-heading">Courses</h3>
                     </a>
-                    <!--                        </div>-->
-                    <!--                        <div class="overlay">-->
-                    <!--                            <div class="text">Coming Soon</div>-->
-                    <!--                        </div>-->
                 </div>
-                <!--                </div>-->
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
                 <div class="box-border fade-in four">
-                    <div class="box-overlay">
+                    <a href="<?= Url::to('/education-loans'); ?>">
                         <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/colleges.png') ?>"
-                                 alt="Universities & Colleges" title="Universities">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-bluee.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
                         <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/collegesw.png') ?>"
-                                 alt="Employers" title="Universities"></div>
-                        <div class="h-heading">Universities</div>
-                        <!--                            <div class="h-text">I want to enroll talent</div>-->
-                    </div>
-                    <div class="overlay">
-                        <div class="text">Coming Soon</div>
-                    </div>
-                </div>
-                <!--                </div>-->
-                <!--                <div class="col-md-2 col-sm-4 col-xs-6">-->
-                <div class="box-border fade-in four">
-                    <div class="box-overlay">
-                        <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/recruiter.png') ?>"
-                                 title="Recruiters" alt="Recruiters">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-white.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
-                        <div class="icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/recruiterw.png') ?>"
-                                 alt="Employers" title="Recruiters"></div>
-                        <div class="h-heading">Recruiters</div>
-                        <!--                            <div class="h-text">I want to find the best match for talent</div>-->
-                    </div>
-                    <div class="overlay">
-                        <div class="text">Coming Soon</div>
-                    </div>
+                        <h3 class="h-heading">Education Loan</h3>
+                    </a>
                 </div>
-                <!--                </div>-->
             </div>
         </div>
     </div>
 </section>
 
-<?= $this->render('/widgets/our-services') ?>
+<?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
 
 <div id="app-data"></div>
-<div id="sectionIsLoading" class="sectionIsLoading">
-    <div></div>
-    <div></div>
+<div id="sectionIsLoading">
+    <svg style="margin:auto;background:#fff;display:block;" width="101px" height="101px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+        <circle cx="50" cy="50" r="15" fill="#00a0e3">
+            <animate attributeName="cx" values="65.55634918610404;34.44365081389595;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
+            <animate attributeName="cy" values="65.55634918610404;34.44365081389596;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
+            <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1" dur="1.3157894736842106s" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
+        </circle>
+        <circle cx="50" cy="50" r="15" fill="#ff7803">
+            <animate attributeName="cx" values="34.44365081389596;65.55634918610404;34.44365081389596" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="0s"></animate>
+            <animate attributeName="cy" values="65.55634918610404;34.44365081389595;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="0s"></animate>
+            <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1" dur="1.3157894736842106s" repeatCount="indefinite" begin="0s"></animate>
+        </circle>
+    </svg>
 </div>
+
+<?= $this->render('/widgets/press-releasee') ?>
 
 <?php
 $this->registerCss('
 #app-data{
     overflow-x: hidden;
 }
+.loan{
+    margin-top: 0px !important;
+}
 .header-row {
-    margin-top: -150px;
+    margin-top: -159px;
     background-color:#ffffff2b;
     padding:0;
 }
@@ -195,43 +162,45 @@ $this->registerCss('
 }
 .h-heading{
     color:#fff;
+    font-weight:400;
+    padding-top:0 !important;
 }
 .h-text{
     color:#ff7803;
 }
-.sectionIsLoading {
-    display: none;
-    position: relative;
-    width: 80px;
-    height: 80px;
-    margin: auto;
-}
-.sectionIsLoading div {
-  position: absolute;
-  border: 4px solid #00a0e3;
-  opacity: 1;
-  border-radius: 50%;
-  animation: sectionIsLoading 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
-}
-.sectionIsLoading div:nth-child(2) {
-  animation-delay: -0.5s;
-}
-@keyframes sectionIsLoading {
-  0% {
-    top: 36px;
-    left: 36px;
-    width: 0;
-    height: 0;
-    opacity: 1;
-  }
-  100% {
-    top: 0px;
-    left: 0px;
-    width: 72px;
-    height: 72px;
-    opacity: 0;
-  }
-}
+//.sectionIsLoading {
+//    display: none;
+//    position: relative;
+//    width: 80px;
+//    height: 80px;
+//    margin: auto;
+//}
+//.sectionIsLoading div {
+//  position: absolute;
+//  border: 4px solid #00a0e3;
+//  opacity: 1;
+//  border-radius: 50%;
+//  animation: sectionIsLoading 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+//}
+//.sectionIsLoading div:nth-child(2) {
+//  animation-delay: -0.5s;
+//}
+//@keyframes sectionIsLoading {
+//  0% {
+//    top: 36px;
+//    left: 36px;
+//    width: 0;
+//    height: 0;
+//    opacity: 1;
+//  }
+//  100% {
+//    top: 0px;
+//    left: 0px;
+//    width: 72px;
+//    height: 72px;
+//    opacity: 0;
+//  }
+//}
 
 .j-tweets{
     background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
@@ -435,7 +404,7 @@ $this->registerCss('
     opacity: 0.1;
 }
 .box-border:hover .overlay {
-    height: 35%;
+    height: 100%;
 }
 /*how it works section starts*/
 .how-it-works{
@@ -611,13 +580,16 @@ how-icon{
     }
 }
 @media screen and (max-width: 1400px){
+    .header-row{
+        margin-top: -147px;
+    }
     .box-border{
          min-width: 157px !important;
          max-width: 157px !important;
          padding-bottom: 15px;
     }
     .h-heading{
-        font-size: 14px;
+        font-size: 16px;
         line-height: 16px;
     }
 }
@@ -641,7 +613,7 @@ how-icon{
     }
     .h-heading{
         color:#000;
-         font-size: 16px;
+         font-size: 14px;
         line-height: 16px;
   
     }
@@ -1191,40 +1163,46 @@ JS;
 if (!Yii::$app->user->isGuest) {
     $this->registerJs("
     var loadElems = [
+        'getOurServices',
         'getFeaturedApplications',
         'getStats',
-        'getLearningTopics',
+        'getTopCities',
+//        'getEduAndRedbull',
+        'getGovernmentJobs',
         'getInternationalJobs',
         'getCompaniesWithUs',
-        'getGovernmentJobs',
-        'getTopCities',
+        'getLearningTopics',
 //        'getOpportunities',
-        'getWhatsappCommunity',
-        'getSafetySigns',
-        'getOnlineClasses',
-        'getNewsUpdate',
+//        'getSafetySigns',
+//        'getOnlineClasses',
+        'getWhatsappCommunityj',
+//        'getNewsUpdate',
 //        'getTweets',
+        'getStudentLoan',
         'getShortcuts'
     ];
     ");
 } else {
     $this->registerJs("
     var loadElems = [
+        'getOurServices',
         'getFeaturedApplications',
         'getFeaturedInternships',
         'getStats',
-        'getLearningTopics',
+        'getTopCities',
+//        'getEduAndRedbull',
+        'getGovernmentJobs',
         'getInternationalJobs',
         'getCompaniesWithUs',
-        'getGovernmentJobs',
-        'getTopCities',
+        'getLearningTopics',
 //        'getOpportunities',
+//        'getSafetySigns',
+//        'getOnlineClasses',
         'getWhatsappCommunity',
-        'getSafetySigns',
-        'getOnlineClasses',
         'getHowItWorks',
-        'getNewsUpdate',
+//        'getNewsUpdate',
 //        'getTweets',
+        'getStudentLoan',
         'getNewsletter',
         'getShortcuts'
     ];

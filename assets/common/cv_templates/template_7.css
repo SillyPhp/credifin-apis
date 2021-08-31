@@ -1,0 +1,80 @@
+.resume-main{
+    max-width: 750px;
+    margin: 0 auto;
+}
+.resume-head{
+    background-color: #0b4d3f;
+    padding: 10px 0px 0px 15px;
+    color: #fff;
+}
+.resume-head h3{
+    font-size: 40px;
+    font-family: cursive;
+}
+.resume-head p{
+    font-size: 18px;
+    font-family: cursive;
+}
+.marg-b{
+    margin-bottom: 10px;
+}
+.us-address{
+    padding-bottom: 12px;
+    padding-top: 15px;
+    border-top-style: double;
+    border-top-color: #7b6565;
+    font-size: 18px;
+    font-family: cursive;
+}
+.personal-sum h3{
+    padding-left: 10px;
+    font-family: cursive;
+    color: #000;
+    font-weight: 600;
+    font-size: 25px;
+}
+.personal-sum p{
+    padding-left: 10px;
+    font-family: cursive;
+    font-size: 15px;
+}
+.us-skills{
+    padding-left: 10px;
+    font-family: cursive;
+    color: #000;
+    font-weight: 600;
+    font-size: 25px;
+}
+.u-skills{
+    padding-top: 10px;
+    font-family: cursive;
+    font-size: 15px;
+}
+.edu-text{
+    padding-left: 10px;
+    padding-top: 10px;
+    font-family: cursive;
+    color: #000;
+    font-weight: 600;
+    font-size: 25px;
+}
+.educ-date, .educ-position{
+    padding-top: 10px;
+    padding-left: 10px;
+    font-family: cursive;
+    font-size: 15px;
+}
+.work-experience{
+    padding-left: 10px;
+    padding-top: 10px;
+    font-family: cursive;
+    color: #000;
+    font-weight: 600;
+    font-size: 25px;
+}
+.experience{
+    padding-top: 10px;
+    padding-left: 10px;
+    font-family: cursive;
+    font-size: 15px;
+}

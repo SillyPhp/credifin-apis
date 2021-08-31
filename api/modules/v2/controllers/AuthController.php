@@ -10,6 +10,7 @@ use common\models\Departments;
 use common\models\EducationalRequirements;
 use common\models\ErexxSettings;
 use common\models\Organizations;
+use common\models\UserCoachingTutorials;
 use common\models\UserOtherDetails;
 use common\models\ErexxWhatsappInvitation;
 use http\Env\Response;
@@ -290,6 +291,14 @@ class AuthController extends ApiBaseController
                         return false;
                     }
                 }
+
+                $user->last_visit = date('Y-m-d H:i:s');
+                $user->last_visit_through = 'ECAMPUS';
+                $user->last_updated_on = date('Y-m-d H:i:s');
+                if (!$user->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+
                 $token = $this->findToken($user, $source);
                 if (empty($token)) {
                     if ($token = $this->newToken($user->user_enc_id, $source)) {
@@ -310,7 +319,7 @@ class AuthController extends ApiBaseController
 
     private function onlyTokens($token)
     {
-        $time_now = date('Y-m-d H:i:s', time('now'));
+        $time_now = date('Y-m-d H:i:s', time());
         $token->access_token = \Yii::$app->security->generateRandomString(32);
         $token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
         $token->refresh_token = \Yii::$app->security->generateRandomString(32);
@@ -326,7 +335,7 @@ class AuthController extends ApiBaseController
         $token = new UserAccessTokens();
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $time_now = date('Y-m-d H:i:s', time('now'));
+        $time_now = date('Y-m-d H:i:s', time());
         $token->access_token_enc_id = $utilitiesModel->encrypt();
         $token->user_enc_id = $user_id;
         $token->access_token = \Yii::$app->security->generateRandomString(32);
@@ -369,6 +378,7 @@ class AuthController extends ApiBaseController
             'phone' => $user->phone,
             'initials_color' => $user->initials_color,
             'access_token' => $source->access_token,
+            'source' => $source->source,
             'refresh_token' => $source->refresh_token,
             'access_token_expiry_time' => $source->access_token_expiration,
             'refresh_token_expiry_time' => $source->refresh_token_expiration,
@@ -439,13 +449,16 @@ class AuthController extends ApiBaseController
                     'a.last_name',
                     'a.organization_enc_id college_id',
                     'cc.college_enc_id',
-                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image',
+                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image',
                     'a.username', 'a.phone', 'a.email',
                     'a.initials_color', 'b.user_type',
                     'c.name city_name', 'e.name org_name', 'd.organization_enc_id',
-                    'd.cgpa', 'd.course_enc_id', 'd.section_enc_id', 'd.semester',
+                    'd.cgpa', 'd.assigned_college_enc_id', 'd.section_enc_id', 'd.semester',
                     'e.has_loan_featured',
-                    'c1.business_activity_enc_id teacher_org_type'
+                    'e.has_skillup_featured',
+                    'c1.has_skillup_featured teacher_skill_up',
+                    'c1.has_loan_featured t_loan_featured',
+                    'c1.business_activity_enc_id teacher_org_type', 'ee.business_activity user_org_business_type'
                 ])
                 ->joinWith(['userTypeEnc b'], false)
                 ->joinWith(['cityEnc c'], false)
@@ -453,7 +466,9 @@ class AuthController extends ApiBaseController
                     $cc->joinWith(['collegeEnc c1']);
                 }])
                 ->joinWith(['userOtherInfo d' => function ($d) {
-                    $d->joinWith(['organizationEnc e']);
+                    $d->joinWith(['organizationEnc e' => function ($e) {
+                        $e->joinWith(['businessActivityEnc ee']);
+                    }]);
                 }], false)
                 ->where(['a.user_enc_id' => $find_user['user_enc_id']])
                 ->asArray()
@@ -475,7 +490,9 @@ class AuthController extends ApiBaseController
                 foreach ($college_settings as $c) {
                     if ($c['setting'] == 'show_jobs' || $c['setting'] == 'show_internships') {
                         if ($c['value'] == null) {
-                            $college_settings[$j]['value'] = 2;
+                            if ($user_detail['user_org_business_type'] == 'College') {
+                                $college_settings[$j]['value'] = 2;
+                            }
                         }
                     }
                     $j++;
@@ -484,6 +501,12 @@ class AuthController extends ApiBaseController
                 $settings = [];
                 foreach ($college_settings as $c) {
                     $settings[$c['setting']] = $c['value'] == 2 ? true : false;
+                }
+
+                if ($user_detail['user_org_business_type'] == 'School') {
+                    $settings['show_quiz'] = true;
+                } else {
+                    $settings['show_quiz'] = false;
                 }
             }
 
@@ -499,23 +522,8 @@ class AuthController extends ApiBaseController
                     ->asArray()
                     ->all();
 
-//                $j = 0;
-//                foreach ($college_settings as $c) {
-//                    if ($c['setting'] == 'show_jobs' || $c['setting'] == 'show_internships') {
-//                        if ($c['value'] == null) {
-//                            $college_settings[$j]['value'] = 2;
-//                        }
-//                    }
-//                    $j++;
-//                }
-//
-//                $settings = [];
-//                foreach ($college_settings as $c) {
-//                    $settings[$c['setting']] = $c['value'] == 2 ? true : false;
-//                }
-
                 $education_loan_college = Organizations::find()
-                    ->select(['has_loan_featured'])
+                    ->select(['has_loan_featured', 'has_skillup_featured'])
                     ->where(['organization_enc_id' => $college_id])
                     ->asArray()
                     ->one();
@@ -562,16 +570,24 @@ class AuthController extends ApiBaseController
 
             }
 
+            $is_viewed_loan_on_dashboard = UserCoachingTutorials::find()
+                ->alias('a')
+                ->select(['a.user_coaching_tutorial_enc_id', 'a.tutorial_enc_id', 'a.is_viewed'])
+                ->joinWith(['tutorialEnc b'])
+                ->where(['a.created_by' => $find_user['user_enc_id']])
+                ->andWhere(['b.name' => 'not_interested_for_loans'])
+                ->asArray()
+                ->one();
+
         }
 
         $data = [
             'user_id' => $find_user['user_enc_id'],
             'username' => $user_detail['username'],
             'college_settings' => $settings,
-//            'education_loan' => (int)$user_detail['has_loan_featured'] == 1 ? true : false,
-//            'ceducation_loan' => (int)$education_loan_college['has_loan_featured'] == 1 ? true : false,
+            'is_viewed' => $is_viewed_loan_on_dashboard['is_viewed'] == 1 ? True : False,
             'image' => $user_detail['image'],
-            'course_enc_id' => $user_detail['course_enc_id'],
+            'course_enc_id' => $user_detail['assigned_college_enc_id'],
             'section_enc_id' => $user_detail['section_enc_id'],
             'semester' => $user_detail['semester'],
             'user_type' => (!empty($user_detail['teachers']) ? 'teacher' : $user_detail['user_type']),
@@ -591,6 +607,8 @@ class AuthController extends ApiBaseController
             'refresh_token_expiry_time' => $find_user['refresh_token_expiration']
         ];
 
+        $data['college_enc_id'] = $data['college_enc_id'] ? $data['college_enc_id'] : $user_detail['college_id'];
+
         if ($user_detail['teacher_org_type']) {
             $type = BusinessActivities::find()
                 ->where(['business_activity_enc_id' => $user_detail['teacher_org_type']])
@@ -603,8 +621,14 @@ class AuthController extends ApiBaseController
         if ($college_id) {
             $data['business_activity'] = $business_activity['business_activity'];
             $data['education_loan'] = (int)$education_loan_college['has_loan_featured'] == 1 ? true : false;
+            $data['has_skillup_featured'] = (int)$education_loan_college['has_skillup_featured'] == 1 ? true : false;
+        } elseif ($user_detail['teachers']) {
+            $data['has_skillup_featured'] = (int)$user_detail['teacher_skill_up'] == 1 ? true : false;
+            $data['education_loan'] = (int)$user_detail['t_loan_featured'] == 1 ? true : false;
         } else {
+            $data['business_activity'] = $user_detail['user_org_business_type'];
             $data['education_loan'] = (int)$user_detail['has_loan_featured'] == 1 ? true : false;
+            $data['has_skillup_featured'] = (int)$user_detail['has_skillup_featured'] == 1 ? true : false;
         }
 
         return $data;
@@ -657,7 +681,7 @@ class AuthController extends ApiBaseController
             $user_other_details->department_enc_id = $department->department_enc_id;
         }
 
-        $user_other_details->course_enc_id = $data['course_id'];
+        $user_other_details->assigned_college_enc_id = $data['course_id'];
         $user_other_details->section_enc_id = $data['section_id'];
         $user_other_details->semester = $data['semester'];
         $user_other_details->starting_year = $data['starting_year'];

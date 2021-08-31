@@ -1,18 +1,17 @@
 <?php
 
-use yii\helpers\Url;
-use yii\helpers\Html;
-use yii\bootstrap\ActiveForm;
-use yii\helpers\ArrayHelper;
 use frontend\models\applications\CandidateApply;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
+use frontend\models\script\ImageScript;
 
 $separator = Yii::$app->params->seo_settings->title_separator;
 $slug = $org['slug'];
 $this->params['url'] = $org['website'];
-
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
-    'type' => 'application'
+    'type' => 'application',
+    'slug' => $slug
 ]);
 $job_heading = (($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name']));
 if ($type == 'Job') {
@@ -24,11 +23,15 @@ if ($type == 'Job') {
     if (!empty($app_locations)) {
         $location = ArrayHelper::map($app_locations, 'city_enc_id', 'name');
         $lc_data = "";
+        $lc = "";
         $locations = [];
+        $loc = [];
         foreach ($app_locations as $placements) {
             array_push($locations, $job_heading . " jobs in " . $placements["name"]);
+            array_push($loc, $placements["name"]);
         }
         $lc_data = implode(", ", array_unique($locations));
+        $lc = implode(", ", array_unique($loc));
     }
     $smililars = 'jobs';
     if (!empty($data2)) {
@@ -98,7 +101,7 @@ if ($type == 'Job') {
             }
         }
     }
-    $this->title = $org['org_name'] . ' is hiring for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']) . ' with a ' . $amount . ' package.';
+    $this->title = $org['org_name'] . ' is hiring for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']);
     $keywords = $org['org_name'] . ' jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,' . $job_heading . ' Jobs,  MBA Jobs, Career, Walk-ins ' . $job_heading . ', ' . rtrim($lc_data, ',') . ',Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,' . $job_heading . ' jobs in india for freshers';
     $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 }
@@ -113,11 +116,15 @@ if ($type == 'Internship') {
     if (!empty($app_locations)) {
         $location = ArrayHelper::map($app_locations, 'city_enc_id', 'name');
         $lc_data = "";
+        $lc = "";
         $locations = [];
+        $loc = [];
         foreach ($app_locations as $placements) {
             array_push($locations, $job_heading . " internships in " . $placements["name"]);
+            array_push($loc, $placements["name"]);
         }
         $lc_data = implode(", ", array_unique($locations));
+        $lc = implode(", ", array_unique($loc));
     }
     $smililars = 'internships';
     if ($data2['wage_type'] == 'Fixed') {
@@ -149,14 +156,40 @@ if ($type == 'Internship') {
         setlocale(LC_MONETARY, 'en_IN');
         $amount = '₹' . utf8_encode(money_format('%!.0n', $data1['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data1['max_wage'])) . ' p.m.';
     }
-    $this->title = $org['org_name'] . ' is looking for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']) . ' interns with a stipend ' . $amount;
+    $this->title = $org['org_name'] . ' is looking for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']) . ' interns';
     $keywords = $org['org_name'] . ' internships,Internships,Paid ' . $job_heading . ' Internships, ' . rtrim($lc_data, ',') . ', Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,' . $job_heading . ' Internships near me';
     $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
 }
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+if (!empty($data2)) {
+    $content_logo = (($org['logo']) ? Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'], 'https') : null);
+} else {
+    $content_logo = (($org['logo']) ? Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'], 'https') : null);
+}
+$content = [
+    'job_title' => (($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name'])),
+    'company_name' => $org['org_name'],
+    'bg_icon' => (($data1['profile_id']) ? $data1['profile_id'] : $data2['profile_id']),
+    'canvas' => (($org['logo']) ? false : true),
+    'logo' => $content_logo,
+    'initial_color' => $org['color'],
+    'location' => (($lc) ? $lc : 'Work From Home'),
+    'app_id' => $application_details['application_enc_id'],
+    'permissionKey' => Yii::$app->params->EmpowerYouth->permissionKey
+];
+$content['bg_icon'] = ImageScript::getProfile($content['bg_icon']);
+if (empty($application_details['image']) || $application_details['image'] == 1) {
+    $image = ImageScript::widget(['content' => $content]);
+} else {
+    $image = Yii::$app->params->digitalOcean->sharingImageUrl . $application_details['image'];
+}
+if (empty($application_details['square_image']) || $application_details['square_image'] == 1) {
+    $Instaimage = \frontend\models\script\InstaImageScript::widget(['content' => $content]);
+} else {
+    $Instaimage = Yii::$app->params->digitalOcean->sharingImageUrl . $application_details['square_image'];
+}
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -171,7 +204,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -180,7 +213,7 @@ $this->params['seo_tags'] = [
 ];
 
 $this->params['header_dark'] = false;
-
+$this->title = ($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name'];
 if (!Yii::$app->user->isGuest) {
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
@@ -195,65 +228,6 @@ $this->render('/widgets/employer_applications/top-banner', [
     'shortlist_btn_display' => true
 ]);
 ?>
-<section>
-    <div class="container">
-        <div class="empty-field">
-            <input type="hidden" id="dropcv">
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="existsModal" role="dialog">
-            <div class="modal-dialog">
-
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Company hasn't created any data for this feature</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Wait for company to create the feature</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-
-</section>
-<section>
-    <div class="container">
-        <div class="empty-field">
-            <input type="hidden" id="loggedIn"
-                   value="<?= (!Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->isGuest) ? 'yes' : '' ?>">
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="myModal" role="dialog">
-            <div class="modal-dialog">
-
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title"></h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Please Login as Candidate to drop your resume</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-
-</section>
 <section>
     <div class="container">
         <div class="row m-0">
@@ -373,16 +347,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                         ]);
                     }
                     ?>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="blogbox"></div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 z-index-9">
@@ -390,6 +354,8 @@ $this->render('/widgets/employer_applications/top-banner', [
                 if (!empty($data2)):
                     echo $this->render('/widgets/employer_applications/organization-details', [
                         'org_logo' => $org['logo'],
+                        'image' => $image,
+                        'Instaimage' => $Instaimage,
                         'org_logo_location' => $org['logo_location'],
                         'org_name' => $org['org_name'],
                         'initial_color' => $org['color'],
@@ -399,11 +365,14 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'applied' => $applied,
                         'application_slug' => $application_details["slug"],
                         'shortlist' => $shortlist,
-                        'shortlist_btn_display' => true
+                        'shortlist_btn_display' => true,
+                        'whatsAppmodel' => $whatsAppmodel
                     ]);
                 else:
                     echo $this->render('/widgets/employer_applications/unclaim_org', [
                         'org_logo' => $org['logo'],
+                        'image' => $image,
+                        'Instaimage' => $Instaimage,
                         'org_logo_location' => $org['logo_location'],
                         'org_name' => $org['org_name'],
                         'initial_color' => $org['color'],
@@ -416,12 +385,20 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'applied' => false,
                         'application_slug' => $application_details["slug"],
                         'shortlist' => $shortlist,
-                        'shortlist_btn_display' => true
+                        'shortlist_btn_display' => true,
+                        'whatsAppmodel' => $whatsAppmodel
                     ]);
                 endif;
                 ?>
 
-                <?= $this->render('/widgets/join-social-groups');?>
+                <?= $this->render('/widgets/join-social-groups'); ?>
+
+                <div class="new-row col-md-10 col-md-offset-1">
+                    <?=
+                    $this->render('/widgets/new-position',[
+                        'company' => $org['org_name'], ]);
+                    ?>
+                </div>
 
                 <?php
                 if (Yii::$app->user->isGuest) {
@@ -456,27 +433,56 @@ if ($settings["showNewPositionsWidget"]):
         </div>
     </section>
 <?php endif; ?>
-
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="blogbox"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 col-sm-8 col-xs-12">
+            <div class="heading-style">Courses</div>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="type-1">
+                <div>
+                    <a id="course-list-btn" href="<?= Url::to('/courses') ?>" target="_blank" class="btn btn-3">
+                        <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
+                        <span class="round"><i class="fas fa-chevron-right"></i></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="list-main"></div>
+</div>
 <?php if (!empty($popular_videos)) {
     if (!empty($cat_name)) {
-        $ctt =  ucfirst(strtolower($cat_name));
-        $category_name = str_replace(' ','-',$ctt);
+        $ctt = ucfirst(strtolower($cat_name));
+        $category_name = str_replace(' ', '-', $ctt);
     }
     ?>
     <div class="container">
         <div class="row">
             <div class="col-md-8 col-sm-8 col-xs-12">
-            <div class="heading-style">Enhance Your Skills With Free Learning Videos </div>
+                <div class="heading-style">Enhance Your Skills With Free Learning Videos</div>
             </div>
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="type-1">
                     <div>
-                        <a href="<?= (!empty($cat_name)) ? Url::to('/learning/videos/category/'.$category_name) :  Url::to('/learning')?>" class="btn btn-3">
+                        <a href="<?= (!empty($cat_name)) ? Url::to('/learning/videos/category/' . $category_name) : Url::to('/learning') ?>" target="_blank"
+                           class="btn btn-3">
                             <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
                             <span class="round"><i class="fas fa-chevron-right"></i></span>
                         </a>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -487,7 +493,7 @@ if ($settings["showNewPositionsWidget"]):
                     <?php foreach ($popular_videos as $p) { ?>
                         <div class="item lc-single-item-main">
                             <div class="lc-item-img">
-                                <a href="<?= Url::to('/learning/video/' . $p['slug']); ?>" class="lc-item-video-link">
+                                <a href="<?= Url::to('/learning/video/' . $p['slug']); ?>" class="lc-item-video-link" target="_blank">
                                 </a>
                                 <div class="lc-item-video-img"
                                      style="background-image: url(<?= Url::to($p['cover_image']); ?>);"></div>
@@ -495,7 +501,7 @@ if ($settings["showNewPositionsWidget"]):
                             <div class="lc-item-desciption">
                                 <div class="lc-item-user-detail">
                                     <h3 class="lc-item-video-title">
-                                        <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" class="ml-20">
+                                        <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" target="_blank" class="ml-20">
                                             <?= Yii::t('frontend', $p['title']); ?>
                                         </a>
                                     </h3>
@@ -507,19 +513,19 @@ if ($settings["showNewPositionsWidget"]):
                                     $link = Url::to('learning/video/' . $p['slug'], 'https');
                                     ?>
                                     <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>"
-                                       target="blank">
+                                       target="_blank">
                                             <span>
                                                 <i class="fab fa-facebook-f"></i>
                                             </span>
                                         </a>
                                         <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>"
-                                           target="blank">
+                                           target="_blank">
                                             <span>
                                                 <i class="fab fa-twitter"></i>
                                             </span>
                                         </a>
                                         <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>"
-                                           target="blank">
+                                           target="_blank">
                                             <span>
                                                 <i class="fab fa-linkedin"></i>
                                             </span>
@@ -531,9 +537,48 @@ if ($settings["showNewPositionsWidget"]):
                 </div>
             </div>
         </div>
-    </div> 
-<?php } ?>
-
+    </div>
+<?php }
+if (!empty($data2) && Yii::$app->params->options->showSchema){
+    $onlyJd = [];
+    foreach ($data2['applicationJobDescriptions'] as $jd){
+        array_push($onlyJd,$jd['job_description']);
+    }
+    $finalJobDescription = implode("<br/>",$onlyJd);
+?>
+    <script type="application/ld+json">
+        {
+            "@context" : "https://schema.org/",
+            "@type" : "JobPosting",
+            "title" : "<?=$data2['cat_name']?>",
+            "description" : "<?=$finalJobDescription;?>",
+            "datePosted" : "<?=$data2['created_on']?>",
+            "validThrough" : "<?= $data1['last_date']?>",
+            "employmentType" : "<?=$data2['type']?>",
+            "hiringOrganization" : {
+                "@type" : "Organization",
+                "name" : "<?=$org['org_name']?>",
+                "sameAs" : "<?=$org['website']?>",
+                "logo" : "<?= Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'], true)?>"
+            },
+            "jobLocation": {
+                "@type": "Place",
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": "<?=$lc?>",
+                    "addressCountry": "IN"
+                }
+            },
+            "baseSalary": {
+                "@type": "MonetaryAmount",
+                "currency": "INR",
+                "value": "<?=(($data2['fixed_wage'])?$data2['fixed_wage']:$data2['max_wage'])?>"
+            }
+        }
+    </script>
+<?php
+}
+?>
 <script>
     function copyToClipboard() {
         var copyText = document.getElementById("share_manually");
@@ -543,8 +588,61 @@ if ($settings["showNewPositionsWidget"]):
     }
 </script>
 <?php
-echo $this->render('/widgets/mustache/application-card-2');
+echo $this->render('/widgets/mustache/application-card');
+echo $this->render('/widgets/mustache/courses-card');
 $this->registerCss("
+.new-row{
+	padding: 0;
+	margin-top: 20px;
+}
+.course-box{
+    min-height: 179px;
+}
+.display-block{
+    display: block;
+}
+.recommendation-box, .job-review-box{
+    width: 100%;
+    position: ralative;
+}
+.recommendation-box button,
+.job-review-box button{
+    width: 100%;
+    background: #ff7803;
+    padding: 18px 0px;
+    border: none;
+    color: #fff;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 5px
+}
+
+.job-review-box button{
+    background: #00a0e3;
+}
+
+.recommendation-box a,
+.job-review-box a{
+    float: right;
+    font-size: 13px;
+    color: #ff7803;
+    font-weight: bold;
+}
+.job-review-box a{
+    color: #00a0e3;
+}
+.recommendation-box a:hover{
+    color: #00a0e3
+}
+.recommendation-box a:hover{
+    color: #ff7803
+}
+.mt2{
+    margin-top: 20px  
+}
+.rec-main{
+    padding: 15px 0 0;
+}
 #mixedSlider .MS-content .item {
     display: inline-block;
     width: 31.7%;
@@ -936,8 +1034,8 @@ button.lc-item-video-menu {
         display:none;
     }
     #logo_img{
-        width: 115px;
-        height: 115px;
+        max-width: 85px !Important;
+        max-height: 100px !Important;
         background-color:#fff;
         object-fit: contain;
     }
@@ -1021,7 +1119,8 @@ button.lc-item-video-menu {
     .job-statistic span {
         float: none;
         display: inline-block;
-        font-size: 12px;
+        font-size: 16px;
+        font-family:roboto;
         border: 1px solid #ffffff;
         color: #ffffff;
         padding: 7px 20px;
@@ -1476,7 +1575,9 @@ button.lc-item-video-menu {
         margin-top: 1px;
     }
     .apply-job-btn {
-    display:inline-block !important;    
+    display:flex;
+    justify-content:center;
+    align-items:center;    
     background: #00a0e3;
     -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
     -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
@@ -1488,12 +1589,12 @@ button.lc-item-video-menu {
     -ms-border-radius: 2px;
     -o-border-radius: 2px;
     border-radius: 2px;
-    font-family: Open Sans;
-    font-size: 13px;
+    font-family: roboto;
+    font-size: 16px;
     color: #fff;
     width: 175px;
     height: auto;
-    padding: 15px 6px;
+    padding: 10px 6px;
     text-align: center;
     margin:auto;
 }
@@ -1507,11 +1608,10 @@ button.lc-item-video-menu {
     }
     .apply-job-btn i {
         float: none;
-        font-size: 18px;
+        font-size: 16px;
         margin-right: 6px;
         line-height: 8px;
         position: relative;
-        top: 4px;
     }
     .viewall-jobs {
         background: #4aa1e3;
@@ -1612,7 +1712,8 @@ button.lc-item-video-menu {
         float: left;
         width: 100%;
         border: 2px solid #e8ecec;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
+        margin-top: 10px;
         -webkit-border-radius: 8px;
         -moz-border-radius: 8px;
         -ms-border-radius: 8px;
@@ -1630,7 +1731,7 @@ button.lc-item-video-menu {
     .pf-field > i {
         position: absolute;
         right: 20px;
-        top: 0;
+        top: 10px;
         font-size: 20px;
         color: #848484;
         line-height: 56px;
@@ -1713,8 +1814,9 @@ button.lc-item-video-menu {
         border-right-color: #ffffff;
     }
     .p-category img{
-        width: 80px;
-        height: 50px;
+        max-width: 80px;
+        max-height: 50px;
+        width: auto;
     }
     .p-category .p-category-view img, .p-category .checkbox-text span i {
         color: #4aa1e3;
@@ -1735,6 +1837,9 @@ button.lc-item-video-menu {
         padding-left: 15px;
         padding-right: 15px;
         margin:auto;
+    }
+    .showOnTab{
+        display: none;
     }
     @media screen and (max-width: 1150px) and (min-width: 1025px) {
           .profile_icons{
@@ -1758,6 +1863,12 @@ button.lc-item-video-menu {
                width: 370px;
           }
     }
+    @media screen and (max-width: 992px){
+        .showOnTab{
+            position: relative !important;
+            display: block;
+        }
+    }
     @media screen and (max-width: 889px) and (min-width: 650px) {
           .profile_icons{
                width: 210px;
@@ -1771,7 +1882,7 @@ button.lc-item-video-menu {
                padding-top: 160px;
           }
     }
-    @media screen and (max-width: 649px) and (min-width: 0px) {
+    @media screen and (max-width: 649px) {
           .profile_icons{
                width: 150px;
                position: relative;
@@ -1790,21 +1901,69 @@ button.lc-item-video-menu {
           .job-statistic{
                display:none;
           }
+          .btn-parent{
+                left: 0px;
+                bottom: 28px;
+                transform: unset;
+                border-radius: 0px 10px 0 0;
+          }
     }
     /* Profile icons css ends */
-    ");
-$this->registerJs("
+");
+$script = <<<JS
+var type = "$type";
+var keyword = "$searchItems";
+var cat = '';
+var slugg = '$slug'
 
-var slugg = '$slug'; 
-var data = {slug: slugg};
-$.ajax({
-    type: 'POST',
-    url: '/drop-resume/check-resume',
-    data : data,
-    success: function(response){
-        $('#dropcv').val(response.message);
-    }
-});
+function getCourseList(keyword=null,cat=null){
+    $.ajax({
+        method: "POST",
+        url : '/courses/courses-list',
+        data:{keyword:keyword,cat:cat,page:1,limit:1},
+        beforeSend: function(){
+           $('.load-more-text').css('visibility', 'hidden');
+           $('.load-more-spinner').css('visibility', 'visible');
+        },
+        success: function(response) {
+            response = JSON.parse(response);
+            $('.loader-main').hide();
+            // $(window).animate({scrollTop:$(document).height() - ($('#footer').height() + 500)}, '300');
+            $('#loadMore').addClass("loading_more");
+            $('.load-more-text').css('visibility', 'visible');
+            $('.load-more-spinner').css('visibility', 'hidden');
+            if(response.count == 0) {
+                $('#loadMore').hide();
+                load_more_cards = false;
+                var alreadyExist = $('#list-main').children().length;
+                if(alreadyExist == 0){
+                    getCourseList(); 
+                }
+            } else{
+                page++;
+                if(response.results.length > 6){
+                     response.results = response.results.slice(0,6);
+                }
+                var template = $('#course-card').html();
+                var rendered = Mustache.render(template,response.results);
+                $('#list-main').append(rendered);
+                $('.c-author').each(function() {
+                    var strVal = $.trim($(this).text());
+                    var lastChar = strVal.slice(-1);
+                    if (lastChar == ',') { // check last character is string
+                        strVal = strVal.slice(0, -1); // trim last character
+                        $(this).text(strVal);
+                    }
+                });
+            }
+            $('#course-list-btn').attr('href','/courses/courses-list?keyword=' + keyword)
+        },
+        complete: function() {
+            loading = true;
+        }
+    });
+}
+getCourseList(keyword,cat);
 
  $(document).on('click','#close_btn',function()
  {
@@ -1812,9 +1971,9 @@ $.ajax({
     $(this).parent().removeClass('show');
 });
 loader = false;
-//getCards('" . $type . "','.similar-application','/" . $smililars . "/similar-application?slug=" . $application_details['slug'] . "');
-");
-$this->registerJs("
-getCards('" . $type . 's' . "','.blogbox','/organizations/organization-opportunities/?org=" . $org['slug'] . "');    
-");
+addToReviewList();
+getCards(type + 's','.blogbox','/organizations/organization-opportunities/?org=' + slugg);
+JS;
+$this->registerJs($script);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

@@ -241,7 +241,7 @@ $script = <<< JS
                                     loc_array.push($(this).val());
                                 });
                             }
-                            var formData = new FormData($('form')[0]);
+                            var formData = new FormData($('#resume_form')[0]);
                             var id = $('#application_id').val();
                             var org_id = $('#organization_id').val();
                             if ($('#question_id').val() == 1) {

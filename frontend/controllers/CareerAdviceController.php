@@ -3,14 +3,18 @@
 namespace frontend\controllers;
 
 use common\models\CareerAdvicePostComments;
+use common\models\Categories;
+use common\models\PostCategories;
 use common\models\PostComments;
 use common\models\Posts;
+use common\models\Users;
 use frontend\models\SubscribeNewsletterForm;
 use yii\web\Response;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
 use yii\web\HttpException;
+use yii\db\Expression;
 use common\models\Utilities;
 use common\models\CareerAdvisePosts;
 
@@ -25,7 +29,59 @@ class CareerAdviceController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
+        $postsModel = new Posts();
+        $infographicsPosts = $postsModel->find()->alias('a')
+            ->select(['a.*', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'd.first_name', 'd.last_name'])
+            ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
+            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+            ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
+            ->where(['c.slug' => 'infographics', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->orderby(['a.created_on' => SORT_DESC])
+            ->limit(2)
+            ->asArray()
+            ->all();
+        $articalsPosts = $postsModel->find()->alias('a')
+            ->select(['a.*', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'd.first_name', 'd.last_name'])
+            ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
+            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+            ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
+            ->where(['c.slug' => 'articles', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->orderby(['a.created_on' => SORT_DESC])
+            ->limit(2)
+            ->asArray()
+            ->all();
+        $posts = $postsModel->find()
+            ->alias('a')
+            ->select(['a.post_enc_id', 'a.featured_image_location', 'a.featured_image', 'a.featured_image_alt', 'featured_image_title', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug'])
+            ->joinWith(['postCategories b' => function ($b) {
+                $b->joinWith(['categoryEnc c'], false);
+            }], false)
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['not', ['c.category_enc_id' => null]])
+            ->orderby(['a.created_on' => SORT_ASC])
+            ->limit(8)
+            ->asArray()
+            ->all();
+
+        $quotes = Posts::find()
+            ->alias('a')
+            ->select(['a.post_enc_id', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->joinWith(['postCategories b' => function ($b) {
+                $b->joinWith(['categoryEnc c'], false);
+            }], false)
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['c.name' => null])
+            ->groupBy(['a.post_enc_id'])
+            ->orderby(new Expression('rand()'))
+            ->limit(6)
+            ->asArray()
+            ->all();
+        return $this->render('index', [
+            'posts' => $posts,
+            'quotes' => $quotes,
+            'infographicsPosts' => $infographicsPosts,
+            'articalsPosts' => $articalsPosts,
+        ]);
     }
 
     public function actionDetail($category)
@@ -106,7 +162,7 @@ class CareerAdviceController extends Controller
 
             $result = CareerAdvicePostComments::find()
                 ->alias('a')
-                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
+                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
                 ->joinWith(['userEnc b'], false)
                 ->where(['a.reply_to' => NULL])
                 ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
@@ -153,7 +209,7 @@ class CareerAdviceController extends Controller
 
             $result = CareerAdvicePostComments::find()
                 ->alias('a')
-                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
+                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
                 ->joinWith(['userEnc b'], false)
                 ->where(['a.reply_to' => $parent])
                 ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
@@ -189,7 +245,7 @@ class CareerAdviceController extends Controller
                 $user_info = [
                     'logo' => Yii::$app->user->identity->image,
                     'username' => Yii::$app->user->identity->username,
-                    'path' => Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image,
+                    'path' => Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image,
                     'color' => Yii::$app->user->identity->initials_color,
                     'name' => Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name,
                     'comment_enc_id' => $a
@@ -229,7 +285,7 @@ class CareerAdviceController extends Controller
                 $user_info = [
                     'logo' => Yii::$app->user->identity->image,
                     'username' => Yii::$app->user->identity->username,
-                    'path' => Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image,
+                    'path' => Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image,
                     'color' => Yii::$app->user->identity->initials_color,
                     'name' => Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name,
                     'comment_enc_id' => $a

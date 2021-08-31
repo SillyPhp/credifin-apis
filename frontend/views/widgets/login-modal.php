@@ -4,8 +4,14 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use borales\extensions\phoneInput\PhoneInput;
-
+Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"', \yii\web\View::POS_HEAD);
 ?>
+<div id="g_id_onload"
+     data-client_id="758339221215-qbm8120ln6a178jbh387s5nb08f1g7ss.apps.googleusercontent.com"
+     data-callback="handleCredentialResponse"
+     data-your_own_param_1_to_login="any_value"
+     data-your_own_param_2_to_login="any_value">
+</div>
 <div id="loginModal" class="modal fade-scale loginModal" role="dialog">
     <div class="modal-dialog modal-dialog-main">
         <!-- Modal content-->
@@ -15,15 +21,15 @@ use borales\extensions\phoneInput\PhoneInput;
                 <div class="col-md-6 col-sm-6">
                     <div class=" half-bg half-bg-color">
                         <div class="top-circle">
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/top-half-circle.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/top-half-circle.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
                         <div class="log-icon">
                             <span></span>
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-img.png') ?>"
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-img.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
                                  class="centerthis">
                         </div>
                         <div class="bottom-circle">
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/bottom-circle.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/bottom-circle.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
                     </div>
                 </div>
@@ -418,6 +424,27 @@ body.modal-open{
 }
 ');
 $script = <<< JS
+$(document).on('click','.auth-link',function(e) {
+    var url = returnUrl;
+    if (url!==""||url==null){
+    storeSessionUrl(url);
+    }
+})
+function storeSessionUrl(url)
+{
+    $.ajax({
+       url:'/auth-status',
+       method:'POST',
+       data:{url:url},
+       success:function(res) {
+           if (res.status==200){
+            console.log(res.message);   
+           }else{
+            console.log(res.message);   
+           }
+       }
+    })
+}
 $(document).on('submit', '#login-form', function(event) {
     var btn = $('.lg-form');
     event.preventDefault();

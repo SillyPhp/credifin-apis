@@ -2,14 +2,38 @@
 
 namespace common\components;
 
+use common\models\SelectedServices;
+use common\models\Services;
 use common\models\UserPreferences;
 use common\models\Users;
 use Yii;
 use yii\helpers\Url;
 use yii\base\Component;
+use yii\helpers\ArrayHelper;
 
 class UserDataComponent extends Component
 {
+    public function checkSelectedService($user_id, $name)
+    {
+        $chkPermission = SelectedServices::find()
+            ->alias('z')
+            ->select(['z.selected_service_enc_id', 'z.organization_enc_id', 'z.service_enc_id', 'z.is_selected', 'a.name', 'a.link'])
+            ->innerJoinWith(['serviceEnc a' => function ($a) use ($name) {
+                $a->andWhere(['a.name' => $name]);
+            }], false)
+            ->andWhere(['z.is_selected' => 1]);
+        if (Yii::$app->user->identity->organization) {
+            $chkPermission->andWhere(['z.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]);
+        } else {
+            $chkPermission->andWhere(['z.created_by' => $user_id]);
+            $chkPermission->andWhere(['or',
+                ['z.organization_enc_id' => NULL],
+                ['z.organization_enc_id' => '']
+            ]);
+        }
+        $chkPermission = $chkPermission->asArray()->one();
+        return $chkPermission;
+    }
 
     public function getPreference($user_id, $type)
     {
@@ -93,7 +117,7 @@ class UserDataComponent extends Component
         $data = Users::find()
             ->alias('a')
             ->select(['a.user_enc_id', 'a.city_enc_id', 'CONCAT(first_name," ",last_name) name', 'email', 'dob', 'phone', 'GROUP_CONCAT(DISTINCT(g.hobby) SEPARATOR ",") hobbies', 'GROUP_CONCAT(DISTINCT(h.interest) SEPARATOR ",") interests',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image'
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image'
             ])
             ->joinWith(['userSkills b' => function ($b) {
                 $b->select(['b.created_by', 'c.skill', 'b.user_skill_enc_id']);

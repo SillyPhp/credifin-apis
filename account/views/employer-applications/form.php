@@ -2,6 +2,7 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 $exp = [
     '0' => 'Freshers',
     '1' => '1',
@@ -18,10 +19,10 @@ $exp = [
     '20' => '20',
     '20+' => 'More Than 20 Years'
 ];
+$Categories = ArrayHelper::map($primary_cat, 'category_enc_id', 'name');
 Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var _experience = '.json_encode($exp).'', \yii\web\View::POS_HEAD);
 ?>
-
 <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -115,7 +116,7 @@ Yii::$app->view->registerJs('var _experience = '.json_encode($exp).'', \yii\web\
                                 echo $this->render('/widgets/employer-applications/basic-job-details', [
                                     'form' => $form,
                                     'model' => $model,
-                                    'primary_cat' => $primary_cat,
+                                    'primary_cat' => $Categories,
                                     'industry' => $industry,
                                     'type' => $type,
                                     'exp' => $exp,
@@ -124,7 +125,7 @@ Yii::$app->view->registerJs('var _experience = '.json_encode($exp).'', \yii\web\
                                 echo $this->render('/widgets/employer-applications/basic-internships-details', [
                                     'form' => $form,
                                     'model' => $model,
-                                    'primary_cat' => $primary_cat,
+                                    'primary_cat' => $Categories,
                                     'type' => $type,
                                 ]);
                             endif;
@@ -257,6 +258,7 @@ Yii::$app->view->registerJs('var _experience = '.json_encode($exp).'', \yii\web\
 //    'type' => $type,
 //]);
 $this->registerCss("
+.btn-next{margin:0 10px 10px 0;}
 body {
     background-image: url(/assets/themes/ey/images/backgrounds/ai-header.png) !important;
     background-size: cover !important;
@@ -273,9 +275,12 @@ ul.ks-cboxtags {
     list-style: none;
     padding:0px;
 }
-.service-list{
-  display: inline-block;
-  min-width: 120px;
+.service-list {
+    display: inline-block;
+    min-width: 120px;
+    margin: 0 5px;
+    text-align: left;
+    width: 230px;
 }
 .service-list label{
     width: 100%;
@@ -298,8 +303,11 @@ ul.ks-cboxtags {
 .service-list label {
     padding: 8px 12px;
     cursor: pointer;
+    text-align:center;
 }
-
+.service-list label > div {
+    margin: 8px 0;
+}
 .service-list label::before {
     display: inline-block;
     font-style: normal;
@@ -1755,6 +1763,7 @@ if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'
         work_from_home('$model->type');
         week_selecter();
     }
+load_job_titles('$model->primaryfield');
 function load_job_titles(prime_id)
 {
 var categories = new Bloodhound({

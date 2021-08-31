@@ -251,6 +251,7 @@ echo $this->render('/widgets/employer_applications/top-banner', [
                         'type' => $type,
                         'applied' => false,
                         'application_slug' => 'Empoweryouth',
+                        'whatsAppmodel'=>$whatsAppmodel
                     ]);
                     ?>
                 </div>

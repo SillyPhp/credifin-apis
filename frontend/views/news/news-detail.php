@@ -11,7 +11,7 @@ breaking news updates in hindi,breaking news updates india, 24/7 latest breaking
 $image = Url::to(Yii::$app->params->upload_directories->posts->featured_image . $newsDetail->image_location . '/' . $newsDetail->image);
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -26,7 +26,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -42,7 +42,13 @@ $this->params['seo_tags'] = [
                         <div class="col-md-12">
                             <div class="cb-blog-box">
                                 <div class="cb-blog-icon header-banner">
-                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $newsDetail->image_location . '/' . $newsDetail->image); ?>"/>
+                                    <?php
+                                    if ($newsDetail->image) {
+                                        ?>
+                                        <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $newsDetail->image_location . '/' . $newsDetail->image); ?>"/>
+                                        <?php
+                                    }
+                                    ?>
                                 </div>
                                 <div class="cb-blog-title">
                                     <?= $newsDetail->title ?>
@@ -50,10 +56,10 @@ $this->params['seo_tags'] = [
                                 <div class="vots">
                                     <span class="upv"><i class="fas fa-thumbs-up vote-btn" data-id="upvoteBtn"
                                                          data-key="<?= $newsDetail->news_enc_id ?>"></i> <font
-                                                class="vote_value"><?= rand(40,100) + $newsDetail->upvote ?></font> upvotes</span>
+                                                class="vote_value"><?= rand(40, 100) + $newsDetail->upvote ?></font> upvotes</span>
                                     <span class="downv"><i class="fas fa-thumbs-down vote-btn" data-id="downvoteBtn"
                                                            data-key="<?= $newsDetail->news_enc_id ?>"></i> <font
-                                                class="vote_value"><?= rand(0,40) + $newsDetail->downvote ?></font> downvotes</span>
+                                                class="vote_value"><?= rand(0, 40) + $newsDetail->downvote ?></font> downvotes</span>
                                 </div>
                                 <div class="cb-quick-summery">
                                     <?= $newsDetail->description ?>

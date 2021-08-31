@@ -21,8 +21,14 @@ AppAssets::register($this);
     <?= Html::csrfMetaTags(); ?>
     <title><?= Html::encode((!empty($this->title)) ? Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name : Yii::$app->params->site_name); ?></title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
-    <?php
+    <?php if (Yii::$app->params->options->crawl) { ?>
+        <meta name="robots" content="index"/>
+    <?php } else { ?>
+        <meta name="robots" content="noindex,nofollow"/>
+        <meta name="googlebot" content="noindex,nofollow">
+    <?php }
     if (isset($this->params['seo_tags']) && !empty($this->params['seo_tags'])) {
         foreach ($this->params['seo_tags']['rel'] as $key => $value) {
             $this->registerLinkTag([
@@ -60,6 +66,7 @@ AppAssets::register($this);
                 "query-input": "required name=search_term_string"
             }
         }
+
 
     </script>
 </head>
@@ -111,7 +118,7 @@ AppAssets::register($this);
                                         <?php
                                     }
                                     ?>
-                                    <span class="logo-beta">Beta</span>
+                                    <!--                                    <span class="logo-beta">Beta</span>-->
                                 </a>
                             </div>
                             <div class="ey-menu-main">
@@ -127,13 +134,13 @@ AppAssets::register($this);
                                         $name = $image = $color = NULL;
                                         if (Yii::$app->user->identity->organization->organization_enc_id) {
                                             if (Yii::$app->user->identity->organization->logo) {
-                                                $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                                $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                                             }
                                             $name = Yii::$app->user->identity->organization->name;
                                             $color = Yii::$app->user->identity->organization->initials_color;
                                         } else {
                                             if (Yii::$app->user->identity->image) {
-                                                $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                                $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                                             }
                                             $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                                             $color = Yii::$app->user->identity->initials_color;
@@ -191,13 +198,13 @@ AppAssets::register($this);
                                         $name = $image = $color = NULL;
                                         if (Yii::$app->user->identity->organization->organization_enc_id) {
                                             if (Yii::$app->user->identity->organization->logo) {
-                                                $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                                $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                                             }
                                             $name = Yii::$app->user->identity->organization->name;
                                             $color = Yii::$app->user->identity->organization->initials_color;
                                         } else {
                                             if (Yii::$app->user->identity->image) {
-                                                $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                                $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                                             }
                                             $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                                             $color = Yii::$app->user->identity->initials_color;
@@ -232,7 +239,7 @@ AppAssets::register($this);
                 <div class="ey-mobile-content">
                     <div class="ey-mobile-menu-main-content">
                         <div class="ey-mobile-menu-inner-content">
-                            <?= $this->render('@common/widgets/top-header-mobile',[
+                            <?= $this->render('@common/widgets/top-header-mobile', [
                                 'data' => $this->params['sub_header']
                             ]); ?>
                         </div>
@@ -243,9 +250,13 @@ AppAssets::register($this);
         <?= (!$this->params['header_dark']) ? '</div>' : ''; ?>
     </header>
     <div class="main-content">
-<!--        <div id="page-loading" class="page-loading">-->
-<!--            <img src="--><?//= Url::to('@eyAssets/images/loader/loader-main.gif'); ?><!--" alt="Loading..">-->
-<!--        </div>-->
+        <!--        <div id="page-loading" class="page-loading">-->
+        <!--            <img src="-->
+        <? //= Url::to('@eyAssets/images/loader/loader-main.gif'); ?><!--" alt="Loading..">-->
+        <!--        </div>-->
+        <div id="auth_loading_img">
+        </div>
+        <div class="auth_fader"></div>
         <?php
         //        if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
         //            echo $this->render('/widgets/sub-header', [
@@ -365,7 +376,7 @@ AppAssets::register($this);
                 <div class="col-md-3 col-sm-12">
                     <div class="app-btn">
                         <a href='https://play.google.com/store/apps/details?id=com.empoweryouth.app&hl=en'
-                           title='Download Empower Youth App on Google Play'>
+                           title='Download Empower Youth App on Google Play' target="_blank">
                             <img alt='Get it on Google Play'
                                  src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png'
                                  title='Download Empower Youth App on Google Play'/>
@@ -400,8 +411,95 @@ AppAssets::register($this);
     }
     ?>
 </div>
+<script type="text/javascript">
+    function handleCredentialResponse(response) {
+        if (response.credential) {
+            var token = parseJwt(response.credential);
+            authLogin(token);
+        } else {
+            alert('Server Error');
+        }
+
+    }
+
+    function parseJwt(token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    };
+
+    function authLogin(token) {
+        $.ajax({
+            url: '/site/one-tap-auth',
+            method: 'POST',
+            data: {token: token, returnUrl: returnUrl},
+            beforeSend: function (e) {
+                $('#auth_loading_img').addClass('show');
+                $('.auth_fader').css('display', 'block');
+            },
+            success: function (e) {
+                $('#auth_loading_img').removeClass('show');
+                $('.auth_fader').css('display', 'none');
+                if (response.status == 201) {
+                    toastr.error(response.message, response.title);
+                }
+            },
+            complete: function () {
+                $('#auth_loading_img').removeClass('show');
+                $('.auth_fader').css('display', 'none');
+            }
+        })
+    }
+</script>
 <?php
 $this->registerCss('
+#auth_loading_img
+{
+  display:none;
+}
+ 
+#auth_loading_img.show
+{
+   z-index:100;
+   position: fixed;
+    opacity: 1;
+    top: 50%;
+    left: 50%;
+    right: 0;
+    border: 6px solid #fff;
+    border-radius: 50%;
+    border-top: 6px solid #00a0e3;
+    width: 60px;
+    height: 60px;
+   -webkit-animation: spin 2s linear infinite;
+  animation: spin 1.2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.auth_fader{
+  width:100%;
+  height:100%;
+  position:fixed;
+  top:0;
+  left:0;
+  display:none;
+  z-index:99;
+  background-color:#fff;
+  opacity:0.7;
+}
 .footer-bottom-links a{
     color:#fff;
     margin-right: 20px;
@@ -789,6 +887,7 @@ if (!empty(Yii::$app->params->google->analytics->id)) {
         ');
 }
 if (Yii::$app->user->isGuest) {
+    Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"', \yii\web\View::POS_HEAD);
     $this->registerJs('
         window.addEventListener("scroll", header_main);
         var lastScrollTop = 50;
@@ -821,20 +920,28 @@ if (!$this->params['header_dark']) {
 $this->registerJs('
 //$(".page-loading").fadeOut();
 var thispageurl = window.location.pathname;
+var hasAccessForSubHeader = true;
+var preventHeaderFor = ["/jobs/list","/internships/list","/jobs/compare","/internships/compare","/jobs/near-me","/internships/near-me"];
+for(var jj = 0;jj<preventHeaderFor.length;jj++){
+    if(thispageurl == preventHeaderFor[jj]){
+        hasAccessForSubHeader = false;
+    }
+}
 $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
     var attr = $(this).attr("href");
-      if (attr === thispageurl) {
+      if (attr === thispageurl && hasAccessForSubHeader) {
         $(this).next(".ey-sub-menu").addClass("ey-active-menu");
         $(this).children("i").css("display", "none");
       }
-});
+}); 
 $(".ey-sub-nav-items > li > a").each(function(){
     var attr = $(this).attr("href");
-      if (attr === thispageurl) {
+      if (attr === thispageurl && hasAccessForSubHeader) {
         $(this).parentsUntil(".ey-sub-menu").parent().addClass("ey-active-menu");
         return false;
       }
 });
+
 
 $(document).on("click", ".partnerWith", function(e){
     e.preventDefault();

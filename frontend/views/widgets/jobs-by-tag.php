@@ -3,7 +3,7 @@ use yii\helpers\Url;
 ?>
 
 <section class="popular-skills">
-    <h3>Jobs By Title</h3>
+    <h1 class="heading-style1">Jobs By Title</h1>
     <div class="popular container">
         <div class="cards"><a href="/web-developer-jobs">Web Developer</a></div>
         <div class="cards"><a href="/digital-marketing-jobs">Digital Marketing</a></div>
@@ -21,12 +21,19 @@ $this->registercss('
 .popular-skills {
     padding: 20px 20px 40px 20px;
     background-image: linear-gradient(98deg, #ba0803, #c2582b);
-    margin-top: 30px;
+//    margin-top: 30px;
 }
 .popular-skills h3 {
 	color: #ef9f89;
 	font-size: 29px;
 	text-align: center;
+}
+.heading-style1{
+font-family: lobster;
+font-size: 28pt;
+text-align: center;
+margin: 15px 5px;
+color: #fff;
 }
 .popular{
     text-align:center;

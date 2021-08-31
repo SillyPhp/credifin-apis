@@ -4,6 +4,7 @@ namespace account\models\applications;
 
 use common\models\ApplicationOption;
 use common\models\Currencies;
+use common\models\ErexxEmployerApplications;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
@@ -212,7 +213,12 @@ class ApplicationForm extends Model
             $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Internships']);
             $type = 'Internships';
         }
-
+        if ($type=='Jobs'){
+            $session = Yii::$app->session;
+            if ($session->has('campusPlacementData')){
+                $session->remove('campusPlacementData');
+            }
+        }
         $employerApplicationsModel = new EmployerApplications();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -222,7 +228,6 @@ class ApplicationForm extends Model
         $employerApplicationsModel->application_type_enc_id = $application_type_enc_id->application_type_enc_id;
         $employerApplicationsModel->interview_process_enc_id = $this->interview_process;
         $employerApplicationsModel->published_on = date('Y-m-d H:i:s');
-        $employerApplicationsModel->image_location = '1';
         $employerApplicationsModel->image = '1';
         $employerApplicationsModel->status = 'Active';
         $category_execute = Categories::find()
@@ -301,15 +306,24 @@ class ApplicationForm extends Model
         $employerApplicationsModel->type = $this->type;
         $employerApplicationsModel->timings_from = date("H:i:s", strtotime($this->from));
         $employerApplicationsModel->timings_to = date("H:i:s", strtotime($this->to));
-        $employerApplicationsModel->minimum_exp = (($this->minimum_exp)?$this->minimum_exp:NULL);
-        $employerApplicationsModel->maximum_exp = (($this->maximum_exp)?$this->maximum_exp:NULL);
+        $employerApplicationsModel->minimum_exp = $this->minimum_exp === '0' || $this->minimum_exp ? $this->minimum_exp:null;
+        $employerApplicationsModel->maximum_exp = $this->maximum_exp === '0' || $this->maximum_exp ? $this->maximum_exp:null;
         $employerApplicationsModel->preferred_gender = $this->gender;
         $employerApplicationsModel->preferred_industry = $this->industry;
         $employerApplicationsModel->joining_date = date('Y-m-d', strtotime($this->earliestjoiningdate));
         $employerApplicationsModel->last_date = date('Y-m-d', strtotime($this->last_date));
         $employerApplicationsModel->created_on = date('Y-m-d H:i:s');
         $employerApplicationsModel->created_by = Yii::$app->user->identity->user_enc_id;
-
+        $session = Yii::$app->session;
+        if ($session->has('campusPlacementData')){
+            $var = $session->get('campusPlacementData');
+            if(!empty($var)){
+                $employerApplicationsModel->application_for = 2;
+                if ($var['subscribed-to-all']){
+                    $employerApplicationsModel->for_all_colleges = 1;
+                }
+            }
+        }
         if ($employerApplicationsModel->save()) {
             if ($this->questionnaire_selection == 1) {
                 $process_questionnaire = json_decode($this->question_process);
@@ -608,10 +622,35 @@ class ApplicationForm extends Model
                 }
             }
             Yii::$app->sitemap->generate();
+            $session = Yii::$app->session;
+            if ($session->has('campusPlacementData')){
+                $var = $session->get('campusPlacementData');
+                if(!empty($var)){
+                    $this->assignCampusJobs($employerApplicationsModel->application_enc_id,$var);
+                }
+            }
             return $employerApplicationsModel->application_enc_id;
         } else {
             return false;
         }
+    }
+
+    private function assignCampusJobs($app,$var){
+        foreach ($var['colleges'] as $clg) {
+            $utilitiesModel = new Utilities();
+            $errexApplication = new ErexxEmployerApplications();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $errexApplication->application_enc_id = $utilitiesModel->encrypt();
+            $errexApplication->employer_application_enc_id = $app;
+            $errexApplication->college_enc_id = $clg;
+            $errexApplication->created_on = date('Y-m-d H:i:s');
+            $errexApplication->created_by = Yii::$app->user->identity->user_enc_id;
+            if (!$errexApplication->save()) {
+                return false;
+            }
+        }
+        $session = Yii::$app->session;
+        $session->remove('campusPlacementData');
     }
 
     private function assignedJob($j_id, $cat_id,$type)
@@ -804,15 +843,19 @@ class ApplicationForm extends Model
     {
         $primaryfields = Categories::find()
             ->alias('a')
-            ->select(['a.name', 'a.category_enc_id'])
+            ->select(['a.name', 'a.category_enc_id','a.icon_png'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
             ->orderBy([new \yii\db\Expression('FIELD (a.name, "Others") ASC, a.name ASC')])
             ->where(['b.assigned_to' => $type, 'b.parent_enc_id' => NULL])
             ->andWhere(['b.status' => 'Approved'])
+            ->andWhere([
+                'or',
+                ['!=', 'a.icon', NULL],
+                ['!=', 'a.icon', ''],
+            ])
             ->asArray()
             ->all();
-        $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
-        return $primary_cat;
+        return $primaryfields;
     }
     public function getApplicationTypes()
     {
@@ -889,7 +932,7 @@ class ApplicationForm extends Model
                 $b->andWhere(['y.name' => $application_type]);
             }], false, 'INNER JOIN')
             ->joinWith(['preferredIndustry x'], false)
-            ->select(['a.id', 'a.application_number', 'a.application_enc_id', 'x.industry', 'a.title', 'a.preferred_gender', 'a.description', 'a.designation_enc_id', 'n.designation', 'l.category_enc_id', 'm.category_enc_id as cat_id', 'm.name as cat_name', 'l.name', 'l.icon_png', 'a.type', 'a.slug', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date',
+            ->select(['a.id', 'a.application_number', 'a.application_enc_id', 'x.industry', 'a.title', 'a.preferred_gender', 'a.description', 'a.designation_enc_id', 'n.designation', 'l.category_enc_id', 'm.category_enc_id as cat_id', 'm.name as cat_name', 'l.category_enc_id profile_id','l.name', 'l.icon_png', 'a.type', 'a.slug', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date',
                 '(CASE
                 WHEN a.experience = "0" THEN "No Experience"
                 WHEN a.experience = "1" THEN "Less Than 1 Year"
@@ -937,7 +980,7 @@ class ApplicationForm extends Model
                 $b->joinWith(['locationEnc s' => function ($b) {
                     $b->joinWith(['cityEnc t'], false);
                 }], false);
-                $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
+                $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude','s.location_name', 't.city_enc_id', 't.name']);
                 $b->distinct();
             }])
             ->joinWith(['applicationPlacementCities r'=>function($b)
@@ -970,7 +1013,7 @@ class ApplicationForm extends Model
             ->alias('a')
             ->distinct()
             ->where(['a.application_enc_id' => $aidk])
-            ->select(['a.application_enc_id','a.preferred_gender','a.description','m.name as cat_name', 'l.name', 'l.icon_png', 'a.type','a.interview_process_enc_id','a.slug','o.*','(CASE
+            ->select(['a.application_enc_id','a.preferred_gender','a.description','m.name as cat_name', 'l.name','l.category_enc_id profile_id','l.icon_png', 'a.type','a.interview_process_enc_id','a.slug','o.*','(CASE
                 WHEN a.experience = "0" THEN "No Experience"
                 WHEN a.experience = "1" THEN "Less Than 1 Year"
                 WHEN a.experience = "2" THEN "1 Year"

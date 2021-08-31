@@ -151,7 +151,8 @@ a:hover{
     padding:20px 10px 10px;
     border-radius:14px !important; 
     margin-bottom:20px; 
-    text-decoration:none; 
+    text-decoration:none;
+    min-height:266px;
 }
 .hr-company-box:hover{
     border-color:#fff; 
@@ -266,7 +267,7 @@ a:hover{
     left: 15px;
     top: 0px;
 }
-.j-whatsapp, .j-fb, .j-linkedin, .j-twitter, .j-email{
+.j-whatsapp, .j-fb, .j-linkedin, .j-twitter, .j-email, .j-clipboard{
    background:transparent;
    border:none;
    color:#4FCE5D;
@@ -291,12 +292,12 @@ a:hover{
    color:#DB4437;
    left:90px;
 }
-.j-edit:hover, .j-clone:hover, .j-delete:hover, .j-fb:hover, .j-linkedin:hover, .j-twitter:hover, .j-email:hover, .j-whatsapp:hover{
+.j-edit:hover, .j-clone:hover, .j-delete:hover, .j-fb:hover, .j-linkedin:hover, .j-clipboard:hover, .j-twitter:hover, .j-email:hover, .j-whatsapp:hover{
     background:#00a0e3;
     color:#fff; 
     border-radius:0 0 10px 10px !important;
 }
-.hr-company-box:hover .j-edit, .hr-company-box:hover .j-clone, .hr-company-box:hover .j-delete, .hr-company-box:hover .j-fb, .hr-company-box:hover .j-linkedin,
+.hr-company-box:hover .j-edit, .hr-company-box:hover .j-clone, .hr-company-box:hover .j-delete, .hr-company-box:hover .j-fb, .hr-company-box:hover .j-linkedin, .hr-company-box:hover .j-clipboard,
 .hr-company-box:hover .j-twitter, .hr-company-box:hover .j-email, .hr-company-box:hover .j-whatsapp, .hr-company-box:hover .j-closed{
     display:inline-block;
 }

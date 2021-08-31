@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 use yii\helpers\Url;
 
@@ -770,6 +770,7 @@ $(document).on('click','.add_new_org',function(e) {
   e.preventDefault();
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_company').val());
 })
+
 var template;
 fetch_cards_new_latest_comp(params={'rating':[1,2,3,4,5],'sort':1,'limit':4},template=$('#latest_reviews_card_new'));
 fetch_cards_new_top_user(params={'rating':[5,4],'limit':4},template=$('#top_user_reviews_card_new'));

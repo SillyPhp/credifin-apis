@@ -314,7 +314,7 @@ button, input, optgroup, select, textarea {
     text-overflow: ellipsis;
 }
 .application-card-main *:not(i) {
-    font-family: Georgia !important;
+    font-family: roboto !important;
 }
 .application-card-type{
     position: absolute;
@@ -325,7 +325,7 @@ button, input, optgroup, select, textarea {
     color: #fff;
     padding: 4px 15px;
     background:#FF4500;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
 }
 .application-card-img{
@@ -339,7 +339,7 @@ button, input, optgroup, select, textarea {
     box-shadow: 0px 2px 20px 1px #bbbbbb8c;
     width: 80px;
     margin-left: 18px;
-    margin-top: 20px;
+    margin-top: 30px;
     overflow: hidden;
     float: left;
     line-height: 75px;
@@ -376,12 +376,13 @@ button, input, optgroup, select, textarea {
     left: -60px;
     margin: 0px 0px 5px;
     transition: all 400ms ease 0s;
+    z-index:99;
 }
 .application-card-main:hover .application-card-wrapper{
     left: 0px;
     opacity: 1;
 }
-.application-card-wrapper a{
+.application-card-wrapper > a{
     padding: 8px 18px;
     margin: 0px 5px 0px 0px;
     min-width: 40px;
@@ -395,7 +396,7 @@ button, input, optgroup, select, textarea {
     font-size: 13px;
     line-height: 24px;
 }
-.application-card-wrapper a i{
+.application-card-wrapper > a i{
     margin-top: 4px;
 }
 .application-card-open{
@@ -404,7 +405,7 @@ button, input, optgroup, select, textarea {
 .application-card-add, .featured-application-card-add{
     background-color: #ed4303;
 }
-.org_name{
+.org_name,.application-title{
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;

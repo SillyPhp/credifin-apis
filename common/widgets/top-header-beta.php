@@ -1,84 +1,85 @@
 <nav class="ey-main-menu-nav">
     <ul class="ey-menu-inner-main">
         <?php
-        if($data){
-        foreach ($data as $grandParents) {
-            ?>
-            <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-                <a href="<?= $grandParents['value']['route']; ?>">
-                    <?= $grandParents['value']['name']; ?>
+        if ($data) {
+            foreach ($data as $grandParents) {
+                ?>
+                <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+                    <a href="<?= $grandParents['value']['route']; ?>">
+                        <?= $grandParents['value']['name']; ?>
+                        <?php
+                        if ($grandParents['childs']) {
+                            ?>
+                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                            <?php
+                        }
+                        ?>
+                    </a>
                     <?php
                     if ($grandParents['childs']) {
                         ?>
-                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        <div class="ey-sub-menu">
+                            <div class="container-fluid">
+                                <div class="large-container container">
+                                    <nav class="ey-sub-nav-main">
+                                        <ul class="ey-sub-nav-items">
+                                            <?php
+                                            foreach ($grandParents['childs'] as $parents) {
+                                                ?>
+                                                <li class="
+                                            <?php
+                                                if ($parents['childs']) {
+                                                    foreach ($parents['childs'] as $children) {
+                                                        if ($children) {
+                                                            ?>
+                                            ey-head-sub-menu-has-child
+                                            <?php
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                ?>
+">
+                                                    <a href="<?= $parents['value']['route'] ?>">
+                                                        <?= $parents['value']['name'] ?>
+                                                        <div class="ey-sub-sec">
+                                                            <ul class="ey-head-sub-menu-items">
+                                                                <?php
+                                                                if ($parents['childs']) {
+                                                                    foreach ($parents['childs'] as $children) {
+                                                                        ?>
+                                                                        <li class="ey-head-sub-menu-icon">
+                                                                            <a href="<?= $children['value']['route']; ?>">
+                                                                                <div>
+                                                                                    <span class="ey-services-icons ai"
+                                                                                          style="background: url('<?= $children['value']['icon']; ?>');"></span>
+                                                                                </div>
+                                                                                <span><?= $children['value']['name']; ?></span>
+                                                                            </a>
+                                                                        </li>
+                                                                        <?php
+                                                                    }
+                                                                }
+                                                                ?>
+                                                            </ul>
+                                                        </div>
+                                                    </a>
+                                                </li>
+                                                <?php
+                                            }
+                                            ?>
+                                        </ul>
+                                    </nav>
+                                    <div class="ey-header-sub-menu-container"></div>
+                                </div>
+                            </div>
+                        </div>
                         <?php
                     }
                     ?>
-                </a>
+                </li>
                 <?php
-                if ($grandParents['childs']) {
-                    ?>
-                    <div class="ey-sub-menu">
-                        <div class="container-fluid">
-                            <div class="large-container container">
-                                <nav class="ey-sub-nav-main">
-                                    <ul class="ey-sub-nav-items">
-                                        <?php
-                                        foreach ($grandParents['childs'] as $parents) {
-                                            ?>
-                                            <li class="
-                                            <?php
-                                            if ($parents['childs']) {
-                                                foreach ($parents['childs'] as $children) {
-                                                    if ($children) {
-                                                        ?>
-                                            ey-head-sub-menu-has-child
-                                            <?php
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                            ?>
-">
-                                                <a href="<?= $parents['value']['route'] ?>">
-                                                    <?= $parents['value']['name'] ?>
-                                                    <div class="ey-sub-sec">
-                                                        <ul class="ey-head-sub-menu-items">
-                                                            <?php
-                                                            if ($parents['childs']) {
-                                                                foreach ($parents['childs'] as $children) {
-                                                                    ?>
-                                                                    <li class="ey-head-sub-menu-icon">
-                                                                        <a href="<?= $children['value']['route']; ?>">
-                                                                            <div>
-                                                                                <span class="ey-services-icons ai" style="background: url('<?= $children['value']['icon'];?>');"></span>
-                                                                            </div>
-                                                                            <span><?= $children['value']['name']; ?></span>
-                                                                        </a>
-                                                                    </li>
-                                                                    <?php
-                                                                }
-                                                            }
-                                                            ?>
-                                                        </ul>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <?php
-                                        }
-                                        ?>
-                                    </ul>
-                                </nav>
-                                <div class="ey-header-sub-menu-container"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <?php
-                }
-                ?>
-            </li>
-            <?php
-        }
+            }
         }
         ?>
         <?php if (!Yii::$app->user->isGuest) { ?>
@@ -104,6 +105,7 @@
                                         <li>
                                             <a href="/account/dashboard">Dashboard</a>
                                         </li>
+                                        <?= $this->render('education-loans'); ?>
                                         <li>
                                             <a href="/account/jobs/dashboard">Manage Jobs</a>
                                         </li>
@@ -250,6 +252,7 @@
                                         <li>
                                             <a href="/account/dashboard">Dashboard</a>
                                         </li>
+                                        <?= $this->render('education-loans'); ?>
                                         <li>
                                             <a href="/account/jobs/dashboard">Manage Jobs</a>
                                         </li>
@@ -264,6 +267,7 @@
                                         </li>
                                     </ul>
                                 </nav>
+                                <div class="ey-header-sub-menu-container"></div>
                             </div>
                         </div>
                     </div>
@@ -352,6 +356,7 @@ $this->registerCss('
     margin: 0 20px 0 0;
     padding: 7px 0px;
 }
+
 .ey-head-main .ey-nav-item:last-child {
     margin: 0;
 }
@@ -486,6 +491,12 @@ $this->registerCss('
 }
 .ey-services-icons.campus {
     background: url(/assets/themes/ey/images/job-profiles/hiring-icon.png);
+}
+.ey-services-icons.loans {
+    background: url(/assets/themes/ey/images/job-profiles/edu-loan-process.png);
+}
+.ey-services-icons.leads {
+    background: url(/assets/themes/ey/images/job-profiles/leads.png);
 }
 .ey-sub-sec .ey-head-sub-menu-icon a>span {
     display: block;
@@ -1016,6 +1027,16 @@ $this->registerCss('
         padding-top:0px;
     }
 }
+@media screen and (max-width: 1400px) and (min-width: 1080px){
+    .ey-head-main .ey-nav-item, .ey-head-main .ey-nav-actions .ey-menu-login {
+        font: 500 13px/16px Roboto, Arial, sans-serif;
+        margin: 0 15px 0 0;
+    }    
+    .ey-menu-main {
+        margin: 0 15px 0 30px;
+    }
+
+}
 .ey-sub-nav-main .ey-sub-nav-items > li > a:hover{
     color:#00a0e3 !Important;
 }
@@ -1029,5 +1050,6 @@ $this->registerCss('
 .ey-main-menu-nav > .ey-menu-inner-main > .ey-nav-item.ey-header-item.ey-header-item-is-menu:hover > a{
     color:#00a0e3 !important;
 }
+
 ');
 ?>

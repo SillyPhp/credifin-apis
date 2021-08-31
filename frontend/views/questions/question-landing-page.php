@@ -10,7 +10,7 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-8 col-xs-12 topp-pad">
-                    <div class="jumbo-heading">Search Your Question & Find Best Answers</div>
+                    <h1 class="jumbo-heading">Search Your Question & Find Best Answers</h1>
                     <div class="search-box1">
                         <form action="<?= Url::to('/learning/search-video') ?>">
                             <input type="text" placeholder="Search" name="keyword" id="keyword">
@@ -37,7 +37,7 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Popular Questions</div>
+                    <h1 class="heading-style">Popular Questions</h1>
                 </div>
             </div>
             <div class="row">

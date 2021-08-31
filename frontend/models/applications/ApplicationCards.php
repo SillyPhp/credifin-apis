@@ -200,8 +200,13 @@ class ApplicationCards
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select(['a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.source',
+                new Expression('NULL as sector'),
+                'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
+                'a.created_on created',
+                'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/job/", a.slug) link',
+                'CONCAT("job/", a.slug) share_link',
                 'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
@@ -216,6 +221,7 @@ class ApplicationCards
                 WHEN a.experience = "10-20" THEN "10-20 Years Experience"
                 WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
                 WHEN a.minimum_exp = "0" AND a.maximum_exp IS NUll THEN "No Experience"
+                WHEN a.minimum_exp = "0" AND a.maximum_exp IS NOT NUll THEN CONCAT(a.minimum_exp,"-",a.maximum_exp," Years Experience")
                 WHEN a.minimum_exp = "20" AND a.maximum_exp = "20+" THEN "More Than 20 Years Experience"
                 WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NOT NUll THEN CONCAT(a.minimum_exp,"-",a.maximum_exp," Years Experience")
                 WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NUll THEN CONCAT("Minimum ",a.minimum_exp," Years Experience") 
@@ -227,8 +233,8 @@ class ApplicationCards
                 'm.max_wage as max_salary',
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration',
-                'd.name as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
@@ -250,15 +256,33 @@ class ApplicationCards
             ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
+            ->andWhere(['a.application_for' => 1])
+            //->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
-                'CONCAT("/job/", a.slug) link',
-                'CONCAT("/job/", a.slug) organization_link',
+            ->select(['a.source',
+                '(CASE
+                WHEN a.source = 3 THEN v.job_level
+                WHEN a.source = 2 THEN v.job_level
+                ELSE NULL
+               END) as sector',
+                'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
+                'a.created_on created',
+                'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+                '(CASE
+                WHEN a.source = 3 THEN CONCAT("/job/muse/",a.slug,"/",a.unique_source_id)
+                WHEN a.source = 2 THEN CONCAT("/job/git-hub/",a.slug,"/",a.unique_source_id)
+                ELSE CONCAT("/job/", a.slug)
+                END) as link',
+                '(CASE
+                WHEN a.source = 3 THEN CONCAT("job/muse/",a.slug,"/",a.unique_source_id)
+                WHEN a.source = 2 THEN CONCAT("job/git-hub/",a.slug,"/",a.unique_source_id)
+                ELSE CONCAT("job/", a.slug)
+                END) as share_link',
+                'CONCAT("/", d.slug,"/reviews") organization_link',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -271,20 +295,23 @@ class ApplicationCards
                 WHEN a.experience = "5-10" THEN "5-10 Years Experience"
                 WHEN a.experience = "10-20" THEN "10-20 Years Experience"
                 WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
-                ELSE "No Experience"
+                ELSE NULL
                END) as experience', 'a.organization_enc_id', 'a.unclaimed_organization_enc_id',
                 'v.fixed_wage as fixed_salary',
-                'v.wage_type salary_type',
+                'v.wage_type as salary_type',
                 'v.max_wage as max_salary',
                 'v.min_wage as min_salary',
                 'v.wage_duration as salary_duration',
-                'd.name as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
-                'g.name city'
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                '(CASE
+                WHEN g.name IS NULL THEN x.location_name
+                ELSE g.name
+               END) as city',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
-            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
-            ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
+            ->leftJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+            ->leftJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
             ->innerJoin(ApplicationUnclaimOptions::tableName() . 'as v', 'v.application_enc_id = a.application_enc_id')
             ->leftJoin(Currencies::tableName() . 'as xt', 'xt.currency_enc_id = v.currency_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
@@ -294,8 +321,10 @@ class ApplicationCards
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
+            ->andWhere(['a.application_for' => 1])
+           // ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
+
 
         if (!empty($profiles)) {
             $cards1->andWhere([
@@ -411,32 +440,51 @@ class ApplicationCards
             $cards2->andWhere(['d.slug'=>$options['slug']]);
         }
         if (isset($options['keyword'])) {
-            $search = trim($options['keyword'], " ");
-            $search_pattern = self::makeSQL_search_pattern($search);
-            $cards1->andFilterWhere([
-                'or',
-                ['REGEXP', 'g.name', $search_pattern],
-                ['REGEXP', 'v.name', $search_pattern],
-                ['REGEXP', 's.name', $search_pattern],
-                ['REGEXP', 'x.name', $search_pattern],
-                ['REGEXP', 'l.designation', $search_pattern],
-                ['REGEXP', 'a.type', $search_pattern],
-                ['REGEXP', 'c.name', $search_pattern],
-                ['REGEXP', 'h.industry', $search_pattern],
-                ['REGEXP', 'i.name', $search_pattern],
-                ['REGEXP', 'd.name', $search_pattern],
-                ['REGEXP', 'a.slug', $search_pattern]
-            ]);
-            $cards2->andFilterWhere([
-                'or',
-                ['REGEXP', 'g.name', $search_pattern],
-                ['REGEXP', 's.name', $search_pattern],
-                ['REGEXP', 'a.type', $search_pattern],
-                ['REGEXP', 'c.name', $search_pattern],
-                ['REGEXP', 'i.name', $search_pattern],
-                ['REGEXP', 'd.name', $search_pattern],
-                ['REGEXP', 'a.slug', $search_pattern]
-            ]);
+             $search = trim($options['keyword'], " ");
+            if ($search == "remote" || $search == "work from home")
+            {
+                $cards1->andFilterWhere([
+                    'or',
+                    ['like', 'a.type', $search],
+                ]);
+                $cards2->andFilterWhere([
+                    'or',
+                    ['like', 'x.location_name', $search],
+                    ['like', 'a.type', $search],
+                    ['like', 'c.name', $search],
+                ]);
+            }
+            else{
+                $search_pattern = self::makeSQL_search_pattern($search);
+                $cards1->andFilterWhere([
+                    'or',
+                    ['REGEXP', 'g.name', $search_pattern],
+                    ['REGEXP', 'v.name', $search_pattern],
+                    ['REGEXP', 's.name', $search_pattern],
+                    ['REGEXP', 'x.name', $search_pattern],
+                    ['REGEXP', 'l.designation', $search_pattern],
+                    ['REGEXP', 'a.type', $search_pattern],
+                    ['REGEXP', 'c.name', $search_pattern],
+                    ['REGEXP', 'h.industry', $search_pattern],
+                    ['REGEXP', 'i.name', $search_pattern],
+                    ['REGEXP', 'd.name', $search_pattern],
+                    ['REGEXP', 'a.slug', $search_pattern],
+                    ['REGEXP', 'ct.name', $search_pattern],
+                    ['REGEXP', 'cy.name', $search_pattern]
+                ]);
+                $cards2->andFilterWhere([
+                    'or',
+                    ['REGEXP', 'g.name', $search_pattern],
+                    ['REGEXP', 's.name', $search_pattern],
+                    ['REGEXP', 'a.type', $search_pattern],
+                    ['REGEXP', 'c.name', $search_pattern],
+                    ['REGEXP', 'i.name', $search_pattern],
+                    ['REGEXP', 'd.name', $search_pattern],
+                    ['REGEXP', 'a.slug', $search_pattern],
+                    ['REGEXP', 'ct.name', $search_pattern],
+                    ['REGEXP', 'x.location_name', $search_pattern]
+                ]);
+            }
         }
         if (isset($optLocation)) {
             $search_location = trim($optLocation, " ");
@@ -458,6 +506,7 @@ class ApplicationCards
                 ['REGEXP', 's.name', $search_pattern_location],
                 ['REGEXP', 'ct.name', $search_pattern_location],
                 ['REGEXP', 'ct.abbreviation', $search_pattern_location],
+                ['REGEXP', 'x.location_name', $search_pattern_location],
             ]);
         }
         if (!empty($locations)) {
@@ -501,7 +550,6 @@ class ApplicationCards
                 $cards2->andWhere(['in', 'ct.country_enc_id', $countryIds]);
             }
         }
-
         $result = null;
         if (isset($options['similar_jobs'])) {
             $cards1->andWhere(['in', 'c.name', $options['similar_jobs']]);
@@ -521,7 +569,7 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->orderBy(['created_on' => SORT_DESC])
+                ->orderBy(['created' => SORT_DESC])
                 ->all();
         }
         $i = 0;
@@ -571,6 +619,11 @@ class ApplicationCards
                     }
                 }
             }
+            else
+            {
+                $result[$i]['salary'] = null;
+                $result[$i]['sal'] = 1; //for api jobs where every thing for salary is blank
+            }
             $i++;
         }
         return $result;
@@ -590,8 +643,11 @@ class ApplicationCards
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select(['a.created_on', 'xt.html_code', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select([
+                'a.created_on as created_date',
+                'xt.html_code', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
+                'CONCAT("internship/", a.slug) share_link',
                 'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
@@ -602,8 +658,8 @@ class ApplicationCards
                 'm.max_wage as max_salary',
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration',
-                'd.name as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
@@ -625,14 +681,18 @@ class ApplicationCards
             ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['a.application_for' => 1])
             ->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select([
+                'a.created_on as created_date',
+                'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
+                'CONCAT("internship/", a.slug) share_link',
                 'CONCAT("/internship/", a.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
@@ -643,8 +703,8 @@ class ApplicationCards
                 'v.max_wage as max_salary',
                 'v.min_wage as min_salary',
                 'v.wage_duration as salary_duration',
-                'd.name as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city'
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
@@ -659,6 +719,7 @@ class ApplicationCards
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['a.application_for' => 1])
             ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
@@ -787,7 +848,7 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->orderBy(['created_on' => SORT_DESC])
+                ->orderBy(['created_date' => SORT_DESC])
                 ->all();
         }
         $i = 0;
@@ -852,7 +913,7 @@ class ApplicationCards
         $cards = (new \yii\db\Query())
             ->distinct()
             ->from(Organizations::tableName() . 'as a')
-            ->select(['name', 'initials_color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image', 'b.business_activity'])
+            ->select(['name', 'initials_color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image', 'b.business_activity'])
             ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.business_activity_enc_id')
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['not', ['logo' => null]]);
@@ -878,8 +939,8 @@ class ApplicationCards
                 'CONCAT("/training/", a.slug) link',
                 'CONCAT("/", d.slug) organization_link', 'd.initials_color color',
                 'c.name as title', 'i.icon',
-                'd.name as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                'REPLACE(d.name, "&amp;", "&") as organization_name',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city',
                 '(CASE
                 WHEN a.training_duration_type = "1" THEN CONCAT(a.training_duration,"  Month(s)")
@@ -955,50 +1016,6 @@ class ApplicationCards
             ->orderBy(['id' => SORT_DESC])
             ->all();
         return $result;
-    }
-    private static function _gitjobs($page,$keyword,$loc)
-    {
-        if (!empty($keyword) || !empty($loc)) {
-            $url = "https://jobs.github.com/positions.json?description=" . $keyword . "&location=" . $loc."&page=".$page;
-        }
-        else
-        {
-            $url = "https://jobs.github.com/positions.json?page=".$page;
-        }
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        $header = [
-            'Accept: application/json, text/plain, */*',
-            'Content-Type: application/json;charset=utf-8',
-        ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        $result = curl_exec($ch);
-        $result = json_decode($result,true);
-        if ($result) {
-            array_walk($result, function (&$item) {
-                $item['created_on'] = $item['created_at'];
-                $item['organization_name'] = $item['company'];
-                $item['logo'] = $item['company_logo'];
-                $item['organization_link'] = $item['company_url'];
-                $item['link'] = '/jobs/api/'.strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $item['company']))).'/'.$item['id'];
-                $item['city'] = $item['location'];
-                $item['sal'] = 1;
-                unset($item['created_at']);
-                unset($item['company']);
-                unset($item['company_logo']);
-                unset($item['company_url']);
-                unset($item['url']);
-                unset($item['description']);
-                unset($item['location']);
-            });
-            return $result;
-        }
-        else
-        {
-            return $result = [];
-        }
     }
     public static function makeSQL_search_pattern($search)
     {

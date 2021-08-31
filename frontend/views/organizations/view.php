@@ -9,7 +9,7 @@ $description = $organization['description'];
 $image = Yii::$app->urlManager->createAbsoluteUrl((!empty($organization['cover_image']) ? Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'] : '/assets/common/logos/empower_fb.png'));
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -24,7 +24,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -33,13 +33,9 @@ $this->params['seo_tags'] = [
 ];
 
 if ($organization['logo']) {
-    $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
-    $image = Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
-    if (!file_exists($image_path)) {
-        $image = $organization['name'];
-    }
+    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
 } else {
-    $image = $organization['name'];
+    $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 }
 if ($organization['cover_image']) {
     $cover_image_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
@@ -64,10 +60,9 @@ $round_avg = round($overall_avg);
                                 <div class="logo-box">
                                     <div class="logo">
                                         <?php
-                                        if (!empty($image_path)):
+                                        if (!empty($image)):
                                             ?>
-                                            <img id="logo-img" src="<?= Url::to($image); ?>"
-                                                 alt="<?= htmlspecialchars_decode($organization['name']) ?>"/>
+                                            <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image" data-name="<?= $organization['name'] ?>" data-width="200" data-height="200" data-color="<?= $organization['initials_color'] ?>" data-font="100px" alt="<?= htmlspecialchars_decode($organization['name']) ?>"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $image; ?>"
                                                     color="<?= $organization['initials_color'] ?>" width="200"
@@ -76,7 +71,10 @@ $round_avg = round($overall_avg);
                                     </div>
                                 </div>
                                 <div class="com-details">
-                                    <div class="com-name"><?= htmlspecialchars_decode($organization['name']) ?></div>
+                                    <div class="com-name">
+                                        <?= htmlspecialchars_decode($organization['name']) ?>
+
+                                    </div>
                                     <?php if (!empty($organization['tag_line'])) { ?>
                                         <div class="com-establish">
                                             <!--                                        <span class="detail-title">Tagline:</span> -->
@@ -88,7 +86,47 @@ $round_avg = round($overall_avg);
                                             <!--                                        <span class="detail-title">Industry:</span> -->
                                             <?= htmlspecialchars_decode($industry['industry']); ?>
                                         </div>
-                                    <?php } ?>
+                                    <?php }
+                                    ?>
+                                    <div class="status-icon">
+                                        <?php
+                                        if($labels['is_new'] == 1){
+                                            ?>
+                                            <span class="new-j" data-toggle="tooltip" title="New">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/new-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if($labels['is_featured'] == 1){
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Featured">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/featured-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if($labels['is_promoted'] == 1){
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Promoted">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/promoted-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if($labels['is_hot'] == 1){
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Hot">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/hot-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if($labels['is_trending'] == 1){
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Trending">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/trending-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -122,13 +160,13 @@ $round_avg = round($overall_avg);
                     </div>
                     <div class="social-btns">
                         <?php if (!empty($organization['facebook'])) { ?><a
-                            href="<?= htmlspecialchars_decode($organization['facebook']) ?>" class="facebook"
+                            href="<?= htmlspecialchars_decode($organization['facebook']) ?>" class="facebook-social"
                             target="_blank"><i class="fab fa-facebook-f"></i> </a><?php } ?>
                         <?php if (!empty($organization['twitter'])) { ?><a
                             href="<?= htmlspecialchars_decode($organization['twitter']) ?>" class="twitter"
                             target="_blank"><i class="fab fa-twitter"></i> </a><?php } ?>
                         <?php if (!empty($organization['linkedin'])) { ?><a
-                            href="<?= htmlspecialchars_decode($organization['linkedin']) ?>" class="linkedin"
+                            href="<?= htmlspecialchars_decode($organization['linkedin']) ?>" class="linkedin-social"
                             target="_blank"><i class="fab fa-linkedin-in"></i> </a><?php } ?>
                         <?php if (!empty($organization['website'])) { ?><a
                             href="<?= htmlspecialchars_decode($organization['website']) ?>" class="web" target="_blank">
@@ -291,43 +329,55 @@ $round_avg = round($overall_avg);
                                         review</h4>
                                 </div>
                             </div>
+                            <div class="set-mar">
+                                <?=
+                                $this->render('/widgets/new-position',[
+                                    'company' => $organization['name'], ]);
+                                ?>
+                            </div>
                         </div>
                     </div>
                     <div class="av-jobs-intern">
-                        <div id="jobs-cards-main" class="row">
-                            <div class="heading-style">
-                                Available Jobs
-                                <div class="pull-right">
-                                    <a href="/jobs/list?company=<?= htmlspecialchars_decode($organization['name']) ?>"
-                                       class="write-review">View
-                                        All</a>
-                                </div>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="blogbox"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="internships-cards-main" class="row">
-                            <div class="internships-block">
+                        <?php if ($jobs_count > 0) {
+                            ?>
+                            <div id="jobs-cards-main" class="row">
                                 <div class="heading-style">
-                                    Available Internships
+                                    Available Jobs
                                     <div class="pull-right">
-                                        <a href="/internships/list?company=<?= htmlspecialchars_decode($organization['name']) ?>"
-                                           class="write-review">View All</a>
+                                        <a href="/jobs/list?slug=<?= $organization['slug'] ?>"
+                                           class="write-review">View
+                                            All</a>
                                     </div>
                                 </div>
                                 <div class="divider"></div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="internships_main"></div>
+                                        <div class="blogbox"></div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        <?php } ?>
+
+                        <?php if ($internships_count > 0) {
+                            ?>
+                            <div id="internships-cards-main" class="row">
+                                <div class="internships-block">
+                                    <div class="heading-style">
+                                        Available Internships
+                                        <div class="pull-right">
+                                            <a href="/internships/list?slug=<?= $organization['slug'] ?>"
+                                               class="write-review">View All</a>
+                                        </div>
+                                    </div>
+                                    <div class="divider"></div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="internships_main"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
                     </div>
                     <?php if (!empty($benefit)) {
                         ?>
@@ -512,18 +562,21 @@ $round_avg = round($overall_avg);
                     </div>
                 </div>
                 <div class="row">
-                    <div class="address-division">
+                    <div class="address-division-new">
                         <div class="heading-style">
                             Address
                         </div>
                         <div class="divider"></div>
                         <div class="row">
-                            <div class="col-md-5 col-xs-12 pull-right">
+                            <div class="col-md-6 col-sm-12 col-xs-12 pull-right mb-20">
                                 <div id="map"></div>
                             </div>
-                            <div class="col-md-7 col-xs-12">
+                            <div class="col-md-6 col-sm-12 col-xs-12">
                                 <div class="head-office">
 
+                                </div>
+                                <div class="view-btn">
+                                    <a href="javascript:;">View All <i class="fas fa-angle-down"></i></a>
                                 </div>
                             </div>
                         </div>
@@ -545,68 +598,7 @@ $round_avg = round($overall_avg);
     </div>
     <input type="hidden" id="organisation_id"
            value="<?= htmlspecialchars_decode($organization['organization_enc_id']) ?>"/>
-    <section>
-        <div class="container">
-            <div class="empty-field">
-                <input type="hidden" id="loggedIn"
-                       value="<?= (!Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->isGuest) ? 'yes' : '' ?>">
-            </div>
-            <!-- Modal -->
-            <div class="modal fade" id="myModal" role="dialog">
-                <div class="modal-dialog">
 
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title"></h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="warn-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/landing/login-warn.png'); ?>">
-                            </div>
-                            <p class="warn-p">Please Login as Candidate to drop your resume</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-    </section>
-    <section>
-        <div class="container">
-            <div class="empty-field">
-                <input type="hidden" id="dropcv">
-            </div>
-            <!-- Modal -->
-            <div class="modal fade" id="existsModal" role="dialog">
-                <div class="modal-dialog">
-
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Company hasn't created any data for this feature</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>Wait for company to create the feature</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-    </section>
 <?php
 echo $this->render('/widgets/mustache/organization_locations', [
     'Edit' => false
@@ -614,13 +606,41 @@ echo $this->render('/widgets/mustache/organization_locations', [
 echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
-    'type' => 'company'
+    'slug' => $organization['slug'],
+    'type' => 'company',
+    'is_claim' => $is_claim,
+    'org_id' => $organization['organization_enc_id'],
 ]);
 echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
 ]);
 $this->registerCss('
-.mv-text{text-align:justify;font-family:roboto;}
+.fIcons img{
+    max-width: 25px;
+}
+.status-icon{
+    padding: 0 0 0 30px;
+}
+.status-icon span{
+    font-size: 0px;
+    margin-right: 8px;
+}
+.set-mar{
+    margin:20px 0;
+}
+.new-position-box{
+    min-height:250px;
+}
+.npb-pos-abso{
+    top:55%;
+}
+.npb-main-heading{
+    font-size:20px;
+}
+.mv-text{
+    text-align:justify;
+    font-family:roboto;
+}
 .j-profiles {
 	box-shadow: 0 3px 12px rgba(0, 0, 0, .2);
 	position: relative;
@@ -847,17 +867,37 @@ $this->registerCss('
 }
 /*----office view ends----*/
 /*----address----*/
-.office-heading{
-    font-weight:bold;
-    font-size:18px;
-    text-transform:uppercase;
+.head-office {
+	display: flex;
+	flex-wrap: wrap;
+}
+.org-location {
+	border: 1px solid #eee;
+	padding: 10px;
+	margin: 0 1% 1% 0;
+	box-shadow: 0 0 5px -1px rgba(0,0,0,0.1);
+	flex-basis: 49%;
+	height: 148px;
+	overflow:hidden;
+}
+.office-heading {
+	font-weight: bold;
+	font-size: 16px;
+	text-transform: uppercase;
+	font-family: lora;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	max-height: 55px;
+	cursor: pointer;
 }
 .office-heading img{
     max-width:25px;
     margin-top:-5px;
 }
 .office-loc{
-    padding:10px 20px;
+    font-family:roboto;
 }
 .o-h2 img{
     max-width:15px;
@@ -931,25 +971,25 @@ $this->registerCss('
 }
 a.twitter{
     padding:8px 6px 8px 10px;
-      color:#1DA1F2;
+    color:#1DA1F2;
 }
 .twitter:hover{
     background:#1da1f2;
     color:#fff;
 }
-a.facebook{
+a.facebook-social{
     padding:8px 9px 8px 12px;
     color:#3C5A99;   
 }
-.facebook:hover{
+.facebook-social:hover{
     background:#3c5a99;
     color:#fff;
 }
-a.linkedin{
+a.linkedin-social{
     padding:8px 9px 8px 11px;
      color:#0077B5;
 }
-.linkedin:hover{
+.linkedin-social:hover{
     background:#0077b5;
     color:#fff;
 }
@@ -976,8 +1016,8 @@ a.web{
     background:#00a0e3;
     color:#fff;
 }
-.follow, .follow:hover, a.facebook, .facebook:hover,
-a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
+.follow, .follow:hover, a.facebook-social, .facebook-social:hover,
+a.twitter, .twitter:hover, a.linkedin-social, .linkedin-social:hover, a.web, .web:hover{
     transition:.3s all;
 }
 /*----follow btn ends----*/
@@ -1068,6 +1108,10 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     font-family:lora;
     color:#fff;
     padding: 0 0 0 30px; 
+    display: flex;
+    flex-wrap: wrap;
+    line-height: 31px;
+    margin-bottom: 10px;
 }
 .com-establish{
     color:#fff;
@@ -1103,6 +1147,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     }
 }
 @media screen and (max-width: 768px){
+.com-name{display:block;margin-top: 20px;}
     .img1 img{
         width:100%;
         height:100%;   
@@ -1127,6 +1172,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     }
     .follow-btn, .social-btns{
         text-align:center;
+        margin-top:20px;
     }
     .logo-absolute{
         position:absolute;
@@ -1159,6 +1205,10 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
         background-color: transparent;
     }
     
+}
+@media screen and (max-width: 600px){
+.org-location{flex-basis:99%;}
+.maxData .org-location{width:99%;}
 }
 .followed {
     background: #00a0e3;
@@ -1282,16 +1332,6 @@ $(document).on('click','.follow',function(e){
     });        
 });
 
-var data = {slug: window.location.pathname.split('/')[1]};
-$.ajax({
-    type: 'POST',
-    url: '/drop-resume/check-resume',
-    data : data,
-    success: function(response){
-        $('#dropcv').val(response.message);
-    }
-});
-
 var first_preview = $('.p-img-thumbnail:first-child a').attr('href');
 $('.p-preview-img a').attr('href', first_preview);
 $('.p-preview-img a img').attr('src', first_preview);
@@ -1335,9 +1375,9 @@ $(document).ready(function() {
 });
 JS;
 $this->registerJs("
-return_message = true;
-jobs_parent = '#jobs-cards-main';
-internships_parent = '#internships-cards-main';
+//return_message = true;
+//jobs_parent = '#jobs-cards-main';
+//internships_parent = '#internships-cards-main';
 getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 ");

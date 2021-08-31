@@ -1,22 +1,63 @@
 <?php
 
 use yii\helpers\Url;
-use yii\helpers\Html;
+use borales\extensions\phoneInput\PhoneInput;
 use yii\bootstrap\ActiveForm;
-use yii\helpers\ArrayHelper;
+use common\models\RandomColors;
+use frontend\models\script\ImageScript;
+
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
-    'type' => 'application'
+    'type' => 'application',
+    'slug' => ''
 ]);
+if (!isset($get['company_logo']) || empty($get['company_logo'])) {
+    $org = \common\models\UnclaimedOrganizations::find()
+        ->select(['logo', 'logo_location'])
+        ->where(['organization_enc_id' => $app['unclaimed_organization_enc_id']])
+        ->asArray()->one();
+    $get['company_logo'] = (($org['logo']) ? Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org['logo_location'] . DIRECTORY_SEPARATOR . $org['logo'], 'https') : null);
+}
+if (is_array($get['location'])) {
+    $p = '';
+    foreach ($get['location'] as $loc) {
+        $p .= $loc['name'];
+    }
+    $location = $p;
+} else {
+    $location = $get['location'];
+}
+$content = [
+    'job_title' => $get['title'],
+    'company_name' => $get['company'],
+    'canvas' => (($get['company_logo']) ? false : true),
+    'bg_icon' => (($app['profile_name'] == "Others") ? false : $app['profile_id']),
+    'logo' => (($get['company_logo']) ? $get['company_logo'] : null),
+    'initial_color' => RandomColors::one(),
+    'location' => $location,
+    'app_id' => $app['application_enc_id'],
+    'permissionKey' => Yii::$app->params->EmpowerYouth->permissionKey
+];
 $this->title = $get['company'] . ' is hiring for ' . $get['title'];
 $keywords = $get['company'] . ' jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,' . $get['title'] . ' Jobs,  MBA Jobs, Career, Walk-ins ' . $get['title'] . ',Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,' . $get['title'] . ' jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+$content['bg_icon'] = ImageScript::getProfile($content['bg_icon']);
+if (empty($app['image']) || $app['image'] == 1) {
+    $image = ImageScript::widget(['content' => $content]);
+} else {
+    $image = Yii::$app->params->digitalOcean->sharingImageUrl . $app['image'];
+}
+
+if (empty($app['square_image']) || $app['square_image'] == 1) {
+    $Instaimage = \frontend\models\script\InstaImageScript::widget(['content' => $content]);
+} else {
+    $Instaimage = Yii::$app->params->digitalOcean->sharingImageUrl . $app['square_image'];
+}
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -31,7 +72,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -60,22 +101,12 @@ if (!Yii::$app->user->isGuest) {
                     <div class="job-title"><?= $get['title']; ?></div>
                     <div class="job-statistic">
                         <?php if ($get['type']): ?>
-                        <div class="job-time"><?= ucwords($get['type']) ?></div>
+                            <div class="job-time"><?= ucwords($get['type']) ?></div>
                         <?php endif; ?>
-                        <?php if ($get['location'])
-                        { ?>
+                        <?php if ($get['location']) { ?>
                             <div class="job-location"><i class="fas fa-map-marker-alt marg"></i>
-                                <?php if (is_array($get['location'])){
-                                    $p = '';
-                                    foreach ($get['location'] as $loc){
-                                        $p .= $loc['name'];
-                                    }
-                                    echo $p;
-                                }
-                                else{
-                                    echo $get['location'];
-                                }  ?>
-                        </div>
+                                <?= $location ?>
+                            </div>
                         <?php } ?>
                     </div>
                 </div>
@@ -86,65 +117,6 @@ if (!Yii::$app->user->isGuest) {
     <!--</div>-->
 </section>
 <!--top header-->
-<section>
-    <div class="container">
-        <div class="empty-field">
-            <input type="hidden" id="dropcv">
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="existsModal" role="dialog">
-            <div class="modal-dialog">
-
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Company hasn't created any data for this feature</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Wait for company to create the feature</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-
-</section>
-<section>
-    <div class="container">
-        <div class="empty-field">
-            <input type="hidden" id="loggedIn"
-                   value="<?= (!Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->isGuest) ? 'yes' : '' ?>">
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="myModal" role="dialog">
-            <div class="modal-dialog">
-
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title"></h4>
-                    </div>
-                    <div class="modal-body">
-                        <p>Please Login as Candidate to drop your resume</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
-
-</section>
 <section>
     <div class="container">
         <div class="row m-0">
@@ -175,7 +147,8 @@ if (!Yii::$app->user->isGuest) {
                         <h4><?= $get['company'] ?></h4>
                         <div class="organization-details">
                             <?php if ($get['company_url']): ?>
-                                <p><i class="fas fa-unlink"></i><a href="<?= $get['company_url'] ?>" target="_blank"><?= $get['company_url'] ?></a></p>
+                                <p><i class="fas fa-unlink"></i><a href="<?= $get['company_url'] ?>"
+                                                                   target="_blank"><?= $get['company_url'] ?></a></p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -191,7 +164,7 @@ if (!Yii::$app->user->isGuest) {
                         <a href="/jobs/list" title="" class="view-all-a">View all
                             Jobs</a>
                     </div>
-                    <?php $link = Url::to('job/'.$source.'/'.$slugparams.'/'.$id, true); ?>
+                    <?php $link = Url::to('job/' . $source . '/' . $slugparams . '/' . $id, 'https'); ?>
                     <div class="effect thurio">
                         <h3 class="text-white">Share</h3>
                         <div class="buttons">
@@ -200,11 +173,11 @@ if (!Yii::$app->user->isGuest) {
                                 <i class="fab fa-facebook-f"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$this->title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                               onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $this->title . '&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-twitter"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$this->title.'&summary='.$this->title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link . '&title=' . $this->title . '&summary=' . $this->title . '&source=' . Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
                             <a href="#"
@@ -215,6 +188,32 @@ if (!Yii::$app->user->isGuest) {
                                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fas fa-envelope"></i>
                             </a>
+                        </div>
+                        <div class="wts-ap">
+                            <h3>Share on Whatsapp via Number</h3>
+                            <div class="col-md-12 form-whats">
+                                <?php
+                                $form = ActiveForm::begin([
+                                    'id' => 'whatsapp-form',
+                                    'fieldConfig' => [
+                                        'template' => '<div class="form-group">{input}{error}</div>',
+                                        'labelOptions' => ['class' => ''],
+                                    ],
+                                ]);
+                                ?>
+                                <?=
+                                $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
+                                    'options' => ['class' => 'wts-txt', 'placeholder' => '+91 98 XXXX XXXX'],
+                                    'jsOptions' => [
+                                        'allowExtensions' => false,
+                                        'preferredCountries' => ['in'],
+                                        'nationalMode' => false,
+                                    ]
+                                ]);
+                                ?>
+                                <?php ActiveForm::end(); ?>
+                                <div class="send"><i class="fa fa-arrow-right"></i></div>
+                            </div>
                         </div>
                         <div class="row m-0">
                             <div class="col-lg-12">
@@ -228,6 +227,13 @@ if (!Yii::$app->user->isGuest) {
                             </div>
                         </div>
                     </div>
+                    <div class="down-img">
+                        <h3>Download Sharing Image</h3>
+                        <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size
+                            (1250*650)</a>
+                        <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square
+                            Size (800*800)</a>
+                    </div>
                 </div>
                 <!--  org details-->
                 <?php
@@ -235,18 +241,11 @@ if (!Yii::$app->user->isGuest) {
                     echo $this->render('/widgets/best-platform');
                 }
                 ?>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="job-single-head style2 overlay-top mt-40" style="background-color: transparent">
-                            <?= $this->render("/widgets/square_ads"); ?>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="heading-style">Jobs You May Like </div>
+                <div class="heading-style">Jobs You May Like</div>
             </div>
         </div>
         <div class="row">
@@ -274,7 +273,35 @@ if ($settings["showNewPositionsWidget"]):
             ?>
         </div>
     </section>
-<?php endif; ?>
+<?php endif;
+if (Yii::$app->params->options->showSchema) {
+    ?>
+    <script type="application/ld+json">
+        {
+            "@context" : "https://schema.org/",
+            "@type" : "JobPosting",
+            "title" : "<?= $get['title']; ?>",
+            "description" : "<?= $get['description'] ?>",
+            "datePosted" : "<?= $get['created_at'] ?>",
+            "employmentType" : "<?= $get['type'] ?>",
+            "hiringOrganization" : {
+                "@type" : "Organization",
+                "name" : "<?= $get['company'] ?>",
+                "sameAs" : "<?= $get['company_url'] ?>",
+                "logo" : "<?= $get['company_logo']; ?>"
+            },
+            "jobLocation": {
+                "@type": "Place",
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": "<?= $location ?>"
+                }
+            }
+        }
+    </script>
+    <?php
+}
+?>
 <script>
     function copyToClipboard() {
         var copyText = document.getElementById("share_manually");
@@ -286,12 +313,58 @@ if ($settings["showNewPositionsWidget"]):
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
-.desc strong
-{
-font-size: 15px;
-    font-weight: 500;
+.form-whats {
+	position: relative;
+}
+.send {
+	position: absolute;
+	top: 2px;
+	right: 28px;
+	font-size: 22px;
+	cursor:pointer;
+}
+.down-img h3 {  
+	color: #fff;
+	font-size: 15px;
+	font-family: roboto;
+	margin: 10px 0 15px;
+}
+.down-img a {
+	color: #fff;
+	border: 2px solid #fff;
+	padding: 8px 25px;
+	font-size: 14px;
+	font-family: roboto;
+	font-weight: 500;
+	border-radius:6px;
+	display: inline-block;
+    margin: 5px 0px;
+}
+.form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
+    margin-bottom:0;
+}
+.wts-ap{position:relative;}
+.wts-ap h3 {
+    margin: 0;
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 8px !important;
     font-family: roboto;
-    color: #00a0e3;
+}
+.wts-ap input {
+    font-family: roboto;
+    width: 100%;
+    margin: auto;
+    height: 40px;
+    border-radius: 6px;
+    padding: 5px 10px;
+}
+.desc strong, .desc h1,.desc h2 
+{
+    font-size: 15px !important;
+    font-weight: 500 !important;
+    font-family: roboto !important;
+    color: #00a0e3 !important;
 }
 .duties-tab a
  {
@@ -679,6 +752,7 @@ $this->registerCss("
         width: 115px;
         height: 115px;
         background-color:#fff;
+        object-fit: contain;
     }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}
@@ -758,7 +832,8 @@ $this->registerCss("
     .job-statistic span {
         float: none;
         display: inline-block;
-        font-size: 12px;
+        font-size: 16px;
+        font-family:roboto;
         border: 1px solid #ffffff;
         color: #ffffff;
         padding: 7px 20px;
@@ -1213,7 +1288,9 @@ $this->registerCss("
         margin-top: 1px;
     }
     .apply-job-btn {
-    display:inline-block !important;    
+    display:flex;
+    justify-content:center;
+    align-items:center; 
     background: #00a0e3;
     -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
     -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
@@ -1225,10 +1302,10 @@ $this->registerCss("
     -ms-border-radius: 2px;
     -o-border-radius: 2px;
     border-radius: 2px;
-    font-family: Open Sans;
-    font-size: 13px;
+    font-family: roboto;
+    font-size: 18px;
     color: #fff;
-    width: 175px;
+    width: 200px;
     height: auto;
     padding: 15px 6px;
     text-align: center;
@@ -1248,7 +1325,6 @@ $this->registerCss("
         margin-right: 6px;
         line-height: 8px;
         position: relative;
-        top: 4px;
     }
     .viewall-jobs {
         background: #4aa1e3;
@@ -1530,7 +1606,41 @@ $this->registerCss("
     }
     /* Profile icons css ends */
     ");
-$this->registerJs("                  
-getCards('" . $type . 's' ."','.blogbox','/organizations/organization-related-titles?title=" .$get['title']. "');    
+$this->registerJs("
+$(document).on('keypress','.wts-txt',function(e) {
+        if(e.which == 13) {
+            var val = $(this).val();
+            var location = window.location.href;
+            if(val.length < 8){
+                alert('Enter Valid Number')
+            }
+            else {
+                window.open('https://api.whatsapp.com/send?phone='+val+'&text=' + location);
+            }
+            $(this).val('');
+        } else {
+            var iKeyCode = (e.which) ? e.which : e.keyCode;
+            if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57) && iKeyCode != 43){
+                return false;
+            }
+            // return true;
+        }
+    });
+    $(document).on('submit','#whatsapp-form',function(e) {
+        e.preventDefault();
+        return false;
+    });     
+    $('.send').click(function () {        
+    var val = $('.wts-txt').val();
+    var location = window.location.href;
+       if(val.length < 10){
+            alert('Enter Valid Number')
+        }
+        else {
+             window.open('https://api.whatsapp.com/send?phone='+val+'&text=' + location);
+        }
+        $('.wts-txt').val('');
+});      
+getCards('" . $type . 's' . "','.blogbox','/organizations/organization-related-titles?title=" . $get['title'] . "');    
 ");
 ?>

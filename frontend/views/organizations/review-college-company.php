@@ -17,7 +17,7 @@ $description = 'Empower Youth is a career development platform where you can fin
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/review_share.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -32,7 +32,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -541,7 +541,7 @@ border: 2px solid #cadfe8 !important;
 }
 .logo-box img{
     width: 100%;
-    height: 100%;
+    height: auto !Important;
     object-fit: fill;
     object-position: top center;
     position: absolute;
@@ -918,6 +918,7 @@ border: 2px solid #cadfe8 !important;
     border-radius: 0px 0px 10px 10px;
     max-height: 350px;
     overflow-y: scroll;
+    color:#333;
 }
 #autocomplete-list div,.tt-dataset{
     padding: 3px;

@@ -148,8 +148,8 @@ use yii\helpers\Url;
             <option value="select" data-url='images/icon-vietnam.png'><img src="images/icon-vietnam.png" alt=""> Select
             </option>
             {{#applications}}
-            <option value="{{application_enc_id}}" data-url='images/icon-vietnam.png'><img src="images/icon-vietnam.png"
-                                                                                           alt=""> {{application_name}}
+            <option value="{{application_enc_id}}" data-url='images/icon-vietnam.png' data-name="{{category_name}}">
+                <img src="images/icon-vietnam.png" alt="">{{application_name}}
             </option>
             {{/applications}}
         </select>
@@ -254,6 +254,20 @@ use yii\helpers\Url;
     </script>
 <?php
 $this->registerCss('
+li .new-s {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+.sec-s{
+    font-size:10px;
+    color:#939191;
+    font-family:roboto;
+}
+.selected > .new-s > .sec-s, li:not(.init):hover> .new-s > .sec-s {
+    color: #fff;
+}
 //.btn-previous{display:none !important;}
 .acc-arrow{
     float: right;

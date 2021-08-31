@@ -4,28 +4,23 @@ use yii\helpers\Url;
 <section class="goven-jobs-sec">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <div class="gov-heading">Find Latest Government Jobs</div>
-            </div>
-        </div>
-        <div class="row">
             <div class="col-md-6">
                 <div class="gov-job">
                     <a href="/usa-jobs">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/usa-govt.png')?>" alt="USA Jobs">
-                        <div class="link-none">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/usa-govt.png')?>" alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
+                        <h1 class="link-none">
                             USA Government Jobs
-                        </div>
+                        </h1>
                     </a>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="gov-job">
                     <a href="/govt-jobs">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>" alt="USA Jobs">
-                        <div class="link-none">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>" alt="government job vacancies, government vacancies, gov job search, latest government jobs, govt job recruitment, government employment opportunities">
+                        <h1 class="link-none">
                             Indian Government Jobs
-                        </div>
+                        </h1>
                     </a>
                 </div>
             </div>
@@ -38,12 +33,12 @@ $this->registerCss('
     background:url('. Url::to('@eyAssets/images/pages/index2/gov-job-sec-bg.png') .');
     background-repeat: no-repeat;
     background-size:cover;
-    padding:0px 0px 40px 0px;
+    padding: 40px 0px 40px 0px;
 }
 .gov-heading {
     text-align: center;
     font-size: 30px;
-    font-family: lora;
+    font-family: lobster;
     margin: 0px 0px 20px 0;
 }
 .gov-job {
@@ -88,6 +83,7 @@ $this->registerCss('
     color:#fff;
     font-size:20px;
     padding:5px 10px;
+    margin:0;
 }
 @media (max-width:415px){
 .gov-heading{

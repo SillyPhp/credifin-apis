@@ -5,6 +5,7 @@ use common\models\AppliedApplications;
 use common\models\EmployerApplications;
 use common\models\Organizations;
 use common\models\ApplicationTypes;
+use frontend\models\whatsAppShareForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -21,7 +22,7 @@ class CareersController extends Controller
                 'name',
                 'slug',
                 'website',
-                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) END logo'
+                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) END logo'
             ])
             ->where([
                 'slug' => $slug
@@ -77,7 +78,7 @@ class CareersController extends Controller
                 'c.name as title',
                 'CONCAT("' . Url::to('@commonAssets/categories/svg/', "https") . '", dd.icon) icon',
                 'd.name as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)
                 https://ui-avatars.com/api/?name=
                 ", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
                 '(CASE
@@ -237,6 +238,7 @@ class CareersController extends Controller
                 ->one();
         }
         $model = new \frontend\models\applications\JobApplied();
+        $whatsAppForm = new whatsAppShareForm();
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
@@ -246,6 +248,7 @@ class CareersController extends Controller
             'type' => $type,
             'model' => $model,
             'shortlist' => $shortlist,
+            'whatsAppmodel' => $whatsAppForm,
             'settings' => [
                 "showRelatedOpportunities" => false,
                 "showNewPositionsWidget" => true,
@@ -274,6 +277,9 @@ class CareersController extends Controller
                 }], false)
                 ->distinct()
                 ->where(['d.slug'=>$slug])
+                ->andWhere(['not', [
+                    'a.type' => 'Work From Home'
+                ]])
                 ->asArray()
                 ->all();
             return ArrayHelper::map($cities, 'name', 'name');

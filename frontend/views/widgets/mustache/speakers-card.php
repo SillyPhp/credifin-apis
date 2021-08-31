@@ -20,11 +20,11 @@ use yii\helpers\Url;
                 </div>
                 <div class="ts-speaker-info">
                     <h3 class="ts-title"><a href="#">{{fullname}}</a></h3>
-                    {{#designation}}
                     <p>
-                        {{designation}}
+                        {{#designation}}
+                            {{designation}}
+                        {{/designation}}
                     </p>
-                    {{/designation}}
                 </div>
             </div>
             <!-- popup start-->
@@ -44,7 +44,7 @@ use yii\helpers\Url;
                         <div class="ts-speaker-popup-content">
                             <h3 class="ts-title">{{fullname}}</h3>
                             {{#designation}}
-                            <span class="speakder-designation">{{designation}}</span>
+                            <span class="speakder-designation mb2">{{designation}}</span>
                             {{/designation}}
                             {{#org_image}}
                             <img class="company-logo"
@@ -173,9 +173,22 @@ $this->registerCss('
     margin-bottom: 0px;
 }
 
+.ts-title {
+    font-family: lora;
+}
+
 .ts-speaker .ts-title a {
-    color: #000;
-    text-transform:capitalize;
+    color: #222222;
+    text-transform: capitalize;
+    height: 34px;
+    font-size: 22px;
+    display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+.ts-speaker-info p{
+    height:23px;
 }
 
 .ts-speaker:hover .speaker-img img {
@@ -286,8 +299,12 @@ $this->registerCss('
 }
 
 .ts-speaker-popup .ts-speaker-popup-content {
-    padding: 60px 40px;
+    padding: 20px 40px;
     font-family: roboto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .ts-speaker-popup .ts-speaker-popup-content .ts-title {
@@ -298,12 +315,17 @@ $this->registerCss('
 .ts-speaker-popup .ts-speaker-popup-content .speakder-designation {
     display: block;
     font-size: 14px;
-    margin-bottom: 20px;
     text-transform: capitalize;
 }
-
+.mb2{
+    margin-bottom: 20px
+}
+.phone-icon i{
+transform: rotate(100deg);
+}
 .ts-speaker-popup .ts-speaker-popup-content .company-logo {
     margin-bottom: 0px;
+    max-height: 80px;
 }
 
 .ts-speaker-popup .ts-speaker-popup-content p {
@@ -424,7 +446,7 @@ function fetchNews(template,limit_dept,offset,loader,loader_btn) {
       $('#loader').css('display','initial');
       $('#loader').attr('disabled', false);
        match_dept = match_dept+body.count;
-      if (body.total<4||body.total==match_dept) {
+      if (body.total==match_dept) {
           $('#loader').hide();
       }
       template.append(Mustache.render($('#speakers-card').html(),body.cards));

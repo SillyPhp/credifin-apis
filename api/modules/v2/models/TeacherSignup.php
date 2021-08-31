@@ -60,6 +60,8 @@ class TeacherSignup extends Model
         try {
             $user = new Candidates();
             $username = new Usernames();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $username->username = $this->username;
             $username->assigned_to = 1;
             if (!$username->validate() || !$username->save()) {
@@ -71,11 +73,13 @@ class TeacherSignup extends Model
             $user->last_name = $this->last_name;
             $user->phone = preg_replace("/\s+/", "", $this->phone);
             $user->email = $this->email;
-            $user->user_enc_id = time() . mt_rand(10, 99);
+            $user->user_enc_id = $utilitiesModel->encrypt();
             $user->user_type_enc_id = UserTypes::findOne(['user_type' => 'Individual'])->user_type_enc_id;
             $user->initials_color = RandomColors::one();
             $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
             $user->status = 'Active';
+            $user->last_visit = date('Y-m-d H:i:s');
+            $user->last_visit_through = 'ECAMPUS';
             $user->setPassword($this->password);
             $user->generateAuthKey();
             if (!$user->save()) {

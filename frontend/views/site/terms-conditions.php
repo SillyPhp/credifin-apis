@@ -3,7 +3,34 @@
 $this->params['header_dark'] = true;
 
 use yii\helpers\Url;
-
+$this->title = 'Check the Candidates Profiles to be Selected by Companies';
+$keywords = 'student employment, select candidates, candidates profile, registered candidates, office training jobs, student jobs near me, desired candidates';
+$description = 'Search for Desired Candidates Profiles: Check the Candidates Profiles to be Selected by Companies - New Opportunities for Candidates as well as for Recruiters.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('assets/themes/ey/images/pages/terms/terms-condition.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 
     <section>

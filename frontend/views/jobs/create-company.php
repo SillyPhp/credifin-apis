@@ -1,7 +1,7 @@
 <?php
-
-use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
+use yii\captcha\Captcha;
 ?>
 
     <div class="modal-body">
@@ -38,6 +38,13 @@ use yii\bootstrap\ActiveForm;
         <div class="row">
             <div class="col-md-12">
                 <?= $form->field($createCompany, 'description')->textArea(['placeholder'=>'Write Some Company Description(Optional)','rows'=>6])->label(false); ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <?= $form->field($createCompany, 'verifyCode')->widget(\yii\captcha\Captcha::classname(), [
+                    // configure additional widget properties here
+                ]) ?>
             </div>
         </div>
         <div class="modal-footer">
