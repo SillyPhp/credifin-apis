@@ -2428,6 +2428,9 @@ class JobsController extends Controller
             }
             $data = $this->__closedjobs($limit, $page);
             if($data['total'] != 0){
+                foreach ($data['data'] as $key => $val){
+                    $data['data'][$key]['last_date'] = date("d-m-Y", strtotime($val['last_date']));
+                }
                 return['status' => 200, 'data' => $data];
             }
             else{
