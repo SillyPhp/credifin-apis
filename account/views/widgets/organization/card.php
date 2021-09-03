@@ -24,7 +24,7 @@ if ($organization_data) {
                             if (empty($shortlist['logo_location'])) {
                                 ?>
                                 <canvas class="user-icon" name="<?= $shortlist['org_name'] ?>" width="100" height="100"
-                                        font="24px" color="<?= $shortlist['initials_color']; ?>"></canvas>
+                                        font="40px" color="<?= $shortlist['initials_color']; ?>"></canvas>
                                 <?php
                             } else {
                                 $logo_location = $shortlist['logo_location'];
@@ -252,6 +252,11 @@ $this->registerCss('
 .hr-com-jobs {
     padding: 20px 0px 0px 0px !important;
     text-align: center;
+}
+.hr-com-icon img {
+    border-radius: 50% !important;
+    object-fit: contain;
+    overflow: hidden;
 }
 .hr-com-field, .ji-set{min-height:22px;}
 .hr-com-icon{height:120px;}
