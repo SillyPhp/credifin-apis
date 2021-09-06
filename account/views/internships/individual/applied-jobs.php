@@ -24,7 +24,7 @@ use yii\helpers\Url;
                                     foreach ($arr as $user) {
                                     ?>
                                     <div class="cd-can-box">
-                                        <div class="cd-box-border" id="cd-box-border">
+                                        <div class="process-cd-box-border" id="cd-box-border">
                                             <div class="row">
                                                 <div class=" cd-user-icon col-md-6">
                                                     <a href="<?= '/internship/' . $user['slug'] ?>" target="_blank">
@@ -192,11 +192,11 @@ $this->registerCss('
     margin-bottom:3px;
     padding:5px 15px;
 }
-.cd-box-border{
+.process-cd-box-border{
             border:2px solid #eef1f4; padding:10px 20px; background:#fff; 
             border-radius:10px !important; color:#999999; 
 }
-.cd-box-border:hover{box-shadow:0 0 20px rgb(0,0,0,.1); 
+.process-cd-box-border:hover{box-shadow:0 0 20px rgb(0,0,0,.1); 
             background-image: url(' . Url::to('@eyAssets/images/pages/dashboard/cd-box-bg.jpg') . ');
             background-size:cover; color:#000 !important;
 }                    
@@ -421,7 +421,7 @@ $('[data-toggle="tooltip"]').tooltip();
 //    alert($('#chkveg').val());    
 //}); 
  
-$('.cd-box-border').click(function(){
+$('.process-cd-box-border').click(function(){
     $(this).closest('.cd-can-box').find('.cd-box-border-hide').slideToggle('slow');
 });
             
