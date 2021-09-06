@@ -255,6 +255,11 @@ if ($type == 'Internships') {
                                        onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                         <i class="fab fa-telegram-plane"></i>
                                     </a>
+                                    <a href="javascript:;" class="copy" id="copy-btn"
+                                       onclick="copyFunction()">
+                                       <span class="tooltiptext" id="myTooltip">Copy Link</span>
+                                       <i class="fas fa-copy"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -591,6 +596,10 @@ h3.job-detail {
    color:#0088cc;
     border-color:#0088cc;  
 }
+.share-bar a.copy{
+    color:#22577A;
+     border-color:#22577A;  
+ }
 .share-bar a:hover{
     color: #fff;
     transition: 0.2s all ease-in;
@@ -616,6 +625,34 @@ h3.job-detail {
 .share-bar a.tg-tele:hover{
    background-color:#0088cc;
     border-color:#0088cc;  
+}
+.share-bar a.copy:hover{
+    background-color:#22577A;
+     border-color:#22577A;  
+ }
+ #myTooltip:after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background: #222;
+    display: block;
+    position: absolute;
+    transform: translateY(-50%);
+    transform: rotate(45deg) translate(-93%);
+    left: 50%;
+    border-radius: 2px;
+    z-index: -1;
+}
+#myTooltip {
+    position: absolute;
+    font-size: 13px;
+    color: #fff;
+    background: #222;
+    width: 70px;
+    border-radius: 5px;
+    top: -30px;
+    transform: translateX(-50%);
+    display: none;
 }
 
 .com-name{ 
@@ -746,6 +783,7 @@ h3.job-detail {
     background: #888888;
     content: "";
 }
+
 @media only screen and (max-width:992px){
     .job-overviews li{flex-basis:49%;}
     .j-details{
@@ -801,7 +839,29 @@ utilities.initials();
 var load_template = `<div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-body"><img src="/assets/themes/dashboard/global/img/loading-spinner-grey.gif" class="loading"><span>Loading... </span></div></div></div>`;
 $(document).on("click", ".jd-close", function(){
     $("#pop_up_modal").modal("hide");
-    $("#pop_up_modal").html(load_template);
+    $("#pop_up_modal").html(load_template);    
 });
+
+
+var copyBtn = document.querySelector("#copy-btn");
+var copyTooltip = document.querySelector("#myTooltip");
+copyBtn.addEventListener("mouseover", () => {
+    copyTooltip.style.display = "inline";
+});
+copyBtn.addEventListener("mouseout", () => {
+    copyTooltip.style.display = "none";
+});
+
+
+function copyFunction() {
+    var detailLink = document.querySelector(".view-detail").getAttribute("href");
+    navigator.clipboard.writeText("empoweryouth.com" + detailLink);
+    copyTooltip.innerHTML = "Copied";
+
+    setTimeout(function() {
+        copyTooltip.innerHTML = "Copy Link";
+    }, 5000);
+}
+
 ');
 $this->registerJs($script);
