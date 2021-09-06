@@ -269,6 +269,7 @@ if ($type == 'Internships') {
                                 ?>
                                 <h3 class="job-detail">Description</h3>
                                 <div class="j-text j-textt">
+                                    <div class="overlay"></div>
                                     <p>
                                         <?= $data['description'] ?>
                                     </p>
@@ -332,6 +333,9 @@ $this->registerCss('
 }
 .j-textt{
 	max-height: 364px;
+}
+.overlay {
+    background: linear-gradient(180deg, transparent 80%, #ffffff 94%);
 }
 .read-moree{
     height:auto;
