@@ -34,7 +34,7 @@ use yii\widgets\Pjax;
                                                 <?php
                                                 if($review['unclaimed_organization_enc_id'] != null){
                                                     $unclaimed_organization_enc_id = \common\models\UnclaimedOrganizations::findOne(['organization_enc_id' => $review['unclaimed_organization_enc_id']]);
-                                                    if ($review['logo']) {
+                                                    if ($unclaimed_organization_enc_id->logo) {
                                                         $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $unclaimed_organization_enc_id->logo_location . DIRECTORY_SEPARATOR . $unclaimed_organization_enc_id->logo;
                                                     } else {
                                                         $organizationLogo = "https://ui-avatars.com/api/?name=" . $unclaimed_organization_enc_id->name . "&size=200&rounded=true&background=" . str_replace("#", "", $unclaimed_organization_enc_id->initials_color) . "&color=ffffff";
