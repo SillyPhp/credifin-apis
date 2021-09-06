@@ -52,7 +52,7 @@ $this->registercss('
 	width: 28px;
 	margin: 7px;
 	text-align: center;
-	line-height: 25px;
+	line-height: 28px;
 	font-size: 18px;
 	font-family: roboto;
 	border-radius: 4px;

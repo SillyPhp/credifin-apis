@@ -66,228 +66,260 @@ if ($type == 'Internships') {
     $link = Url::to($application_details['link'], true);
 }
 ?>
-<div id="openModal" class="modalDialog">
-    <div class="modal-bg">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="modal-main col-md-offset-2 col-sm-offset-1 col-xs-offset-1  col-md-8 col-sm-10 col-xs-10">
-                    <a href="javascript:;" title="Close" class="jd-close">✕</a>
-                    <div class="job-details-header col-md-12">
-                        <div class="com-initials">
-                            <div class="company-logo">
-                                <?php
-                                if (!empty($application_details['logo'])) {
-                                    if ($application_details['organization_enc_id']) {
-                                ?>
-                                        <img src="<?= Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $application_details['logo_location'] . DIRECTORY_SEPARATOR . $application_details['logo'] ?>" class="img-responsive" />
+    <div id="openModal" class="modalDialog">
+        <div class="modal-bg">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="modal-main col-md-offset-2 col-sm-offset-1 col-xs-offset-1  col-md-8 col-sm-10 col-xs-10">
+                        <a href="javascript:;" title="Close" class="jd-close">✕</a>
+                        <div class="job-details-header col-md-12">
+                            <div class="com-initials">
+                                <div class="company-logo">
                                     <?php
-                                    } else { ?>
-                                        <img src="<?= Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $application_details['logo_location'] . DIRECTORY_SEPARATOR . $application_details['logo'] ?>" class="img-responsive" />
-                                    <?php
+                                    if (!empty($application_details['logo'])) {
+                                        if ($application_details['organization_enc_id']) {
+                                            ?>
+                                            <img src="<?= Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $application_details['logo_location'] . DIRECTORY_SEPARATOR . $application_details['logo'] ?>"
+                                                 class="img-responsive"/>
+                                            <?php
+                                        } else { ?>
+                                            <img src="<?= Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $application_details['logo_location'] . DIRECTORY_SEPARATOR . $application_details['logo'] ?>"
+                                                 class="img-responsive"/>
+                                            <?php
+                                        }
+                                    } else {
+                                        ?>
+                                        <canvas class="user-icon" name="<?= $application_details['org_name'] ?>"
+                                                color="<?= $application_details['color'] ?>" width="100" height="100"
+                                                border-radius="70px" font="45px"></canvas>
+                                        <?php
                                     }
+                                    ?>
+                                </div>
+                                <div class="name-f-c">
+                                    <div><a href="<?= $application_details['link'] ?>" class="com-name"
+                                            target="_blank"><?= $data['cat_name'] ?></a></div>
+                                    <div><a href="<?= $application_details['org_link'] ?>" class="com-est"
+                                            target="_blank"><?= $application_details['org_name'] ?></a></div>
+                                </div>
+                            </div>
+                            <div class="buttons-detail">
+                                <?php
+                                if ($application_details['applied']) {
+                                    ?>
+                                    <a href="javascript:;" class="b-apply">Applied</a>
+                                    <?php
+                                } else if (!$application_details['unclaimed_organization_enc_id']) {
+                                    ?>
+                                    <a href="javascript:;" data-app="<?= $application_details['application_enc_id']; ?>"
+                                       data-org="<?= $application_details['organization_enc_id']; ?>"
+                                       class="b-apply applyApplicationNow <?= $application_details['application_enc_id']; ?>-apply-now">Apply
+                                        Now</a>
+                                    <?php
                                 } else {
                                     ?>
-                                    <canvas class="user-icon" name="<?= $application_details['org_name'] ?>" color="<?= $application_details['color'] ?>" width="100" height="100" border-radius="70px" font="45px"></canvas>
-                                <?php
+                                    <a href="<?= $application_details['link'] ?>" target="_blank" class="b-apply">Apply Now</a>
+                                    <?php
                                 }
                                 ?>
-                            </div>
-                            <div class="name-f-c">
-                                <div><a href="<?= $application_details['link'] ?>" class="com-name" target="_blank"><?= $data['cat_name'] ?></a></div>
-                                <div><a href="<?= $application_details['org_link'] ?>" class="com-est" target="_blank"><?= $application_details['org_name'] ?></a></div>
+                                <a href="<?= $application_details['link'] ?>" target="_blank" class="view-detail">View Detail</a>
                             </div>
                         </div>
-                        <div class="buttons">
-                            <div class="view-detail-btn">
-                                <a href="<?= $application_details['link'] ?>"  target="_blank" class="view-detail">View Details</a>
-                            </div>
-                            <!-- <div class="b-apply foo">
-                                <a href="<?= $application_details['link'] ?>" class="apply-job-btn apply-btn" target="_blank">Apply Now</a>
-                            </div> -->
-                        </div>
-                    </div>
-                    <div class="j-details col-md-4">
-                        <ul class="job-overviews row col-md-12">
-                            <li>
-                                <i class="far fa-clock"></i>
-                                <h3>Experience</h3>
-                                <span><?= $data['experience'] ?></span>
-                            </li>
-                            <li>
-                                <i class="fas fa-map-marker-alt"></i>
-                                <h3>Location</h3>
-                                <span><?= (($str) ? rtrim($str, ',') : 'Work From Home'); ?></span>
-                            </li>
-                            <?php
-                            if ($type == '"jobs"') {
-                                if ($data['wage_type'] == 'Fixed') {
-                                    $amount = $data['fixed_wage'];
-                                    setlocale(LC_MONETARY, 'en_IN');
-                                    $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount)) . 'p.a.';
-                                } else if ($data['wage_type'] == 'Negotiable') {
-                                    $amount1 = $data['min_wage'];
-                                    $amount2 = $data['max_wage'];
-                                    setlocale(LC_MONETARY, 'en_IN');
-                                    if (!empty($min_wage) && !empty($max_wage)) {
-                                        $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . 'p.a.' . '&nbspTo&nbsp' . '&#8377 ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.a.';
-                                    } elseif (!empty($min_wage)) {
-                                        $amount = 'From &#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . 'p.a.';
-                                    } elseif (!empty($max_wage)) {
-                                        $amount = 'Upto &#8377 ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.a.';
-                                    } elseif (empty($min_wage) && empty($max_wage)) {
-                                        $amount = 'Negotiable';
+                        <div class="j-details col-md-4">
+                            <ul class="job-overviews row col-md-12">
+                                <li>
+                                    <i class="far fa-clock"></i>
+                                    <h3>Experience</h3>
+                                    <span><?= $data['experience'] ?></span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <h3>Location</h3>
+                                    <span><?= (($str) ? rtrim($str, ',') : 'Work From Home'); ?></span>
+                                </li>
+                                <?php
+                                if ($type == '"jobs"') {
+                                    if ($data['wage_type'] == 'Fixed') {
+                                        $amount = $data['fixed_wage'];
+                                        setlocale(LC_MONETARY, 'en_IN');
+                                        $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount)) . 'p.a.';
+                                    } else if ($data['wage_type'] == 'Negotiable') {
+                                        $amount1 = $data['min_wage'];
+                                        $amount2 = $data['max_wage'];
+                                        setlocale(LC_MONETARY, 'en_IN');
+                                        if (!empty($min_wage) && !empty($max_wage)) {
+                                            $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . 'p.a.' . '&nbspTo&nbsp' . '&#8377 ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.a.';
+                                        } elseif (!empty($min_wage)) {
+                                            $amount = 'From &#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . 'p.a.';
+                                        } elseif (!empty($max_wage)) {
+                                            $amount = 'Upto &#8377 ' . utf8_encode(money_format('%!.0n', $amount2)) . 'p.a.';
+                                        } elseif (empty($min_wage) && empty($max_wage)) {
+                                            $amount = 'Negotiable';
+                                        }
+                                    }
+                                    ?>
+                                    <li>
+                                        <i class="far fa-money-bill-alt"></i>
+                                        <h3>Salary</h3>
+                                        <span><?= $amount; ?></span>
+                                    </li>
+                                    <?php
+                                }
+                                if (!empty($data['industry'])) {
+                                    ?>
+                                    <li>
+                                        <i class="fas fa-puzzle-piece"></i>
+                                        <h3>Preferred Industry</h3>
+                                        <span><?= $data['industry'] ?></span>
+                                    </li>
+                                    <?php
+                                }
+                                if (!empty($data['designation'])) {
+                                    ?>
+                                    <li>
+                                        <i class="fas fa-thumbtack"></i>
+                                        <h3>Designation</h3>
+                                        <span><?= $data['designation'] ?></span>
+                                    </li>
+                                    <?php
+                                }
+                                if ($type == '"internships"') {
+                                    if (!empty($data['min_wage'])) {
+                                        ?>
+                                        <li>
+                                            <i class="far fa-money-bill-alt"></i>
+                                            <h3>Minimum stipend</h3>
+                                            <span><?= (($data['min_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' p.m.' : 'N/A'); ?></span>
+                                        </li>
+                                        <?php
+                                    }
+                                    if (!empty($data['max_wage'])) {
+                                        ?>
+                                        <li><i class="far fa-money-bill-alt"></i>
+                                            <h3>Maximum Stipend</h3>
+                                            <span><?= (($data['max_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . ' p.m.' : 'N/A'); ?></span>
+                                        </li>
+                                        <?php
+                                    }
+                                    if (!empty($data['fixed_wage'])) {
+                                        ?>
+                                        <li>
+                                            <i class="far fa-money-bill-alt"></i>
+                                            <h3>Fixed Stipend</h3>
+                                            <span><?= (($data['fixed_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) . 'p.m.' : 'N/A') ?></span>
+                                        </li>
+                                        <?php
                                     }
                                 }
-                            ?>
-                                <li>
-                                    <i class="far fa-money-bill-alt"></i>
-                                    <h3>Salary</h3>
-                                    <span><?= $amount; ?></span>
-                                </li>
-                            <?php
-                            }
-                            if (!empty($data['industry'])) {
-                            ?>
-                                <li>
-                                    <i class="fas fa-puzzle-piece"></i>
-                                    <h3>Preferred Industry</h3>
-                                    <span><?= $data['industry'] ?></span>
-                                </li>
-                            <?php
-                            }
-                            if (!empty($data['designation'])) {
-                            ?>
-                                <li>
-                                    <i class="fas fa-thumbtack"></i>
-                                    <h3>Designation</h3>
-                                    <span><?= $data['designation'] ?></span>
-                                </li>
-                                <?php
-                            }
-                            if ($type == '"internships"') {
-                                if (!empty($data['min_wage'])) {
                                 ?>
-                                    <li>
-                                        <i class="far fa-money-bill-alt"></i>
-                                        <h3>Minimum stipend</h3>
-                                        <span><?= (($data['min_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' p.m.' : 'N/A'); ?></span>
-                                    </li>
-                                <?php
-                                }
-                                if (!empty($data['max_wage'])) {
-                                ?>
-                                    <li><i class="far fa-money-bill-alt"></i>
-                                        <h3>Maximum Stipend</h3>
-                                        <span><?= (($data['max_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . ' p.m.' : 'N/A'); ?></span>
-                                    </li>
-                                <?php
-                                }
-                                if (!empty($data['fixed_wage'])) {
-                                ?>
-                                    <li>
-                                        <i class="far fa-money-bill-alt"></i>
-                                        <h3>Fixed Stipend</h3>
-                                        <span><?= (($data['fixed_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) . 'p.m.' : 'N/A') ?></span>
-                                    </li>
-                            <?php
-                                }
-                            }
-                            ?>
-                            <li>
-                                <i class="fas fa-suitcase"></i>
-                                <h3>Type</h3>
-                                <span><?= $application_details['type'] ?></span>
-                            </li>
-                            <li>
-                                <i class="fas fa-chart-line"></i>
-                                <h3>Total Vacancies</h3>
-                                <span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span>
-                            </li>
-                        </ul>
+                                <li>
+                                    <i class="fas fa-suitcase"></i>
+                                    <h3>Type</h3>
+                                    <span><?= $application_details['type'] ?></span>
+                                </li>
+                                <li>
+                                    <i class="fas fa-chart-line"></i>
+                                    <h3>Total Vacancies</h3>
+                                    <span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span>
+                                </li>
+                            </ul>
                             <div class="col-md-12 flex-share">
                                 <div class="share-bar">
                                     <h3>Share</h3>
-                                    <a href="javascript:;" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-fb">
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="share-fb">
                                         <i class="fab fa-facebook-f"></i>
                                     </a>
-                                    <a href="javascript:;" onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-twitter">
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="share-twitter">
                                         <i class="fab fa-twitter"></i>
                                     </a>
-                                    <a href="javascript:;" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-linkedin">
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="share-linkedin">
                                         <i class="fab fa-linkedin-in"></i>
                                     </a>
-                                    <a href="javascript:;" onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-whatsapp">
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="share-whatsapp">
                                         <i class="fab fa-whatsapp"></i>
                                     </a>
-                                    <a href="javascript:;" onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-google">
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="share-google">
                                         <i class="fas fa-envelope"></i>
                                     </a>
-                                    <a href="javascript:;" class="tg-tele" onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                    <a href="javascript:;" class="tg-tele"
+                                       onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                         <i class="fab fa-telegram-plane"></i>
                                     </a>
                                 </div>
                             </div>
-                    </div>
-                    <div class="j-discription col-md-8">
-                        <?php
-                        if ($data['description']) {
-                        ?>
-                            <h3 class="job-detail">Description</h3>
-                            <div class="j-text j-textt">
-                                <p>
-                                    <?= $data['description'] ?>
-                                </p>
-                                <p>
-                                <ul>
+                        </div>
+                        <div class="j-discription col-md-8">
+                            <?php
+                            if ($data['description']) {
+                                ?>
+                                <h3 class="job-detail">Description</h3>
+                                <div class="j-text j-textt">
+                                    <p>
+                                        <?= $data['description'] ?>
+                                    </p>
+                                    <p>
+                                    <ul>
+                                        <?php
+                                        foreach ($data['applicationJobDescriptions'] as $jd) {
+                                            ?>
+                                            <li><?= $jd['job_description'] ?></li>
+                                            <?php
+                                        }
+                                        ?>
+                                    </ul>
+                                    </p>
+                                </div>
+                                <div class="read-more col-md-12 p-0"><a href="<?= $application_details['link'] ?>"
+                                                                        target="_blank" class="showmore">Read
+                                        More......</a>
+                                </div>
+                                <?php
+                            }
+                            if ($data['applicationSkills']) {
+                                ?>
+                                <h3 class="job-detail">Skills Required</h3>
+                                <div class="tags-bar">
                                     <?php
-                                    foreach ($data['applicationJobDescriptions'] as $jd) {
+                                    foreach ($data['applicationSkills'] as $skill) {
+                                        ?>
+                                        <span><?= $skill['skill'] ?></span>
+                                        <?php
+                                    }
                                     ?>
-                                        <li><?= $jd['job_description'] ?></li>
+                                </div>
+                                <?php
+                            }
+                            if ($data['applicationSkills']) {
+                                ?>
+                                <h3 class="job-detail">Education/Qualification</h3>
+                                <ul class="edu-requirement">
                                     <?php
+                                    foreach ($data['applicationEducationalRequirements'] as $qualifications) {
+                                        ?>
+                                        <li><?= $qualifications['educational_requirement']; ?></li>
+                                        <?php
                                     }
                                     ?>
                                 </ul>
-                                </p>
-                            </div>
-                            <div class="read-more col-md-12 p-0"><a href="<?= $application_details['link'] ?>" target="_blank" class="showmore">Read More......</a>
-                            </div>
-                        <?php
-                        }
-                        if ($data['applicationSkills']) {
-                        ?>
-                            <h3 class="job-detail">Skills Required</h3>
-                            <div class="tags-bar">
                                 <?php
-                                foreach ($data['applicationSkills'] as $skill) {
-                                ?>
-                                    <span><?= $skill['skill'] ?></span>
-                                <?php
-                                }
-                                ?>
-                            </div>
-                        <?php
-                        }
-                        if ($data['applicationSkills']) {
-                        ?>
-                            <h3 class="job-detail">Education/Qualification</h3>
-                            <ul class="edu-requirement">
-                                <?php
-                                foreach ($data['applicationEducationalRequirements'] as $qualifications) {
-                                ?>
-                                    <li><?= $qualifications['educational_requirement']; ?></li>
-                                <?php
-                                }
-                                ?>
-                            </ul>
-                        <?php
-                        }
-                        ?>
+                            }
+                            ?>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 <?php
 $this->registerCss('
 .flex-share{
@@ -603,7 +635,7 @@ h3.job-detail {
     padding: 20px 0;
     display: flex;
     align-items: center;
-    flex-basis: 70%;
+    flex-basis: 65%;
 }
 .job-details-header {
     background: #fff;
@@ -615,12 +647,12 @@ h3.job-detail {
 }
 .company-logo {
     text-align: center;
-    width: 70px;
-    height: 70px;
+    width: 100px;
+    height: 100px;
     overflow: hidden;
     box-shadow: 0 0 10px 0px rgb(0 0 0 / 30%);
     border-radius: 70px;
-    min-width: 70px;
+    min-width: 100px;
 }
 .company-logo img {
     width: 100%;
@@ -660,34 +692,35 @@ h3.job-detail {
     font-weight: 900;
     margin-top: 5px;
 }
-.buttons{
-    display: flex;
-    align-items: center;
-    flex-basis: 30%;
+.buttons-detail{
+    text-align: center;
+    flex-basis: 35%;
 }
-.buttons .view-detail-btn{
-    margin-left: auto;
-}
-.view-detail{
-    margin-right: 15px;
+.view-detail, .b-apply, .view-detail:focus, .b-apply:focus{
     transition: .2s all ease-in;
     font-weight: 600;
-    background: #ff7803;
-    padding: 8px 18px;
+    padding: 6px 22px;
     color: #fff;
     border-radius: 5px;
-    border: 2px solid #ff7803;
+    margin-bottom: 5px;
+    transition: .2s all ease-in;
+    display:inline-block;
+}
+.b-apply{
+    background-color:#00a0e3;
+    border:2px solid #00a0e3;
+}
+.b-apply:hover{
+    background-color:#fff;
+    color:#00a0e3;
+}
+.view-detail{
+    background-color:#ff7803;
+    border:2px solid #ff7803;   
 }
 .view-detail:hover{
-    font-weight: 600;
-    transition: .2s all ease-in;
-    background: #fff;
+    background-color: #fff;
     color: #ff7803;
-    border: 2px solid #ff7803;
-}
-.b-apply{  
-    border-radius: 8px;
-    text-align: right;
 }
 .edu-requirement {
     width: 100%;
@@ -722,17 +755,13 @@ h3.job-detail {
         padding: 0;
         margin-right: -15px;
     }
-    .view-detail{
-        padding: 2px 18px;
-    }
 }
 @media only screen and (max-width:768px){
     .job-details-header{
         flex-direction: column;
     }
-    .view-detail{
-        margin-bottom: 10px;
-        display: block;
+    .view-detail, .b-apply{
+        padding: 4px 16px;
     }
 }
 @media only screen and (max-width:670px){
