@@ -190,7 +190,7 @@ use yii\widgets\Pjax;
                                                                         <?php
                                                                         if ($review['unclaimed_organization_enc_id'] != null) {
                                                                             $unclaimed_organization_enc_id = \common\models\UnclaimedOrganizations::findOne(['organization_enc_id' => $review['unclaimed_organization_enc_id']]);
-                                                                            if ($review['logo']) {
+                                                                            if ($unclaimed_organization_enc_id->logo) {
                                                                                 $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $unclaimed_organization_enc_id->logo_location . DIRECTORY_SEPARATOR . $unclaimed_organization_enc_id->logo;
                                                                             } else {
                                                                                 $organizationLogo = "https://ui-avatars.com/api/?name=" . $unclaimed_organization_enc_id->name . "&size=200&rounded=true&background=" . str_replace("#", "", $unclaimed_organization_enc_id->initials_color) . "&color=ffffff";
@@ -294,7 +294,7 @@ use yii\widgets\Pjax;
                                                                     <div class="hr-com-icon">
                                                                         <?php
                                                                         if ($shortlist['unclaimed_organization_enc_id'] != null) {
-                                                                            if ($shortlist['logo']) {
+                                                                            if ($shortlist['unclaim_org_logo']) {
                                                                                 $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $shortlist['unclaim_org_logo_location'] . DIRECTORY_SEPARATOR . $shortlist['unclaim_org_logo'];
                                                                             } else {
                                                                                 $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['unclaim_org_name'] . "&size=200&rounded=true&background=" . str_replace("#", "", $shortlist['unclaim_org_initials_color']) . "&color=ffffff";

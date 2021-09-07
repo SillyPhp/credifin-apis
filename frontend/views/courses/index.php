@@ -242,7 +242,7 @@ if (Yii::$app->user->isGuest) {
             <a href="/courses/courses-list?cat={{title}}">
                 <div class="newset">
                     <div class="imag">
-                        <img src="/assets/themes/ey/images/pages/learning-corner/othercategory.png" alt="{{title}}"/>
+                        <img src="/assets/themes/ey/images/pages/learning-corner/{{icon_name}}.png" alt="{{title}}"/>
                     </div>
                     <div class="txt">{{title}}</div>
                 </div>
