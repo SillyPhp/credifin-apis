@@ -41,7 +41,10 @@ $this->params['seo_tags'] = [
 ?>
 
 <!--Modal-->
-<div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+<?php
+    if(Yii::$app->user->identity->organization->organization_enc_id){
+?>
+    <div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" id="profiles">
         <!-- Modal content-->
         <div class="modal-content">
@@ -86,6 +89,9 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </div>
+<?php
+    }
+?>
 
 <section>
     <div class="container">
