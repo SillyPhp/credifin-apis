@@ -150,19 +150,32 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                         </div>
 
                         <div class="j-share">
-                            <span class="fbook" data-toggle="tooltip" title="Share on Facebook"><a href="javascript:;" onclick="window.open('<?= 'https://www.facebook.com/sharer/sharer.php?u=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-facebook"></i></a></span>
-                            <span class="wts" data-toggle="tooltip" title="Share on Whatsapp"><a href="javascript:;" onclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fa fa-whatsapp"></i></a></span>
-                            <span class="twt" data-toggle="tooltip" title="Share on Twitter"><a href="javascript:;" onclick="window.open('<?= 'https://twitter.com/intent/tweet?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');" <i class="fa fa-twitter"></i></a></span>
-                            <span class="mail" data-toggle="tooltip" title="Share via Email"><a href="javascript:;" onclick="window.open('<?= 'mailto:?&body=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');" <i class="fa fa-envelope"></i></a></span>
-                            <span class="link" data-toggle="tooltip" title="Share on LinkedIn"><a href="javascript:;" onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');" <i class="fa fa-linkedin"></i></a></span>
+                            <span class="fbook" data-toggle="tooltip" title="Share on Facebook"><a href="javascript:;"
+                                                                                                   onclick="window.open('<?= 'https://www.facebook.com/sharer/sharer.php?u=' . Url::to($slug_base . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                            class="fa fa-facebook"></i></a></span>
+                            <span class="wts" data-toggle="tooltip" title="Share on Whatsapp"><a
+                                        href="javascript:;"
+                                        onclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($slug_base . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                            class="fa fa-whatsapp"></i></a></span>
+                            <span class="twt" data-toggle="tooltip" title="Share on Twitter"><a href="javascript:;"
+                                                                                                onclick="window.open('<?= 'https://twitter.com/intent/tweet?text=' . Url::to($slug_base . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
+                                        class="fa fa-twitter"></i></a></span>
+                            <span class="mail" data-toggle="tooltip" title="Share via Email"><a href="javascript:;"
+                                                                                                onclick="window.open('<?= 'mailto:?&body=' . Url::to($slug_base . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
+                                        class="fa fa-envelope"></i></a></span>
+                            <span class="link" data-toggle="tooltip" title="Share on LinkedIn"><a
+                                        href="javascript:;"
+                                        onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($slug_base . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
+                                        class="fa fa-linkedin"></i></a></span>
                             <span class="j-">
-                                <?php
-                                $link = Url::to('/' . $app_type . '/' . $application_name['slug'], "https");
-                                ?>
-                                <a href="javascript:;" class="clipb tt jj-clipboard" type="button" data-toggle="tooltip" title="Copy Link" data-link="<?= $link ?>">
-                                    <i class="fa fa-clipboard"></i>
-                                </a>
-                            </span>
+                            <?php
+                            $link = Url::to($slug_base . $application_name['slug'], "https");
+                            ?>
+                            <a href="javascript:;" class="clipb tt jj-clipboard" type="button" data-toggle="tooltip"
+                               title="Copy Link" data-link="<?= $link ?>">
+                                <i class="fa fa-clipboard"></i>
+                            </a>
+                        </span>
                         </div>
                     </div>
                 </div>
