@@ -175,6 +175,12 @@ $this->registerCss('
 .up-btn:hover:focus{
     width:100%;
 }
+@media screen and (max-width: 768px) {
+    .fab-message{margin-left:80%;}
+}
+@media screen and (max-width: 600px) {
+  .fab-message{margin-left:70%;}
+}
 ');
 
 $script = <<<JS

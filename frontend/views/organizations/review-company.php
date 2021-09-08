@@ -50,7 +50,7 @@ $this->params['seo_tags'] = [
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
-                <div><a href="<?= Url::to('/' . $slug); ?>" class="com-name"><?= ucwords($org_details['name']); ?></a>
+                <div class="com-name-set"><a href="<?= Url::to('/' . $slug); ?>" class="com-name"><?= ucwords($org_details['name']); ?></a>
                 </div>
                 <div class="com-rating-1">
                     <?php for ($i = 1; $i <= 5; $i++) { ?>
@@ -307,10 +307,8 @@ $this->params['seo_tags'] = [
                 <div id="organizations-cards-main" class="row">
                     <div class="heading-style">Similar Organizations</div>
                     <div class="divider"></div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div id="companies-card" class="row"></div>
-                        </div>
+                    <div class="col-md-12">
+                        <div id="companies-card" class="row"></div>
                     </div>
                 </div>
             </div>
@@ -531,8 +529,8 @@ $this->params['seo_tags'] = [
 <input type="hidden" name="hidden_city_location" class="hidden_city_location">
 </div>
 <?php
-echo $this->render('/widgets/mustache/companies-card',[
-       'hideDropResume' => true,
+echo $this->render('/widgets/mustache/companies-card', [
+    'hideDropResume' => true,
 ]);
 echo $this->render('/widgets/mustache/application-card');
 
@@ -1274,7 +1272,8 @@ border: 2px solid #cadfe8 !important;
     }
 }
 
-@media only screen and (max-width: 767px){
+@media only screen and (max-width: 768px){
+    .com-name-set,.com-rating-1,.com-rate{text-align:left;}
     .rh-header{
         background-size:100% 520px;
         text-align:center;
@@ -1297,7 +1296,14 @@ border: 2px solid #cadfe8 !important;
         text-align: center;
         padding-top: 20px;
     }
+    .review-summary{
+        padding-left:0px;
+    }
     
+}
+@media only screen and (max-width: 767px){
+.com-name-set,.com-rating-1,.com-rate{text-align:center;}
+.share-btn{justify-content:center;}
 }
 .i-review-box *{
     font-family: "Roboto Slab";
