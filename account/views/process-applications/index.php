@@ -2882,7 +2882,8 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.
                 div.innerHTML = notesTemp;
                 parentElem.insertAdjacentElement('afterend', div);
                 let textArea = document.querySelector(".noteText");
-                textArea.focus();
+                
+                PosEnd(textArea);   
 
                 let closeNotes = document.getElementById('closeNotes');
                 closeNotes.addEventListener('click', function() {
@@ -2910,6 +2911,21 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.
                     div.remove();
                 });
             })
+        }
+    }
+
+    function PosEnd(end) {
+        var len = end.value.length;
+            
+        if (end.setSelectionRange) {
+            end.focus();
+            end.setSelectionRange(len, len);
+        } else if (end.createTextRange) {
+            var t = end.createTextRange();
+            t.collapse(true);
+            t.moveEnd('character', len);
+            t.moveStart('character', len);
+            t.select();
         }
     }
 
