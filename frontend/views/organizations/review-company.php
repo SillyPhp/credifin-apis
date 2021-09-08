@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $radios_array = [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5];
-$this->title = $org_details['name'] . ' ' . Yii::$app->params->seo_settings->title_separator . ' Reviews';
+$this->title = htmlspecialchars_decode($org_details['name']) . ' ' . Yii::$app->params->seo_settings->title_separator . ' Reviews';
 Yii::$app->view->registerJs('var slug = "' . $slug . '"', \yii\web\View::POS_HEAD);
 $overall_avg = array_sum($stats) / count($stats);
 $round_avg = round($overall_avg);
@@ -38,12 +38,6 @@ $this->params['seo_tags'] = [
         'fb:app_id' => '973766889447403'
     ],
 ];
-
-echo $this->render('/widgets/drop_resume', [
-    'username' => Yii::$app->user->identity->username,
-    'type' => 'company',
-    'slug' => $slug
-]);
 ?>
 <section class="rh-header">
     <div class="container">
@@ -549,8 +543,13 @@ if ($review_type == 'claimed') {
     echo $this->render('/widgets/mustache/organization-unclaimed-reviews', [
     ]);
 }
-
+echo $this->render('/widgets/drop_resume', [
+    'username' => Yii::$app->user->identity->username,
+    'type' => 'company',
+    'slug' => $slug
+]);
 $this->registerCss('
+.footer{margin-top:0 !important;}
 .control-label{
     font-size:16px !important;
     font-family:roboto;
