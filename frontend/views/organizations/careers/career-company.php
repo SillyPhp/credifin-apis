@@ -8,11 +8,6 @@ use yii\helpers\Html;
 use frontend\widgets\login;
 
 //Yii::$app->view->registerJs('var slug_var = "' . $org['slug'] . '"', \yii\web\View::POS_HEAD);
-echo $this->render('/widgets/drop_resume', [
-    'username' => Yii::$app->user->identity->username,
-    'type' => 'application',
-    'slug' => $org['slug']
-]);
 ?>
 
 <section class="overlape">
@@ -346,7 +341,13 @@ echo $this->render('/widgets/drop_resume', [
     </div>
 </section>
 
-
+<?php
+echo $this->render('/widgets/drop_resume', [
+    'username' => Yii::$app->user->identity->username,
+    'type' => 'application',
+    'slug' => $org['slug']
+]);
+?>
 <?php
 echo $this->render('/widgets/mustache/career-job-box');
 if (Yii::$app->user->isGuest) {
@@ -354,6 +355,7 @@ if (Yii::$app->user->isGuest) {
 }
 //$this->registerCssFile('@eyAssets/css/chosen.css');
 $this->registerCss('
+.footer{margin-top:0 !important;}
 .login-msg .modal-header,
 .login-msg .modal-footer{
     border: none;
