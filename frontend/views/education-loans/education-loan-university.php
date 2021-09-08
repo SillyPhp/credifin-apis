@@ -10,7 +10,7 @@ use yii\helpers\Url;
                     <h1>Pay School / College fees MONTHLY at ZERO cost*</h1>
                     <p>Don't pay in advance for Education</p>
                     <div class="apply-btn">
-                        <a href="">Apply Now</a>
+                        <a href="/education-loans/apply">Apply Now</a>
                     </div>
                 </div>
                 <div class="col-md-6">

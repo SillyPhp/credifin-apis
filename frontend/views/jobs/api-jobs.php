@@ -1658,7 +1658,9 @@ $(document).on('keypress','.wts-txt',function(e) {
              window.open('https://api.whatsapp.com/send?phone='+val+'&text=' + location);
         }
         $('.wts-txt').val('');
-});      
+});
+loader = false;
+addToReviewList();
 getCards('" . $type . 's' . "','.blogbox','/organizations/organization-related-titles?title=" . $get['title'] . "');    
 ");
 ?>
