@@ -26,7 +26,6 @@
 </div>
 <?php
 $this->registerCss('
-.short-main{margin-bottom:30px;}
 .cd-box-border {
     position: absolute;
     top: 172px;
