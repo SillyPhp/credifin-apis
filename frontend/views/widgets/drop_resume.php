@@ -99,7 +99,7 @@ $this->registerCss('
     -o-transition: all .2s ease-in-out;
     transition: all .2s ease-in-out;
     bottom: 30px;
-    margin-left: 90%;
+    margin-left: calc(100% - 130px);
     z-index:9;
 }
 #fab-message-open:hover .fab-hover-message{
@@ -174,12 +174,6 @@ $this->registerCss('
 }
 .up-btn:hover:focus{
     width:100%;
-}
-@media screen and (max-width: 768px) {
-    .fab-message{margin-left:80%;}
-}
-@media screen and (max-width: 600px) {
-  .fab-message{margin-left:70%;}
 }
 ');
 
