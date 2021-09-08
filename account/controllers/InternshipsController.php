@@ -902,7 +902,7 @@ class InternshipsController extends Controller
             ->groupBy(['a.followed_enc_id'])
             ->distinct()
             ->orderBy(['a.id' => SORT_DESC])
-            ->limit(8)
+            ->limit(6)
             ->asArray()
             ->all();
 
