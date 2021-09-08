@@ -490,4 +490,9 @@ class EducationLoansController extends Controller
     public function actionTermsAndConditions(){
         return $this->render('terms-and-conditions');
     }
+
+    public function actionFaq()
+    {
+        return $this->render('faq');
+    }
 }
