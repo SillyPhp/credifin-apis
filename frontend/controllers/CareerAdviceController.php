@@ -53,11 +53,12 @@ class CareerAdviceController extends Controller
         $posts = $postsModel->find()
             ->alias('a')
             ->select(['a.post_enc_id', 'a.featured_image_location', 'a.featured_image', 'a.featured_image_alt', 'featured_image_title', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug'])
-            ->joinWith(['postCategories b' => function ($b) {
+            ->innerJoinWith(['postCategories b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false);
             }], false)
+            ->joinWith(['postTypeEnc d'], false)
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
-            ->andWhere(['not', ['c.category_enc_id' => null]])
+            ->andWhere(['<>', 'd.post_type', 'Social'])
             ->orderby(['a.created_on' => SORT_ASC])
             ->limit(8)
             ->asArray()
