@@ -87,14 +87,14 @@ switch ([$controller_id, $action_id]) {
                         if (!Yii::$app->user->isGuest) {
                             ?>
                         {{#unclaimed_organization_enc_id}}
-                            <a href="{{link}}" target="_blank" class="ji-apply" title="Apply Now">Apply Now</a>
+                            <a href="{{link}}" target="_blank" class="ji-apply <?= ((Yii::$app->user->identity->organization->organization_enc_id) ? 'disabled' : '')?>" title="Apply Now">Apply Now</a>
                         {{/unclaimed_organization_enc_id}}
                         {{^unclaimed_organization_enc_id}}
                             {{#applied}}
                             <a href="javascript:;" class="ji-apply" title="Applied">Applied</a>
                             {{/applied}}
                             {{^applied}}
-                                <a href="javascript:;" data-app="{{application_id}}" data-org="{{organization_enc_id}}" class="ji-apply applyApplicationNow {{application_id}}-apply-now" title="Apply Now">Apply Now</a>
+                                <a href="javascript:;" data-app="{{application_id}}" data-org="{{organization_enc_id}}" class="ji-apply <?= ((Yii::$app->user->identity->organization->organization_enc_id) ? 'disabled' : 'applyApplicationNow')?> {{application_id}}-apply-now" title="Apply Now">Apply Now</a>
                             {{/applied}}
                         {{/unclaimed_organization_enc_id}}
                         <?php
@@ -469,6 +469,9 @@ $(document).on('mouseleave', '.app-box', function(){
 JS;
 $this->registerJs($script);
 $this->registerCss('
+.ji-apply.disabled{
+    cursor:not-allowed;
+} 
 .moveright{right:13% !important;}
 .app-box {
     text-align: left;
