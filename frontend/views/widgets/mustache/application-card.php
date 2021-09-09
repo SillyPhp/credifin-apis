@@ -87,7 +87,17 @@ switch ([$controller_id, $action_id]) {
                         if (!Yii::$app->user->isGuest) {
                             ?>
                         {{#unclaimed_organization_enc_id}}
-                            <a href="{{link}}" target="_blank" class="ji-apply <?= ((Yii::$app->user->identity->organization->organization_enc_id) ? 'disabled' : '')?>" title="Apply Now">Apply Now</a>
+                        <?php
+                        if (Yii::$app->user->identity->organization->organization_enc_id) {
+                            ?>
+                            <a href="javascript:;" class="ji-apply disabled" title="Apply Now">Apply Now</a>
+                            <?php
+                        } else {
+                            ?>
+                            <a href="{{link}}" target="_blank" class="ji-apply" title="Apply Now">Apply Now</a>
+                        <?php
+                        }
+                        ?>
                         {{/unclaimed_organization_enc_id}}
                         {{^unclaimed_organization_enc_id}}
                             {{#applied}}
