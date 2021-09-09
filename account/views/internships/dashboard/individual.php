@@ -656,7 +656,7 @@ $this->registerCss('
     margin-right:5px;
 }
 .hr-com-icon img {
-    border-radius: 50% !important;
+//    border-radius: 50% !important;
     object-fit: contain;
     overflow: hidden;
 }
