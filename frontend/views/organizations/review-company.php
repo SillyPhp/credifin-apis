@@ -1583,6 +1583,8 @@ document.getElementById("wr").addEventListener("click", function(e){
             popup.open();
         });
 }
+loader = false;
+addToReviewList();
 getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=$slug');
 getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=$slug');
 getCompanies();
