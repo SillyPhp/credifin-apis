@@ -414,17 +414,34 @@ $this->registerCss('
 	-o-border-radius: 8px;
 	border-radius: 8px;
 	padding:15px;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: flex-start;
-	align-items: flex-start;
     background: #fff;
+    height: 359px;
+    overflow: auto;
 }
+.job-overviews::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+    border-radius: 0 8px 8px 0;
+}
+
+.job-overviews::-webkit-scrollbar
+{
+	width: 8px;
+	background-color: #F5F5F5;
+}
+
+.job-overviews::-webkit-scrollbar-thumb
+{
+	background-color: #999999;
+    border-radius: 0 8px 8px 0;
+}
+
 .job-overviews li {
 	width: 100%;
 	position: relative;
 	padding-left: 50px;
-	margin: 8px 2px;
+	margin-bottom: 15px;
 	min-height: 45px;
 }
 .job-overviews li i {
