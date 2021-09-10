@@ -105,21 +105,23 @@ if ($type == 'Internships') {
                             </div>
                             <div class="buttons-detail">
                                 <?php
-                                if ($application_details['applied']) {
-                                    ?>
-                                    <a href="javascript:;" class="b-apply">Applied</a>
-                                    <?php
-                                } else if (!$application_details['unclaimed_organization_enc_id']) {
-                                    ?>
-                                    <a href="javascript:;" data-app="<?= $application_details['application_enc_id']; ?>"
-                                       data-org="<?= $application_details['organization_enc_id']; ?>"
-                                       class="b-apply applyApplicationNow <?= $application_details['application_enc_id']; ?>-apply-now">Apply
-                                        Now</a>
-                                    <?php
-                                } else {
-                                    ?>
-                                    <a href="<?= $application_details['link'] ?>" target="_blank" class="b-apply">Apply Now</a>
-                                    <?php
+                                if(!Yii::$app->user->identity->organization->organization_enc_id){
+                                    if ($application_details['applied']) {
+                                        ?>
+                                        <a href="javascript:;" class="b-apply">Applied</a>
+                                        <?php
+                                    } else if (!$application_details['unclaimed_organization_enc_id']) {
+                                        ?>
+                                        <a href="javascript:;" data-app="<?= $application_details['application_enc_id']; ?>"
+                                           data-org="<?= $application_details['organization_enc_id']; ?>"
+                                           class="b-apply applyApplicationNow <?= $application_details['application_enc_id']; ?>-apply-now">Apply
+                                            Now</a>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <a href="<?= $application_details['link'] ?>" target="_blank" class="b-apply">Apply Now</a>
+                                        <?php
+                                    }
                                 }
                                 ?>
                                 <a href="<?= $application_details['link'] ?>" target="_blank" class="view-detail">View Detail</a>
