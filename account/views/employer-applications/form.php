@@ -97,6 +97,14 @@ Yii::$app->view->registerJs('var _experience = '.json_encode($exp).'', \yii\web\
                                     <i class="fa fa-check"></i> Interview Details  </span>
                             </a>
                         </li>
+                        <li class="step5">
+                            <a href="#tab5" data-toggle="tab" class="step">
+                                <span class="number"> 5 </span><br/>
+                                <span class="desc">
+                                    <i class="fa fa-check"></i> Confirmation </span>
+
+                            </a>
+                        </li>
                     </ul>
                     <div id="bar" class="progress progress-striped" role="progressbar">
                         <div class="progress-bar progress-bar-success"></div>
@@ -207,6 +215,15 @@ Yii::$app->view->registerJs('var _experience = '.json_encode($exp).'', \yii\web\
                                 ]);
                                 ?>
                             </div>
+                        </div>
+                        <div class="tab-pane" id="tab5">
+                            <?=
+                            $this->render('/widgets/employer-applications/preview', [
+                                'form' => $form,
+                                'model' => $model,
+                                'type' => $type,
+                            ]);
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -2339,7 +2356,7 @@ function init() {
                     $('#form_wizard_1').find('.button-next').hide();
                     $('#form_wizard_1').find('.button-submit').show();
                     $('#form_wizard_1').find('.button-preview').show();
-                    // displayConfirm();
+                    displayConfirm();
                 } else {
                     $('#form_wizard_1').find('.button-next').show();
                     $('#form_wizard_1').find('.button-submit').hide();
