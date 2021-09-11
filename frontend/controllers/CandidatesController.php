@@ -181,9 +181,9 @@ class CandidatesController extends Controller
         }
     }
 
-    public function actionIndex()
+    public function actionIndex($salary = null)
     {
-        if (Yii::$app->request->isPost) {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parameters = array_merge(Yii::$app->request->queryParams, Yii::$app->request->post());
             $offset = $parameters['offset'];
@@ -395,18 +395,21 @@ class CandidatesController extends Controller
 
     private function getApplications()
     {
-        $employer_applications = EmployerApplications::find()
-            ->alias('a')
-            ->select(['a.application_enc_id', 'a.title', 'c.category_enc_id', 'd.name', 'e.name application_type'])
-            ->joinWith(['title c' => function ($x) {
-                $x->joinWith(['categoryEnc d'], false);
-            }], false)
-            ->joinWith(['organizationEnc b'], false)
-            ->joinWith(['applicationTypeEnc e'], false)
-            ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.application_for' => 1])
+        $employer_applications = [];
+        if(Yii::$app->user->identity->organization->organization_enc_id) {
+            $employer_applications = EmployerApplications::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.title', 'c.category_enc_id', 'd.name', 'e.name application_type'])
+                ->joinWith(['title c' => function ($x) {
+                    $x->joinWith(['categoryEnc d'], false);
+                }], false)
+                ->joinWith(['organizationEnc b'], false)
+                ->joinWith(['applicationTypeEnc e'], false)
+                ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.application_for' => 1])
 //            ->andWhere(['c.assigned_to' => $type])
-            ->asArray()
-            ->all();
+                ->asArray()
+                ->all();
+        }
 
         return $employer_applications;
     }
