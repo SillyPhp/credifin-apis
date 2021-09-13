@@ -181,10 +181,10 @@ $this->registercss('
 	width: 110px;
 	height: 110px;
 	margin: auto;
-	border-radius: 60px;
+//	border-radius: 60px;
 	overflow: hidden;
-	border: 1px solid #eee;
-	box-shadow: 0 0 13px 4px #eee;
+//	border: 1px solid #eee;
+//	box-shadow: 0 0 13px 4px #eee;
 	line-height:104px;
 	margin-top:12px;
 }
