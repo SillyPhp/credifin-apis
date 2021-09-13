@@ -27,16 +27,17 @@ function webDate($webDate)
 }
 ?>
 <section class="header-web">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-sm-6">
+    <div class="back-shadow"></div>
+    <div class="container-fluid">
+        <div class="row flex-set">
+            <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="header-txt">
                     <h1>Webinars</h1>
                     <h2>Introducing <span class="ornge">EmpowerYouth Masterclass - A Webinar Series</span>
                         Created To Help You Understand And Immerse Yourself In The Latest Career Options.</h2>
                 </div>
             </div>
-            <div class="col-md-6 col-sm-6">
+            <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="header-img">
                     <img src="<?= Url::to('@eyAssets/images/pages/webinar/web.png') ?>"/>
                 </div>
@@ -345,6 +346,14 @@ if ($optedWebinar) {
 <?php
 echo $this->render('/widgets/mustache/speakers-card');
 $this->registerCss("
+.flex-set{
+    display:flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.header-txt {
+    padding-left: 35px;
+}
 .sub-btn{
     background: #00a0e3;
     color: #fff;
@@ -653,8 +662,9 @@ color: #fff !important;
 .footer{
     margin-top: 0px !important;
 }
-.ornge{
-    color: #fff;
+.ornge {
+    color: #00a0e3;
+    font-weight:500;
 }
 .speakers{
     padding-bottom: 50px; 
@@ -681,33 +691,45 @@ color: #fff !important;
 	transform: translateY(-3px);
 	transition: all .2s;
 }
-.header-web{
-    background-color: #3e8cf9;
-    padding-top: 60px;
+.header-web {
+    background-color: #E8F6EF;
+    position: relative;
+    overflow: hidden;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.back-shadow {
+    position: absolute;
+    top: -22%;
+    right: 0;
+    width: 50%;
+    background-color: #00a0e3;
+    height: 144%;
+    border-radius: 50% 0 0 50%;
 }
 .header-txt h1 {
-	font-size: 60px;
-	font-family: lobster;
-	font-weight: 500;
-	margin-top: 80px;
-	color: #fff;
-	margin-bottom: 0;
+    font-size: 44px;
+    font-family: roboto;
+    font-weight: 700;
+    margin-top: 0px;
+    color: #00a0e3;
+    margin-bottom: 0;
     letter-spacing: 1.5px;
     text-transform: uppercase;
 }
 .header-txt h2 {
-	font-size: 20px;
-	font-family: roboto;
-	margin: 0 0 0 8px;
-	color: #000;
-	font-weight: 500;
+    font-size: 20px;
+    font-family: roboto;
+    margin: 0 0 0 8px;
+    color: #707070;
+    font-weight: 500;
     text-transform: capitalize;
-    letter-spacing:.5px; 
 }
 .header-img {
-	width: 450px;
-	margin: auto;
-	margin-bottom:20px;
+    width: 350px;
+    margin: auto;
 }
 .web-form{
     margin: -9px 0px 0px 2px;
@@ -796,30 +818,31 @@ color: #fff !important;
 	width: 100%;
 }
 .web-date {
-	position: absolute;
-	top: 5px;
-	right: 10px;
-	background-color: #fff;
-	border-radius: 8px;
-	padding:4px 6px;
-	text-align: center;
-	border: 2px solid #00a0e3;
-	font-weight: 500;
-	font-family: roboto;
-	line-height: 18px;
+    position: absolute;
+    bottom: 5px;
+    right: 67px;
+    border-radius: 4px;
+    padding: 0px 8px;
+    text-align: center;
+    border: 2px solid #00a0e3;
+    font-weight: 500;
+    font-family: roboto;
+    background-color: #00a0e3;
+    color: #fff;
 }
 .web-paid {
-	position: absolute;
-	bottom: 5px;
-	right: 10px;
-	background-color: #fff;
-	border: 2px solid #ff7803;
-	border-radius: 7px;
-	padding: 0px 8px;
-	text-align: center;
-	text-transform: uppercase;
-	font-family: roboto;
-	font-weight: 500;
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    background-color: #ff7803;
+    border: 2px solid #ff7803;
+    border-radius: 4px;
+    padding: 0px 8px;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: roboto;
+    font-weight: 500;
+    color: #fff;
 }
 .web-inr {
 	padding: 5px 10px 10px;
@@ -852,7 +875,7 @@ color: #fff !important;
 	-webkit-line-clamp: 3;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
-	min-height: 80px;
+	height: 75px;
 }
 .opted-web {
 	background-image: url(' . Url::to('@eyAssets/images/pages/webinar/wb2.png') . '); 
@@ -1024,10 +1047,10 @@ color: #fff !important;
     .header-txt h2{font-size:18px;}
     .header-img{width:300px;}
 }
-@media only screen and (max-width: 768px) and (min-width: 320px){
+@media only screen and (max-width: 767px) and (min-width: 300px){
     .header-txt h1{
-        font-size: 35px;
-        margin-bottom: 10px;
+        font-size: 25px;
+        margin-bottom: 0px;
     }
     .header-txt h2{
         font-size: 16px;
@@ -1035,6 +1058,21 @@ color: #fff !important;
     }
     .header-img{
         width: 200px;
+        padding-top: 20px;
+    }
+    .header-txt {
+        padding-left: 0px;
+        padding-bottom:30px;
+    }
+    .back-shadow {
+        position: absolute;
+        top:inherit;
+        bottom: -50%;
+        left: -22%;
+        width: 140%;
+        background-color: #00a0e3;
+        height: 100%;
+        border-radius: 50% 50% 0 0;
     }
 }
 ");
