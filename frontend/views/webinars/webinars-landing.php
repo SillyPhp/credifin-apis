@@ -881,7 +881,7 @@ color: #fff !important;
 	height: 75px;
 }
 .opted-web {
-	background-image: url(' . Url::to('@eyAssets/images/pages/webinar/wb2.png') . '); 
+	background-image: url(" . Url::to('@eyAssets/images/pages/webinar/wb2.png') . "); 
 	margin: 30px 0 0;
 	padding: 0 0 50px;
 	background-position: center;
@@ -894,7 +894,7 @@ color: #fff !important;
 	top: 0;
 	content: \'\';
 	right: 0;
-	background-image: url(' . Url::to('@eyAssets/images/pages/webinar/title.png') . ');
+	background-image: url(" . Url::to('@eyAssets/images/pages/webinar/title.png') . ");
 	background-repeat: no-repeat;
 	background-size: center center;
 	background-position: contain;
