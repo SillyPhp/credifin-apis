@@ -1,4 +1,5 @@
 <?php
+use yii\helpers\Url;
 ?>
 <div class="container">
     <div class="row">
@@ -7,224 +8,22 @@
                 <h3 class="ou-head">Find Course</h3>
                 <div class="search-b">
                     <input type="text" id="searchForm" placeholder="Search by Name" class="form-control"
-                           onkeyup="search()">
+                           onkeyup="searchCourse(event)">
                 </div>
-                <div class="p-listing">
-                    <ul>
-                        <li>
-                            <a href="#b-tech" class="scroll-to-sec">B-Tech</a>
-                        </li>
-                        <li>
-                            <a href="#m-tech" class="scroll-to-sec">M-Tech</a>
-                        </li>
-                        <li>
-                            <a href="#mca" class="scroll-to-sec">MCA</a>
-                        </li>
-                        <li>
-                            <a href="#bca" class="scroll-to-sec">BCA</a>
-                        </li>
-                        <li>
-                            <a href="#ba" class="scroll-to-sec">BA</a>
-                        </li>
-                    </ul>
+                <div class="pos-res">
+                    <div class="p-listing"></div>
                 </div>
             </div>
         </div>
-        <div class="col-md-8" id="integration-main">
-            <div class="course-main-page set-sticky">
-                <div class="courses-box">
-                    <h3 id="b-tech">B-Tech</h3>
-                    <div class="courses-b">
-                        <div class="c-fees"><i class="fas fa-wallet"></i> 1.37 Lakhs (1st Year Fees)</div>
-                        <div class="c-duration"><i class="fas fa-calendar-times"></i> 3 Years</div>
-                        <div class="c-eligible"><i class="fas fa-list-ol"></i> 10+2 with 60% + LPUNEST</div>
-                        <div class="register-fee"><i class="fa fa-money-bill-alt"></i> ₹ 500</div>
-                        <div class="loanPro">
-                            <h4>Available Loan Options</h4>
-                            <ul>
-                                <li>
-                                    <div class="loanProIcon" onclick="showDetailDiv()">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>">
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="loanProIcon" onclick="showDetailDiv()">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>">
-                                    </div>
-                                </li>
-                            </ul>
-                            <div class="loanDetails">
-                                <div class="col-md-12 ">
-                                    <div class="disFlex">
-                                        <div>Loan Provider: </div>
-                                        <div class="lp-active">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>">
-                                        </div>
-                                        <div class="loanDetailsHide" onclick="loanDetailsHide()"><i class="fas fa-times"></i></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="ld-card">
-                                        <h5 class="ld-main-title">Fees Details</h5>
-                                        <ul>
-                                            <li>
-                                                <div class="ld-title">Tuition: <span>₹ 2.75 Lacs/yr</span></div>
-                                            </li>
-                                            <li>
-                                                <div class="ld-title">Hostel Fee: <span>N/A</span></div>
-                                            </li>
-                                            <li>
-                                                <div class="ld-title">Others: <span>N/A</span></div>
-                                            </li>
-                                            <li>
-                                                <div class="ld-title">Total Fees: <span>₹ 2.75 Lacs/yr</span></div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="ld-card">
-                                        <h5 class="ld-main-title">Loan Details</h5>
-                                        <ul>
-                                            <li>
-                                                <div class="ld-title">Loan Amount: <span>₹ 76300/yr</span></div>
-                                            </li>
-                                            <li>
-                                                <div class="ld-title">Interest Rate: <span>N/A</span></div>
-                                            </li>
-                                            <li>
-                                                <div class="ld-title">Repayment Period: <span>N/A</span></div>
-                                            </li>
-                                            <li>
-                                                <div class="ld-title">EMI: <span>₹ 76300/yr</span></div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <h4>Available Courses</h4>
-                    <div class="course-box-details">
-                        <div class="course-title">B.Tech (Bioinformatics Engineering)</div>
-                        <div class="other-data">
-                            <div class="fee-c">₹ 1.37 Lakhs (Per Semester)</div>
-                            <div class="duration-c">1 Years</div>
-                        </div>
-                        <div class="s-process set-h2">
-                            <h2>Selection Process</h2>
-                            <p>This spring has brought unprecedented shifts to your child's educational
-                                experience. As parents ourselves at StudyPoint, we understand the challenge of providing
-                                support and guidance for your child in a rapidly changing academic environment.
-                                To simplify your spring and summer planning, we've broken down which national testing
-                                dates have or have not changed, as well as resources for keeping your junior engaged and
-                                inspired during the college application process.
-                            </p>
-                        </div>
-                        <div class="e-criteria set-h2">
-                            <h2>Eligibility Criteria</h2>
-                            <p>This spring has brought unprecedented shifts to your child's educational
-                                experience. As parents ourselves at StudyPoint, we understand the challenge of providing
-                                support and guidance for your child in a rapidly changing academic environment.
-                                To simplify your spring and summer planning, we've broken down which national testing
-                                dates have or have not changed, as well as resources for keeping your junior engaged and
-                                inspired during the college application process.
-                            </p>
-                        </div>
-                        <div class="other-info-c set-h2">
-                            <h2>Other Details</h2>
-                            <p>This spring has brought unprecedented shifts to your child's educational
-                                experience. As parents ourselves at StudyPoint, we understand the challenge of providing
-                                support and guidance for your child in a rapidly changing academic environment.
-                                To simplify your spring and summer planning, we've broken down which national testing
-                                dates have or have not changed, as well as resources for keeping your junior engaged and
-                                inspired during the college application process.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="course-main-page set-sticky">
-                <div class="courses-box">
-                    <h3 id="m-tech">M-Tech</h3>
-                    <div class="courses-b">
-                        <div class="c-fees"><i class="fas fa-wallet"></i> 1.37 Lakhs (1st Year Fees)</div>
-                        <div class="c-duration"><i class="fas fa-calendar-times"></i> 3 Years</div>
-                        <div class="c-eligible"><i class="fas fa-list-ol"></i> 10+2 with 60% + LPUNEST</div>
-                        <div class="register-fee"><i class="fa fa-money-bill-alt"></i> ₹ 500</div>
-                    </div>
-                    <h4>Available Courses</h4>
-                    <div class="course-box-details">
-                        <div class="course-title">B.Tech (Bioinformatics Engineering)</div>
-                        <div class="other-data">
-                            <div class="fee-c">₹ 1.37 Lakhs (Per Semester)</div>
-                            <div class="duration-c">1 Years</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="course-main-page set-sticky">
-                <div class="courses-box">
-                    <h3 id="mca">MCA</h3>
-                    <div class="courses-b">
-                        <div class="c-fees"><i class="fas fa-wallet"></i> 1.37 Lakhs (1st Year Fees)</div>
-                        <div class="c-duration"><i class="fas fa-calendar-times"></i> 3 Years</div>
-                        <div class="c-eligible"><i class="fas fa-list-ol"></i> 10+2 with 60% + LPUNEST</div>
-                        <div class="register-fee"><i class="fa fa-money-bill-alt"></i> ₹ 500</div>
-                    </div>
-                    <h4>Available Courses</h4>
-                    <div class="course-box-details">
-                        <div class="course-title">B.Tech (Bioinformatics Engineering)</div>
-                        <div class="other-data">
-                            <div class="fee-c">₹ 1.37 Lakhs (Per Semester)</div>
-                            <div class="duration-c">1 Years</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="course-main-page set-sticky">
-                <div class="courses-box">
-                    <h3 id="bca">BCA</h3>
-                    <div class="courses-b">
-                        <div class="c-fees"><i class="fas fa-wallet"></i> 1.37 Lakhs (1st Year Fees)</div>
-                        <div class="c-duration"><i class="fas fa-calendar-times"></i> 3 Years</div>
-                        <div class="c-eligible"><i class="fas fa-list-ol"></i> 10+2 with 60% + LPUNEST</div>
-                        <div class="register-fee"><i class="fa fa-money-bill-alt"></i> ₹ 500</div>
-                    </div>
-                    <h4>Available Courses</h4>
-                    <div class="course-box-details">
-                        <div class="course-title">B.Tech (Bioinformatics Engineering)</div>
-                        <div class="other-data">
-                            <div class="fee-c">₹ 1.37 Lakhs (Per Semester)</div>
-                            <div class="duration-c">1 Years</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="course-main-page set-sticky">
-                <div class="courses-box">
-                    <h3 id="ba">B.A</h3>
-                    <div class="courses-b">
-                        <div class="c-fees"><i class="fas fa-wallet"></i> 1.37 Lakhs (1st Year Fees)</div>
-                        <div class="c-duration"><i class="fas fa-calendar-times"></i> 3 Years</div>
-                        <div class="c-eligible"><i class="fas fa-list-ol"></i> 10+2 with 60% + LPUNEST</div>
-                        <div class="register-fee"><i class="fa fa-money-bill-alt"></i> ₹ 500</div>
-                    </div>
-                    <h4>Available Courses</h4>
-                    <div class="course-box-details">
-                        <div class="course-title">B.Tech (Bioinformatics Engineering)</div>
-                        <div class="other-data">
-                            <div class="fee-c">₹ 1.37 Lakhs (Per Semester)</div>
-                            <div class="duration-c">1 Years</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="col-md-8" id="integration-main"></div>
     </div>
 </div>
 <?php
-$this->reginsterCSS('
+$user_id = '';
+if(!Yii::$app->user->isGuest){
+    $user_id = Yii::$app->user->identity->user_enc_id;
+}
+$this->registerCSS('
 .lp-active{
     max-width: 80px;
     max-height: 80px;
@@ -300,13 +99,21 @@ $this->reginsterCSS('
 .search-main{
     position: -webkit-sticky; /* Safari */;
     position:sticky;
-    top:125px;
+    top:100px;
 }
 .form-control {
 	border-radius: 8px;
 }
+.pos-res{
+    display: block;
+}
 .p-listing {
+    position: relative;
 	padding: 15px 5px;
+	height: calc(100vh - 225px);
+}
+#integration-main{
+	min-height:100vh;
 }
 .p-listing ul li {
 	font-size: 18px;
@@ -314,7 +121,9 @@ $this->reginsterCSS('
 	margin-bottom: 8px;
 	font-family: roboto;
 }
-.p-listing ul li a:hover {color:#00a0e3;}
+.p-listing ul li a:hover {
+    color:#00a0e3;
+}
 .courses-box h3 {
 	margin: 0;
 	margin-bottom: 5px;
@@ -366,6 +175,13 @@ $this->reginsterCSS('
 .other-data div {
 	flex-basis: 50%;
 }
+.notFound{
+    text-align: center !important;
+    padding-top: 10px;
+    font-family: lora;
+    font-size: 20px;
+    color: #000;
+}
 @media only screen and (max-width: 767px) {
 .set-height{
     height:auto !important;
@@ -373,49 +189,110 @@ $this->reginsterCSS('
 }
 ');
 $script = <<<JS
-function initializePosSticky() {
-  var mainHeight = $('#integration-main').height();
-  $('#side-bar-main').css('height',mainHeight);
-}
+var user_id = '$user_id';
+
 $(document).on('click', '.scroll-to-sec', function(e) {
     e.preventDefault();
     var sectionId = $(this).attr('href');
     var offsetHeight = $(sectionId).offset().top - 135 ;
     $('html, body').animate({scrollTop: offsetHeight}, 0);
 });
-setTimeout(function() {
-  initializePosSticky();
-},700);
 
   
+var js = new PerfectScrollbar('.p-listing');
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
+$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
-    function search() {
-
-        var name = document.getElementById("searchForm").value;
-        var pattern = name.toLowerCase();
-        var targetId = "";
-
-        var divs = document.getElementsByClassName("courses-box");
-        for (var i = 0; i < divs.length; i++) {
-            var para = divs[i].getElementsByTagName("h3");
-            var index = para[0].innerText.toLowerCase().indexOf(pattern);
-            if (index != -1) {
-                targetId = divs[i].parentNode;
-                targetId.scrollIntoView({behavior: 'smooth', block: 'center'});
-                // document.getElementById(targetId).scrollIntoView();
-                break;
-            }
+    let courses = '';
+    async function getCourses() {
+        let response = await fetch(`${baseUrl}/api/v3/ey-college-profile/courses`, {
+            method: 'POST',
+            body: data,
+        });
+        const res = await response.json();
+        if(res['response']['status'] == 200){
+            createCourseCards(res['response']['courses']);
+            createCourseList(res['response']['courses']);
+            courses = res['response']['courses'];
         }
     }
+    getCourses();
 
+    function createCourseCards(courses){
+        let courseCard = courses.map(course => {
+            return `<div class="course-main-page set-sticky">
+                <div class="courses-box">
+                    <h3 id="${course.assigned_college_enc_id}">${course.course_name}</h3>
+                    <div class="courses-b">
+                        ${course.fees ? `
+                        <div class="c-fees"><i class="fas fa-wallet"></i> `+course.fees+`</div>
+                        ` : ''}
+                        <div class="c-duration"><i class="fas fa-calendar-times"></i> ${course.course_duration} ${course.type ? course.type : ''}</div>
+                        ${course.registration_fee ? `
+                            <div class="register-fee"><i class="fa fa-money-bill-alt"></i> ₹ `+course.registration_fee+`</div> `
+                        : ''}
+                    </div>
+                    <div class="course-box-details">
+                        ${course.selection_process ?
+                            `<div class="s-process set-h2">
+                                    <h2>Selection Process</h2>
+                                    <p>`+course.selection_process+`</p>
+                            </div>`
+                        : ''}
+                        ${course.eligibility_criteria ? `
+                        <div class="e-criteria set-h2">
+                            <h2>Eligibility Criteria</h2>
+                            <p>`+course.eligibility_criteria+`</p>
+                        </div>
+                        ` : ''}
+                        ${course.other_details ? `
+                        <div class="other-info-c set-h2">
+                            <h2>Other Details</h2>
+                            <p>`+course.other_details+`</p>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>`
+        }).join('');
+        document.querySelector('#integration-main').innerHTML = courseCard;
+        initializePosSticky()
+    }
+    function createCourseList(courses){
+        let sideBarCourses = courses.map(course => {
+            return `<li>
+                        <a href="#${course.assigned_college_enc_id}" class="scroll-to-sec">${course.course_name}</a>
+                    </li>`
+        })
+        const html = `<ul>${sideBarCourses.join('')}</ul>`;
+        document.querySelector('.p-listing').innerHTML = html;
+
+    }
+    function searchCourse(event){
+        console.log(courses);
+        let str = event.currentTarget.value.toLowerCase();
+        let filteredCourses = courses.filter(
+            course => { return course.course_name.toLowerCase().startsWith(str); }
+        )
+        if(filteredCourses.length > 0){
+            createCourseCards(filteredCourses)
+            createCourseList(filteredCourses);
+        }else {
+            document.querySelector('#integration-main').innerHTML = '<p class="notFound">No Courses Found</p>';
+            document.querySelector('.p-listing').innerHTML = '<p class="notFound">No Courses Found</p>';
+        }
+    }
+    function initializePosSticky() {
+        let mainHeight = document.querySelector('#integration-main').offsetHeight;
+        document.querySelector('#side-bar-main').style.height = mainHeight+'px';
+    }
     function showDetailDiv(){
         let loanDetails = document.querySelector('.loanDetails');
         loanDetails.classList.add('loanDetailsShow');
     }
-
     function loanDetailsHide(e){
         let clickedElem = this.event.currentTarget;
         let parentElem = clickedElem.closest('.loanDetails');
