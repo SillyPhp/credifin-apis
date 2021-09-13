@@ -90,7 +90,7 @@ $this->registerCss('
 }
 ');
 $script = <<<JS
-let limit = 8;
+let limit = 12;
 let page = 1;
 let type = '$type';
 let loadmorecards = false;

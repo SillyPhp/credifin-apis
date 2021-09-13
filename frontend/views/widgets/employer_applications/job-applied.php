@@ -18,7 +18,15 @@ Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->cont
                 </div>
                 <div class="modal-body">
                     <?php if (!empty($location)) {
-                        echo $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location');
+                        echo '<div class="control-group">'.$form->field($model, 'location_pref')->checkBoxList($location,[
+                                'item' => function($index, $label, $name, $checked, $value) {
+                                    $return .= '<label class="control control--checkbox" for="2' . $value . '">' .ucwords($label);
+                                    $return .= '<input type="checkbox" id="2' . $value . '" name="' . $name . '" value="' . $value . '">';
+                                    $return .= '<div class="control__indicator"></div>';
+                                    $return .=  ' </label>';
+                                    return $return;
+                                }
+                            ])->label('Select Placement Location') . '</div>';
                     } ?>
                     <?= $form->field($model, 'id', ['template' => '{input}'])->hiddenInput(['id' => 'application_id', 'value' => $application_enc_id]); ?>
                     <?= $form->field($model, 'org_id', ['template' => '{input}'])->hiddenInput(['id' => 'organization_id', 'value' => $organization_enc_id]); ?>
@@ -37,7 +45,15 @@ Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->cont
                         $checkList = [1 => 'Upload New'];
                     }
                     ?>
-                    <?= $form->field($model, 'check')->inline()->radioList($checkList)->label('Upload Resume') ?>
+                    <?= '<div class="control-group">'.$form->field($model, 'check')->radioList($checkList,[
+                        'item' => function($index, $label, $name, $checked, $value) {
+                            $return .= '<label class="control control--radio" for="2' . $value . '">' .ucwords($label);
+                            $return .= '<input type="radio" id="2' . $value . '" name="' . $name . '" value="' . $value . '">';
+                            $return .= '<div class="control__indicator"></div>';
+                            $return .=  ' </label>';
+                            return $return;
+                        }
+                    ])->label('Upload Resume') . '</div>' ?>
 
                     <div id="new_resume">
                         <?= $form->field($model, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf,Jpg,Jpeg,Png Format Only'); ?>
@@ -74,6 +90,11 @@ Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->cont
 <?php
 echo $this->render('/widgets/employer_applications/applied-modal', ['applicationType' => $applicationType]);
 $this->registerCss("
+
+/*!
+ * custom-checkboxes-radio-buttons-and-select-boxes
+ */
+.control-group {display: inline-block;vertical-align: top;background: #fff;text-align: left;box-shadow: 0 1px 2px rgba(0,0,0,0.1);padding: 30px;width: 200px;height: 210px;margin: 10px;}.control {display: block;position: relative;padding-left: 30px;margin-bottom: 15px;cursor: pointer;font-size: 18px;}.control input {position: absolute;z-index: -1;opacity: 0;}.control__indicator {position: absolute;top: 2px;left: 0;height: 20px;width: 20px;background: #e6e6e6;}.control--radio .control__indicator {border-radius: 50%;}.control:hover input ~ .control__indicator,.control input:focus ~ .control__indicator {background: #ccc;}.control input:checked ~ .control__indicator {background: #2aa1c0;}.control:hover input:not([disabled]):checked ~ .control__indicator,.control input:checked:focus ~ .control__indicator {background: #0e647d;}.control input:disabled ~ .control__indicator {background: #e6e6e6;opacity: 0.6;pointer-events: none;}.control__indicator:after {content: '';position: absolute;display: none;}.control input:checked ~ .control__indicator:after {display: block;}.control--checkbox .control__indicator:after {left: 8px;top: 4px;width: 3px;height: 8px;border: solid #fff;border-width: 0 2px 2px 0;transform: rotate(45deg);}.control--checkbox input:disabled ~ .control__indicator:after {border-color: #7b7b7b;}.control--radio .control__indicator:after {left: 7px;top: 7px;height: 6px;width: 6px;border-radius: 50%;background: #fff;}.control--radio input:disabled ~ .control__indicator:after {background: #7b7b7b;}.select {position: relative;display: inline-block;margin-bottom: 15px;width: 100%;}.select select {display: inline-block;width: 100%;cursor: pointer;padding: 10px 15px;outline: 0;border: 0;border-radius: 0;background: #e6e6e6;color: #7b7b7b;appearance: none;-webkit-appearance: none;-moz-appearance: none;}.select select::-ms-expand {display: none;}.select select:hover,.select select:focus {color: #000;background: #ccc;}.select select:disabled {opacity: 0.5;pointer-events: none;}.select__arrow {position: absolute;top: 16px;right: 15px;width: 0;height: 0;pointer-events: none;border-style: solid;border-width: 8px 5px 0 5px;border-color: #7b7b7b transparent transparent transparent;}.select select:hover ~ .select__arrow,.select select:focus ~ .select__arrow {border-top-color: #000;}.select select:disabled ~ .select__arrow {border-top-color: #ccc;}
     .inputGroup {
       background-color: #fff;
       display: block;
@@ -156,11 +177,44 @@ $this->registerCss("
     }
     
     label.control-label {
-        font-family: 'Titillium Web', sans-serif;
+        font-family: roboto;
         font-size: 16px;
-        font-weight: 600;
+        font-weight: 500;
         margin-bottom: 10px;
     }
+    .control-group{
+        width: 100%;
+        box-shadow: none;
+        padding: 0;
+        height: auto;
+        margin: 0;
+    }
+    .modal-title-change {
+        font-family: 'Roboto';
+        font-size: 18px;
+        font-weight: 500;
+    }
+    .control {
+        margin-bottom:10px;
+        display: inline-block;
+        margin-right: 20px;
+        font-family: roboto;
+        font-size: 16px;
+        font-weight: 400;
+    }
+    .control-group > .form-group{
+        margin-bottom:0px;
+    }
+    .control--checkbox .control__indicator:after {
+        left: 7.5px;
+        top: 4px;
+        width: 5px;
+        height: 10px;
+    }
+    .control:hover input:not([disabled]):checked ~ .control__indicator,
+        .control input:checked:focus ~ .control__indicator {
+          background: #00a0e3;
+        }
 ");
 $script = <<< JS
     $(document).on('click', '.' + btn_class + '', function (e) {
