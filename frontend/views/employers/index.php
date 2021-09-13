@@ -201,6 +201,9 @@ echo $this->render('/widgets/e-campus')
             </div>
         </div>
     </section>
+
+<?= $this->render('/widgets/features-companies')?>
+
 <?php
 echo $this->render('/widgets/drop-resume-section')
 ?>

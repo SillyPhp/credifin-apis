@@ -100,6 +100,9 @@ use yii\helpers\Url;
 
 <?php
 $this->registercss('
+.companies-features{
+    font-family: Roboto;
+}
 .feature{
     height: 400px;
 }
