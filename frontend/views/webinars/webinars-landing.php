@@ -279,13 +279,13 @@ if ($optedWebinar) {
         <div class="col-md-5 col-sm-12 req-web">
             <div class="req">
                 <h1>Request For A Webinar</h1>
-                <h2>- <span>For Enriching</span> Your Organization's Online Content.<br>
-                    - Establishing <span>Authority</span>.<br>
-                    - Enhanced <span> Branding Value</span>.<br>
-                    - Building <span>Trust</span>. <br>
-                    - Building <span>Stronger, Lasting Business Relationships</span>.<br>
-                    - Accessing The <span>Global Audience</span>.<br>
-                    - <span>Sharing Information</span> with the Audience.</h2>
+                <p>- For Enriching Your Organization's Online Content.</p>
+                <p>- Establishing Authority.</p>
+                <p>- Enhanced Branding Value.</p>
+                <p>- Building Trust.</p>
+                <p>- Building Stronger, Lasting Business Relationships.</p>
+                <p>- Accessing The Global Audience.</p>
+                <p>- Sharing Information with the Audience.</p>
             </div>
             <div class="req-icon">
                 <img src="<?= Url::to('@eyAssets/images/pages/webinar/r-webi.png') ?>"/>
@@ -354,13 +354,17 @@ $this->registerCss("
 .header-txt {
     padding-left: 35px;
 }
-.sub-btn{
+.sub-btn {
     background: #00a0e3;
     color: #fff;
     padding: 10px 15px;
-    border: 1px solid #00a0e3; 
+    border: 1px solid #00a0e3;
     font-size: 14px;
     text-transform: uppercase;
+    transition: all .3s;
+    font-family:roboto;
+    font-weight: 500;
+    border-radius: 4px;
 }
 .sub-btn:hover{
     background: #fff;
@@ -736,15 +740,16 @@ color: #fff !important;
 }
 .web-form label{
     font-size: 18px;
-    font-family: lora;
+    font-family: roboto;
+    font-weight: 400;
     color: #333;
-    margin-bottom: 0px;
+    margin-bottom: 6px;
 }
 .web-form input,
 .web-form textarea{
      border: 1px solid #d4caca;
-     padding: 7px;
-     border-radius: 3px;
+     padding: 6px;
+     border-radius: 4px;
      width: 100%;
      height:40px;
      line-height:22px !important;
@@ -752,7 +757,7 @@ color: #fff !important;
 }
 .web-form textarea{
     margin-bottom: 10px;
-    height: 75px;
+    height: 100px;
 }
 .web-button{
     text-align:center;  
@@ -782,25 +787,23 @@ color: #fff !important;
     justify-content: space-between;
 }
 .req h1{
-    font-size: 45px;
+    font-size: 36px;
     text-align: center;
     font-family: lobster;
-//    background-color: #00a0e3;
-    padding: 20px 10px 20px 10px;
+    padding: 20px  0 10px;
     color: #fff;
 }
-.req h2{
-    font-size: 20px;
+.req p{
+    font-size: 16px;
     color: #fff;
     text-align: center;
-    font-family: lora;
-}
-.req h2 span{
-    font-weight: bold;
-    color: #fff;
+    font-family: roboto;
+    font-weight: 400;
+    margin:0 0 5px 0;
 }
 .req-icon {
-    text-align: bottom;
+    max-width: 350px;
+    margin: 0 auto;
 }
 .web-card {
 	border-radius: 6px;
