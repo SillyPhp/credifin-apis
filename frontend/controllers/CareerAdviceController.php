@@ -54,11 +54,13 @@ class CareerAdviceController extends Controller
             ->alias('a')
             ->select(['a.post_enc_id', 'a.featured_image_location', 'a.featured_image', 'a.featured_image_alt', 'featured_image_title', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug'])
             ->innerJoinWith(['postCategories b' => function ($b) {
-                $b->joinWith(['categoryEnc c'], false);
+                $b->innerJoinWith(['categoryEnc c' => function($c){
+                    $c->onCondition(['c.slug' => 'articles']);
+                }], false);
             }], false)
-            ->joinWith(['postTypeEnc d'], false)
+//            ->joinWith(['postTypeEnc d'], false)
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
-            ->andWhere(['<>', 'd.post_type', 'Social'])
+//            ->andWhere(['<>', 'd.post_type', 'Social'])
             ->orderby(['a.created_on' => SORT_ASC])
             ->limit(8)
             ->asArray()
@@ -264,7 +266,6 @@ class CareerAdviceController extends Controller
             }
 
         }
-
     }
 
     public function actionChildComment()

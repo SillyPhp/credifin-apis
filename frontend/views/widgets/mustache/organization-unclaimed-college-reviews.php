@@ -31,8 +31,8 @@ $link = Url::to($org_slug . '/reviews', true);
                 <div class="col-md-10 col-sm-10 user-review-main">
                     <div class="col-md-6 col-sm-6">
                         <div class="com-rating">
-                            <div class="average-star" data-score="{{average}}"></div>
-                            <div class="num-rate">{{average}}/5</div>
+                            <div class="average-star" data-score="{{average_rating}}"></div>
+                            <div class="num-rate">{{average_rating}}/5</div>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
@@ -57,31 +57,31 @@ $link = Url::to($org_slug . '/reviews', true);
                     <div class="row">
                         <div class="col-md-12 user-rating">
                             <div class="ur-bg padd-lr-5">
-                                <div class="urating">{{academics}}/5</div>
+                                <div class="urating">{{rating.Academics}}/5</div>
                                 <div class="uratingtitle">Academics</div>
                             </div>
                             <div class="ur-bg light-bg padding-none">
-                                <div class="urating">{{faculty_teaching_quality}}/5</div>
+                                <div class="urating">{{rating.Faculty_Teaching_Quality}}/5</div>
                                 <div class="uratingtitle">Faculty & Teaching Quality</div>
                             </div>
                             <div class="ur-bg">
-                                <div class="urating">{{infrastructure}}/5</div>
+                                <div class="urating">{{rating.Infrastructure}}/5</div>
                                 <div class="uratingtitle">Infrastructure</div>
                             </div>
                             <div class="ur-bg light-bg">
-                                <div class="urating">{{accomodation_food}}/5</div>
+                                <div class="urating">{{rating.Accomodation_Food}}/5</div>
                                 <div class="uratingtitle">Accomodation Food</div>
                             </div>
                             <div class="ur-bg">
-                                <div class="urating">{{placements_internships}}/5</div>
+                                <div class="urating">{{rating.Placements_Internships}}/5</div>
                                 <div class="uratingtitle">Placements /Internships</div>
                             </div>
                             <div class="ur-bg light-bg">
-                                <div class="urating">{{social_life_extracurriculars}}/5</div>
+                                <div class="urating">{{rating.Social_Life_Extracurriculars}}/5</div>
                                 <div class="uratingtitle">Social Life & Extracurriculars</div>
                             </div>
                             <div class="ur-bg">
-                                <div class="urating">{{culture_diversity}}/5</div>
+                                <div class="urating">{{rating.Culture_Diversity}}/5</div>
                                 <div class="uratingtitle">Culture Diversity</div>
                             </div>
                         </div>
