@@ -479,6 +479,7 @@ $this->registerCss("
 }
 .step{
     min-height: 300px;
+    margin-bottom: 10px;
 }
 .icon{
     margin-bottom: 40px;
