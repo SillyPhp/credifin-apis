@@ -41,7 +41,10 @@ $this->params['seo_tags'] = [
 ?>
 
 <!--Modal-->
-<div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+<?php
+    if(Yii::$app->user->identity->organization->organization_enc_id){
+?>
+    <div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" id="profiles">
         <!-- Modal content-->
         <div class="modal-content">
@@ -86,6 +89,9 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </div>
+<?php
+    }
+?>
 
 <section>
     <div class="container">
@@ -1120,60 +1126,62 @@ $(document).on('click', 'a#reset-salary', function (e) {
        from: 5000,
        to: 5000,
      });
-// $(document).ready(function () {
-    var ths = $('#rangess');
-    var thsVal = null;
-    var thsCls = ths.attr('class').split(' ')[0];
+
+    // var ths = $('#rangess');
+    // var thsVal = null;
+    // var thsCls = ths.attr('class').split(' ')[0];
 	load_more_cards = true;
 	$('#user_cards').html(" ");
 	$('.loading-main').show();
-	exp_params = [];
-	var params = unescape(window.location.search.substring(1));
-	var cls_loc = params.match(/locations=/g);
-    var cls_jt = params.match(/job_titles=/g);
-    var cls_sk = params.match(/skills=/g);
-    var cls_sal = params.match(/salary=/g);
-    var p = [];
-    $.each(params.split("&"),function(index,value) {
-        exp_params.push(value);
-        $.each(value.split("="),function(i,v) {
-            p.push(v);
-        });
-    });
-    $.each(p, function(i,v) {
-        if(v == thsCls){
-            var str = [];
-            if(thsVal != null){
-                $.each(thsVal.split(";"),function(index,value) {
-                    str.push(value);
-                });
-                p[i+1] = str[0]+','+str[1];
-            } else {
-                p[i+1] = "";
-            }
-        }
-    });
-    var cur_params = "?";
-    $.each(p,function(i, v) {
-        if(i === 0){
-            cur_params = cur_params + v;
-        } else {
-            if(i % 2 === 0){
-                cur_params = cur_params + '&' + v;
-            } else {
-                cur_params = cur_params + '=' + v;
-            }
-        }
-    });
-	history.pushState('data', 'title', cur_params);
-	var cur_url = '/candidates' + window.location.search;
+    $('input[type=checkbox]').prop('checked', false);
+	// exp_params = [];
+	// var params = unescape(window.location.search.substring(1));
+	// var cls_loc = params.match(/locations=/g);
+    // var cls_jt = params.match(/job_titles=/g);
+    // var cls_sk = params.match(/skills=/g);
+    // var cls_sal = params.match(/salary=/g);
+    // var p = [];
+    // $.each(params.split("&"),function(index,value) {
+    //     exp_params.push(value);
+    //     $.each(value.split("="),function(i,v) {
+    //         p.push(v);
+    //     });
+    // });
+    // $.each(p, function(i,v) {
+    //     if(v == thsCls){
+    //         var str = [];
+    //         if(thsVal != null){
+    //             $.each(thsVal.split(";"),function(index,value) {
+    //                 str.push(value);
+    //             });
+    //             p[i+1] = str[0]+','+str[1];
+    //         } else {
+    //             p[i+1] = "";
+    //         }
+    //     }
+    // });
+    // var cur_params = "?";
+    // $.each(p,function(i, v) {
+    //     if(i === 0){
+    //         cur_params = cur_params + v;
+    //     } else {
+    //         if(i % 2 === 0){
+    //             cur_params = cur_params + '&' + v;
+    //         } else {
+    //             cur_params = cur_params + '=' + v;
+    //         }
+    //     }
+    // });
+    // console.log(cur_params);
+	history.pushState('data', 'title', '/candidates');
+	var cur_url = '/candidates';
 	offset = 0;
 	getUserCards(offset, cur_url, 'html');
 });
     
 var xhr;
 $(document).ready(function () {
-	$(document).on('keyup', 'input[type=text]', function () {
+	$(document).on('keyup', '.f-search-loc input[type=text]', function () {
 		var ths = $(this);
 		var id = ths.attr('id').slice(0, -7);
 		var val = ths.val();
@@ -1269,7 +1277,8 @@ $(document).on('click', '.shortlist-main', function (event) {
 		}
 	});
 });
-document.getElementById('submitData').addEventListener('click', function () {
+if(document.getElementById('submitData')){
+    document.getElementById('submitData').addEventListener('click', function () {
 	var applications = document.getElementsByName('applications');
 	var selected_value;
 	for (var i = 0; i < applications.length; i++) {
@@ -1293,6 +1302,7 @@ document.getElementById('submitData').addEventListener('click', function () {
 		}
 	});
 });
+}
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');

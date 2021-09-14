@@ -67,7 +67,7 @@ $this->params['seo_tags'] = [
         <div class="row">
             <div class="col-md-5 tac">
                 <div class="whystudy">
-                    <img src="<?= Url::to('@eyAssets/images/pages/custom/canada-flag.png')?>" alt="">
+                    <img src="<?= Url::to('@eyAssets/images/pages/custom/canada-std.jpeg')?>" alt="">
                 </div>
             </div>
             <div class="col-md-7">

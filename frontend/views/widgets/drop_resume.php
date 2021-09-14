@@ -84,23 +84,23 @@ $this->registerCss('
 	font-size: 18px;
 	font-family: roboto;
 }
-.fab-message{
-    position:fixed;
-    bottom: 20px;
-    cursor:pointer;
-    right:20px;
-    z-index:9999;
+.fab-message {
+    position: sticky;
+    cursor: pointer;
     color: #fff;
     font-size: 20px;
     border-radius: 50%;
-    width:100px;
-    height:80px;
+    width: 100px;
+    height: 80px;
     line-height: 60px;
     text-align: center;
     -webkit-transition: all .2s ease-in-out;
     -moz-transition: all .2s ease-in-out;
     -o-transition: all .2s ease-in-out;
     transition: all .2s ease-in-out;
+    bottom: 30px;
+    margin-left: calc(100% - 130px);
+    z-index:9;
 }
 #fab-message-open:hover .fab-hover-message{
   -webkit-animation-name: example1; /* Safari 4.0 - 8.0 */

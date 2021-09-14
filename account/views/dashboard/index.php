@@ -124,6 +124,7 @@ endif;
                     </div>
                 </div>
             </div>
+
             <?php
             if ($loanApplication && Yii::$app->user->identity->type->user_type == 'Individual') {
                 echo $this->render('/widgets/education-loan/loan-detail-individual-dashboard', [

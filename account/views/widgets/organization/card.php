@@ -131,7 +131,7 @@ $this->registerCss('
     width: 45px;
     min-width: 45px;
     height: 45px;
-    border-radius: 50% !important;
+//    border-radius: 50% !important;
     background-color: #fff;
     overflow:hidden;
 }
@@ -208,9 +208,9 @@ $this->registerCss('
 //.hr-company-box {
 //    padding: 20px 10px 20px;
 //}
-.user-icon {
-    border-radius: 50%;
-}
+//.user-icon {
+//    border-radius: 50%;
+//}
 .j-grid > button {
     font-family: roboto;
     font-size: 11px;
@@ -254,7 +254,7 @@ $this->registerCss('
     text-align: center;
 }
 .hr-com-icon img {
-    border-radius: 50% !important;
+//    border-radius: 50% !important;
     object-fit: contain;
     overflow: hidden;
 }
