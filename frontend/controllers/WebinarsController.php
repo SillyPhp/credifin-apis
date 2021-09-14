@@ -568,4 +568,9 @@ class WebinarsController extends Controller
             return $data;
         }
     }
+
+    public function actionWebinarExpired(){
+        return $this->render('webinar-expired');
+    }
+
 }
