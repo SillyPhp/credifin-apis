@@ -58,7 +58,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label class="input-group-text" for="inputGroupSelect01">
-                                            Which Type Of Loan Is This ?
+                                           Looking For Education Loan ?
                                         </label>
                                         <ul class="displayInline">
                                             <li>
@@ -196,7 +196,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                     <div class="col-md-12 padd-20">
                                         <div class="form-group">
                                             <label for="number" class="input-group-text">
-                                                Name of The Student
+                                                Student Name
                                             </label>
                                             <input value="<?= ($userDetail->first_name)?$userDetail->first_name . " " . $userDetail->last_name : "" ?>" type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
                                         </div>
