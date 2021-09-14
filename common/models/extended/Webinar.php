@@ -85,11 +85,14 @@ class Webinar extends \common\models\Webinar
                 $e->joinWith(['outcomePoolEnc e1'], false);
             }])
             ->where([
-                'b.organization_enc_id' => $college_id,
+//                'b.organization_enc_id' => $college_id,
                 'a.is_deleted' => 0,
                 'a.webinar_enc_id' => $webinar_id
-            ])
-            ->asArray()
+            ]);
+        if ($college_id != null) {
+            $webinar_detail->andWhere(['b.organization_enc_id' => $college_id]);
+        }
+        $webinar_detail = $webinar_detail->asArray()
             ->one();
 
         if ($webinar_detail) {
