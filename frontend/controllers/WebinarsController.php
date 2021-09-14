@@ -411,7 +411,7 @@ class WebinarsController extends Controller
         return $webinar;
     }
 
-    public function actionIndex()
+    public function actionAllWebinars()
     {
         $webinars = self::getWebinars();
         return $this->render('all-webinars', [
@@ -474,7 +474,7 @@ class WebinarsController extends Controller
         return $webinars;
     }
 
-    public function actionWebinarsLanding()
+    public function actionIndex()
     {
         $upcomingWebinar = self::showWebinar($status = 'upcoming');
         $pastWebinar = self::showWebinar($status = 'past', '', false);
