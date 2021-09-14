@@ -2918,8 +2918,6 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.
                         method: 'post',
                         success: function(data) {}
                     });
-
-                    
                     this.setAttribute('data-val', note);
                     div.remove();
                 });
