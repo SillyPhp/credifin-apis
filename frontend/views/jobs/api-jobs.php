@@ -8,11 +8,6 @@ use yii\helpers\Url;
 
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
-echo $this->render('/widgets/drop_resume', [
-    'username' => Yii::$app->user->identity->username,
-    'type' => 'application',
-    'slug' => ''
-]);
 if (!isset($get['company_logo']) || empty($get['company_logo'])) {
     $org = \common\models\UnclaimedOrganizations::find()
         ->select(['logo', 'logo_location'])
@@ -281,6 +276,14 @@ if (!Yii::$app->user->isGuest) {
         <?php endif; ?>
     </div>
 </section>
+
+<?php
+echo $this->render('/widgets/drop_resume', [
+    'username' => Yii::$app->user->identity->username,
+    'type' => 'application',
+    'slug' => ''
+]);
+?>
 <?php
 if ($settings["showNewPositionsWidget"]):
     ?>
@@ -332,6 +335,7 @@ if (Yii::$app->params->options->showSchema) {
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.footer{margin-top:0 !important;}
 .job-location {
     width: 40%;
     display: block;
@@ -1658,7 +1662,9 @@ $(document).on('keypress','.wts-txt',function(e) {
              window.open('https://api.whatsapp.com/send?phone='+val+'&text=' + location);
         }
         $('.wts-txt').val('');
-});      
+});
+loader = false;
+addToReviewList();
 getCards('" . $type . 's' . "','.blogbox','/organizations/organization-related-titles?title=" . $get['title'] . "');    
 ");
 ?>

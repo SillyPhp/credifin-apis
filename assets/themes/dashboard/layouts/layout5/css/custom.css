@@ -639,6 +639,7 @@ a.viewall-jobs:visited, a.viewall-jobs:focus{
     position: relative;
     transition: all .3s;
     border-radius: 6px;
+    height: 128px;
     z-index:0;
 }
 .short-main:hover .remove-btn{

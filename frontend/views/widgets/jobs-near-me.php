@@ -509,8 +509,8 @@ body {
 }
 .application-card-img {
     display: inline-block;
-    box-shadow: 0 0 8px 0px #eee;
-    border-radius: 50%;
+//    box-shadow: 0 0 8px 0px #eee;
+//    border-radius: 50%;
     overflow: hidden;
     min-width: 90px;
     text-align: center;
