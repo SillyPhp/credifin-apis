@@ -480,7 +480,13 @@ label {
 .tc{
     text-align:center;
 }
-
+.noResults{
+    font-size: 20px;
+    color: #333;
+    font-family: lora;
+    text-align: center !important;
+    width: 100%;
+}
 @media only screen and (max-width: 767px) {
     .h-point1 {
         width: 50%;

@@ -187,6 +187,8 @@ async function getPlacementData() {
     let res = await response.json();
     if(res['response']['status'] == 200){
         createHighlightsDiv(res['response']['highlights'])
+    }else {
+        createHighlightsDiv()
     }
 }
 getPlacementData();
@@ -196,35 +198,35 @@ function createHighlightsDiv(highlights){
             <div class="fa-icon"><i class="fas fa-university"></i></div>
             <div class="fa-text">
                 <h3>No. of Companies visited</h3>
-                <p>${highlights.companies_visited}</p>
+                <p>${highlights ? highlights.companies_visited : '-' }</p>
             </div>
         </div>
         <div class="place-point">
             <div class="fa-icon"><i class="fab fa-affiliatetheme"></i></div>
             <div class="fa-text">
                 <h3>Top Recruiters</h3>
-                <p>${highlights.top_recruiter}</p>
+                <p>${highlights ? highlights.top_recruiter : '-'}</p>
             </div>
         </div>
         <div class="place-point">
             <div class="fa-icon"><i class="fas fa-scroll"></i></div>
             <div class="fa-text">
                 <h3>Highest Stipend Offered</h3>
-                <p>${highlights.highest_stipend_offered}</p>
+                <p>${highlights ? highlights.highest_stipend_offered : '-'}</p>
             </div>
         </div>
         <div class="place-point">
             <div class="fa-icon"><i class="fas fa-microchip"></i></div>
             <div class="fa-text">
                 <h3>Highest placement package</h3>
-                <p>${highlights.highest_placement_package}</p>
+                <p>${highlights ? highlights.highest_placement_package : '-'}</p>
             </div>
         </div>
         <div class="place-point">
             <div class="fa-icon"><i class="fas fa-clipboard-check"></i></div>
             <div class="fa-text">
                 <h3>No. of Companies Offering Dream Packages</h3>
-                <p>${highlights.companies_offering_dream_packages}</p>
+                <p>${highlights ? highlights.companies_offering_dream_packages : '-'}</p>
             </div>
         </div>`;
 
@@ -238,6 +240,8 @@ async function getCoursePlacements(){
     let res = await response.json()
     if(res['response']['status'] == 200){
         createPlacementBox(res['response']['recruitments'])
+    }else{
+        document.querySelector('.course-outer').innerHTML = '<p class="noResults"> No Details Added </p>'
     }
 }
 getCoursePlacements()

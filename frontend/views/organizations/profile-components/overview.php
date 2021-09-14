@@ -493,9 +493,10 @@ obj = {
             document.querySelector('.h-points').innerHTML = stats;
 
             if(collegeStats.description == null){
-                collegeStats.description = 'Description not added';
+                document.querySelector('.aboutCollege').innerHTML = '<p class="noResults">Description not added</p>';
+            }else{
+                document.querySelector('.aboutCollege').innerText = collegeStats.description;
             }
-            document.querySelector('.aboutCollege').innerText = collegeStats.description;
         },
         get testVar(){
             return this.value;

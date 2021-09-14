@@ -5,9 +5,6 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
-
-print_r('hello');
-die();
 ?>
     <div class="container">
         <div class="set-sticky">

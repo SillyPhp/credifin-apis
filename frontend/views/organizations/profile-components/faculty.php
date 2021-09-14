@@ -64,6 +64,8 @@ $this->registerCss('
         if(res['response']['status'] == 200){
             let facultyList = res['response']['faculty_list'];
             createFacultyBox(facultyList);
+        }else{
+            document.querySelector('.faculty-main').innerHTML = '<p class="noResults">No Details Added</p>';
         }
     }
     getFaculty();

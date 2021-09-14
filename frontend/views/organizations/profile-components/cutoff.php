@@ -64,6 +64,8 @@ $this->registerCSS('
 
         if(res['response']['status'] == 200){
             createCutoffRow(res['response']['cutoff']);
+        }else{
+            document.querySelector('.cutoff-data').innerHTML = '<p class="noResults">No Details Added</p>';
         }
     }
     getCutoff();

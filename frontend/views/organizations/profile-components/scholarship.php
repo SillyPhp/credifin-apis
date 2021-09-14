@@ -59,6 +59,8 @@ async function getScholarships(){
     let res = await response.json();
     if(res['response']['status'] == 200){
         createScholarshipBox(res['response']['scholarships']);
+    }else {
+        document.querySelector('.showScholarship').innerHTML = '<p class="noResults">No Details Added</p>';
     }
 }
 getScholarships();

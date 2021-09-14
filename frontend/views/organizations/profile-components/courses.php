@@ -217,11 +217,15 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             createCourseCards(res['response']['courses']);
             createCourseList(res['response']['courses']);
             courses = res['response']['courses'];
+        }else {
+            createCourseCards();
+            createCourseList();
         }
     }
     getCourses();
 
     function createCourseCards(courses){
+        if(courses){
         let courseCard = courses.map(course => {
             return `<div class="course-main-page set-sticky">
                 <div class="courses-box">
@@ -259,16 +263,23 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             </div>`
         }).join('');
         document.querySelector('#integration-main').innerHTML = courseCard;
+        }else {
+            document.querySelector('#integration-main').innerHTML = '<p class="noResults">No Courses To Display</p>';
+        }
         initializePosSticky()
     }
     function createCourseList(courses){
-        let sideBarCourses = courses.map(course => {
-            return `<li>
-                        <a href="#${course.assigned_college_enc_id}" class="scroll-to-sec">${course.course_name}</a>
-                    </li>`
-        })
-        const html = `<ul>${sideBarCourses.join('')}</ul>`;
-        document.querySelector('.p-listing').innerHTML = html;
+        if(courses){
+            let sideBarCourses = courses.map(course => {
+                return `<li>
+                            <a href="#${course.assigned_college_enc_id}" class="scroll-to-sec">${course.course_name}</a>
+                        </li>`
+            })
+            const html = `<ul>${sideBarCourses.join('')}</ul>`;
+            document.querySelector('.p-listing').innerHTML = html;
+        }else{
+            document.querySelector('.p-listing').innerHTML = '<p class="noResults">No Courses To Display</p>';
+        }
 
     }
     function searchCourse(event){

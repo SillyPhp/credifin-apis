@@ -54,6 +54,8 @@ $this->registerCss('
         if(res['response']['status'] == 200){
            let infraList = res['response']['list'];
            createInfraBox(infraList)
+        }else {
+            document.querySelector('#infraDiv').innerHTML = '<p class="noResults">No Details Added</p>'
         }
     }
     getInfrastructure();
