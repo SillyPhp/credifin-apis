@@ -256,7 +256,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
         <div class="row">
             <div class="contact-req">
                 <h3>if you are facing any problem during registration call us on :</h3>
-                <a href="tel:9501771965">+919501771965</a>
+                <a href="tel:9501771965">+917009076638</a>
             </div>
         </div>
     </div>
@@ -793,7 +793,7 @@ $this->registerCss('
     max-width: 50%;
 }
 .speak-img {
-    background-position: center;
+    background-position: top;
     background-size: cover;
 }
 .flex-use {
