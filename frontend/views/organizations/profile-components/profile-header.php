@@ -639,7 +639,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 <script>
     var url = window.location.pathname.split('/');
     var slug = url[1];
-    var baseUrl = 'https://ravinder.eygb.me';
+    var baseUrl = '';
     let data = new FormData();
     data.append("slug", slug);
     let obj = null
