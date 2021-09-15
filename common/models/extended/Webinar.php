@@ -42,8 +42,12 @@ class Webinar extends \common\models\Webinar
                 $c->onCondition(['c.is_deleted' => 0, 'c.status' => [0, 1]]);
                 $c->orderBy(['c.start_datetime' => SORT_ASC]);
             }])
-            ->where(['a.is_deleted' => 0, 'b.organization_enc_id' => $college_id])
+            ->where(['a.is_deleted' => 0])
             ->andWhere(['a.session_for' => [0, 2]])
+            ->andWhere(['or',
+                ['b.organization_enc_id' => $college_id],
+                ['a.for_all_colleges' => 1]
+            ])
             ->asArray()
             ->all();
 
@@ -90,7 +94,10 @@ class Webinar extends \common\models\Webinar
                 'a.webinar_enc_id' => $webinar_id
             ]);
         if ($college_id != null) {
-            $webinar_detail->andWhere(['b.organization_enc_id' => $college_id]);
+            $webinar_detail->andWhere(['or',
+                ['b.organization_enc_id' => $college_id],
+                ['a.for_all_colleges' => 1]
+            ]);
         }
         $webinar_detail = $webinar_detail->asArray()
             ->one();
