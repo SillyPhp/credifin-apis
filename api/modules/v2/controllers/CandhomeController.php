@@ -849,7 +849,7 @@ class CandhomeController extends ApiBaseController
                     $registered_count = WebinarRegistrations::find()
                         ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $w['webinar_enc_id']])
                         ->count();
-                    $webinar[$i]['count'] = $registered_count + 320;
+                    $webinar[$i]['count'] = $registered_count;
                     $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
                     $webinar[$i]['is_registered'] = $user_registered;
                     $webinar[$i]['is_paid'] = $w['price'] ? true : false;
@@ -962,7 +962,7 @@ class CandhomeController extends ApiBaseController
             $registered_count = WebinarRegistrations::find()
                 ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
                 ->count();
-            $webinar['registered_count'] = $registered_count + 320;
+            $webinar['registered_count'] = $registered_count;
 
             $webinar['is_registered'] = $user_registered;
 
