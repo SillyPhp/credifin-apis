@@ -344,6 +344,14 @@ class WebinarsController extends ApiBaseController
 
     public function actionDetail()
     {
+        $param = Yii::$app->request->post();
+
+        if (isset($param['webinar_id']) && !empty($param['webinar_id'])) {
+            $webinar_id = $param['webinar_id'];
+        } else {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
         if ($user = $this->isAuthorized()) {
 
             $user_id = $user->user_enc_id;
@@ -356,51 +364,54 @@ class WebinarsController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $param = Yii::$app->request->post();
-
-            if (isset($param['webinar_id']) && !empty($param['webinar_id'])) {
-                $webinar_id = $param['webinar_id'];
-            } else {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
-            }
-
             $webinar = new \common\models\extended\Webinar();
             $webinar = $webinar->webinarDetail($college_id['organization_enc_id'], $webinar_id);
+        } else {
+            $webinar = new \common\models\extended\Webinar();
+            $webinar = $webinar->webinarDetail(null, $webinar_id);
+        }
 
-            if (!empty($webinar)) {
-                $registered_count = WebinarRegistrations::find()
-                    ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
-                    ->count();
-                $webinar['registered_count'] = $registered_count;
+
+        if (!empty($webinar)) {
+            if ($user = $this->isAuthorized()) {
+
+                $user_id = $user->user_enc_id;
                 $user_registered = $this->userRegistered($webinar['webinar_enc_id'], $user_id);
-                $webinar['is_registered'] = $user_registered;
                 $webinar['interest_status'] = $this->interested($webinar['webinar_enc_id'], $user_id);
-                $date = new \DateTime($webinar['event']['start_datetime']);
-                $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
-                $webinar['seconds'] = $seconds;
-                $webinar['is_started'] = ($seconds < 0 ? true : false);
-                foreach ($webinar['events'] as $k => $a) {
-                    $j = 0;
-                    foreach ($a as $t) {
-                        $date = new \DateTime($t['start_datetime']);
-                        $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
-                        $is_started = ($seconds < 0 ? true : false);
-                        $webinar['events'][$k][$j]['seconds'] = $seconds;
-                        $webinar['events'][$k][$j]['is_started'] = $is_started;
-                        $j++;
-                    }
+            } else {
+                $user_registered = 0;
+                $webinar['interest_status'] = null;
+            }
+            $registered_count = WebinarRegistrations::find()
+                ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
+                ->count();
+            $webinar['registered_count'] = $registered_count;
+
+            $webinar['is_registered'] = $user_registered;
+
+            $date = new \DateTime($webinar['event']['start_datetime']);
+            $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+            $webinar['seconds'] = $seconds;
+            $webinar['is_started'] = ($seconds < 0 ? true : false);
+            foreach ($webinar['events'] as $k => $a) {
+                $j = 0;
+                foreach ($a as $t) {
+                    $date = new \DateTime($t['start_datetime']);
+                    $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+                    $is_started = ($seconds < 0 ? true : false);
+                    $webinar['events'][$k][$j]['seconds'] = $seconds;
+                    $webinar['events'][$k][$j]['is_started'] = $is_started;
+                    $j++;
                 }
             }
-
-            if ($webinar) {
-                return $this->response(200, ['status' => 200, 'data' => $webinar]);
-            } else {
-                return $this->response(404, ['status' => 404, 'message' => 'not found']);
-            }
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+
+        if ($webinar) {
+            return $this->response(200, ['status' => 200, 'data' => $webinar]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+
     }
 
     private function interested($webinar_id, $user_id)
