@@ -77,4 +77,19 @@ $this->registerCss('
     color: #ff7803;
     background-color: #fff4eb;
 }
+@media screen and (max-width: 768px) and (min-width: 320px) {
+    .eflex {
+        display: inline-block;
+    }
+    .expired-text {
+        text-align: center;
+    }
+    .expired-vector {
+        text-align: center;
+    }
+    .expired-text p {
+        font-size: 18px;
+        line-height: 26px;
+    }
+}
 ');

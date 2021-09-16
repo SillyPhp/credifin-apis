@@ -46,83 +46,6 @@ function webDate($webDate)
     </div>
 </section>
 
-<section class="how-it-works">
-    <div class="container">
-        <div class="row">
-            <div class="heading-style">How To Join A Webinar</div>
-        </div>
-        <div class="row">
-            <div class="col-md-4 col-sm-4">
-                <div class="step">
-                    <div class="step-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icons-registration.png') ?>"/>
-                    </div>
-                    <div class="step-text">
-                        <h3>1. Register</h3>
-                        <p>Register for the webinar by simply filling all the required details and clicking on the "Request For a Webinar' button. Once registered, a mail will the join link will be sent to you.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-4">
-                <div class="step">
-                    <div class="step-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icons-join.png') ?>"/>
-                    </div>
-                    <div class="step-text">
-                        <h3>2. Join</h3>
-                        <p>At the time of the webinar, click on the join link sent in the mail. You will be redirected to the webinar detail page. Click on the 'Join Now' button and you will be in the webinar.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-4">
-                <div class="step">
-                    <div class="step-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icons-watch.png') ?>"/>
-                    </div>
-                    <div class="step-text">
-                        <h3>3. Watch</h3>
-                        <p>Once the organiser arrived, the webinar will begin. You can also interact with them before the Live Chat. Enjoy your creative learning!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="webinar-on-device">
-    <div class="container">
-        <div class="row">
-            <h1 class="heading-style">Engage from anywhere on any device</h1>
-        </div>
-        <div class="row steps">
-            <div class="col-sm-4">
-                <div class="icon">
-                    <div class="icon-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-computer.png'); ?>">
-                    </div>
-                    On your Desktop
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="icon">
-                    <div class="icon-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-smartphone.png'); ?>">
-                    </div>
-                    On your Smartphone
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="icon">
-                    <div class="icon-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-tablet.png'); ?>">
-                    </div>
-                    On your Tablet
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
 <section class="upcoming-web">
     <div class="container">
         <div class="row">
@@ -196,80 +119,123 @@ function webDate($webDate)
     </div>
 </section>
 
-<?php
-if ($optedWebinar) {
-    ?>
-    <section class="opted-web">
-        <div class="container">
-            <div class="row">
-                <div class="heading-opted">Opted Webinars</div>
+<section class="how-it-works">
+    <div class="container">
+        <div class="row">
+            <div class="heading-style">How To Join A Webinar</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <div class="step">
+                    <div class="step-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icons-registration.png') ?>"/>
+                    </div>
+                    <div class="step-text">
+                        <h3>1. Register</h3>
+                        <p>Register for the webinar by simply filling all the required details and clicking on the "Request For a Webinar' button. Once registered, a mail will the join link will be sent to you.</p>
+                    </div>
+                </div>
             </div>
-            <?php
-            foreach ($optedWebinar as $opWeb) {
-                ?>
+            <div class="col-md-4 col-sm-4">
+                <div class="step">
+                    <div class="step-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icons-join.png') ?>"/>
+                    </div>
+                    <div class="step-text">
+                        <h3>2. Join</h3>
+                        <p>At the time of the webinar, click on the join link sent in the mail. You will be redirected to the webinar detail page. Click on the 'Join Now' button and you will be in the webinar.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-4">
+                <div class="step">
+                    <div class="step-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icons-watch.png') ?>"/>
+                    </div>
+                    <div class="step-text">
+                        <h3>3. Watch</h3>
+                        <p>Once the organiser arrived, the webinar will begin. You can also interact with them before the Live Chat. Enjoy your creative learning!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<?php
+    if ($optedWebinar) {
+        ?>
+        <section class="opted-web">
+            <div class="container">
                 <div class="row">
-                    <div class="col-md-4 col-sm-6">
-                        <div class="web-card">
-                            <div class="web-img">
-                                <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"><img src="<?= $opWeb['banner'] ?>"></a>
-                                <div class="web-date">
-                                    <div class="date">
+                    <div class="heading-opted">Opted Webinars</div>
+                </div>
+                <?php
+                foreach ($optedWebinar as $opWeb) {
+                    ?>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-6">
+                            <div class="web-card">
+                                <div class="web-img">
+                                    <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"><img src="<?= $opWeb['banner'] ?>"></a>
+                                    <div class="web-date">
+                                        <div class="date">
+                                            <?php
+                                            $eventDate = webDate($opWeb['webinarEvents'][0]['start_datetime']);
+                                            echo $eventDate;
+                                            ?>
+                                        </div>
+                                    </div>
+                                    <div class="web-paid">
                                         <?php
-                                        $eventDate = webDate($opWeb['webinarEvents'][0]['start_datetime']);
-                                        echo $eventDate;
+                                        $finalPrice = finalAmount($opWeb['price'], $opWeb['gst']);
+                                        echo $finalPrice;
                                         ?>
                                     </div>
                                 </div>
-                                <div class="web-paid">
-                                    <?php
-                                    $finalPrice = finalAmount($opWeb['price'], $opWeb['gst']);
-                                    echo $finalPrice;
-                                    ?>
+                                <div class="web-inr">
+                                    <div class="web-title"><a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"> <?= $opWeb['name'] ?> </a></div>
+                                    <div class="web-speaker">
+                                        <span><?= str_replace(',', ', </span><span>', trim($opWeb['speakers'])) ?></span></span>
+                                    </div>
+                                    <div class="web-des"><?= $opWeb['description'] ?></div>
                                 </div>
-                            </div>
-                            <div class="web-inr">
-                                <div class="web-title"><a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"> <?= $opWeb['name'] ?> </a></div>
-                                <div class="web-speaker">
-                                    <span><?= str_replace(',', ', </span><span>', trim($opWeb['speakers'])) ?></span></span>
-                                </div>
-                                <div class="web-des"><?= $opWeb['description'] ?></div>
-                            </div>
-                            <div class="reg-btn-count">
-                                <div class="register-count">
-                                    <div class="reg-img">
-                                        <?php
-                                        if (count($web['webinarRegistrations']) > 0) {
-                                            $reg = 1;
-                                            foreach ($web['webinarRegistrations'] as $uImage) {
-                                                ?>
-                                                <span class="reg<?= $reg ?> reg">
-                                                    <img src="<?= $uImage['createdBy']['image'] ?>">
-                                                </span>
-                                                <?php
-                                                $reg++;
-                                                if ($reg == 4) {
-                                                    break;
+                                <div class="reg-btn-count">
+                                    <div class="register-count">
+                                        <div class="reg-img">
+                                            <?php
+                                            if (count($web['webinarRegistrations']) > 0) {
+                                                $reg = 1;
+                                                foreach ($web['webinarRegistrations'] as $uImage) {
+                                                    ?>
+                                                    <span class="reg<?= $reg ?> reg">
+                                                        <img src="<?= $uImage['createdBy']['image'] ?>">
+                                                    </span>
+                                                    <?php
+                                                    $reg++;
+                                                    if ($reg == 4) {
+                                                        break;
+                                                    }
                                                 }
                                             }
-                                        }
-                                        ?>
+                                            ?>
+                                        </div>
+                                        <span class="cont"><?= count($web['webinarRegistrations']) ?> Registered</span>
                                     </div>
-                                    <span class="cont"><?= count($web['webinarRegistrations']) ?> Registered</span>
+                                    <!--                        <div class="register-btns">-->
+                                    <!--                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>-->
+                                    <!--                        </div>-->
                                 </div>
-                                <!--                        <div class="register-btns">-->
-                                <!--                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>-->
-                                <!--                        </div>-->
                             </div>
                         </div>
                     </div>
-                </div>
-                <?php
-            }
-            ?>
-        </div>
-    </section>
-    <?php
-}
+                    <?php
+                }
+                ?>
+            </div>
+        </section>
+        <?php
+    }
 ?>
 
 <section class="past-web">
@@ -328,6 +294,40 @@ if ($optedWebinar) {
                 <?php
             }
             ?>
+        </div>
+    </div>
+</section>
+
+<section class="webinar-on-device">
+    <div class="container">
+        <div class="row">
+            <h1 class="heading-style">Engage from anywhere on any device</h1>
+        </div>
+        <div class="row steps">
+            <div class="col-sm-4">
+                <div class="icon">
+                    <div class="icon-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-computer.png'); ?>">
+                    </div>
+                    On your Desktop
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="icon">
+                    <div class="icon-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-smartphone.png'); ?>">
+                    </div>
+                    On your Smartphone
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="icon">
+                    <div class="icon-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-tablet.png'); ?>">
+                    </div>
+                    On your Tablet
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -477,12 +477,17 @@ $this->registerCss("
 .steps{
     margin: 50px 0;
 }
+.step{
+    min-height: 300px;
+    margin-bottom: 10px;
+}
 .icon{
     margin-bottom: 40px;
 }
-.webinar-on-device{
-    background:#00a0e320;
+.how-it-works{
+    background:#fcfcfc;
     margin-bottom: 20px;
+    padding-bottom: 20px;
 }
 .flex-set{
     display:flex;
