@@ -108,6 +108,8 @@ if (Yii::$app->user->isGuest) {
 echo $this->render('/widgets/e-campus')
 ?>
 
+<?= $this->render('/widgets/features-companies')?>
+
     <section class="great-bg">
         <div class="container">
             <div class="row">
@@ -202,7 +204,7 @@ echo $this->render('/widgets/e-campus')
         </div>
     </section>
 
-<?= $this->render('/widgets/features-companies')?>
+
 
 <?php
 echo $this->render('/widgets/drop-resume-section')
