@@ -5,12 +5,11 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
-
 ?>
     <div class="container">
         <div class="set-sticky">
             <h3 class="heading-style">Education Loan Options</h3>
-            <div class="table-view">
+            <div class="table-view loan-table">
                 <table>
                     <thead>
                     <tr>
@@ -312,24 +311,24 @@ use borales\extensions\phoneInput\PhoneInput;
     </div>
 <?php
 $this->registerCss('
-table { 
+.loan-table table { 
     width: 100%; 
     border-collapse: collapse; 
     margin-bottom: 0px !important;
 }
 /* Zebra striping */
-tr{
+.loan-table tr{
     padding: 5px 0; 
 }
-tr:nth-child(odd) { 
+.loan-table tr:nth-child(odd) { 
     background: #fbfbfb; 
 }
-th { 
+.loan-table th { 
     background: #00a0e3; 
     color: #fff; 
     font-weight: bold; 
 }
-td, th { 
+.loan-table td, .loan-table th { 
     padding: 15px 6px; 
     border-left: 1px solid #f1f1f1; 
     border-right: 1px solid #f1f1f1; 
@@ -337,7 +336,7 @@ td, th {
     height: 70px;
     
 }
-td p{
+.loan-table td p{
     margin-bottom: 0px !important;
     text-align: center !
     important;
@@ -646,21 +645,26 @@ label {
         float: right;
         margin: unset;
     }
-    table, thead, tbody, th, td, tr { 
+    .loan-table table,
+    .loan-table thead, 
+    .loan-table tbody, 
+    .loan-table th, 
+    .loan-table td, 
+    .loan-table tr { 
         display: block; 
     }
             
     /* Hide table headers (but not display: none;, for accessibility) */
-    thead tr { 
+    .loan-table thead tr { 
         position: absolute;
         top: -9999px;
         left: -9999px;
     }
-    tr {
+    .loan-table tr {
         border: 1px solid #ccc; 
         margin-bottom: 10px;
     }
-    td { 
+    .loan-table td { 
         /* Behave  like a "row" */
         border: none;
         border-bottom: 1px solid #eee; 
@@ -669,10 +673,10 @@ label {
         min-height: 70px;
         height: auto; 
     }
-    td:last-child{
+    .loan-table td:last-child{
         border-bottom: none;
     }
-    td:before { 
+    .loan-table td:before { 
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
@@ -680,19 +684,19 @@ label {
         width: 45%; 
         padding-right: 10px;
     }
-    td:nth-of-type(1):before { 
+    .loan-table td:nth-of-type(1):before { 
         content: "Bank/Financier"; 
     }
-    td:nth-of-type(2):before { 
+    .loan-table td:nth-of-type(2):before { 
         content: "ROI"; 
     }
-    td:nth-of-type(3):before { 
+    .loan-table td:nth-of-type(3):before { 
         content: "Loan Amount Available"; 
     }
-    td:nth-of-type(4):before { 
+    .loan-table td:nth-of-type(4):before { 
         content: "Collateral"; 
     }
-    td:nth-of-type(5):before { 
+    .loan-table td:nth-of-type(5):before { 
         content: "Processing Fees"; 
     }
 }

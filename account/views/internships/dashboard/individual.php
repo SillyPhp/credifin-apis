@@ -193,13 +193,13 @@ use yii\widgets\Pjax;
                                                                             if ($unclaimed_organization_enc_id->logo) {
                                                                                 $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $unclaimed_organization_enc_id->logo_location . DIRECTORY_SEPARATOR . $unclaimed_organization_enc_id->logo;
                                                                             } else {
-                                                                                $organizationLogo = "https://ui-avatars.com/api/?name=" . $unclaimed_organization_enc_id->name . "&size=200&rounded=true&background=" . str_replace("#", "", $unclaimed_organization_enc_id->initials_color) . "&color=ffffff";
+                                                                                $organizationLogo = "https://ui-avatars.com/api/?name=" . $unclaimed_organization_enc_id->name . "&size=200&rounded=false&background=" . str_replace("#", "", $unclaimed_organization_enc_id->initials_color) . "&color=ffffff";
                                                                             }
                                                                         } else {
                                                                             if ($review['logo']) {
                                                                                 $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $review['logo_location'] . DIRECTORY_SEPARATOR . $review['logo'];
                                                                             } else {
-                                                                                $organizationLogo = "https://ui-avatars.com/api/?name=" . $review['org_name'] . "&size=200&rounded=true&background=" . str_replace("#", "", $review['initials_color']) . "&color=ffffff";
+                                                                                $organizationLogo = "https://ui-avatars.com/api/?name=" . $review['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $review['initials_color']) . "&color=ffffff";
                                                                             }
                                                                         }
                                                                         ?>
@@ -304,13 +304,13 @@ use yii\widgets\Pjax;
                                                                             if ($shortlist['unclaim_org_logo']) {
                                                                                 $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $shortlist['unclaim_org_logo_location'] . DIRECTORY_SEPARATOR . $shortlist['unclaim_org_logo'];
                                                                             } else {
-                                                                                $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['unclaim_org_name'] . "&size=200&rounded=true&background=" . str_replace("#", "", $shortlist['unclaim_org_initials_color']) . "&color=ffffff";
+                                                                                $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['unclaim_org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $shortlist['unclaim_org_initials_color']) . "&color=ffffff";
                                                                             }
                                                                         } else {
                                                                             if ($shortlist['logo']) {
                                                                                 $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $shortlist['logo_location'] . DIRECTORY_SEPARATOR . $shortlist['logo'];
                                                                             } else {
-                                                                                $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['org_name'] . "&size=200&rounded=true&background=" . str_replace("#", "", $shortlist['initials_color']) . "&color=ffffff";
+                                                                                $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $shortlist['initials_color']) . "&color=ffffff";
                                                                             }
                                                                         }
                                                                         ?>
@@ -402,7 +402,7 @@ use yii\widgets\Pjax;
                                                                         if ($apply['logo']) {
                                                                             $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $apply['logo_location'] . DIRECTORY_SEPARATOR . $apply['logo'];
                                                                         } else {
-                                                                            $organizationLogo = "https://ui-avatars.com/api/?name=" . $apply['org_name'] . "&size=200&rounded=true&background=" . str_replace("#", "", $apply['initials_color']) . "&color=ffffff";
+                                                                            $organizationLogo = "https://ui-avatars.com/api/?name=" . $apply['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $apply['initials_color']) . "&color=ffffff";
                                                                         }
                                                                         ?>
                                                                         <img src="<?= $organizationLogo ?>"
@@ -470,7 +470,7 @@ use yii\widgets\Pjax;
                                                                         if ($accept['logo']) {
                                                                             $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $accept['logo_location'] . DIRECTORY_SEPARATOR . $accept['logo'];
                                                                         } else {
-                                                                            $organizationLogo = "https://ui-avatars.com/api/?name=" . $accept['org_name'] . "&size=200&rounded=true&background=" . str_replace("#", "", $accept['initials_color']) . "&color=ffffff";
+                                                                            $organizationLogo = "https://ui-avatars.com/api/?name=" . $accept['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $accept['initials_color']) . "&color=ffffff";
                                                                         }
                                                                         ?>
                                                                         <img src="<?= $organizationLogo ?>"
@@ -536,7 +536,7 @@ use yii\widgets\Pjax;
                                                                         if ($shortlist['logo']) {
                                                                             $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $shortlist['logo_location'] . DIRECTORY_SEPARATOR . $shortlist['logo'];
                                                                         } else {
-                                                                            $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['org_name'] . "&size=200&rounded=true&background=" . str_replace("#", "", $shortlist['initials_color']) . "&color=ffffff";
+                                                                            $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $shortlist['initials_color']) . "&color=ffffff";
                                                                         }
                                                                         ?>
                                                                         <img src="<?= $organizationLogo ?>"
