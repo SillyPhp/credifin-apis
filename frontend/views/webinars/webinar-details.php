@@ -11,7 +11,7 @@ $registeration_status = $webResig['status'];
 $interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
 $this->title = $webinar['title'];
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/webinar-education-loan.png');
+$image = $webinar['image'];
 $keywords = $webinar['title'];
 $description = $webinar['description'];
 $this->params['seo_tags'] = [
@@ -50,6 +50,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     <div class="full-width-light"
          style="">
         <div class="title-main">
+                <img src="<?= $webinar['image'] ?>" class="absolute">
             <div class="element-percent">
                 <h1><?= $webinar['title'] ?></h1>
                 <div class="register-btn" id="registerEventSection">
@@ -1204,7 +1205,7 @@ transform: rotate(100deg);
 .ts-count-down {
     padding: 0;
     margin: -80px 0 0 0;
-    z-index: 1;
+    z-index: 3;
     position: relative;
 }
 .gradient {
@@ -1403,12 +1404,23 @@ a:link, a:visited {
 }
 
 .title-main {
-    background: url(' . Url::to('@eyAssets/images/pages/webinar/webinar-cover.png') . ');
+//    background: url(' . Url::to('@eyAssets/images/pages/webinar/webinar-cover.png') . ');
     height: 90vh;
     background-size: cover;
     background-position: center;
+    position: relative;
 }
-
+.absolute{
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    max-height: 90vh;
+    height:100%; 
+    object-fit: cover;
+    object-position: top center;
+}
 .element-percent {
     background:#5e6a6fb8;
     width: 100%;
@@ -1416,6 +1428,8 @@ a:link, a:visited {
     height: 90vh;
     display: inline-block;
     padding-top: 28vh;
+    z-index: 2;
+    position: relative;
 }
 .element-percent h1 {
     color: #fff;

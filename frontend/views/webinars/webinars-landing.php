@@ -59,7 +59,8 @@ function webDate($webDate)
                     <div class="col-md-4 col-sm-6">
                         <div class="web-card">
                             <div class="web-img">
-                                <a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><img src="<?= $web['banner'] ?>"></a>
+                                <a href="<?= Url::to("/webinar/" . $web['slug']) ?>">
+                                    <img src="<?= $web['image'] ?>"></a>
                                 <div class="web-date">
                                     <div class="date">
                                         <?php
