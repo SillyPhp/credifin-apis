@@ -7,7 +7,7 @@ use yii\helpers\Url;
 <section class="covid-offer">
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-5">
                 <div class="banner-text">
                     <div class="covid-offer-tag">
                         COVID RELIEF OFFER
@@ -18,7 +18,7 @@ use yii\helpers\Url;
                     <p class="banner-description">
                         Offer valid till 22nd of September
                     </p>
-                    <a href="" class="avail-btn">
+                    <a href="<?= $availUrl ?>" class="avail-btn">
                         <span>Avail Now</span>
                         <div class="arrows">
                             <i class="fas fa-chevron-right"></i>
@@ -28,11 +28,10 @@ use yii\helpers\Url;
                             <i class="fas fa-chevron-right"></i>
                             <i class="fas fa-chevron-right"></i>
                         </div>
-
                     </a>
                 </div>
             </div>
-            <div class="col-md-6 banner-img-holder">
+            <div class="col-md-6 col-sm-7 banner-img-holder">
                 <div class="banner-img">
                     <div class="bg-div">
                         <div class="loan-product">
@@ -66,6 +65,7 @@ $this->registerCss('
     margin: 15px 22px;
     border-radius: 12px;
     box-shadow: 0 0 17px 1px #e6e6e6;
+    overflow: hidden;
 }
 .covid-offer .container{
     height: 100%;
@@ -163,5 +163,28 @@ $this->registerCss('
     color: #fff;
     font-weight: 800;
     margin-top: 4px;
+}
+@media only screen and (max-width: 375px){
+    div.banner-text h1{
+        font-size: 20pt;
+    }
+}
+@media only screen and (max-width: 750px){
+    .banner-img-holder{
+        display: none;
+    }
+    .banner-text h1{
+        font-size: 25pt;
+        line-height: 38px;
+    }
+}
+@media only screen and (max-width: 992px){
+    .banner-img{
+        width: 225px;
+        margin-left: 45px;
+    }
+    .avail-btn{
+        background: #ff7803;
+    }
 }
 ');
