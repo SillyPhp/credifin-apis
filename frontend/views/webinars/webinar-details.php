@@ -1493,7 +1493,6 @@ a:link, a:visited {
     color: #fff;
     font-weight: 700;
     text-align: center;
-    text-decoration: capitalize
 }
 .webinar-description, .sidebar {
 //    padding-top: 30px;
