@@ -59,7 +59,8 @@ function webDate($webDate)
                     <div class="col-md-4 col-sm-6">
                         <div class="web-card">
                             <div class="web-img">
-                                <a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><img src="<?= $web['banner'] ?>"></a>
+                                <a href="<?= Url::to("/webinar/" . $web['slug']) ?>">
+                                    <img src="<?= $web['image'] ?>"></a>
                                 <div class="web-date">
                                     <div class="date">
                                         <?php
@@ -1025,7 +1026,7 @@ color: #fff !important;
 }
 .opted-web {
 	background-image: url(" . Url::to('@eyAssets/images/pages/webinar/wb2.png') . "); 
-	margin: 30px 0 0;
+	margin: 0px 0 0;
 	padding: 0 0 50px;
 	background-position: center;
     background-size: cover;

@@ -11,9 +11,9 @@ $registeration_status = $webResig['status'];
 $interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
 $this->title = $webinar['title'];
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/webinar-sharing-promote.png');
+$image = $webinar['image'];
 $keywords = $webinar['title'];
-$description = $webinar['description'];
+$description = html_entity_decode($webinar['description']);
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
@@ -50,6 +50,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     <div class="full-width-light"
          style="">
         <div class="title-main">
+                <img src="<?= $webinar['image'] ?>" class="absolute">
             <div class="element-percent">
                 <h1><?= $webinar['title'] ?></h1>
                 <div class="register-btn" id="registerEventSection">
@@ -256,7 +257,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
         <div class="row">
             <div class="contact-req">
                 <h3>if you are facing any problem during registration call us on :</h3>
-                <a href="tel:9501771965">+919501771965</a>
+                <a href="tel:9501771965">+917009076638</a>
             </div>
         </div>
     </div>
@@ -504,78 +505,6 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     </section>
 <?php } ?>
 <!-- ts intro end-->
-<!-- ts VC start-->
-<!--<section>-->
-<!--    --><?php //Pjax::begin(['id' => 'webinar_join_registations']); ?>
-<!--    <div class="container-fluid">-->
-<!--        <div class="row md-flex">-->
-<!--            <div class="col-md-6 ts-book-seat">-->
-<!--                <div class="book-seat-content text-center mb-100">-->
-<!--                    <h3 class="section-title white">-->
-<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/webinar/edupreneur_village.png') ?><!--"/><br>-->
-<!--                        Edupreneur Village Challenge 2.0<br/><br/>-->
-<!--                    </h3>-->
-<!--                    <ul class="section-list">-->
-<!--                        <li>For EdTech startups at an ideation / Validation stage</li>-->
-<!--                        <li>Investment upto 25 lacs, Cash Prizes and Incubation Support</li>-->
-<!--                        <li>Partnership with the Auro Scholar Programme of Sri Aurobindo Society</li>-->
-<!--                        <li>Scholarship available for top 5 startups for Education Entrepreneurship Certification-->
-<!--                            Program-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                    <div class="text-center us-marg" v-if="userType === 'Individual'">-->
-<!--                        --><?php
-//                        if ($user_id) {
-//                            if ($registeration_status != 1) {
-//                                ?>
-<!--                                <button class="vc-ra-btn" id="joinRegisterBtn">Join Webinar to learn more</button>-->
-<!--                                --><?php
-//                            }
-//                            ?>
-<!--                            --><?php
-//                        } else {
-//                            ?>
-<!--                            <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn">-->
-<!--                                Join Webinar to learn more-->
-<!--                            </button>-->
-<!--                            --><?php
-//                        }
-//                        ?>
-<!--                    </div>-->
-<!--                </div> book seat end-->
-<!--            </div> col end-->
-<!--            <div class="col-md-6 ts-book-seat second">-->
-<!--                <div class="book-seat-content text-center mb-100">-->
-<!--                    <h3 class="section-title white">-->
-<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/webinar/red_bull_logo.png') ?><!--"/> <br>-->
-<!--                        Red Bull Basement is where students come to innovate, collaborate, and drive change on campus-->
-<!--                        through DIY-based technological solutions.-->
-<!--                    </h3>-->
-<!--                    <div class="text-center">-->
-<!--                        --><?php
-//                        if ($user_id) {
-//                            if ($registeration_status != 1) {
-//                                ?>
-<!--                                <button class="vc-ra-btn" id="joinRegisterBtn">Join Webinar to learn more</button>-->
-<!--                                --><?php
-//                            }
-//                            ?>
-<!--                            --><?php
-//                        } else {
-//                            ?>
-<!--                            <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn">-->
-<!--                                Join Webinar to learn more-->
-<!--                            </button>-->
-<!--                            --><?php
-//                        }
-//                        ?>
-<!--                    </div>-->
-<!--                </div> book seat end-->
-<!--            </div> col end-->
-<!--        </div> row end-->
-<!--    </div> container end-->
-<!--    --><?php //Pjax::end(); ?>
-<!--</section>-->
 
 <?php
 function color_mod($hex, $diff)
@@ -793,7 +722,7 @@ $this->registerCss('
     max-width: 50%;
 }
 .speak-img {
-    background-position: center;
+    background-position: top;
     background-size: cover;
 }
 .flex-use {
@@ -1276,7 +1205,7 @@ transform: rotate(100deg);
 .ts-count-down {
     padding: 0;
     margin: -80px 0 0 0;
-    z-index: 1;
+    z-index: 3;
     position: relative;
 }
 .gradient {
@@ -1475,12 +1404,23 @@ a:link, a:visited {
 }
 
 .title-main {
-    background: url(' . Url::to('@eyAssets/images/pages/webinar/webinar-cover.png') . ');
+//    background: url(' . Url::to('@eyAssets/images/pages/webinar/webinar-cover.png') . ');
     height: 90vh;
     background-size: cover;
     background-position: center;
+    position: relative;
 }
-
+.absolute{
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    max-height: 90vh;
+    height:100%; 
+    object-fit: cover;
+    object-position: top center;
+}
 .element-percent {
     background:#5e6a6fb8;
     width: 100%;
@@ -1488,6 +1428,8 @@ a:link, a:visited {
     height: 90vh;
     display: inline-block;
     padding-top: 28vh;
+    z-index: 2;
+    position: relative;
 }
 .element-percent h1 {
     color: #fff;
