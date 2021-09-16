@@ -257,10 +257,9 @@ if ($type == 'Internships') {
                                        onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                         <i class="fab fa-telegram-plane"></i>
                                     </a>
-                                    <a href="javascript:;" class="copy" id="copy-btn"
-                                       onclick="copyFunction()">
-                                       <span class="tooltiptext" id="myTooltip">Copy Link</span>
-                                       <i class="fas fa-copy"></i>
+                                    <a href="javascript:;" class="copy jj-clipboard" type="button" data-toggle="tooltip"
+                                       title="Copy Link" data-link="<?= $application_details['link'] ?>">
+                                        <i class="fas fa-clipboard"></i>
                                     </a>
                                 </div>
                             </div>
@@ -836,6 +835,19 @@ $script = <<<js
 //       status.addClass('j-textt');
 //   }
 // });
+$(document).on('click', '.jj-clipboard',function (event) {
+            event.preventDefault();
+            var link = window.location.hostname + $(this).attr('data-link');
+            CopyToClipboard(link, true, "Link copied");
+        });
+function CopyToClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
 if(document.getElementsByClassName('j-text')[0].scrollHeight <= 394){
     document.getElementsByClassName('read-more')[0].classList.add('hidden');
 }
@@ -847,27 +859,5 @@ $(document).on("click", ".jd-close", function(){
     $("#pop_up_modal").modal("hide");
     $("#pop_up_modal").html(load_template);    
 });
-
-
-var copyBtn = document.querySelector("#copy-btn");
-var copyTooltip = document.querySelector("#myTooltip");
-copyBtn.addEventListener("mouseover", () => {
-    copyTooltip.style.display = "inline";
-});
-copyBtn.addEventListener("mouseout", () => {
-    copyTooltip.style.display = "none";
-});
-
-
-function copyFunction() {
-    var detailLink = document.querySelector(".view-detail").getAttribute("href");
-    navigator.clipboard.writeText("empoweryouth.com" + detailLink);
-    copyTooltip.innerHTML = "Copied";
-
-    setTimeout(function() {
-        copyTooltip.innerHTML = "Copy Link";
-    }, 5000);
-}
-
 ');
 $this->registerJs($script);
