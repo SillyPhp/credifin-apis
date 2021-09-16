@@ -1025,7 +1025,7 @@ color: #fff !important;
 }
 .opted-web {
 	background-image: url(" . Url::to('@eyAssets/images/pages/webinar/wb2.png') . "); 
-	margin: 30px 0 0;
+	margin: 0px 0 0;
 	padding: 0 0 50px;
 	background-position: center;
     background-size: cover;
