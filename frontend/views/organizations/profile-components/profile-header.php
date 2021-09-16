@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Url;
+
 ?>
 
 <section class="college-header">
@@ -21,8 +22,38 @@ use yii\helpers\Url;
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link collegeLink courses" href="javascript:;" data-key="courses">
+                    Courses
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collegeLink placement" href="javascript:;" data-key="placement">
+                    Placements
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link collegeLink loans" href="javascript:;" data-key="loans">
                     loans
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collegeLink infrastructure" href="javascript:;" data-key="infrastructure">
+                    Infrastructure
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collegeLink faculty" href="javascript:;" data-key="faculty">
+                    Faculty
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collegeLink cutoff" href="javascript:;" data-key="cutoff">
+                    Cutoff
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collegeLink scholarship" href="javascript:;" data-key="scholarship">
+                    Scholarships
                 </a>
             </li>
             <li class="nav-item">
@@ -39,6 +70,7 @@ $user_id = '';
 if(!Yii::$app->user->isGuest){
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
+
 $this->registerCss('
 .college-header {
 	background-image: url('. Url::to("@eyAssets/images/pages/college-new-module/colg-campus.png") .');
@@ -448,7 +480,13 @@ label {
 .tc{
     text-align:center;
 }
-
+.noResults{
+    font-size: 20px;
+    color: #333;
+    font-family: lora;
+    text-align: center !important;
+    width: 100%;
+}
 @media only screen and (max-width: 767px) {
     .h-point1 {
         width: 50%;
@@ -572,47 +610,15 @@ function removeActive(){
         $('.nav-item').removeClass('cActive');
     }
 }
-var baseUrl = '';
-function getDetails(){
-    $.ajax({
-        url: baseUrl+"/api/v3/ey-college-profile/college-detail",
-        method: 'POST',
-        data: {slug:slug},
-        success: function (res){
-            if(res.response.status == 200){
-                var response = res.response.data;
-                let collegeDet = collegeInfo(res);
-                $('.college-main').append(collegeDet);
-            }
-        },
-        complete: function (){
-            getReviews();
-            getUserReviews();
-        }
-    })
-}
-getDetails()
-function collegeInfo(res) {
-    const {city_name, logo, name, organization_enc_id} = res.response.data;
-    var collegeInfo = `<div class="college-logo">
-                        <img src="`+logo+`">
-                    </div>
-                    <div class="college-info">
-                        <h3 data-id="`+organization_enc_id+`" id="orgDetail">`+name+`</h3>
-                        `+(city_name ? `<div class="c-location"><i class="fas fa-map-marker-alt"></i>` +city_name+`</div>` : '')+`    
-                     </div>`;
-    return collegeInfo;
-}
+
 $('.collegeLink').on('click', function (){
   var dataKey = $(this).attr('data-key'); 
   var url = window.location.pathname.split('/');
   var slugg = url[1];
   var subUrl = url[2];
-  console.log(dataKey);
   if(subUrl && subUrl != dataKey && dataKey != "overview"){
       history.replaceState({}, '', dataKey);
   }else if(dataKey == "overview"){
-      console.log('oo'); 
       history.replaceState({}, '', '/'+slugg);
   }else{
      history.pushState({}, '', '/'+slugg+"/"+dataKey);
@@ -631,6 +637,47 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 
 ?>
 <script>
+    var url = window.location.pathname.split('/');
+    var slug = url[1];
+    var baseUrl = '';
+    let data = new FormData();
+    data.append("slug", slug);
+    let obj = null
+    let collegeStats = null;
+    let reviewObj = null;
+
+    async function getCollegeDetails(){
+        let response = await fetch(`${baseUrl}/api/v3/ey-college-profile/college-detail`, {
+            method: 'POST',
+            body: data,
+        });
+        let res = await response.json();
+
+        if(res['response']['status'] == 200){
+            collegeStats = res['response']['data'];
+            if(obj != null){
+                obj.testVar = res['response']['data'];
+            }
+            collegeInfo(res['response']['data'])
+            if(reviewObj != null){
+                reviewObj.setOrgId = res['response']['data']['organization_enc_id'];
+            }
+        }
+    }
+    getCollegeDetails();
+
+    function collegeInfo(res) {
+        const {city_name, logo, name, organization_enc_id} = res;
+        var collegeInfo = `<div class="college-logo">
+                        <img src="`+logo+`">
+                    </div>
+                    <div class="college-info">
+                        <h3 data-id="`+organization_enc_id+`" id="orgDetail">`+name+`</h3>
+                        `+(city_name ? `<div class="c-location"><i class="fas fa-map-marker-alt"></i>` +city_name+`</div>` : '')+`
+                     </div>`;
+
+        document.querySelector('.college-main').innerHTML = collegeInfo;
+    }
     function showJobsSidebar() {
         let paSidebar = document.getElementsByClassName('hamburger-jobs');
         paSidebar[0].classList.toggle('pa-sidebar-show');

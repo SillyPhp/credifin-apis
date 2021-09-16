@@ -261,6 +261,9 @@ $this->registerCss('
     border: none;
     padding: 5px 20px;
     font-family: roboto;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
 }
 .nav>li>a>img {
     max-width: none;
