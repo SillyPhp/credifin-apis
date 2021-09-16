@@ -33,16 +33,16 @@ use yii\widgets\Pjax;
                                                 <div class="hr-com-icon">
                                                     <?php
                                                     if($shortlist['unclaimed_organization_enc_id'] != null){
-                                                        if ($shortlist['logo']) {
+                                                        if ($shortlist['unclaim_org_logo']) {
                                                             $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $shortlist['unclaim_org_logo_location'] . DIRECTORY_SEPARATOR . $shortlist['unclaim_org_logo'];
                                                         } else {
-                                                            $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['unclaim_org_name'] . "&size=200&rounded=true&background=" . str_replace("#", "", $shortlist['unclaim_org_initials_color']) . "&color=ffffff";
+                                                            $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['unclaim_org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $shortlist['unclaim_org_initials_color']) . "&color=ffffff";
                                                         }
                                                     }else {
                                                         if ($shortlist['logo']) {
                                                             $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $shortlist['logo_location'] . DIRECTORY_SEPARATOR . $shortlist['logo'];
                                                         } else {
-                                                            $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['org_name'] . "&size=200&rounded=true&background=" . str_replace("#", "", $shortlist['initials_color']) . "&color=ffffff";
+                                                            $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $shortlist['initials_color']) . "&color=ffffff";
                                                         }
                                                     }
                                                     ?>
@@ -142,7 +142,7 @@ $this->registerCss('
     margin-right:5px;
 }
 .hr-com-icon img {
-    border-radius: 50% !important;
+//    border-radius: 50% !important;
     object-fit: contain;
     overflow: hidden;
 }

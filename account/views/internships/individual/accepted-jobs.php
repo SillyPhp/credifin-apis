@@ -37,7 +37,7 @@ use yii\widgets\Pjax;
                                                 if ($accept['logo']) {
                                                     $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $accept['logo_location'] . DIRECTORY_SEPARATOR . $accept['logo'];
                                                 } else {
-                                                    $organizationLogo = "https://ui-avatars.com/api/?name=" . $accept['org_name'] . "&size=200&rounded=true&background=" . str_replace("#", "", $accept['initials_color']) . "&color=ffffff";
+                                                    $organizationLogo = "https://ui-avatars.com/api/?name=" . $accept['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $accept['initials_color']) . "&color=ffffff";
                                                 }
                                                 ?>
                                                 <img src="<?= $organizationLogo ?>" class="img-responsive ">
@@ -116,7 +116,7 @@ $this->registerCss('
     margin-right:5px;
 }
 .hr-com-icon img {
-    border-radius: 50% !important;
+//    border-radius: 50% !important;
     object-fit: contain;
     overflow: hidden;
 }

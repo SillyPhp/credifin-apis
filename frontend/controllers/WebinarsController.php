@@ -353,6 +353,7 @@ class WebinarsController extends Controller
                 'a.title',
                 'a.description',
                 'a.seats',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
             ])
             ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now, $recent) {
                 $a1->select([
@@ -411,7 +412,7 @@ class WebinarsController extends Controller
         return $webinar;
     }
 
-    public function actionIndex()
+    public function actionAllWebinars()
     {
         $webinars = self::getWebinars();
         return $this->render('all-webinars', [
@@ -474,7 +475,7 @@ class WebinarsController extends Controller
         return $webinars;
     }
 
-    public function actionWebinarsLanding()
+    public function actionIndex()
     {
         $upcomingWebinar = self::showWebinar($status = 'upcoming');
         $pastWebinar = self::showWebinar($status = 'past', '', false);
@@ -489,6 +490,8 @@ class WebinarsController extends Controller
             $model->load(Yii::$app->request->post());
             return $model->save($speaker_id);
         }
+//        print_r($upcomingWebinar);
+//        die();
         return $this->render('webinars-landing', [
             'upcomingWebinar' => $upcomingWebinar,
             'pastWebinar' => $pastWebinar,
@@ -503,7 +506,7 @@ class WebinarsController extends Controller
         $webinars = Webinar::find()
             ->alias('a')
             ->select(['a.name', 'a.description', 'a.price', 'a.webinar_enc_id', 'a.gst', 'a.slug',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->webinars->banner->image) . '", a.image_location, "/", a.image) END banner',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
                 'GROUP_CONCAT(DISTINCT(CONCAT(f.first_name, " " ,f.last_name)) SEPARATOR ",") speakers'])
             ->joinWith(['webinarEvents b' => function ($b) use ($status, $currentTime) {
                 $b->distinct();
@@ -528,8 +531,8 @@ class WebinarsController extends Controller
                 $c->select(['c.webinar_enc_id', 'c.register_enc_id', 'c.status', 'c.created_by', 'c.created_on']);
                 $c->joinWith(['createdBy cc' => function ($cc) {
                     $cc->select(['cc.user_enc_id',
-                        'CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", cc.image_location, "/", image)',
-//                        'CASE WHEN cc.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", cc.image_location, "/", image)  ELSE NULL END image'
+//                        'CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", cc.image_location, "/", image)',
+                        'CASE WHEN cc.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", cc.image_location, "/", image)  ELSE NULL END image'
                     ])
                         ->where(['OR',
                             ['!=', 'cc.image', null],
@@ -568,4 +571,9 @@ class WebinarsController extends Controller
             return $data;
         }
     }
+
+    public function actionWebinarExpired(){
+        return $this->render('webinar-expired');
+    }
+
 }

@@ -19,7 +19,7 @@ use yii\helpers\Url;
             <div class="col-md-4 col-sm-4 f-flex">
                 <div class="faq-vector">
                     <img src="<?= Url::to('@eyAssets/images/pages/education-loans/girl-with-question.png') ?>"
-                         alt=""/>
+                         alt="">
                 </div>
             </div>
         </div>
