@@ -182,7 +182,7 @@ if ($optedWebinar) {
                         <div class="web-card">
                             <div class="web-img">
                                 <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"><img
-                                            src="<?= $opWeb['banner'] ?>"></a>
+                                            src="<?= $opWeb['image'] ?>"></a>
                                 <div class="web-date">
                                     <div class="date">
                                         <?php
