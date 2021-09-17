@@ -108,6 +108,8 @@ if (Yii::$app->user->isGuest) {
 echo $this->render('/widgets/e-campus')
 ?>
 
+<?= $this->render('/widgets/features-companies')?>
+
     <section class="great-bg">
         <div class="container">
             <div class="row">
@@ -201,6 +203,9 @@ echo $this->render('/widgets/e-campus')
             </div>
         </div>
     </section>
+
+
+
 <?php
 echo $this->render('/widgets/drop-resume-section')
 ?>
@@ -254,21 +259,21 @@ echo $this->render('/widgets/drop-resume-section')
                 <div class="col-sm-3 stat-card-holder">
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-user-graduate"></i></div>
-                        <div class="stat-num">10k+</div>
+                        <div class="stat-num">100k+</div>
                         <div class="stat-info">Freshers</div>
                     </div>
                 </div>
                 <div class="col-sm-3 stat-card-holder">
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-user"></i></div>
-                        <div class="stat-num">5k+</div>
+                        <div class="stat-num">50k+</div>
                         <div class="stat-info">Experienced Candidates</div>
                     </div>
                 </div>
                 <div class="col-sm-3 stat-card-holder">
                     <div class="stat-card">
                         <div class="stat-icon"><i class="fas fa-briefcase"></i></div>
-                        <div class="stat-num">15k+</div>
+                        <div class="stat-num">150k+</div>
                         <div class="stat-info">Internships</div>
                     </div>
                 </div>
