@@ -25,6 +25,7 @@ function webDate($webDate)
     $newDate = date('d-M', $sec);
     return $newDate;
 }
+
 ?>
 <section class="header-web">
     <div class="back-shadow"></div>
@@ -53,7 +54,7 @@ function webDate($webDate)
         </div>
         <div class="row">
             <?php
-            if($upcomingWebinar){
+            if ($upcomingWebinar) {
                 foreach ($upcomingWebinar as $web) {
                     ?>
                     <div class="col-md-4 col-sm-6">
@@ -77,7 +78,9 @@ function webDate($webDate)
                                 </div>
                             </div>
                             <div class="web-inr">
-                                <div class="web-title"><a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a></div>
+                                <div class="web-title"><a
+                                            href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a>
+                                </div>
                                 <div class="web-speaker">
                                     <span><?= str_replace(',', ', </span><span>', trim($web['speakers'])) ?></span>
                                 </div>
@@ -90,12 +93,14 @@ function webDate($webDate)
                                         if (count($web['webinarRegistrations']) > 0) {
                                             $reg = 1;
                                             foreach ($web['webinarRegistrations'] as $uImage) {
-                                                ?>
-                                                <span class="reg<?= $reg ?> reg">
+                                                if ($uImage['createdBy']['image']) {
+                                                    ?>
+                                                    <span class="reg<?= $reg ?> reg">
                                         <img src="<?= $uImage['createdBy']['image'] ?>">
                                     </span>
-                                                <?php
-                                                $reg++;
+                                                    <?php
+                                                    $reg++;
+                                                }
                                                 if ($reg == 4) {
                                                     break;
                                                 }
@@ -133,7 +138,9 @@ function webDate($webDate)
                     </div>
                     <div class="step-text">
                         <h3>1. Register</h3>
-                        <p>Register for the webinar by simply filling all the required details and clicking on the "Request For a Webinar' button. Once registered, a mail will the join link will be sent to you.</p>
+                        <p>Register for the webinar by simply filling all the required details and clicking on the
+                            "Request For a Webinar' button. Once registered, a mail will the join link will be sent to
+                            you.</p>
                     </div>
                 </div>
             </div>
@@ -144,7 +151,9 @@ function webDate($webDate)
                     </div>
                     <div class="step-text">
                         <h3>2. Join</h3>
-                        <p>At the time of the webinar, click on the join link sent in the mail. You will be redirected to the webinar detail page. Click on the 'Join Now' button and you will be in the webinar.</p>
+                        <p>At the time of the webinar, click on the join link sent in the mail. You will be redirected
+                            to the webinar detail page. Click on the 'Join Now' button and you will be in the
+                            webinar.</p>
                     </div>
                 </div>
             </div>
@@ -155,7 +164,8 @@ function webDate($webDate)
                     </div>
                     <div class="step-text">
                         <h3>3. Watch</h3>
-                        <p>Once the organiser arrived, the webinar will begin. You can also interact with them before the Live Chat. Enjoy your creative learning!</p>
+                        <p>Once the organiser arrived, the webinar will begin. You can also interact with them before
+                            the Live Chat. Enjoy your creative learning!</p>
                     </div>
                 </div>
             </div>
@@ -164,79 +174,82 @@ function webDate($webDate)
 </section>
 
 <?php
-    if ($optedWebinar) {
-        ?>
-        <section class="opted-web">
-            <div class="container">
+if ($optedWebinar) {
+    ?>
+    <section class="opted-web">
+        <div class="container">
+            <div class="row">
+                <div class="heading-opted">Opted Webinars</div>
+            </div>
+            <?php
+            foreach ($optedWebinar as $opWeb) {
+                ?>
                 <div class="row">
-                    <div class="heading-opted">Opted Webinars</div>
-                </div>
-                <?php
-                foreach ($optedWebinar as $opWeb) {
-                    ?>
-                    <div class="row">
-                        <div class="col-md-4 col-sm-6">
-                            <div class="web-card">
-                                <div class="web-img">
-                                    <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"><img src="<?= $opWeb['banner'] ?>"></a>
-                                    <div class="web-date">
-                                        <div class="date">
-                                            <?php
-                                            $eventDate = webDate($opWeb['webinarEvents'][0]['start_datetime']);
-                                            echo $eventDate;
-                                            ?>
-                                        </div>
-                                    </div>
-                                    <div class="web-paid">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="web-card">
+                            <div class="web-img">
+                                <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"><img
+                                            src="<?= $opWeb['banner'] ?>"></a>
+                                <div class="web-date">
+                                    <div class="date">
                                         <?php
-                                        $finalPrice = finalAmount($opWeb['price'], $opWeb['gst']);
-                                        echo $finalPrice;
+                                        $eventDate = webDate($opWeb['webinarEvents'][0]['start_datetime']);
+                                        echo $eventDate;
                                         ?>
                                     </div>
                                 </div>
-                                <div class="web-inr">
-                                    <div class="web-title"><a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"> <?= $opWeb['name'] ?> </a></div>
-                                    <div class="web-speaker">
-                                        <span><?= str_replace(',', ', </span><span>', trim($opWeb['speakers'])) ?></span></span>
-                                    </div>
-                                    <div class="web-des"><?= $opWeb['description'] ?></div>
+                                <div class="web-paid">
+                                    <?php
+                                    $finalPrice = finalAmount($opWeb['price'], $opWeb['gst']);
+                                    echo $finalPrice;
+                                    ?>
                                 </div>
-                                <div class="reg-btn-count">
-                                    <div class="register-count">
-                                        <div class="reg-img">
-                                            <?php
-                                            if (count($web['webinarRegistrations']) > 0) {
-                                                $reg = 1;
-                                                foreach ($web['webinarRegistrations'] as $uImage) {
-                                                    ?>
-                                                    <span class="reg<?= $reg ?> reg">
+                            </div>
+                            <div class="web-inr">
+                                <div class="web-title"><a
+                                            href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"> <?= $opWeb['name'] ?> </a>
+                                </div>
+                                <div class="web-speaker">
+                                    <span><?= str_replace(',', ', </span><span>', trim($opWeb['speakers'])) ?></span></span>
+                                </div>
+                                <div class="web-des"><?= $opWeb['description'] ?></div>
+                            </div>
+                            <div class="reg-btn-count">
+                                <div class="register-count">
+                                    <div class="reg-img">
+                                        <?php
+                                        if (count($web['webinarRegistrations']) > 0) {
+                                            $reg = 1;
+                                            foreach ($web['webinarRegistrations'] as $uImage) {
+                                                ?>
+                                                <span class="reg<?= $reg ?> reg">
                                                         <img src="<?= $uImage['createdBy']['image'] ?>">
                                                     </span>
-                                                    <?php
-                                                    $reg++;
-                                                    if ($reg == 4) {
-                                                        break;
-                                                    }
+                                                <?php
+                                                $reg++;
+                                                if ($reg == 4) {
+                                                    break;
                                                 }
                                             }
-                                            ?>
-                                        </div>
-                                        <span class="cont"><?= count($web['webinarRegistrations']) ?> Registered</span>
+                                        }
+                                        ?>
                                     </div>
-                                    <!--                        <div class="register-btns">-->
-                                    <!--                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>-->
-                                    <!--                        </div>-->
+                                    <span class="cont"><?= count($web['webinarRegistrations']) ?> Registered</span>
                                 </div>
+                                <!--                        <div class="register-btns">-->
+                                <!--                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>-->
+                                <!--                        </div>-->
                             </div>
                         </div>
                     </div>
-                    <?php
-                }
-                ?>
-            </div>
-        </section>
-        <?php
-    }
+                </div>
+                <?php
+            }
+            ?>
+        </div>
+    </section>
+    <?php
+}
 ?>
 
 <section class="past-web">
@@ -248,8 +261,7 @@ function webDate($webDate)
             <?php
             foreach ($pastWebinar as $pWeb) {
                 $date = array();
-                foreach ($pWeb['webinarEvents'] as $key => $row)
-                {
+                foreach ($pWeb['webinarEvents'] as $key => $row) {
                     $date[$key] = $row['start_datetime'];
                 }
                 array_multisort($date, SORT_DESC, $pWeb['webinarEvents']);
@@ -371,26 +383,26 @@ function webDate($webDate)
         </div>
         <div class="col-md-7 col-sm-12 col-xs-12" style="background-color: #fff;padding: 30px 20px;">
             <?php $form = ActiveForm::begin([
-                'id'=>'requestWebForm'
+                'id' => 'requestWebForm'
             ])
             ?>
             <div class="row">
                 <div class="col-md-12">
                     <div class="web-form">
                         <label for="title">Topic</label>
-                        <?= $form->field($model,'topic')->textInput(['class' => 'form-control', 'id' => 'topic', 'placeholder' => ''])->label(false)?>
+                        <?= $form->field($model, 'topic')->textInput(['class' => 'form-control', 'id' => 'topic', 'placeholder' => ''])->label(false) ?>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="web-form">
                         <label for="date">Date</label>
-                        <?= $form->field($model,'date')->textInput(['class' => 'form-control datepicker', 'id' => 'date', 'placeholder' => ''])->label(false)?>
+                        <?= $form->field($model, 'date')->textInput(['class' => 'form-control datepicker', 'id' => 'date', 'placeholder' => ''])->label(false) ?>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="web-form">
                         <label for="seats">Seats</label>
-                       <?= $form->field($model,'seats')->textInput(['class' => 'form-control', 'id' => 'seats', 'placeholder' => ''])->label(false)?>
+                        <?= $form->field($model, 'seats')->textInput(['class' => 'form-control', 'id' => 'seats', 'placeholder' => ''])->label(false) ?>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -399,7 +411,7 @@ function webDate($webDate)
                         <div class="load-suggestions">
                             <span></span><span></span><span></span>
                         </div>
-                        <?= $form->field($model,'speakers[]',['template' => '{input}{error}'])->textInput(['class' => 'form-control typeahead', 'id' => 'speakers', 'placeholder' => ''])->label(false)?>
+                        <?= $form->field($model, 'speakers[]', ['template' => '{input}{error}'])->textInput(['class' => 'form-control typeahead', 'id' => 'speakers', 'placeholder' => ''])->label(false) ?>
                         <div class="pf-field no-margin">
                             <ul class="tags languages_tag_list">
                                 <li class="tagAdd taglist"></li>
@@ -410,7 +422,7 @@ function webDate($webDate)
                 <div class="col-md-12 mt10">
                     <div class="web-form">
                         <label for="objectives">Objectives</label><br>
-                       <?= $form->field($model,'objective')->textArea(['rows'=> 6, 'cols'=> 20,'class' => 'form-control', 'id' => 'objective', 'placeholder' => ''])->label(false)?>
+                        <?= $form->field($model, 'objective')->textArea(['rows' => 6, 'cols' => 20, 'class' => 'form-control', 'id' => 'objective', 'placeholder' => ''])->label(false) ?>
                     </div>
                 </div>
                 <div class="col-md-12 text-center">
