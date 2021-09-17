@@ -178,7 +178,7 @@ function webDate($webDate)
                         <div class="col-md-4 col-sm-6">
                             <div class="web-card">
                                 <div class="web-img">
-                                    <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"><img src="<?= $opWeb['banner'] ?>"></a>
+                                    <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"><img src="<?= $opWeb['image'] ?>"></a>
                                     <div class="web-date">
                                         <div class="date">
                                             <?php
@@ -258,7 +258,7 @@ function webDate($webDate)
                     <div class="web-card">
                         <div class="web-img">
                             <a href="<?= Url::to("/webinar/" . $pWeb['slug']) ?>">
-                                <img src="<?= $pWeb['banner'] ?>">
+                                <img src="<?= $pWeb['image'] ?>">
                             </a>
                             <div class="web-date">
                                 <div class="date">
