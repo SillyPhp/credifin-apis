@@ -533,12 +533,9 @@ class WebinarsController extends Controller
                     $cc->select(['cc.user_enc_id',
 //                        'CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", cc.image_location, "/", image)',
                         'CASE WHEN cc.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", cc.image_location, "/", image)  ELSE NULL END image'
-                    ])
-                        ->where(['OR',
-                            ['!=', 'cc.image', null],
-                            ['!=', 'cc.image', '']
-                        ]);
+                    ]);
                 }]);
+                $c->onCondition(['c.status' => 1, 'c.is_deleted' => 0]);
                 $c->orderBy(['c.created_on' => SORT_DESC]);
                 if (!empty($userIdd)) {
                     $c->where(['c.created_by' => $userIdd]);
@@ -552,6 +549,7 @@ class WebinarsController extends Controller
             ->all();
         return $webinars;
     }
+
     public function actionSearchSpeakers($q = null)
     {
         if (!is_null($q)) {
@@ -562,7 +560,7 @@ class WebinarsController extends Controller
                     'z.speaker_enc_id id',
                     'z.user_enc_id',
                     'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',])
-                ->joinWith(['userEnc a'],false)
+                ->joinWith(['userEnc a'], false)
                 ->andFilterWhere(['like', 'CONCAT(a.first_name, " " ,a.last_name)', $q])
                 ->andWhere(['z.is_deleted' => 0])
                 ->limit(20)
@@ -572,7 +570,8 @@ class WebinarsController extends Controller
         }
     }
 
-    public function actionWebinarExpired(){
+    public function actionWebinarExpired()
+    {
         return $this->render('webinar-expired');
     }
 
