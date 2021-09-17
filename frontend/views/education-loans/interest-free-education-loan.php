@@ -57,7 +57,8 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
-
+    
+    
     <section class="studyus-head">
         <div class="container">
             <div class="row">
@@ -115,6 +116,9 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+    <?= $this->render('/widgets/covid-offer-banner', ['availUrl' => '/education-loans/apply']) ?>
+
+
 <?= $this->render('/widgets/interest-free-loan-process') ?>
 
     <section class="benefit-bg">
