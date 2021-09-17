@@ -211,9 +211,9 @@ if ($optedWebinar) {
                                 <div class="register-count">
                                     <div class="reg-img">
                                         <?php
-                                        if (count($web['webinarRegistrations']) > 0) {
+                                        if (count($opWeb['webinarRegistrations']) > 0) {
                                             $reg = 1;
-                                            foreach ($web['webinarRegistrations'] as $uImage) {
+                                            foreach ($opWeb['webinarRegistrations'] as $uImage) {
                                                 ?>
                                                 <span class="reg<?= $reg ?> reg">
                                                         <img src="<?= $uImage['createdBy']['image'] ?>">
@@ -227,7 +227,7 @@ if ($optedWebinar) {
                                         }
                                         ?>
                                     </div>
-                                    <span class="cont"><?= count($web['webinarRegistrations']) ?> Registered</span>
+                                    <span class="cont"><?= count($opWeb['webinarRegistrations']) ?> Registered</span>
                                 </div>
                                 <!--                        <div class="register-btns">-->
                                 <!--                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>-->

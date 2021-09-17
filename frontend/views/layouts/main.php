@@ -74,6 +74,7 @@ AppAssets::register($this);
 <?php $this->beginBody(); ?>
 <div class="body-overlay"></div>
 <div id="wrapper" class="clearfix">
+
     <header id="header" class="header">
         <?= (!$this->params['header_dark']) ? '<div id="main-header" class="header-nav navbar-fixed-top header-dark navbar-white navbar-transparent navbar-sticky-animated animated-active">' : ''; ?>
         <div id="header-main"
