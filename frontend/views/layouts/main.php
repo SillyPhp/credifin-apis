@@ -93,7 +93,7 @@ AppAssets::register($this);
                             </div>
                             <div class="col-md-3 col-sm-2">
                                 <div class="view-detail">
-                                    <a href="" class="view-btn">
+                                    <a href="https://www.empoweryouth.com/webinar/whither-education-the-challenge-of-change-90286" class="view-btn">
                                         View Details
                                     </a>
                                 </div>
