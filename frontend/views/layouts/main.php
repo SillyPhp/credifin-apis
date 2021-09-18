@@ -78,29 +78,29 @@ AppAssets::register($this);
         <header id="header" class="header">
             <?= (!$this->params['header_dark']) ? '<div id="main-header" class="header-nav navbar-fixed-top header-dark navbar-white navbar-transparent navbar-sticky-animated animated-active">' : ''; ?>
             <div id="header-main" class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
-                <section class="upcoming-webinar">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-3 col-sm-2">
-                                <div class="webinar-heading">
-                                    Upcoming Webinar
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-8">
-                                <div class="webinar-name">
-                                    Whither Education
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-2">
-                                <div class="view-detail">
-                                    <a href="https://www.empoweryouth.com/webinar/whither-education-the-challenge-of-change-90286" class="view-btn">
-                                        View Details
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+<!--                <section class="upcoming-webinar">-->
+<!--                    <div class="container">-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-md-3 col-sm-2">-->
+<!--                                <div class="webinar-heading">-->
+<!--                                    Upcoming Webinar-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-6 col-sm-8">-->
+<!--                                <div class="webinar-name">-->
+<!--                                    Whither Education-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-3 col-sm-2">-->
+<!--                                <div class="view-detail">-->
+<!--                                    <a href="https://www.empoweryouth.com/webinar/whither-education-the-challenge-of-change-90286" class="view-btn">-->
+<!--                                        View Details-->
+<!--                                    </a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </section>-->
                 <?php
                 //            if (Yii::$app->user->isGuest && empty($this->params['sub_header'])) {
                 if (Yii::$app->user->isGuest) {
