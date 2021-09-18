@@ -3,6 +3,8 @@
 namespace frontend\controllers;
 
 use common\models\Speakers;
+use common\models\User;
+use common\models\Users;
 use common\models\UserWebinarInterest;
 use common\models\Webinar;
 use common\models\WebinarEvents;
@@ -267,6 +269,11 @@ class WebinarsController extends Controller
                 }
                 $model->status = 1;
                 if ($model->save()) {
+                    $get = Users::findOne(['user_enc_id'=>$uid]);
+                    $params = [];
+                    $params['email'] = $get->email;
+                    $params['name'] = $get->first_name.' '.$get->last_name;
+                    Yii::$app->notificationEmails->webinarRegistrationEmail($params);
                     return [
                         'status' => 200,
                         'title' => 'Success',
