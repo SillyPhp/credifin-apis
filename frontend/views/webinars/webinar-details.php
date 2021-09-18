@@ -13,7 +13,7 @@ $status = $webinar['status'];
 $this->title = $webinar['title'];
 $image = $webinar['image'];
 $keywords = $webinar['title'];
-$description = html_entity_decode($webinar['description']);
+$description = 'Present-day education is radically different from that of the past. The youth are unaware of and oblivious to the importance of recognizing and embracing these changes. They are also utterly lost on their career path and have no idea where their career is taking them.';
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
@@ -257,7 +257,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
         <div class="row">
             <div class="contact-req">
                 <h3>if you are facing any problem during registration call us on :</h3>
-                <a href="tel:9501771965">+917009076638</a>
+                <a href="tel:+917009076638">+917009076638</a>
             </div>
         </div>
     </div>

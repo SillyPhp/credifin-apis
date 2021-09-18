@@ -9,6 +9,7 @@ use common\models\SkillsUpPostAssignedBlogs;
 use common\models\Users;
 use common\models\RandomColors;
 use common\models\Utilities;
+use common\models\WebinarRegistrations;
 use yii\helpers\Url;
 use yii\web\Controller;
 use Yii;
@@ -143,4 +144,31 @@ class TestCacheController extends Controller
                 }
             }
         }
+
+    public function actionReminderEmail(){
+        $i = 0;
+        $data = WebinarRegistrations::find()
+            ->alias('a')
+            ->select(['CONCAT(c.first_name," ",c.last_name) name','c.email'])
+            ->joinWith(['createdBy c'],false,'INNER JOIN')
+            ->where(['a.status'=>1])
+            ->andWhere(['a.webinar_enc_id'=>'E9n1pJ74KRzvWNxkap8xRgxm0e5ND6'])
+            ->asArray()->all();
+        foreach ($data as $param){
+            $subject = "Reminder- Your Webinar Session Is Going To Live";
+            Yii::$app->mailer->htmlLayout = 'layouts/email';
+            $mail = Yii::$app->mailer->compose(
+                ['html' => 'webinar-registration-mail.php'],['data'=>$param]
+            )
+                ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+                ->setTo([$param['email'] => $param['name']])
+                ->setSubject($subject);
+            if (!$mail->send()) {
+                return true;
+            }else{
+                $i++;
+            }
+        }
+        echo $i;
+    }
 }
