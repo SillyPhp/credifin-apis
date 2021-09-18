@@ -220,7 +220,7 @@ $this->registerCss('
     display: inline-block;
 }
 .training-card-description {
-    margin-left: 8px;
+    margin-left: 15px;
 }
 h4.training-title {
     color: #000;
