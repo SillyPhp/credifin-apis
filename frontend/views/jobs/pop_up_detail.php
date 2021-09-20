@@ -710,8 +710,8 @@ h3.job-detail {
     width: 100px;
     height: 100px;
     overflow: hidden;
-    box-shadow: 0 0 10px 0px rgb(0 0 0 / 30%);
-    border-radius: 70px;
+    // box-shadow: 0 0 10px 0px rgb(0 0 0 / 30%);
+    // border-radius: 70px;
     min-width: 100px;
 }
 .company-logo img {

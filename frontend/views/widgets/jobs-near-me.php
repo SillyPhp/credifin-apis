@@ -114,8 +114,8 @@ if ($type == 'jobs') {
     {{#.}}
     <div class="col-md-12 col-sm-6 col-xs-12">
         <div id="card-hover" data-id="{{application_enc_id}}" data-key="{{application_enc_id}}-{{location_id}}"
-             class="application-card-main shadow">
-            <div class="app-box">
+             class="application-card-main">
+            <div class="app-box shadow">
                 <div class="app-card-main">
                     <div class="application-card-img">
                         <a href="{{organization_link}}" class="orgSlug" target="_blank" title="{{organization_name}}">
@@ -478,7 +478,7 @@ body {
 .clear{
     clear:both;
 }
-.moveright{right:13% !important;}
+.moveright{right:10% !important;}
 .app-box {
     text-align: left;
     padding: 22px 0 0;
@@ -556,6 +556,7 @@ body {
     margin-top: 5px;
     padding-right: 10px;
     width:100%;
+    position: relative;
 }
 .ji-apply, .ji-apply:focus {
     font-family: Roboto;
@@ -590,8 +591,9 @@ body {
     color: #fff;
 }
 .sharing-links {
-    width: calc(100% - 12%);
+    width: calc(100% - 8%);
     position: absolute;
+    height: 100%;
     right: -90%;
     bottom: 0px;
     text-align: center;
@@ -1236,7 +1238,7 @@ $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/css/ion.rangeSlider.min.css');
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
-$this->registerJsFile('@backendAssets/global/scripts/app.min.js');
+$this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js', ['depends' => [JqueryAsset::className()]]);
