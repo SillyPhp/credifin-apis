@@ -229,6 +229,12 @@ if ($type == 'jobs') {
                                        title="Share on Telegram">
                                         <span><i class="fab fa-telegram-plane"></i></span></a>
                                 </div>
+                                <div class="copy-app-link">
+                                    <a href="javascript:;" class="clipb tt detail-clipboard" type="button" data-toggle="tooltip"
+                                       title="Copy Link" data-link="{{link}}">
+                                        <i class="fas fa-clipboard"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -632,34 +638,32 @@ body {
     display: flex;
     justify-content:center;
 }
-.fb {
-    background: #236dce;
-}
-.tw {
-    background-color: #1c99e9;
-}
-.linkd {
-    background-color: #0e76a8;
-}
-.male {
-    background-color: #BB001B;
-}
-.tele {
-    background-color: #0088cc;
-}
-.wts-app{
-    background-color:#4FCE5D;
-}
-.wts-app, .fb, .tw, .linkd, .male, .tele {
+.wts-app i, .fb i, .tw i, .linkd i, .male i, .tele i, .copy-app-link i{
     width: 25px;
     text-align: center;
     border-radius: 50px;
     height: 25px;
-    font-size: 13px;
-    padding-top: 2px;
+    font-size: 14px;
     margin: 0 5px;
+    border: 1px solid transparent;
+    padding-top: 5px;
+    transition:all .3s;
 }
-.wts-app a, .linkd a, .tw a, .fb a, .male a, .tele a {
+.fb i {color: #236dce;}
+.fb i:hover {background-color: #236dce;}
+.tw i{color: #1c99e9;}
+.tw i:hover{background-color: #1c99e9;}
+.linkd i{color: #0e76a8;}
+.linkd i:hover{background-color: #0e76a8;}
+.male i{color: #BB001B;}
+.male i:hover{background-color: #BB001B;}
+.tele i{color: #0088cc;}
+.tele i:hover{background-color: #0088cc;}
+.wts-app i{color:#4FCE5D;}
+.wts-app i:hover{background-color:#4FCE5D;}
+.copy-app-link i{color:#22577A;}
+.copy-app-link i:hover{background-color:#22577A;}
+.wts-app i:hover, .linkd i:hover, .tw i:hover, .fb i:hover, .male i:hover, .tele i:hover, .copy-app-link i:hover{
 	color: #fff;
 }
 .share-b:hover .sharing-links, .sharing-links:hover{display:block !Important;}
@@ -745,6 +749,21 @@ body {
 ');
 $controller = Yii::$app->controller->id;
 $script = <<< JS
+$(document).on('click', '.detail-clipboard',function (event) {
+            event.preventDefault();
+            var link = window.location.hostname + $(this).attr('data-link');
+            CopyClipboard(link, true, "Link copied");
+        });
+function CopyClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
+
+
 $(window).animate({scrollTop:0}, '300');
 $('body').css('overflow','hidden');
 setTimeout(
