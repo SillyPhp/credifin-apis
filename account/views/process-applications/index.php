@@ -1285,16 +1285,17 @@ $this->registerCss('
     align-items: center;
     justify-content: center;
 }
-.sr-box{
-    color: #000;
+.sr-box {
+    color: #ff4242;
+    font-family: lora;
+    align-self: end;
 }
 .rejectReason p{
     text-align: center;
-    font-family: roboto;
     font-size: 20px;
     margin-top: 0px;
     margin-bottom: 5px;
-    color: #333;
+    color: #;
 }
 .customJobBox p{
     color: #333 !important;
