@@ -1859,10 +1859,10 @@ class LoansController extends ApiBaseController
             if (isset($params['loan_type']) && $params['loan_type'] == 0) {
                 if ($params) {
                     if ($params['is_applicant'] != 1) {
-                        $params['child_information'][0]['child_name'] = $params['child_name'];
+                        $params['child_information'][0]['child_name'] = $params['applicant_name'];
                         $params['child_information'][0]['child_class'] = $params['child_class'];
                         $params['child_information'][0]['child_school'] = $params['child_school'];
-                        $params['child_information'][0]['child_loan_amount'] = $params['child_loan_amount'];
+                        $params['child_information'][0]['child_loan_amount'] = $params['amount'];
                     }
                     $model = new LoanApplicationsForm();
 //                    $orgDate = $params['applicant_dob'];
