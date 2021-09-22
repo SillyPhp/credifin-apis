@@ -36,7 +36,6 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/whither-webinar') ?>
 <section>
     <div class="container">
         <div class="row">

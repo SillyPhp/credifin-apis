@@ -173,4 +173,17 @@ class NotificationEmails extends Component
             return true;
         }
     }
+
+    public function webinarRegistrationEmail($param){
+        Yii::$app->mailer->htmlLayout = 'layouts/email';
+        $mail = Yii::$app->mailer->compose(
+            ['html' => 'webinar-registration-mail.php'],['data'=>$param]
+        )
+            ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+            ->setTo([$param['email'] => $param['name']])
+            ->setSubject('Thank you for Registering for "Whither Education"');
+        if ($mail->send()) {
+            return true;
+        }
+    }
 }

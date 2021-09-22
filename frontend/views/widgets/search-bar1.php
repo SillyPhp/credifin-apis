@@ -106,7 +106,7 @@ $this->registerCss('
 .stickyheader{
     position: fixed;
     top: -100%;
-    width: 80.3%;
+    width: 93.4%;
     margin-top: 0;
     border-bottom: 1px solid #ccc;
     z-index: 999;
@@ -192,11 +192,13 @@ $this->registerCss('
         height: 110px;
     }
     .stickyheader {
-        width: 69.3%;
+        width: 88.4%;
+        top:70px !important;
     }
     .twitter-typeahead input{
         width:100% !important;
     }
+    .search-button{margin-bottom:10px;}
 }
 @media only screen and (max-width: 767px) {
     .stickyheader {
