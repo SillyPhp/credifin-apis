@@ -80,7 +80,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                     <span id="applicantTypeRadio"></span>
                                 </div>
                                 <!--Loan Type end-->
-<!--                                parent co borower details start-->
+                                <!--parent co borower details start-->
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label class="input-group-text" for="inputGroupSelect01">
@@ -88,10 +88,14 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         </label>
                                         <ul class="displayInline">
                                             <li>
-                                                <label class="container-radio"><input type="radio" id="parent" value="1" onclick="showRelation(this)" name="applicantRadio"> Parent / Guardian<span class="checkmark"></span></label>
+                                                <label class="container-radio">
+                                                    <input type="radio" id="parent" value="1" onclick="showRelation(this)" name="applicantRadio"> Parent / Guardian<span class="checkmark"></span>
+                                                </label>
                                             </li>
                                             <li>
-                                                <label class="container-radio"><input type="radio" id="applicant" value="0" onclick="hideRelation(this)" name="applicantRadio"> Student<span class="checkmark"></span></label>
+                                                <label class="container-radio">
+                                                    <input type="radio" id="applicant" value="0" onclick="hideRelation(this)" name="applicantRadio"> Student<span class="checkmark"></span>
+                                                </label>
                                             </li>
                                         </ul>
                                     </div>
