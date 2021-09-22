@@ -63,16 +63,14 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         <ul class="displayInline">
                                             <li>
                                                 <label class="container-radio">
-                                                    School Fee Loan
                                                     <input type="radio" id="TypeSchool" value="1" onclick="showChildren(this)" name="applicantTypeRadio">
-                                                    <span class="checkmark"></span>
+                                                    <span class="checkmark">School Fee Loan</span>
                                                 </label>
                                             </li>
                                             <li>
                                                 <label class="container-radio">
-                                                    College/University Fee Loan
                                                     <input type="radio" id="TypeCollege" value="0" onclick="hideChildren(this)" name="applicantTypeRadio">
-                                                    <span class="checkmark"></span>
+                                                    <span class="checkmark">College/University Fee Loan</span>
                                                 </label>
                                             </li>
                                         </ul>
@@ -89,12 +87,12 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         <ul class="displayInline">
                                             <li>
                                                 <label class="container-radio">
-                                                    <input type="radio" id="parent" value="1" onclick="showRelation(this)" name="applicantRadio"> Parent / Guardian<span class="checkmark"></span>
+                                                    <input type="radio" id="parent" value="1" onclick="showRelation(this)" name="applicantRadio"> <span class="checkmark">Parent / Guardian</span>
                                                 </label>
                                             </li>
                                             <li>
                                                 <label class="container-radio">
-                                                    <input type="radio" id="applicant" value="0" onclick="hideRelation(this)" name="applicantRadio"> Student<span class="checkmark"></span>
+                                                    <input type="radio" id="applicant" value="0" onclick="hideRelation(this)" name="applicantRadio"> <span class="checkmark">Student</span>
                                                 </label>
                                             </li>
                                         </ul>
@@ -110,38 +108,58 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                                     </div>
                                                     <ul id="co-relation-ul-1" class="displayInline">
                                                         <li>
-                                                            <label for="co-father-1" class="container-radio">
-                                                                Father
+                                                            <label for="co-father-1" class="container-radio-second">
                                                                 <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-1" class="checkbox-input services" checked>
-                                                                <span class="checkmark"></span>
+                                                                <svg width="1.3em" height="1.3em" viewBox="0 0 20 20">
+                                                                    <circle cx="10" cy="10" r="9"></circle>
+                                                                    <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
+                                                                    <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
+                                                                </svg>
+                                                                <span class="checkmarked">Father</span>
                                                             </label>
                                                         </li>
                                                         <li>
-                                                            <label for="co-mother-1" class="container-radio">
-                                                                Mother
+                                                            <label for="co-mother-1" class="container-radio-second">
                                                                 <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-1" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
+                                                                <svg width="1.3em" height="1.3em" viewBox="0 0 20 20">
+                                                                    <circle cx="10" cy="10" r="9"></circle>
+                                                                    <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
+                                                                    <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
+                                                                </svg>
+                                                                <span class="checkmarked">Mother</span>
                                                             </label>
                                                         </li>
                                                         <li>
-                                                            <label for="co-brother-1" class="container-radio">
-                                                                Brother
+                                                            <label for="co-brother-1" class="container-radio-second">
                                                                 <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-1" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
+                                                                <svg width="1.3em" height="1.3em" viewBox="0 0 20 20">
+                                                                    <circle cx="10" cy="10" r="9"></circle>
+                                                                    <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
+                                                                    <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
+                                                                </svg>
+                                                                <span class="checkmarked">Brother</span>
                                                             </label>
                                                         </li>
                                                         <li>
-                                                            <label for="co-sister-1" class="container-radio">
-                                                                Sister
+                                                            <label for="co-sister-1" class="container-radio-second">
                                                                 <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-1" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
+                                                                <svg width="1.3em" height="1.3em" viewBox="0 0 20 20">
+                                                                    <circle cx="10" cy="10" r="9"></circle>
+                                                                    <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
+                                                                    <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
+                                                                </svg>
+                                                                <span class="checkmarked">Sister</span>
                                                             </label>
                                                         </li>
                                                         <li>
-                                                            <label for="co-guardian-1" class="container-radio">
-                                                                Guardian
+                                                            <label for="co-guardian-1" class="container-radio-second">
                                                                 <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-1" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
+                                                                <svg width="1.3em" height="1.3em" viewBox="0 0 20 20">
+                                                                    <circle cx="10" cy="10" r="9"></circle>
+                                                                    <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
+                                                                    <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
+                                                                </svg>
+                                                                <span class="checkmarked">Guardian</span>
                                                             </label>
                                                         </li>
                                                     </ul>
@@ -163,23 +181,20 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                                     <ul class="displayInline">
                                                         <li>
                                                             <label for="sal-1" class="container-radio">
-                                                                Salaried
                                                                 <input type="radio" value="1" checked="checked" id="sal-1" name="co-emptype[1]" class="checkbox-input services" checked>
-                                                                <span class="checkmark"></span>
+                                                                <span class="checkmark">Salaried</span>
                                                             </label>
                                                         </li>
                                                         <li>
                                                             <label for="self-1" class="container-radio">
-                                                                Self-Employed
                                                                 <input type="radio" value="2" id="self-1" name="co-emptype[1]" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
+                                                                <span class="checkmark">Self-Employed</span>
                                                             </label>
                                                         </li>
                                                         <li>
                                                             <label for="non-1" class="container-radio">
-                                                                Non-Working
                                                                 <input type="radio" value="3" id="non-1" name="co-emptype[1]" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
+                                                                <span class="checkmark">Non-Working</span>
                                                             </label>
                                                         </li>
                                                     </ul>
@@ -215,15 +230,15 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         </label>
                                         <ul class="displayInline">
                                             <li>
-                                                <label class="container-radio">India
+                                                <label class="container-radio">
                                                     <input type="radio" checked="checked" id="india" value="1" onclick="showCountry(this)" name="countryRadio">
-                                                    <span class="checkmark"></span>
+                                                    <span class="checkmark">India</span>
                                                 </label>
                                             </li>
                                             <li>
-                                                <label class="container-radio">Outside India
+                                                <label class="container-radio">
                                                     <input type="radio" id="othercountry" value="0" onclick="showCountry(this)" name="countryRadio">
-                                                    <span class="checkmark"></span>
+                                                    <span class="checkmark">Outside India</span>
                                                 </label>
                                             </li>
                                         </ul>
@@ -257,16 +272,14 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         <ul class="displayInline">
                                             <li>
                                                 <label for="yc" class="container-radio">
-                                                    Yes
                                                     <input type="radio" value="1"  id="yc" name="college_taken" class="checkbox-input services">
-                                                    <span class="checkmark"></span>
+                                                    <span class="checkmark">Yes</span>
                                                 </label>
                                             </li>
                                             <li>
                                                 <label for="nc" class="container-radio">
-                                                    No
                                                     <input type="radio" value="0" id="nc" name="college_taken" class="checkbox-input services">
-                                                    <span class="checkmark"></span>
+                                                    <span class="checkmark">No</span>
                                                 </label>
                                             </li>
                                         </ul>
@@ -546,6 +559,55 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
 <input type="hidden" name="pulled_from" id="pulled_from">
 <?php
 $this->registerCss('
+.container-radio-second {
+  cursor: pointer;
+  display: inline-block;
+  float: left;
+  -webkit-user-select: none;
+  user-select: none;
+  font-family:roboto;
+  font-size:16px;
+  margin-bottom:5px;
+  padding-left:0.375em;
+}
+.container-radio-second svg {
+  fill: none;
+  vertical-align: middle;
+}
+.container-radio-second svg circle {
+  stroke-width: 2;
+  stroke: #C8CCD4;
+}
+.container-radio-second svg path {
+  stroke: #008FFF;
+}
+.container-radio-second svg path.inner {
+  stroke-width: 6;
+  stroke-dasharray: 19;
+  stroke-dashoffset: 19;
+}
+.container-radio-second svg path.outer {
+  stroke-width: 2;
+  stroke-dasharray: 57;
+  stroke-dashoffset: 57;
+}
+.container-radio-second input {
+  display: none;
+}
+.container-radio-second input:checked + svg path {
+  transition: all 0.4s ease;
+}
+.container-radio-second input:checked + svg path.inner {
+  stroke-dashoffset: 38;
+  transition-delay: 0.3s;
+}
+.container-radio-second input:checked + svg path.outer {
+  stroke-dashoffset: 0;
+}
+.container-radio-second span {
+  display: inline-block;
+  vertical-align: middle;
+}
 .child-info-div{
     padding: 0px 15px;
 }
@@ -769,7 +831,8 @@ border: 1px solid #ddd !important;
     font-weight: bold;
     font-family: lora;
     color: #000;
-    font-size: 15px;
+    font-size: 16px;
+    margin-bottom:10px;
 }
 .head-padding{
     padding-top:50px;
@@ -797,9 +860,8 @@ form label {
     color:#999;
 }
 .container-radio {
-  display: block;
+  display: flex;
   position: relative;
-  padding-left: 29px;
   margin-bottom: 5px;
   cursor: pointer;
   font-size: 16px;
@@ -808,43 +870,43 @@ form label {
   -ms-user-select: none;
   user-select: none;
 }
+
 .container-radio input {
   position: absolute;
   opacity: 0;
   cursor: pointer;
+  left:-9999px;
 }
 .checkmark {
-    position: absolute;
-    top: 3px;
-    left: 0;
-    height: 22px;
-    width: 22px;
-    background-color: #eee;
+    display: flex;
+    align-items: center;
+    padding: 3px 8px 3px 5px;
+    border-radius: 99em;
+    transition: 0.25s ease;
+}
+.checkmark:before {
+    display: flex;
+    flex-shrink: 0;
+    content: "";
+    background-color: #fff;
+    width: 1.3em;
+    height: 1.3em;
     border-radius: 50%;
+    margin-right: 0.375em;
+    transition: 0.25s ease;
+    box-shadow: inset 0 0 0 0.125em #00a0e3;   
+    font-family:roboto;
 }
 .container-radio:hover input ~ .checkmark {
-  background-color: #ccc;
+  background-color:#f7f7ff;
 }
+
 .container-radio input:checked ~ .checkmark {
-  background-color: #2196F3;
+  background-color:#f7f7ff;
+  font-weight:500;
 }
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;    
-}
-/* Show the indicator (dot/circle) when checked */
-.container-radio input:checked ~ .checkmark:after {
-  display: block;
-}
-/* Style the indicator (dot/circle) */
-.container-radio .checkmark:after {
- 	top: 6px;
-    left: 6px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: white;
+.container-radio input:checked ~ .checkmark:before {
+    box-shadow: inset 0 0 1px 5px #00a0e3;
 }
 .service-list{
      display: inline-block;
