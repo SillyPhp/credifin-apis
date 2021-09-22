@@ -6,7 +6,7 @@ use yii\helpers\Url;
     <script id="organization-locations" type="text/template">
         {{#.}}
         <div class="org-location">
-            <div class="office-heading">
+            <div class="office-heading" title="{{location_name}}">
                 {{location_name}}
             </div>
             <div class="office-loc">
@@ -18,11 +18,13 @@ use yii\helpers\Url;
             <?php
             if ($Edit) {
                 ?>
-                <a value="/account/locations/get-data?id={{location_enc_id}}" class="edit_location"><i class="fas fa-pencil-alt"></i></a>
+                <a value="/account/locations/get-data?id={{location_enc_id}}" class="edit_location"><i
+                            class="fas fa-pencil-alt"></i></a>
                 <a href="#" class="remove_location"><i class="fas fa-times-circle"></i></a>
                 <div id="remove_location_confirm" class="confirm_remove_loc">
                     <button id="confirm_loc" type="button" value="{{location_enc_id}}"
-                            class="btn btn-primary btn-sm editable-submit"><i class="glyphicon glyphicon-ok"></i>
+                            class="btn btn-primary btn-sm editable-submit"><i
+                                class="glyphicon glyphicon-ok"></i>
                     </button>
                     <button id="cancel_loc" type="button" class="btn btn-default btn-sm editable-cancel"><i
                                 class="glyphicon glyphicon-remove"></i></button>
@@ -66,13 +68,30 @@ $this->registerCss("
     top: 0;
     display:none;
 }
+.off-add{
+    word-break: break-word;
+}
+.view-btn {
+	text-align: center;
+}
+.view-btn a{
+	color: #00a0e3;
+	font-size: 16px;
+}
+.maxData{
+    width:100%;
+    display:none;
+}
+.maxData .org-location{
+    display:inline-block;
+    width: 49%;
+}
 ");
 $script = <<<JS
 
 $(document).on('click', '.edit_location', function() {
     $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));
 });
-
 
 function getLocations() {
     $.ajax({
@@ -101,13 +120,47 @@ function getLocations() {
                     map: map
                   });
                 }
+                setTimeout(function() {
+                  initCourse();
+                },1000);
                 // renderLocations(response.locations);
+            } else{
+                $('.view-btn').hide();
+                $('.address-division-new').hide();
+                $('.location_tab').css('display','none');
             }
         }
     });
 }
 
 getLocations();
+JS;
+$script2 = <<<JS
+        function initCourse(){
+            if($(".org-location").length <= 6){
+              $('.view-btn').hide();  
+            }
+            var htmlData = $("<div class='maxData'></div>");
+            $( ".org-location" ).each(function(index) {
+                  if(index >= 6){
+                      htmlData.append('<div class="org-location">'+$(this).html()+'</div>');
+                      $(this).remove();
+                  }
+            });
+            $('.head-office').append(htmlData);
+        }
+        $(document).on('click','.view-btn',function(e) {
+            e.preventDefault();
+            $('.tab-content').css('height','auto');
+          $('.view-btn').toggleClass('show');
+          if ($('.view-btn').hasClass('show')) {
+            $(this).children('a').html("View Less <i class='fas fa-angle-up'></i>");
+            $('.maxData').slideDown('fast');
+          } else {
+            $(this).children('a').html("View All <i class='fas fa-angle-down'></i>");
+            $('.maxData').slideUp('fast');
+          }
+        });
 JS;
 if ($Edit) {
     $this->registerJs("
@@ -142,6 +195,8 @@ if ($Edit) {
             });
         });
     ");
+} else{
+    $this->registerJs($script2);
 }
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

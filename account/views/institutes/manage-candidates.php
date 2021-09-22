@@ -31,7 +31,7 @@ use yii\widgets\Pjax;
                                                             <?php
                                                             $name = $image = NULL;
                                                             if (!empty($u['appliedEnc']['image'])) {
-                                                                $image = Yii::$app->params->upload_directories->users->image . $u['appliedEnc']['image_location'] . DIRECTORY_SEPARATOR . $u['appliedEnc']['image'];
+                                                                $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $u['appliedEnc']['image_location'] . DIRECTORY_SEPARATOR . $u['appliedEnc']['image'];
                                                             }
                                                             $name = $u['appliedEnc']['name'];
                                                             if ($image):
@@ -62,7 +62,7 @@ use yii\widgets\Pjax;
                                                                 <?php
                                                                 $org_name = $org_logo = NULL;
                                                                 if (!empty($u['appliedEnc']['applicationEnc']['organizationEnc']['logo'])) {
-                                                                    $org_logo = Yii::$app->params->upload_directories->organizations->logo . $u['appliedEnc']['applicationEnc']['organizationEnc']['logo_location'] . DIRECTORY_SEPARATOR . $u['appliedEnc']['applicationEnc']['organizationEnc']['logo'];
+                                                                    $org_logo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $u['appliedEnc']['applicationEnc']['organizationEnc']['logo_location'] . DIRECTORY_SEPARATOR . $u['appliedEnc']['applicationEnc']['organizationEnc']['logo'];
                                                                 }
                                                                 $org_name = $u['appliedEnc']['applicationEnc']['organizationEnc']['name'];
                                                                 if ($org_logo):

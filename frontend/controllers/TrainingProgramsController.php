@@ -5,8 +5,10 @@ namespace frontend\controllers;
 use common\models\AppliedTrainingApplications;
 use common\models\TrainingProgramApplication;
 use common\models\TrainingProgramBatches;
+use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\TrainingAppliedForm;
 use frontend\models\applications\ApplicationCards;
+use frontend\models\whatsAppShareForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -22,6 +24,18 @@ class TrainingProgramsController extends Controller
 
     public function actionIndex()
     {
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
+
+        return $this->render('index', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionLoadCards(){
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $type = Yii::$app->request->post('type');
@@ -42,7 +56,6 @@ class TrainingProgramsController extends Controller
             }
             return $response;
         }
-        return $this->render('index');
     }
     public function actionFetchInstitutes()
     {
@@ -129,7 +142,7 @@ class TrainingProgramsController extends Controller
                 ->andWhere(['is_deleted' => 0])
                 ->exists();
         }
-
+        $whatsAppForm = new whatsAppShareForm();
         return $this->render('details',[
             'org' => $org_details,
             'data' => $data,
@@ -139,6 +152,7 @@ class TrainingProgramsController extends Controller
             'model' => $model,
             'applied' => $applied_jobs,
             'total_seats' => $sum,
+            'whatsAppmodel' => $whatsAppForm,
         ]);
     }
 

@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Url;
+Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
 <div class="col-md-12">
     <div class="overlay-white-9">
@@ -105,7 +106,7 @@ $this->registerCss('
 .stickyheader{
     position: fixed;
     top: -100%;
-    width: 80.3%;
+    width: 93.4%;
     margin-top: 0;
     border-bottom: 1px solid #ccc;
     z-index: 999;
@@ -191,11 +192,13 @@ $this->registerCss('
         height: 110px;
     }
     .stickyheader {
-        width: 69.3%;
+        width: 88.4%;
+        top:70px !important;
     }
     .twitter-typeahead input{
         width:100% !important;
     }
+    .search-button{margin-bottom:10px;}
 }
 @media only screen and (max-width: 767px) {
     .stickyheader {
@@ -213,33 +216,36 @@ $this->registerCss('
         padding-right: 30px;
     }
 }
-@media screen and (max-width: 1160px) and (min-width: 992px) {
-    .twitter-typeahead input{
-        max-width:165px;
-    }
-    .twitter-typeahead .tt-menu{
-        max-width:165px;
-    }
-}
+//@media screen and (max-width: 1160px) and (min-width: 992px) {
+//    .twitter-typeahead input{
+//        max-width:165px;
+//    }
+//    .twitter-typeahead .tt-menu{
+//        max-width:165px;
+//    }
+//}
 ');
-$script = <<<JS
-var type = '$type';
+$script = <<< JS
 $(document).on('submit','#search_bar_form',function(e) {
   e.preventDefault();
-  var cname = $('#cities').val();
-  var kname = $('#keywords').val();
-  if (cname&&kname)
+  var cname = $('#cities').val().trim().replace(/[^a-z0-9\s]/gi, ''); 
+  var kname = $('#keywords').val().trim().replace(/[^a-z0-9\s]/gi, '');
+  if (cname =="" && kname =="")
       {
-          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+type+'-in-'+cname.replace(/\s+/g, '-'));
+          window.location.assign('/jobs/list');
       }
-  else if (cname)
+  if (cname&&kname)  
       {
-          window.location.assign('/'+type+'-in-'+cname.replace(/\s+/g, '-'));
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type+'-in-'+cname.replace(/\s+/g, '-'));
+      }
+  else if (cname) 
+      {
+          window.location.assign('/'+_type+'-in-'+cname.replace(/\s+/g, '-'));
       }
   else if (kname)
       {
-          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+type);
-      }
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type);
+      } 
 })     
 var searchelem = document.getElementById("search_preview");    
 var getParams = function (url) {
@@ -288,6 +294,7 @@ $('#cities').typeahead(null, {
   source: city,
    limit: 15,
    hint:false,
+   cache:true,
 }).on('typeahead:asyncrequest', function() {
     $('.Typeahead-spinner').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {

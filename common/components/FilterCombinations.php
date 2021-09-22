@@ -10,7 +10,6 @@ use yii\base\Component;
 
 class FilterCombinations extends Component
 {
-
     public function getFilterCombos($filter_keys)
     {
         $result = [];

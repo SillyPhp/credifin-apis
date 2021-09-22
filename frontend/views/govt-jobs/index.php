@@ -10,8 +10,8 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
         <div class="row">
             <div class="col-md-12 z-index-9">
                 <div class="search-box text-center">
-                    <h2 class="text-white mt-40 mb-5 font-weight-700">Looking for a Career In Government.</h2>
-                    <h4 class="text-white font-20 mt-0">Find Your Dream Job Today.</h4>
+                    <h1 class="text-white mt-40 mb-5 font-weight-700">Looking for a Career In Government.</h1>
+                    <h2 class="text-white font-20 mt-0">Find Your Dream Govt. Job Today.</h2>
                     <form id="form-search" action="">
                         <div class="input-group search-bar">
                             <input type="text" id="search_company" class="col-md-7 header-search-tw" placeholder="Search City,State,Organizations" name="keywords" value="<?= $keywords ?>">
@@ -29,11 +29,11 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
     </div>
 </section>
 
-<section>
+<section style="background: #fff;">
     <div class="container">
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-6">
-                <div class="heading-style">Departments</div>
+                <h1 class="heading-style">Govt. Departments</h1>
             </div>
             <div class="col-md-6 col-sm-6 col-xs-6">
                 <div class="type-1">
@@ -57,16 +57,23 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
 <section>
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <div class="heading-style">Jobs</div>
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <h1 class="heading-style">Govt. Jobs Vacancies</h1>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="type-1">
+                    <div>
+                        <a href="/govt-jobs/search" class="btn btn-3">
+                            <span class="txt-cate">View all</span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
             <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>
             <div id="cards">
-            </div>
-            <div class="align_btn">
-                <button id="loadMore" class="btn btn-success">Load More</button>
             </div>
         </div>
     </div>
@@ -84,6 +91,9 @@ $this->registerCss("
     float:right;
     margin-top: 15px;
     margin-bottom: 15px;
+}
+.text-white{
+    font-size:35px
 }
 
 .type-1 div a {
@@ -157,9 +167,6 @@ $this->registerCss("
 }
 
 /*<!---- view-all button css ends --->*/
-.application-card-border-bottom{
-    height:156px;
-}
 .loader_screen img
 {
 display:none;
@@ -553,18 +560,6 @@ float:right;
     margin-left: auto;
     margin-right: auto;
 }
-@media only screen and (max-width: 550px){
-    .overlay-image {
-        max-width: 115px;
-    }
-}
-.application-card-img{
-    margin-left:0px;
-    margin-top:30px;
-}
-.application-card-description{
-    margin:20px 0 0 15px !important;
-}
 ");
 echo $this->render('/widgets/mustache/govt-jobs-card');
 echo $this->render('/widgets/mustache/departments_govt');
@@ -583,7 +578,7 @@ $(document).on('submit','#form-search',function(e) {
           window.location.assign('/govt-jobs/search/'+keyword.replace(/\s+/g, '-'));
       }
 })
-fetchDepartments(template=$('#departments_cards'),limit_dept=4,offset=0);
+fetchDepartments(template=$('#departments_cards'),limit_dept=12,offset=0);
 JS;
 $this->registerJs($script);
 ?>

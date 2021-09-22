@@ -2,12 +2,13 @@
 $this->title = ucwords(str_replace("-"," ",$s)).' Govt Jobs';
 $this->params['header_dark'] = true;
 Yii::$app->view->registerJs('var keyword = "' . $s . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var url_path = "' . Yii::$app->controller->id . '"', \yii\web\View::POS_HEAD);
 $keywords = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
 $description = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -22,7 +23,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,

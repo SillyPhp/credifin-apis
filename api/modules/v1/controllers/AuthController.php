@@ -3,10 +3,16 @@
 namespace api\modules\v1\controllers;
 
 use api\modules\v1\models\ForgotPasswordForm;
+use api\modules\v1\models\SocialLogin;
+use common\components\AuthHandler;
+use common\models\Auth;
 use common\models\EmailLogs;
+use common\models\User;
 use common\models\Usernames;
 use common\models\Users;
 use common\models\UserTypes;
+use http\Env\Response;
+use yii\helpers\Url;
 use Yii;
 use api\modules\v1\models\IndividualSignup;
 use api\modules\v1\models\LoginForm;
@@ -27,10 +33,124 @@ class AuthController extends ApiBaseController
                 'signup' => ['POST'],
                 'login' => ['POST'],
                 'refresh-access-token' => ['POST'],
-                'forgot-password' => ['POST']
+                'forgot-password' => ['POST'],
+                'social-authentication' => ['POST'],
+                'social-login' => ['POST'],
+                'check-source-id' => ['POST'],
+                'user-data' => ['POST'],
             ]
         ];
         return $behaviors;
+    }
+
+    public function actionCheckSourceId()
+    {
+        $params = Yii::$app->request->post();
+        if (!isset($params['platform']) && empty($params['platform'])) {
+            return $this->response(422, 'missing information');
+        }
+
+        if (!isset($params['source_id']) && empty($params['source_id'])) {
+            return $this->response(422, 'missing information');
+        }
+        $auth = Auth::find()->where([
+            'source' => $params['platform'],
+            'source_id' => $params['source_id'],
+        ])->one();
+
+        if ($auth) {
+            return $this->response(200, 'success');
+        } else {
+            return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionSocialAuthentication()
+    {
+        $model = new SocialLogin();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+                $result = $model->handle();
+                if ($result['status'] == 203) {
+                    $user = Candidates::findOne([
+                        'user_enc_id' => $result['user_id'],
+                    ]);
+                    $token = $this->findToken($user, $model->source);
+                    if (empty($token)) {
+                        if ($token = $this->newToken($user->user_enc_id, $model->source)) {
+                            $data = $this->returnData($user, $token);
+                            return $this->response(200, $data);
+                        }
+                    } else {
+                        if ($token = $this->onlyTokens($token)) {
+                            $data = $this->returnData($user, $token);
+                            return $this->response(200, $data);
+                        }
+                    }
+                } else if ($result['status'] == 205) {
+                    $user = Candidates::findOne([
+                        'user_enc_id' => $result['user_id'],
+                    ]);
+                    return $this->response(200, ['user_id' => $user->user_enc_id, 'user_name' => $user->username]);
+                } else {
+                    return $this->response(500, 'An Error Occurred..');
+                }
+            }
+            return $this->response(422, $model->getErrors());
+        }
+        return $this->response(422);
+    }
+
+    public function actionSocialLogin()
+    {
+        $id = Yii::$app->request->post('user_id');
+        $username = Yii::$app->request->post('username');
+        $platform = Yii::$app->request->post('platform');
+        $source = Yii::$app->request->post('source');
+        $user = Candidates::findOne([
+            'user_enc_id' => $id,
+        ]);
+        if (!$user) {
+            return $this->response(404, 'Not Found');
+        }
+        if ($user->username != $username) {
+            $chkUsername = Usernames::findOne(['username' => $username]);
+            if ($chkUsername) {
+                return $this->response(409, 'Already Exist');
+            } else {
+                $save_user_name = new Usernames();
+                if (strlen($username) >= 3 && strlen($username) <= 20) {
+                    $save_user_name->username = $username;
+                } else {
+                    return $this->response(409, 'Already Exist');
+                }
+                $save_user_name->assigned_to = 1;
+                if ($save_user_name->save()) {
+                    $user->username = $username;
+                    $user->last_updated_on = date('Y-m-d H:i:s');
+                    $user->last_visit = date('Y-m-d H:i:s');
+                    $user->last_visit_through = 'EYAPP';
+                    if (!$user->update()) {
+                        return $this->response(500, 'an error occurred');
+                    }
+                } else {
+                    return $this->response(500, 'an error occurred');
+                }
+            }
+
+        }
+        $token = $this->findToken($user, $platform);
+        if (empty($token)) {
+            if ($token = $this->newToken($user->user_enc_id, $source)) {
+                $data = $this->returnData($user, $token);
+                return $this->response(200, $data);
+            }
+        } else {
+            if ($token = $this->onlyTokens($token)) {
+                $data = $this->returnData($user, $token);
+                return $this->response(200, $data);
+            }
+        }
     }
 
     public function actionSignup()
@@ -132,6 +252,9 @@ class AuthController extends ApiBaseController
         $user->initials_color = RandomColors::one();
         $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
         $user->status = "Active";
+        $user->last_visit = date('Y-m-d H:i:s');
+        $user->last_visit_through = "EYAPP";
+        $user->signed_up_through = "EYAPP";
         $user->setPassword($model->password);
         $user->generateAuthKey();
         if ($user->save()) {
@@ -139,19 +262,19 @@ class AuthController extends ApiBaseController
             $mail = Yii::$app->mail;
             $mail->receivers = [];
             $mail->receivers[] = [
-                "name" => $user->first_name ." " . $user->last_name,
+                "name" => $user->first_name . " " . $user->last_name,
                 "email" => $user->email,
             ];
             $mail->subject = 'Welcome to Empower Youth';
             $mail->template = 'thank-you';
-            if($mail->send()){
+            if ($mail->send()) {
                 $mail_logs = new EmailLogs();
                 $utilitesModel = new Utilities();
                 $utilitesModel->variables['string'] = time() . rand(100, 100000);
                 $mail_logs->email_log_enc_id = $utilitesModel->encrypt();
                 $mail_logs->email_type = 5;
                 $mail_logs->user_enc_id = $user->user_enc_id;
-                $mail_logs->receiver_name = $user->first_name ." " . $user->last_name;
+                $mail_logs->receiver_name = $user->first_name . " " . $user->last_name;
                 $mail_logs->receiver_email = $user->email;
                 $mail_logs->receiver_phone = $user->phone;
                 $mail_logs->subject = 'Welcome to Empower Youth';
@@ -266,6 +389,11 @@ class AuthController extends ApiBaseController
             if ($model->load(\Yii::$app->getRequest()->getBodyParams(), '')) {
                 if ($model->login()) {
                     $user = $this->findUser($model);
+                    $user->last_visit = date('Y-m-d H:i:s');
+                    $user->last_visit_through = "EYAPP";
+                    if (!$user->update()) {
+                        return $this->response(500, 'an error occurred');
+                    }
                     $token = $this->findToken($user, $source);
                     if (empty($token)) {
                         if ($token = $this->newToken($user->user_enc_id, $source)) {
@@ -309,6 +437,36 @@ class AuthController extends ApiBaseController
                     return $this->response(500, ['message' => 'An error has occurred. Please try again.']);
                 }
             }
+        }
+    }
+
+    public function actionUserData()
+    {
+        $token_holder_id = UserAccessTokens::find()
+            ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+            ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+            ->one();
+
+        if (!$token_holder_id) {
+            return $this->response(401, 'unauthorized');
+        }
+
+        $user = Candidates::findOne([
+            'user_enc_id' => $token_holder_id->user_enc_id
+        ]);
+
+        $user = Users::find()
+            ->select(['user_enc_id', 'first_name', 'last_name', 'username', 'phone', 'email', 'initials_color',
+                'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", image_location, "/", image) ELSE NULL END user_image'
+            ])
+            ->where(['user_enc_id' => $user->user_enc_id])
+            ->asArray()
+            ->one();
+
+        if ($user) {
+            return $this->response(200, $user);
+        } else {
+            return $this->response(404, 'not found');
         }
     }
 

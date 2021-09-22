@@ -98,7 +98,8 @@ $this->render('/widgets/employer_applications/top-banner', [
                     'website' => $org['website'],
                     'type' => $type,
                     'application_slug' => $application_details["slug"],
-                    'shortlist_btn_display' => false
+                    'shortlist_btn_display' => false,
+                    'whatsAppmodel' => $whatsAppmodel
                 ]);
                 ?>
             </div>
@@ -1101,17 +1102,6 @@ $this->registerCss("
     /* Profile icons css ends */
     ");
 $this->registerJs("
-
-var slugg = '$slug'; 
-var data = {slug: slugg};
-$.ajax({
-    type: 'POST',
-    url: '/drop-resume/check-resume',
-    data : data,
-    success: function(response){
-        $('#dropcv').val(response.message);
-    }
-});
 
  $(document).on('click','#close_btn',function()
  {

@@ -5,9 +5,9 @@
     <div class="comment-box">
         <div class="add-comment">
             <div class="row">
-                <div class="col-md-10 col-md-offset-1">
+                <div class="col-md-12">
                     <form id="postComm" action="/<?= $controllerId; ?>/parent-comment">
-                        <div class="">
+                        <div class="text-a">
                             <textarea id="commentArea"></textarea>
                         </div>
                         <div class="comment-sub">
@@ -17,7 +17,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-12">
             <div id="activecomments"></div>
         </div>
     </div>
@@ -26,6 +26,15 @@
 <?php
 
 $this->registerCss('
+.text-a textarea{
+    border: 1px solid #4444;
+}
+.comment-icon{
+    overflow:hidden !important;
+}
+comment-name{
+    text-transform:capitalize !important;
+}
 .chan-heading{
     font-size:18px;
     font-weight:bold;

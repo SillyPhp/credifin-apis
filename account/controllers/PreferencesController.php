@@ -10,6 +10,9 @@ use common\models\Categories;
 use common\models\EmailLogs;
 use common\models\EmployerApplications;
 use common\models\Industries;
+use common\models\UserPreferredIndustries;
+use common\models\UserPreferredJobProfile;
+use common\models\UserPreferredLocations;
 use common\models\Users;
 use common\models\Utilities;
 use yii\web\HttpException;
@@ -39,15 +42,16 @@ class PreferencesController extends Controller
                 ->alias('a')
                 ->select(['a.name', 'a.category_enc_id'])
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['b.assigned_to' => 'Jobs', 'b.status' => 'Approved'])
+                ->where(['b.assigned_to' => 'Jobs', 'b.status' => 'Approved', 'b.parent_enc_id' => null, 'b.is_deleted' => 0])
                 ->asArray()
                 ->all();
+
 
             $internprimaryfields = Categories::find()
                 ->alias('a')
                 ->select(['a.name', 'a.category_enc_id'])
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['b.assigned_to' => 'Internships', 'b.status' => 'Approved'])
+                ->where(['b.assigned_to' => 'Internships', 'b.status' => 'Approved', 'b.parent_enc_id' => null, 'b.is_deleted' => 0])
                 ->asArray()
                 ->all();
 
@@ -309,4 +313,78 @@ class PreferencesController extends Controller
         }
     }
 
+    public function actionSavePreference(){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $params = Yii::$app->request->post();
+            $error = ['title' => 'Error', 'message' => 'An Error Occurred'];
+            $preference = UserPreferences::findOne([
+                'created_by' => Yii::$app->user->identity->user_enc_id,
+                'assigned_to'=> $params['type']
+            ]);
+            if($preference){
+                $preference_enc_id = $preference->preference_enc_id;
+            }else{
+                $user_preference = new UserPreferences();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $user_preference->preference_enc_id = $utilitiesModel->encrypt();
+                $user_preference->assigned_to = $params['type'];
+                $user_preference->created_on = date('Y-m-d h:i:s');
+                $user_preference->created_by = Yii::$app->user->identity->user_enc_id;
+                if(!$user_preference -> save()){
+                    return $error;
+                }
+                $preference_enc_id = $user_preference->preference_enc_id;
+            }
+            if(isset($params['profiles']) && !empty($params['profiles'])){
+                foreach ($params['profiles'] as $job){
+                    $userpreferredJobsModel = new UserPreferredJobProfile();
+                    $userpreferredJobsModel->preference_enc_id = $preference_enc_id;
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $userpreferredJobsModel->preferred_job_profile_enc_id = $utilitiesModel->encrypt();
+                    $userpreferredJobsModel->job_profile_enc_id = $job;
+                    $userpreferredJobsModel->created_on = date('Y-m-d h:i:s');
+                    $userpreferredJobsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    if(!$userpreferredJobsModel->save()){
+                        return $error;
+                    }
+                }
+            }
+            if(isset($params['industries']) && !empty($params['industries'])){
+                foreach ($params['industries'] as $indus) {
+                    $UserpreferredindustriesModel = new UserPreferredIndustries();
+                    $UserpreferredindustriesModel->preference_enc_id = $preference_enc_id;
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $UserpreferredindustriesModel->preferred_industry_enc_id = $utilitiesModel->encrypt();
+                    $UserpreferredindustriesModel->industry_enc_id = $indus;
+                    $UserpreferredindustriesModel->created_on = date('Y-m-d h:i:s');
+                    $UserpreferredindustriesModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$UserpreferredindustriesModel->save()) {
+                        return $error;
+                    }
+                }
+            }
+            if(isset($params['locations']) && !empty($params['locations'])){
+                foreach ($params['locations'] as $loc) {
+                    $userpreferredlocationsModel = new UserPreferredLocations();
+                    $userpreferredlocationsModel->preference_enc_id = $preference_enc_id;
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $userpreferredlocationsModel->preferred_location_enc_id = $utilitiesModel->encrypt();
+                    $userpreferredlocationsModel->city_enc_id = $loc;
+                    $userpreferredlocationsModel->created_on = date('Y-m-d h:i:s');
+                    $userpreferredlocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$userpreferredlocationsModel->save()) {
+                        return $error;
+                    }
+                }
+            }
+            return [
+                'title' => 'Success',
+            ];
+        }
+    }
 }

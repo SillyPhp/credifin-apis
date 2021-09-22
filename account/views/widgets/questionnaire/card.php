@@ -16,17 +16,17 @@ if (!empty($total_questionnaire)) {
                     <div class="box-main-col <?= $col_width; ?>">
                         <div class="p-category">
                             <div class="rt-bttns">
-                                <a class="clone-bttn set-right-align two" href="<?= Url::toRoute('questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"] . DIRECTORY_SEPARATOR . 'clone'); ?>" target="_blank">
+                                <a data-toggle="tooltip" data-placement="top" title="Clone" class="clone-bttn set-right-align two" href="<?= Url::toRoute('questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"] . DIRECTORY_SEPARATOR . 'clone'); ?>" target="_blank">
                                     <i class="fa fa-clone"></i>
                                 </a>
                             </div>
                             <div class="lt-bttn">
-                                <button type="button" class="e-bttn delete_questionnaire set-right-align one"
+                                <button data-toggle="tooltip" data-placement="top" title="Delete" type="button" class="e-bttn delete_questionnaire set-right-align one"
                                         value="<?= $questionnaire[$next]['id']; ?>">
                                     <i class="fa fa-trash-o" aria-hidden="true"></i>
                                 </button>
                             </div>
-                            <a href="<?= Url::toRoute('questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"] . DIRECTORY_SEPARATOR . 'view'); ?>">
+                            <a href="<?= Url::to('/account/questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"] . DIRECTORY_SEPARATOR . 'view','https'); ?>" target="_blank">
                                 <i class="fa fa-file-text"></i>
                                 <span><?= $questionnaire[$next]['questionnaire_name']; ?></span>
                                 <p>
@@ -78,6 +78,9 @@ $this->registerCss('
 }
 ');
 $script = <<<JS
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
 $(document).on('click','.delete_questionnaire',function(e){
     e.preventDefault();
     var main_card = $(this).parentsUntil(".p-category").closest('.box-main-col');

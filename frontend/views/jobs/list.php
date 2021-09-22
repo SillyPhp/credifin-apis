@@ -8,6 +8,7 @@ if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
 } else {
     $this->title = 'Total job vacancies available';
 }
+
 $this->params['header_dark'] = true;
 
 if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
@@ -36,7 +37,7 @@ if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -51,7 +52,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -59,6 +60,10 @@ $this->params['seo_tags'] = [
     ],
 ];
 $this->registerCss('
+.salary a
+{
+color: #2b7cb7;
+}
 .change-hr{
     margin-bottom: 30px;
     margin-top: 15px;
@@ -71,6 +76,13 @@ $this->registerCss('
 }
 .main-content{
     min-height:100vh !important;
+}
+@media screen and (max-width: 1250px) and (min-width: 992px) {
+    .ji-apply{padding:5px;}
+    .application-card-bottom a {
+        font-size: 11px;
+    }
+    .sharing-links{padding:4px;}
 }
 ');
 ?>
@@ -88,6 +100,7 @@ $this->registerCss('
                 <?=
                 $this->render('/widgets/search-bar1',['type'=>'jobs']);
                 ?>
+
                 <div class=" col-md-12 col-sm-12">
                     <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
                     <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>
@@ -135,9 +148,7 @@ echo $this->render('/widgets/mustache/application-card', [
     'type' => 'Jobs',
 ]);
 
-
 $script = <<<JS
-
 var loading = false;
 var load_more_cards = true;
 $(window).animate({scrollTop:0}, '300');
@@ -176,9 +187,10 @@ $(document).on('click','.loading_more', function(e){
 });
 loader = true;
 draggable = true;
-getCards();
+getCards();   
 var sidebarpage = 1;
 getReviewList(sidebarpage);
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+?>

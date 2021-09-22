@@ -15,7 +15,7 @@ use yii\web\HttpException;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\filters\AccessControl;
-use frontend\models\learning\VideoForm;
+use frontend\models\learning\ClassEnquiryForm;
 
 class VideosController extends Controller
 {
@@ -51,7 +51,7 @@ class VideosController extends Controller
     {
         $this->layout = 'main-secondary';
 
-        $learningCornerFormModel = new VideoForm();
+        $learningCornerFormModel = new ClassEnquiryForm();
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -82,7 +82,7 @@ class VideosController extends Controller
                     'a.slug' => $slug,
                     'b.assigned_to' => 'Videos',
                 ])
-                ->andWhere([
+                ->andFilterWhere([
                     'or',
                     ['not', ['b.parent_enc_id' => NULL]],
                     ['not', ['b.parent_enc_id' => ""]]
@@ -92,7 +92,7 @@ class VideosController extends Controller
             $object = QuestionsPool::find()
                 ->alias('a')
                 ->andWhere(['a.is_deleted' => 0])
-                ->select(['a.question_pool_enc_id', 'c.name', 'question', 'privacy', 'a.slug', 'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", f.image_location, "/", f.image) ELSE NULL END image', 'f.username', 'f.initials_color', 'CONCAT(f.first_name," ","f.last_name") user_name'])
+                ->select(['a.question_pool_enc_id', 'c.name', 'question', 'privacy', 'a.slug', 'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", f.image_location, "/", f.image) ELSE NULL END image', 'f.username', 'f.initials_color', 'CONCAT(f.first_name," ","f.last_name") user_name'])
                 ->joinWith(['createdBy f'], false)
                 ->joinWith(['topicEnc b' => function ($b) use ($parentId) {
                     $b->andWhere(['b.category_enc_id'=>$parentId['category_enc_id']]);
@@ -100,7 +100,7 @@ class VideosController extends Controller
                 }], false)
                 ->joinWith(['questionsPoolAnswers d' => function ($b) {
                     $b->joinWith(['createdBy e'], false);
-                    $b->select(['d.question_pool_enc_id', 'CONCAT(e.first_name," ",e.last_name) name', 'CASE WHEN e.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", e.image_location, "/", e.image) ELSE NULL END image', 'e.username', 'e.initials_color']);
+                    $b->select(['d.question_pool_enc_id', 'CONCAT(e.first_name," ",e.last_name) name', 'CASE WHEN e.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", e.image_location, "/", e.image) ELSE NULL END image', 'e.username', 'e.initials_color']);
                     $b->limit(3);
                 }])
                 ->orderBy(new Expression('rand()'))
@@ -206,7 +206,7 @@ class VideosController extends Controller
                     'c.initials_color color',
                     'CONCAT("/", c.slug) organization_link',
                     'c.name as organization_name',
-                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
+                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
                     'h.name category',
                     'g.name as title',
                     'e.designation',
@@ -314,7 +314,7 @@ class VideosController extends Controller
                     'c.initials_color color',
                     'CONCAT("/", c.slug) organization_link',
                     'c.name as organization_name',
-                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
+                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
                     'h.name category',
                     'g.name as title',
                     'l.fixed_wage as fixed_salary',

@@ -1,5 +1,7 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
     <section class="whatsapp-bg">
         <div class="container">
@@ -7,33 +9,68 @@ use yii\helpers\Url;
                 <div class="col-md-6">
                     <div class="wm-pos-rel">
                         <div class="whats-abso">
-                            <h1 class="whats-main-heading">Join Our WhatsApp Community</h1>
-                            <div class="whats-sub-heading">Get Latest Job Updates</div>
+                            <h2 class="whats-main-heading">Join Our Social Community</h2>
+                            <h3 class="whats-sub-heading">Get Latest Job Updates</h3>
                             <div class="whats-href">
-                                <a href= "<?= Url::to('/whatsapp-community') ?>">
+                                <a href="<?= Url::to('/social-community') ?>">
                                     View Links
-                                    <span><img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo-white.png') ?>"> </span>
+                                    <span><i class="fas fa-long-arrow-alt-right"></i></span>
                                 </a>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="wm-pos-rel-img">
-                        <div class="whats-main-img">
-                            <a href= "<?= Url::to('/whatsapp-community') ?>">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/whats.png') ?>" alt="">
-                            </a>
-                        </div>
-                        <div class="whats-img-chat">
-                            <a href= "<?= Url::to('/whatsapp-community') ?>">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/whtsppmsg.png') ?>" alt="">
-                            </a>
-                        </div>
-                        <div class="whats-img-chat-2">
-                            <a href= "<?= Url::to('/whatsapp-community') ?>">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/whtsppmsg2.png') ?>" alt="">
-                            </a>
+                    <div class="row mt10">
+                        <div class="mobile-flex">
+                            <div class="col-md-6 col-md-offset-0 col-sm-2 col-sm-offset-1">
+                                <div class="social-main">
+                                    <a href="/social-community#WhatsApp">
+                                        <div class="social-logo" style="background-color:#34bd34">
+                                            <i class="fab fa-whatsapp"></i>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6  col-sm-2">
+                                <div class="social-main">
+                                    <a href="/social-community#Facebook">
+                                        <div class="social-logo" style="background-color:#fff">
+                                            <i class="fab fa-facebook-f"></i>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12  col-sm-2">
+                                <div class="social-main">
+                                    <a href="/social-community#Telegram">
+                                        <div class="social-logo" style="background-color:#00a0e3">
+                                            <i class="fab fa-telegram-plane"></i>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6  col-sm-2">
+                                <div class="social-main">
+                                    <a href="/social-community#Instagram">
+                                        <div class="social-logo" style="background-color:#dc004a">
+                                            <i class="fab fa-instagram"></i>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6  col-sm-2">
+                                <div class="social-main">
+                                    <a href="/social-community#twitter">
+                                        <div class="social-logo"
+                                             style="background-color:#85ceec">
+                                            <i class="fab fa-twitter"></i>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -42,6 +79,31 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.mt10{
+    margin-top: 20px;
+}
+.social-main,  a .social-logo {
+    border: 1px solid transparent;
+    width: 100px;
+    margin: auto;
+    height: 100px;
+    border-radius: 10px;
+    text-align: center;
+//    padding: 20px;
+    margin-bottom:20px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+.social-logo .fab.fa-whatsapp, .social-logo .fab.fa-telegram-plane,
+.social-logo .fab.fa-instagram, .social-logo .fab.fa-twitter {
+    font-size: 55px;
+    color: #fff;
+}
+.social-logo .fab.fa-facebook-f {
+    font-size: 55px;
+    color: #00a0e3;
+}
 .whats-href {
     margin-top:30px;
 }
@@ -60,13 +122,9 @@ $this->registerCss('
 }
 .whats-href a span{
     position: absolute;
-    right: 8px !important;
-    top:5px;
+    right: 10px !important;
+    top:8px;
     display: none;
-}
-.whats-href a span img{
-    max-height:15px;
-    max-width:15px;
 }
 .whats-href a:hover{
     width:125px;
@@ -76,7 +134,7 @@ $this->registerCss('
     display: block;
 }
 .whatsapp-bg{
-    background: linear-gradient(141deg, #53ccb1, #548c7f);
+    background:linear-gradient(141deg, #5377cc -3%, #dc004a 154%);
     min-height:380px;
 }
 .wm-pos-rel{
@@ -96,7 +154,7 @@ $this->registerCss('
     font-family:Roboto;
     color:#fff;
     font-weight:bold;
-    font-size:38px;
+    font-size:40px;
     margin:0px; 
     text-transform: capitalize;
 }
@@ -107,43 +165,35 @@ $this->registerCss('
     text-transform: capitalize;
     margin-top: -10px;
 }
-.whats-main-img, .whats-img-chat{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform: translate(-50%,-50%);
+.s-top {
+    padding-top: 12px;
 }
-.whats-img-chat{
-    position:absolute;
-    top:50%;
-    margin-top:60px;
-    right:0px;
-    transform: translateY(-50%);
+@media screen and (max-width: 992px){
+    .wm-pos-rel{
+        position: relative;
+        height:220px;
+        text-align: center;
+    }
+    .whats-abso{
+        position: relative;
+        
+    }
 }
-.whats-img-chat-2{
-    position:absolute;
-    top:50%;
-    margin-top:-50px;
-    left:80px;
-    transform: translateY(-50%);
+@media(max-width:768px){
+    .wm-pos-rel{
+        height:250px;
+    }
+    .mobile-flex{
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
 }
-.whats-img-chat img{
-    max-width: 200px;
-}
-.whats-img-chat-2 img{
-    max-width:160px;
-}
-.whats-main-img img{
-    animation: rotateWhats 15s infinite;
-}
-@keyframes rotateWhats{
-    0%{transform: rotate(-20deg)}
-    50%{transform: rotate(40deg)}
-    100%{transform: rotate(-20deg)}
-}
-@media (max-width:415px){
-.wm-pos-rel, .wm-pos-rel-img{
-    height:250px;
+@media(max-width:500px){
+.social-logo .fab.fa-facebook-f, .social-logo .fab.fa-whatsapp,
+.social-logo .fab.fa-telegram-plane, .social-logo .fab.fa-instagram,
+.social-logo .fab.fa-twitter {
+    font-size: 40px;
 }
 }
 ')

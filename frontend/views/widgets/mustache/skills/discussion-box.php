@@ -1,3 +1,8 @@
+<?php
+if(!$grid){
+    $grid = 'col-md-10 col-md-offset-1';
+}
+?>
 <div class="row" id="comments">
     <div class="col-md-12">
         <h1 class="chan-heading">Comments</h1>
@@ -5,10 +10,10 @@
     <div class="comment-box">
         <div class="add-comment">
             <div class="row">
-                <div class="col-md-10 col-md-offset-1">
+                <div class="<?= $grid ?>">
                     <form id="postComm" action="/<?= Yii::$app->controller->id; ?>/parent-comment">
                         <div class="">
-                            <textarea id="commentArea" rows="1"></textarea>
+                            <textarea id="commentArea" rows="1" class="<?= $commentBoxClasses ?>"></textarea>
                         </div>
                         <div class="comment-sub">
                             <button type="button" id="sendComment">Comment</button>

@@ -14,6 +14,7 @@ use common\models\PostCategories;
 use common\models\Users;
 use common\models\Tags;
 use common\models\Categories;
+use yii\helpers\ArrayHelper;
 
 class BlogController extends Controller
 {
@@ -29,20 +30,27 @@ class BlogController extends Controller
     {
         $postsModel = new Posts();
         $posts = $postsModel->find()
-            ->select(['featured_image_location', 'featured_image', 'featured_image_alt', 'featured_image_title', 'title', '(CASE WHEN is_crawled = "0" THEN CONCAT("c/",slug) ELSE slug END) as slug'])
-            ->where(['status' => 'Active', 'is_deleted' => 0])
-            ->orderby(['created_on' => SORT_ASC])
+            ->alias('a')
+            ->select(['a.post_enc_id', 'a.featured_image_location', 'a.featured_image', 'a.featured_image_alt', 'featured_image_title', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug'])
+            ->joinWith(['postCategories b' => function ($b) {
+                $b->joinWith(['categoryEnc c'], false);
+            }], false)
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['not', ['c.category_enc_id' => null]])
+            ->andWhere(['a.is_visible'=>1])
+            ->orderby(['a.created_on' => SORT_ASC])
             ->limit(8)
             ->asArray()
             ->all();
+
         $quotes = Posts::find()
             ->alias('a')
             ->select(['a.post_enc_id', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
-            ->innerJoinWith(['postCategories b' => function ($b) {
-                $b->innerJoinWith(['categoryEnc c'], false);
+            ->joinWith(['postCategories b' => function ($b) {
+                $b->joinWith(['categoryEnc c'], false);
             }], false)
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
-            ->andWhere(['c.name' => 'Quotes'])
+            ->andWhere(['c.name' => null])
             ->groupBy(['a.post_enc_id'])
             ->orderby(new Expression('rand()'))
             ->limit(6)
@@ -50,15 +58,21 @@ class BlogController extends Controller
             ->all();
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
+            $params = Yii::$app->request->post();
+
             $popular_posts = Posts::find()
                 ->alias('a')
                 ->select(['a.post_enc_id', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
                 ->joinWith(['postCategories b' => function ($b) {
                     $b->joinWith(['categoryEnc c'], false);
                 }], false)
-                ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
-                ->orderby(new Expression('rand()'))
-                ->limit(4)
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0]);
+            if (isset($params['category']) && !empty($params['category'])) {
+                $popular_posts->andFilterWhere(['like', 'c.name', $params['category']]);
+            }
+
+            $popular_posts = $popular_posts->orderby(new Expression('rand()'))
+                ->limit(3)
                 ->asArray()
                 ->all();
             return $response = [
@@ -86,6 +100,7 @@ class BlogController extends Controller
                 ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
                 ->andWhere(['not', ['c.name' => 'Infographics']])
                 ->andWhere(['not', ['c.name' => 'Quotes']])
+                ->andWhere(['a.is_visible'=>1])
                 ->groupBy(['a.post_enc_id'])
                 ->orderby(new Expression('rand()'))
                 ->limit(4)
@@ -108,6 +123,7 @@ class BlogController extends Controller
                 ->andWhere(['a.status' => 'Active', 'a.is_deleted' => 0])
                 ->andWhere(['not', ['c.name' => 'Infographics']])
                 ->andWhere(['not', ['c.name' => 'Quotes']])
+                ->andWhere(['a.is_visible'=>1])
                 ->groupBy(['a.post_enc_id'])
                 ->orderby(new Expression('rand()'))
                 ->limit(6)
@@ -128,6 +144,7 @@ class BlogController extends Controller
                 ->andWhere(['a.status' => 'Active', 'a.is_deleted' => 0])
                 ->andWhere(['not', ['c.name' => 'Infographics']])
                 ->andWhere(['not', ['c.name' => 'Quotes']])
+                ->andWhere(['a.is_visible'=>1])
                 ->groupBy(['a.post_enc_id'])
                 ->orderby(new Expression('rand()'))
                 ->limit(12)
@@ -151,43 +168,35 @@ class BlogController extends Controller
 
     private function _getPostDetails($slug, $is_crawled = 1)
     {
-        $postsModel = new Posts();
-        $post = $postsModel->find()->alias('a')
-            ->select(['a.*', 'CONCAT(f.first_name, " ", f.last_name) name', 'f.description user_about', 'f.image', 'f.image_location', 'f.initials_color'])
-            ->joinWith(['postCategories b' => function ($b) {
-                $b->select(['b.post_enc_id', 'b.category_enc_id']);
-                $b->joinWith(['categoryEnc c' => function ($y) {
-                    $y->select(['c.category_enc_id', 'c.name', 'c.slug']);
-                }]);
-            }])
-            ->joinWith(['postTags d' => function ($b) {
-                $b->select(['d.post_enc_id', 'd.tag_enc_id']);
-                $b->joinWith(['tagEnc e' => function ($z) {
-                    $z->select(['e.tag_enc_id', 'e.name', 'e.slug']);
-                }]);
-            }])
-            ->leftJoin(Users::tablename() . ' as f', 'f.user_enc_id = a.author_enc_id')
-            ->where([
-                'a.slug' => $slug,
-                'a.status' => 'Active',
-                'is_crawled' => $is_crawled,
-                'a.is_deleted' => 0,
-            ])
-            ->asArray()
-            ->one();
-
+        $post = Posts::findOne(['is_deleted' => 0, 'slug' => $slug, 'status' => 'Active', 'is_crawled' => $is_crawled,'is_visible'=>1]);
+        $tags = ArrayHelper::getColumn($post->postTags, 'tagEnc.name');
         if ($post) {
-            $similar_posts = $postsModel->find()->alias('a')
-                ->select(['a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'a.excerpt', 'a.featured_image', 'a.featured_image_location', 'a.featured_image_alt', 'a.featured_image_title', 'd.name', 'd.tag_enc_id'])
-                ->innerJoin(PostCategories::tableName() . ' as b', 'b.post_enc_id = a.post_enc_id')
-                ->innerJoin(PostTags::tableName() . ' as c', 'c.post_enc_id = a.post_enc_id')
-                ->innerJoin(Tags::tableName() . ' as d', 'd.tag_enc_id = c.tag_enc_id')
-                ->where(['!=', 'a.post_enc_id', $post['post_enc_id']])
-                ->andWhere(['c.tag_enc_id' => $post['postTags'][0]['tag_enc_id'],
-                    'a.status' => 'Active', 'a.is_deleted' => 0])
-                ->limit(3)
-                ->orderBy(['a.created_on' => SORT_DESC])
+            $post_categories = PostCategories::find()
+                ->select(['category_enc_id'])
+                ->where(['post_enc_id' => $post->post_enc_id])
                 ->asArray()
+                ->all();
+            $categories = [];
+            foreach ($post_categories as $c) {
+                $categories[] = $c['category_enc_id'];
+            }
+
+            $similar_posts = Posts::find()
+                ->alias('z')
+                ->joinWith(['postTags a' => function ($a) use ($tags) {
+                    $a->joinWith(['tagEnc a1' => function ($a1) use ($tags) {
+                        $a1->where(['in', 'a1.name', $tags]);
+                    }]);
+                }])
+                ->joinWith(['postCategories b'], false)
+                ->andWhere(['!=', 'z.post_enc_id', $post->post_enc_id])
+                ->andWhere(['z.status' => 'Active', 'z.is_deleted' => 0])
+//                ->andFilterWhere(['like', 'b.category_enc_id', $categories])
+                ->andWhere(['z.is_visible'=>1])
+                ->andWhere(['b.category_enc_id' => $categories])
+                ->orderBy(new Expression('rand()'))
+                ->asArray()
+                ->limit(3)
                 ->all();
 
             return $this->render('detail', [
@@ -235,7 +244,7 @@ class BlogController extends Controller
             ->innerJoin(PostTags::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
             ->innerJoin(Tags::tableName() . 'as c', 'c.tag_enc_id = b.tag_enc_id')
             ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
-            ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0,'is_visible'=>1])
             ->orderby(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
@@ -268,7 +277,7 @@ class BlogController extends Controller
                 ->innerJoin(PostTags::tableName() . 'as d', 'd.post_enc_id = a.post_enc_id')
                 ->innerJoin(Tags::tableName() . 'as e', 'e.tag_enc_id = d.tag_enc_id')
                 ->innerJoin(Users::tableName() . 'as f', 'f.user_enc_id = a.author_enc_id')
-                ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0])
+                ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0,'is_visible'=>1])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->limit(5)
                 ->asArray()

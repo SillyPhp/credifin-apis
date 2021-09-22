@@ -15,22 +15,23 @@ use yii\helpers\Url;
                                         <?php
                                         if (!empty($applications['data'])) {
                                             ?>
-                                            <div class="col-sm-9">
+                                            <div class="col-sm-12">
                                                 <h1 class="text-center">Campus Hiring</h1>
                                             </div>
-                                            <div class="col-sm-3 text-right pr-0">
+                                            <div class="col-sm-3 pr-0">
                                                 <button style="display:none" type="button"
-                                                        class="btn btn-default wizard-prev">
-                                                    Previous
-                                                </button>
-                                                <button type="button" class="btn btn-primary wizard-next">
-                                                    Continue
-                                                </button>
+                                                        class="btn btn-default wizard-prev">Previous</button>
                                                 <button style="display:none" type="submit"
-                                                        class="btn btn-primary wizard-subm submit-applications-inErexx">
-                                                    Submit
-                                                </button>
-
+                                                        class="btn btn-primary wizard-subm submit-applications-inErexx">Submit</button>
+                                            </div>
+                                            <div class="col-sm-9 text-right pr-0">
+                                                <div class="cr-job">
+                                                    <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
+                                                       title="Create AI Internship" class="ai">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>">
+                                                        <h3>Create AI Internship</h3>
+                                                    </a>
+                                                </div>
                                             </div>
                                             <?php
                                         } else {
@@ -49,8 +50,8 @@ use yii\helpers\Url;
                                         <?php
                                         if (!empty($applications['data'])) {
                                             ?>
-                                            <div class="col-md-12">
-                                                <h4>Select Internships for campus hiring.</h4>
+                                            <div class="col-md-12 text-center">
+                                                <h4 class="slct">Select from Previous Internships for campus hiring.</h4>
                                             </div>
                                             <?php
                                             foreach ($applications['data'] as $app) {
@@ -75,12 +76,16 @@ use yii\helpers\Url;
                                                                     <div class="job-location location">
                                                                         <i class="fa fa-map-marker"></i>
                                                                         <?php
-                                                                        $lc = [];
-                                                                        foreach ($app['locations'] as $loc) {
-                                                                            array_push($lc, $loc['name']);
-                                                                        }
-                                                                        echo ' <span title="' . implode(', ', $lc) . '">' . implode(', ', $lc) . '</span>';
-                                                                        ?>
+                                                                        if ($app['locations']) {
+                                                                            $lc = [];
+                                                                            foreach ($app['locations'] as $loc) {
+                                                                                array_push($lc, $loc['name']);
+                                                                            }
+                                                                            echo ' <span title="' . implode(', ', $lc) . '">' . implode(', ', $lc) . '</span>';
+                                                                        } else {
+                                                                            echo '<span title="Work From Home">Work From Home</span>';
+                                                                        } ?>
+
                                                                     </div>
                                                                 </div>
                                                                 <div class="job-listing-meta meta">
@@ -90,7 +95,7 @@ use yii\helpers\Url;
                                                                     <ul class="job-types">
                                                                         <li class="job-type full-time"> <?= $app['type']; ?></li>
                                                                     </ul>
-                                                                    <span class="job-published-date date">Last Date To Apply <?= date('d-M-y',strtotime($app['last_date'])); ?></span>
+                                                                    <span class="job-published-date date">Last Date To Apply <?= date('d-M-y', strtotime($app['last_date'])); ?></span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -121,7 +126,7 @@ use yii\helpers\Url;
                                         if (!empty($applications['data'])) {
                                             ?>
                                             <div class="col-md-12">
-                                                <h4>Select Colleges for campus hiring.</h4>
+                                                <h4 class="slct">Select Colleges for campus hiring.</h4>
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group form-md-line-input form-md-floating-label">
@@ -148,15 +153,18 @@ use yii\helpers\Url;
                                                         <div class="inner-list-main">
                                                             <div class="job-listing-company-logo">
                                                                 <?php
-                                                                if(!empty($clg['logo'])) {
+                                                                if (!empty($clg['logo'])) {
                                                                     ?>
                                                                     <img class="company_logo"
                                                                          src="<?= Url::to($clg['logo']); ?>"
                                                                          alt="<?= $clg['name']; ?>">
                                                                     <?php
-                                                                } else{
+                                                                } else {
                                                                     ?>
-                                                                    <canvas class="user-icon" name="<?= $clg['name']; ?>" width="80" height="80" color="<?= $clg['color']?>" font="39px"></canvas>
+                                                                    <canvas class="user-icon"
+                                                                            name="<?= $clg['name']; ?>" width="80"
+                                                                            height="80" color="<?= $clg['color'] ?>"
+                                                                            font="39px"></canvas>
                                                                     <?php
                                                                 }
                                                                 ?>
@@ -236,8 +244,41 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.job-listing-company-logo img{
+    object-fit:contain;
+}
+.ai{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.ai h3 {
+	margin: 0;
+	font-size: 20px;
+	color: #ff7803;
+	font-family: roboto;
+	margin-left: 5px;
+} 
+.page-content {
+    background-image: url(/assets/themes/ey/images/backgrounds/campus-hiring.png) !important;
+    background-size: auto 100% !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+}
+.container-fluid{
+    padding:0 !important;
+}
+.cr-job {
+	margin-bottom: 5px;
+}
+.slct{
+    font-family:roboto;
+    font-size:18px;
+    font-weight:500;
+}
 .pr-0{
     padding-right:0px;
+    margin-bottom:5px;
 }
 .card-like {
 //  margin-top: 50px;
@@ -250,13 +291,16 @@ $this->registerCss('
 }
 .wizard {
   overflow: hidden;
+	background-color: #fffffff7;
 }
 .wizard .wizard-header {
-  margin-bottom: 30px;
+  margin-bottom: 12px;
 }
 .wizard .wizard-header h1 {
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
+  font-family:roboto;
+  font-weight:500;
 }
 .wizard .wizard-header h1 small {
   color: #bbb;

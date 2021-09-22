@@ -29,7 +29,7 @@ namespace common\models;
 class OrganizationEmployees extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -37,7 +37,7 @@ class OrganizationEmployees extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -47,13 +47,15 @@ class OrganizationEmployees extends \yii\db\ActiveRecord
             [['is_deleted'], 'integer'],
             [['employee_enc_id', 'organization_enc_id', 'image', 'image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['first_name', 'last_name'], 'string', 'max' => 30],
-            [['facebook', 'twitter', 'linkedin', 'designation'], 'string', 'max' => 50],
+            [['facebook', 'twitter', 'linkedin'], 'string', 'max' => 150],
+            [['designation'], 'string', 'max' => 50],
             [['employee_enc_id'], 'unique'],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery

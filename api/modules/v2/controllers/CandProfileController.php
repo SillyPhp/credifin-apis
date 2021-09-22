@@ -5,6 +5,7 @@ namespace api\modules\v2\controllers;
 use api\modules\v1\models\Candidates;
 use api\modules\v2\models\PictureUpload;
 use api\modules\v2\models\ProfilePicture;
+use api\modules\v2\models\ResumeUpload;
 use common\models\AppliedApplications;
 use common\models\AssignedCategories;
 use common\models\Categories;
@@ -50,13 +51,14 @@ class CandProfileController extends ApiBaseController
                 'upload-profile-picture' => ['POST', 'OPTIONS'],
                 'profile-picture' => ['POST', 'OPTIONS'],
                 'profiles' => ['POST', 'OPTIONS'],
+                'upload-resume' => ['POST', 'OPTIONS'],
             ]
         ];
 
         $behaviors['corsFilter'] = [
             'class' => Cors::className(),
             'cors' => [
-                'Origin' => ['http://127.0.0.1:5500'],
+                'Origin' => ['https://www.myecampus.in/'],
                 'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
                 'Access-Control-Max-Age' => 86400,
                 'Access-Control-Expose-Headers' => [],
@@ -82,7 +84,7 @@ class CandProfileController extends ApiBaseController
 
             return $this->response(200, $result);
         } else {
-            return $this->response(401);
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -92,7 +94,8 @@ class CandProfileController extends ApiBaseController
             ->alias('a')
             ->where([
                 'a.created_by' => $id,
-                'a.assigned_to' => $type
+                'a.assigned_to' => $type,
+                'a.is_deleted' => 0
             ])
             ->joinWith(['userPreferredJobProfiles b' => function ($x) {
                 $x->onCondition(['b.is_deleted' => 0]);
@@ -121,7 +124,7 @@ class CandProfileController extends ApiBaseController
             ->alias('a')
             ->select(['a.name value', 'a.category_enc_id key'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-            ->where(['b.assigned_to' => $type, 'b.status' => 'Approved'])
+            ->where(['b.assigned_to' => $type, 'b.status' => 'Approved', 'b.is_deleted' => 0])
             ->asArray()
             ->all();
 
@@ -179,19 +182,88 @@ class CandProfileController extends ApiBaseController
                 $city_enc_id = $city_id->city_enc_id;
             }
 
+            if ($req['cgpa']) {
+                $update = Yii::$app->db->createCommand()
+                    ->update(UserOtherDetails::tableName(), ['cgpa' => $req['cgpa'], 'updated_on' => Date('Y-m-d H:i:s')], ['user_enc_id' => $user->user_enc_id])
+                    ->execute();
+
+                if (!$update) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            }
+
             if (!empty($city_enc_id)) {
                 $update = Yii::$app->db->createCommand()
                     ->update(Users::tableName(), ['city_enc_id' => $city_enc_id, 'last_updated_on' => Date('Y-m-d H:i:s')], ['user_enc_id' => $user->user_enc_id])
                     ->execute();
-                if ($update) {
-                    return $this->response(200, ['status' => 200]);
-                } else {
-                    return false;
+                if (!$update) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }
             }
+
+            $source = Yii::$app->request->headers->get('source');
+            $bearer_token = Yii::$app->request->headers->get('Authorization');
+            $token = explode(" ", $bearer_token)[1];
+
+            $find_user = UserAccessTokens::find()
+                ->select(['*'])
+                ->where(['access_token' => $token, 'source' => $source])
+                ->asArray()
+                ->one();
+
+            if (!empty($find_user)) {
+                $user_type = Users::find()
+                    ->where(['!=', 'organization_enc_id', 'null'])
+                    ->exists();
+
+
+                $user_detail = Users::find()
+                    ->alias('a')
+                    ->select(['a.first_name', 'a.last_name', 'a.username', 'a.phone', 'a.email', 'a.initials_color', 'b.user_type', 'c.name city_name', 'e.name org_name', 'd.organization_enc_id', 'd.cgpa'])
+                    ->joinWith(['userTypeEnc b'], false)
+                    ->joinWith(['cityEnc c'], false)
+                    ->joinWith(['userOtherInfo d' => function ($d) {
+                        $d->joinWith(['organizationEnc e']);
+                    }], false)
+                    ->where(['a.user_enc_id' => $find_user['user_enc_id']])
+                    ->asArray()
+                    ->one();
+
+            }
+
+            $data = [
+                'user_id' => $find_user['user_enc_id'],
+                'username' => $user_detail['username'],
+                'user_type' => $user_detail['user_type'],
+                'user_other_detail' => $this->userOtherDetail($find_user['user_enc_id']),
+                'city' => $user_detail['city_name'],
+                'cgpa' => $user_detail['cgpa'],
+                'college' => $user_detail['org_name'],
+                'college_enc_id' => $user_detail['organization_enc_id'],
+                'email' => $user_detail['email'],
+                'first_name' => $user_detail['first_name'],
+                'last_name' => $user_detail['last_name'],
+                'phone' => $user_detail['phone'],
+                'initials_color' => $user_detail['initials_color'],
+                'access_token' => $find_user['access_token'],
+                'refresh_token' => $find_user['refresh_token'],
+                'access_token_expiry_time' => $find_user['access_token_expiration'],
+                'refresh_token_expiry_time' => $find_user['refresh_token_expiration'],
+            ];
+
+            return $this->response(200, ['status' => 200, 'data' => $data]);
         } else {
-            return $this->response(401);
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    private function userOtherDetail($user_id)
+    {
+        $user_other_detail = UserOtherDetails::find()
+            ->where(['user_enc_id' => $user_id])
+            ->exists();
+
+        return $user_other_detail;
     }
 
     public function actionSaveApplications()
@@ -207,14 +279,16 @@ class CandProfileController extends ApiBaseController
                         ->one();
 
                     if ($user) {
-//                        $a = $this->updateData($req, $user_id);
                         if ($this->updateData($req, $user_id)) {
-                            return $this->response(200,['status'=>200]);
+                            return $this->response(200, ['status' => 200]);
+                        } else {
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                         }
                     } else {
-//                        $b = $this->saveData($req, $user_id);
                         if ($this->saveData($req, $user_id)) {
-                            return $this->response(200,['status'=>200]);
+                            return $this->response(200, ['status' => 200]);
+                        } else {
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                         }
                     }
                 }
@@ -227,17 +301,21 @@ class CandProfileController extends ApiBaseController
 
                     if ($user) {
                         if ($this->updateData($req, $user_id)) {
-                            return $this->response(200,['status'=>200]);
+                            return $this->response(200, ['status' => 200]);
+                        } else {
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                         }
                     } else {
                         if ($this->saveData($req, $user_id)) {
-                            return $this->response(200,['status'=>200]);
+                            return $this->response(200, ['status' => 200]);
+                        } else {
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                         }
                     }
                 }
             }
         } else {
-            return $this->response(401);
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -266,7 +344,7 @@ class CandProfileController extends ApiBaseController
                 $user_locations_model->created_on = date('Y-m-d H:i:s');
                 $user_locations_model->created_by = $user_id;
                 if (!$user_locations_model->save()) {
-                    print_r($user_locations_model->getErrors());
+                    return false;
                 }
             }
 
@@ -284,7 +362,7 @@ class CandProfileController extends ApiBaseController
                 $user_industries_model->created_by = $user_id;
                 $user_industries_model->created_on = date('Y-m-d H:i:s');
                 if (!$user_industries_model->save()) {
-                    print_r($user_industries_model->getErrors());
+                    return false;
                 }
             }
 
@@ -310,12 +388,12 @@ class CandProfileController extends ApiBaseController
                 $user_jobs_profile->created_on = date('Y-m-d H:i:s');
                 $user_jobs_profile->created_by = $user_id;
                 if (!$user_jobs_profile->save()) {
-                    print_r($user_jobs_profile->getErrors());
+                    return false;
                 }
             }
             return true;
         } else {
-            print_r($user_preference->getErrors());
+            return false;
         }
     }
 
@@ -379,7 +457,7 @@ class CandProfileController extends ApiBaseController
                     $user_locations_model->created_on = date('Y-m-d H:i:s');
                     $user_locations_model->created_by = $user_id;
                     if (!$user_locations_model->save()) {
-                        print_r($user_locations_model->getErrors());
+                        return false;
                     }
                 }
             }
@@ -434,7 +512,7 @@ class CandProfileController extends ApiBaseController
                     $user_industries_model->created_on = date('Y-m-d H:i:s');
                     $user_industries_model->created_by = $user_id;
                     if (!$user_industries_model->save()) {
-                        print_r($user_industries_model->getErrors());
+                        return false;
                     }
                 }
             }
@@ -526,14 +604,14 @@ class CandProfileController extends ApiBaseController
                     $userpreferredJobsModel->created_on = date('Y-m-d h:i:s');
                     $userpreferredJobsModel->created_by = $user_id;
                     if (!$userpreferredJobsModel->save()) {
-                        print_r($userpreferredJobsModel->getErrors());
+                        return false;
                     }
                 }
             }
 
             return true;
         } else {
-            print_r($user_preference->getErrors());
+            return false;
         }
     }
 
@@ -545,11 +623,11 @@ class CandProfileController extends ApiBaseController
             if ($pictureModel->profile_image && $pictureModel->validate()) {
                 if ($user_id = $pictureModel->update()) {
                     $user_image = Users::find()
-                        ->select(['CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", image_location, "/", image) ELSE NULL END image'])
-                        ->where(['user_enc_id'=>$user_id])
+                        ->select(['CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", image_location, "/", image) ELSE NULL END image'])
+                        ->where(['user_enc_id' => $user_id])
                         ->asArray()
                         ->one();
-                    return $this->response(200,['status'=>200,'image'=>$user_image['image']]);
+                    return $this->response(200, ['status' => 200, 'image' => $user_image['image']]);
                 }
                 return $this->response(500);
             } else {
@@ -636,12 +714,36 @@ class CandProfileController extends ApiBaseController
             ]);
 
             if (!empty($candidate->image_location)) {
-                return Url::to(Yii::$app->params->upload_directories->users->image . $candidate->image_location . DIRECTORY_SEPARATOR . $candidate->image, 'https');
+                return Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $candidate->image_location . DIRECTORY_SEPARATOR . $candidate->image, 'https');
             } else {
                 return '';
             }
         } else {
             return $this->response(401);
+        }
+    }
+
+    public function actionUploadResume()
+    {
+        if ($user = $this->isAuthorized()) {
+            $resume = new ResumeUpload();
+            $file = UploadedFile::getInstanceByName('resume');
+            if ($resume) {
+                $resume->resume_file = $file;
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+            $data['user_id'] = $user->user_enc_id;
+            if ($resume->resume_file && $resume->validate()) {
+                if ($id = $resume->upload($data)) {
+                    return $this->response(200, ['status' => 200, 'message' => 'Saved', 'id' => $id]);
+                }
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => $resume->getErrors()]);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 }

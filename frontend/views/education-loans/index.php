@@ -4,6 +4,34 @@ $this->title = Yii::t('frontend', 'Education Loans');
 
 use yii\helpers\Url;
 
+$this->title = 'Education Loan';
+$keywords = 'Education Loan | Empower Youth';
+$description = 'Everyone deserves access To Education, EmpowerYouth believes in funding dreams by helping youth fulfill their career potentials.';
+$image = Url::to('@eyAssets/images/pages/education-loans/education-loan-s.png', 'https');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
     <!--<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">-->
     <!--<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet"/>-->
@@ -174,12 +202,12 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-
+    <div class="clearfix"></div>
     <section>
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="heading-style"><?= Yii::t('frontend', 'Our Loaning Partners'); ?></h3>
+                    <h3 class="heading-style"><?= Yii::t('frontend', 'Our Lending Partners'); ?></h3>
                     <div class="row ml-20 mr-20">
                         <div class="partners-flex">
                             <div id="company-slider" class="owl-carousel-4col" data-dots="false" data-nav="true">
@@ -243,6 +271,9 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+    <div class="clearfix"></div>
+<?= $this->render('/widgets/press-releasee') ?>
+
 <?php
 $script = <<<JS
 $('#company-slider').owlCarousel({

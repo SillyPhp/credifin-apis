@@ -1,7 +1,7 @@
 <?php
 
 namespace account\models\applications;
-
+use yii\helpers\Url;
 use common\models\extended\EmployerApplications;
 
 class Applications extends EmployerApplications
@@ -18,11 +18,16 @@ class Applications extends EmployerApplications
     public function getApplications($options = [])
     {
         $this->__setOptions($options);
-        $slug = substr_replace(strtolower($this->_applicationType), "", -1);
+        if ($options['errex']){
+            $slug = 'https://www.myecampus.in/detail?id=';
+        }
+        else{
+            $slug ='/'.substr_replace(strtolower($this->_applicationType), "", -1).'/';
+        }
         $applications = self::find()
             ->alias('a')
             ->distinct()
-            ->select(['a.application_enc_id','interview_process_enc_id','g.positions','a.type','a.last_date','a.title', 'CONCAT("/", "' . $slug . '", "/", a.slug) link', 'c.name', 'd.icon', 'LOWER(f.name) application_type'])
+            ->select(['a.application_enc_id','interview_process_enc_id','g.positions','a.type','a.last_date','a.title', 'CONCAT("' . $slug . '", a.slug) link', 'UPPER(c.name) name', 'd.icon', 'LOWER(f.name) application_type'])
             ->joinWith(['applicationOptions g'], false)
             ->joinWith(['title b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false);

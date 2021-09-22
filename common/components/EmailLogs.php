@@ -18,6 +18,7 @@ class EmailLogs extends Component
     public $email_subject = '';
     public $email_receivers = [];
     public $data = [];
+    public $type = '';
     public $referral_code = '';
     private $_flag = false;
 
@@ -38,10 +39,11 @@ class EmailLogs extends Component
                 $mail_log->receiver_email = $r['email'];
                 $mail_log->receiver_name = $r['name'];
                 $mail_log->receiver_phone = $r['phone'];
+                $mail_log->type = $this->type;
                 $mail_log->template = $this->email_template;
                 $mail_log->is_sent = 1;
                 $mail_log->created_on = date('Y-m-d H:i:s');
-                $this->data['referral_link'] = 'https://localhost:8080/signup?ref='.$this->referral_code.'&invitation='.$mail_log->email_log_enc_id;
+                $this->data['referral_link'] = 'https://www.myecampus.in/signup?ref='.$this->referral_code.'&invitation='.$mail_log->email_log_enc_id;
                 if ($mail_log->save()) {
                     $mail = Yii::$app->mail;
                     $mail->receivers = [];

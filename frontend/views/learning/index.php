@@ -11,21 +11,21 @@ use yii\helpers\Url;
             <div class="col-md-6 col-sm-6 col-xs-12 pull-right">
                 <div class="newlogoset">
                     <div class="main-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?>" align="right"
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?>" align="right" alt="free online learning site, online learning, best free online learning platforms, study online for free, free learning"
                              class="responsive"/>
                     </div>
                     <div class="anim-3">
-                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element1.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element1.png'); ?>" alt="free online learning site, online learning, best free online learning platforms, study online for free, free learning"/>
                     </div>
                     <div class="anim-4">
-                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element2.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element2.png'); ?>" alt="free online learning site, online learning, best free online learning platforms, study online for free, free learning"/>
                     </div>
                 </div>
             </div>
             <div class="col-md-6 col-sm-6 col-xs-12 mt-80 topp-pad">
                 <div class="main-heading-set">
-                    <div class="min-heading">Learn anything, anytime, anywhere</div>
-                    <div class="jumbo-heading">the world's largest selection of Free Learning Content</div>
+                    <h3 class="min-heading">Learn anything, anytime, anywhere</h3>
+                    <h1 class="jumbo-heading">the world's largest selection of Free Learning Content</h1>
 <!--                    <div class="jumbo-subheading"> Learn Something <span class="jumbo-heading">New Everyday</span></div>-->
                     <div class="search-box1">
                         <form action="<?= Url::to('/learning/search-video') ?>">
@@ -36,10 +36,10 @@ use yii\helpers\Url;
                 </div>
                 <div class="animations-set">
                     <div class="anim-1">
-                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/ele3.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/ele3.png'); ?>" alt="free online learning site, online learning, best free online learning platforms, study online for free, free learning"/>
                     </div>
                     <div class="anim-2">
-                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lines.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lines.png'); ?>" alt="free online learning site, online learning, best free online learning platforms, study online for free, free learning"/>
                     </div>
                 </div>
             </div>
@@ -51,8 +51,7 @@ use yii\helpers\Url;
 <div class="clearfix"></div>
 <div class="empty"></div>
 
-
-<div class="container ">
+<div class="container">
     <div class="cat-padding">
         <div class="row">
             <div class="col-md-12">
@@ -83,8 +82,10 @@ use yii\helpers\Url;
 
 <div class="clearfix"></div>
 <div class="clearfix"></div>
-<div class="empty"></div>
-
+<!--<div class="empty"></div>-->
+<?= $this->render('/widgets/online-classes', [
+    'model' => $model,
+]) ?>
 <!--dynamic categories end-->
 
 <!--    <div class="working-box ">-->
@@ -283,7 +284,7 @@ use yii\helpers\Url;
                                                             font="20px"></canvas>
                                                 <?php } ?>
                                             <?php } else { ?>
-                                                <img src="<?= Url::to('/assets/common/images/user1.png'); ?>">
+                                                <img src="<?= Url::to('/assets/common/images/user1.png'); ?>" alt="free online learning site, online learning, best free online learning platforms, study online for free, free learning">
                                             <?php } ?>
                                         </div>
                                         <div class="user-topic">
@@ -353,7 +354,7 @@ use yii\helpers\Url;
             <div class="row" style="margin:20px">
                 <div class="col-md-4">
                     <div class="col-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learning-wt.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learning-wt.png'); ?>" alt="free online learning site, online learning, best free online learning platforms, study online for free, free learning"/>
                     </div>
                 </div>
                 <div class="col-md-8">
@@ -418,6 +419,7 @@ $this->registerCss('
     font-size: 11px;
     font-family: roboto;
     letter-spacing: 1px;
+    margin:0;
 }
 .animation-set{
     position:relative;
@@ -918,15 +920,6 @@ $this->registerCss('
     padding-top: 20px; 
     padding-bottom: 40px;
 }
-//#mixedSlider {
-//    position: relative;
-//}
-//#mixedSlider .MS-content {
-//    white-space: nowrap;
-//    overflow: hidden;	
-//    margin: 0 45px;
-//    margin-left: 35px;
-//}
 #mixedSlider .MS-content .item {
     display: inline-block;
     width: 31.7%;
@@ -985,48 +978,8 @@ text-align: left;
     margin: 0px 2px;
 }
 #mixedSlider .MS-content .item a:hover {
-//  text-shadow: 0 0 1px grey;
   text-decoration: none;
 }
-//#mixedSlider .MS-controls button {
-//  position: absolute;
-//  border: none;
-//  background-color: transparent;
-//  outline: 0;
-//  font-size: 50px;
-//  top: 95px;
-//  color: rgba(0, 0, 0, 0.4);
-//  transition: 0.15s linear;
-//}
-//#mixedSlider .MS-controls button:hover {
-//  color: rgba(0, 0, 0, 0.8);
-//}
-//@media (max-width: 992px) {
-//  #mixedSlider .MS-controls button {
-//    font-size: 30px;
-//  }
-//}
-//@media (max-width: 767px) {
-//  #mixedSlider .MS-controls button {
-//    font-size: 20px;
-//  }
-//}
-//#mixedSlider .MS-controls .MS-left {
-//  left: 0px;
-//}
-//@media (max-width: 767px) {
-//  #mixedSlider .MS-controls .MS-left {
-//    left: -10px;
-//  }
-//}
-//#mixedSlider .MS-controls .MS-right {
-//  right: 0px;
-//}
-//@media (max-width: 767px) {
-//  #mixedSlider .MS-controls .MS-right {
-//    right: -10px;
-//  }
-//}
 /*topics css*/
 .topic-con{
     position: relative;
@@ -1344,31 +1297,7 @@ text-align: left;
 
 
 /*video slider css starts*/
-//.lc-items-grids {
-//    display: grid;
-//    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-//    -webkit-box-align: start;
-//    -webkit-align-items: start;
-//    -ms-flex-align: start;
-//    align-items: start;
-//    justify-items: center;
-//    grid-gap: 4rem 3rem;
-//    margin-top: 20px;
-//}
 .lc-single-item-main {
-//    display: -webkit-box;
-//    display: -webkit-flex;
-//    display: -ms-flexbox;
-//    display: flex;
-//    -webkit-box-orient: vertical;
-//    -webkit-box-direction: normal;
-//    -webkit-flex-direction: column;
-//    -ms-flex-direction: column;
-//    flex-direction: column;
-//    color: #9ca0b1;
-//    position: relative;
-//    width: 100%;
-//    height: 100%;
     z-index: 1;
 }
 .lc-item-img{
@@ -1599,25 +1528,6 @@ button.lc-item-video-menu {
 ');
 
 $script = <<< JS
-    // (function (b, o, i, l, e, r) {
-    //     b.GoogleAnalyticsObject = l;
-    //     b[l] || (b[l] =
-    //             function () {
-    //                 (b[l].q = b[l].q || []).push(arguments)
-    //             });
-    //     b[l].l = +new Date;
-    //     e = o.createElement(i);
-    //     r = o.getElementsByTagName(i)[0];
-    //     e.src = '//www.google-analytics.com/analytics.js';
-    //     r.parentNode.insertBefore(e, r)
-    // }(window, document, 'script', 'ga'));
-    // ga('create', 'UA-XXXXX-X', 'auto');
-    // ga('send', 'pageview');
-    //
-    // $('#mixedSlider').multislider({
-    //     duration: 750,
-    //     interval: 3000
-    // });
     
    $.ajax({
         method: "POST",

@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -37,14 +38,14 @@ class ReviewsController extends Controller
         return $this->render('index', ['model' => $model, 'type' => $org_type]);
     }
 
-    public function actionSearch($keywords)
+    public function actionSearch($keyword)
     {
         $business_activity = BusinessActivities::find()
             ->select(['business_activity_enc_id', 'business_activity'])
             ->asArray()
             ->all();
 
-        return $this->render('filter-companies', ['keywords' => $keywords, 'business_activity' => $business_activity]);
+        return $this->render('filter-companies', ['keyword' => $keyword, 'business_activity' => $business_activity]);
     }
 
     public function actionSearchOrg($type = null, $query)
@@ -52,7 +53,7 @@ class ReviewsController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         $type = explode(",", $type);
         $params1 = (new \yii\db\Query())
-            ->select(['name', 'CONCAT(slug, "/reviews") as profile_link', 'CONCAT(slug, "/reviews") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
+            ->select(['name', 'CONCAT(slug, "/reviews") as profile_link', 'CONCAT(slug, "/reviews") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
                 WHEN business_activity IS NULL THEN ""
                 ELSE business_activity
                 END) as business_activity'])
@@ -70,7 +71,7 @@ class ReviewsController extends Controller
         }
 
         $params2 = (new \yii\db\Query())
-            ->select(['name', 'slug as profile_link', 'CONCAT(slug, "/reviews") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo', 'business_activity'])
+            ->select(['name', 'slug as profile_link', 'CONCAT(slug, "/reviews") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo', 'business_activity'])
             ->from(Organizations::tableName() . 'as a')
             ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.business_activity_enc_id')
             ->where("replace(name, '.', '') LIKE '%$query%'");
@@ -130,7 +131,14 @@ class ReviewsController extends Controller
 
     public function actionSchools()
     {
-        return $this->render('schools');
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
+        return $this->render('schools',[
+            'model' => $model,
+        ]);
     }
 
     public function actionCompanies()
@@ -140,7 +148,14 @@ class ReviewsController extends Controller
 
     public function actionColleges()
     {
-        return $this->render('colleges');
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
+        return $this->render('colleges',[
+            'model' => $model,
+        ]);
     }
 
     public function actionInstitutes()

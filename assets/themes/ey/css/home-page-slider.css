@@ -12,7 +12,6 @@
     font-weight: 500;
     font-family:Roboto;
     color: #000;
-    padding-top: 15px;
     font-size: 16px;
 }
 .h-text{
@@ -242,10 +241,10 @@
     padding: 0;
     margin-bottom: 50px;
 }
-.job-search-sec .job-search > h3 {
+.job-search-sec .job-search > h1 {
     font-weight: normal;
 }
-.job-search > h3 {
+.job-search > h1 {
     float: left;
     width: 100%;
     font-family: Quicksand;
@@ -258,17 +257,31 @@
     margin-bottom: 13px;
 }
 @media only screen and (max-width: 768px) {
-    .job-search > h3 {
+    .job-search > h1 {
         font-size: 34px;
     }
 }
 @media only screen and (max-width: 500px) {
-    .job-search > h3 {
-        font-size: 25px;
+    .job-search > h1 {
+        font-size: 24px;
+        line-height: 30px;
+    }
+    .job-search > h2 {
+        font-size: 20px !important;
     }
 }
 .job-search-sec .job-search.style2 > span {
     opacity: 1;
+}
+.job-search > h2 {
+    float: left;
+    width: 100%;
+    font-family:Quicksand;
+    font-size: 30px;
+    font-weight: 400;
+    color: #ffffff;
+    text-align: center;
+    margin-top: 10px;
 }
 .job-search > span {
     float: left;

@@ -1,12 +1,13 @@
 <?php
-
 namespace common\models;
+use Yii;
 
 /**
  * This is the model class for table "{{%quiz_questions_pool}}".
  *
  * @property int $id Primary Key
  * @property string $quiz_question_pool_enc_id Quiz Question Encrypted ID
+ * @property string $hash hash
  * @property string $quiz_pool_enc_id Quiz Encrypted Id
  * @property string $type Quiz Type
  * @property string $difficulty Quiz Difficulty
@@ -46,12 +47,17 @@ class QuizQuestionsPool extends \yii\db\ActiveRecord
             [['created_on', 'last_updated_on'], 'safe'],
             [['status', 'is_deleted'], 'integer'],
             [['quiz_question_pool_enc_id', 'quiz_pool_enc_id', 'image', 'image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['hash'], 'string', 'max' => 255],
             [['quiz_question_pool_enc_id'], 'unique'],
             [['quiz_pool_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => QuizPool::className(), 'targetAttribute' => ['quiz_pool_enc_id' => 'quiz_pool_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
 
     /**
      * @return \yii\db\ActiveQuery

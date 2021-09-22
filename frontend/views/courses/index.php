@@ -1,8 +1,38 @@
 <?php
 $this->params['header_dark'] = false;
-
+$this->title = "Acquire And Find Best Courses From Top Institutes";
 use yii\helpers\Url;
 
+$keywords = "Best Courses from Top Institutes,  ";
+
+$description = "Learn anything , anytime , Acquire and find best courses from top institutes";
+
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
     <section style="background: #061540;">
         <div class="container headsec">
@@ -18,7 +48,7 @@ use yii\helpers\Url;
                 <div class="col-md-6 col-sm-6 col-xs-12 topp-pad">
                     <div class="main-heading-set">
                         <div class="min-heading">Learn anything, anytime, anywhere</div>
-                        <div class="jumbo-heading">Aquire and Find best courses from top institutes</div>
+                        <div class="jumbo-heading">Acquire and Find best courses from top institutes</div>
                         <div class="search-box1">
                             <form action="<?= Url::to('/courses/courses-list') ?>">
                                 <input type="text" placeholder="Search" name="keyword" id="get-courses-list">
@@ -34,7 +64,7 @@ use yii\helpers\Url;
     <section>
         <div class="container">
             <div class="row">
-                <div class="heading-style">Learning Hub Category</div>
+                <div class="heading-style">Courses By Category</div>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -49,22 +79,170 @@ use yii\helpers\Url;
         <div class="container" id="popular-category"></div>
     </section>
 
+<!--    <section>-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="heading-style">Top Course Provider</div>-->
+<!--            </div>-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-2 col-sm-3 col-xs-6">-->
+<!--                    <div class="p-parent">-->
+<!--                        <div class="p-logo">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/courses/udemy.png'); ?><!--" align="right"-->
+<!--                                 class="responsive"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-2 col-sm-3 col-xs-6">-->
+<!--                    <div class="p-parent">-->
+<!--                        <div class="p-logo">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/courses/coursera-vector-logo.png'); ?><!--"-->
+<!--                                 align="right"-->
+<!--                                 class="responsive"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-2 col-sm-3 col-xs-6">-->
+<!--                    <div class="p-parent">-->
+<!--                        <div class="p-logo">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/courses/Udacity_logo.png'); ?><!--" align="right"-->
+<!--                                 class="responsive"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
+
     <section>
         <div class="container">
             <div class="row">
-                <div class="heading-style">Courses</div>
+                <div class="col-md-6 col-sm-6 col-xs-6 p-0">
+                    <div class="heading-style">Courses</div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="type-1">
+                        <div>
+                            <a href="<?= Url::to('/courses/courses-list'); ?>" class="btn btn-3">
+                                <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
+                                <span class="round"><i class="fas fa-chevron-right"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="row" id="card-main"></div>
         </div>
     </section>
 
+<?php if (!empty($popular_videos)) { ?>
+    <div class="container">
+        <div class="row">
+            <div class="heading-style">Free Learning Videos</div>
+        </div>
+    </div>
+    <div>
+        <div class="container">
+            <div id="mixedSlider">
+                <div class="MS-content lc-items-grids">
+                    <?php foreach ($popular_videos as $p) { ?>
+                        <div class="item lc-single-item-main">
+                            <div class="lc-item-img">
+                                <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" class="lc-item-video-link">
+                                </a>
+                                <div class="lc-item-video-img"
+                                     style="background-image: url(<?= Url::to($p['cover_image']); ?>);"></div>
+                            </div>
+                            <div class="lc-item-desciption">
+                                <!--                                <a class="lc-item-user-icon" href="#">-->
+                                <!--                                    <img src="https://s.cdpn.io/profiles/user/1531686/80.jpg?1511402852" alt=""-->
+                                <!--                                         width="40" height="40">-->
+                                <!--                                </a>-->
+                                <div class="lc-item-user-detail">
+                                    <h3 class="lc-item-video-title">
+                                        <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" class="ml-20">
+                                            <?= Yii::t('frontend', $p['title']); ?>
+                                        </a>
+                                    </h3>
+                                    <!--                                    <div class="lc-item-user-sub-main">-->
+                                    <!--                                        <a class="lc-item-user-sub-detail" href="#">-->
+                                    <!--                                            <span>casper392945</span>-->
+                                    <!--                                        </a>-->
+                                    <!--                                    </div>-->
+                                </div>
+                                <!--                                <div class="lc-item-video-actions">-->
+                                <!--                                    <button class="lc-item-video-menu" aria-expanded="false">-->
+                                <!--                                        <i class="fas fa-ellipsis-v"></i>-->
+                                <!--                                    </button>-->
+                                <!--                                </div>-->
+                            </div>
+                            <div class="lc-item-video-stats">
+                                <!--                                <a class="lc-item-video-stat" href="#">-->
+                                <!--                                    <span>-->
+                                <!--                                        <i class="fas fa-heart"></i> 5-->
+                                <!--                                    </span>-->
+                                <!--                                </a>-->
+                                <!--                                <a class="lc-item-video-stat" href="#">-->
+                                <!--                                    <span>-->
+                                <!--                                        <i class="far fa-comments"></i> 0-->
+                                <!--                                    </span>-->
+                                <!--                                </a>-->
+                                <!--                                <a class="lc-item-video-stat" href="#">-->
+                                <!--                                    <span>-->
+                                <!--                                        <i class="fas fa-eye"></i> 0-->
+                                <!--                                    </span>-->
+                                <!--                                </a>-->
+                                <span class="lc-item-video-stat marg">
+                                    <?php
+                                    $link = Url::to('learning/video/' . $p['slug'], 'https');
+                                    ?>
+                                        <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>"
+                                           target="blank">
+                                            <span>
+                                                <i class="fab fa-facebook-f"></i>
+                                            </span>
+                                        </a>
+                                        <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>"
+                                           target="blank">
+                                            <span>
+                                                <i class="fab fa-twitter"></i>
+                                            </span>
+                                        </a>
+                                        <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>"
+                                           target="blank">
+                                            <span>
+                                                <i class="fab fa-linkedin"></i>
+                                            </span>
+                                        </a>
+                                </span>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+                <!--                <div class="MS-controls">-->
+                <!--                    <button class="MS-left"><i class="fas fa-angle-left" aria-hidden="true"></i></button>-->
+                <!--                    <button class="MS-right"><i class="fas fa-angle-right" aria-hidden="true"></i></button>-->
+                <!--                </div>-->
+            </div>
+        </div>
+    </div>
+<?php } ?>
+
+    <!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+    <!--Subscribe Widget ends-->
+
     <script id="courses-categories" type="text/template">
         {{#.}}
-        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+        <div class="col-md-2 col-sm-4 col-xs-6 pc-main">
             <a href="/courses/courses-list?cat={{title}}">
                 <div class="newset">
                     <div class="imag">
-                        <img src="/assets/themes/ey/images/pages/learning-corner/othercategory.png" alt="{{title}}"/>
+                        <img src="/assets/themes/ey/images/pages/learning-corner/{{icon_name}}.png" alt="{{title}}"/>
                     </div>
                     <div class="txt">{{title}}</div>
                 </div>
@@ -75,6 +253,293 @@ use yii\helpers\Url;
 <?php
 echo $this->render('/widgets/mustache/courses-card');
 $this->registerCss('
+.type-1 .txt-v {
+    font-size: 14px;
+    line-height: 1.45;
+}
+#mixedSlider .MS-content .item {
+    display: inline-block;
+    width: 31.7%;
+    position: relative;
+    vertical-align: top;
+    height: 100%;
+    white-space: normal;
+    padding: 5px 10px;
+    margin: 15px 8px;
+}
+@media (max-width: 991px) {
+  #mixedSlider .MS-content .item {
+    width: 47%;
+  }
+}
+@media (max-width: 768px) {
+  #mixedSlider .MS-content .item {
+    width: 49%;
+    margin:0px;
+  }
+}
+@media (max-width: 550px) {
+  #mixedSlider .MS-content .item {
+    width: 100%;
+    margin:0px;
+  }
+}
+#mixedSlider .MS-content .item .imgTitle a {
+  position: relative;
+}
+#mixedSlider .MS-content .item .blogTitle  a{
+  color: #252525;
+  font-style:normal !important;
+  background-color: rgba(255, 255, 255, 0.5);
+  width: 100%;
+  bottom: 0;
+  font-weight: bold;
+  padding: 10px 0 0 0;
+  font-size: 16px;
+  
+}
+#mixedSlider .MS-content .item .imgTitle img {
+  height: auto;
+  width: 100%;
+}
+#mixedSlider .MS-content .item p {
+  font-size: 16px;
+  margin: 0px 0px 0 5px;
+text-align: left;
+  padding-top: 0px !important;
+}
+#mixedSlider .MS-content .item a {
+  font-size: 16px;
+}
+.marg a {
+    margin: 0px 2px;
+}
+#mixedSlider .MS-content .item a:hover {
+  text-decoration: none;
+}
+
+/*video slider css starts*/
+.lc-single-item-main {
+    z-index: 1;
+}
+.lc-item-img{
+    position: relative;
+    height: 0;
+    border-radius: 6px;
+    padding-top: 56.25%;
+    overflow: hidden;
+    background: #444857;
+}
+.lc-single-item-main .lc-item-video-link {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    border: 0 !important;
+    z-index: 1;
+}
+.lc-item-img .lc-item-video-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center center;
+    background-size: cover;
+}
+.lc-single-item-main .lc-item-desciption {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-top: 1rem;
+    -webkit-box-ordinal-group: 4;
+    -webkit-order: 3;
+    -ms-flex-order: 3;
+    order: 3;
+}
+.lc-single-item-main .lc-item-user-icon {
+    display: block;
+    margin-right: 0.75rem;
+    position: relative;
+    z-index: 1;
+}
+.lc-single-item-main .lc-item-user-icon>img {
+    display: block;
+    width: 40px;
+    height: 40px;
+    background: #444857;
+    overflow: hidden;
+    font: 10px/1 monospace;
+    border-radius: 4px;
+}
+.lc-single-item-main .lc-item-user-detail {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    margin: 0 1rem 0 0;
+}
+.lc-single-item-main .lc-item-user-detail, .lc-single-item-main .lc-item-user-detail .lc-item-video-title {
+    width: 95%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.lc-single-item-main .lc-item-video-title {
+    font-weight: 900;
+    font-size: 17px;
+    margin: 0 0 0.25rem 15px;
+    display: block;
+}
+.lc-single-item-main .lc-item-video-title a {
+    color: white;
+}
+.lc-single-item-main .lc-item-user-sub-main {
+    color: #c0c3d0;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.2;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.lc-single-item-main .lc-item-user-sub-detail {
+    color: inherit;
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    -webkit-transition: 0.2s ease all;
+    transition: 0.2s ease all;
+}
+.lc-single-item-main .lc-item-video-actions {
+    position: relative;
+}
+.lc-item-video-stats {
+    padding: 0 0 0 7px;
+    height: 45px;
+    z-index: 1;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: flex-end;
+    -webkit-box-align: center;  
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    font-size: 12px;
+    overflow: hidden;
+}
+button.lc-item-video-menu {
+    border: 0;
+    background: none;
+}
+.lc-item-video-stats .lc-item-video-stat {
+    font: inherit;
+    margin-right: 5px;
+    background: rgba(0,0,0,0.9);
+    border-radius: 4px;
+    padding: 2px 5px;
+    color: white;
+    cursor: pointer;
+}
+.lc-single-item-main:not(.hide-owner) .lc-item-video-stat {
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    opacity: 0;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+    -webkit-transition-property: opacity, -webkit-transform;
+    transition-property: opacity, -webkit-transform;
+    transition-property: transform, opacity;
+    transition-property: transform, opacity, -webkit-transform;
+    -webkit-transition-timing-function: cubic-bezier(1, 0, 0.65, 0.75),linear;
+    transition-timing-function: cubic-bezier(1, 0, 0.65, 0.75),linear;
+}
+.lc-single-item-main:not(.hide-owner) .lc-item-video-stat:nth-child(2) {
+    -webkit-transition-delay: 0.05s;
+    transition-delay: 0.05s;
+}
+.lc-single-item-main:not(.hide-owner) .lc-item-video-stat:nth-child(3) {
+    -webkit-transition-delay: 0.1s;
+    transition-delay: 0.1s;
+}
+.lc-single-item-main::after {
+    position: absolute;
+    content: \'\';
+    right: 0px;
+    bottom: 35px;
+    left: 1rem;
+    top: 1rem;
+    background: #202229;
+    border-radius: 10px;
+    z-index: -1;
+    -webkit-transition: 0.3s ease;
+    transition: 0.3s ease;
+}
+.lc-single-item-main:hover::after, .lc-single-item-main:focus::after, .lc-single-item-main:active::after {
+    left: -5px;
+    right: -5px;
+    top: -5px;
+    bottom: 0px;
+}
+.lc-single-item-main:not(.hide-owner):hover .lc-item-video-stat, .lc-single-item-main:not(.hide-owner):active .lc-item-video-stat, .lc-single-item-main:not(.hide-owner):focus .lc-item-video-stat {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    opacity: 1;
+    -webkit-transition-timing-function: cubic-bezier(0.2, 0.15, 0.1, 1),ease;
+    transition-timing-function: cubic-bezier(0.2, 0.15, 0.1, 1),ease;
+    -webkit-transition-delay: 0.2s;
+    transition-delay: 0.2s;
+}
+.lc-single-item-main:not(.hide-owner):hover .lc-item-video-stat:nth-child(2), .lc-single-item-main:not(.hide-owner):active .lc-item-video-stat:nth-child(2), .lc-single-item-main:not(.hide-owner):focus .lc-item-video-stat:nth-child(2) {
+    -webkit-transition-delay: 0.15s;
+    transition-delay: 0.15s;
+}
+.lc-single-item-main:not(.hide-owner):hover .lc-item-video-stat:nth-child(3), .lc-single-item-main:not(.hide-owner):active .lc-item-video-stat:nth-child(3), .lc-single-item-main:not(.hide-owner):focus .lc-item-video-stat:nth-child(3) {
+    -webkit-transition-delay: 0.1s;
+    transition-delay: 0.1s;
+}
+.marg{
+	margin-left: 125px;
+	margin-bottom: 2px;
+	background: none !important;
+}
+.marg img{
+	width: 22px;
+}
+/*Video slider css ends*/
+
+.p-parent {
+    border: 2px solid transparent;
+    padding: 28px 15px;
+    box-shadow: 0 0 16px 0px #eee;
+    border-radius: 5px;
+    margin-bottom:15px;
+}
+.p-logo {
+    width: 120px;
+    margin: auto;
+    height: 65px;
+}
+//.p-name {
+//    text-align: center;
+//    font-size: 16px;
+//    font-family: roboto;
+//    text-transform:uppercase;
+//    font-weight:500;
+//}
 /*---Categories css start---*/
 .cat-padding{
     padding-top:20px;
@@ -85,7 +550,8 @@ $this->registerCss('
     line-height: 210px;
     position: relative;
     width:100%;
-    margin-bottom:20px;
+    margin-bottom:20px !important;
+    margin:0 auto;
 }
 .imag{
     text-align: right;

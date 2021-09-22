@@ -22,6 +22,8 @@ class VerifyEmail extends Model {
     public function rules() {
         return [
             [['new_password', 'confirm_new_password',], 'required'],
+            [['new_password', 'confirm_new_password'],'trim'],
+            [['new_password', 'confirm_new_password',], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['confirm_new_password'], 'compare', 'compareAttribute' => 'new_password'],
         ];
     }

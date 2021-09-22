@@ -39,7 +39,7 @@ class ValidateUser extends Model
             ->one();
 
         if ($user) {
-            return $this->addError($attribute, "$attribute must be unique in brand scope!");
+            return $this->addError($attribute, "$attribute already exists!");
         }
     }
 }

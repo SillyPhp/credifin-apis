@@ -15,7 +15,12 @@ $this->beginPage();
         <title><?= Html::encode((!empty($this->title)) ? Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name : Yii::$app->params->site_name); ?></title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
-        <?php
+        <?php if(Yii::$app->params->options->crawl) { ?>
+            <meta name="robots" content="index"/>
+        <?php } else { ?>
+            <meta name="robots" content="noindex,nofollow"/>
+            <meta name="googlebot" content="noindex,nofollow">
+        <?php }
         if ($this->params['seo_tags']) {
             foreach ($this->params['seo_tags']['rel'] as $key => $value) {
                 $this->registerLinkTag([
@@ -41,13 +46,13 @@ $this->beginPage();
     </head>
     <body>
     <?php $this->beginBody(); ?>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>
-        (adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "ca-pub-2186770765824304",
-            enable_page_level_ads: true
-        });
-    </script>
+<!--    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
+<!--    <script>-->
+<!--        (adsbygoogle = window.adsbygoogle || []).push({-->
+<!--            google_ad_client: "ca-pub-2186770765824304",-->
+<!--            enable_page_level_ads: true-->
+<!--        });-->
+<!--    </script>-->
 
     <?= $content; ?>
 

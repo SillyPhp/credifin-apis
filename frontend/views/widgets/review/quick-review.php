@@ -8,8 +8,8 @@ use yii\helpers\Url;
                 <div class="col-md-3 quick-review-img"><img src="<?= Url::to('@eyAssets/images/pages/review/quick-review.png');?>"></div>
                 <div class="col-md-7 overflow-hidden set-heading-c">
                     <h2>Help The Community</h2>
-                    <div class="quick-review-t">find empoweryouth reviews Helpful?start helping others by sharing your
-                        personal experience.
+                    <div class="quick-review-t">Find Empoweryouth Reviews Helpful? Start Helping Others by Sharing your
+                        Personal Experience.
                     </div>
                     <div class="quick-review-action" id="review_btn">
                         <a href="javascript:;">Start Your First Review</a>

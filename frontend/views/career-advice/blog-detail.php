@@ -20,7 +20,7 @@ use yii\helpers\Url;
                             <div class="cb-blob-web-name">
                                 <a href="<?= $careerDetail['link'] ?>">View Source</a>
                             </div>
-                            <div class="cb-blog-time"><?= date('d-M-Y',strtotime($careerDetail['created_on'])) ?></div>
+                            <div class="cb-blog-time"><?= date('d-M-Y', strtotime($careerDetail['created_on'])) ?></div>
                             <div class="cb-quick-sum-heading">
                                 Quick Summary
                             </div>
@@ -28,12 +28,15 @@ use yii\helpers\Url;
                                 <?= $careerDetail['description'] ?>
                             </div>
                             <div class="cb-ori-artical-link">
-                                <a href="<?= $careerDetail['link'] ?>">Read orignal Article</a>
+                                <a href="<?= $careerDetail['link'] ?>" target="_blank">Read orignal Article</a>
                             </div>
                         </div>
                     </div>
                 </div>
-<!--                <//= $this->render('/widgets/career-pole-widget') >-->
+                <?php
+                echo $this->render('/widgets/sharing-widget-new');
+                ?>
+                <!--                <//= $this->render('/widgets/career-pole-widget') >-->
                 <?=
                 $this->render('/widgets/mustache/discussion/discussion-box', [
                     "controllerId" => Yii::$app->controller->id . "/comments"
@@ -41,13 +44,20 @@ use yii\helpers\Url;
                 ?>
             </div>
             <div class="col-md-4">
-                <?=
-                $this->render('/widgets/subscribe-newsletter',[
-                    'subscribersForm' => $newsletterForm
-                ]);
-                ?>
                 <?php
-                if(!empty($relatedArticles)) {
+                if (Yii::$app->user->isGuest) {
+                    echo $this->render('/widgets/subscribe-newsletter', [
+                        'subscribersForm' => $newsletterForm
+                    ]);
+                }
+                ?>
+
+                <?php
+                echo $this->render('/widgets/sharing-box');
+                ?>
+
+                <?php
+                if (!empty($relatedArticles)) {
                     ?>
                     <div class="row">
                         <div class="col-md-12">
@@ -67,7 +77,7 @@ use yii\helpers\Url;
                                     </div>
                                     <div class="cb-blog-time"><?= date('d-M-Y', strtotime($r['created_on'])) ?></div>
                                     <div class="cb-blob-web-name cb-blob-web-name-small">
-                                        <a href="">Read Article</a>
+                                        <a href="<?= $r['slug'] ?>">Read Article</a>
                                     </div>
                                 </div>
                             </div>
@@ -79,6 +89,7 @@ use yii\helpers\Url;
                     <?php
                 }
                 ?>
+                <!--                    <//= $this->render("/widgets/square_ads"); ?>-->
             </div>
         </div>
     </div>

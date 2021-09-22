@@ -316,4 +316,12 @@ class QuizzesController extends Controller
             ];
         }
     }
+    public function actionSubjectPage()
+    {
+        return $this->render('subject-page');
+    }
+    public function actionTopics()
+    {
+        return $this->render('topics');
+    }
 }

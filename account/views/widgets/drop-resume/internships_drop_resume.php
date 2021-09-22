@@ -150,6 +150,22 @@ $this->registerCss('
 .work-profile p{
     margin: 0px !important;
 }
+.count-cat {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-color: #00a0e3;
+	color: #fff;
+	padding: 0 5px;
+	border-radius: 5px 0;
+	font-size: 13px;
+	font-weight: 500;
+	font-family: roboto;
+}
+.work-profile-box:hover .count-cat{
+    background-color:#fff;
+    color:#00a0e3;
+}
 .work-profile-box:hover span{
     background:#fff;
     color:#00a0e3;
@@ -387,7 +403,6 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
     <div class="col-md-2 col-sm-4 padd-5 work-profile-box-search">
         <input type="checkbox" id="{{category_enc_id}}" class="category-input checks" value="{{category_enc_id}}"/>
         <label for="{{category_enc_id}}" class="work-profile-box unique2 wp2">
-
             <div class="work-profile">
                 {{name}}
             </div>
@@ -457,6 +472,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                                     <div class="edit-cat parent_category" data-id="{{category_enc_id}}">
                                         <i class="fa fa-pencil"></i>
                                     </div>
+                                    <div class="count-cat" title="Resume Count">{{count}}</div>
                                     <a href="/account/uploaded-resume/candidate-resumes?id={{assigned_category_enc_id}}&type=Internships">
                                         <div class="work-profile">
                                             <div class="rb-cat-icon"><img src="{{icon}}" alt=""></div>

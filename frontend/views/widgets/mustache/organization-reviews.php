@@ -1,34 +1,34 @@
 <?php
 
 use yii\helpers\Url;
-
-$link = Url::to($org_slug . '/reviews', true);
 ?>
     <script id="organization-reviews" type="text/template">
         {{#.}}
         <div class="row">
-            <div class="re-box refirst">
-                <div class="col-md-2 col-sm-2">
-                    {{#show_user_details}}
-                    <div class="uicon">
-                        {{#image}}
-                        <img src="{{image}}">
-                        {{/image}}
-                        {{^image}}
-                        <canvas class="user-icon" name="{{first_name}} {{last_name}}" color="{{initials_color}}"
-                                width="80" height="80" font="35px"></canvas>
-                        {{/image}}
-                    </div>
-                    <div class="uname">{{first_name}} {{last_name}}</div>
-                    {{/show_user_details}}
-                    {{^show_user_details}}
-                    <div class="uicon">
-                        <img src="/assets/common/images/user1.png" width="50" height="50">
-                    </div>
-                    <div class="uname">Anonymous</div>
-                    {{/show_user_details}}
-                </div>
-                <div class="col-md-10 col-sm-10 user-review-main">
+            <div class="col-md-12">
+                <div class="re-box refirst" id="{{review_enc_id}}">
+                    <div class="row">
+                        <div class="col-md-2 col-sm-2">
+                            {{#show_user_details}}
+                            <div class="uicon">
+                                {{#image}}
+                                <img src="{{image}}">
+                                {{/image}}
+                                {{^image}}
+                                <canvas class="user-icon" name="{{first_name}} {{last_name}}" color="{{initials_color}}"
+                                        width="80" height="80" font="35px"></canvas>
+                                {{/image}}
+                            </div>
+                            <div class="uname">{{first_name}} {{last_name}}</div>
+                            {{/show_user_details}}
+                            {{^show_user_details}}
+                            <div class="uicon">
+                                <img src="/assets/common/images/user1.png" width="50" height="50">
+                            </div>
+                            <div class="uname">Anonymous</div>
+                            {{/show_user_details}}
+                        </div>
+                        <div class="col-md-10 col-sm-10 user-review-main">
                     <div class="col-md-6 col-sm-6">
                         <div class="com-rating">
                             <div class="average-star" data-score="{{average}}"></div>
@@ -95,13 +95,13 @@ $link = Url::to($org_slug . '/reviews', true);
                         <div class="ushare">
                             <div class="ushare-heading">Share</div>
                             <i class="fab fa-facebook-square"
-                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                               onclick="window.open('https://www.facebook.com/sharer/sharer.php?u={{review_sharing_link}}', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                             <i class="fab fa-twitter-square"
-                               onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                               onclick="window.open('https://twitter.com/intent/tweet?text={{seo_title}}&url={{review_sharing_link}}', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                             <i class="fab fa-linkedin"
-                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                               onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url={{review_sharing_link}} &title={{seo_title}}&summary={{seo_title}}', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                             <i class="fab fa-whatsapp wa_icon_hover"
-                               onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                               onclick="window.open('https://api.whatsapp.com/send?text={{review_sharing_link}}', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                         </div>
                     </div>
                     <div class="col-md-8 col-sm-6">
@@ -136,6 +136,8 @@ $link = Url::to($org_slug . '/reviews', true);
                                 </button>
                             </div>
                         </div>
+                    </div>
+                </div>
                     </div>
                 </div>
             </div>
@@ -203,8 +205,14 @@ $link = Url::to($org_slug . '/reviews', true);
     </div>
 <?php
 $this->registerCss("
-.heading_style_1{
-    font-size:18px;
+.rev-image {
+	text-align: center;
+	margin: 40px;
+}
+.heading_style_1 {
+	font-size: 18px;
+	text-align: center;
+	font-family: roboto;
 }
 .refirst{
    margin:0 0 0 0 !important; 
@@ -489,15 +497,16 @@ $(document).on('click','.follow',function(e){
         }
     });        
 });
+
 var page_name=0;
 var total=0;
-function getReviews(limit=null,offset=null) {
+var scrollTo=true;
+function getReviews(limit=null,offset=null, ridk='') {
     var slug = window.location.pathname.split('/')[1];
     $.ajax({
         method: "POST",
-        url : '/organizations/get-reviews?slug='+slug+'&limit='+limit+'&offset='+offset,
-         beforeSend:function()
-        {
+        url : '/organizations/get-reviews?slug='+slug+'&limit='+limit+'&offset='+offset+'&ridk='+ridk,
+        beforeSend:function(){
             $('#load_more_btn').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success: function(response) {
@@ -513,12 +522,19 @@ function getReviews(limit=null,offset=null) {
                     return $(this).attr('data-score');
                   }
                 });
-               if (response.reviews.length+total==response.total)
-                   {
+               if (response.reviews.length+total==response.total) {
                        $('#load_more_btn').hide();
-                   }
+               }
+                if(ridk && $("#"+ridk) && scrollTo){
+                    setTimeout(function (){
+                        $('html, body').animate({
+                            scrollTop: $("#"+myParam).offset().top -150
+                        }, 2000);
+                    }, 500); 
+                }
+               scrollTo = false;
             } else if(response.status === 201){
-                $("#org-reviews").html('<div class = "heading_style_1">Currenlty No Review Has Been Given To This Company</div>');
+                $("#org-reviews").html('<div><div class = "rev-image"><img src="/assets/themes/ey/images/pages/landing/no-reviews.png"></div><p class = "heading_style_1">Currenlty No Review Has Been Given To This Company</p></div>');
                 $('.viewbtn').hide();
                 $('#load_more_btn').hide();
             }
@@ -526,13 +542,23 @@ function getReviews(limit=null,offset=null) {
         }
     });
 }
+const urlParams = window.location.pathname.split('/');
+const myParam = urlParams[3];
 $(document).on('click','#load_more_btn',function(e) {
   e.preventDefault();
   page_name = page_name+3;
   total = total+3;
-  getReviews(limit=3,offset=page_name);
+  if(myParam){
+    getReviews(limit=3,offset=page_name, myParam);
+  } else {
+    getReviews(limit=3,offset=page_name);
+  }
 })
-getReviews(limit=3,offset=page_name);
+if(myParam){
+    getReviews(limit=3,offset=page_name, myParam);
+} else {
+    getReviews(limit=3,offset=page_name);
+}
 $(document).on('click','input[name="reporting_radio"]',function() {
   var r_id = $('#review_enc_id').val();
   var id = $(this).val();

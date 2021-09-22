@@ -356,10 +356,39 @@ $EducationalLoanForm = ActiveForm::begin([
             <div class="col-md-12">
                 <div class="max-300">
                     <div class="cl-heading">Get the Best Education Loan</div>
-                    <div class="cl-text"> We tie up with the best providers in the country to help you plan your
-                        education.
+                    <div class="cl-text"> We tie up with the best providers in the country to
+                        help you plan your education.
                         With offers that provide up to 100% of your required loan amount, planning for your education
                         is now more easier than ever.
+                        <p>More Than 20+ Lenders</p>
+                    </div>
+                    <div class="cl-icon">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="widget-benfit">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-minimal-paper-work.png') ?>">
+                                    <p>Minimal Paper Work</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="widget-benfit">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-faster-processing-time.png') ?>">
+                                    <p>Faster Processing Time</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="widget-benfit">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-approval-in-minutes.png') ?>">
+                                    <p>Approval In Minutes</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="widget-benfit">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-quick-disbursement.png') ?>">
+                                    <p>Quick Disbursement</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -370,6 +399,23 @@ $EducationalLoanForm = ActiveForm::begin([
 </section>
 <?php
 $this->registerCss('
+.widget-benfit{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 30px;
+}
+.widget-benfit img{
+    max-width: 60px;
+    margin-bottom: 10px;
+}
+.widget-benfit p{
+    color: #fff;
+    font-size: 16px;
+    line-height: 20px;
+    
+} 
 .form-start{
     max-width:400px;
     margin: 0 auto;
@@ -412,6 +458,26 @@ $this->registerCss('
     position:absolute;
     min-height:100vh;
 }
+.cl-icon ul li{
+    display: inline-grid;
+    background: #fff;
+    height: 100px;
+    width: 100px; 
+    border-radius: 10px; 
+    margin:0 5px 15px;
+    box-shadow: 0 0 10px rgba(149,139,139, .3);
+}
+.cl-icon ul li img{
+    max-width: 80px;
+    max-height: 60px;
+}
+.lender-icon{
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+     font-size: 16px;
+}
 .college-logo {
     margin-left:50vw;
     padding:60px 25px 0 25px;
@@ -422,6 +488,7 @@ $this->registerCss('
     position:fixed;
     background:#00a0e3;
 }
+
 #footer{
     display:none;
 }

@@ -117,6 +117,9 @@ use yii\helpers\Url;
                         }
                         ?>
                     </div>
+                    <div class="col-md-4">
+                        <!--                    <//= $this->render("/widgets/square_ads"); ?>-->
+                    </div>
                 </div>
                 <?php
             }

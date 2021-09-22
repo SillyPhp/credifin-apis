@@ -1,8 +1,10 @@
 <?php
 
+use common\models\spaces\Spaces;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Questionnaire',
 ]);
@@ -56,11 +58,12 @@ echo $this->render('/widgets/header/secondary-header', [
                                                                 </a>
                                                             </div>
                                                             <div class="vj-btn col-md-6">
-                                                                <?php
-                                                                $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
-                                                                ?>
-                                                                <a href="<?= $cv ?>">Download
-                                                                    Resume</a>
+                                                                <?php if (!empty($arr['resume_location']) || !empty($arr['resume'])) { ?>
+                                                                    <a href="javascript:;" class="download-resume"
+                                                                       data-key="<?= $arr['resume_location'] ?>"
+                                                                       data-id="<?= $arr['resume'] ?>">Download
+                                                                        Resume</a>
+                                                                <?php } ?>
                                                                 <a href="<?= '/' . $arr['username'] ?>">View
                                                                     Profile</a>
                                                             </div>
@@ -469,6 +472,10 @@ a:hover{
         margin: 5px;
     }
 }
+.disabled-elem{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 ');
 $script = <<<JS
 $('[data-toggle="tooltip"]').tooltip();
@@ -513,6 +520,34 @@ $(document).on('click', '.approve', function() {
           }
        }) 
 });
+
+$(document).on('click','.download-resume',function (e){
+    e.preventDefault();
+    let btnElem = $(this);
+    let resume_location = $(this).attr('data-key');
+    let resume = $(this).attr('data-id');
+    let htmldata = $(this).html();
+    btnElem.addClass('disabled-elem');
+    btnElem.html('<i class="fa fa-circle-o-notch fa-spin fa-fw p-0"></i>');
+    $.ajax({
+            url: '/users/resume-link',
+            type: 'POST',
+            data: {
+                resume_location: resume_location,
+                resume: resume
+            },
+            success:function(res){
+                btnElem.removeClass('disabled-elem');
+                btnElem.html(htmldata);
+                if(res['status'] == 200){
+                    let cv_link = res['cv_link'];
+                    window.open(cv_link);
+                }else if(res['status'] == 500){
+                    alert('an error occurerd')
+                }
+            }
+        })    
+})
    
         function hide_btn(res,total,thisObj,thisObj1,thisObj2)
         {  
@@ -569,6 +604,8 @@ $(document).on('click', '.approve', function() {
     }
     current_div.find('a').removeClass('current').addClass('active');
        }
+       
+       
    
 JS;
 $this->registerJs($script);

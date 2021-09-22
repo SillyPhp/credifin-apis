@@ -5,9 +5,15 @@ namespace account\controllers;
 use account\models\applications\ApplicationReminderForm;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationReminder;
+use common\models\CandidateRejection;
+use common\models\CandidateRejectionReasons;
 use common\models\DropResumeApplications;
+use common\models\Interviewers;
+use common\models\LoanApplications;
 use common\models\OrganizationAssignedCategories;
+use common\models\RejectionReasons;
 use common\models\ReviewedApplications;
+use common\models\ShortlistedApplicants;
 use common\models\ShortlistedApplications;
 use common\models\InterviewCandidates;
 use common\models\InterviewDates;
@@ -15,6 +21,9 @@ use common\models\InterviewDateTimings;
 use common\models\InterviewOptions;
 use common\models\InterviewProcessFields;
 use common\models\ScheduledInterview;
+use common\models\UserPreferences;
+use common\models\UserSkills;
+use frontend\models\script\scriptModel;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -50,7 +59,7 @@ class DashboardController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id,2);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
 
@@ -77,10 +86,11 @@ class DashboardController extends Controller
         }
 
         if (!Yii::$app->user->identity->services['selected_services']) {
-            return $this->_services();
+            return $this->actionServices();
         }
 
         if (Yii::$app->user->identity->organization) {
+            $scriptModel = new scriptModel();
             $viewed = $this->hasViewed();
             $this->_condition = ['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id];
             $applications = [
@@ -96,7 +106,7 @@ class DashboardController extends Controller
         if (empty(Yii::$app->user->identity->organization)) {
             $applied_app = EmployerApplications::find()
                 ->alias('a')
-                ->select(['a.application_enc_id application_id', 'i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id applied_id', 'f.status', 'd.icon', 'g.name as org_name', 'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total', 'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
+                ->select(['a.application_enc_id application_id', 'e.rejection_type', 'rr.reason', 'i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id applied_id', 'f.status', 'd.icon', 'g.name as org_name', 'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total', 'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
                 ->innerJoin(ApplicationTypes::tableName() . 'as i', 'i.application_type_enc_id = a.application_type_enc_id')
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
                 ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -105,19 +115,37 @@ class DashboardController extends Controller
                 ->leftJoin(AppliedApplications::tableName() . 'as f', 'f.application_enc_id = a.application_enc_id')
                 ->where(['f.created_by' => Yii::$app->user->identity->user_enc_id])
                 ->leftJoin(AppliedApplicationProcess::tableName() . 'as h', 'h.applied_application_enc_id = f.applied_application_enc_id')
+                ->leftJoin(CandidateRejection::tableName() . 'as e', 'e.applied_application_enc_id = f.applied_application_enc_id')
+                ->leftJoin(CandidateRejectionReasons::tableName() . 'as crr', 'crr.candidate_rejection_enc_id = e.candidate_rejection_enc_id')
+                ->leftJoin(RejectionReasons::tableName() . 'as rr', 'rr.rejection_reason_enc_id = crr.rejection_reasons_enc_id')
                 ->groupBy(['h.applied_application_enc_id'])
-                ->orderBy(['f.id' => SORT_DESC])
+                ->orderBy([new \yii\db\Expression("FIELD (f.status,'Hired','Accepted','Incomplete','Pending','Rejected','Cancelled')")])
                 ->asArray()
                 ->all();
 
             $shortlist_org = FollowedOrganizations::find()
                 ->alias('a')
-                ->select(['b.establishment_year', 'a.followed_enc_id', 'b.name as org_name', 'b.initials_color', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+                ->select(['az.organization_enc_id', 'a.organization_enc_id', 'az.establishment_year', 'a.followed_enc_id', 'az.name as org_name', 'az.initials_color', 'c.industry', 'az.logo', 'az.logo_location', 'az.slug'])
                 ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
-                ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
-                ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
+                ->joinWith(['organizationEnc az' => function ($az) {
+                    $az->joinWith(['employerApplications b' => function ($x) {
+                        $x->select(['b.organization_enc_id', 'b.application_type_enc_id', 'h.name', 'COUNT(distinct b.application_enc_id) as total_application']);
+                        $x->joinWith(['applicationTypeEnc h' => function ($x2) {
+                            $x2->distinct();
+                            $x2->groupBy(['h.name']);
+                            $x2->orderBy([new \yii\db\Expression('FIELD (h.name, "Jobs") DESC, h.name DESC')]);
+                        }], true);
+                        $x->groupBy(['b.application_enc_id']);
+                        $x->onCondition(['b.is_deleted' => 0, 'b.application_for' => 1, 'b.status' => 'ACTIVE']);
+                    }], true);
+                    $az->groupBy(['az.organization_enc_id']);
+                    $az->distinct();
+                }])
+                ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = az.industry_enc_id')
+                ->groupBy(['a.followed_enc_id'])
+                ->distinct()
                 ->orderBy(['a.id' => SORT_DESC])
-                ->limit(8)
+                ->limit(6)
                 ->asArray()
                 ->all();
 
@@ -168,7 +196,7 @@ class DashboardController extends Controller
 
             $total_accepted = AppliedApplications::find()
                 ->alias('a')
-                ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
+                ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
                 ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
                 ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
                 ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
@@ -239,6 +267,41 @@ class DashboardController extends Controller
                     $question[] = $array;
                 }
             }
+
+            $loan = LoanApplications::find()
+                ->alias('a')
+                ->select(['a.loan_app_enc_id', 'a.loan_status', 'a.applicant_name', 'a.years', 'a.semesters',
+                    'a.amount',
+                    '(CASE
+                        WHEN c1.course_name IS NOT NULL THEN c1.course_name
+                        WHEN e1.course_name IS NOT NULL THEN e1.course_name
+                        ELSE d.course_name
+                        END) as course_name',
+                    ])
+                ->joinWith(['loanApplications b' => function($b){
+                    $b->select(['b.loan_app_enc_id', 'b.parent_application_enc_id']);
+                }])
+                ->joinWith(['pathToClaimOrgLoanApplications c' => function($c){
+                    $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
+                        $cc->joinWith(['courseEnc c1']);
+                    }], false);
+                }], false)
+                ->joinWith(['pathToUnclaimOrgLoanApplications e' => function($e){
+                    $e->joinWith(['assignedCourseEnc ee' => function ($ee) {
+                        $ee->joinWith(['courseEnc e1']);
+                    }], false);
+                }], false)
+                ->joinWith(['pathToOpenLeads d'], false)
+                ->joinWith(['assignedLoanProviders f'], false)
+                ->where([
+                    'a.created_by'=>Yii::$app->user->identity->user_enc_id,
+                    'f.status'=>11,
+                    'a.parent_application_enc_id' => null,
+                    'a.is_deleted' => 0,
+                ])
+                ->asArray()
+                ->one();
+
             $app_reminder_form = new ApplicationReminderForm();
             $app_reminder = ApplicationReminder::find()
                 ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'is_deleted' => 0])
@@ -281,7 +344,18 @@ class DashboardController extends Controller
 
         $servicesModel = new \account\models\services\ServiceSelectionForm();
 
+        $loanApplication = Yii::$app->userData->loanApplicationObj();
+        if ($loanApplication) {
+            $loanApplication = $loanApplication
+                ->andWhere(['not', ['alp.status' => 10]])
+                ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                ->orderBy(['a.created_on' => SORT_DESC])
+                ->asArray()
+                ->one();
+        }
+
         return $this->render('index', [
+            'loanApplication' => $loanApplication,
             'applied' => $applied_app,
             'services' => $services,
             'model' => $servicesModel,
@@ -300,6 +374,10 @@ class DashboardController extends Controller
             'org_applications' => $this->__jobs(8),
             'total_org_applied' => $this->total_applied(),
             'viewed' => $viewed,
+            'scriptModel' => $scriptModel,
+            'userValues' => $this->_CompleteProfile(),
+            'userPref' => $this->_CompletePreference(),
+            'loan' => $loan,
         ]);
     }
 
@@ -311,9 +389,6 @@ class DashboardController extends Controller
                 'where' => [
                     'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                     'a.status' => 'Active',
-                ],
-                'having' => [
-                    '>=', 'a.last_date', date('Y-m-d')
                 ],
                 'orderBy' => [
                     'a.published_on' => SORT_DESC,
@@ -353,8 +428,9 @@ class DashboardController extends Controller
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
             ],
-            'having' => [
-                '>', 'a.last_date', date('Y-m-d')
+            'andWhere' => ['or',
+                ['a.application_for' => 0],
+                ['a.application_for' => 1]
             ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
@@ -534,7 +610,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    private function _services()
+    public function actionServices()
     {
         $model = new \account\models\services\ServiceSelectionForm();
 
@@ -555,6 +631,71 @@ class DashboardController extends Controller
                 'services' => $services,
             ]);
         }
+    }
+
+    private function _CompleteProfile()
+    {
+        $user = Users::find()
+            ->alias('a')
+            ->select([
+                'a.user_enc_id', 'a.dob', 'a.experience', 'a.gender', 'a.city_enc_id',
+                'a.image', 'a.job_function', 'a.asigned_job_function', 'a.description', 'a.is_available'
+            ])
+            ->joinWith(['userSkills b' => function ($b) {
+                $b->onCondition(['b.is_deleted' => 0]);
+            }])
+            ->joinWith(['userSpokenLanguages c' => function ($c) {
+                $c->onCondition(['c.is_deleted' => 0]);
+            }])
+            ->where([
+                'a.user_enc_id' => Yii::$app->user->identity->user_enc_id,
+                'a.is_deleted' => 0
+            ])
+            ->asArray()
+            ->one();
+
+        $is_complete = 1;
+        foreach ($user as $val) {
+            if ($val == '' || $val == null) {
+                $is_complete = 0;
+                break;
+            }
+        }
+        return ['is_complete' => $is_complete, 'userVal' => $user];
+    }
+
+    private function _CompletePreference()
+    {
+        $userPref = UserPreferences::find()
+            ->alias('a')
+            ->select(['a.preference_enc_id', 'a.assigned_to'])
+            ->joinWith(['userPreferredJobProfiles b' => function ($b) {
+                $b->select(['b.preferred_job_profile_enc_id', 'b.preference_enc_id']);
+                $b->onCondition(['b.is_deleted' => 0]);
+            }])
+            ->joinWith(['userPreferredLocations c' => function ($c) {
+                $c->select(['c.preferred_location_enc_id', 'c.preference_enc_id']);
+                $c->onCondition(['c.is_deleted' => 0]);
+            }])
+            ->joinWith(['userPreferredIndustries d' => function ($d) {
+                $d->select(['d.preferred_industry_enc_id', 'd.preference_enc_id']);
+                $d->onCondition(['d.is_deleted' => 0]);
+            }])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0, 'a.assigned_to' => 'Jobs'])
+            ->asArray()
+            ->one();
+
+        $is_complete = 1;
+        if (empty($userPref['userPreferredJobProfiles'])) {
+            $is_complete = 0;
+        }
+        if (empty($userPref['userPreferredLocations'])) {
+            $is_complete = 0;
+        }
+        if (empty($userPref['userPreferredIndustries'])) {
+            $is_complete = 0;
+        }
+        return ['is_complete' => $is_complete, 'userPref' => $userPref];
     }
 
     private function _uploadImage()
@@ -623,7 +764,7 @@ class DashboardController extends Controller
     public function actionCalendar()
     {
         if (!Yii::$app->user->identity->organization->organization_enc_id) {
-            return $this->render('test');
+            return $this->render('scheduled-interviews');
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
@@ -741,6 +882,7 @@ class DashboardController extends Controller
                     WHEN a.interview_mode = 2 THEN m.name
                     END) as interview_at',
                 'q.name interview_type',
+                'c.field_name round'
             ])
             ->innerJoinWith(['interviewOptions b' => function ($b) {
                 $b->innerJoinWith(['processFieldEnc c' => function ($c) {
@@ -767,8 +909,14 @@ class DashboardController extends Controller
                     $l->joinWith(['cityEnc m'], false);
                 }], false);
             }], false)
+            ->joinWith(['interviewers rr' => function ($r) {
+                $r->select(['rr.interviewer_enc_id', 'rr.scheduled_interview_enc_id', 'r1.name', 'r1.email', 'r1.phone']);
+                $r->joinWith(['interviewerDetails r1'], false);
+            }])
+            ->joinWith(['interviewCandidates q1'], false)
             ->where(new \yii\db\Expression('`e`.`current_round` = `c`.`sequence`'))
             ->andWhere(new \yii\db\Expression('`e`.`application_enc_id` = `a`.`application_enc_id`'))
+            ->andWhere(new \yii\db\Expression('`q1`.`applied_application_enc_id` != `e`.`applied_application_enc_id`'))
             ->andWhere(['e.created_by' => Yii::$app->user->identity->user_enc_id])
             ->asArray()
             ->all();
@@ -813,7 +961,8 @@ class DashboardController extends Controller
                 'a.applied_application_enc_id',
                 'a.interview_candidate_enc_id',
                 'a.status',
-                'z.designation'
+                'z.designation',
+                'g2.field_name round'
             ])
             ->joinWith(['appliedApplicationEnc b' => function ($b) {
                 $b->andWhere(['b.created_by' => Yii::$app->user->identity->user_enc_id]);
@@ -835,6 +984,9 @@ class DashboardController extends Controller
                     $h->joinWith(['locationEnc i' => function ($i) {
                         $i->joinWith(['cityEnc j']);
                     }]);
+                }], false);
+                $g->joinWith(['interviewOptions g1' => function ($g1) {
+                    $g1->joinWith(['processFieldEnc g2']);
                 }], false);
             }], true)
             ->where(['q.name' => 'flexible'])
@@ -891,6 +1043,9 @@ class DashboardController extends Controller
                 $fixed_data['applied_application_enc_id'] = $f['applied_application_enc_id'];
                 $fixed_data['process_field_enc_id'] = $f['process_field_enc_id'];
                 $fixed_data['status'] = $f['status'];
+                $fixed_data['round'] = $f['round'];
+                $fixed_data['interview_at'] = $f['interview_at'];
+                $fixed_data['interviewers'] = $f['interviewers'];
                 foreach ($f['interviewDates'] as $dd) {
                     $d['date'] = $dd['interview_date'];
                     foreach ($dd['interviewDateTimings'] as $t) {
@@ -938,6 +1093,16 @@ class DashboardController extends Controller
                 $data['interview_c_enc_id'] = $f['interview_candidate_enc_id'];
                 $data['process_field_enc_id'] = $f['process_field_enc_id'];
                 $data['status'] = $f['status'];
+                $data['round'] = $f['round'];
+                $data['interview_at'] = $f['interview_at'];
+                $interviewers = Interviewers::find()
+                    ->alias('a')
+                    ->select(['a.interviewer_enc_id', 'a.scheduled_interview_enc_id', 'b.name', 'b.email', 'b.phone'])
+                    ->joinWith(['interviewerDetails b'], false)
+                    ->where(['a.scheduled_interview_enc_id' => $f['scheduled_interview_enc_id']])
+                    ->asArray()
+                    ->all();
+                $data['interviewers'] = $interviewers;
                 foreach ($f['scheduledInterviewEnc']['interviewDates'] as $dd) {
                     $d['date'] = $dd['interview_date'];
                     foreach ($dd['interviewDateTimings'] as $t) {
@@ -1148,7 +1313,10 @@ class DashboardController extends Controller
         return $count[0]['total_applications'];
     }
 
-
+    public function actionSafetyPosters()
+    {
+        return $this->render('safety-posters');
+    }
 //    public function actionError(){
 //        $error = Yii::$app->errorHandler->exception;
 //        return $this->render('error',[

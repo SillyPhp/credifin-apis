@@ -15,7 +15,7 @@ use yii\bootstrap\ActiveForm;
                         <div class="header-bg">
                             <div class="search-box">
                                 <div class="head-text">
-                                    <p>earn credibility, attract talent</p>
+                                    <h1 class="reviewhead">Search, Reviews, and Rankings</h1>
                                 </div>
                                 <form id="form-search" action="<?= Url::to(['search']) ?>">
                                     <div class="input-group search-bar">
@@ -26,7 +26,7 @@ use yii\bootstrap\ActiveForm;
                                         </div>
                                         <input type="text" id="search_company" class="form-control"
                                                placeholder="Search Companies, Colleges, Schools, Educational Institutes"
-                                               name="keywords">
+                                               name="keyword">
                                         <div class="input-group-btn">
                                             <button class="loader_btn_search"><i class="fas fa-search"></i></button>
                                         </div>
@@ -43,7 +43,7 @@ use yii\bootstrap\ActiveForm;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Reviews</div>
+                    <h1 class="heading-style">Reviews</h1>
                 </div>
             </div>
             <div class="row">
@@ -52,9 +52,9 @@ use yii\bootstrap\ActiveForm;
                         <a href="<?= Url::to("/reviews/companies"); ?>">
                             <div class="review-cat-box com-hover">
                                 <div class="rcb-icon" id="company-cont">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/review/company-icon.png') ?>">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/company-icon.png') ?>" alt="Reviews and ranking of top Universities, Reviews and ranking of top colleges, Reviews and ranking of top Schools,Reviews and ranking of top Institutes">
                                 </div>
-                                <div class="rcb-name">Companies</div>
+                                <h3 class="rcb-name">Companies</h3>
                             </div>
                         </a>
                     </div>
@@ -62,9 +62,9 @@ use yii\bootstrap\ActiveForm;
                         <a href="<?= Url::to("/reviews/colleges"); ?>">
                             <div class="review-cat-box college-hover">
                                 <div class="rcb-icon" id="college-cont">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/review/college-icon.png') ?>">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/college-icon.png') ?>" alt="Reviews and ranking of top Universities, Reviews and ranking of top colleges, Reviews and ranking of top Schools,Reviews and ranking of top Institutes">
                                 </div>
-                                <div class="rcb-name">Colleges/Universities</div>
+                                <h3 class="rcb-name">Colleges/Universities</h3>
                             </div>
                         </a>
                     </div>
@@ -72,9 +72,9 @@ use yii\bootstrap\ActiveForm;
                         <a href="<?= Url::to("/reviews/schools"); ?>">
                             <div class="review-cat-box sch-hover">
                                 <div class="rcb-icon" id="school-cont">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/review/school-icon.png') ?>">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/school-icon.png') ?>" alt="Reviews and ranking of top Universities, Reviews and ranking of top colleges, Reviews and ranking of top Schools,Reviews and ranking of top Institutes">
                                 </div>
-                                <div class="rcb-name">Schools</div>
+                                <h3 class="rcb-name">Schools</h3>
                             </div>
                         </a>
                     </div>
@@ -82,9 +82,9 @@ use yii\bootstrap\ActiveForm;
                         <a href="<?= Url::to("/reviews/institutes"); ?>">
                             <div class="review-cat-box ei-hover">
                                 <div class="rcb-icon" id="education-cont">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/review/ei-icon.png') ?>">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/ei-icon.png') ?>" alt="Reviews and ranking of top Universities, Reviews and ranking of top colleges, Reviews and ranking of top Schools,Reviews and ranking of top Institutes">
                                 </div>
-                                <div class="rcb-name">Educational Institutes</div>
+                                <h3 class="rcb-name">Educational Institutes</h3>
                             </div>
                         </a>
                     </div>
@@ -326,7 +326,7 @@ $this->registerCss('
     margin:0 auto;
 }
 .rcb-name{
-    padding-top:40px;
+    padding-top:20px;
     font-size:23px;
     text-transform:capitalize;
     font-family: lora;
@@ -546,11 +546,12 @@ color: initial;
     padding-bottom:10px;
     color:#000;
     font-family:lobster;
-     font-size:40px;
     text-transform:capitalize;
 }
-.head-text p{
-    line-height:35px;
+.head-text h1{
+    font-family:lobster;
+    font-size:40px
+
 }
 /*top categories css*/
 .cat-box{
@@ -661,6 +662,7 @@ color: initial;
 .twitter-typeahead
 {
 width:100%;
+display:block !important;
 }
 .benifit-bttn a{
   border:2px solid #00a0e3;

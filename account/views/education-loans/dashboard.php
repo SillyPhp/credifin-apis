@@ -1,76 +1,89 @@
 <?php
 
 use yii\helpers\Url;
+use yii\widgets\Pjax;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
 
+$filters = [];
+if (isset($_GET['filter'])) {
+    $filters = explode(',', $_GET['filter']);
+}
 ?>
 <div class="row">
-<div class="col-md-12">
-    <div class="widget-row">
-        <div class="col-md-3 col-sm-6">
-            <a href="#">
-                <div class="box-des box1 mt">
-                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
-                    <span class="count">10</span>
-                    <span class="box-text">New Leads</span>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <a href="#">
-                <div class="box-des box3 mt">
-                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
-                    <span class="count">100+</span>
-                    <span class="box-text">All Applications</span>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <a href="#">
-                <div class="box-des box6 mt">
-                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/intrnship.png') ?>">
-                    <span class="count">100+</span>
-                    <span class="box-text">Accepted</span>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <a href="#">
-                <div class="box-des box4 mt box2set">
-                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidates.png') ?>">
-                    <span class="count">20</span>
-                    <span class="box-text">Pre Verification</span>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <a href="#">
-                <div class="box-des box5 mt">
-                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
-                    <span class="count">100+</span>
-                    <span class="box-text">Under Process</span>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <a href="#">
-                <div class="box-des box7 mt">
-                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
-                    <span class="count">100+</span>
-                    <span class="box-text">Sanctioned</span>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <a href="#">
-                <div class="box-des box7 mt">
-                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
-                    <span class="count">100+</span>
-                    <span class="box-text">Disbursed</span>
-                </div>
-            </a>
+    <?php
+        Pjax::begin([
+            'id' => 'stat-container',
+        ]);
+    ?>
+    <div class="col-md-12">
+        <div class="widget-row">
+            <div class="col-md-3 col-sm-6">
+                <a href="/account/education-loans/dashboard?filter=0" data-pjax = "0">
+                    <div class="box-des box1 mt">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
+                        <span class="count"><?= $stats['new_leads'] ?></span>
+                        <span class="box-text">New Leads</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="/account/education-loans/dashboard?filter=all" data-pjax = "0">
+                    <div class="box-des box3 mt">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
+                        <span class="count"><?= $stats['all_applications'] ?></span>
+                        <span class="box-text">All Applications</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="/account/education-loans/dashboard?filter=1" data-pjax = "0">
+                    <div class="box-des box6 mt">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/intrnship.png') ?>">
+                        <span class="count"><?= $stats['accepted'] ?></span>
+                        <span class="box-text">Accepted</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="/account/education-loans/dashboard?filter=2" data-pjax = "0">
+                    <div class="box-des box4 mt box2set">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidates.png') ?>">
+                        <span class="count"><?= $stats['pre_verification'] ?></span>
+                        <span class="box-text">Pre Verification</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="/account/education-loans/dashboard?filter=3" data-pjax = "0">
+                    <div class="box-des box5 mt">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
+                        <span class="count"><?= $stats['under_process'] ?></span>
+                        <span class="box-text">Under Process</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="/account/education-loans/dashboard?filter=4" data-pjax = "0">
+                    <div class="box-des box7 mt">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
+                        <span class="count"><?= $stats['sanctioned'] ?></span>
+                        <span class="box-text">Sanctioned</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="/account/education-loans/dashboard?filter=5" data-pjax = "0">
+                    <div class="box-des box7 mt">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
+                        <span class="count"><?= $stats['disbursed'] ?></span>
+                        <span class="box-text">Disbursed</span>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
-</div>
+    <?php Pjax::end(); ?>
 </div>
 <div class="col-xs-12 col-sm-12">
     <div class="portlet light ">
@@ -79,43 +92,48 @@ use yii\helpers\Url;
                 <div class="col-md-12">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase">Company Profiles</span>
+                        <span class="caption-subject font-dark bold uppercase">Loan Applications</span>
                     </div>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-12">
-                    <ul class="statusFilters">
-                        <li>
-                            <input id="lists[all]" type="checkbox" name="lists[all]"/>
-                            <label for="lists[all]">All</label>
-                        </li>
-                        <li>
-                            <input id="lists[new_lead]" type="checkbox" name="lists[new_lead]"/>
-                            <label for="lists[new_lead]"> New Lead</label>
-                        </li>
-                        <li>
-                            <input id="lists[accepted]" type="checkbox" name="lists[accepted]"/>
-                            <label for="lists[accepted]"> Accepted</label>
-                        </li>
-                        <li>
-                            <input id="lists[pre_verification]" type="checkbox" name="lists[pre_verification]"/>
-                            <label for="lists[pre_verification]"> Pre Verification</label>
-                        </li>
-                        <li>
-                            <input id="lists[under_process]" type="checkbox" name="lists[under_process]"/>
-                            <label for="lists[under_process]"> Under Process</label>
-                        </li>
-                        <li>
-                            <input id="lists[sanctioned]" type="checkbox" name="lists[sanctioned]"/>
-                            <label for="lists[sanctioned]"> Sanctioned</label>
-                        </li>
-                        <li>
-                            <input id="lists[disbursed]" type="checkbox" name="lists[disbursed]"/>
-                            <label for="lists[disbursed]"> Disbursed</label>
-                        </li>
+                <div class="col-md-12 heading-filters-container">
+                    <?php
+                    $filterList = [
+                        'all' => 'All',
+                        0 => 'New Lead',
+                        1 => 'Accepted',
+                        2 => 'Pre Verification',
+                        3 => 'Under Process',
+                        4 => 'Sanctioned',
+                        5 => 'Disbursed',
+                        10 => 'Rejected',
+                    ];
+                    $jsonFilterList = json_encode($filterList);
+                    ?>
+                    <ul class="statusFilters" id="status_filters">
+                        <?php
+                        foreach ($filterList as $key => $filter) {
+                            $checked = "";
+                            if ($key) {
+                                if (!empty($filters)) {
+                                    $checked = (in_array($key, $filters)) ? 'checked' : '';
+                                } else {
+                                    $checked = ($key == "all") ? 'checked' : '';
+                                }
+                            }
+                            ?>
+                            <li>
+                                <input class="status_filters" id="list_<?= $key ?>" value="<?= $key ?>" type="checkbox"
+                                       name="list-loan" <?= $checked ?>/>
+                                <label for="list_<?= $key ?>"><?= $filter ?></label>
+                            </li>
+                            <?php
+                        }
+                        ?>
                     </ul>
+                    <div id="search-filter-span"><input style="height: 35px" class="form-control-static" id="search-filter" type="text" placeholder="Type to search..." value="<?= $_GET['search'] ?>" /><button id="search-filter-btn" class="btn btn-primary">Search</button></button></div>
                 </div>
             </div>
         </div>
@@ -123,6 +141,9 @@ use yii\helpers\Url;
             <div class="tab-content">
                 <div class="tab-pane active pos-rel" id="tab_actions_pending">
                     <div id="overflowScroll">
+                        <?php
+                        Pjax::begin(['id' => 'list-container']);
+                        ?>
                         <div class="row">
                             <div class="mt-actions mainTable" style="">
                                 <div class="col-md-12">
@@ -133,6 +154,9 @@ use yii\helpers\Url;
                                             <th class="loanAction">Loan Status</th>
                                             <th class="applicantName">Applicant Name</th>
                                             <th class="loanAmount">Loan Amount</th>
+                                            <th class="amountReceived">Amount Received</th>
+                                            <th class="amountDue">Amount Due</th>
+                                            <th class="scholarship">Scholarship</th>
                                             <th class="degree">Degree</th>
                                             <th class="courseName">Course Name</th>
                                             <th class="collegeName">College/University Name</th>
@@ -158,270 +182,97 @@ use yii\helpers\Url;
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <td>22 Aug 2020</td>
-                                            <td class="actionColoum">
-                                                <div class="dropdown">
-                                                    <button onclick="actionStats(this)" class="dropbtn"><i
-                                                                class="fa fa-ellipsis-v"></i></button>
-                                                    <div class="dropdown-content myDropdown">
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="New Lead">New Lead
+                                        <?php
+                                        if (!empty($loans)) {
+                                            $dropDowns = [
+                                                0 => 'New Lead',
+                                                1 => 'Accepted',
+                                                2 => 'Pre Verification',
+                                                3 => 'Under Process',
+                                                4 => 'Sanctioned',
+                                                5 => 'Disbursed',
+                                                10 => 'Reject',
+                                            ];
+                                            foreach ($loans as $loan) {
+                                                ?>
+                                                <tr>
+                                                    <td><?= date('d M Y', strtotime($loan['apply_date'])) ?></td>
+                                                    <td class="actionColoum">
+                                                        <div class="dropdown">
+                                                            <button onclick="actionStats(this)"
+                                                                    style="display: <?= (in_array($loan['loan_status'], ['Disbursed', 'Reject'])) ? 'none' : 'block' ?>"
+                                                                    class="dropbtn"><i
+                                                                        class="fa fa-ellipsis-v"></i></button>
+                                                            <div class="dropdown-content myDropdown">
+                                                                <?php
+                                                                foreach ($dropDowns as $k => $v) {
+                                                                    ?>
+                                                                    <button class="actionBtn"
+                                                                            data-key="<?= $loan['loan_app_enc_id'] ?>"
+                                                                            data-value="<?= $k ?>"
+                                                                            onclick="nextRound(this)"
+                                                                            value="<?= $v ?>"><?= $v ?></button>
+                                                                    <?php
+                                                                }
+                                                                ?>
+                                                            </div>
+                                                        </div>
+                                                        <span class="currentState"><?= $loan['loan_status'] ?></span>
+                                                        <button class="nextState" onclick="nextPhase(this)"
+                                                                style="display: <?= (in_array($loan['loan_status'], ['Disbursed', 'Reject'])) ? 'none' : 'block' ?>"
+                                                                data-toggle="tooltip"
+                                                                data-key="<?= $loan['loan_app_enc_id'] ?>"
+                                                                data-placement="top" title="Move to Next Phase">
+                                                            <i class="fa fa-arrow-circle-right"></i>
                                                         </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Accepted">Accepted
+                                                        <button class="viewStatus"
+                                                                style="display: <?= ($loan['loan_status'] == 'Disbursed') ? 'block' : 'none' ?>"
+                                                                onclick="viewStatus()">View Status
                                                         </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Pre Verification">Pre
-                                                            Verification
+                                                        <button class="reconsider"
+                                                                data-key="<?= $loan['loan_app_enc_id'] ?>"
+                                                                style="display: <?= ($loan['loan_status'] == 'Reject') ? 'block' : 'none' ?>"
+                                                                onclick="reconsider(this)">Reconsider
                                                         </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Under Process">Under
-                                                            Process
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Disbursed">Disbursed
-                                                        </button>
-                                                        <button class="actionBtn ab-last-btn"
-                                                                onclick="nextRound(this)" value="Rejected">Reject
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <span class="currentState">New Lead</span>
-                                                <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
-                                                        data-placement="top" title="Move to Next Phase">
-                                                    <i class="fa fa-arrow-circle-right"></i>
-                                                </button>
-                                                <button class="viewStatus" onclick="viewStatus()">View Status</button>
-                                                <button class="reconsider" onclick="reconsider()">Reconsider</button>
-                                            </td>
-                                            <td>Shshank Vasisht</td>
-                                            <td>5,00,000</td>
-                                            <td>Professional Course</td>
-                                            <td>Charted Accountant</td>
-                                            <td>Guru Nanak Institute of Management And Technology</td>
-                                            <td>6</td>
-                                            <td>3</td>
-                                            <td>+91 7837394374</td>
-                                            <td>vasishtshshank@gmail.com</td>
-                                            <td>Ludhiana</td>
-                                            <td>Male</td>
-                                            <td>28-Sept-1993</td>
-                                            <td>Father</td>
-                                            <td>Ashiwini Kumar Vasisht</td>
-                                            <td>Salaried</td>
-                                            <td>13,00,000</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                        </tr>
-                                        <tr>
-                                            <td>22 Aug 2020</td>
-                                            <td class="actionColoum">
-                                                <div class="dropdown">
-                                                    <button onclick="actionStats(this)" class="dropbtn"><i
-                                                                class="fa fa-ellipsis-v"></i></button>
-                                                    <div class="dropdown-content myDropdown">
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="New Lead">New Lead
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Accepted">Accepted
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Pre Verification">Pre
-                                                            Verification
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Under Process">Under
-                                                            Process
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Disbursed">Disbursed
-                                                        </button>
-                                                        <button class="actionBtn ab-last-btn"
-                                                                onclick="nextRound(this)" value="Rejected">Reject
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <span class="currentState">New Lead</span>
-                                                <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
-                                                        data-placement="top" title="Move to Next Phase">
-                                                    <i class="fa fa-arrow-circle-right"></i>
-                                                </button>
-                                                <button class="viewStatus" onclick="viewStatus()">View Status</button>
-                                            </td>
-                                            <td>Shshank Vasisht</td>
-                                            <td>5,00,000</td>
-
-                                            <td>Professional Course</td>
-                                            <td>Charted Accountant</td>
-                                            <td>Guru Nanak Institute of Management And Technology</td>
-                                            <td>2</td>
-                                            <td>1</td>
-                                            <td>+91 7837394374</td>
-                                            <td>vasishtshshank@gmail.com</td>
-                                            <td>Ludhiana</td>
-                                            <td>Male</td>
-                                            <td>28-Sept-1993</td>
-                                            <td>Father</td>
-                                            <td>Ashiwini Kumar Vasisht</td>
-                                            <td>Salaried</td>
-                                            <td>13,00,000</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                        </tr>
-                                        <tr>
-                                            <td>22 Aug 2020</td>
-                                            <td class="actionColoum">
-                                                <div class="dropdown">
-                                                    <button onclick="actionStats(this)" class="dropbtn"><i
-                                                                class="fa fa-ellipsis-v"></i></button>
-                                                    <div class="dropdown-content myDropdown">
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="New Lead">New Lead
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Accepted">Accepted
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Pre Verification">Pre
-                                                            Verification
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Under Process">Under
-                                                            Process
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Disbursed">Disbursed
-                                                        </button>
-                                                        <button class="actionBtn ab-last-btn"
-                                                                onclick="nextRound(this)" value="Rejected">Reject
-                                                            .modal-content         </button>
-                                                    </div>
-                                                </div>
-                                                <span class="currentState">New Lead</span>
-                                                <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
-                                                        data-placement="top" title="Move to Next Phase">
-                                                    <i class="fa fa-arrow-circle-right"></i>
-                                                </button>
-                                                <button class="viewStatus" onclick="viewStatus()">View Status</button>
-                                            </td>
-                                            <td>Shshank Vasisht</td>
-                                            <td>5,00,000</td>
-                                            <td>Professional Course</td>
-                                            <td>Charted Accountant</td>
-                                            <td>Guru Nanak Institute of Management And Technology</td>
-                                            <td>6</td>
-                                            <td>3</td>
-                                            <td>+91 7837394374</td>
-                                            <td>vasishtshshank@gmail.com</td>
-                                            <td>Ludhiana</td>
-                                            <td>Male</td>
-                                            <td>28-Sept-1993</td>
-                                            <td>Father</td>
-                                            <td>Ashiwini Kumar Vasisht</td>
-                                            <td>Salaried</td>
-                                            <td>13,00,000</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                        </tr>
-                                        <tr>
-                                            <td>22 Aug 2020</td>
-                                            <td class="actionColoum">
-                                                <div class="dropdown">
-                                                    <button onclick="actionStats(this)" class="dropbtn"><i
-                                                                class="fa fa-ellipsis-v"></i></button>
-                                                    <div class="dropdown-content myDropdown">
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="New Lead">New Lead
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Accepted">Accepted
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Pre Verification">Pre
-                                                            Verification
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Under Process">Under
-                                                            Process
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Sanctioned">Sanctioned
-                                                        </button>
-                                                        <button class="actionBtn"
-                                                                onclick="nextRound(this)" value="Disbursed">Disbursed
-                                                        </button>
-                                                        <button class="actionBtn ab-last-btn"
-                                                                onclick="nextRound(this)" value="Rejected">Reject
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <span class="currentState">New Lead</span>
-                                                <button class="nextState" onclick="nextPhase()" data-toggle="tooltip"
-                                                        data-placement="top" title="Move to Next Phase">
-                                                    <i class="fa fa-arrow-circle-right"></i>
-                                                </button>
-                                                <button class="viewStatus" onclick="viewStatus()">View Status</button>
-                                            </td>
-                                            <td>Shshank Vasisht</td>
-                                            <td>5,00,000</td>
-
-                                            <td>Professional Course</td>
-                                            <td>Charted Accountant</td>
-                                            <td>Guru Nanak Institute of Management And Technology</td>
-                                            <td>2</td>
-                                            <td>1</td>
-                                            <td>+91 7837394374</td>
-                                            <td>vasishtshshank@gmail.com</td>
-                                            <td>Ludhiana</td>
-                                            <td>Male</td>
-                                            <td>28-Sept-1993</td>
-                                            <td>Father</td>
-                                            <td>Ashiwini Kumar Vasisht</td>
-                                            <td>Salaried</td>
-                                            <td>13,00,000</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                        </tr>
+                                                    </td>
+                                                    <td><?= $loan['applicant_name'] ?></td>
+                                                    <td><?= $loan['amount'] ?></td>
+                                                    <td><?= $loan['amount_received'] ?></td>
+                                                    <td><?= $loan['amount_due'] ?></td>
+                                                    <td><?= $loan['scholarship'] ?></td>
+                                                    <td><?= $loan['degree'] ?></td>
+                                                    <td><?= $loan['course_name'] ?></td>
+                                                    <td><?= $loan['org_name'] ?></td>
+                                                    <td><?= $loan['semesters'] ?></td>
+                                                    <td><?= $loan['years'] ?></td>
+                                                    <td><?= $loan['phone'] ?></td>
+                                                    <td><?= $loan['email'] ?></td>
+                                                    <td><?= $loan['city'] ?></td>
+                                                    <td><?= $loan['gender'] ?></td>
+                                                    <td><?= date('d F Y', strtotime($loan['dob'])) ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][0]['relation'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][0]['name'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][0]['employment_type'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][0]['annual_income'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][1]['relation'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][1]['name'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][1]['employment_type'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][1]['annual_income'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][2]['relation'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][2]['name'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][2]['employment_type'] ?></td>
+                                                    <td><?= $loan['loanCoApplicants'][2]['annual_income'] ?></td>
+                                                </tr>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
+                        <?php Pjax::end(); ?>
                     </div>
                 </div>
             </div>
@@ -512,63 +363,47 @@ use yii\helpers\Url;
                         <p>Sanction Loan</p>
                     </div>
                 </div>
+                <?php
+                $form = ActiveForm::begin([
+                    'id' => 'sanctioned-form',
+                    'options' => ['enctype' => 'multipart/form-data'],
+                    'fieldConfig' => [
+                        'template' => '<div class="form-group"><label for="number" class="input-group-text">{label}</label>{input}</div>',
+                    ],
+                ]);
+                ?>
                 <div class="col-md-9 col-sm-12 noPadd">
                     <div id="loanModalScroll">
                         <div class="row">
-                            <div class="col-md-6 col-sm-6 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        File Number
-                                    </label>
-                                    <input type="text" class="form-control" id="fileNumber">
+                            <div class="col-md-12">
+                                <div class="col-md-6 col-sm-6 padd-20">
+                                    <?= $form->field($model, 'file_number')->textInput(['autocomplete' => 'off', 'autofocus' => true]); ?>
+                                    <?= $form->field($model, 'loan_app_id', ['template' => '{input}'])->hiddenInput(['id' => 'loan_app_id', 'value' => ""])->label(false); ?>
+                                </div>
+                                <div class="col-md-6 col-sm-6 padd-20">
+                                    <?= $form->field($model, 'loan_amount')->textInput(['autocomplete' => 'off', 'type' => 'number']); ?>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-sm-6 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Loan Amount
-                                    </label>
-                                    <input type="text" class="form-control" id="loanAmount">
+                            <div class="col-md-12">
+                                <div class="col-md-4 col-sm-4 padd-20">
+                                    <?= $form->field($model, 'processing_fee')->textInput(['autocomplete' => 'off', 'type' => 'number']); ?>
+                                </div>
+                                <div class="col-md-4 col-sm-4 padd-20">
+                                    <?= $form->field($model, 'total_installments')->textInput(['autocomplete' => 'off', 'type' => 'number']); ?>
+                                </div>
+                                <div class="col-md-4 col-sm-4 padd-20">
+                                    <?= $form->field($model, 'discounting')->textInput(['autocomplete' => 'off', 'type' => 'number', 'placeholder' => 'in %']); ?>
                                 </div>
                             </div>
-                            <div class="col-md-4 col-sm-4 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Processing Fee
-                                    </label>
-                                    <input type="text" class="form-control" id="processing">
+                            <div class="col-md-12">
+                                <div class="col-md-4 col-sm-4 padd-20">
+                                    <?= $form->field($model, 'rate_of_interest')->textInput(['autocomplete' => 'off', 'type' => 'number']); ?>
                                 </div>
-                            </div>
-                            <div class="col-md-4 col-sm-4 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Total Installments
-                                    </label>
-                                    <input type="text" class="form-control" id="installments">
+                                <div class="col-md-4 col-sm-4 padd-20">
+                                    <?= $form->field($model, 'approved_by')->textInput(['autocomplete' => 'off']); ?>
                                 </div>
-                            </div>
-                            <div class="col-md-4 col-sm-4 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Discounting
-                                    </label>
-                                    <input type="text" class="form-control" id="discounting">
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        Approved By
-                                    </label>
-                                    <input type="text" class="form-control" id="approved">
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6 padd-20">
-                                <div class="form-group">
-                                    <label for="number" class="input-group-text">
-                                        FLDG
-                                    </label>
-                                    <input type="text" class="form-control" id="FLDG">
+                                <div class="col-md-4 col-sm-4 padd-20">
+                                    <?= $form->field($model, 'fldg')->textInput(['autocomplete' => 'off', 'type' => 'number', 'placeholder' => 'in %'])->label('FLDG'); ?>
                                 </div>
                             </div>
                             <div class="col-md-12 col-sm-12 padd-20">
@@ -582,32 +417,35 @@ use yii\helpers\Url;
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <td>Birth Certificate</td>
-                                            <td><input type="radio" id="male" name="Certificate" value="Collected"
-                                                       checked></td>
-                                            <td><input type="radio" id="male" name="Certificate" value="Pending"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Residence Proof</td>
-                                            <td><input type="radio" id="male" name="Residence" value="Collected"></td>
-                                            <td><input type="radio" id="male" name="Residence" value="Pending" checked>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Proof of Identity</td>
-                                            <td><input type="radio" id="male" name="Identity" value="Collected" checked>
-                                            </td>
-                                            <td><input type="radio" id="male" name="Identity" value="Pending"></td>
-                                        </tr>
-
+                                        <?php
+                                        if ($documents) {
+                                            foreach ($documents as $doc) {
+                                                $name = str_replace(" ", "_", strtolower($doc->name));
+                                                ?>
+                                                <tr>
+                                                    <td><?= $doc->name ?></td>
+                                                    <td><input type="radio"
+                                                               name="documents[<?= $doc->document_enc_id ?>]" value="1">
+                                                    </td>
+                                                    <td><input type="radio"
+                                                               name="documents[<?= $doc->document_enc_id ?>]" value="0">
+                                                    </td>
+                                                </tr>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
+                        <div class="modal-footer">
+                            <?= Html::submitButton('Update', ['class' => 'btn btn-info updateBtn', 'id' => 'updateBtn']); ?>
+                        </div>
                     </div>
                 </div>
+                <?php ActiveForm::end(); ?>
             </div>
 
         </div>
@@ -615,6 +453,26 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
+.heading-filters-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+#search-filter-span{
+    display: flex;
+    margin-bottom: 10px;
+}
+#search-filter-span input{
+    border: 1px solid #ddd;
+    padding: 0px 15px;
+    margin-right: 10px;
+    border-radius: 2px;
+}
+#search-filter-span input, #search-filter-span button{
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
 .form-group{
     margin-bottom: 5px;
 }
@@ -696,7 +554,7 @@ tr{
     min-width:200px;
     max-width:200px;
 }
-.loanAction{
+.loanAction, .loanPurpos{
     min-width:180px;
     max-width:180px;
 }
@@ -975,7 +833,7 @@ input.checkbox:checked + label:before {
 }
 #loanModalScroll{
     position: relative;
-    height: 60vh;
+    height: 65vh;
     padding: 0 10px;
 }
 .certificate-list{
@@ -1106,6 +964,9 @@ input.checkbox:checked + label:before {
     }
 }
 
+span#search-filter-span {
+    float: right;
+}
 ');
 
 $script = <<<JS
@@ -1117,11 +978,61 @@ var ps = new PerfectScrollbar('#loanDetailScroll');
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 });
-
+var filterList = $jsonFilterList;
+$(document).on('change', '.status_filters', function(e) {
+    var ths = $(this);
+    filterState(ths, false);
+});
+$(document).on('keyup', '#search-filter', function(e) {
+    var ths = $(this);
+    if(e.keyCode === 13){
+        filterState(ths, true);
+    }
+});
+$(document).on('click', '#search-filter-btn', function(e) {
+    var ths = $(this);
+    filterState(ths, true);
+});
+function filterState(ths, searchFilter){
+    var searchValue = $('#search-filter').val();
+    var thsValue = ths.val();
+    var obj = $('#status_filters').find('.status_filters');
+    var len = obj.length;
+    
+    // var parent = ths.parent();
+    // var childrens = parent.find('li > input');
+    var list = "";
+    $.each(filterList, function (k, v) {
+        var data = $('#list_' + k);
+        if(thsValue == 'all'){
+            data.prop('checked', false);
+            $('#list_all').prop('checked', true);
+        } else {
+            $('#list_all').prop('checked', false);
+        }
+        if(data.is(":checked")){
+            if(list == ""){
+                list = k;
+            } else {
+                list = list +','+ k;
+            }
+        }
+    });
+    var cur_params = '/account/education-loans/dashboard?search='+searchValue;
+    if(list){
+        history.pushState('data', 'title', cur_params +'&filter=' + list);
+    } else {
+        history.pushState('data', 'title', cur_params);
+        $('#list_all').prop('checked', true);
+    }
+    $.pjax.reload({container: '#list-container', async: false});
+}
 JS;
 $this->registerJS($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
     window.onclick = function () {
@@ -1141,39 +1052,77 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
         }
     }
 
+    function reconsider(e) {
+        var status = 0;
+        var id = e.getAttribute('data-key');
+        let parElement = e.closest('.actionColoum');
+        let currentState = parElement.querySelector('.currentState');
+        currentState.innerText = 'New Lead';
+        parElement.querySelector('.reconsider').style.display = "none";
+        parElement.querySelector('.nextState').style.display = "block";
+        // parElement.querySelector('.dropdown').style.display = "block";
+        changeStatus(id, status, 1);
+        setTimeout(function () {
+            $.pjax.reload({container: '#list-container', async: false});
+        }, 500);
+    }
+
     function nextRound(e) {
         let currentRoundName = e.value;
         let parElement = e.closest('.actionColoum');
         let currentState = parElement.querySelector('.currentState');
         currentState.innerText = currentRoundName;
-
+        var status = e.getAttribute('data-value');
+        var id = e.getAttribute('data-key');
+        changeStatus(id, status, 0);
         if (currentRoundName == 'Sanctioned') {
             sanctionModal.style.display = "block"
         }
         if (currentRoundName == 'Disbursed') {
             parElement.querySelector('.nextState').style.display = "none";
             parElement.querySelector('.dropdown').style.display = "none";
-            parElement.querySelector('.viewStatus').style.display = "block";
         }
 
-        if (currentRoundName == 'Rejected') {
+        if (currentRoundName == 'Reject') {
             parElement.querySelector('.nextState').style.display = "none";
             parElement.querySelector('.dropdown').style.display = "none";
             parElement.querySelector('.reconsider').style.display = "block";
         }
     }
 
-    function nextPhase() {
+    function changeStatus(id, status, reconsider) {
+        $.ajax({
+            url: '/account/education-loans/change-status',
+            method: "POST",
+            data: {id: id, status: status, reconsider: reconsider},
+            beforeSend: function () {
+                $('#loan_app_id').val(id);
+            },
+            success: function (res) {
+                if (res.status == 200) {
+                    toastr.success(res.title, res.message);
+                } else if (res.status == 203) {
+                    toastr.warning(res.title, res.message);
+                } else {
+                    toastr.error(res.title, res.message);
+                }
+            },
+            complete: function () {
+                $.pjax.reload({container: '#stat-container', async: false});
+            }
+        });
+    }
+
+    function nextPhase(e) {
         let parElement = event.currentTarget.parentElement;
         let curElement = parElement.getElementsByClassName('currentState');
         let curPhase = curElement[0].innerHTML;
-
         let phases = parElement.getElementsByClassName('actionBtn');
         let pVal = [];
         for (let i = 0; i < phases.length; i++) {
             pVal.push(phases[i].value);
             let nextIndex = pVal.indexOf(curPhase) + 1;
-            let nextElem = pVal[nextIndex];
+            var nextElem = pVal[nextIndex];
             curElement[0].innerHTML = nextElem;
 
             if (nextElem == 'Sanctioned') {
@@ -1183,11 +1132,37 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             if (nextElem == 'Disbursed') {
                 parElement.querySelector('.nextState').style.display = "none";
                 parElement.querySelector('.dropdown').style.display = "none";
-                parElement.querySelector('.viewStatus').style.display = "block";
             }
 
         }
-
+        var status = nextElem;
+        var id = e.getAttribute('data-key');
+        switch (status) {
+            case 'New Lead' :
+                status = 0;
+                break;
+            case 'Accepted' :
+                status = 1;
+                break;
+            case 'Pre Verification' :
+                status = 2;
+                break;
+            case 'Under Process' :
+                status = 3;
+                break;
+            case 'Sanctioned' :
+                status = 4;
+                break;
+            case 'Disbursed' :
+                status = 5;
+                break;
+            case 'Reject' :
+                status = 10;
+                break;
+            default :
+                return false;
+        }
+        changeStatus(id, status, 0);
     }
 
     function template() {

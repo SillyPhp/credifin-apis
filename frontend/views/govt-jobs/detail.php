@@ -1,18 +1,51 @@
 <?php
-
 use yii\helpers\Url;
 use yii\helpers\Html;
-
-$link = Url::to('detail/' . $get['slug'], 'https');
+use common\models\RandomColors;
+use frontend\models\script\ImageScript;
+$link = Url::to('/govt-jobs/detail/' . $get['slug'], 'https');
 $this->params['header_dark'] = false;
 $separator = Yii::$app->params->seo_settings->title_separator;
 $this->title = $get['Organizations'] . ' is hiring for ' . $get['Position'];
+$sharing_title = str_replace('|','',$this->title);
+$content = [
+    'job_title'=>$get['Position'],
+    'company_name'=>$get['Organizations'],
+    'canvas'=>(($get['logo'])?false:true),
+    'bg_icon'=>false,
+    'logo'=>(($get['logo'])?$get['logo']:null),
+    'initial_color'=>RandomColors::one(),
+    'location'=>(($get['Location'])?$get['Location']:''),
+    'app_id'=>$get['job_enc_id'],
+    'is_govt_job'=>true,
+    'permissionKey'=>Yii::$app->params->EmpowerYouth->permissionKey
+];
 $keywords = 'Jobs,Jobs in India';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+$content['bg_icon'] = ImageScript::getProfile($content['bg_icon']);
+if (empty($get['image'])||$get['image']==1){
+    $image =  ImageScript::widget(['content' => $content]);
+}else
+{
+    $image = Yii::$app->params->digitalOcean->sharingImageUrl.$get['image'];
+}
+
+if (empty($get['square_image'])||$get['square_image']==1){
+    $Instaimage =  \frontend\models\script\InstaImageScript::widget(['content' => $content]);
+}else
+{
+    $Instaimage = Yii::$app->params->digitalOcean->sharingImageUrl.$get['square_image'];
+}
+
+if (empty($get['story_image'])||$get['story_image']==1){
+    $Storyimage =  \frontend\models\script\StoriesImageScript::widget(['content' => $content]);
+}else
+{
+    $Storyimage = Yii::$app->params->digitalOcean->sharingImageUrl.$get['story_image'];
+}
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -27,7 +60,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -153,19 +186,19 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="tw-share">
                         <button class="tw-btn"
-                                onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$sharing_title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                             <i class="fab fa-twitter marg"></i>Twitter
                         </button>
                     </div>
                     <div class="li-share">
                         <button class="li-btn"
-                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$sharing_title.'&summary='.$sharing_title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                             <i class="fab fa-linkedin-in marg"></i>LinkedIn
                         </button>
                     </div>
                     <div class="wa-share">
                         <button class="wa-btn"
-                                onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                             <i class="fab fa-whatsapp marg"></i>Whatsapp
                         </button>
                     </div>
@@ -176,13 +209,49 @@ $this->params['seo_tags'] = [
                         </button>
                     </div>
                 </div>
-                <?= $this->render("/widgets/square_ads");?>
+                <div class="down-img">
+                    <h3>Download Sharing Image</h3>
+                    <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size (1250*650)</a>
+                    <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>
+                    <a href="<?= $Storyimage; ?>" download target="_blank"><i class="fa fa-download"></i> Story Size (Default)</a>
+                </div>
+                <!--                    <//= $this->render("/widgets/square_ads"); ?>-->
             </div>
         </div>
     </div>
 </section>
 <?php
 $this->registerCss('
+.down-img {
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-top: 67px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px 0px #eee;
+    width: 100%;
+    text-align:center;
+}
+.down-img h3 {  
+	color: #000;
+	font-size: 15px;
+	font-family: roboto;
+	margin: 10px 0 15px;
+}
+.down-img a {
+text-align:center;
+	padding: 10px 0px;
+    width: 100%;
+    background: #00a0e3;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: roboto;
+    text-transform: capitalize;
+    color: #fff;
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.2);
+    display: inline-block;
+    margin: 5px 0px;
+}
 .tags-bar > span {
     background: #f4f5fa;
     -webkit-border-radius: 8px;

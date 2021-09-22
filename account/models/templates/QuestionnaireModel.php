@@ -12,7 +12,7 @@ use common\models\QuestionnaireTemplates;
 
 class QuestionnaireModel
 {
-    public function assignToOrg($id)
+    public function assignToOrg($id,$org_id)
     {
         $model1 = QuestionnaireTemplates::findOne(['questionnaire_enc_id'=>$id]);
         $model2 = new OrganizationQuestionnaire();
@@ -21,7 +21,8 @@ class QuestionnaireModel
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model2->questionnaire_enc_id = $utilitiesModel->encrypt();
-        $model2->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+        $model2->organization_enc_id = $org_id;
+        $model2->template_enc_id = $model1->questionnaire_enc_id;
         if (!$model2->save())
         {
             return false;

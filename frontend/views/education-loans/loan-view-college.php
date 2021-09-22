@@ -38,16 +38,6 @@ use yii\helpers\Url;
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="col-md-12 padd-20" id="countryName">
-                                    <div class="form-group">
-                                        <label for="duration" class="input-group-text">
-                                            Enter Country Name
-                                        </label>
-                                        <input type="text" class="form-control" id="country"
-                                               placeholder="Enter Country Name">
-                                    </div>
-                                </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label class="input-group-text" for="inputGroupSelect02">
@@ -55,6 +45,15 @@ use yii\helpers\Url;
                                         </label>
                                         <input type="text" id="cities" name="location" class="form-control"
                                                autocomplete="off" placeholder="City or State"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padd-20" id="countryName">
+                                    <div class="form-group">
+                                        <label for="duration" class="input-group-text">
+                                            College Name
+                                        </label>
+                                        <input type="text" class="form-control" id="country"
+                                               placeholder="Enter College Name">
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -114,7 +113,7 @@ use yii\helpers\Url;
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label for="number" class="input-group-text">
-                                            Phone Number (WhatsApp Preferred)
+                                            Phone Number (WhatsApp & Call)
                                         </label>
                                         <input type="text" class="form-control" id="number"
                                                placeholder="Enter Phone Number">
@@ -200,7 +199,7 @@ use yii\helpers\Url;
                                 </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="form-heading">
-                                        Co-Applicant Details
+                                        Borrower Details
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -238,11 +237,11 @@ use yii\helpers\Url;
                                                        class="checkbox-input services"/>
                                                 <label for="sister">Sister</label>
                                             </li>
-                                            <li class="service-list">
-                                                <input type="radio" name="name" id="guardian"
-                                                       class="checkbox-input services"/>
-                                                <label for="guardian">Guardian</label>
-                                            </li>
+<!--                                            <li class="service-list">-->
+<!--                                                <input type="radio" name="name" id="guardian"-->
+<!--                                                       class="checkbox-input services"/>-->
+<!--                                                <label for="guardian">Guardian</label>-->
+<!--                                            </li>-->
                                         </ul>
                                     </div>
                                 </div>
@@ -276,6 +275,16 @@ use yii\helpers\Url;
                                 </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
+                                        <label for="panNumber" class="input-group-text">
+                                            Pan Card Number
+                                        </label>
+                                        <input type="text" class="form-control co-field" id="panNumber"
+                                               name="panNumber" data-name="panNumber"
+                                               placeholder="Enter Pan Number">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
                                         <label for="annulIncome" class="input-group-text">
                                             Annual Income
                                         </label>
@@ -283,12 +292,119 @@ use yii\helpers\Url;
                                                placeholder="Enter Annual Income">
                                     </div>
                                 </div>
-                                <div id="addAnotherCo">
+                                <div class="applicantsMultiple">
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-heading">
+                                            Co-Borrower Details <span>Female Only</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="coBorrowerFemale" class="input-group-text">
+                                                Name
+                                            </label>
+                                            <input type="text" class="form-control co-field" id="coBorrowerFemale"
+                                                   placeholder="Enter Full Name" name="name" data-name="name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <div class="radio-heading input-group-text">
+                                                Relation
+                                            </div>
+                                            <ul>
 
+                                                <li class="service-list">
+                                                    <input type="radio" name="relation" id="coMother"
+                                                           class="checkbox-input services co-field" value="Mother"
+                                                           data-name="relation"/>
+                                                    <label for="coMother">Mother</label>
+                                                </li>
+                                                <li class="service-list">
+                                                    <input type="radio" name="relation" id="coSister"
+                                                           class="checkbox-input services co-field" value="Sister"
+                                                           data-name="relation"/>
+                                                    <label for="coSister">Sister</label>
+                                                </li>
+                                                <li class="service-list">
+                                                    <input type="radio" name="relation" id="coOther"
+                                                           class="checkbox-input services co-field" value="Sister"
+                                                           data-name="relation" onchange="showRelation()"/>
+                                                    <label for="coOther">Other</label>
+                                                </li>
+                                                <!--<li class="service-list">-->
+                                                <!--<input type="radio" name="relation" id="guardian"-->
+                                                <!--class="checkbox-input services co-field" value="Guardian"-->
+                                                <!--data-name="relation"/>-->
+                                                <!--<label for="guardian">Guardian</label>-->
+                                                <!--</li>-->
+                                            </ul>
+                                            <div class="">
+                                                <input type="text" class="form-control co-field" id="relationInput"
+                                                       name="relationInput" data-name="relationInput"
+                                                       placeholder="Relation">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <div class="radio-heading input-group-text">
+                                                Employment type ?
+                                            </div>
+                                            <ul class="displayInline">
+                                                <li>
+                                                    <label class="container-radio">Salaried
+                                                        <input type="radio" checked="checked" name="employment_type"
+                                                               value="1" class="co-field"
+                                                               data-name="employment_type">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
+                                                <li>
+                                                    <label class="container-radio">Self-Employed
+                                                        <input type="radio" name="employment_type" value="2"
+                                                               class="co-field" data-name="employment_type">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
+                                                <li>
+                                                    <label class="container-radio">Non-Working
+                                                        <input type="radio" name="employment_type" value="0"
+                                                               class="co-field" data-name="employment_type">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="panNumberTwo" class="input-group-text">
+                                                Pan Card Number
+                                            </label>
+                                            <input type="text" class="form-control co-field" id="panNumberTwo"
+                                                   name="panNumber" data-name="panNumber"
+                                                   placeholder="Enter Pan Number">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="coAnnual_income" class="input-group-text">
+                                                Annual Income
+                                            </label>
+                                            <input type="text" class="form-control co-field" id="coAnnual_income"
+                                                   name="annual_income" data-name="annual_income"
+                                                   placeholder="Enter Annual Income">
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-12 padd-20 displayFlex" id="addAnotherButton">
-                                    <button type="button" class="addAnotherCo input-group-text" onclick="addAnotherCo()"> <i class="fas fa-plus-square"></i> Add Another Co-Applicant</button>
-                                </div>
+<!--                                <div id="addAnotherCo">-->
+<!---->
+<!--                                </div>-->
+<!--                                <div class="col-md-12 padd-20 displayFlex" id="addAnotherButton">-->
+<!--                                    <button type="button" class="addAnotherCo input-group-text" onclick="addAnotherCo()"> <i class="fas fa-plus-square"></i> Add Another Co-Applicant</button>-->
+<!--                                </div>-->
                             </div>
                             <div class="input-group padd-20">
                                 <div class="btn-center">
@@ -315,12 +431,19 @@ use yii\helpers\Url;
                     <div class="el-pos-rel">
                         <div class="max-300">
                             <div class="cl-heading">Get the Best Education Loan</div>
-                            <div class="cl-text"> We tie up with the best providers in the country to help you plan your
-                                education.
-                                With offers that provide up to 100% of your required loan amount, planning for your
-                                education
-                                is now more easier than ever.
-                            </div>
+<!--                            <div class="cl-text"> We tie up with the best providers in the country to help you plan your-->
+<!--                                education.-->
+<!--                                With offers that provide up to 100% of your required loan amount, planning for your-->
+<!--                                education-->
+<!--                                is now more easier than ever.-->
+<!--                            </div>-->
+                            <ul class="loan-benefits">
+                                <li>- <span>No Security</span> Loans upto 2 Lakhs.</li>
+                                <li>- <span>0%</span> rate of interest</li>
+                                <li>- <span>100% Financing</span> will be provided which includes all expenses borne by
+                                    the students in a particular <span>academic year</span>.</li>
+                                <li>- Loan will be <span>repaid</span> with in the semester</li>
+                            </ul>
                             <div class="cl-icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/edu-loan-icon.png') ?>"
                                      alt="">
@@ -333,11 +456,26 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.padd-20{
+    padding-bottom: 10px;
+}
+.loan-benefits li{
+    color:#f3f3f2;
+    font-size: 16px;    
+}
 #countryName{
+.loan-benefits li span{
+    font-weight: bold;
+    color:#fff;
+}
     display: none;
 }
 #subBtn{
     display: none;
+}
+#relationInput{
+    display: none;
+    margin-top: 10px; 
 }
 .form-heading{
     font-weight: bold;
@@ -347,6 +485,10 @@ $this->registerCss('
     font-family: lora;
     border-bottom: 2px solid #eee;
     margin-bottom: 10px;
+}
+.form-heading span{
+    float: right;
+    color: #00a0e3
 }
 .thankyou-text{
     text-align: center;
@@ -816,6 +958,14 @@ $this->registerJs($script);
             console.log(coapplicants)
             if(coapplicants.length < 2){
                 document.getElementById('addAnotherButton').style.display = "block"
+            }
+        }
+
+        function showRelation() {
+            if(event.currentTarget.checked == true){
+                document.getElementById('relationInput').style.display = "block"
+            }else{
+                document.getElementById('relationInput').style.display = "none"
             }
         }
     </script>

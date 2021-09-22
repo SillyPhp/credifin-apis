@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+
 /**
  * This is the model class for table "{{%users}}".
  *
@@ -22,7 +23,7 @@ namespace common\models;
  * @property string $cover_image User Cover Image
  * @property string $cover_image_location User Cover Image Location
  * @property string $description User Info
- * @property string $objective Objective
+ * @property string $objective
  * @property string $facebook Facebook URL
  * @property string $google Google+ URL
  * @property string $twitter Twitter URL
@@ -43,41 +44,28 @@ namespace common\models;
  * @property string $last_updated_on On which date User information was updated
  * @property int $is_email_verified Is User Email Verified (0 as False, 1 as True)
  * @property int $is_phone_verified Is User Phone Verified (0 as False, 1 as True)
+ * @property int $is_credential_change
  * @property string $status User Status (Active, Inactive, Pending)
+ * @property string $last_visit user last login details
+ * @property string $last_visit_through user last login through which method
+ * @property string $signed_up_through from where user has first signed up
  * @property int $is_deleted Is User Deleted (0 as False, 1 as True)
  *
- * @property AccessRoutes[] $accessRoutes
- * @property AccessRoutes[] $accessRoutes0
- * @property AnsweredQuestionnaire[] $answeredQuestionnaires
- * @property AnsweredQuestionnaire[] $answeredQuestionnaires0
- * @property AnsweredQuestionnaireFields[] $answeredQuestionnaireFields
- * @property AnsweredQuestionnaireFields[] $answeredQuestionnaireFields0
+ * @property IndianGovtDepartments[] $indianGovtDepartments
+ * @property UsaDepartments[] $usaDepartments
+ * @property UsaProfileCodes[] $usaProfileCodes
+ * @property UsaProfileCodes[] $usaProfileCodes0
+ * @property ApiJobs[] $apiJobs
+ * @property ApiJobsPlacementCities[] $apiJobsPlacementCities
+ * @property ApiJobsPlacementCities[] $apiJobsPlacementCities0
  * @property AppEmpBenefitTemplate[] $appEmpBenefitTemplates
  * @property AppEmpBenefitTemplate[] $appEmpBenefitTemplates0
  * @property AppInterviewQuestionnaireTemplate[] $appInterviewQuestionnaireTemplates
  * @property AppInterviewQuestionnaireTemplate[] $appInterviewQuestionnaireTemplates0
  * @property ApplicationEduReqTemplate[] $applicationEduReqTemplates
  * @property ApplicationEduReqTemplate[] $applicationEduReqTemplates0
- * @property ApplicationEducationalRequirements[] $applicationEducationalRequirements
- * @property ApplicationEducationalRequirements[] $applicationEducationalRequirements0
- * @property ApplicationEmployeeBenefits[] $applicationEmployeeBenefits
- * @property ApplicationEmployeeBenefits[] $applicationEmployeeBenefits0
- * @property ApplicationInterviewLocations[] $applicationInterviewLocations
- * @property ApplicationInterviewLocations[] $applicationInterviewLocations0
- * @property ApplicationInterviewQuestionnaire[] $applicationInterviewQuestionnaires
- * @property ApplicationInterviewQuestionnaire[] $applicationInterviewQuestionnaires0
- * @property ApplicationJobDescription[] $applicationJobDescriptions
- * @property ApplicationJobDescription[] $applicationJobDescriptions0
- * @property ApplicationOptions[] $applicationOptions
- * @property ApplicationOptions[] $applicationOptions0
  * @property ApplicationOptionsTemplate[] $applicationOptionsTemplates
  * @property ApplicationOptionsTemplate[] $applicationOptionsTemplates0
- * @property ApplicationPlacementCities[] $applicationPlacementCities
- * @property ApplicationPlacementCities[] $applicationPlacementCities0
- * @property ApplicationPlacementLocations[] $applicationPlacementLocations
- * @property ApplicationPlacementLocations[] $applicationPlacementLocations0
- * @property ApplicationSkills[] $applicationSkills
- * @property ApplicationSkills[] $applicationSkills0
  * @property ApplicationSkillsTemplate[] $applicationSkillsTemplates
  * @property ApplicationSkillsTemplate[] $applicationSkillsTemplates0
  * @property ApplicationTemplateJobDescription[] $applicationTemplateJobDescriptions
@@ -86,278 +74,335 @@ namespace common\models;
  * @property ApplicationTemplates[] $applicationTemplates0
  * @property ApplicationUnclaimOptions[] $applicationUnclaimOptions
  * @property ApplicationUnclaimOptions[] $applicationUnclaimOptions0
- * @property Applications[] $applications
- * @property Applications[] $applications0
- * @property Applications[] $applications1
- * @property AppliedApplicationLocations[] $appliedApplicationLocations
- * @property AppliedApplicationLocations[] $appliedApplicationLocations0
- * @property AppliedApplicationProcess[] $appliedApplicationProcesses
- * @property AppliedApplicationProcess[] $appliedApplicationProcesses0
- * @property AppliedApplications[] $appliedApplications
- * @property AppliedApplications[] $appliedApplications0
+ * @property AppliedTrainingApplications[] $appliedTrainingApplications
+ * @property AppliedTrainingApplications[] $appliedTrainingApplications0
+ * @property AppliedTrainingBatches[] $appliedTrainingBatches
+ * @property AppliedTrainingBatches[] $appliedTrainingBatches0
  * @property AssignedCategories[] $assignedCategories
  * @property AssignedCategories[] $assignedCategories0
+ * @property AssignedCollegeCourses[] $assignedCollegeCourses
+ * @property AssignedCollegeCourses[] $assignedCollegeCourses0
  * @property AssignedEducationalRequirements[] $assignedEducationalRequirements
  * @property AssignedEducationalRequirements[] $assignedEducationalRequirements0
+ * @property AssignedIndianJobs[] $assignedIndianJobs
+ * @property AssignedIndianJobs[] $assignedIndianJobs0
  * @property AssignedIndustries[] $assignedIndustries
  * @property AssignedIndustries[] $assignedIndustries0
  * @property AssignedJobDescription[] $assignedJobDescriptions
  * @property AssignedJobDescription[] $assignedJobDescriptions0
+ * @property AssignedLoanProvider[] $assignedLoanProviders
+ * @property AssignedLoanProvider[] $assignedLoanProviders0
+ * @property AssignedOrganizationFeeComponent[] $assignedOrganizationFeeComponents
  * @property AssignedSkills[] $assignedSkills
  * @property AssignedSkills[] $assignedSkills0
+ * @property AssignedStaticWidgets[] $assignedStaticWidgets
  * @property AssignedTags[] $assignedTags
  * @property AssignedTags[] $assignedTags0
- * @property BookmarkedHiringTemplates[] $bookmarkedHiringTemplates
- * @property BookmarkedHiringTemplates[] $bookmarkedHiringTemplates0
- * @property BookmarkedQuestionnaireTemplates[] $bookmarkedQuestionnaireTemplates
- * @property BookmarkedQuestionnaireTemplates[] $bookmarkedQuestionnaireTemplates0
- * @property CandidateJobTitle[] $candidateJobTitles
- * @property CandidateRecords[] $candidateRecords
- * @property CareerAdvise[] $careerAdvises
- * @property CareerAdvise[] $careerAdvises0
- * @property CareerQuestions[] $careerQuestions
- * @property CareerQuestions[] $careerQuestions0
+ * @property AssignedUnclaimCollegeCourses[] $assignedUnclaimCollegeCourses
+ * @property AssignedUnclaimCollegeCourses[] $assignedUnclaimCollegeCourses0
+ * @property AssignedWebinarTo[] $assignedWebinarTos
+ * @property Auth[] $auths
+ * @property CandidateConsiderJobs[] $candidateConsiderJobs
+ * @property CandidateRejection[] $candidateRejections
+ * @property CandidateRejection[] $candidateRejections0
+ * @property CandidateRejectionReasons[] $candidateRejectionReasons
+ * @property CareerAdvicePostComments[] $careerAdvicePostComments
+ * @property CareerAdvisePosts[] $careerAdvisePosts
+ * @property CareerAdvisePosts[] $careerAdvisePosts0
  * @property Categories[] $categories
  * @property Categories[] $categories0
- * @property CategoriesList[] $categoriesLists
- * @property CategoriesList[] $categoriesLists0
- * @property CitiesPriority[] $citiesPriorities
- * @property CitiesPriority[] $citiesPriorities0
+ * @property CategoryTags[] $categoryTags
+ * @property CategoryTags[] $categoryTags0
+ * @property ClassAccess[] $classAccesses
+ * @property ClassAccess[] $classAccesses0
+ * @property ClassNotes[] $classNotes
+ * @property CollectedDocuments[] $collectedDocuments
+ * @property CollegeCourses[] $collegeCourses
+ * @property CollegeCourses[] $collegeCourses0
+ * @property CollegeCoursesPool[] $collegeCoursesPools
+ * @property CollegeCoursesPool[] $collegeCoursesPools0
+ * @property CollegePlacementHighlights[] $collegePlacementHighlights
+ * @property CollegePlacementHighlights[] $collegePlacementHighlights0
+ * @property CollegeRecruitmentByCourse[] $collegeRecruitmentByCourses
+ * @property CollegeRecruitmentByCourse[] $collegeRecruitmentByCourses0
+ * @property CollegeScholarships[] $collegeScholarships
+ * @property CollegeScholarships[] $collegeScholarships0
+ * @property CollegeSections[] $collegeSections
+ * @property CollegeSettings[] $collegeSettings
+ * @property CollegeSettings[] $collegeSettings0
  * @property CollegeStudentsReview[] $collegeStudentsReviews
  * @property CollegeStudentsReview[] $collegeStudentsReviews0
- * @property Contacts[] $contacts
- * @property ConversationMessages[] $conversationMessages
- * @property ConversationMessages[] $conversationMessages0
- * @property ConversationParticipants[] $conversationParticipants
- * @property ConversationParticipants[] $conversationParticipants0
- * @property ConversationParticipants[] $conversationParticipants1
- * @property Conversations[] $conversations
- * @property Conversations[] $conversations0
- * @property CustomForm[] $customForms
- * @property CustomForm[] $customForms0
+ * @property Courses[] $courses
+ * @property Currencies[] $currencies
  * @property Designations[] $designations
  * @property Designations[] $designations0
+ * @property DevelopmentTracking[] $developmentTrackings
+ * @property DevelopmentTracking[] $developmentTrackings0
  * @property DomainNames[] $domainNames
- * @property DropResumeApplicationLocations[] $dropResumeApplicationLocations
- * @property DropResumeApplicationLocations[] $dropResumeApplicationLocations0
- * @property DropResumeApplicationLocations[] $dropResumeApplicationLocations1
- * @property DropResumeApplicationTitles[] $dropResumeApplicationTitles
- * @property DropResumeApplicationTitles[] $dropResumeApplicationTitles0
- * @property DropResumeApplicationTitles[] $dropResumeApplicationTitles1
- * @property DropResumeApplications[] $dropResumeApplications
- * @property DropResumeApplications[] $dropResumeApplications0
- * @property DropResumeApplications[] $dropResumeApplications1
+ * @property DomainNames[] $domainNames0
+ * @property DomainRoutes[] $domainRoutes
+ * @property DomainRoutes[] $domainRoutes0
+ * @property EducationLoanPayments[] $educationLoanPayments
+ * @property EducationLoanPayments[] $educationLoanPayments0
  * @property EducationalRequirements[] $educationalRequirements
  * @property EducationalRequirements[] $educationalRequirements0
- * @property EducationalStreams[] $educationalStreams
- * @property EducationalStreams[] $educationalStreams0
- * @property EmployeeBenefits[] $employeeBenefits
- * @property EmployeeBenefits[] $employeeBenefits0
- * @property EmployerApplications[] $employerApplications
- * @property EmployerApplications[] $employerApplications0
+ * @property EmailLogs[] $emailLogs
+ * @property EmailTemplates[] $emailTemplates
+ * @property EmailTemplates[] $emailTemplates0
  * @property EmployerReviews[] $employerReviews
  * @property EmployerReviews[] $employerReviews0
- * @property Feedback[] $feedbacks
- * @property Feedback[] $feedbacks0
- * @property FollowedOrganizations[] $followedOrganizations
- * @property FollowedOrganizations[] $followedOrganizations0
- * @property FollowedOrganizations[] $followedOrganizations1
- * @property Organizations[] $organizationEncs
+ * @property ErexxActivityTracks[] $erexxActivityTracks
+ * @property ErexxActivityTracks[] $erexxActivityTracks0
+ * @property ErexxCollegeRejectionReasons[] $erexxCollegeRejectionReasons
+ * @property ErexxCollegeRejections[] $erexxCollegeRejections
+ * @property ErexxEmployerApplications[] $erexxEmployerApplications
+ * @property ErexxEmployerApplications[] $erexxEmployerApplications0
+ * @property ErexxWhatsappInvitation[] $erexxWhatsappInvitations
+ * @property ExternalNewsUpdate[] $externalNewsUpdates
+ * @property ExternalNewsUpdate[] $externalNewsUpdates0
+ * @property FeedSources[] $feedSources
+ * @property Files[] $files
+ * @property Files[] $files0
+ * @property GitApplications[] $gitApplications
+ * @property GitApplications[] $gitApplications0
+ * @property GitOrganizations[] $gitOrganizations
+ * @property GitOrganizations[] $gitOrganizations0
+ * @property HiringProcessNotes[] $hiringProcessNotes
+ * @property HiringProcessNotes[] $hiringProcessNotes0
  * @property HiringProcessTemplateFields[] $hiringProcessTemplateFields
  * @property HiringProcessTemplateFields[] $hiringProcessTemplateFields0
  * @property HiringProcessTemplates[] $hiringProcessTemplates
  * @property HiringProcessTemplates[] $hiringProcessTemplates0
+ * @property IndianGovtJobs[] $indianGovtJobs
+ * @property InstituteLeads[] $instituteLeads
+ * @property InstituteLeads[] $instituteLeads0
+ * @property InstituteLeadsPayments[] $instituteLeadsPayments
+ * @property InstituteLeadsPayments[] $instituteLeadsPayments0
  * @property InstituteStudentsReview[] $instituteStudentsReviews
  * @property InstituteStudentsReview[] $instituteStudentsReviews0
- * @property InterviewProcessFields[] $interviewProcessFields
- * @property InterviewProcessFields[] $interviewProcessFields0
- * @property InterviewScheduler[] $interviewSchedulers
- * @property InterviewScheduler[] $interviewSchedulers0
- * @property InterviewerRecords[] $interviewerRecords
- * @property InterviewerRecords[] $interviewerRecords0
  * @property JobDescription[] $jobDescriptions
  * @property JobDescription[] $jobDescriptions0
- * @property LearningCornerResourceDiscussion[] $learningCornerResourceDiscussions
- * @property LearningCornerResourceDiscussion[] $learningCornerResourceDiscussions0
- * @property LearningVideoComments[] $learningVideoComments
- * @property LearningVideoLikes[] $learningVideoLikes
- * @property LearningVideoTags[] $learningVideoTags
- * @property LearningVideoTags[] $learningVideoTags0
- * @property LearningVideos[] $learningVideos
- * @property LearningVideos[] $learningVideos0
+ * @property Labels[] $labels
+ * @property Labels[] $labels0
+ * @property LeadApplicationCalling[] $leadApplicationCallings
+ * @property LeadApplicationCalling[] $leadApplicationCallings0
+ * @property LeadsApplications[] $leadsApplications
+ * @property LeadsApplications[] $leadsApplications0
+ * @property LeadsApplications[] $leadsApplications1
+ * @property LeadsApplications[] $leadsApplications2
+ * @property LeadsApplications[] $leadsApplications3
+ * @property LeadsCollegePreference[] $leadsCollegePreferences
+ * @property LeadsCollegePreference[] $leadsCollegePreferences0
+ * @property LeadsParentInformation[] $leadsParentInformations
+ * @property LeadsParentInformation[] $leadsParentInformations0
+ * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
+ * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos0
+ * @property LoanApplicationLogs[] $loanApplicationLogs
+ * @property LoanApplications[] $loanApplications
+ * @property LoanApplications[] $loanApplications0
+ * @property LoanApplicationsCollegePreference[] $loanApplicationsCollegePreferences
+ * @property LoanApplicationsCollegePreference[] $loanApplicationsCollegePreferences0
+ * @property LoanCandidateEducation[] $loanCandidateEducations
+ * @property LoanCandidateEducation[] $loanCandidateEducations0
+ * @property LoanCertificates[] $loanCertificates
+ * @property LoanCertificates[] $loanCertificates0
+ * @property LoanCoApplicants[] $loanCoApplicants
+ * @property LoanCoApplicants[] $loanCoApplicants0
+ * @property LoanDocuments[] $loanDocuments
+ * @property LoanPurpose[] $loanPurposes
+ * @property LoanSanctionReports[] $loanSanctionReports
+ * @property LoanSanctionReports[] $loanSanctionReports0
+ * @property MisAssignedMenuItems[] $misAssignedMenuItems
+ * @property MisAssignedMenuItems[] $misAssignedMenuItems0
+ * @property MisAssignedMenus[] $misAssignedMenuses
+ * @property MisAssignedMenus[] $misAssignedMenuses0
  * @property MisEmailLogs[] $misEmailLogs
- * @property NewOrganizationReviews[] $newOrganizationReviews
- * @property NewOrganizationReviews[] $newOrganizationReviews0
- * @property OrganizationAssignedCategories[] $organizationAssignedCategories
- * @property OrganizationAssignedCategories[] $organizationAssignedCategories0
- * @property OrganizationBlogInfoLocations[] $organizationBlogInfoLocations
- * @property OrganizationBlogInformation[] $organizationBlogInformations
- * @property OrganizationBlogInformationImages[] $organizationBlogInformationImages
- * @property OrganizationEmployeeBenefits[] $organizationEmployeeBenefits
- * @property OrganizationEmployeeBenefits[] $organizationEmployeeBenefits0
- * @property OrganizationEmployees[] $organizationEmployees
- * @property OrganizationEmployees[] $organizationEmployees0
- * @property OrganizationImages[] $organizationImages
- * @property OrganizationImages[] $organizationImages0
- * @property OrganizationInterviewProcess[] $organizationInterviewProcesses
- * @property OrganizationInterviewProcess[] $organizationInterviewProcesses0
- * @property OrganizationLocations[] $organizationLocations
- * @property OrganizationLocations[] $organizationLocations0
- * @property OrganizationProductImages[] $organizationProductImages
- * @property OrganizationProductImages[] $organizationProductImages0
- * @property OrganizationProducts[] $organizationProducts
- * @property OrganizationProducts[] $organizationProducts0
+ * @property MisUserTasks[] $misUserTasks
+ * @property MisUserTasks[] $misUserTasks0
+ * @property MisUserTasks[] $misUserTasks1
+ * @property MockBoards[] $mockBoards
+ * @property MockCoursePool[] $mockCoursePools
+ * @property MockCourses[] $mockCourses
+ * @property MockLabelPool[] $mockLabelPools
+ * @property MockLabels[] $mockLabels
+ * @property MockLevels[] $mockLevels
+ * @property MockQuizPool[] $mockQuizPools
+ * @property MockQuizQuestionsPool[] $mockQuizQuestionsPools
+ * @property MockQuizQuestionsPool[] $mockQuizQuestionsPools0
+ * @property MockQuizzes[] $mockQuizzes
+ * @property MockQuizzes[] $mockQuizzes0
+ * @property MockSubjects[] $mockSubjects
+ * @property MockSubjectsPool[] $mockSubjectsPools
+ * @property MockTakenQuizzes[] $mockTakenQuizzes
+ * @property NewsTags[] $newsTags
+ * @property NewsTags[] $newsTags0
+ * @property OnlineClassComments[] $onlineClassComments
+ * @property OnlineClassComments[] $onlineClassComments0
+ * @property OpenAssignedTitles[] $openAssignedTitles
+ * @property OpenAssignedTitles[] $openAssignedTitles0
+ * @property OrganizationFeeAmount[] $organizationFeeAmounts
+ * @property OrganizationFeeComponents[] $organizationFeeComponents
+ * @property OrganizationLabels[] $organizationLabels
+ * @property OrganizationLabels[] $organizationLabels0
+ * @property OrganizationLoanSchemes[] $organizationLoanSchemes
  * @property OrganizationQuestionnaire[] $organizationQuestionnaires
  * @property OrganizationQuestionnaire[] $organizationQuestionnaires0
- * @property OrganizationReviewFeedback[] $organizationReviewFeedbacks
- * @property OrganizationReviewFeedback[] $organizationReviewFeedbacks0
- * @property OrganizationReviewFeedback[] $organizationReviewFeedbacks1
- * @property OrganizationReviewLikeDislike[] $organizationReviewLikeDislikes
- * @property OrganizationReviewLikeDislike[] $organizationReviewLikeDislikes0
- * @property OrganizationReviews[] $organizationReviews
- * @property OrganizationReviews[] $organizationReviews0
- * @property OrganizationVideos[] $organizationVideos
- * @property OrganizationVideos[] $organizationVideos0
  * @property Organizations[] $organizations
  * @property Organizations[] $organizations0
+ * @property OrganizationsDatabase[] $organizationsDatabases
+ * @property PathToClaimOrgLoanApplication[] $pathToClaimOrgLoanApplications
+ * @property PathToOpenLeads[] $pathToOpenLeads
+ * @property PollCounterr[] $pollCounterrs
+ * @property PoolWebinarOutcomes[] $poolWebinarOutcomes
  * @property PostCategories[] $postCategories
  * @property PostCategories[] $postCategories0
  * @property PostComments[] $postComments
- * @property PostEmbeddedImages[] $postEmbeddedImages
- * @property PostEmbeddedImages[] $postEmbeddedImages0
- * @property PostMedia[] $postMedia
- * @property PostMedia[] $postMedia0
- * @property PostTags[] $postTags
- * @property PostTags[] $postTags0
- * @property Posts[] $posts
- * @property Posts[] $posts0
+ * @property QuestionPoolTags[] $questionPoolTags
+ * @property QuestionPoolTags[] $questionPoolTags0
  * @property QuestionnaireFieldOptions[] $questionnaireFieldOptions
  * @property QuestionnaireFieldOptions[] $questionnaireFieldOptions0
  * @property QuestionnaireFields[] $questionnaireFields
  * @property QuestionnaireFields[] $questionnaireFields0
- * @property QuestionnaireTemplateFieldOptions[] $questionnaireTemplateFieldOptions
- * @property QuestionnaireTemplateFieldOptions[] $questionnaireTemplateFieldOptions0
- * @property QuestionnaireTemplateFields[] $questionnaireTemplateFields
- * @property QuestionnaireTemplateFields[] $questionnaireTemplateFields0
  * @property QuestionnaireTemplates[] $questionnaireTemplates
  * @property QuestionnaireTemplates[] $questionnaireTemplates0
+ * @property QuestionsPool[] $questionsPools
+ * @property QuestionsPool[] $questionsPools0
+ * @property QuestionsPoolAnswer[] $questionsPoolAnswers
+ * @property QuestionsPoolAnswer[] $questionsPoolAnswers0
+ * @property QuizAssignedGroup[] $quizAssignedGroups
+ * @property QuizAssignedGroup[] $quizAssignedGroups0
+ * @property QuizPool[] $quizPools
+ * @property QuizPool[] $quizPools0
+ * @property QuizQuestionsPool[] $quizQuestionsPools
+ * @property QuizQuestionsPool[] $quizQuestionsPools0
  * @property Quizzes[] $quizzes
  * @property Quizzes[] $quizzes0
- * @property QuizQuestions[] $quizQuestions
- * @property QuizQuestions[] $quizQuestions0
+ * @property RatingQuestions[] $ratingQuestions
+ * @property RatingQuestions[] $ratingQuestions0
+ * @property RatingSystem[] $ratingSystems
+ * @property RatingSystem[] $ratingSystems0
+ * @property RatingSystemAnswers[] $ratingSystemAnswers
+ * @property RatingSystemAnswers[] $ratingSystemAnswers0
+ * @property RawDatabase[] $rawDatabases
  * @property Referral[] $referrals
  * @property Referral[] $referrals0
- * @property Organizations[] $organizationEncs0
+ * @property Organizations[] $organizationEncs
  * @property ReferralSignUpTracking[] $referralSignUpTrackings
- * @property ReviewedApplications[] $reviewedApplications
- * @property ReviewedApplications[] $reviewedApplications0
+ * @property RejectionReasons[] $rejectionReasons
+ * @property ResumeTemplates[] $resumeTemplates
  * @property Reviews[] $reviews
- * @property ReviewsType[] $reviewsTypes
- * @property RolePrivileges[] $rolePrivileges
- * @property Roles[] $roles
- * @property ScheduledInterview[] $scheduledInterviews
- * @property ScheduledInterview[] $scheduledInterviews0
+ * @property SalaryReviews[] $salaryReviews
+ * @property SalaryReviews[] $salaryReviews0
  * @property SchoolStudentsReview[] $schoolStudentsReviews
  * @property SchoolStudentsReview[] $schoolStudentsReviews0
- * @property SelectedServices[] $selectedServices
- * @property SelectedServices[] $selectedServices0
  * @property Seo[] $seos
  * @property Seo[] $seos0
- * @property SharingLinks[] $sharingLinks
- * @property SharingLinks[] $sharingLinks0
- * @property ShortlistedApplications[] $shortlistedApplications
- * @property ShortlistedApplications[] $shortlistedApplications0
- * @property ShortlistedOrganizations[] $shortlistedOrganizations
- * @property ShortlistedOrganizations[] $shortlistedOrganizations0
- * @property Sitemap[] $sitemaps
- * @property Sitemap[] $sitemaps0
- * @property SitemapComments[] $sitemapComments
- * @property SitemapComments[] $sitemapComments0
+ * @property ShortlistedApplicants[] $shortlistedApplicants
+ * @property ShortlistedApplicants[] $shortlistedApplicants0
+ * @property ShortlistedApplicants[] $shortlistedApplicants1
  * @property Skills[] $skills
  * @property Skills[] $skills0
- * @property SocialOwnedGroups[] $socialOwnedGroups
- * @property SocialOwnedGroups[] $socialOwnedGroups0
- * @property SocialPages[] $socialPages
- * @property SocialPages[] $socialPages0
- * @property SocialProfiles[] $socialProfiles
- * @property SocialProfiles[] $socialProfiles0
- * @property SocialPublicGroups[] $socialPublicGroups
- * @property SocialPublicGroups[] $socialPublicGroups0
- * @property SpokenLanguages[] $spokenLanguages
- * @property SpokenLanguages[] $spokenLanguages0
+ * @property SkillsUpEmbedPosts[] $skillsUpEmbedPosts
+ * @property SkillsUpEmbedPosts[] $skillsUpEmbedPosts0
+ * @property SkillsUpPostAssignedBlogs[] $skillsUpPostAssignedBlogs
+ * @property SkillsUpPostAssignedBlogs[] $skillsUpPostAssignedBlogs0
+ * @property SkillsUpPostAssignedEmbeds[] $skillsUpPostAssignedEmbeds
+ * @property SkillsUpPostAssignedEmbeds[] $skillsUpPostAssignedEmbeds0
+ * @property SkillsUpPostAssignedIndustries[] $skillsUpPostAssignedIndustries
+ * @property SkillsUpPostAssignedIndustries[] $skillsUpPostAssignedIndustries0
+ * @property SkillsUpPostAssignedNews[] $skillsUpPostAssignedNews
+ * @property SkillsUpPostAssignedNews[] $skillsUpPostAssignedNews0
+ * @property SkillsUpPostAssignedSkills[] $skillsUpPostAssignedSkills
+ * @property SkillsUpPostAssignedSkills[] $skillsUpPostAssignedSkills0
+ * @property SkillsUpPostAssignedVideo[] $skillsUpPostAssignedVideos
+ * @property SkillsUpPostAssignedVideo[] $skillsUpPostAssignedVideos0
+ * @property SkillsUpPosts[] $skillsUpPosts
+ * @property SkillsUpPosts[] $skillsUpPosts0
+ * @property SkillsUpSources[] $skillsUpSources
+ * @property SkillsUpSources[] $skillsUpSources0
+ * @property SocialGroups[] $socialGroups
+ * @property SocialGroups[] $socialGroups0
+ * @property SocialLinks[] $socialLinks
+ * @property SocialLinks[] $socialLinks0
+ * @property SocialPlatforms[] $socialPlatforms
+ * @property SocialPlatforms[] $socialPlatforms0
+ * @property SpeakerExpertises[] $speakerExpertises
+ * @property Speakers[] $speakers
+ * @property Speakers[] $speakers0
+ * @property Speakers[] $speakers1
+ * @property StaticWidgets[] $staticWidgets
+ * @property StaticWidgets[] $staticWidgets0
  * @property SubmittedVideos[] $submittedVideos
  * @property SubmittedVideos[] $submittedVideos0
+ * @property SubmittedVideos[] $submittedVideos1
+ * @property SuggestionAnsweredQuestionnaire[] $suggestionAnsweredQuestionnaires
+ * @property SuggestionAnsweredQuestionnaire[] $suggestionAnsweredQuestionnaires0
+ * @property SuggestionGroup[] $suggestionGroups
+ * @property SuggestionGroup[] $suggestionGroups0
+ * @property SuggestionQuestionnaire[] $suggestionQuestionnaires
+ * @property SuggestionQuestionnaire[] $suggestionQuestionnaires0
+ * @property SuggestionQuestionnaireFields[] $suggestionQuestionnaireFields
+ * @property SuggestionQuestionnaireFields[] $suggestionQuestionnaireFields0
  * @property Tags[] $tags
  * @property Tags[] $tags0
- * @property TopOrganizationsBlogs[] $topOrganizationsBlogs
- * @property TopOrganizationsBlogsList[] $topOrganizationsBlogsLists
- * @property TrainingApplications[] $trainingApplications
+ * @property Teachers[] $teachers
+ * @property TitleMergedDb[] $titleMergedDbs
+ * @property TitleMergedDb[] $titleMergedDbs0
+ * @property Topics[] $topics
+ * @property TrainingProgramApplication[] $trainingProgramApplications
+ * @property TrainingProgramApplication[] $trainingProgramApplications0
  * @property TrainingProgramBatches[] $trainingProgramBatches
  * @property TrainingProgramBatches[] $trainingProgramBatches0
- * @property TrainingProgramBatches[] $trainingProgramBatches1
- * @property TrainingPrograms[] $trainingPrograms
- * @property TrainingPrograms[] $trainingPrograms0
- * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations
- * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations0
- * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations1
- * @property UnclaimedOrganizations[] $organizationEncs1
+ * @property TrainingProgramBatchesBk[] $trainingProgramBatchesBks
+ * @property TrainingProgramBatchesBk[] $trainingProgramBatchesBks0
+ * @property TrainingProgramSkills[] $trainingProgramSkills
+ * @property TrainingProgramSkills[] $trainingProgramSkills0
+ * @property TwitterJobSkills[] $twitterJobSkills
+ * @property TwitterJobSkills[] $twitterJobSkills0
+ * @property TwitterJobs[] $twitterJobs
+ * @property TwitterJobs[] $twitterJobs0
+ * @property TwitterPlacementCities[] $twitterPlacementCities
+ * @property TwitterPlacementCities[] $twitterPlacementCities0
+ * @property UnclaimAssignedIndustries[] $unclaimAssignedIndustries
+ * @property UnclaimAssignedIndustries[] $unclaimAssignedIndustries0
+ * @property UnclaimOrganizationImages[] $unclaimOrganizationImages
+ * @property UnclaimOrganizationImages[] $unclaimOrganizationImages0
+ * @property UnclaimOrganizationLabels[] $unclaimOrganizationLabels
+ * @property UnclaimOrganizationLabels[] $unclaimOrganizationLabels0
+ * @property UnclaimOrganizationLocations[] $unclaimOrganizationLocations
+ * @property UnclaimOrganizationLocations[] $unclaimOrganizationLocations0
  * @property UnclaimedOrganizations[] $unclaimedOrganizations
- * @property UserAccessTokens[] $userAccessTokens
- * @property UserAchievements[] $userAchievements
- * @property UserAchievements[] $userAchievements0
- * @property UserAchievements[] $userAchievements1
- * @property UserCoachingTutorials[] $userCoachingTutorials
- * @property UserCoachingTutorials[] $userCoachingTutorials0
- * @property UserEducation[] $userEducations
- * @property UserEducation[] $userEducations0
- * @property UserEducation[] $userEducations1
- * @property UserHobbies[] $userHobbies
- * @property UserHobbies[] $userHobbies0
- * @property UserHobbies[] $userHobbies1
- * @property UserInterests[] $userInterests
- * @property UserInterests[] $userInterests0
- * @property UserInterests[] $userInterests1
- * @property UserPreferences[] $userPreferences
- * @property UserPreferences[] $userPreferences0
- * @property UserPreferredIndustries[] $userPreferredIndustries
- * @property UserPreferredIndustries[] $userPreferredIndustries0
- * @property UserPreferredJobProfile[] $userPreferredJobProfiles
- * @property UserPreferredJobProfile[] $userPreferredJobProfiles0
- * @property UserPreferredLocations[] $userPreferredLocations
- * @property UserPreferredLocations[] $userPreferredLocations0
- * @property UserPreferredSkills[] $userPreferredSkills
- * @property UserPreferredSkills[] $userPreferredSkills0
- * @property UserPrivileges[] $userPrivileges
- * @property UserPrivileges[] $userPrivileges0
- * @property UserPrivileges[] $userPrivileges1
- * @property Roles[] $roleEncs
- * @property UserResume[] $userResumes
- * @property UserResume[] $userResumes0
- * @property UserResume[] $userResumes1
- * @property UserSkills[] $userSkills
- * @property UserSkills[] $userSkills0
- * @property UserSpokenLanguages[] $userSpokenLanguages
- * @property UserSpokenLanguages[] $userSpokenLanguages0
- * @property UserTasks[] $userTasks
- * @property UserTasks[] $userTasks0
- * @property UserTasks[] $userTasks1
+ * @property UserOtherDetails[] $userOtherDetails
  * @property UserVerificationTokens[] $userVerificationTokens
- * @property UserVerificationTokens[] $userVerificationTokens0
- * @property UserWorkExperience[] $userWorkExperiences
- * @property UserWorkExperience[] $userWorkExperiences0
- * @property UserWorkExperience[] $userWorkExperiences1
- * @property Cities $cityEnc
+ * @property UserWebinarInterest[] $userWebinarInterests
+ * @property UserWebinarInterest[] $userWebinarInterests0
  * @property Organizations $organizationEnc
  * @property UserTypes $userTypeEnc
- * @property Categories $jobFunction
- * @property AssignedCategories $asignedJobFunction
- * @property WhatsappInvitationMessages[] $whatsappInvitationMessages
- * @property WhatsappInvitationMessages[] $whatsappInvitationMessages0
- * @property WhatsappInvitations[] $whatsappInvitations
- * @property WhatsappInvitations[] $whatsappInvitations0
- * @property YoutubeChannels[] $youtubeChannels
- * @property YoutubeChannels[] $youtubeChannels0
- * @property YoutubeChannels[] $youtubeChannels1
+ * @property Cities $cityEnc
+ * @property VideoSessions[] $videoSessions
+ * @property Webinar[] $webinars
+ * @property Webinar[] $webinars0
+ * @property WebinarConversationMessages[] $webinarConversationMessages
+ * @property WebinarConversationMessages[] $webinarConversationMessages0
+ * @property WebinarConversations[] $webinarConversations
+ * @property WebinarConversations[] $webinarConversations0
+ * @property WebinarEvents[] $webinarEvents
+ * @property WebinarEvents[] $webinarEvents0
+ * @property WebinarModerators[] $webinarModerators
+ * @property WebinarModerators[] $webinarModerators0
+ * @property WebinarOutcomes[] $webinarOutcomes
+ * @property WebinarOutcomes[] $webinarOutcomes0
+ * @property WebinarPayments[] $webinarPayments
+ * @property WebinarPayments[] $webinarPayments0
+ * @property WebinarRegistrations[] $webinarRegistrations
+ * @property WebinarRegistrations[] $webinarRegistrations0
+ * @property WebinarRequest[] $webinarRequests
+ * @property WebinarRequest[] $webinarRequests0
+ * @property WebinarRequestSpeakers[] $webinarRequestSpeakers
+ * @property WebinarRequestSpeakers[] $webinarRequestSpeakers0
+ * @property WebinarSessions[] $webinarSessions
+ * @property WebinarSpeakers[] $webinarSpeakers
+ * @property WebinarSpeakers[] $webinarSpeakers0
  */
 class Users extends \yii\db\ActiveRecord
 {
@@ -375,10 +420,10 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_enc_id', 'username', 'email', 'password', 'auth_key', 'first_name', 'last_name', 'user_type_enc_id', 'phone', 'initials_color'], 'required'],
-            [['dob', 'created_on', 'last_updated_on'], 'safe'],
-            [['gender', 'is_available', 'is_email_verified', 'is_phone_verified', 'is_deleted'], 'integer'],
-            [['description', 'objective', 'user_of', 'status'], 'string'],
+            [['user_enc_id', 'username', 'email', 'password', 'auth_key', 'first_name', 'last_name', 'user_type_enc_id', 'initials_color'], 'required'],
+            [['description', 'objective', 'user_of', 'status', 'last_visit_through', 'signed_up_through'], 'string'],
+            [['dob', 'created_on', 'last_updated_on', 'last_visit'], 'safe'],
+            [['gender', 'is_available', 'is_email_verified', 'is_phone_verified', 'is_credential_change', 'is_deleted'], 'integer'],
             [['user_enc_id', 'auth_key', 'user_type_enc_id', 'address', 'image', 'image_location', 'cover_image', 'cover_image_location', 'city_enc_id', 'organization_enc_id', 'job_function', 'asigned_job_function'], 'string', 'max' => 100],
             [['username', 'email', 'facebook', 'google', 'twitter', 'instagram', 'linkedin', 'youtube', 'skype'], 'string', 'max' => 50],
             [['password'], 'string', 'max' => 200],
@@ -389,11 +434,9 @@ class Users extends \yii\db\ActiveRecord
             [['username'], 'unique'],
             [['email'], 'unique'],
             [['phone'], 'unique'],
-            [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
             [['user_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type_enc_id' => 'user_type_enc_id']],
-            [['job_function'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['job_function' => 'category_enc_id']],
-            [['asigned_job_function'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedCategories::className(), 'targetAttribute' => ['asigned_job_function' => 'assigned_category_enc_id']],
+            [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
         ];
     }
 
@@ -443,6 +486,38 @@ class Users extends \yii\db\ActiveRecord
     public function getAnsweredQuestionnaireFields0()
     {
         return $this->hasMany(AnsweredQuestionnaireFields::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIndianGovtDepartments()
+    {
+        return $this->hasMany(IndianGovtDepartments::className(), ['last_retrieved_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsaDepartments()
+    {
+        return $this->hasMany(UsaDepartments::className(), ['last_retrieved_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsaProfileCodes()
+    {
+        return $this->hasMany(UsaProfileCodes::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsaProfileCodes0()
+    {
+        return $this->hasMany(UsaProfileCodes::className(), ['last_updated_by' => 'user_enc_id']);
     }
 
     /**
@@ -792,6 +867,38 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getAppliedTrainingApplications()
+    {
+        return $this->hasMany(AppliedTrainingApplications::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAppliedTrainingApplications0()
+    {
+        return $this->hasMany(AppliedTrainingApplications::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAppliedTrainingBatches()
+    {
+        return $this->hasMany(AppliedTrainingBatches::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAppliedTrainingBatches0()
+    {
+        return $this->hasMany(AppliedTrainingBatches::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getAssignedCategories()
     {
         return $this->hasMany(AssignedCategories::className(), ['created_by' => 'user_enc_id']);
@@ -819,6 +926,22 @@ class Users extends \yii\db\ActiveRecord
     public function getAssignedEducationalRequirements0()
     {
         return $this->hasMany(AssignedEducationalRequirements::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedIndianJobs()
+    {
+        return $this->hasMany(AssignedIndianJobs::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedIndianJobs0()
+    {
+        return $this->hasMany(AssignedIndianJobs::className(), ['last_updated_by' => 'user_enc_id']);
     }
 
     /**
@@ -872,6 +995,14 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getAssignedStaticWidgets()
+    {
+        return $this->hasMany(AssignedStaticWidgets::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getAssignedTags()
     {
         return $this->hasMany(AssignedTags::className(), ['created_by' => 'user_enc_id']);
@@ -884,6 +1015,7 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(AssignedTags::className(), ['last_updated_by' => 'user_enc_id']);
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -968,6 +1100,46 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getAssignedWebinarTos()
+    {
+        return $this->hasMany(AssignedWebinarTo::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAuths()
+    {
+        return $this->hasMany(Auth::className(), ['user_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCareerAdvicePostComments()
+    {
+        return $this->hasMany(CareerAdvicePostComments::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCareerAdvisePosts()
+    {
+        return $this->hasMany(CareerAdvisePosts::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCareerAdvisePosts0()
+    {
+        return $this->hasMany(CareerAdvisePosts::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCategories()
     {
         return $this->hasMany(Categories::className(), ['created_by' => 'user_enc_id']);
@@ -980,6 +1152,7 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Categories::className(), ['last_updated_by' => 'user_enc_id']);
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -1109,6 +1282,7 @@ class Users extends \yii\db\ActiveRecord
         return $this->hasMany(CustomForm::className(), ['created_by' => 'user_enc_id']);
     }
 
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -1204,6 +1378,7 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(DropResumeApplications::className(), ['last_updated_by' => 'user_enc_id']);
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -1788,6 +1963,7 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Organizations::className(), ['last_updated_by' => 'user_enc_id']);
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -2899,5 +3075,1149 @@ class Users extends \yii\db\ActiveRecord
     public function getUserOtherInfo()
     {
         return $this->hasOne(UserOtherDetails::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTeachers()
+    {
+        return $this->hasMany(Teachers::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategoryTags()
+    {
+        return $this->hasMany(CategoryTags::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategoryTags0()
+    {
+        return $this->hasMany(CategoryTags::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getClassAccesses()
+    {
+        return $this->hasMany(ClassAccess::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getClassAccesses0()
+    {
+        return $this->hasMany(ClassAccess::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getClassNotes()
+    {
+        return $this->hasMany(ClassNotes::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeCourses()
+    {
+        return $this->hasMany(CollegeCourses::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeCourses0()
+    {
+        return $this->hasMany(CollegeCourses::className(), ['updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeSections()
+    {
+        return $this->hasMany(CollegeSections::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeSettings()
+    {
+        return $this->hasMany(CollegeSettings::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeSettings0()
+    {
+        return $this->hasMany(CollegeSettings::className(), ['updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCourses()
+    {
+        return $this->hasMany(Courses::className(), ['updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCurrencies()
+    {
+        return $this->hasMany(Currencies::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDevelopmentTrackings()
+    {
+        return $this->hasMany(DevelopmentTracking::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDevelopmentTrackings0()
+    {
+        return $this->hasMany(DevelopmentTracking::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDomainNames0()
+    {
+        return $this->hasMany(DomainNames::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDomainRoutes()
+    {
+        return $this->hasMany(DomainRoutes::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDomainRoutes0()
+    {
+        return $this->hasMany(DomainRoutes::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmailLogs()
+    {
+        return $this->hasMany(EmailLogs::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmailTemplates()
+    {
+        return $this->hasMany(EmailTemplates::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmailTemplates0()
+    {
+        return $this->hasMany(EmailTemplates::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getErexxActivityTracks()
+    {
+        return $this->hasMany(ErexxActivityTracks::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getErexxActivityTracks0()
+    {
+        return $this->hasMany(ErexxActivityTracks::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getErexxEmployerApplications()
+    {
+        return $this->hasMany(ErexxEmployerApplications::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getErexxEmployerApplications0()
+    {
+        return $this->hasMany(ErexxEmployerApplications::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getErexxWhatsappInvitations()
+    {
+        return $this->hasMany(ErexxWhatsappInvitation::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getExternalNewsUpdates()
+    {
+        return $this->hasMany(ExternalNewsUpdate::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getExternalNewsUpdates0()
+    {
+        return $this->hasMany(ExternalNewsUpdate::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFiles()
+    {
+        return $this->hasMany(Files::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFiles0()
+    {
+        return $this->hasMany(Files::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGitApplications()
+    {
+        return $this->hasMany(GitApplications::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGitApplications0()
+    {
+        return $this->hasMany(GitApplications::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGitOrganizations()
+    {
+        return $this->hasMany(GitOrganizations::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGitOrganizations0()
+    {
+        return $this->hasMany(GitOrganizations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getIndianGovtJobs()
+    {
+        return $this->hasMany(IndianGovtJobs::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLabels()
+    {
+        return $this->hasMany(Labels::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLabels0()
+    {
+        return $this->hasMany(Labels::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMisAssignedMenuItems()
+    {
+        return $this->hasMany(MisAssignedMenuItems::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMisAssignedMenuItems0()
+    {
+        return $this->hasMany(MisAssignedMenuItems::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMisAssignedMenuses()
+    {
+        return $this->hasMany(MisAssignedMenus::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMisAssignedMenuses0()
+    {
+        return $this->hasMany(MisAssignedMenus::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMisUserTasks()
+    {
+        return $this->hasMany(MisUserTasks::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMisUserTasks0()
+    {
+        return $this->hasMany(MisUserTasks::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMisUserTasks1()
+    {
+        return $this->hasMany(MisUserTasks::className(), ['task_for' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockBoards()
+    {
+        return $this->hasMany(MockBoards::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockCoursePools()
+    {
+        return $this->hasMany(MockCoursePool::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockCourses()
+    {
+        return $this->hasMany(MockCourses::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockLabelPools()
+    {
+        return $this->hasMany(MockLabelPool::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockLabels()
+    {
+        return $this->hasMany(MockLabels::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockLevels()
+    {
+        return $this->hasMany(MockLevels::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockQuizPools()
+    {
+        return $this->hasMany(MockQuizPool::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockQuizQuestionsPools()
+    {
+        return $this->hasMany(MockQuizQuestionsPool::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockQuizQuestionsPools0()
+    {
+        return $this->hasMany(MockQuizQuestionsPool::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockQuizzes()
+    {
+        return $this->hasMany(MockQuizzes::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockQuizzes0()
+    {
+        return $this->hasMany(MockQuizzes::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockSubjects()
+    {
+        return $this->hasMany(MockSubjects::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockSubjectsPools()
+    {
+        return $this->hasMany(MockSubjectsPool::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMockTakenQuizzes()
+    {
+        return $this->hasMany(MockTakenQuizzes::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNewsTags()
+    {
+        return $this->hasMany(NewsTags::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNewsTags0()
+    {
+        return $this->hasMany(NewsTags::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOnlineClassComments()
+    {
+        return $this->hasMany(OnlineClassComments::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOnlineClassComments0()
+    {
+        return $this->hasMany(OnlineClassComments::className(), ['updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationLabels()
+    {
+        return $this->hasMany(OrganizationLabels::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationLabels0()
+    {
+        return $this->hasMany(OrganizationLabels::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationsDatabases()
+    {
+        return $this->hasMany(OrganizationsDatabase::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPollCounterrs()
+    {
+        return $this->hasMany(PollCounterr::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPoolWebinarOutcomes()
+    {
+        return $this->hasMany(PoolWebinarOutcomes::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuestionPoolTags()
+    {
+        return $this->hasMany(QuestionPoolTags::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuestionPoolTags0()
+    {
+        return $this->hasMany(QuestionPoolTags::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuestionsPools()
+    {
+        return $this->hasMany(QuestionsPool::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuestionsPools0()
+    {
+        return $this->hasMany(QuestionsPool::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuestionsPoolAnswers()
+    {
+        return $this->hasMany(QuestionsPoolAnswer::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuestionsPoolAnswers0()
+    {
+        return $this->hasMany(QuestionsPoolAnswer::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuizAssignedGroups()
+    {
+        return $this->hasMany(QuizAssignedGroup::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuizAssignedGroups0()
+    {
+        return $this->hasMany(QuizAssignedGroup::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuizPools()
+    {
+        return $this->hasMany(QuizPool::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuizPools0()
+    {
+        return $this->hasMany(QuizPool::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuizQuestionsPools()
+    {
+        return $this->hasMany(QuizQuestionsPool::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuizQuestionsPools0()
+    {
+        return $this->hasMany(QuizQuestionsPool::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRatingQuestions()
+    {
+        return $this->hasMany(RatingQuestions::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRatingQuestions0()
+    {
+        return $this->hasMany(RatingQuestions::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRatingSystems()
+    {
+        return $this->hasMany(RatingSystem::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRatingSystems0()
+    {
+        return $this->hasMany(RatingSystem::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRatingSystemAnswers()
+    {
+        return $this->hasMany(RatingSystemAnswers::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRatingSystemAnswers0()
+    {
+        return $this->hasMany(RatingSystemAnswers::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRawDatabases()
+    {
+        return $this->hasMany(RawDatabase::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getResumeTemplates()
+    {
+        return $this->hasMany(ResumeTemplates::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSalaryReviews()
+    {
+        return $this->hasMany(SalaryReviews::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSalaryReviews0()
+    {
+        return $this->hasMany(SalaryReviews::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSocialGroups()
+    {
+        return $this->hasMany(SocialGroups::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSocialGroups0()
+    {
+        return $this->hasMany(SocialGroups::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSocialLinks()
+    {
+        return $this->hasMany(SocialLinks::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSocialLinks0()
+    {
+        return $this->hasMany(SocialLinks::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSocialPlatforms()
+    {
+        return $this->hasMany(SocialPlatforms::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSocialPlatforms0()
+    {
+        return $this->hasMany(SocialPlatforms::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSpeakerExpertises()
+    {
+        return $this->hasMany(SpeakerExpertises::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSpeakers()
+    {
+        return $this->hasMany(Speakers::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSpeakers0()
+    {
+        return $this->hasMany(Speakers::className(), ['updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStaticWidgets()
+    {
+        return $this->hasMany(StaticWidgets::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStaticWidgets0()
+    {
+        return $this->hasMany(StaticWidgets::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSubmittedVideos1()
+    {
+        return $this->hasMany(SubmittedVideos::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSuggestionAnsweredQuestionnaires()
+    {
+        return $this->hasMany(SuggestionAnsweredQuestionnaire::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSuggestionAnsweredQuestionnaires0()
+    {
+        return $this->hasMany(SuggestionAnsweredQuestionnaire::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSuggestionGroups()
+    {
+        return $this->hasMany(SuggestionGroup::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSuggestionGroups0()
+    {
+        return $this->hasMany(SuggestionGroup::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSuggestionQuestionnaires()
+    {
+        return $this->hasMany(SuggestionQuestionnaire::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSuggestionQuestionnaires0()
+    {
+        return $this->hasMany(SuggestionQuestionnaire::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSuggestionQuestionnaireFields()
+    {
+        return $this->hasMany(SuggestionQuestionnaireFields::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSuggestionQuestionnaireFields0()
+    {
+        return $this->hasMany(SuggestionQuestionnaireFields::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTopics()
+    {
+        return $this->hasMany(Topics::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrainingProgramApplications()
+    {
+        return $this->hasMany(TrainingProgramApplication::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrainingProgramApplications0()
+    {
+        return $this->hasMany(TrainingProgramApplication::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrainingProgramBatchesBks()
+    {
+        return $this->hasMany(TrainingProgramBatchesBk::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrainingProgramBatchesBks0()
+    {
+        return $this->hasMany(TrainingProgramBatchesBk::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrainingProgramSkills()
+    {
+        return $this->hasMany(TrainingProgramSkills::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrainingProgramSkills0()
+    {
+        return $this->hasMany(TrainingProgramSkills::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTwitterJobSkills()
+    {
+        return $this->hasMany(TwitterJobSkills::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTwitterJobSkills0()
+    {
+        return $this->hasMany(TwitterJobSkills::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTwitterJobs()
+    {
+        return $this->hasMany(TwitterJobs::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTwitterJobs0()
+    {
+        return $this->hasMany(TwitterJobs::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTwitterPlacementCities()
+    {
+        return $this->hasMany(TwitterPlacementCities::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTwitterPlacementCities0()
+    {
+        return $this->hasMany(TwitterPlacementCities::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUnclaimAssignedIndustries()
+    {
+        return $this->hasMany(UnclaimAssignedIndustries::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUnclaimAssignedIndustries0()
+    {
+        return $this->hasMany(UnclaimAssignedIndustries::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUnclaimOrganizationImages()
+    {
+        return $this->hasMany(UnclaimOrganizationImages::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUnclaimOrganizationImages0()
+    {
+        return $this->hasMany(UnclaimOrganizationImages::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUnclaimOrganizationLabels()
+    {
+        return $this->hasMany(UnclaimOrganizationLabels::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUnclaimOrganizationLabels0()
+    {
+        return $this->hasMany(UnclaimOrganizationLabels::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUnclaimOrganizationLocations()
+    {
+        return $this->hasMany(UnclaimOrganizationLocations::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUnclaimOrganizationLocations0()
+    {
+        return $this->hasMany(UnclaimOrganizationLocations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserOtherDetails()
+    {
+        return $this->hasMany(UserOtherDetails::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVideoSessions()
+    {
+        return $this->hasMany(VideoSessions::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWebinarOutcomes()
+    {
+        return $this->hasMany(WebinarOutcomes::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWebinarOutcomes0()
+    {
+        return $this->hasMany(WebinarOutcomes::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWebinarRegistrations()
+    {
+        return $this->hasMany(WebinarRegistrations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWebinarRegistrations0()
+    {
+        return $this->hasMany(WebinarRegistrations::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWebinarSpeakers()
+    {
+        return $this->hasMany(WebinarSpeakers::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWebinarSpeakers0()
+    {
+        return $this->hasMany(WebinarSpeakers::className(), ['updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWebinars()
+    {
+        return $this->hasMany(Webinars::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWebinars0()
+    {
+        return $this->hasMany(Webinars::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShortlistedApplicants()
+    {
+        return $this->hasMany(ShortlistedApplicants::className(), ['candidate_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShortlistedApplicants0()
+    {
+        return $this->hasMany(ShortlistedApplicants::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShortlistedApplicants1()
+    {
+        return $this->hasMany(ShortlistedApplicants::className(), ['last_updated_by' => 'user_enc_id']);
     }
 }

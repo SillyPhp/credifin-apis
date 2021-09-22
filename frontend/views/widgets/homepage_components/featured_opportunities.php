@@ -48,7 +48,7 @@ use yii\helpers\Url;
                                                 </a>
                                             </div><!-- Job -->
                                             <div class="job-listing wtabs">
-                                                <a href="/job/business-development-executive-1901271548600570">
+                                                <a href="/job/web-developer-junior-developer-76361572243448">
                                                     <div class="job-title-sec">
                                                         <div class="c-logo">
                                                             <a href="/dsbedutech">
@@ -58,9 +58,9 @@ use yii\helpers\Url;
                                                         </div>
 
                                                         <h3>
-                                                            <a href="/job/business-development-executive-1901271548600570"
-                                                               title="Business Development Executive">
-                                                                Business Development Executive
+                                                            <a href="/job/web-developer-junior-developer-76361572243448"
+                                                               title="Web Developer">
+                                                                Web Developer
                                                             </a>
                                                         </h3>
                                                         <div class="wtabs-com-name"><a href="/dsbedutech"

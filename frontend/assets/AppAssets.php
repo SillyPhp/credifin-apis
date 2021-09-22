@@ -25,6 +25,7 @@ class AppAssets extends AssetBundle {
         'js/jquery-plugin-collection_new.js',
         'js/custom.js',
         'js/lazyload.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.9/jquery.lazy.min.js'
 //        'js/functions.js',
     ];
     public $depends = [

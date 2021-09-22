@@ -10,14 +10,14 @@ use yii\helpers\Url;
                 $name = $image = $color = NULL;
                 if (Yii::$app->user->identity->organization) {
                     if (Yii::$app->user->identity->organization->logo) {
-                        $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                        $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
                     }
                     $name = Yii::$app->user->identity->organization->name;
                     $color = Yii::$app->user->identity->organization->initials_color;
                     $email = Yii::$app->user->identity->organization->email;
                 } else {
                     if (Yii::$app->user->identity->image) {
-                        $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                        $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                     }
                     $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                     $color = Yii::$app->user->identity->initials_color;
@@ -52,8 +52,13 @@ use yii\helpers\Url;
 
                     </li>
                     <li class="inner-child">
-                        <a href="/account/jobs/shortlisted" title="" class="tree-toggler"><i class="fa fa-money"></i>Shorlisted
+                        <a href="/account/jobs/saved" title="" class="tree-toggler"><i class="fa fa-money"></i>Saved
                             Jobs</a>
+
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/internships/saved" title="" class="tree-toggler"><i class="fa fa-desktop"></i>Saved
+                            Internships</a>
 
                     </li>
                     <li class="inner-child">
@@ -229,8 +234,8 @@ $this->registerCss('
 .tree_widget-sec > ul > li > a {
     float: left;
     width: 100%;
-    font-family: Open Sans;
-    font-size: 13px;
+    font-family:roboto;
+    font-size: 14px;
     color: #888888;
     line-height: 41px;
 }
@@ -238,7 +243,7 @@ $this->registerCss('
     float: left;
     font-size: 23px;
     line-height: 41px;
-    color: #babebe;
+    color: #00a0e3;
     margin-right: 5px;
     width: 35px;
 }
@@ -324,7 +329,7 @@ $this->registerCss('
 .can-detail-s > h3 {
     float: left;
     width: 100%;
-    font-family: Quicksand;
+    font-family: lora
     font-size: 22px;
     color: #202020;
     font-weight: bold;
@@ -348,7 +353,8 @@ $this->registerCss('
     width: 100%;
     margin: 0;
     margin-top: 0px;
-    font-size: 13px;
+    font-size: 14px;
+    font-family:roboto;
     color: #888888;
     line-height: 13px;
     margin-top: 10px;

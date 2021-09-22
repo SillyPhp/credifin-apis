@@ -43,18 +43,45 @@ class CitiesController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (!is_null($q)) {
-            $cities = Cities::find()
-                ->alias('a')
-                ->select(['a.city_enc_id AS id', 'a.name AS text'])
+            $cities = (new \yii\db\Query())
+                ->from(Cities::tableName() . 'as a')
+                ->select(['a.city_enc_id AS id', 'CONCAT(a.name," - ", b.name) text'])
                 ->innerJoin(States::tableName() . ' as b', 'b.state_enc_id = a.state_enc_id')
                 ->innerJoin(Countries::tablename() . ' as c', 'c.country_enc_id = b.country_enc_id')
-                ->where(['like', 'a.name', $q])
-                ->andWhere(['c.country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMOGM2K3loZz09'])
+                ->andFilterWhere([
+                    'or',
+                    ['like', 'b.name', $q],
+                    ['like', 'a.name', $q],
+                    ['like', 'c.name', $q],
+                ])
+                ->distinct('a.name')
+                ->groupBy('b.name','a.name')
+                ->limit(20)
+                ->all();
+            return $cities;
+        }
+    }
+
+    public function actionGetLocation($q = null)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($q) {
+            $data = Cities::find()
+                ->alias('a')
+                ->select(['a.city_enc_id as id', 'CONCAT(a.name,", ",b.name,", ",c.name) city_name', 'a.name as text'])
+                ->joinWith(['stateEnc b' => function ($b) {
+                    $b->joinWith(['countryEnc c']);
+                }], false)
+                ->andWhere(['or',
+                    ['like', 'a.name', $q],
+                    ['like', 'b.name', $q],
+                    ['like', 'c.name', $q],
+                ])
                 ->limit(20)
                 ->asArray()
                 ->all();
 
-            return $cities;
+            return $data;
         }
     }
 
@@ -149,7 +176,7 @@ class CitiesController extends Controller
         $institute_count = $this->getCompanyCount($city, $institute);
 
         // getting company, school, college and institute data
-        $companies = $this->getInstitutes($city,$company);
+        $companies = $this->getInstitutes($city, $company);
         $institutes = $this->getInstitutes($city, $institute);
         $college = $this->getInstitutes($city, $college);
         $school = $this->getInstitutes($city, $school);
@@ -228,7 +255,7 @@ class CitiesController extends Controller
             ->joinWith(['cityEnc b'], false)
             ->where(['a.is_deleted' => 0, 'a.status' => 1, 'b.name' => $city]);
         if ($type != null) {
-            $unclaimed_org->joinWith(['organizationTypeEnc d'],false)
+            $unclaimed_org->joinWith(['organizationTypeEnc d'], false)
                 ->andWhere(['d.business_activity' => $type]);
         } else {
             $unclaimed_org->joinWith(['organizationTypeEnc d'], false)->andWhere(['not in', 'd.business_activity', ['School', 'College', 'Educational Institute']]);
@@ -246,7 +273,7 @@ class CitiesController extends Controller
         // getting claimed org data
         $organizations = Organizations::find()
             ->alias('a')
-            ->select(['distinct(a.organization_enc_id)', 'a.name', 'a.initials_color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image','(CASE WHEN a.organization_enc_id IS NOT NULL THEN "claimed" END) as org_type'])
+            ->select(['distinct(a.organization_enc_id)', 'a.name', 'a.initials_color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image', '(CASE WHEN a.organization_enc_id IS NOT NULL THEN "claimed" END) as org_type'])
             ->joinWith(['organizationLocations b' => function ($b) {
                 $b->joinWith(['cityEnc c']);
             }], false)
@@ -257,7 +284,7 @@ class CitiesController extends Controller
             ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'c.name' => $city]);
         if ($type != null) {
             //if type company then it will return only claimed company data
-            if($type == 'Company'){
+            if ($type == 'Company') {
                 $result =
                     $organizations
                         ->andWhere(['not in', 'd.business_activity', ['School', 'College', 'Educational Institute']])
@@ -274,7 +301,7 @@ class CitiesController extends Controller
         // getting unclaimed org data
         $un_org = UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['distinct(a.organization_enc_id)', 'a.name', 'a.initials_color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image','(CASE WHEN a.organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type'])
+            ->select(['distinct(a.organization_enc_id)', 'a.name', 'a.initials_color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image', '(CASE WHEN a.organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type'])
             ->innerJoinWith(['cityEnc b'])
             ->joinWith(['organizationTypeEnc d'])
             ->joinWith(['newOrganizationReviews e' => function ($e) {
