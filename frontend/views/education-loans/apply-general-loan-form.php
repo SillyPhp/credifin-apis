@@ -436,37 +436,32 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                                         <ul id="co-relation-ul-1" class="displayInline">
                                                             <li>
                                                                 <label for="co-father-z" class="container-radio">
-                                                                    Father
                                                                     <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-z" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Father</span>
                                                                 </label>
                                                             </li>
                                                             <li>
                                                                 <label for="co-mother-z" class="container-radio">
-                                                                    Mother
                                                                     <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-z" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Mother</span>
                                                                 </label>
                                                             </li>
                                                             <li>
                                                                 <label for="co-brother-z" class="container-radio">
-                                                                    Brother
                                                                     <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-z" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Brother</span>
                                                                 </label>
                                                             </li>
                                                             <li>
                                                                 <label for="co-sister-z" class="container-radio">
-                                                                    Sister
                                                                     <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-z" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Sister</span>
                                                                 </label>
                                                             </li>
                                                             <li>
                                                                 <label for="co-guardian-z" class="container-radio">
-                                                                    Guardian
                                                                     <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-z" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Guardian</span>
                                                                 </label>
                                                             </li>
                                                         </ul>
@@ -480,23 +475,20 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                                         <ul class="displayInline">
                                                             <li>
                                                                 <label for="sal-z" class="container-radio">
-                                                                    Salaried
                                                                     <input type="radio" value="1" checked="checked" id="sal-z" name="co-emptype[1]" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Salaried</span>
                                                                 </label>
                                                             </li>
                                                             <li>
                                                                 <label for="self-z" class="container-radio">
-                                                                    Self-Employed
                                                                     <input type="radio" value="2" id="self-z" name="co-emptype[1]" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Self-Employed</span>
                                                                 </label>
                                                             </li>
                                                             <li>
                                                                 <label for="non-z" class="container-radio">
-                                                                    Non-Working
                                                                     <input type="radio" value="3" id="non-z" name="co-emptype[1]" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Non-Working</span>
                                                                 </label>
                                                             </li>
                                                         </ul>
