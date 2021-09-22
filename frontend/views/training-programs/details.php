@@ -446,18 +446,6 @@ $this->registerCss("
         font-size: 14px !Important;
         margin-top: 15px !important;
     }
-    .job-thumb a {
-        width: 100px;
-        height: 100px;
-        background-color: #fff;
-        display: block;
-        margin: auto;
-        border-radius: 50%;
-    }
-    
-    .job-thumb a img {
-        margin: 5px;
-    }
     .z-index-9{
         z-index:9;
     }
@@ -585,10 +573,6 @@ $this->registerCss("
     }
     #new_resume,#use_existing{
         display:none;
-    }
-    #logo_img{
-        width: 115px;
-        height: 115px; 
     }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}
@@ -1019,28 +1003,6 @@ $this->registerCss("
         text-align: center;
         border: none;
     }
-    .job-single-head.style2 .job-thumb {
-        float: left;
-        width: 100%;
-        text-align: center;
-        margin-top:20px;
-    }
-    .job-single-head.style2 .job-thumb img, .job-single-head.style2 .job-thumb canvas {
-        float: none;
-        display: inline-block;
-        width: auto;
-        border: none;
-//        -webkit-box-shadow: 0px 0px 20px 7px #ddd;
-//        -moz-box-shadow: 0px 0px 20px 7px #ddd;
-//        -ms-box-shadow: 0px 0px 20px 7px #ddd;
-//        -o-box-shadow: 0px 0px 20px 7px #ddd;
-//        box-shadow: 0px 0px 20px 7px #ddd;
-        -webkit-border-radius: 50%;
-        -moz-border-radius: 50%;
-        -ms-border-radius: 50%;
-        -o-border-radius: 50%;
-        border-radius: 50%;
-    }
     .job-single-head.style2 .job-head-info {
         float: left;
         width: 100%;
@@ -1077,21 +1039,6 @@ $this->registerCss("
         -o-border-radius: 8px;
         border-radius: 8px;
         color: #ffffff;
-    }
-    .job-thumb {
-        display: table-cell;
-        vertical-align: top;
-        width: 107px;
-    }
-    .job-thumb img {
-        float: left;
-        width: 100%;
-        border: 2px solid #e8ecec;
-        -webkit-border-radius: 8px;
-        -moz-border-radius: 8px;
-        -ms-border-radius: 8px;
-        -o-border-radius: 8px;
-        border-radius: 8px;
     }
     .job-head-info {
         display: table-cell;

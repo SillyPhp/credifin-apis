@@ -1,53 +1,48 @@
 <script id="application-card" type="text/template">
     {{#.}}
-    <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
-        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
-             class="application-card-main">
+    <div class="col-md-4 col-sm-6 col-xs-12 pt-5">
+        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}" class="training-card-main">
             {{#city}}
-            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
-                  data-locations="">
-                <i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
-                </span>
+                <span class="training-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}" data-locations="">
+                <i class="fas fa-map-marker-alt"></i> {{city}}</span>
             {{/city}}
             {{^city}}
-            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
-                  data-locations="">
-                <i class="fas fa-map-marker-alt"></i>&nbsp;All India
-                </span>
+                <span class="training-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}" data-locations="">
+                <i class="fas fa-map-marker-alt"></i>&nbsp;All India</span>
             {{/city}}
-            <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                <div class="application-card-img">
+            <div class="training-flex">
+                <div class="training-card-img">
                     <a href="{{organization_link}}" title="{{organization_name}}">
                         {{#logo}}
                         <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}">
                         {{/logo}}
                         {{^logo}}
-                        <canvas class="user-icon" name="{{organization_name}}" width="80" height="80"
+                        <canvas class="user-icon" name="{{organization_name}}" width="90" height="90"
                                 color="{{color}}" font="35px"></canvas>
                         {{/logo}}
                     </a>
                 </div>
-                <div class="application-card-description">
-                    <a href="{{link}}" title="{{title}}"><h4 class="application-title">{{title}}</h4></a>
-                    {{#duration}}
-                    <h5><i class="far fa-calendar-alt"></i>&nbsp;{{duration}}</h5>
-                    {{/duration}}
-                    {{#timings}}
-                    <h5><i class="far fa-clock"></i>&nbsp;{{timings}}</h5>
-                    {{/timings}}
-                    {{#fees}}
-                    <h5>Fees: <i class="fas fa-rupee-sign"></i>&nbsp;{{fees}}</h5>
-                    {{/fees}}
-                    {{^fees}}
-                    <h5>N/A</h5>
-                    {{/fees}}
+                <div class="training-card-description">
+                    <a href="{{link}}" title="{{title}}"><h4 class="training-title">{{title}}</h4></a>
+                    <p class="org_name">{{organization_name}}</p>
+                    <div class="duration-clock">
+                        {{#duration}}
+                        <h5><i class="far fa-calendar-alt"></i>&nbsp;{{duration}}</h5>
+                        {{/duration}}
+                        {{#timings}}
+                        <h5><i class="far fa-clock"></i>&nbsp;{{timings}}</h5>
+                        {{/timings}}
+                        {{#fees}}
+                        <h5>Fees: <i class="fas fa-rupee-sign"></i>&nbsp;{{fees}}</h5>
+                        {{/fees}}
+                        {{^fees}}
+                        <h5>N/A</h5>
+                        {{/fees}}
+                    </div>
                 </div>
             </div>
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <h4 class="org_name text-right">{{organization_name}}</h4>
-            </div>
-            <div class="application-card-wrapper">
-                <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
+            <div class="training-card-wrapper">
+                <a href="{{link}}" class="application-card-open training-detail" target="_blank" title="View Detail">View Detail</a>
             </div>
         </div>
     </div>
@@ -69,7 +64,7 @@ function renderCards(cards, container){
     var noRows = Math.ceil(cardsLength / 3);
     var j = 0;
     for(var i = 1; i <= noRows; i++){
-        $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
+        $(container).append('' + Mustache.render(card, cards.slice(j, j+3)) + '');
         j+=3;
     }
 }
@@ -197,6 +192,79 @@ function getReviewList(sidebarpage){
 JS;
 $this->registerJs($script);
 $this->registerCss('
+.training-card-main {
+    box-shadow: 0 0 4px 0px rgb(0 0 0 / 20%);
+    margin-bottom: 25px;
+    padding: 15px 15px 0;
+    position: relative;
+    border-radius:8px;
+}
+.training-card-type.location {
+    position: absolute;
+    right: -1px;
+    top: -1px;
+    background-color: #63c6f0;
+    font-family: "Roboto";
+    color: #fff;
+    padding: 1px 8px;
+    border-radius: 0 8px 0 8px;
+}
+.training-flex {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.training-card-img img, .training-card-img canvas {
+    width: 90px;
+    height: 90px;
+    display: inline-block;
+}
+.training-card-description {
+    margin-left: 15px;
+}
+h4.training-title {
+    color: #000;
+    font-size: 16px;
+    font-family: roboto;
+    font-weight: 500;
+    margin: 10px 0 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-transform:capitalize;
+}
+p.org_name {
+    font-size: 14px;
+    font-family: roboto;
+    color: #63c6f0;
+    font-weight:500;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.duration-clock{height:70px;}
+.duration-clock h5 {
+    margin: 5px 0;
+    font-family: "Roboto";
+    font-weight:500;
+}
+.training-card-wrapper {
+    text-align: center;
+    padding: 5px 0; 
+    border-top: 1px solid #eee;
+    margin-top:5px;
+}
+.training-detail{
+    font-family:roboto;
+    font-weight:500;
+}
+.training-detail:hover{
+    color:#63c6f0;
+    transition:all .1s;
+}
 .not-found{
     max-width: 400px;
     margin: auto;

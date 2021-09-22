@@ -429,7 +429,7 @@ $this->registerCSS('
 ');
 $script = <<<JS
 var user_id = '$user_id';
-var baseUrl = 'https://ravinder.eygb.me';
+var baseUrl = '';
 
 reviewObj = {
     org_id: '',
