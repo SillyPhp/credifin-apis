@@ -118,9 +118,27 @@ $this->registerCss('
 }
 .owl-carousel .owl-item img{width:auto !important;}
 .owl-theme .owl-dots{display:none !important;}
-.owl-controls .owl-nav > div{background:none;}
-.owl-controls .owl-nav .owl-prev i, .owl-controls .owl-nav .owl-next i{
+.owl-nav > div{background:none;}
+.owl-nav .owl-prev i, .owl-nav .owl-next i{
     font-size:35px !important;
+}
+.owl-nav > button {
+    background: none repeat scroll 0 0 rgba(240, 240, 240, 0.8);
+    border-radius: 0;
+    display: block;
+    margin: 0;
+    padding: 10px;
+    position: absolute;
+    top: 45%;
+    -webkit-transition: all .4s ease 0s;
+    -moz-transition: all .4s ease 0s;
+    -ms-transition: all .4s ease 0s;
+    -o-transition: all .4s ease 0s;
+    transition: all 0.4s ease 0s;
+    z-index: 6;
+}
+.owl-next {
+    right: 0px;
 }
 @media (max-width:550px){
 .gov-job {
@@ -138,29 +156,36 @@ $this->registerCss('
 }
 ');
 $script = <<<JS
-$('.owl-carousel').owlCarousel({
-  loop: true,
-  margin: 10,
-  nav: true,
-  navText: [
-    "<i class='fa fa-caret-left'></i>",
-    "<i class='fa fa-caret-right'></i>"
-  ],
-  autoplay: true,
-  autoplayHoverPause: true,
-  responsive: {
-    0: {
-      items: 1
-    },
-    600: {
-      items: 1
-    },
-    1000: {
-      items: 2
-    }
-  }
-})
+function initOwl() {
+    $('.owl-carousel').owlCarousel({
+      loop: true,
+      margin: 10,
+      nav: true,
+      navText: [
+        "<i class='fa fa-caret-left'></i>",
+        "<i class='fa fa-caret-right'></i>"
+      ],
+      autoplay: true,
+      autoplayHoverPause: true,
+      responsive: {
+        0: {
+          items: 1
+        },
+        600: {
+          items: 1
+        },
+        1000: {
+          items: 2
+        }
+      }
+    })
+}
+// initOwl();
+setTimeout(function() {
+    initOwl();
+    console.log("done");
+},1000)
 JS;
 $this->registerjs($script);
-$this->registerCssfile('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css');
-$this->registerjsfile('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/owl.carousel.min.js');
+$this->registerCssfile('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css');
+$this->registerjsfile('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js');
