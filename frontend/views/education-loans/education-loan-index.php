@@ -122,7 +122,7 @@ use yii\helpers\Url;
     </section>
 
     <?= $this->render('/widgets/Our-lending-partners') ?>
-
+    <?= $this->render('/widgets/testimonials') ?>
     <section class="bg-blue pb10">
         <?= $this->render('/widgets/choose-education-loan') ?>
     </section>
@@ -279,7 +279,6 @@ if ($blogs['blogs']) {
     'data' => $data,
     'viewBtn' => true
 ]) ?>
-
 <?= $this->render('/widgets/loan-strip') ?>
 
 

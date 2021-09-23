@@ -7,7 +7,7 @@ use yii\helpers\Url;
 <section class="test-bg">
     <div class="testimonial-bg"></div>
     <div class="container">
-        <div class="row">
+        <div class="row test-flex">
             
             <div class="col-md-6 col-sm-6">
                 <div class="testimonial-text">
@@ -92,7 +92,7 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
-.vid-nav {
+.vid-nav, .test-flex {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -177,19 +177,9 @@ $this->registerCss('
 }
 .test-text{
     width: 100%;
-    margin-top: 64px;
 }
 .text{
     min-width: 100%;
-}
-.test-text:before {
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    content: "\f10d";
-    position: absolute;
-    transform: translateY(-100%);
-    font-size: 28pt;
-    color: #fff;
 }
 
 @media only screen and (max-width: 992px){
