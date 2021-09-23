@@ -12,7 +12,6 @@ use yii\helpers\Url;
     <?= $this->render('/widgets/covid-offer-banner', ['availUrl' => '/education-loans/apply']) ?>
     <?= $this->render('/widgets/loan-why-empower-youth') ?>
     <?= $this->render('/widgets/education-loan-internship') ?>
-    <?= $this->render('/widgets/testimonials') ?>
     
     <section class="edu-with-sec">
         <div class="container">

@@ -11,9 +11,9 @@ use yii\helpers\Url;
             
             <div class="col-md-6 col-sm-6">
                 <div class="testimonial-text">
+                    <h3>Testimonials</h3>
                     <div class="test-text">
-                        <div class="text1">
-                            <h3>Testimonials</h3>
+                        <div class="text">
                             <p>Neetu  tells that Empower Youth is the genuine company and with easy and simple
                                 steps, anybody can apply for the education loan . Her brother and sister had
                                 applied for the loan and they got the loan within 5 to 7 days without any hassle.
@@ -23,8 +23,7 @@ use yii\helpers\Url;
                                 contact Empower Youth for education loans.</p>
                             <p><span class="testfont">Ms. Neetu</span><br>Student</p>
                         </div>
-                        <div class="text1">
-                            <h3>Testimonials</h3>
+                        <div class="text">
                             <p>Here jaskaran, facing the financial problem due to which i have to take the
                                 student loan which i first prefer to apply from empoweryouth, i contacted them
                                 and with their efforts to complete my documentation i therefore achieve my goals
@@ -45,7 +44,6 @@ use yii\helpers\Url;
                         <div class="videos">
                                 <iframe width="677" height="381" src="https://www.youtube.com/embed/PTX50h-3x60" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                 <iframe width="677" height="381" src="https://www.youtube.com/embed/CZEr5MCKb0M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                <iframe width="677" height="381" src="https://www.youtube.com/embed/PTX50h-3x60" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
                     </div>
                 </div>
@@ -69,16 +67,17 @@ use yii\helpers\Url;
     const navLeft = document.querySelector(".left");
     const navRight = document.querySelector(".right");
 
+    const texts = document.querySelector(".test-text");
     const videos = document.querySelector(".videos");
 
     let index = 0;
 
     function right() {
-        transform((index = index < 2 ? ++index : 0));
+        transform((index = index < 1 ? ++index : 0));
     }
 
     function left() {
-        transform((index = index > 0 ? --index : 2));
+        transform((index = index > 0 ? --index : 1));
     }
 
     navLeft.addEventListener("click", left);
@@ -86,7 +85,7 @@ use yii\helpers\Url;
 
     function transform(index) {
         videos.style.transform = `translateX(-${index * 100}%)`;
-        colors.style.transform = `translateX(-${index * 100}%)`;
+        texts.style.transform = `translateX(-${index * 100}%)`;
     }
 
 </script>
@@ -118,15 +117,15 @@ $this->registerCss('
     top: 0;
     left: 0;
 }
-.text1 h3 {
+.test-bg h3 {
     font-family: lora;
     color: #fff;
     font-size: 30px;
     letter-spacing: 0.3px;
 }
-.text1 p {
-    font-size: 16px;
-    line-height: 26px;
+.text p {
+    font-size: 14px;
+    line-height: 20px;
     color: #fff;
     font-family: roboto;
     letter-spacing: 0.3px;
@@ -160,18 +159,37 @@ $this->registerCss('
     background-color: #9a9393;
     color: #fff;
 }
-.testimonial-vid{
+.testimonial-vid, .testimonial-text{
     width: 340px;
     overflow: hidden;
 }
-.videos{
+.videos, .test-text{
     width: 340px;
     display: flex;
     transition: all .35s ease-in;
     margin-bottom: 10px;
 }
-.videos iframe {
+.videos iframe{
     min-width: 340px;
+}
+.testimonial-text{
+    width: 100%;
+}
+.test-text{
+    width: 100%;
+    margin-top: 64px;
+}
+.text{
+    min-width: 100%;
+}
+.test-text:before {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    content: "\f10d";
+    position: absolute;
+    transform: translateY(-100%);
+    font-size: 28pt;
+    color: #fff;
 }
 
 @media only screen and (max-width: 992px){
@@ -192,14 +210,14 @@ $this->registerCss('
         color: #fff;
         border-color: #fff;
     }
-    .text1 p {
+    .text p {
         font-size: 14px;
         line-height: 22px;
     }
     .testfont {
         font-size: 16px;
     }
-    .text1 h3 {
+    .test-bg h3 {
         font-size: 26px;
     }
     .right, .left {
@@ -216,14 +234,14 @@ $this->registerCss('
         color: #fff;
         border-color: #fff;
     }
-    .text1 p {
+    .text p {
         font-size: 14px;
         line-height: 22px;
     }
     .testfont {
         font-size: 16px;
     }
-    .text1 h3 {
+    .test-bg h3 {
         font-size: 26px;
     }
     .right, .left {
