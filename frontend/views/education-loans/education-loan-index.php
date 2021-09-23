@@ -11,7 +11,9 @@ use yii\helpers\Url;
     <?= $this->render('/widgets/loan-products') ?>
     <?= $this->render('/widgets/covid-offer-banner', ['availUrl' => '/education-loans/apply']) ?>
     <?= $this->render('/widgets/loan-why-empower-youth') ?>
-<?= $this->render('/widgets/education-loan-internship') ?>
+    <?= $this->render('/widgets/education-loan-internship') ?>
+    <?= $this->render('/widgets/testimonials') ?>
+    
     <section class="edu-with-sec">
         <div class="container">
             <div class="row mt-20">
@@ -120,7 +122,7 @@ use yii\helpers\Url;
         </div>
     </section>
 
-<?= $this->render('/widgets/Our-lending-partners') ?>
+    <?= $this->render('/widgets/Our-lending-partners') ?>
 
     <section class="bg-blue pb10">
         <?= $this->render('/widgets/choose-education-loan') ?>

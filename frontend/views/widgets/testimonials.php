@@ -5,8 +5,10 @@ use yii\helpers\Url;
 ?>
 
 <section class="test-bg">
+    <div class="testimonial-bg"></div>
     <div class="container">
-        <div class="row testflex">
+        <div class="row">
+            
             <div class="col-md-6 col-sm-6">
                 <div class="testimonial-text">
                     <div class="test-text">
@@ -31,24 +33,29 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-4">
-                <div class="testimonial-vid">
-                    <div class="videos">
-                            <iframe width="677" height="381" src="https://www.youtube.com/embed/PTX50h-3x60" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            <iframe width="677" height="381" src="https://www.youtube.com/embed/CZEr5MCKb0M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            <iframe width="677" height="381" src="https://www.youtube.com/embed/PTX50h-3x60" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="col-sm-6">
+                
+            <div class="vid-nav">
+                <div class="col-md-9 col-sm-12">
+                    <div class="testimonial-vid">
+                        <div class="videos">
+                                <iframe width="677" height="381" src="https://www.youtube.com/embed/PTX50h-3x60" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                <iframe width="677" height="381" src="https://www.youtube.com/embed/CZEr5MCKb0M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                <iframe width="677" height="381" src="https://www.youtube.com/embed/PTX50h-3x60" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    <div class="navigation">
+                        <div class="right">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="left">
+                            <i class="fas fa-arrow-left"></i>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-2 col-sm-2">
-                <div class="navigation">
-                    <div class="right">
-                        <i class="fas fa-arrow-right"></i>
-                    </div>
-                    <div class="left">
-                        <i class="fas fa-arrow-left"></i>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -82,7 +89,7 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
-.testflex {
+.vid-nav {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -96,11 +103,16 @@ $this->registerCss('
     margin-bottom: 30px;
 }
 .test-bg {
-    background: url(' . Url::to('@eyAssets/images/pages/education-loans/test-bg.png') . ');
-    background-repeat: no-repeat;
-    background-size: cover;
     min-height: 350px;
-    max-height: 550px;
+    position: relative;
+}
+.testimonial-bg{
+    width: 60%;
+    height: 100%;
+    background: #00a0e3;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 .text1 h3 {
     font-family: lora;
@@ -132,7 +144,7 @@ $this->registerCss('
     justify-content: center;
     font-size: 30px;
     color: #9a9393;
-    margin-bottom: 5px;
+    margin: 5px;
     cursor: pointer;
     transition: .3s ease-in;
 }
@@ -156,6 +168,25 @@ $this->registerCss('
 }
 .videos iframe {
     min-width: 340px;
+}
+
+@media only screen and (max-width: 992px){
+    .vid-nav{
+        flex-direction: column;
+    }
+    .vid-nav .navigation{
+        flex-direction: row-reverse;
+    }
+}
+
+@media only screen and (max-width: 768px){
+    .testimonial-bg{
+        width: 100%;
+    }
+    .navigation .right, .navigation .left{
+        color: #fff;
+        border-color: #fff;
+    }
 }
 
 ');
