@@ -23,13 +23,17 @@ use yii\helpers\Url;
                                 contact Empower Youth for education loans.</p>
                             <p><span class="testfont">Ms. Neetu</span><br>Student</p>
                         </div>
-<!--                        <div class="text1">-->
-<!--                            <h3>Testimonials</h3>-->
-<!--                            <p>Lorem Ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt-->
-<!--                                ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation-->
-<!--                                ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>-->
-<!--                            <p><span class="testfont">Mr. Rahul Aggarwal</span><br>Director<br> ABC Company</p>-->
-<!--                        </div>-->
+                        <div class="text1">
+                            <h3>Testimonials</h3>
+                            <p>Here jaskaran, facing the financial problem due to which i have to take the
+                                student loan which i first prefer to apply from empoweryouth, i contacted them
+                                and with their efforts to complete my documentation i therefore achieve my goals
+                                to pursue my study in the university.<br> He thanks
+                                Empower Youth for putting in so much effort. He recommends everyone should
+                                contact Empower Youth for education loans.</p>
+                            <p><span class="testfont">Mr. Jaskaran</span><br>Student</p>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -176,6 +180,7 @@ $this->registerCss('
     }
     .vid-nav .navigation{
         flex-direction: row-reverse;
+        margin-bottom: 30px;
     }
 }
 
@@ -186,6 +191,48 @@ $this->registerCss('
     .navigation .right, .navigation .left{
         color: #fff;
         border-color: #fff;
+    }
+    .text1 p {
+        font-size: 14px;
+        line-height: 22px;
+    }
+    .testfont {
+        font-size: 16px;
+    }
+    .text1 h3 {
+        font-size: 26px;
+    }
+    .right, .left {
+        height: 60px;
+        width: 60px;
+        font-size: 20px;
+    }
+}
+@media only screen and (max-width: 766px) and (min-width: 320px) {
+    .testimonial-bg{
+        width: 100%;
+    }
+    .navigation .right, .navigation .left{
+        color: #fff;
+        border-color: #fff;
+    }
+    .text1 p {
+        font-size: 14px;
+        line-height: 22px;
+    }
+    .testfont {
+        font-size: 16px;
+    }
+    .text1 h3 {
+        font-size: 26px;
+    }
+    .right, .left {
+        height: 60px;
+        width: 60px;
+        font-size: 20px;
+    }
+    .testimonial-text {
+        text-align: center;
     }
 }
 
