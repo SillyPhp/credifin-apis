@@ -278,6 +278,7 @@ if ($blogs['blogs']) {
     'data' => $data,
     'viewBtn' => true
 ]) ?>
+
 <?= $this->render('/widgets/loan-strip') ?>
 
 
