@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use Yii;
 
 /**
  * This is the model class for table "{{%loan_applications}}".
@@ -51,7 +50,7 @@ use Yii;
  * @property string $updated_by
  * @property string $updated_on
  * @property string $lead_application_enc_id Lead application Link
- * @property int $status 0 as Pending, 1 as Approved, 2 as Rejected
+ * @property int $status 0 as Pending, 1 as Approved, 2 as Rejected, 3 as Verified
  * @property int $loan_status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Senctioned, 5 as Disbursed, 6 as Completed, 10 as Rejected
  * @property string $loan_type
  * @property string $loan_purpose
@@ -128,7 +127,67 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['current_scheme_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationLoanSchemes::className(), 'targetAttribute' => ['current_scheme_id' => 'scheme_enc_id']],
             [['managed_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['managed_by' => 'user_enc_id']],
             [['lead_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['lead_by' => 'user_enc_id']],
-            [['parent_application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplication::className(), 'targetAttribute' => ['parent_application_enc_id' => 'loan_app_enc_id']],
+            [['parent_application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['parent_application_enc_id' => 'loan_app_enc_id']],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('app', 'ID'),
+            'loan_app_enc_id' => Yii::t('app', 'Loan App Enc ID'),
+            'parent_application_enc_id' => Yii::t('app', 'Parent Application Enc ID'),
+            'had_taken_addmission' => Yii::t('app', 'Had Taken Addmission'),
+            'current_scheme_id' => Yii::t('app', 'Current Scheme ID'),
+            'college_enc_id' => Yii::t('app', 'College Enc ID'),
+            'college_course_enc_id' => Yii::t('app', 'College Course Enc ID'),
+            'loan_type_enc_id' => Yii::t('app', 'Loan Type Enc ID'),
+            'applicant_name' => Yii::t('app', 'Applicant Name'),
+            'employement_type' => Yii::t('app', 'Employement Type'),
+            'image' => Yii::t('app', 'Image'),
+            'image_location' => Yii::t('app', 'Image Location'),
+            'applicant_dob' => Yii::t('app', 'Applicant Dob'),
+            'applicant_current_city' => Yii::t('app', 'Applicant Current City'),
+            'degree' => Yii::t('app', 'Degree'),
+            'years' => Yii::t('app', 'Years'),
+            'months' => Yii::t('app', 'Months'),
+            'semesters' => Yii::t('app', 'Semesters'),
+            'phone' => Yii::t('app', 'Phone'),
+            'email' => Yii::t('app', 'Email'),
+            'candidate_status' => Yii::t('app', 'Candidate Status'),
+            'candidate_sub_status' => Yii::t('app', 'Candidate Sub Status'),
+            'cibil_score' => Yii::t('app', 'Cibil Score'),
+            'gender' => Yii::t('app', 'Gender'),
+            'amount' => Yii::t('app', 'Amount'),
+            'yearly_income' => Yii::t('app', 'Yearly Income'),
+            'amount_received' => Yii::t('app', 'Amount Received'),
+            'amount_due' => Yii::t('app', 'Amount Due'),
+            'scholarship' => Yii::t('app', 'Scholarship'),
+            'aadhaar_number' => Yii::t('app', 'Aadhaar Number'),
+            'source' => Yii::t('app', 'Source'),
+            'ask_guarantor_info' => Yii::t('app', 'Ask Guarantor Info'),
+            'deadline' => Yii::t('app', 'Deadline'),
+            'intake' => Yii::t('app', 'Intake'),
+            'aadhaar_link_phone_number' => Yii::t('app', 'Aadhaar Link Phone Number'),
+            'managed_by_refferal' => Yii::t('app', 'Managed By Refferal'),
+            'managed_by' => Yii::t('app', 'Managed By'),
+            'lead_by_refferal' => Yii::t('app', 'Lead By Refferal'),
+            'lead_by' => Yii::t('app', 'Lead By'),
+            'created_by' => Yii::t('app', 'Created By'),
+            'created_on' => Yii::t('app', 'Created On'),
+            'updated_by' => Yii::t('app', 'Updated By'),
+            'updated_on' => Yii::t('app', 'Updated On'),
+            'lead_application_enc_id' => Yii::t('app', 'Lead Application Enc ID'),
+            'status' => Yii::t('app', 'Status'),
+            'loan_status' => Yii::t('app', 'Loan Status'),
+            'loan_type' => Yii::t('app', 'Loan Type'),
+            'loan_purpose' => Yii::t('app', 'Loan Purpose'),
+            'lender_reasons' => Yii::t('app', 'Lender Reasons'),
+            'is_deleted' => Yii::t('app', 'Is Deleted'),
+            'is_removed' => Yii::t('app', 'Is Removed'),
         ];
     }
 
