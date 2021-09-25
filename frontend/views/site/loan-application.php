@@ -593,17 +593,31 @@ $('#contact').mask("#", {reverse: true});
               $('#prevBtn').show();
             if (res.status=='200')
                 {
-                    let ptoken = res.data.payment_id; 
-                    let payment_enc_id = res.data.payment_enc_id;
-                    let loan_app_enc_id = res.data.loan_app_enc_id;
-                    if (ptoken!=null || ptoken !=""){
-                        _razoPay(ptoken,payment_enc_id,loan_app_enc_id);
-                    } else{
-                        swal({
-                            title:"Error",
-                            text: "Payment Gatway Is Unable to Process Your Payment At The Moment, Please Try After Some Time",
-                            });
-                    }
+                    swal({
+                        title: "",
+                        text: "Your Application Is Submitted Successfully",
+                        type:'success',
+                        showCancelButton: false,  
+                        confirmButtonClass: "btn-primary",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true, 
+                        closeOnCancel: true
+                         },
+                            function (isConfirm) { 
+                             location.reload(true);
+                         }
+                        );
+                    //let ptoken = res.data.payment_id; 
+                    //let payment_enc_id = res.data.payment_enc_id;
+                    //let loan_app_enc_id = res.data.loan_app_enc_id;
+                    // if (ptoken!=null || ptoken !=""){
+                    //     _razoPay(ptoken,payment_enc_id,loan_app_enc_id);
+                    // } else{
+                    //     swal({
+                    //         title:"Error",
+                    //         text: "Payment Gatway Is Unable to Process Your Payment At The Moment, Please Try After Some Time",
+                    //         });
+                    // }
                 }else{
                       swal({
                             title:"Error",
