@@ -100,7 +100,7 @@ $this->params['seo_tags'] = [
                                 <?= $form->field($model, 'contact', ['template' => '<div class="input_contact"><span>+91</span>{input}</div>{error}'])->textInput(['placeholder' => 'Mobile Number', 'id' => 'contact'])->label(false); ?>
                             </div>
                             <div class="form-group ml5">
-                                <?= $form->field($model, 'email', ['template' => '{input}{error}'])->textInput(['placeholder' => 'Email For Communication'])->label(false); ?>
+                                <?= $form->field($model, 'email', ['template' => '{input}{error}'])->textInput(['placeholder' => 'Email For Communication (Optional)'])->label(false); ?>
                             </div>
                         </div>
                         <div class="form-group text-center">
@@ -618,7 +618,7 @@ $('#contact').mask("#", {reverse: true});
     var options = {
     "key": access_key, 
     "name": "Empower Youth",
-    "description": "Application Processing Fee",
+    "description": "Application Login Fee",
     "image": "/assets/common/logos/logo.svg",
     "order_id": ptoken, 
     "handler": function (response){
