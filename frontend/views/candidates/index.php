@@ -94,7 +94,7 @@ $this->params['seo_tags'] = [
 ?>
 
 <section>
-    <div class="container">
+    <div class="container-fluid">
         <div class="col-md-3 col-sm-4 mobile-hidden" id="filters">
             <form>
                 <div class="filters">
