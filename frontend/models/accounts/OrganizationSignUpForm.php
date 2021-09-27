@@ -20,6 +20,7 @@ class OrganizationSignUpForm extends Model
 
     public $username;
     public $email;
+    public $referer;
     public $new_password;
     public $confirm_password;
     public $first_name;
@@ -54,6 +55,8 @@ class OrganizationSignUpForm extends Model
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_name', 'organization_email', 'organization_phone'], 'required'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'trim'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
+            [['referer'], 'safe'],
+            ['referer', 'string'],
             [['organization_name'], 'string', 'max' => 100],
             [['username'], 'string', 'length' => [3, 20]],
             [['email', 'organization_email'], 'string', 'max' => 50],

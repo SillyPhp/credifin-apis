@@ -158,7 +158,6 @@ class AccountsController extends Controller
 
     public function actionSignup($type, $loan_id_ref = null)
     {
-
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -188,12 +187,13 @@ class AccountsController extends Controller
 
             if ($model->load(Yii::$app->request->post())) {
                 $model->user_type = 'Individual';
+                $backURL = $model->referer;
                 if ($model->add()) {
                     $data['username'] = $model->username;
                     $data['password'] = $model->new_password;
                     $model = new IndividualSignUpForm();
                     if ($this->login($data)) {
-                        return $this->redirect('/account/dashboard');
+                        return $this->redirect((($backURL) ? $backURL : '/account/dashboard'));
                     }
                 } else {
                     Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
@@ -215,12 +215,13 @@ class AccountsController extends Controller
 
             if ($model->load(Yii::$app->request->post())) {
                 $model->user_type = 'Organization Admin';
+                $backURL = $model->referer;
                 if ($model->add()) {
                     $data['username'] = $model->username;
                     $data['password'] = $model->new_password;
                     $model = new OrganizationSignUpForm();
                     if ($this->login($data)) {
-                        return $this->redirect('/account/dashboard');
+                        return $this->redirect((($backURL) ? $backURL : '/account/dashboard'));
                     }
                 } else {
                     Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');

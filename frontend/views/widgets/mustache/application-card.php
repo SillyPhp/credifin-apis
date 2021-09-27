@@ -90,7 +90,7 @@ switch ([$controller_id, $action_id]) {
                         <?php
                         if (Yii::$app->user->identity->organization->organization_enc_id) {
                             ?>
-                            <a href="javascript:;" class="ji-apply disabled" title="Apply Now">Apply Now</a>
+                            <a href="javascript:;" class="ji-apply disabled no-anim" title="Apply Now">Apply Now</a>
                             <?php
                         } else {
                             ?>
@@ -101,10 +101,10 @@ switch ([$controller_id, $action_id]) {
                         {{/unclaimed_organization_enc_id}}
                         {{^unclaimed_organization_enc_id}}
                             {{#applied}}
-                            <a href="javascript:;" class="ji-apply" title="Applied">Applied</a>
+                            <a href="javascript:;" class="ji-apply no-anim" title="Applied">Applied</a>
                             {{/applied}}
                             {{^applied}}
-                                <a href="javascript:;" data-app="{{application_id}}" data-org="{{organization_enc_id}}" class="ji-apply <?= ((Yii::$app->user->identity->organization->organization_enc_id) ? 'disabled' : 'applyApplicationNow')?> {{application_id}}-apply-now" title="Apply Now">Apply Now</a>
+                                <a href="javascript:;" data-app="{{application_id}}" data-org="{{organization_enc_id}}" class="ji-apply <?= ((Yii::$app->user->identity->organization->organization_enc_id) ? 'disabled no-anim' : 'applyApplicationNow')?> {{application_id}}-apply-now" title="<?= ((Yii::$app->user->identity->organization->organization_enc_id) ? 'Login as Candidate' : 'Apply Now')?>">Apply Now</a>
                             {{/applied}}
                         {{/unclaimed_organization_enc_id}}
                         <?php
@@ -163,6 +163,12 @@ switch ([$controller_id, $action_id]) {
                                        class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
                                        title="Share on Telegram">
                                         <span><i class="fab fa-telegram-plane"></i></span></a>
+                                </div>
+                                <div class="copy-app-link">
+                                    <a href="javascript:;" class="clipb tt detail-clipboard" type="button" data-toggle="tooltip"
+                                       title="Copy Link" data-link="{{link}}">
+                                        <i class="fas fa-clipboard"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -476,6 +482,19 @@ $(document).on('click', '.share-b', function(){
 $(document).on('mouseleave', '.app-box', function(){
     $(this).find('.sharing-links').removeClass('moveright');
 });
+$(document).on('click', '.detail-clipboard',function (event) {
+            event.preventDefault();
+            var link = window.location.hostname + $(this).attr('data-link');
+            CopyClipboard(link, true, "Link copied");
+        });
+function CopyClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
 JS;
 $this->registerJs($script);
 $this->registerCss('
@@ -503,7 +522,7 @@ $this->registerCss('
     padding: 2px 10px !important;
     background-color: #63c6f0 !important;
     color: #fff !important;
-    border-radius: 0px 10px 0px 8px !important;
+    border-radius: 0px 8px 0px 8px !important;
     position: absolute !important;
     right: 0px !important;
     top: 0px !important;
@@ -560,6 +579,7 @@ $this->registerCss('
     margin-top: 5px;
     padding-right: 10px;
     width:100%;
+    position:relative;
 }
 .ji-apply, .ji-apply:focus {
     font-family: Roboto;
@@ -570,6 +590,14 @@ $this->registerCss('
     text-align: center;
     display: inline-block;
     width: 35%;
+    transition:all .2s;
+}
+.ji-apply:hover{
+    color: #fff;
+    transform:scale(1.1);
+}
+.no-anim:hover{
+    transform:scale(1);
 }
 .application-card-open {
     width: 35%;
@@ -579,24 +607,37 @@ $this->registerCss('
     display: inline-block;
     padding: 4px 0;
 }
-.ji-plus-btn, .ji-plus-btn:focus, .ji-plus-btn:hover{
+.application-card-open:hover {
+    color: #00a0e3;
+    transition: all .1s;
+    transform:scale(1.1);
+}
+.ji-plus-btn, .ji-plus-btn:focus{
     color: #ff7803;
     width: 10%;
     text-align: center;
 }
-.share-b, .share-b:focus, .share-b:hover {
+.ji-plus-btn:hover{
+    color:#ff7803;
+    transform:scale(1.2);
+    transition:all .1s;
+    }
+.share-b, .share-b:focus{
     color: #00a0e3;
     width: 10%;
     text-align: center;
 }
-.ji-apply:hover {
-    color: #fff;
-}
+.share-b:hover{
+    color:#00a0e3;
+    transform:scale(1.2);
+    transition:all .1s;
+    }
 .sharing-links {
     width: calc(100% - 12%);
+    height:100%;
     position: absolute;
     right: -90%;
-    bottom: 0px;
+    top: 0px;
     text-align: center;
     background-color: #fff;
     padding: 3px 4px;
@@ -631,55 +672,61 @@ $this->registerCss('
 }
 .inner {
     display: flex;
-    justify-content:center;
+    justify-content:right;
 }
-.fb {
-    background: #236dce;
-}
-.tw {
-    background-color: #1c99e9;
-}
-.linkd {
-    background-color: #0e76a8;
-}
-.male {
-    background-color: #BB001B;
-}
-.tele {
-    background-color: #0088cc;
-}
-.wts-app{
-    background-color:#4FCE5D;
-}
-.wts-app, .fb, .tw, .linkd, .male, .tele {
+.wts-app i, .fb i, .tw i, .linkd i, .male i, .tele i, .copy-app-link i{
     width: 25px;
     text-align: center;
     border-radius: 50px;
     height: 25px;
-    font-size: 13px;
-    padding-top: 2px;
+    font-size: 14px;
     margin: 0 5px;
+    border: 1px solid transparent;
+    padding-top: 5px;
+    transition:all .3s;
 }
-.wts-app a, .linkd a, .tw a, .fb a, .male a, .tele a {
+.fb i {color: #236dce;}
+.fb i:hover {background-color: #236dce;}
+.tw i{color: #1c99e9;}
+.tw i:hover{background-color: #1c99e9;}
+.linkd i{color: #0e76a8;}
+.linkd i:hover{background-color: #0e76a8;}
+.male i{color: #BB001B;}
+.male i:hover{background-color: #BB001B;}
+.tele i{color: #0088cc;}
+.tele i:hover{background-color: #0088cc;}
+.wts-app i{color:#4FCE5D;}
+.wts-app i:hover{background-color:#4FCE5D;}
+.copy-app-link i{color:#22577A;}
+.copy-app-link i:hover{background-color:#22577A;}
+.wts-app i:hover, .linkd i:hover, .tw i:hover, .fb i:hover, .male i:hover, .tele i:hover, .copy-app-link i:hover{
 	color: #fff;
 }
 .share-b:hover .sharing-links, .sharing-links:hover{display:block !Important;}
 /*cards-box css*/
 @media screen and (max-width: 1250px) and (min-width: 992px) {
-    .wts-app, .fb, .tw, .linkd, .male, .tele {
+    .wts-app i, .fb i, .tw i, .linkd i, .male i, .tele i, .copy-app-link i{
         width: 22px;
         height: 22px;
-        font-size: 12px;
-        margin: 0px 2px;
-        padding-top:1px;
+        font-size: 14px;
+        margin: 0px 5px;
+        padding-top:2px;
     }
-    .sharing-links{padding:2px;}
+    .sharing-links{padding:1px;}
+}
+@media screen and (max-width: 768px) {
+    .inner{justify-content:center;}
 }
 @media screen and (max-width: 550px) {
   .ji-apply, .application-card-open{
     font-size:12px;
     padding:6px 0;
 }
+ .wts-app i, .fb i, .tw i, .linkd i, .male i, .tele i, .copy-app-link i{
+        font-size: 14px;
+        margin: 0px 2px;
+        padding-top:3px;
+    }
 }
 
 ');

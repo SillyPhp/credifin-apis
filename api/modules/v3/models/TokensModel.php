@@ -46,7 +46,7 @@ class TokensModel
 
     public function validateToken($options)
     {
-        $session_id = WebinarSessions::findOne(['session_enc_id' => $options['tokenId']])['session_id'];
+        $session_id = WebinarSessions::findOne(['session_enc_id' => $options['tokenId']])->session_id;
         $model = VideoSessions::find()
             ->where(['is_active' => 1, 'session_enc_id' => $session_id])
             ->asArray()->one();

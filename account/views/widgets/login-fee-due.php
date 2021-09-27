@@ -35,6 +35,7 @@ $this->registerCss('
 	min-height: 350px;
     display: flex;
     align-items: center;
+    margin-bottom: 30px;
 }
 .dueflex {
     display: flex;

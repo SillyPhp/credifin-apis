@@ -320,6 +320,7 @@ function reviewlists(response){
     
         var review = $('#review-cards').html();
         $("#ilist").append(Mustache.render(review, response.cards));
+        check_list()
 }
 
 
