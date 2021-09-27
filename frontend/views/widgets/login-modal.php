@@ -82,7 +82,9 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
                                     </div>
                                 </div>
                                 <div class="login-btn">
-                                    <?= Html::submitButton('Login', ['class' => 'lg-form', 'name' => 'login-button']); ?>
+                                    <button <?= Html::submitButton('Login', ['class' => 'lg-form', 'name' => 'login-button']); ?> </button>
+                                    or
+                                    <button type="button" onclick="changeSignup()"> Sign Up</button>
                                 </div>
                                 <?php ActiveForm::end(); ?>
                                 <div class="separator pb-10">
@@ -92,10 +94,6 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
                                     <?=
                                     \yii\authclient\widgets\AuthChoice::widget([ 'baseAuthUrl' => ['site/auth'], 'popupMode' => true, ])
                                     ?>
-                                </div>
-                                <div class="new-user">
-                                    New User?
-                                    <button type="button" onclick="changeSignup()"> Sign Up</button>
                                 </div>
                             </div>
 
@@ -403,6 +401,7 @@ input{
     padding:10px 20px;
     border-radius:5px;
     font-size:13px;
+    margin: 0 8px;
 }
 @media screen and (max-width: 992px){
     .half-bg{
