@@ -155,7 +155,7 @@ $this->params['seo_tags'] = [
                 </div>
             </form>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9 col-sm-8">
             <div class="row" id="user_cards"></div>
             <?php
             echo $this->render('/widgets/users/preloaders/candidates');
@@ -938,6 +938,16 @@ form input[type="text"]:focus {
 	transform: translateY(-50%);
 	cursor: pointer;
 	transition: all 200ms ease-in;
+}
+
+@media only screen and (min-width: 1440px){
+	
+	.p-category-main{
+		width: 33.33% !important;
+	}
+	.f-ratings{
+		width: 100%;
+	}
 }
 ');
 

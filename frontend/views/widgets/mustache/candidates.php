@@ -1,6 +1,6 @@
 <script id="candidates" type="text/template">
     {{#.}}
-    <div class="col-lg-6 col-md-6 col-sm-6 p-category-main">
+    <div class="col-lg-6 col-md-6 col-sm-12 p-category-main">
         <div class="paid-candidate-container">
 <!--                        --><?php //if (Yii::$app->user->identity->organization) { ?>
 <!--                            <span class="shortlist-main" id="{{user_enc_id}}">-->
