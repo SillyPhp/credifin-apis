@@ -78,10 +78,17 @@ foreach ($fields as $f) {
 
 $locations = [];
 foreach ($application_name['applicationPlacementLocations'] as $apl) {
-    if (isset($locations[$apl['name']])) {
-        $locations[$apl['name']] += $apl['positions'];
+    if ($locations[$apl['city_enc_id']]) {
+        $singleLoc = [];
+        $singleLoc['name'] = $apl['name'];
+        $singleLoc['positions'] = $locations[$apl['city_enc_id']]['positions'] + $apl['positions'];
+        $locations[$apl['city_enc_id']] = $singleLoc;
     } else {
-        $locations[$apl['name']] = $apl['positions'];
+//        $locations[$apl['name']] = $apl['positions'];
+        $singleLoc = [];
+        $singleLoc['name'] = $apl['name'];
+        $singleLoc['positions'] = $apl['positions'];
+        $locations[$apl['city_enc_id']] = $singleLoc;
     }
 }
 
@@ -313,7 +320,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                         <?php if ($application_name['applicationPlacementLocations']) { ?>
                             <ul class="location-posts">
                                 <?php foreach ($locations as $key => $val) { ?>
-                                    <li><?= $key . '<span>' . $val . '</span>' ?></li>
+                                    <li class="filter-application-by-location" data-loc="<?=$key?>"><?= $val['name'] . '<span>' . $val['positions'] . '</span>' ?></li>
                                 <?php } ?>
                             </ul>
                             <?php if (count($locations) > 3) { ?>
@@ -326,7 +333,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                             <?php if ($application_name['applicationPlacementLocations']) { ?>
                                 <ul class="location-postss">
                                     <?php foreach ($locations as $key => $val) { ?>
-                                        <li><?= $key . '<span>' . $val . '</span>' ?></li>
+                                        <li class="filter-application-by-location" data-loc="<?= $key?>"><?= $val['name'] . '<span>' . $val['positions'] . '</span>' ?></li>
                                     <?php } ?>
                                 </ul>
                             <?php } ?>
@@ -412,7 +419,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                 }
                 $rejectionType = $arr['candidateRejections'][0]['rejection_type'];
         ?>
-                <li class="<?= $tempfieldMain ?>" data-key="<?= $fieldMain ?>" data-id="<?= $arr['applied_application_enc_id'] ?>">
+                <li class="single-item-field <?php echo $tempfieldMain; foreach($arr['appliedApplicationLocations'] as $cID){echo " " . $cID['city_enc_id'] ." ";} ?>" data-key="<?= $fieldMain ?>" data-id="<?= $arr['applied_application_enc_id'] ?>">
 
                     <div class="row pr-user-main">
                         <div class="reject-box" <?= (($arr['rejection_window'] == 1) ? 'style="display: flex;"' : '') ?>>
@@ -1285,16 +1292,17 @@ $this->registerCss('
     align-items: center;
     justify-content: center;
 }
-.sr-box{
-    color: #000;
+.sr-box {
+    color: #ff4242;
+    font-family: lora;
+    align-self: end;
 }
 .rejectReason p{
     text-align: center;
-    font-family: roboto;
     font-size: 20px;
     margin-top: 0px;
     margin-bottom: 5px;
-    color: #333;
+    color: #;
 }
 .customJobBox p{
     color: #333 !important;
@@ -2167,7 +2175,17 @@ overflow: hidden;
   z-index: 9;
   
 }
-
+.filter-application-by-location{
+    cursor: pointer;
+}
+.filter-application-by-location.active{
+    background-color:#00a0e3 !important;
+    color:#fff;
+}
+.filter-application-by-location.active span{
+    background-color: #fff;
+    color: #00a0e3;
+}
 .close:hover,
 .close:focus {
   color: #000;
@@ -2325,12 +2343,25 @@ $('.and-more').click( function(e) {
     e.stopPropagation(); // when you click the button, it stops the page from seeing it as clicking the body too
     $('.hidden-locations').toggle();
 });
-$('.hidden-locations').click( function(e) {
-    e.stopPropagation(); // when you click within the content area, it stops the page from seeing it as clicking the body too 
-});
+// $('.hidden-locations').click( function(e) {
+//     // e.stopPropagation(); // when you click within the content area, it stops the page from seeing it as clicking the body too 
+// });
 $('body').click( function() {
     $('.hidden-locations').hide();
    });
+$(document).on('click', '.filter-application-by-location', function(e){
+    e.preventDefault();
+    if(!$(this).hasClass('active')){
+        $('.filter-application-by-location').removeClass('active');
+        var cId = $(this).attr('data-loc');
+        $('li[data-loc='+cId+']').addClass('active');
+        $('.single-item-field').addClass('hidden');
+        $('.'+cId).removeClass('hidden');
+    } else {
+        $(this).removeClass('active');
+        $('.single-item-field').removeClass('hidden');
+    }
+});
 $(document).on('click', '#email-invitation', function(){
     var email_id = $(this).parent().find('input#email').val();
     if(email_id != "" && typeof email_id !== "undefined"){

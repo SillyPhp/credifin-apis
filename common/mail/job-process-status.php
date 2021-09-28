@@ -154,18 +154,20 @@ img + div{
     </div>
     <div class="content">
         <p>Dear <?= $data['name'] ?>,</p>
-        <p>We are happy to inform you that you have been selected for the<span class="darktext"> Personal Interview</span> round for <span class="darktext">Business Development Manager</span> in <span class="darktext">DSBEduTech</span>. Please give your consent regarding the same as soon as possible as we are eagerly waiting for your response.</p>
+        <p>We are happy to inform you that you have been selected for the<span class="darktext"> <?= $data['round_name'] ?></span> round for <span class="darktext"><?= $data['job_title'] ?></span> in <span class="darktext"><?= $data['company'] ?></span>. Please give your consent regarding the same as soon as possible as we are eagerly waiting for your response.</p>
         <p>Track your application by clicking the button below</p>
     </div>
     <div class="track">
-        <a href="https://www.empoweryouth.com/account/process-applications/2DeBxPEjOGdjkjgnV3beQpqANyVYw9" class="track-btn">Track Your Application</a>
+        <a href="https://www.empoweryouth.com/account/process-applications/<?= $data['applied_id'] ?>" class="track-btn">Track Your Application</a>
     </div>
+    <?php if ($data['questionniare_enc_id']): ?>
     <div class="content">
         <p>Also Note That You Have Some Pending Questionnaire Please Fill Up Before Apearing To Personal Interview</p>
     </div>
         <div class="fill">
-        <a href="https://www.empoweryouth.com/account/questionnaire/fill-questionnaire/qEeByK16PolWN4n7nGe5RzZn49J0YL/<?= $data['applied_id'] ?>" class="fill-btn">Fill Questionnaire</a>
+        <a href="https://www.empoweryouth.com/account/questionnaire/fill-questionnaire/<?= $data['questionniare_enc_id'] ?>/<?= $data['applied_id'] ?>" class="fill-btn">Fill Questionnaire</a>
     </div>
+    <?php endif; ?>
     <div class="footer">
         <div class="web-social">
             <a href="https://www.facebook.com/empower/" target="_blank"><img src="https://www.empoweryouth.com/assets/themes/email/images/Nxj6lKYbJdDjEJYOMWeBRvg5VrAZ3y.png"></a>

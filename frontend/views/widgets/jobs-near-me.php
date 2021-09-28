@@ -114,8 +114,8 @@ if ($type == 'jobs') {
     {{#.}}
     <div class="col-md-12 col-sm-6 col-xs-12">
         <div id="card-hover" data-id="{{application_enc_id}}" data-key="{{application_enc_id}}-{{location_id}}"
-             class="application-card-main shadow">
-            <div class="app-box">
+             class="application-card-main">
+            <div class="app-box shadow">
                 <div class="app-card-main">
                     <div class="application-card-img">
                         <a href="{{organization_link}}" class="orgSlug" target="_blank" title="{{organization_name}}">
@@ -228,6 +228,12 @@ if ($type == 'jobs') {
                                        class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
                                        title="Share on Telegram">
                                         <span><i class="fab fa-telegram-plane"></i></span></a>
+                                </div>
+                                <div class="copy-app-link">
+                                    <a href="javascript:;" class="clipb tt detail-clipboard" type="button" data-toggle="tooltip"
+                                       title="Copy Link" data-link="{{link}}">
+                                        <i class="fas fa-clipboard"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -478,7 +484,7 @@ body {
 .clear{
     clear:both;
 }
-.moveright{right:13% !important;}
+.moveright{right:10% !important;}
 .app-box {
     text-align: left;
     padding: 22px 0 0;
@@ -556,6 +562,7 @@ body {
     margin-top: 5px;
     padding-right: 10px;
     width:100%;
+    position: relative;
 }
 .ji-apply, .ji-apply:focus {
     font-family: Roboto;
@@ -590,8 +597,9 @@ body {
     color: #fff;
 }
 .sharing-links {
-    width: calc(100% - 12%);
+    width: calc(100% - 8%);
     position: absolute;
+    height: 100%;
     right: -90%;
     bottom: 0px;
     text-align: center;
@@ -630,34 +638,32 @@ body {
     display: flex;
     justify-content:center;
 }
-.fb {
-    background: #236dce;
-}
-.tw {
-    background-color: #1c99e9;
-}
-.linkd {
-    background-color: #0e76a8;
-}
-.male {
-    background-color: #BB001B;
-}
-.tele {
-    background-color: #0088cc;
-}
-.wts-app{
-    background-color:#4FCE5D;
-}
-.wts-app, .fb, .tw, .linkd, .male, .tele {
+.wts-app i, .fb i, .tw i, .linkd i, .male i, .tele i, .copy-app-link i{
     width: 25px;
     text-align: center;
     border-radius: 50px;
     height: 25px;
-    font-size: 13px;
-    padding-top: 2px;
+    font-size: 14px;
     margin: 0 5px;
+    border: 1px solid transparent;
+    padding-top: 5px;
+    transition:all .3s;
 }
-.wts-app a, .linkd a, .tw a, .fb a, .male a, .tele a {
+.fb i {color: #236dce;}
+.fb i:hover {background-color: #236dce;}
+.tw i{color: #1c99e9;}
+.tw i:hover{background-color: #1c99e9;}
+.linkd i{color: #0e76a8;}
+.linkd i:hover{background-color: #0e76a8;}
+.male i{color: #BB001B;}
+.male i:hover{background-color: #BB001B;}
+.tele i{color: #0088cc;}
+.tele i:hover{background-color: #0088cc;}
+.wts-app i{color:#4FCE5D;}
+.wts-app i:hover{background-color:#4FCE5D;}
+.copy-app-link i{color:#22577A;}
+.copy-app-link i:hover{background-color:#22577A;}
+.wts-app i:hover, .linkd i:hover, .tw i:hover, .fb i:hover, .male i:hover, .tele i:hover, .copy-app-link i:hover{
 	color: #fff;
 }
 .share-b:hover .sharing-links, .sharing-links:hover{display:block !Important;}
@@ -743,6 +749,21 @@ body {
 ');
 $controller = Yii::$app->controller->id;
 $script = <<< JS
+$(document).on('click', '.detail-clipboard',function (event) {
+            event.preventDefault();
+            var link = window.location.hostname + $(this).attr('data-link');
+            CopyClipboard(link, true, "Link copied");
+        });
+function CopyClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
+
+
 $(window).animate({scrollTop:0}, '300');
 $('body').css('overflow','hidden');
 setTimeout(
@@ -1236,7 +1257,7 @@ $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/css/ion.rangeSlider.min.css');
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
-$this->registerJsFile('@backendAssets/global/scripts/app.min.js');
+$this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js', ['depends' => [JqueryAsset::className()]]);
