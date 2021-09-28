@@ -186,4 +186,17 @@ class NotificationEmails extends Component
             return true;
         }
     }
+
+    public function candidateProcessNotification($param){
+        Yii::$app->mailer->htmlLayout = 'layouts/email';
+        $mail = Yii::$app->mailer->compose(
+            ['html' => 'job-process-status'],['data'=>$param]
+        )
+            ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+            ->setTo([$param['email'] => $param['name']])
+            ->setSubject($param['subject']);
+        if ($mail->send()) {
+            return true;
+        }
+    }
 }
