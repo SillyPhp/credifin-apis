@@ -268,7 +268,12 @@ if ($optedWebinar) {
                 <div class="col-md-4 col-sm-6">
                     <div class="web-card">
                         <div class="web-img">
-                            <a href="<?= Url::to("/webinar/" . $pWeb['slug']) ?>">
+                            <a href="<?php
+                                if ($pWeb['webinarEvents'][0]['status'] == 2) {
+                                    echo "/webinar/webinar-expired";
+                                } else {
+                                    echo Url::to("/webinar/" . $pWeb['slug']);
+                                } ?>">
                                 <img src="<?= $pWeb['image'] ?>">
                             </a>
                             <div class="web-detail-date">
@@ -295,7 +300,12 @@ if ($optedWebinar) {
                             </div>
                         </div>
                         <div class="web-inr">
-                            <div class="web-title"><a href="<?= Url::to("/webinar/" . $pWeb['slug']) ?>">
+                            <div class="web-title"><a href="<?php
+                                if ($pWeb['webinarEvents'][0]['status'] == 2) {
+                                    echo "/webinar/webinar-expired";
+                                } else {
+                                    echo Url::to("/webinar/" . $pWeb['slug']);
+                                } ?>">
                                     <?= $pWeb['name'] ?></a></div>
                             <div class="web-speaker">
                                 <span><?= str_replace(',', ', </span><span>', trim($pWeb['speakers'])) ?></span></div>
