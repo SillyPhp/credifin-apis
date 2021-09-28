@@ -200,6 +200,9 @@ $this->params['seo_tags'] = [
 </section>
 <?php
 $this->registerCss('
+.ps__thumb-x{
+	display: none !important;
+}
 .colorBlue{
     color:#00a0e3;
     font-size:12px;
@@ -222,10 +225,11 @@ a#reset-salary:hover {
 }
 .btns-b {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    margin-top: 9px;
 }
 .v-detail, .short-btn {
-    flex-basis:50%;
+    flex-basis:47%;
 }
 .full-wi{
     flex-basis:100%;
@@ -289,19 +293,21 @@ button.viewall-jobs {
 }
 .paid-candidate-container {
 	background: #ffffff;
-	border-radius: 6px !important;
-	overflow: hidden;
-	text-align: center;
-	margin-bottom: 30px;
-	position: relative;
-	transition: .4s;
-	border: 1px solid #eaeff5;
-	box-shadow: 0 0px 14px rgba(0, 0, 0, 0.1);
+    border-radius: 6px !important;
+    overflow: hidden;
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+    transition: .4s;
+    border: 1px solid #eaeff5;
+    box-shadow: 0 0px 14px rgb(0 0 0 / 10%);
+    padding: 15px;
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 .paid-candidate-inner--box {
-    display: flex;
-    justify-content:flex-start;
-    align-items: center;
     margin-bottom:5px;
 }
 .paid-candidate-container:hover,
@@ -323,7 +329,6 @@ button.viewall-jobs {
 }
 .paid-candidate-box {
 	text-align: center;
-	padding: 20px 15px 10px;
 }
 .paid-candidate-status {
 	position: absolute;
@@ -350,18 +355,19 @@ button.viewall-jobs {
 .paid-candidate-box-detail {
     flex-basis: 70%;
     text-align: left;
-    margin: 0 0 0 10px;
+	margin-top: 10px;
 }
 .paid-candidate-box-detail h4 {
 	margin-bottom: 4px;
-	margin-top:0;
-	font-size: 18px;
-	text-overflow: ellipsis;
-	-webkit-line-clamp: 1;
-	-webkit-box-orient: vertical;
-	display: -webkit-inline-box;
-	overflow: hidden;
-	text-transform: capitalize
+    margin-top: 0;
+    font-size: 18px;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-inline-box;
+    overflow: hidden;
+    text-transform: capitalize;
+    font-weight: 700;
 }
 .paid-candidate-box-exp {
 	display: flex;
@@ -371,45 +377,46 @@ button.viewall-jobs {
 .paid-candidate-box-detail .location,
 .paid-candidate-box-exp .desination {
 	font-weight: 500;
-	font-size: 15px;
-	color: #677484;
-	height: 27px;
-//	padding: 5px 20px 0;
-	text-overflow: ellipsis;
-	-webkit-line-clamp: 1;
-	-webkit-box-orient: vertical;
-	display: -webkit-box;
-	overflow: hidden;
+    /* font-size: 15px; */
+    color: #677484;
+    /* height: 21px; */
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+    margin-top: -13px;
 }
+
 .paid-candidate-box-extra ul {
-//	margin: 10px 0;
 	padding: 0;
-	min-height: 28px;
-	height: 28px;
-	overflow: hidden;
-	text-align:left;
+    max-height: 24px;
+    overflow: hidden;
+    text-align: left;
 }
-.paid-candidate-box-extra ul li {
-	list-style: none;
-	padding: 1px 5px;
-//	border: 1px solid #b9c5ce;
-	border-radius: 50px !important;
-	margin: 1px 0;
-	font-weight: 400;
-	color: #657180;
-	text-overflow: ellipsis;
-	-webkit-line-clamp: 1;
-	-webkit-box-orient: vertical;
-	display: -webkit-inline-box;
-	overflow: hidden;
-	font-family:roboto;
+.paid-candidate-box-extra ul li:not(:first-child) {
+    display: inline;
+    padding: 0 2px 0 0;
+    padding: 1px 8px;
+    border-radius: 3px;
+}
+.paid-candidate-box-extra:nth-child(2) ul li:not(:first-child){
+	color: #00a0e3;
+    background: #00a0e325;
 }
 .skills-h {
     font-weight: 500 !important;
+    display: inline;
 }
 .paid-candidate-box-extra ul li.more-skill {
-	color: #ffffff;
+    color: #fff !important;
+    background-color: #337ab7 !important;
+}
+.paid-candidate-box-extra ul li.more-skill {
 	border-color: #1194f7;
+}
+.paid-candidate-box-extra:nth-child(3) {
+    margin-top: 7px;
 }
 a.btn.btn-paid-candidate {
 	padding: 10px !important;
@@ -421,8 +428,6 @@ a.btn.btn-paid-candidate {
 }
 a.btn.btn-paid-candidate:hover,
 a.btn.btn-paid-candidate:focus {
-	background: #00a0e3;
-	color: #ffffff;
 	-webkit-transition: all .3s ease-in-out;
 	-moz-transition: all .3s ease-in-out;
 	-o-transition: all .3s ease-in-out;
@@ -822,7 +827,7 @@ form input[type="text"]:focus {
 	border-radius: 10px;
 	width: 260px;
 	overflow-y: scroll;
-	height: 500px;
+	height: 85vh;
 	position: relative;
 }
 .overall-box-heading {
