@@ -661,6 +661,9 @@ let appEditor;
     appEditor.updateSourceElement();
     return true; 
 });
+window.onbeforeunload = function() {
+   return "Do you really want to leave ?";
+};
 JS;
 $this->registerJs($script);
 $this->registerCssFile("/assets/themes/jobhunt/css/icons.css");

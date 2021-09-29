@@ -2494,6 +2494,9 @@ function get_preview(session_tok) {
                        }
                     }); 
             }
+window.onbeforeunload = function() {
+return "Do you really want to leave ?";
+};
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
