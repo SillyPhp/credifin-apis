@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\SkillsUpPosts;
+use common\models\Users;
 use frontend\models\skillsUp\AddSourceForm;
 use frontend\models\skillsUp\SkillsUpForm;
 use yii\web\Controller;
@@ -135,8 +136,9 @@ class  SkillUpController extends Controller
                 $f->joinWith(['videoEnc f1']);
             }], false);
         $permissions = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "Skill-Up-Executive");
-        if ($permissions) {
-        $postDetail->where(['a.slug' => $slug, 'a.is_deleted' => 0]);
+        $user = Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id])->user_of;
+        if ($permissions || $user == 'MIS') {
+            $postDetail->where(['a.slug' => $slug, 'a.is_deleted' => 0]);
         } else {
             $postDetail->where(['a.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0]);
         }

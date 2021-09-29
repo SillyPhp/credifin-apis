@@ -37,7 +37,7 @@ use yii\helpers\Url;
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="feature-text">
-                            <h4>Utilize the chatbox to improve customer engagement</h4>
+                            <h4>Utilize the chatbox to improve candidate engagement</h4>
                             <p>Make communication easy between you and applicants by answering their queries and complex questions, ultimately resulting in a good candidate experience with an instant answering facility using a chatbox.</p>
                             <a href="/account/jobs/dashboard" class="learn-btn">Learn More</a>
                         </div>
