@@ -173,7 +173,6 @@ $this->registerCss("
 $script = <<<JS
 $(document).on('click','.datepicker_opn',function(e) {
 e.preventDefault();
-    alert('click');
 $('#application_enc_id').val($(this).attr('data-id'));
 $('#form_modal2').modal('show');
 });
