@@ -106,8 +106,10 @@ if($blogs['blogs']){
 };
 ?>
 <?= $this->render('/widgets/loan-form-detail',[
-    'model' => $model
+    'model' => $model,
+    'param' => 'Study Abroad'
 ]); ?>
+
 <?= $this->render('/widgets/press-releasee',[
     'data' => $data,
     'viewBtn' => true,
