@@ -67,6 +67,8 @@ class Webinar extends \common\models\Webinar
                 'a.seats',
                 'a.slug',
                 'a.availability',
+                'a.webinar_conduct_on',
+                'a.other_platforms'
             ])
             ->joinWith(['assignedWebinarTos b'], false)
             ->joinWith(['webinarRegistrations d' => function ($d) {

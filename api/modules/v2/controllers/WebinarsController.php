@@ -489,8 +489,9 @@ class WebinarsController extends ApiBaseController
                         $params['webinar_id'] = $webinar_id;
                         $params['email'] = $user->email;
                         $params['name'] = $user->first_name . ' ' . $user->last_name;
-                        $param['from'] = 'no-reply@myecampus.in';
+                        $params['from'] = 'no-reply@myecampus.in';
                         $params['site_name'] = 'My E-Campus';
+                        $params['is_my_campus'] = 1;
                         Yii::$app->notificationEmails->webinarRegistrationEmail($params);
                         return $this->response(201, ['status' => 201, 'message' => 'Successfully Registered']);
                     }
