@@ -108,7 +108,8 @@ class DashboardController extends Controller
         if (empty(Yii::$app->user->identity->organization)) {
             $applied_app = EmployerApplications::find()
                 ->alias('a')
-                ->select(['a.application_enc_id application_id', 'e.rejection_type', 'rr.reason', 'i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id applied_id', 'f.status', 'd.icon', 'g.name as org_name', 'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total', 'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
+                ->select(['a.application_enc_id application_id', 'e.rejection_type', 'GROUP_CONCAT(DISTINCT(rr.reason) SEPARATOR ", ") reason',
+                    'i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id applied_id', 'f.status', 'd.icon', 'g.name as org_name', 'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total', 'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
                 ->innerJoin(ApplicationTypes::tableName() . 'as i', 'i.application_type_enc_id = a.application_type_enc_id')
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
                 ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -279,16 +280,16 @@ class DashboardController extends Controller
                         WHEN e1.course_name IS NOT NULL THEN e1.course_name
                         ELSE d.course_name
                         END) as course_name',
-                    ])
-                ->joinWith(['loanApplications b' => function($b){
+                ])
+                ->joinWith(['loanApplications b' => function ($b) {
                     $b->select(['b.loan_app_enc_id', 'b.parent_application_enc_id']);
                 }])
-                ->joinWith(['pathToClaimOrgLoanApplications c' => function($c){
+                ->joinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
                     $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
                         $cc->joinWith(['courseEnc c1']);
                     }], false);
                 }], false)
-                ->joinWith(['pathToUnclaimOrgLoanApplications e' => function($e){
+                ->joinWith(['pathToUnclaimOrgLoanApplications e' => function ($e) {
                     $e->joinWith(['assignedCourseEnc ee' => function ($ee) {
                         $ee->joinWith(['courseEnc e1']);
                     }], false);
@@ -296,8 +297,8 @@ class DashboardController extends Controller
                 ->joinWith(['pathToOpenLeads d'], false)
                 ->joinWith(['assignedLoanProviders f'], false)
                 ->where([
-                    'a.created_by'=>Yii::$app->user->identity->user_enc_id,
-                    'f.status'=>11,
+                    'a.created_by' => Yii::$app->user->identity->user_enc_id,
+                    'f.status' => 11,
                     'a.parent_application_enc_id' => null,
                     'a.is_deleted' => 0,
                 ])
