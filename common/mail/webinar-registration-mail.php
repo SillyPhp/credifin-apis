@@ -166,15 +166,15 @@ img + div{
         </div>
         <div class="webinar">
             <div class="webdetails">
-                <p> <span class="wd">Webinar Name:</span> Whither Education? The Challenge of Change</p>
-                <p> <span class="wd">Speakers:</span> Aastha Hora, Kavya Khurana, Saourabh Sameer</p>
-                <p> <span class="wd">Time:</span> 03:45 PM - 05:14 PM</p>
-                <p> <span class="wd">Date:</span> 18 September 2021</p>
+                <p> <span class="wd">Webinar Name:</span> <?= $data['title'] ?></p>
+                <p> <span class="wd">Speakers:</span> <?= $data['speakers'] ?></p>
+                <p> <span class="wd">Time:</span> <?= $data['time'] ?></p>
+                <p> <span class="wd">Date:</span><?= $data['date'] ?></p>
             </div>
         </div>
         <div class="cont">
             <p>Please Join the webinar by clicking the button below:</p>
-            <a href="https://www.empoweryouth.com/webinar/whither-education-the-challenge-of-change-90286" class="join-btn">Join</a>
+            <a href="<?= $data['link'] ?>" class="join-btn">Join</a>
         </div>
     </div>
     <div class="footer">
