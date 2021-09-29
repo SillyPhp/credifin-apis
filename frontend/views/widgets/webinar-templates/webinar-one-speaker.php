@@ -42,7 +42,7 @@ use yii\helpers\Url;
 
 <?php $this->registerCss('
     .webinar-one-speaker {
-        background: url(/assets/themes/ey/images/pages/webinar/webinar-one-speaker-bg.png);
+        background: url('.Url::to('@eyAssets/images/pages/webinar/webinar-one-speaker-bg.png').');
         min-height: 550px;
         overflow: hidden;
         background-repeat: no-repeat;
