@@ -3,6 +3,7 @@
 namespace account\controllers;
 
 use account\models\applications\ApplicationReminderForm;
+use account\models\applications\ExtendsJob;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationReminder;
 use common\models\CandidateRejection;
@@ -90,6 +91,7 @@ class DashboardController extends Controller
         }
 
         if (Yii::$app->user->identity->organization) {
+            $extendModel = new ExtendsJob();
             $scriptModel = new scriptModel();
             $viewed = $this->hasViewed();
             $this->_condition = ['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id];
@@ -379,6 +381,7 @@ class DashboardController extends Controller
             'userValues' => $this->_CompleteProfile(),
             'userPref' => $this->_CompletePreference(),
             'loan' => $loan,
+            'extendModel' => $extendModel
         ]);
     }
 

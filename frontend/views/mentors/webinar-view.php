@@ -17,6 +17,13 @@ $time = date('Y/m/d H:i:s', strtotime($upcomingDateTime));
        id="current-user-name">
 <input type="hidden" value="<?= $image; ?>" id="current-user-image">
 
+<section class="reload-strip">
+    <div class="reload-text">If your Webinar has not been started yet. Please Reload the Page.</div>
+    <div class="reload">
+        <a onClick="window.location.reload()" class="reload-btn">Relaod</a>
+    </div>
+</section>
+
 <section>
     <div class="videoFlex">
         <div class="video-section">
@@ -139,6 +146,37 @@ $time = date('Y/m/d H:i:s', strtotime($upcomingDateTime));
 </script>
 <?php
 $this->registerCss('
+.reload-strip{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background: #2980b9;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #2c3e50, #2980b9);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #2c3e50, #2980b9); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    padding: 15px 25px;
+    align-items: center;
+}
+.reload-text{
+    color: #fff;
+    font-family: roboto;
+}
+.reload-btn {
+    padding: 6px 20px;
+    text-decoration: none;
+    background: #2c4054;
+    color: #fff;
+    font-family: roboto;
+    font-weight: 500;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    border:none;
+    cursor: pointer;
+    transition:all .3s;
+}
+.reload-btn:hover {
+    color: #2c4054 !important;
+    background: #fff;
+}
 .time-part {
     display: flex !important;
 }

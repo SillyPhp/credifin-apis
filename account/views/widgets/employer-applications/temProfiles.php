@@ -152,6 +152,7 @@ margin: 0 6px;
         background-color: #00a0e3;
         color: #fff;
         transition: all .2s;
+        transform: scale(1.03);
     }
 
     .service-list > input {
@@ -232,13 +233,14 @@ margin: 0 6px;
     min-width: 120px;
     margin: 0 5px;
     text-align: left;
-    width: 230px;
+    width: 280px;
 }
 .service-list label{
     width: 100%;
     display: inline-block;
-    background-color: rgba(255, 255, 255, .9);
-    border: 2px solid rgba(139, 139, 139, .3);
+    background-color: rgb(253 251 251 / 90%);
+    border: 2px solid rgb(249 246 246 / 30%);
+    box-shadow: 0 2px 4px 0 #e5e1e1;
     color: #333;
     border-radius: 4px;
     white-space: nowrap;
@@ -251,14 +253,23 @@ margin: 0 6px;
     -webkit-tap-highlight-color: transparent;
     transition: all .2s;
 }
+.service-list img {
+    margin-right: 15px;
+}
 
 .service-list label {
-    padding: 8px 12px;
+    display: flex;
+    padding: 10px 12px;
     cursor: pointer;
-    text-align:center;
+    text-align: center;
+    align-items: center;
+    color: #706c6c;
 }
 .service-list label > div {
+    font-weight: 500;
     margin: 8px 0;
+    font-family: 'Roboto';
+    letter-spacing: 0.3px;
 }
 .service-list label::before {
     display: inline-block;
