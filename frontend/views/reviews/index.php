@@ -132,6 +132,8 @@ use yii\bootstrap\ActiveForm;
         </div>
     </section>
     <!---->
+
+
     <section class="top-com">
         <div class="container">
             <h1 class="heading-style">Top Schools</h1>
@@ -141,6 +143,8 @@ use yii\bootstrap\ActiveForm;
             </div>
         </div>
     </section>
+
+
     <section>
         <div class="container">
             <h1 class="heading-style">Top Educational Institutes</h1>
@@ -170,6 +174,9 @@ use yii\bootstrap\ActiveForm;
         </div>
     </section>
 
+
+
+    <?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
     <!--Subscribe Widget start-->
 <?php
 if (Yii::$app->user->isGuest) {
@@ -177,6 +184,8 @@ if (Yii::$app->user->isGuest) {
 }
 ?>
     <!--Subscribe Widget ends-->
+    
+
 <?php
 echo $this->render('/widgets/mustache/review-cards');
 echo $this->render('/widgets/mustache/latest-reviews');

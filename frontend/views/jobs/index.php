@@ -114,6 +114,8 @@ echo $this->render('/widgets/jobs-by-tag');
 
 <?= $this->render('/widgets/international-jobs'); ?>
 
+<?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
+
 <section class="j-tweets">
     <div class="container">
         <div class="row">

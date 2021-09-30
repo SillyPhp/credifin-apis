@@ -132,6 +132,8 @@ echo $this->render('/widgets/internships-by-tag');
         </div>
     </div>
 </section>
+<?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
+
 <section class="j-tweets">
     <div class="container">
         <div class="row">

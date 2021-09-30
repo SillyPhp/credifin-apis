@@ -13,6 +13,9 @@ use yii\helpers\Url;
     <?= $this->render('/widgets/loan-why-empower-youth') ?>
     <?= $this->render('/widgets/education-loan-internship') ?>
     
+
+
+
     <section class="edu-with-sec">
         <div class="container">
             <div class="row mt-20">
@@ -126,6 +129,8 @@ use yii\helpers\Url;
     <section class="bg-blue pb10">
         <?= $this->render('/widgets/choose-education-loan') ?>
     </section>
+
+    <?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
     <section class="faq-s">
         <div class="faq-s-bg"></div>
         <div class="container">
