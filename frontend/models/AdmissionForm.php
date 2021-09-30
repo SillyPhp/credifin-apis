@@ -21,6 +21,7 @@ class AdmissionForm extends Model
     public $phone;
     public $countryCode;
     public $course;
+    public $source;
     public $college;
     public $preference_college1;
     public $preference_college2;
@@ -50,7 +51,7 @@ class AdmissionForm extends Model
         return [
             [['email', 'first_name', 'last_name', 'phone'], 'required'],
             [['email'], 'email'],
-            [['amount', 'college', 'preference_college1', 'course'], 'safe'],
+            [['amount', 'college', 'preference_college1', 'source', 'course'], 'safe'],
             [['amount'], 'integer'],
             [['email', 'first_name', 'last_name', 'phone'], 'trim'],
             [['email', 'first_name', 'last_name', 'phone'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
@@ -72,6 +73,7 @@ class AdmissionForm extends Model
             $model->first_name = $this->first_name;
             $model->last_name = $this->last_name;
             $model->student_mobile_number = $this->phone;
+            $model->source = $this->source;
             $model->student_email = $this->email;
             if ($this->college) {
                 $model->college_name = $this->college;
@@ -147,6 +149,7 @@ class AdmissionForm extends Model
             $model->first_name = $this->first_name;
             $model->last_name = $this->last_name;
             $model->student_mobile_number = $this->phone;
+            $model->source = $this->source;
             $model->student_email = $this->email;
             if ($this->college) {
                 $model->college_institute_name = $this->college;

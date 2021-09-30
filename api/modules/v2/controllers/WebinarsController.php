@@ -484,6 +484,15 @@ class WebinarsController extends ApiBaseController
                     $model->created_by = $user->user_enc_id;
                     $model->created_on = date('Y-m-d h:i:s');
                     if ($model->save()) {
+                        $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
+                        $params = [];
+                        $params['webinar_id'] = $webinar_id;
+                        $params['email'] = $user->email;
+                        $params['name'] = $user->first_name . ' ' . $user->last_name;
+                        $params['from'] = 'no-reply@myecampus.in';
+                        $params['site_name'] = 'My E-Campus';
+                        $params['is_my_campus'] = 1;
+                        Yii::$app->notificationEmails->webinarRegistrationEmail($params);
                         return $this->response(201, ['status' => 201, 'message' => 'Successfully Registered']);
                     }
                 }

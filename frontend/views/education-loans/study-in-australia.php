@@ -134,7 +134,8 @@ if($blogs['blogs']){
 };
 ?>
 <?= $this->render('/widgets/loan-form-detail',[
-    'model' => $model
+    'model' => $model,
+    'param' => 'Study in Australia'
 ]); ?>
 <?= $this->render('/widgets/press-releasee',[
     'data' => $data,

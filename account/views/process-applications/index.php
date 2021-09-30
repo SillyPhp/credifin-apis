@@ -428,7 +428,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                     Profile</a>
 
                                 <?php if (!empty($arr['resume_location']) || !empty($arr['resume'])) { ?>
-                                    <a href="javascript:;" class="download-resume" target="_blank" data-key="<?= $arr['resume_location'] ?>" data-id="<?= $arr['resume'] ?>">Download
+                                    <a href="javascript:;" class="download-resume" target="_blank" data-key="<?= $arr['resume_location'] ?>" data-id="<?= $arr['resume'] ?>" data-name="<?= $arr['name']?>">Download
                                         Resume</a>
                                 <?php } ?>
                                 <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
@@ -685,7 +685,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                             Profile</a>
                                         <?php
                                         if (!empty($arr['resume_location']) || !empty($arr['resume'])) { ?>
-                                            <a href="javascript:;" class="download-resume" target="_blank" data-key="<?= $arr['resume_location'] ?>" data-id="<?= $arr['resume'] ?>">Download Resume</a>
+                                            <a href="javascript:;" class="download-resume" target="_blank" data-key="<?= $arr['resume_location'] ?>" data-id="<?= $arr['resume'] ?>" data-name="<?= $arr['name']?>">Download Resume</a>
                                         <?php } ?>
                                         <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                         <!--                                            <a href="#">Request to Complete Profile</a>-->
@@ -2799,6 +2799,7 @@ $(document).on('click','.download-resume',function (e){
     let resume_location = $(this).attr('data-key');
     let resume = $(this).attr('data-id');
     let htmldata = $(this).html();
+    let user_name = $(this).attr('data-name');
     btnElem.addClass('disabled-elem');
     btnElem.html('<i class="fa fa-circle-o-notch fa-spin fa-fw p-0"></i>');
     $.ajax({
@@ -2813,7 +2814,13 @@ $(document).on('click','.download-resume',function (e){
                 btnElem.html(htmldata);
                 if(res['status'] == 200){
                     let cv_link = res['cv_link'];
-                    window.open(cv_link);
+                    // window.open(cv_link);
+                    const a = document.createElement("a");
+      a.href = cv_link;
+      a.download = user_name;
+      a.target = '_blank';
+      console.log(a);
+      a.click();
                 }else if(res['status'] == 500){
                     alert('an error occurerd')
                 }

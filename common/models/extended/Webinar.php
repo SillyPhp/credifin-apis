@@ -25,7 +25,9 @@ class Webinar extends \common\models\Webinar
                 'a.description',
                 'a.price',
                 'a.seats',
-                'a.slug'
+                'a.slug',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
+
             ])
             ->joinWith(['assignedWebinarTos b'], false)
             ->joinWith(['webinarRegistrations d' => function ($d) {
@@ -67,6 +69,9 @@ class Webinar extends \common\models\Webinar
                 'a.seats',
                 'a.slug',
                 'a.availability',
+                'a.webinar_conduct_on',
+                'a.other_platforms',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
             ])
             ->joinWith(['assignedWebinarTos b'], false)
             ->joinWith(['webinarRegistrations d' => function ($d) {
@@ -299,7 +304,9 @@ class Webinar extends \common\models\Webinar
                 'a.description',
                 'a.price',
                 'a.seats',
-                'a.slug'
+                'a.slug',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
+
             ])
             ->joinWith(['assignedWebinarTos b'], false)
             ->joinWith(['webinarRegistrations d' => function ($d) {

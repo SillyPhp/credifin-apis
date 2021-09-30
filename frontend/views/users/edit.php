@@ -679,6 +679,7 @@ $(document).on('keypress','input',function(e)
             return false;
         }
 });
+
 $(document).on('keyup','#search-skill',function(e)
 {
     if(e.which==13)
@@ -766,7 +767,11 @@ $(document).on('submit','#basicDetailForm',function(event)
     event.preventDefault();
     data = new FormData(this);
     var btn = $('.btn_submit_basic');
-    runAjax($(this),data,btn);
+    toastr.warning('Validating your data.', 'Please Wait...');
+    var thiss = $(this);
+    setTimeout(function() {
+        runAjax(thiss,data,btn);
+    },1500)
 });
     
 $(document).on('submit','#socialDetailForm',function(event)
