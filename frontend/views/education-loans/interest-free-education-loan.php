@@ -246,6 +246,8 @@ $this->params['seo_tags'] = [
         </div>
     </section>
 
+<?= $this->render('/widgets/testimonials-interestfree') ?>
+
     <section class="bgeEd pdbtm">
         <div class="container">
             <div class="row">

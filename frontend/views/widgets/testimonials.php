@@ -9,7 +9,7 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row test-flex">
             
-            <div class="col-md-6 col-sm-6">
+            <div class="col-md-4 col-sm-4">
                 <div class="testimonial-text">
                     <h3>Testimonials</h3>
                     <div class="test-text">
@@ -80,18 +80,18 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-8">
                 
             <div class="vid-nav">
                 <div class="col-md-9 col-sm-12">
                     <div class="testimonial-vid">
                         <div class="videos">
-                                <iframe width="677" height="381" src="https://www.youtube.com/embed/PTX50h-3x60" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                <iframe width="677" height="381" src="https://www.youtube.com/embed/CZEr5MCKb0M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                <iframe width="677" height="381" src="https://www.youtube.com/embed/j7Z6jWV6zy0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                <iframe width="677" height="381" src="https://www.youtube.com/embed/YcgMYqkbBXk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                <iframe width="677" height="381" src="https://www.youtube.com/embed/Rk0_O1w9Xso" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                <iframe width="677" height="381" src="https://www.youtube.com/embed/L9rvjCj_-Ps" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                <iframe width="900" height="381" src="https://www.youtube.com/embed/PTX50h-3x60" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                <iframe width="900" height="381" src="https://www.youtube.com/embed/CZEr5MCKb0M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                <iframe width="900" height="381" src="https://www.youtube.com/embed/j7Z6jWV6zy0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                <iframe width="900" height="381" src="https://www.youtube.com/embed/YcgMYqkbBXk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                <iframe width="900" height="381" src="https://www.youtube.com/embed/Rk0_O1w9Xso" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                <iframe width="900" height="381" src="https://www.youtube.com/embed/L9rvjCj_-Ps" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
                     </div>
                 </div>
@@ -208,17 +208,17 @@ $this->registerCss('
     color: #fff;
 }
 .testimonial-vid, .testimonial-text{
-    width: 340px;
+    width: 100%;
     overflow: hidden;
 }
 .videos, .test-text{
-    width: 340px;
+    width: 100%;
     display: flex;
     transition: all .35s ease-in;
     margin-bottom: 10px;
 }
 .videos iframe{
-    min-width: 340px;
+    min-width: 100%;
 }
 .testimonial-text{
     width: 100%;
