@@ -434,7 +434,7 @@ $this->registerCss('
 .header-text{
   margin: 25px 0 40px;
   position: relative;
-  z-index: 1;
+  z-index: 9;
 }
 
 .header-text h1{
