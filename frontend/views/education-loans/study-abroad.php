@@ -93,6 +93,7 @@ $this->params['seo_tags'] = [
 </section>
 <?= $this->render('/widgets/loan-process-ease') ?>
 <?= $this->render('/widgets/loan-table')?>
+<?= $this->render('/widgets/testimonials-abroad')?>
 <section class="bg-blue">
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
