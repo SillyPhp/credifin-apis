@@ -307,6 +307,7 @@ endif;
                         echo $this->render('/widgets/applications/card', [
                             'applications' => $applications['jobs']['data'],
                             'per_row' => 3,
+                            'type' => 'Job',
                             'col_width' => 'col-lg-4 col-md-4 col-sm-6',
                         ]);
                     } else {
@@ -363,6 +364,7 @@ endif;
                         echo $this->render('/widgets/applications/card', [
                             'applications' => $applications['internships']['data'],
                             'per_row' => 3,
+                            'type' => 'Internship',
                             'col_width' => 'col-lg-4 col-md-4 col-sm-6',
                         ]);
                     } else {
