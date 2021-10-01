@@ -18,12 +18,12 @@ use yii\helpers\Url;
                     <span class="time">1:20 PM - 2:20 PM</span>
                 </div>
                 <p>Are you ready for your dream career? Don’t miss the upcoming webinar on “how to get your dream job?” so that you are no longer confused and frustrated when it comes to making your career decision. The webinar with Vishal Verma will be live soon so register now!</p>
-                <a href="https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
+                <a href="/webinar/how-to-get-your-dream-job-4790" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
                 <div class="share-bar">
-                    <a target="_blank" href="#" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                    <a target="_blank" href="#" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                    <a target="_blank" href="#" class="share-linkedin"><i class="fab fa-whatsapp"></i></a>
-                    <a target="_blank" href="#" class="share-twitter"><i class="far fa-envelope-open"></i></a>
+                    <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                    <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                    <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-linkedin"><i class="fab fa-whatsapp"></i></a>
+                    <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-twitter"><i class="fab fa-twitter"></i></a>
                 </div>
             </div>
         </div>
@@ -139,7 +139,7 @@ use yii\helpers\Url;
     }
     
     .share-bar a.share-twitter {
-        color: #E60023;
+        color: #1DA1F2;
     }
     
     .share-bar a.share-linkedin {
@@ -163,7 +163,7 @@ use yii\helpers\Url;
     }
     
     .share-bar a.share-twitter:hover {
-        background-color: #E60023;
+        background-color: #1DA1F2;
     }
     
     .share-bar a.share-linkedin:hover {

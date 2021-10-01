@@ -93,6 +93,9 @@ use yii\bootstrap\ActiveForm;
         </div>
     </section>
 
+    
+    <?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
+
 <?= $this->render('/widgets/review/quick-review'); ?>
 
     <section class="top-com">
@@ -176,7 +179,6 @@ use yii\bootstrap\ActiveForm;
 
 
 
-    <?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
     <!--Subscribe Widget start-->
 <?php
 if (Yii::$app->user->isGuest) {

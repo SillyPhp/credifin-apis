@@ -9,6 +9,8 @@ use yii\helpers\Url;
 <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
     <div class="clearfix"></div>
     <?= $this->render('/widgets/loan-products') ?>
+    
+    <?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
     <?= $this->render('/widgets/covid-offer-banner', ['availUrl' => '/education-loans/apply']) ?>
     <?= $this->render('/widgets/loan-why-empower-youth') ?>
     <?= $this->render('/widgets/education-loan-internship') ?>
@@ -130,7 +132,6 @@ use yii\helpers\Url;
         <?= $this->render('/widgets/choose-education-loan') ?>
     </section>
 
-    <?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
     <section class="faq-s">
         <div class="faq-s-bg"></div>
         <div class="container">
