@@ -511,8 +511,8 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                             $msg = 'The candidate has been considered for following jobs';
                                             break;
                                         case 3:
-                                            $msg = "Candidate's CV has been saved for later. Please check CV in 
-                                                    drop resume";
+                                            $msg = "Candidate has been saved for later. Please check candidate's profile in 
+                                            Saved Candidates section";
                                             break;
                                         case 4:
                                             $msg = "This candidate has been rejected";
