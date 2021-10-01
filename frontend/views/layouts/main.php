@@ -78,29 +78,34 @@ AppAssets::register($this);
         <header id="header" class="header">
             <?= (!$this->params['header_dark']) ? '<div id="main-header" class="header-nav navbar-fixed-top header-dark navbar-white navbar-transparent navbar-sticky-animated animated-active">' : ''; ?>
             <div id="header-main" class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
-<!--                <section class="upcoming-webinar">-->
-<!--                    <div class="container">-->
-<!--                        <div class="row">-->
-<!--                            <div class="col-md-3 col-sm-2">-->
-<!--                                <div class="webinar-heading">-->
-<!--                                    Upcoming Webinar-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-6 col-sm-8">-->
-<!--                                <div class="webinar-name">-->
-<!--                                    Whither Education-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-3 col-sm-2">-->
-<!--                                <div class="view-detail">-->
-<!--                                    <a href="https://www.empoweryouth.com/webinar/whither-education-the-challenge-of-change-90286" class="view-btn">-->
-<!--                                        View Details-->
-<!--                                    </a>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </section>-->
+               
+            
+            
+            <section class="upcoming-webinar">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="webinar-heading">
+                                Upcoming Webinar
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="webinar-name">
+                                How to Get Your Dream Job?
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div class="view-detail">
+                                <a href="/webinar/how-to-get-your-dream-job-4790" class="view-btn">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
                 <?php
                 //            if (Yii::$app->user->isGuest && empty($this->params['sub_header'])) {
                 if (Yii::$app->user->isGuest) {
@@ -464,15 +469,16 @@ AppAssets::register($this);
     $this->registerCss('
     .upcoming-webinar{
         width: 100%;
-        background: #301164;
+        background: #0e1c3d;
         display: flex;
         position: relative;
         margin-top:-65px;
         // top: 0;
         z-index: 20;
       }
-      .upcoming-webinar .container{
-          padding: 0 !important;
+      .upcoming-webinar .container-fluid{
+          padding-top: 0 !important;
+          width: 100%;
       }
       .upcoming-webinar .row{
         display: flex;
@@ -521,7 +527,7 @@ AppAssets::register($this);
         opacity: 0.9;
       }
       
-      @media only screen and (max-width: 768px){
+      @media only screen and (max-width: 767px){
         .upcoming-webinar .row{
           display: block;
         }
@@ -529,7 +535,7 @@ AppAssets::register($this);
           background: none;
         }
         .upcoming-webinar{
-          background: url(' . Url::to('https://user-images.githubusercontent.com/72601463/133765334-22ac93c4-167b-4f7a-b145-11caa4175341.png') . '), #301164;
+          background: url(' . Url::to('https://user-images.githubusercontent.com/72601463/133765334-22ac93c4-167b-4f7a-b145-11caa4175341.png') . '), #0e1c3d;
           background-repeat: no-repeat;
           background-size: 100% 100%;
           display: block;
@@ -955,6 +961,14 @@ AppAssets::register($this);
         width:100%;
     }
 }
+@media (max-width: 992px) and (min-width: 768px){
+    .view-btn{
+        padding: 5px 8px;
+        font-size: 13px;
+    }
+    .webinar-name{
+        font-size: 22pt;
+}
 ');
 
     if ($this->params['header_dark']) {
@@ -1056,6 +1070,9 @@ $(".ey-sub-nav-items > li > a").each(function(){
         return false;
       }
 });
+if(!hasAccessForSubHeader){
+    $(".upcoming-webinar").css("display","none");
+}
 
 
 $(document).on("click", ".partnerWith", function(e){

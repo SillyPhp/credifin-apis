@@ -10,8 +10,8 @@ use yii\helpers\Url;
     <div class="clearfix"></div>
     <?= $this->render('/widgets/loan-products') ?>
     
-    <?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
     <?= $this->render('/widgets/covid-offer-banner', ['availUrl' => '/education-loans/apply']) ?>
+    <?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
     <?= $this->render('/widgets/loan-why-empower-youth') ?>
     <?= $this->render('/widgets/education-loan-internship') ?>
     
