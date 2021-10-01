@@ -37,7 +37,7 @@ use yii\helpers\Url;
             <div class="speaker-detail">
                 <h2>Vishal Verma</h2>
                 <h5>Personality Development Coach</h5>
-                <h5>Internation IELTS Trainer</h5>
+                <h5>International IELTS Trainer</h5>
                 <h5>Natitonal Debate Champion</h5>
             </div>
         </div>
