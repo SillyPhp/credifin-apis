@@ -116,6 +116,7 @@ $this->params['seo_tags'] = [
 <?= $this->render('/widgets/loan-process-ease') ?>
 <?php $is_show = 1; ?>
 <?= $this->render('/widgets/loan-table',['is_show'=>$is_show])?>
+<?= $this->render('/widgets/testimonials-india') ?>
 <section class="bg-blue">
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>

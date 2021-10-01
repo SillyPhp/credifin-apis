@@ -511,8 +511,8 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                             $msg = 'The candidate has been considered for following jobs';
                                             break;
                                         case 3:
-                                            $msg = "Candidate's CV has been saved for later. Please check CV in 
-                                                    drop resume";
+                                            $msg = "Candidate has been saved for later. Please check candidate's profile in 
+                                            Saved Candidates section";
                                             break;
                                         case 4:
                                             $msg = "This candidate has been rejected";
@@ -549,6 +549,19 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                                 More</p>
                                         </div>
                                     <?php
+                                    } else if($arr['candidateRejections'][0]['candidateRejectionReasons']){
+                                        ?>
+                                        <ul class="cr-reasons">
+                                            <li class="colorRed">Reasons:</li>
+                                            <?php
+                                            foreach ($arr['candidateRejections'][0]['candidateRejectionReasons'] as $crr){
+                                                ?>
+                                                <li><?= $crr['reason']?></li>
+                                                <?php
+                                            }
+                                            ?>
+                                        </ul>
+                                        <?php
                                     }
                                     ?>
                                 </div>
@@ -940,6 +953,24 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
 $this->registerCss('
 .has-success #phone-input {
     border-color: #c2cad8;
+}
+.cr-reasons{
+    display: inline;
+    color: #000;
+}
+.cr-reasons li{
+    padding: 0 !important;
+}
+.cr-reasons li:after{
+    content: ",";
+    padding-left: 2px;
+}
+.cr-reasons li:first-child:after,
+.cr-reasons li:last-child:after{
+   content: "";
+}
+.colorRed{
+    color: #ff4242; 
 }
 .hidden-locations{
     display:none;
