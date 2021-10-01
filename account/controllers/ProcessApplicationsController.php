@@ -194,6 +194,7 @@ class ProcessApplicationsController extends Controller
                     ->where(['reason_by' => 1, 'is_deleted' => 0, 'status' => 'Approved'])
                     ->asArray()
                     ->all();
+
                 return $this->render('index', [
                     'fields' => $applied_users,
                     'que' => $question,
