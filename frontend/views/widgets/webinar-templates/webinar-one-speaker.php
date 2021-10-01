@@ -18,7 +18,7 @@ use yii\helpers\Url;
                     <span class="time">1:20 PM - 2:20 PM</span>
                 </div>
                 <p>Are you ready for your dream career? Don’t miss the upcoming webinar on “how to get your dream job?” so that you are no longer confused and frustrated when it comes to making your career decision. The webinar with Vishal Verma will be live soon so register now!</p>
-                <a href="#" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
+                <a href="https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
                 <div class="share-bar">
                     <a target="_blank" href="#" class="share-fb"><i class="fab fa-facebook-f"></i></a>
                     <a target="_blank" href="#" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
