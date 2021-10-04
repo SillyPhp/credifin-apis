@@ -44,6 +44,9 @@ class TestCacheController extends Controller
          Yii::$app->notificationEmails->candidateProcessNotification($params);
     }
 
-
+   public function actionJava(){
+        $this->layout = 'widget-layout';
+        return $this->render('pdf');
+   }
 
 }
