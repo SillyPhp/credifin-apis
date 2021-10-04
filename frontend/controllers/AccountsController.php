@@ -75,7 +75,8 @@ class AccountsController extends Controller
                 $loginFormModel->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
                 if (Yii::$app->user->identity->organization)
                 {
-                    return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
+//                    return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
+                    return $this->redirect('/account/dashboard');
                 }
                 return $response = [
                     'status' => 200,
@@ -100,7 +101,8 @@ class AccountsController extends Controller
             }
             if (Yii::$app->user->identity->organization)
             {
-                return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
+//                return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
+                return $this->redirect('/account/dashboard');
             }
             return $this->goBack($loginFormModel->referer);
         }
