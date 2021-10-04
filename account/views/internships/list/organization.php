@@ -21,6 +21,7 @@ echo $this->render('/widgets/header/secondary-header', [
                     echo $this->render('/widgets/applications/card', [
                         'applications' => $applications['data'],
                         'per_row' => 4,
+                        'type' => 'Internship'
                     ]);
                 }
                 Pjax::end();

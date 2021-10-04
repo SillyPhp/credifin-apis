@@ -74,6 +74,8 @@ $this->params['seo_tags'] = [
         </div>
     </section>
 
+    <?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
+
     <section class="popular-skills">
         <h3>Popular Categories</h3>
         <div class="container" id="popular-category"></div>

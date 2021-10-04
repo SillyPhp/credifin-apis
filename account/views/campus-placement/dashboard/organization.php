@@ -40,6 +40,7 @@ echo $this->render('/widgets/header/secondary-header', [
                     if ($applications['total'] > 0) {
                         echo $this->render('/widgets/applications/card', [
                             'applications' => $applications['data'],
+                            'type' => 'Job',
                             'per_row' => 4,
                         ]);
                     } else {
