@@ -12,28 +12,33 @@ use yii\helpers\Url;
         <div class="row">
         <div class="col-md-12">
             <div class="webinar-text">
-                <h1>Webinar Title</h1>
+                <h1>How to get Your Dream Job</h1>
                 <div class="date-time">
-                    <span class="date">30 September</span>
-                    <span class="time">15:00 - 16:45</span>
+                    <span class="date">8 October</span>
+                    <span class="time">1:20 PM - 2:20 PM</span>
                 </div>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Recusandae id sunt incidunt aperiam quisquam, quos sed fugit dolorum asperiores quod!</p>
-                <a href="#" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
+                <p>Are you ready for your dream career? Don’t miss the upcoming webinar on “how to get your dream job?” so that you are no longer confused and frustrated when it comes to making your career decision. The webinar with Vishal Verma will be live soon so register now!</p>
+                <a href="/webinar/how-to-get-your-dream-job-4790" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
                 <div class="share-bar">
-                    <a target="_blank" href="#" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                    <a target="_blank" href="#" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                    <a target="_blank" href="#" class="share-linkedin"><i class="fab fa-whatsapp"></i></a>
-                    <a target="_blank" href="#" class="share-twitter"><i class="far fa-envelope-open"></i></a>
+                    <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                    <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                    <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-linkedin"><i class="fab fa-whatsapp"></i></a>
+                    <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-twitter"><i class="fab fa-twitter"></i></a>
                 </div>
             </div>
         </div>
     </div>
     <div class="webinar-speaker-img">
         <div class="rotate-div">
-            <div class="speaker-img"></div>
+            <div class="speaker-img">
+            <img src="<?= Url::to('@eyAssets/images/pages/webinar/vishal-verma-pic.png') ?>">
+
+            </div>
             <div class="speaker-detail">
-                <h2>Speaker Name</h2>
-                <h5>Designation</h5>
+                <h2>Vishal Verma</h2>
+                <h5>Personality Development Coach</h5>
+                <h5>International IELTS Trainer</h5>
+                <h5>Natitonal Debate Champion</h5>
             </div>
         </div>
     </div>
@@ -54,12 +59,19 @@ use yii\helpers\Url;
         align-items: center;
         position: relative;
     }
+    .webinar-one-speaker .row{
+        position: relative;
+        z-index: 2;
+    }
     .webinar-text{
         max-width: 400px;
     }
     .webinar-text h1 {
         color: #fff;
         font-family: Roboto;
+        text-transform: uppercase;
+        font-size: 45px;
+        line-height: 1;
     }
     .date-time span {
         display: block;
@@ -131,7 +143,7 @@ use yii\helpers\Url;
     }
     
     .share-bar a.share-twitter {
-        color: #E60023;
+        color: #1DA1F2;
     }
     
     .share-bar a.share-linkedin {
@@ -155,7 +167,7 @@ use yii\helpers\Url;
     }
     
     .share-bar a.share-twitter:hover {
-        background-color: #E60023;
+        background-color: #1DA1F2;
     }
     
     .share-bar a.share-linkedin:hover {
@@ -194,9 +206,14 @@ use yii\helpers\Url;
     .speaker-detail {
         margin-left: 20px;
     }
-    .speaker-detail h2, .speaker-detail h5 {
+    .speaker-detail h2 {
         color: #fff;
         font-family: Roboto;
+    }
+    .speaker-detail h5 {
+        color: #afafaf;
+        margin: 0;
+        font-weight: 600;
     }
     .rotate-div div {
         transform: rotate(45deg);
@@ -211,6 +228,9 @@ use yii\helpers\Url;
         }
         .webinar-speaker-img{
             right: -260px;
+        }
+        .webinar-text h1{
+            font-size: 35px;
         }
     }
     @media only screen and (max-width: 768px){
@@ -230,12 +250,18 @@ use yii\helpers\Url;
         .rotate-div div{
             transform: none;
         }
+        .webinar-text h1{
+            max-width: 280px;
+        }
+        .speaker-detail h5{
+            font-size: 10px;
+        }
     }
     @media only screen and (max-width: 576px){
         .webinar-speaker-img{
             align-items: flex-end;
             top: 0;
-            width: 100%;
+            width: 110%;
         }
         .webinar-one-speaker .container{
             align-items: flex-start;
@@ -243,6 +269,20 @@ use yii\helpers\Url;
         }
         .rotate-div{
             margin-bottom: 10px;
+        }
+        .webinar-text h1{
+            max-width: 100%;
+            font-size: 30px;
+        }
+        .webinar-text{
+            max-width: 100%;
+        }
+        .rotate-div{
+            height: 120px;
+        }
+        .speaker-img{
+            width: 100px;
+            height: 100px;
         }
     }
     @media only screen and (max-width: 375px){
@@ -257,6 +297,11 @@ use yii\helpers\Url;
             width: 120px;
             height: 120px;
         }
-
+        .webinar-one-speaker{
+            min-height: 620px;
+        }
+        .webinar-one-speaker .container{
+            min-height: 620px;
+        }
     }
 ') ?>

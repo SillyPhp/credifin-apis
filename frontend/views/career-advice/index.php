@@ -87,8 +87,11 @@ $careerAdviceCategories = [
                     </div>
                 </div>
             </div>
-        </div>
+        </div> 
     </section>
+
+    <?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
+
     <section class="background-mirror blog-section-0">
         <div class="container">
                 <div class="row">
