@@ -138,7 +138,7 @@ if (!empty($total_applications)) {
                                     </div>
                                 </a>
                                 <div class="exp-soon-msg">
-                                    Expiring Soon
+                                    <?= $type ?> Expiring Soon
                                 </div>
                             </div>
                             <?php
@@ -373,21 +373,22 @@ $this->registerCss("
     min-width:80px;
     max-width:150px;
 }
-.exp-soon-msg{
-     box-shadow: 0 0 10px rgba(0,0,0,.2);
+.exp-soon-msg.exp-soon-msg {
+    box-shadow: 0 0 10px rgb(0 0 0 / 20%);
     padding: 5px;
     position: absolute;
-    top: 51px;
-    right: -2px;
-    max-width: 60px;
-    font-size: 12px;
+    top: 58px;
+    right: 4px;
+    max-width: 80px;
+    font-size: 11px;
+    font-family: roboto;
+    font-weight:500;
     border-radius: 0 5px 5px;
-    display:none;
-    
-     -webkit-animation: myOrbit 4s linear infinite; /* Chrome, Safari 5 */
-       -moz-animation: myOrbit 4s linear infinite; /* Firefox 5-15 */
-         -o-animation: myOrbit 4s linear infinite; /* Opera 12+ */
-            animation: myOrbit 4s linear infinite; /* Chrome, Firefox 16+, IE 10+, Safari 5 */
+    display: none;
+    -webkit-animation: myOrbit 4s linear infinite;
+    -moz-animation: myOrbit 4s linear infinite;
+    -o-animation: myOrbit 4s linear infinite;
+    animation: myOrbit 4s linear infinite;
 }
 @-webkit-keyframes myOrbit {
     from { -webkit-transform: rotate(0deg) translateX(2px) rotate(0deg); }
@@ -416,9 +417,9 @@ $this->registerCss("
     animation-play-state: paused !important;
     transform: scale(1) !important;
 }
-.exp-soon-main:hover .exp-soon-msg  {
-    display:none !important;
-}
+//.exp-soon-main:hover .exp-soon-msg  {
+//    display:none !important;
+//}
 .expring-btn img{
    animation: BigSmall .5s linear infinite;
 }
@@ -429,7 +430,7 @@ $this->registerCss("
 .expring-btn{
     position:absolute;
     top:35px;
-    right:50px;
+    right:35px;
 }
 
 .tab-empty{

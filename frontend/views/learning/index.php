@@ -78,6 +78,9 @@ use yii\helpers\Url;
     </div>
 </div>
 
+
+<?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
+
 <!--dynamic categories start-->
 
 <div class="clearfix"></div>

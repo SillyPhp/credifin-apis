@@ -2,11 +2,10 @@
 use yii\helpers\Url;
 Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
-<div class="col-md-12">
-    <div class="overlay-white-9">
+<div class="overlay-white-9">
         <div id="header-search">
             <form class="form-inline" action="/" method="GET" id="search_bar_form">
-                <div class="set-scroll-fixed mb-20">
+                <div class="set-scroll-fixed">
                     <div class="row content-search">
                         <div class="col-md-5 col-xs-12 col-sm-6">
                             <div class="input-group">
@@ -16,7 +15,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
                                 ?>
                                 <input type="text" id="keywords" name="keyword" value="<?=str_replace("-"," ",Yii::$app->request->get('keyword')); Yii::$app->request->get('company');?>" class="form-control">
                                         <?php }else{ ?>
-                                        <input type="text" id="keywords" name="keyword" placeholder="<?= (($placeholder)?$placeholder:'Job Title or Keywords or Company') ?>" class="form-control">
+                                        <input type="text" id="keywords" name="keyword" placeholder="<?= (($placeholder)?$placeholder:$type.' Title or Keywords or Company') ?>" class="form-control">
                                         <?php }?>
                             </div>
                         </div>
@@ -52,10 +51,12 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
             <div id="search_preview">
             </div>
         </div>
-    </div>
 </div>
 <?php
 $this->registerCss('
+.overlay-white-9 {
+    margin-bottom: 20px;
+}
 .twitter-typeahead input{
     width:100% !important;
 }
@@ -103,17 +104,15 @@ $this->registerCss('
     margin-top: 10px;
     padding-top: 15px;
 }
-.stickyheader{
-    position: fixed;
-    top: -100%;
-    width: 93.4%;
-    margin-top: 0;
-    border-bottom: 1px solid #ccc;
+.stickyheader {
+    position: sticky;
+    width: 100%;
+    height: 100%;
     z-index: 999;
-    -webkit-box-shadow: 0 8px 5px -6px #ccc;
-    -moz-box-shadow: 0 8px 5px -6px #ccc;
-    box-shadow: 0 8px 5px -6px #ccc;
-    background-color:#fff;
+    background-color: #fff;
+    padding: 20px 0 10px;
+    box-shadow: 0 4px 13px 6px rgb(0 0 0 / 20%);
+    border-radius: 0 0 10px 10px;
 }
 .content-search{
     background-color: transparent !important;
@@ -190,10 +189,6 @@ $this->registerCss('
 @media only screen and (max-width: 991px) {
     #header-search {
         height: 110px;
-    }
-    .stickyheader {
-        width: 88.4%;
-        top:70px !important;
     }
     .twitter-typeahead input{
         width:100% !important;
@@ -302,10 +297,10 @@ $('#cities').typeahead(null, {
   });
         
 $(window).scroll(function () {
-    if( $(window).scrollTop() > $('.set-scroll-fixed').offset().top + 120 && !($('.set-scroll-fixed').hasClass('stickyheader'))){
-        $('.set-scroll-fixed').addClass('stickyheader').animate({"top":"60px"}, 1000);
+    if( $(window).scrollTop() > $('.overlay-white-9').offset().top + 40 && !($('.overlay-white-9').hasClass('stickyheader'))){
+        $('.overlay-white-9').addClass('stickyheader').animate({"top":"60px"}, 1000);
     } else if ($(window).scrollTop() == 0){
-        $('.set-scroll-fixed').removeClass('stickyheader').css({"top":"-100%"});
+        $('.overlay-white-9').removeClass('stickyheader').css({"top":"-100%"});
     }
 });
 JS;

@@ -99,6 +99,9 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
 </section>
 
 
+
+<?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
+
 <?php
 echo $this->render('/widgets/info-stats');
 
@@ -132,6 +135,8 @@ echo $this->render('/widgets/internships-by-tag');
         </div>
     </div>
 </section>
+
+
 <section class="j-tweets">
     <div class="container">
         <div class="row">
