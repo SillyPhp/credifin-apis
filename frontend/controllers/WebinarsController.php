@@ -273,6 +273,9 @@ class WebinarsController extends Controller
                     $params = [];
                     $params['email'] = $get->email;
                     $params['name'] = $get->first_name.' '.$get->last_name;
+                    $params['webinar_id'] = $wid;
+                    $params['from'] = Yii::$app->params->from_email;
+                    $params['site_name'] = Yii::$app->params->site_name;
                     Yii::$app->notificationEmails->webinarRegistrationEmail($params);
                     return [
                         'status' => 200,
@@ -497,8 +500,6 @@ class WebinarsController extends Controller
             $model->load(Yii::$app->request->post());
             return $model->save($speaker_id);
         }
-//        print_r($upcomingWebinar);
-//        die();
         return $this->render('webinars-landing', [
             'upcomingWebinar' => $upcomingWebinar,
             'pastWebinar' => $pastWebinar,
