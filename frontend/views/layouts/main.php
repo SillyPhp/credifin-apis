@@ -84,17 +84,17 @@ AppAssets::register($this);
             <section class="upcoming-webinar">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-sm-2">
+                        <div class="col-sm-3">
                             <div class="webinar-heading">
                                 Upcoming Webinar
                             </div>
                         </div>
-                        <div class="col-sm-8">
+                        <div class="col-sm-6">
                             <div class="webinar-name">
                                 How to Get Your Dream Job?
                             </div>
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-sm-3">
                             <div class="view-detail">
                                 <a href="/webinar/how-to-get-your-dream-job-4790" class="view-btn">
                                     View Details
@@ -472,7 +472,7 @@ AppAssets::register($this);
         background: #0e1c3d;
         display: flex;
         position: relative;
-        margin-top:-65px;
+        margin-top:-39px;
         // top: 0;
         z-index: 20;
       }
@@ -487,7 +487,7 @@ AppAssets::register($this);
         text-transform: capitalize;
         font-family: lora;
         font-weight: 700;
-        font-size: 18pt;
+        font-size: 22px;
         line-height: 28px;
         color: #FFDF39;
         display: flex;
@@ -498,10 +498,10 @@ AppAssets::register($this);
         font-family: Lobster;
         font-style: normal;
         font-weight: normal;
-        font-size: 28pt;
+        font-size: 22px;
         text-align: center;
         color: #FFFFFF;
-        background: url(' .  Url::to("https://user-images.githubusercontent.com/72601463/133762664-79a23bf9-ec89-4f06-8c97-37465d1a16f5.png")  . ');
+        //background: url(' .  Url::to("https://user-images.githubusercontent.com/72601463/133762664-79a23bf9-ec89-4f06-8c97-37465d1a16f5.png")  . ');
         background-repeat: no-repeat;
         background-size: 100% 100%;
         height: 100%;
@@ -510,7 +510,7 @@ AppAssets::register($this);
         background: linear-gradient(91.16deg, #FFBB54 -43.72%, #CB650C 125.14%, #DB7E2E 125.14%);
         border-radius: 27px;
         color: #fff;
-        padding: 5px 20px;
+        padding: 2px 13px;
         display: block;
         margin-left: auto;
         width: fit-content;
@@ -528,6 +528,9 @@ AppAssets::register($this);
       }
       
       @media only screen and (max-width: 767px){
+          .webinar-heading{
+              font-size: 19px;
+          }
         .upcoming-webinar .row{
           display: block;
         }
@@ -535,7 +538,7 @@ AppAssets::register($this);
           background: none;
         }
         .upcoming-webinar{
-          background: url(' . Url::to('https://user-images.githubusercontent.com/72601463/133765334-22ac93c4-167b-4f7a-b145-11caa4175341.png') . '), #0e1c3d;
+          //background: url(' . Url::to('https://user-images.githubusercontent.com/72601463/133765334-22ac93c4-167b-4f7a-b145-11caa4175341.png') . '), #0e1c3d;
           background-repeat: no-repeat;
           background-size: 100% 100%;
           display: block;
@@ -544,9 +547,6 @@ AppAssets::register($this);
         .view-btn{
           margin: 10px auto;
         }
-        .webinar-name{
-          font-size: 21pt;
-        }  
         .webinar-heading{
           justify-content: center;
         }
@@ -963,11 +963,12 @@ AppAssets::register($this);
 }
 @media (max-width: 992px) and (min-width: 768px){
     .view-btn{
-        padding: 5px 8px;
         font-size: 13px;
     }
-    .webinar-name{
-        font-size: 22pt;
+    .webinar-heading{
+        font-size: 19px;
+    }
+
 }
 ');
 

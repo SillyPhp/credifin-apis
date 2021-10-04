@@ -59,6 +59,10 @@ use yii\helpers\Url;
         align-items: center;
         position: relative;
     }
+    .webinar-one-speaker .row{
+        position: relative;
+        z-index: 2;
+    }
     .webinar-text{
         max-width: 400px;
     }
