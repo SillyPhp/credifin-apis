@@ -77,7 +77,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
     </div>
 </section>
 
-<?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
+<?= $this->render('/webinars/webinar-carousel')?>
 
 <?php
 echo $this->render('/widgets/info-stats');

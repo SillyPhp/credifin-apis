@@ -94,7 +94,7 @@ use yii\bootstrap\ActiveForm;
     </section>
 
     
-    <?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
+<?= $this->render('/webinars/webinar-carousel')?>
 
 <?= $this->render('/widgets/review/quick-review'); ?>
 

@@ -9,7 +9,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row test-flex">
 
-                <div class="col-md-6 col-sm-6">
+                <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="testimonial-text">
                         <h3>Testimonials</h3>
                         <div class="test-text">
@@ -21,32 +21,47 @@ use yii\helpers\Url;
                                     process and the disbursement of the loan. He said that empower youth kept regular
                                     contact with him to inquire about the status of his visa until he received it.
                                     Lastly, he is extremely grateful to empower youth for making the dream of studying
-                                    abroad a reality.
+                                    abroad a reality.</p>
                                 <p><span class="testfont">Mr. Gaurav Sahnan</span><br>Student</p>
+                            </div>
+                            <div class="text">
+                                <p>Arshpreet Kaur, a supply chain management student, shares her success story
+                                    with Empower Youth. Obtaining a loan from Empower Youth enabled her to pursue
+                                    a college education in Canada. She applied for a loan from several banks in
+                                    her program's two-year duration, but each time her application was rejected.
+                                    One of her friends told her about empower youth, so she applied for a loan to
+                                    fund her education. Within 10 days her loan was sanctioned and approved.
+                                    Besides this, she only had to visit the office once, and that was for document
+                                    submission. Everything went smoothly, so she is very appreciative of the
+                                    entire team at empower youth for helping her.</p>
+                                <p><span class="testfont">Ms. Arshpreet Kaur</span><br>Student</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-md-8 col-sm-8 col-xs-12">
 
                     <div class="vid-nav">
-                        <div class="col-md-12 col-sm-12">
+                        <div class="col-md-9 col-sm-12">
                             <div class="testimonial-vid">
                                 <div class="videos">
-                                    <iframe width="900" height="381" src="https://www.youtube.com/embed/Rk0_O1w9Xso" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    <iframe width="677" height="381"
+                                            src="https://www.youtube.com/embed/8_-qP_Nl-_E?rel=0&amp;controls=0&amp;showinfo=0&amp;modestbranding=1"></iframe>
+                                    <iframe width="677" height="381"
+                                            src="https://www.youtube.com/embed/dOmoZccFzEk?rel=0&amp;controls=0&amp;showinfo=0&amp;modestbranding=1"></iframe>
                                 </div>
                             </div>
                         </div>
-<!--                        <div class="col-md-3 col-sm-12">-->
-<!--                            <div class="navigation">-->
-<!--                                <div class="right">-->
-<!--                                    <i class="fas fa-arrow-right"></i>-->
-<!--                                </div>-->
-<!--                                <div class="left">-->
-<!--                                    <i class="fas fa-arrow-left"></i>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
+                        <div class="col-md-3 col-sm-12">
+                            <div class="navigation">
+                                <div class="right">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                <div class="left">
+                                    <i class="fas fa-arrow-left"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -63,11 +78,11 @@ use yii\helpers\Url;
         let index = 0;
 
         function right() {
-            transform((index = index < 5 ? ++index : 0));
+            transform((index = index < 1 ? ++index : 0));
         }
 
         function left() {
-            transform((index = index > 0 ? --index : 5));
+            transform((index = index > 0 ? --index : 1));
         }
 
         navLeft.addEventListener("click", left);
@@ -179,6 +194,11 @@ $this->registerCss('
     .vid-nav .navigation{
         flex-direction: row-reverse;
         margin-bottom: 30px;
+        justify-content: center;
+    }
+    .navigation .right, .navigation .left{
+        color: #000;
+        border-color: #000;
     }
 }
 
@@ -207,6 +227,9 @@ $this->registerCss('
     }
 }
 @media only screen and (max-width: 766px) and (min-width: 320px) {
+    .test-flex{
+    display: block;
+    }
     .testimonial-bg{
         width: 100%;
     }
@@ -235,4 +258,3 @@ $this->registerCss('
 }
 
 ');
-
