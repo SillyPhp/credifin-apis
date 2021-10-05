@@ -71,7 +71,8 @@ use yii\helpers\Url;
         font-family: Roboto;
         text-transform: uppercase;
         font-size: 45px;
-        line-height: 1;
+        line-height: 1.3;
+        text-align: left;
     }
     .date-time span {
         display: block;
@@ -233,7 +234,12 @@ use yii\helpers\Url;
             font-size: 35px;
         }
     }
-    @media only screen and (max-width: 768px){
+    @media only screen and (max-width: 767px){
+        .webinar-one-speaker{
+            min-height: 750px;
+            display: flex;
+            align-items: center;
+        }
         .webinar-speaker-img{
             right: -94px;
             top: 30px;
@@ -272,7 +278,7 @@ use yii\helpers\Url;
         }
         .webinar-text h1{
             max-width: 100%;
-            font-size: 30px;
+            font-size: 28px;
         }
         .webinar-text{
             max-width: 100%;
@@ -283,6 +289,9 @@ use yii\helpers\Url;
         .speaker-img{
             width: 100px;
             height: 100px;
+        }
+        .webinar-one-speaker{
+            min-height: 650px;
         }
     }
     @media only screen and (max-width: 375px){

@@ -11,7 +11,7 @@ use yii\helpers\Url;
     <?= $this->render('/widgets/loan-products') ?>
     
     <?= $this->render('/widgets/covid-offer-banner', ['availUrl' => '/education-loans/apply']) ?>
-    <?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
+<?= $this->render('/webinars/webinar-carousel')?>
     <?= $this->render('/widgets/loan-why-empower-youth') ?>
     <?= $this->render('/widgets/education-loan-internship') ?>
     
