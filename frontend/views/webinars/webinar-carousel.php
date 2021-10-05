@@ -46,7 +46,7 @@
       if(counter > 2){
         counter = 1;
       }
-    }, 5000);
+    }, 12000);
     </script>
 
   </body>
@@ -96,7 +96,7 @@ $this->registerCss('
   }
   
   .manual-btn:not(:last-child){
-    margin-right: 40px;
+    margin-right: 10px;
   }
   
   .manual-btn:hover{
@@ -137,7 +137,7 @@ $this->registerCss('
   }
   
   .navigation-auto div:not(:last-child){
-    margin-right: 40px;
+    margin-right: 10px;
   }
   
   #radio1:checked ~ .navigation-auto .auto-btn1{
