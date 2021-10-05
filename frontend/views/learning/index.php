@@ -79,7 +79,7 @@ use yii\helpers\Url;
 </div>
 
 
-<?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
+<?= $this->render('/webinars/webinar-carousel')?>
 
 <!--dynamic categories start-->
 
