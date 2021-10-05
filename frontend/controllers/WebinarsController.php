@@ -363,6 +363,8 @@ class WebinarsController extends Controller
                 'a.title',
                 'a.description',
                 'a.seats',
+                'a.other_platforms',
+                'a.webinar_conduct_on',
                 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
             ])
             ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now, $recent) {
