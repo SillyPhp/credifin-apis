@@ -14,16 +14,6 @@ use yii\helpers\Url;
                         <h3>Testimonials</h3>
                         <div class="test-text">
                             <div class="text">
-                                <p>Neetu tells that Empower Youth is the genuine company and with easy and simple
-                                    steps, anybody can apply for the education loan . Her brother and sister had
-                                    applied for the loan and they got the loan within 5 to 7 days without any hassle.
-                                    She says that Empower Youth was very supportive throughout and updated her daily
-                                    about the latest developments in the online loan application process.<br> She thanks
-                                    Empower Youth for putting in so much effort. She recommends everyone should
-                                    contact Empower Youth for education loans.</p>
-                                <p><span class="testfont">Ms. Neetu</span><br>Student</p>
-                            </div>
-                            <div class="text">
                                 <p>Here jaskaran, facing the financial problem due to which i have to take the
                                     student loan which i first prefer to apply from empoweryouth, i contacted them
                                     and with their efforts to complete my documentation i therefore achieve my goals
@@ -54,28 +44,15 @@ use yii\helpers\Url;
                                 <p><span class="testfont">Mrs. Gursimranjit Kaur</span><br>Student</p>
                             </div>
                             <div class="text">
-                                <p>Gaurav Sahnan has been searching up for an education loan without any security
-                                    for the past three years. Luckily, He managed to get his loan approved with a
-                                    low-interest rate and without any collateral when he contacted empower youth.
-                                    In addition, he said empower youth was very helpful to him during the sanctioning
-                                    process and the disbursement of the loan. He said that empower youth kept regular
-                                    contact with him to inquire about the status of his visa until he received it.
-                                    Lastly, he is extremely grateful to empower youth for making the dream of studying
-                                    abroad a reality.
-                                <p><span class="testfont">Mr. Gaurav Sahnan</span><br>Student</p>
-                            </div>
-                            <div class="text">
-                                <p>Neetu from Jalandhar shared her experience as she took an education loan for her
-                                    brother and sister from empower youth. She appreciates how genuine our company
-                                    is and how simple the steps are to get an education loan from empower youth.
-                                    Moreover, she mentions that the loan approval to disbursement process took only
-                                    5-7 days, which is less than a week. In addition, her EMI is for three years at
-                                    a very affordable rate. One of the biggest things she likes about Empower Youth
-                                    is the interest-free education loan it offers, which are difficult to obtain
-                                    anywhere else. In her opinion, it was very convenient to have all of the
-                                    formalities online, such as signing and submitting documentation with no hassle
-                                    at all Hence she is so thankful for everything.
-                                <p><span class="testfont">Ms. Neetu</span><br>Student</p>
+                                <p>In her testimony, Jesintha recounts her experience at empower youth and
+                                    describes her desire to continue her higher education but she was not able
+                                    to pursue higher education due to financial problems. When she heard of
+                                    empower youth, she applied for the loan and received it easily. She got
+                                    enrolled in a B.Ed. program and it was quite easy for her to pay the EMIs
+                                    she added. Additionally, she had no difficulty getting an interest-free
+                                    education loan and was not under any pressure. She ends by thanking Empower
+                                    Youth for making it possible for her to pay her tuition fees.</p>
+                                <p><span class="testfont">Ms. Jesintha</span><br>Student</p>
                             </div>
                         </div>
                     </div>
@@ -87,17 +64,13 @@ use yii\helpers\Url;
                             <div class="testimonial-vid">
                                 <div class="videos">
                                     <iframe width="900" height="381"
-                                            src="https://www.youtube.com/embed/PTX50h-3x60?rel=0&amp;controls=0&amp;showinfo=0&amp;modestbranding=1"></iframe>
-                                    <iframe width="900" height="381"
                                             src="https://www.youtube.com/embed/CZEr5MCKb0M?rel=0&amp;controls=0&amp;showinfo=0&amp;modestbranding=1"></iframe>
                                     <iframe width="900" height="381"
                                             src="https://www.youtube.com/embed/j7Z6jWV6zy0?rel=0&amp;controls=0&amp;showinfo=0&amp;modestbranding=1"></iframe>
                                     <iframe width="900" height="381"
                                             src="https://www.youtube.com/embed/YcgMYqkbBXk?rel=0&amp;controls=0&amp;showinfo=0&amp;modestbranding=1"></iframe>
                                     <iframe width="677" height="381"
-                                            src="https://www.youtube.com/embed/8_-qP_Nl-_E?rel=0&amp;controls=0&amp;showinfo=0&amp;modestbranding=1"></iframe>
-                                    <iframe width="900" height="381"
-                                            src="https://www.youtube.com/embed/L9rvjCj_-Ps?rel=0&amp;controls=0&amp;showinfo=0&amp;modestbranding=1"></iframe>
+                                            src="https://www.youtube.com/embed/Fv2zW3FZL5Y?rel=0&amp;controls=0&amp;showinfo=0&amp;modestbranding=1"></iframe>
                                 </div>
                             </div>
                         </div>
@@ -127,11 +100,11 @@ use yii\helpers\Url;
         let index = 0;
 
         function right() {
-            transform((index = index < 5 ? ++index : 0));
+            transform((index = index < 3 ? ++index : 0));
         }
 
         function left() {
-            transform((index = index > 0 ? --index : 5));
+            transform((index = index > 0 ? --index : 3));
         }
 
         navLeft.addEventListener("click", left);
