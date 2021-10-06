@@ -113,7 +113,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                                         here to Join</a>
                                 <?php } else {
                                     if ($webinar['webinar_conduct_on'] == 1) { ?>
-                                        <a href="<?= $webinar['other_platforms'] ?>" target="_blank">Click
+                                        <a id="joinOtherBtn" href="<?= $webinar['other_platforms'] ?>" target="_blank">Click
                                             here to Join</a>
                                     <?php } else { ?>
                                         <a id="joinBtn"
@@ -769,7 +769,7 @@ display:none;
 #counter{
 display:none;
 }
-#joinBtn{
+#joinBtn, #joinOtherBtn{
     font-size: 25px;
     padding: 48px;
     display: block;
