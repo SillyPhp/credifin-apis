@@ -1,13 +1,4 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Image Slider</title>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-
-    <!--image slider start-->
+   <!--image slider start-->
     <div class="slider">
       <div class="slides">
         <!--radio buttons start-->
@@ -35,23 +26,9 @@
         <label for="radio2" class="manual-btn"></label>
       </div>
       <!--manual navigation end-->
+      
     </div>
     <!--image slider end-->
-
-    <script type="text/javascript">
-    var counter = 1;
-    setInterval(function(){
-      document.getElementById('radio' + counter).checked = true;
-      counter++;
-      if(counter > 2){
-        counter = 1;
-      }
-    }, 12000);
-    </script>
-
-  </body>
-</html>
-
 
 <?php
 $this->registerCss('
@@ -220,3 +197,15 @@ $('a.control_next').click(function () {
 JS;
 
 ?>
+
+
+<script type="text/javascript">
+    var counter = 1;
+    setInterval(function(){
+      document.getElementById('radio' + counter).checked = true;
+      counter++;
+      if(counter > 2){
+        counter = 1;
+      }
+    }, 12000);
+    </script>
