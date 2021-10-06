@@ -263,7 +263,7 @@ if ($optedWebinar) {
                 <div class="col-md-4 col-sm-6">
                     <div class="web-card">
                         <div class="web-img">
-                            <a href="<?= Url::to("/webinar/" . $pWeb['slug']) ?>">
+                            <a href="<?= Url::to("/webinar/webinar-expired") ?>">
                                 <img src="<?= $pWeb['image'] ?>">
                             </a>
                             <div class="web-date">
