@@ -165,7 +165,7 @@ class CollegeProfileController extends ApiBaseController
             $streams = AssignedCollegeCourses::find()
                 ->distinct()
                 ->alias('a')
-                ->select(['a.assigned_college_enc_id', 'c.course_name stream'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name stream', 'a.course_enc_id'])
                 ->joinWith(['courseEnc c'], false)
                 ->where(['a.organization_enc_id' => $organizations['organization_enc_id'], 'a.is_deleted' => 0, 'c.type' => 'Stream'])
                 ->orderBy(['c.course_name' => SORT_ASC])
