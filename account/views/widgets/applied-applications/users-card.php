@@ -53,7 +53,7 @@ use yii\helpers\Url;
                                     <div class="mt-action-body">
                                         <div class="mt-action-row">
                                             <div class="mt-action-info ">
-                                                <div class="mt-action-details ">
+                                                <div class="mt-action-details text-capitalize">
                                                     <span class="mt-action-author"><a
                                                                 href="/<?= $candiates['username'] ?>"><?= $candiates['fullname']; ?></a></span>
                                                     <p class="mt-action-desc">Applied
