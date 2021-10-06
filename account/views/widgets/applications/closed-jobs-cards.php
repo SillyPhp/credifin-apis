@@ -21,14 +21,14 @@ if (!empty($total_applications)) {
                     if (!empty($applications)) { ?>
                         <?php foreach ($applications as $application) { ?>
                             <div class="mt-action">
-                                <div class="mt-action-img" style="width: auto">
-                                    <img src="<?= Url::to('@commonAssets/categories/' . $application["icon"]); ?>" width="50px" height="50"/>
+                                <div class="closed-card-img">
+                                    <img src="<?= Url::to('@commonAssets/categories/' . $application["icon"]); ?>" width="40px" height="40px"/>
                                 </div>
                                 <div class="mt-action-body">
                                     <div class="mt-action-row">
                                         <div class="mt-action-info ">
                                             <div class="mt-action-details ">
-                                                <span class="mt-action-author"><?= $application['name']; ?></span>
+                                                <a href="javascript:;" onclick="window.open('<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $application['application_enc_id'], true); ?>', '_blank');" class="mt-action-author" target="_blank"><?= $application['name']; ?></a>
                                                 <p class="mt-action-desc">Expired On <?= date("d-m-Y", strtotime($application['last_date'])); ?></p>
                                             </div>
                                         </div>
@@ -113,6 +113,9 @@ $this->registerCss("
 .mt-action-desc{
     font-family:roboto;
 }
+.closed-card-img {
+    float: left;
+}
 .btn:not(.md-skip):not(.bs-select-all):not(.bs-deselect-all).btn-sm{
     font-family: roboto;
     font-weight: 500;
@@ -173,7 +176,6 @@ $this->registerCss("
 $script = <<<JS
 $(document).on('click','.datepicker_opn',function(e) {
 e.preventDefault();
-    alert('click');
 $('#application_enc_id').val($(this).attr('data-id'));
 $('#form_modal2').modal('show');
 });

@@ -243,6 +243,9 @@ echo $this->render('/widgets/drop-resume-section')
     </section>
 <?php } ?>
 
+    <?php if(Yii::$app->user->isGuest){
+    
+    ?>
     <section class="stats">
         <div class="container">
             <div class="row">
@@ -280,6 +283,8 @@ echo $this->render('/widgets/drop-resume-section')
             </div>
         </div>
     </section>
+    
+    <?php } ?>
 
     <section class="emp-back">
         <div class="container">
@@ -429,7 +434,7 @@ $this->registerCss('
 .header-text{
   margin: 25px 0 40px;
   position: relative;
-  z-index: 1;
+  z-index: 9;
 }
 
 .header-text h1{

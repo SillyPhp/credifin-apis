@@ -1,7 +1,9 @@
 <?php
+
 use common\models\Users;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 $cookies_request = Yii::$app->request->cookies;
 $refcode = $cookies_request->get('ref_csrf-webinar');
 $promo = false;
@@ -50,7 +52,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     <div class="full-width-light"
          style="">
         <div class="title-main">
-                <img src="<?= $webinar['image'] ?>" class="absolute">
+            <img src="<?= $webinar['image'] ?>" class="absolute">
             <div class="element-percent">
                 <h1><?= $webinar['title'] ?></h1>
                 <div class="register-btn" id="registerEventSection">
@@ -72,13 +74,13 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                             <?php
                         } else {
                             if ((int)$webinar['price']) {
-                                if ($promo){ ?>
+                                if ($promo) { ?>
                                     <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
-                               <?php } else { ?>
+                                <?php } else { ?>
                                     <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>
-                                 <?php }
-                                  ?>
-                             <?php
+                                <?php }
+                                ?>
+                                <?php
                             } else {
                                 ?>
                                 <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
@@ -109,12 +111,17 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                                 <?php if (Yii::$app->user->isGuest) { ?>
                                     <a id="joinBtn" href="javascript:;" data-toggle="modal" data-target="#loginModal">Click
                                         here to Join</a>
-                                <?php } else { ?>
-                                    <a id="joinBtn"
-                                       href="javascript:;" data-link="<?= $share_link ?>"
-                                       data-id="<?= $nextEvent['session_enc_id'] ?>">Click
-                                        here to Join</a>
-                                <?php } ?>
+                                <?php } else {
+                                    if ($webinar['webinar_conduct_on'] == 1) { ?>
+                                        <a id="joinOtherBtn" href="<?= $webinar['other_platforms'] ?>" target="_blank">Click
+                                            here to Join</a>
+                                    <?php } else { ?>
+                                        <a id="joinBtn"
+                                           href="javascript:;" data-link="<?= $share_link ?>"
+                                           data-id="<?= $nextEvent['session_enc_id'] ?>">Click
+                                            here to Join</a>
+                                    <?php }
+                                } ?>
                             </div>
                             <div id="counter">
                                 <div class="counter-item">
@@ -237,133 +244,9 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
             </div>
         </div>
     </div>
-</section>
-<!-- sharing widget start -->
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <?php
-            $sharingLink = Url::base('https') . '/webinar/' . $webinar['slug'];
-            echo $this->render('/widgets/sharing-widget-webinar', [
-                'sharingLink' => $sharingLink
-            ]) ?>
-        </div>
-    </div>
-</div>
-<!-- sharing widget end -->
-<!-- problem widget start -->
-<section class="cntct">
-    <div class="container">
-        <div class="row">
-            <div class="contact-req">
-                <h3>if you are facing any problem during registration call us on :</h3>
-                <a href="tel:9501771965">+917009076638</a>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- problem widget end -->
-<!-- ts speaker start-->
-<section id="ts-speakers" class="ts-speakers speaker-classic">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 mx-auto">
-                <h2 class="section-title text-center">
-                    <span>Listen to the</span>
-                    Event Speakers
-                </h2>
-            </div><!-- col end-->
-        </div><!-- row end-->
-        <div class="row">
-            <?php if (!empty($assignSpeaker)) {
-            foreach ($assignSpeaker
 
-            as $as) {
-            $designation = ucwords($designation);
-            ?>
-            <div class="col-lg-3 col-md-6">
-                <div class="ts-speaker open-sp-modal">
-                    <div class="speaker-img">
-                        <?php if ($as['speaker_image']) { ?>
-                            <img class="img-fluid" src="<?= $as['speaker_image'] ?>">
-                        <?php } else { ?>
-                            <img class="img-fluid" src="<?= $as['speaker_image_fake'] ?>">
-                        <?php } ?>
-                        <a href="#<?= $as['speaker_enc_id'] ?>" class="view-speaker ts-image-popup"
-                           data-effect="mfp-zoom-in">
-                            <i class="fas fa-plus"></i>
-                        </a>
-                    </div>
-                    <div class="ts-speaker-info">
-                        <h3 class="ts-title"><a href="#"><?= $as['fullname'] ?></a></h3>
-                        <p>
-                            <?php if ($designation) { ?>
-                                <?= $designation ?>
-                            <?php } ?>
-                        </p>
-                    </div>
-                </div>
-                <!-- popup start-->
-                <div id="<?= $as['speaker_enc_id'] ?>" class="container ts-speaker-popup mfp-hide">
-                    <div class="row">
-                        <div class="speaker-flex">
-                            <?php
-                            if ($as['speaker_image']) {
-                                $image = $as['speaker_image'];
-                            } else {
-                                $image = $as['speaker_image_fake'];
-                            }
-                            ?>
-                            <div class="speak-img" style="background-image: url('<?= $image; ?>');">
-
-                            </div><!-- col end-->
-                            <div class="speak-cntnt">
-                                <div class="ts-speaker-popup-content">
-                                    <h3 class="ts-title"><?= $as['fullname'] ?></h3>
-                                    <?php if ($designation) { ?>
-                                        <span class="speakder-designation"><?= $designation ?></span>
-                                    <?php }
-                                    if ($as['org_image']) {
-                                        ?>
-                                        <img class="company-logo"
-                                             src="<?= $as['org_image'] ?>">
-                                    <?php }
-                                    if ($as['org_name']) { ?>
-                                        <span class="speakder-designation"><?= $as['org_name'] ?></span>
-                                    <?php }
-                                    if ($as['description']) {
-                                        ?>
-                                        <p>
-                                            <?= $as['description'] ?>
-                                        </p>
-                                    <?php } ?>
-                                    <div class="ts-speakers-social">
-                                        <?php if ($as['facebook']) { ?><a
-                                            href="https://www.facebook.com/<?= $as['facebook'] ?>" target="_blank"><i
-                                                        class="fab fa-facebook-f"></i></a><?php } ?>
-                                        <?php if ($as['twitter']) { ?><a
-                                            href="https://twitter.com/<?= $as['twitter'] ?>"
-                                            target="_blank"><i class="fab fa-twitter"></i>
-                                            </a><?php } ?>
-                                        <?php if ($as['instagram']) { ?><a
-                                            href="https://www.instagram.com/<?= $as['instagram'] ?>" target="_blank"><i
-                                                        class="fab fa-instagram"></i></a><?php } ?>
-                                        <?php if ($as['linkedin']) { ?><a
-                                            href="https://www.linkedin.com/in/<?= $as['linkedin'] ?>" target="_blank"><i
-                                                        class="fab fa-linkedin-in"></i></a><?php } ?>
-                                    </div>
-                                </div><!-- ts-speaker-popup-content end-->
-                            </div><!-- col end-->
-                        </div>
-                    </div><!-- row end-->
-                </div><!-- popup end-->
-            </div>
-            <?php }
-            } ?><!-- col end-->
-        </div><!-- row end-->
-    </div><!-- container end-->
 </section>
-<!-- ts speaker end-->
+
 <!-- Schedules event section start here -->
 <section class="ts-schedule">
     <div class="container">
@@ -457,6 +340,135 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     </div><!-- container end-->
 </section>
 <!-- Schedules event section end here -->
+
+
+<!-- sharing widget start -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <?php
+            $sharingLink = Url::base('https') . '/webinar/' . $webinar['slug'];
+            echo $this->render('/widgets/sharing-widget-webinar', [
+                'sharingLink' => $sharingLink
+            ]) ?>
+        </div>
+    </div>
+</div>
+<!-- sharing widget end -->
+<!-- problem widget start -->
+<section class="cntct">
+    <div class="container">
+        <div class="row">
+            <div class="contact-req">
+                <h3>if you are facing any problem during registration call us on :</h3>
+                <a href="tel:+917009076638">+917009076638</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- problem widget end -->
+<!-- ts speaker start-->
+<section id="ts-speakers" class="ts-speakers speaker-classic">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 mx-auto">
+                <h2 class="section-title text-center">
+                    <span>Listen to the</span>
+                    Event Speakers
+                </h2>
+            </div><!-- col end-->
+        </div><!-- row end-->
+        <div class="row d-flex">
+            <?php if (!empty($assignSpeaker)) {
+            foreach ($assignSpeaker
+
+            as $as) {
+            $designation = ucwords($designation);
+            ?>
+            <div class="col-lg-3 col-md-6">
+                <div class="ts-speaker open-sp-modal">
+                    <div class="speaker-img">
+                        <?php if ($as['speaker_image']) { ?>
+                            <img class="img-fluid" src="<?= $as['speaker_image'] ?>">
+                        <?php } else { ?>
+                            <img class="img-fluid" src="<?= $as['speaker_image_fake'] ?>">
+                        <?php } ?>
+                        <a href="#<?= $as['speaker_enc_id'] ?>" class="view-speaker ts-image-popup"
+                           data-effect="mfp-zoom-in">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                    </div>
+                    <div class="ts-speaker-info">
+                        <h3 class="ts-title"><a href="#"><?= $as['fullname'] ?></a></h3>
+                        <p>
+                            <?php if ($designation) { ?>
+                                <?= $designation ?>
+                            <?php } ?>
+                        </p>
+                    </div>
+                </div>
+                <!-- popup start-->
+                <div id="<?= $as['speaker_enc_id'] ?>" class="container ts-speaker-popup mfp-hide">
+                    <div class="row">
+                        <div class="speaker-flex">
+                            <?php
+                            if ($as['speaker_image']) {
+                                $image = $as['speaker_image'];
+                            } else {
+                                $image = $as['speaker_image_fake'];
+                            }
+                            ?>
+                            <div class="speak-img" style="background-image: url('<?= $image; ?>');">
+
+                            </div><!-- col end-->
+                            <div class="speak-cntnt">
+                                <div class="ts-speaker-popup-content">
+                                    <h3 class="ts-title"><?= $as['fullname'] ?></h3>
+                                    <?php if ($designation) { ?>
+                                        <span class="speakder-designation"><?= $designation ?></span>
+                                    <?php }
+                                    if ($as['org_image']) {
+                                        ?>
+                                        <img class="company-logo"
+                                             src="<?= $as['org_image'] ?>">
+                                    <?php }
+                                    if ($as['org_name']) { ?>
+                                        <span class="speakder-designation"><?= $as['org_name'] ?></span>
+                                    <?php }
+                                    if ($as['description']) {
+                                        ?>
+                                        <p>
+                                            <?= $as['description'] ?>
+                                        </p>
+                                    <?php } ?>
+                                    <div class="ts-speakers-social">
+                                        <?php if ($as['facebook']) { ?><a
+                                            href="https://www.facebook.com/<?= $as['facebook'] ?>" target="_blank"><i
+                                                        class="fab fa-facebook-f"></i></a><?php } ?>
+                                        <?php if ($as['twitter']) { ?><a
+                                            href="https://twitter.com/<?= $as['twitter'] ?>"
+                                            target="_blank"><i class="fab fa-twitter"></i>
+                                            </a><?php } ?>
+                                        <?php if ($as['instagram']) { ?><a
+                                            href="https://www.instagram.com/<?= $as['instagram'] ?>" target="_blank"><i
+                                                        class="fab fa-instagram"></i></a><?php } ?>
+                                        <?php if ($as['linkedin']) { ?><a
+                                            href="https://www.linkedin.com/in/<?= $as['linkedin'] ?>" target="_blank"><i
+                                                        class="fab fa-linkedin-in"></i></a><?php } ?>
+                                    </div>
+                                </div><!-- ts-speaker-popup-content end-->
+                            </div><!-- col end-->
+                        </div>
+                    </div><!-- row end-->
+                </div><!-- popup end-->
+            </div>
+            <?php }
+            } ?><!-- col end-->
+        </div><!-- row end-->
+    </div><!-- container end-->
+</section>
+<!-- ts speaker end-->
+
 <!-- ts intro start -->
 <?php if (!empty($outComes)) { ?>
     <section class="ts-intro-outcome">
@@ -478,14 +490,12 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                     $color_code = '#' . $oc['bg_colour'];
                     $reduceColor = createPalette($color_code, $colorCount = 1);
                     ?>
-                    <div class="ts-single-outcome"
-                         style="background-image: linear-gradient(110deg,<?= $color_code ?> 15%,<?= $reduceColor[0] ?> 95%)">
+                    <div class="ts-single-outcome">
                         <?php } else {
                         $color_code = '#000';
                         $reduceColor = createPalette($color_code, $colorCount = 1);
                         ?>
-                        <div class="ts-single-outcome"
-                             style="background: linear-gradient(110deg,<?= $color_code ?> 15%,<?= $reduceColor[0] ?> 95%)">
+                        <div class="ts-single-outcome">
                             <?php } ?>
                             <?php if ($oc['icon']) { ?>
                                 <div class="out-img">
@@ -550,6 +560,12 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.d-flex{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 .cntct{
     background: linear-gradient(178deg, #00a0e3 20%, #fff 110%);
     padding-bottom: 20px;
@@ -753,7 +769,7 @@ display:none;
 #counter{
 display:none;
 }
-#joinBtn{
+#joinBtn, #joinOtherBtn{
     font-size: 25px;
     padding: 48px;
     display: block;
@@ -983,7 +999,6 @@ transform: rotate(100deg);
 
 .speaker-classic {
     padding-top: 50px;
-    margin-top: 50px;
     background-image:url(' . Url::to('@eyAssets/images/pages/webinar/speakers-bg.png') . ');
     background-repeat: no-repeat;
     background-size: cover;
@@ -1184,6 +1199,7 @@ transform: rotate(100deg);
 }
 .ts-single-outcome .ts-title {
     color: #fff;
+    text-transform: capitalize;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -1200,6 +1216,29 @@ transform: rotate(100deg);
     animation-duration: 1s;
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both; 
+}
+.outcome-item:nth-of-type(1) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
+    background-image: -o-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
+    background-image: linear-gradient(110deg, #fc6076 0%, #ff9a44 100%);
+}
+
+.outcome-item:nth-of-type(2) .ts-single-outcome {
+    background-image: -webkit-radial-gradient(50% 50%, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
+    background-image: -o-radial-gradient(50% 50%, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
+    background-image: radial-gradient(50% 50%, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
+}
+
+.outcome-item:nth-of-type(3) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
+    background-image: -o-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
+    background-image: linear-gradient(-45deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
+}
+
+.outcome-item:nth-of-type(4) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
+    background-image: -o-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
+    background-image: linear-gradient(-45deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
 }
 
 .ts-count-down {

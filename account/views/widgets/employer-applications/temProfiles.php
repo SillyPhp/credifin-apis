@@ -17,7 +17,7 @@ $oppType = $type == 'internships' ? 'Internship' : 'Job';
                                 <a href="<?= Url::to('/account/dashboard')?>" id="wizard-back-cont" type="button" class="btn btn-primary wizard-back-cont">
                                     <i class="fa fa-arrow-left" aria-hidden="true"></i> Back To Dashboard
                                 </a>
-                                <h3 class="text-center" style="font-family: roboto;">Select Profile For Your <?= $oppType ?></h3>
+<!--                                <h3 class="text-center" style="font-family: roboto;">Select Profile For Your --><?//= $oppType ?><!--</h3>-->
                             </div>
                         </div>
                     </div>
@@ -88,16 +88,13 @@ $oppType = $type == 'internships' ? 'Internship' : 'Job';
 <!--light box-->
 <?php
 $this->registerCss("
-.disFlex{
+.disFlex {
     position: relative;
-    text-align: center;
-}
-.disFlex a{
-    position: absolute !important;
-    left:10px;
+    margin: 20px 0 0 20px;
+    text-align: left;
 }
 .margin_right{
-margin: 0 6px;
+    margin: 0 6px;
 }
 #no_temp{
     position: absolute;
@@ -110,58 +107,52 @@ margin: 0 6px;
     height: 100%;
     height: 100%;
 }
-.service-list {
-        display: inline-block;
-        min-width: 90px;
-        text-align: center;
-        margin: 2px 5px;
-    }
+.service-list > label {
+    width: 100%;
+    display: inline-block;
+    background-color: rgba(255, 255, 255, .9);
+    border: 2px solid rgba(139, 139, 139, .3);
+    color: #333;
+    font-weight:normal;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin: 3px 0px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all .2s;
+}
 
-    .service-list > label {
-        width: 100%;
-        display: inline-block;
-        background-color: rgba(255, 255, 255, .9);
-        border: 2px solid rgba(139, 139, 139, .3);
-        color: #333;
-        font-weight:normal;
-        border-radius: 4px;
-        white-space: nowrap;
-        margin: 3px 0px;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        -webkit-tap-highlight-color: transparent;
-        transition: all .2s;
-    }
-
-    .service-list > label {
-        padding: 8px 5px;
-        cursor: pointer;
-    }
-    .relationList {
+.service-list > label {
+    padding: 8px 5px;
+    cursor: pointer;
+}
+.relationList {
     padding: 20px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
 }
 
-    .service-list > input[type='radio']:checked + label, .service-list > label:hover {
-        border: 2px solid #00a0e3;
-        background-color: #00a0e3;
-        color: #fff;
-        transition: all .2s;
-    }
+.service-list > input[type='radio']:checked + label, .service-list > label:hover {
+    border: 2px solid #00a0e3;
+    background-color: #00a0e3;
+    color: #fff;
+    transition: all .2s;
+    transform: scale(1.03);
+}
 
-    .service-list > input {
-        position: absolute;
-        opacity: 0;
-    }
+.service-list > input {
+    position: absolute;
+    opacity: 0;
+}
 
-    .service-list > input[type='radio']:focus + label {
-        border: 2px solid #00a0e3;
-    }
+.service-list > input[type='radio']:focus + label {
+    border: 2px solid #00a0e3;
+}
 
 .light-box-modal{
     position: fixed;
@@ -230,15 +221,16 @@ margin: 0 6px;
 .service-list {
     display: inline-block;
     min-width: 120px;
-    margin: 0 5px;
+    margin: 0 5px 5px;
     text-align: left;
-    width: 230px;
+    width: 280px;
 }
 .service-list label{
     width: 100%;
     display: inline-block;
-    background-color: rgba(255, 255, 255, .9);
-    border: 2px solid rgba(139, 139, 139, .3);
+    background-color: rgb(253 251 251 / 90%);
+    border: 2px solid rgb(249 246 246 / 30%);
+    box-shadow: 0 2px 4px 0 #e5e1e1;
     color: #333;
     border-radius: 4px;
     white-space: nowrap;
@@ -251,14 +243,23 @@ margin: 0 6px;
     -webkit-tap-highlight-color: transparent;
     transition: all .2s;
 }
+.service-list img {
+    margin-right: 15px;
+}
 
 .service-list label {
-    padding: 8px 12px;
+    display: flex;
+    padding: 10px 12px;
     cursor: pointer;
-    text-align:center;
+    text-align: center;
+    align-items: center;
+    color: #706c6c;
 }
 .service-list label > div {
+    font-weight: 500;
     margin: 8px 0;
+    font-family: 'Roboto';
+    letter-spacing: 0.3px;
 }
 .service-list label::before {
     display: inline-block;

@@ -3,6 +3,8 @@
 namespace frontend\controllers;
 
 use common\models\Speakers;
+use common\models\User;
+use common\models\Users;
 use common\models\UserWebinarInterest;
 use common\models\Webinar;
 use common\models\WebinarEvents;
@@ -267,6 +269,14 @@ class WebinarsController extends Controller
                 }
                 $model->status = 1;
                 if ($model->save()) {
+                    $get = Users::findOne(['user_enc_id'=>$uid]);
+                    $params = [];
+                    $params['email'] = $get->email;
+                    $params['name'] = $get->first_name.' '.$get->last_name;
+                    $params['webinar_id'] = $wid;
+                    $params['from'] = Yii::$app->params->from_email;
+                    $params['site_name'] = Yii::$app->params->site_name;
+                    Yii::$app->notificationEmails->webinarRegistrationEmail($params);
                     return [
                         'status' => 200,
                         'title' => 'Success',
@@ -353,6 +363,8 @@ class WebinarsController extends Controller
                 'a.title',
                 'a.description',
                 'a.seats',
+                'a.other_platforms',
+                'a.webinar_conduct_on',
                 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
             ])
             ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now, $recent) {
@@ -490,8 +502,6 @@ class WebinarsController extends Controller
             $model->load(Yii::$app->request->post());
             return $model->save($speaker_id);
         }
-//        print_r($upcomingWebinar);
-//        die();
         return $this->render('webinars-landing', [
             'upcomingWebinar' => $upcomingWebinar,
             'pastWebinar' => $pastWebinar,

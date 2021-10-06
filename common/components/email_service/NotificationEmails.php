@@ -10,6 +10,7 @@ use common\models\Organizations;
 use common\models\UnclaimedOrganizations;
 use common\models\Users;
 use common\models\AppliedEmailLogs;
+use common\models\Webinar;
 use yii\helpers\Url;
 use yii\base\Component;
 use yii\base\InvalidParamException;
@@ -169,6 +170,53 @@ class NotificationEmails extends Component
             ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
             ->setTo([$params['email'] => $params['name']])
             ->setSubject('Congratulations! Your Application Has Been Received');
+        if ($mail->send()) {
+            return true;
+        }
+    }
+
+    public function webinarRegistrationEmail($params){
+        $data = Webinar::find()
+            ->alias('a')
+            ->select(['a.webinar_enc_id','slug','a.title','other_platforms','GROUP_CONCAT(DISTINCT CONCAT(e.first_name," ",e.last_name)) speakers','GROUP_CONCAT(DISTINCT DATE_FORMAT(b.start_datetime, "%d-%M-%y")) date','GROUP_CONCAT(DISTINCT DATE_FORMAT(b.start_datetime, "%H:%i %p")) time'])
+            ->joinWith(['webinarEvents b'=>function($b){
+                $b->joinWith(['webinarSpeakers c'=>function($b){
+                    $b->joinWith(['speakerEnc d'=>function($b){
+                        $b->joinWith(['userEnc e'],false);
+                    }],false);
+                }]);
+            }],false)
+            ->where(['a.webinar_enc_id'=>$params['webinar_id']])
+            ->asArray()->one();
+        $params['title'] = $data['title'];
+        $params['speakers'] = $data['speakers'];
+        $params['date'] = $data['date'];
+        $params['time'] = $data['time'];
+        if ($params['is_my_campus']){
+            $params['link'] = 'https://www.myecampus.in/webinar-detail?id='.$params['webinar_id'];
+        }else{
+            $params['link'] = 'https://www.empoweryouth.com/webinar/'.$data['slug'];
+        }
+        Yii::$app->mailer->htmlLayout = 'layouts/email';
+        $mail = Yii::$app->mailer->compose(
+            ['html' => 'webinar-registration-mail.php'],['data'=>$params]
+        )
+            ->setFrom([$params['from'] => $params['site_name']])
+            ->setTo([$params['email'] => $params['name']])
+            ->setSubject('Thank you for Registering for This Webinar');
+        if ($mail->send()) {
+            return true;
+        }
+    }
+
+    public function candidateProcessNotification($param){
+        Yii::$app->mailer->htmlLayout = 'layouts/email';
+        $mail = Yii::$app->mailer->compose(
+            ['html' => 'job-process-status'],['data'=>$param]
+        )
+            ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+            ->setTo([$param['email'] => $param['name']])
+            ->setSubject($param['subject']);
         if ($mail->send()) {
             return true;
         }

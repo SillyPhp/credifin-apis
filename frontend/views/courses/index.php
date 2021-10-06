@@ -61,8 +61,6 @@ $this->params['seo_tags'] = [
         </div>
     </section>
 
-<?= $this->render('/widgets/whither-webinar') ?>
-
     <section>
         <div class="container">
             <div class="row">
@@ -75,6 +73,8 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
+    <?= $this->render('/webinars/webinar-carousel')?>
 
     <section class="popular-skills">
         <h3>Popular Categories</h3>

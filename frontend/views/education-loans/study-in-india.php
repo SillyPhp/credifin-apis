@@ -116,6 +116,7 @@ $this->params['seo_tags'] = [
 <?= $this->render('/widgets/loan-process-ease') ?>
 <?php $is_show = 1; ?>
 <?= $this->render('/widgets/loan-table',['is_show'=>$is_show])?>
+<?= $this->render('/widgets/testimonials-india') ?>
 <section class="bg-blue">
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
@@ -129,7 +130,8 @@ if($blogs['blogs']){
 };
 ?>
 <?= $this->render('/widgets/loan-form-detail',[
-    'model' => $model
+    'model' => $model,
+    'param' => 'Study In India'
 ]); ?>
 <?= $this->render('/widgets/press-releasee',[
     'data' => $data,

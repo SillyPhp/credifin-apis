@@ -451,7 +451,7 @@ class UsersController extends Controller
             } catch (\Exception $e) {
                 return [
                     'status' => 500,
-                    'message' => 'an error occurred'
+                    'message' => $e->getMessage()
                 ];
             }
         }
