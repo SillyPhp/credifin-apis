@@ -18,7 +18,7 @@ $time = date('Y/m/d H:i:s', strtotime($upcomingDateTime));
 <input type="hidden" value="<?= $image; ?>" id="current-user-image">
 
 <section class="reload-strip">
-    <div class="reload-text">If your Webinar has not been started yet. Please Reload the Page.</div>
+    <div class="reload-text">If you are having trouble while watching webinar, please Reload the page.</div>
     <div class="reload">
         <a onClick="window.location.reload()" class="reload-btn">Relaod</a>
     </div>
