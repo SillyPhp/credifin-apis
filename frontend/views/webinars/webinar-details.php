@@ -159,11 +159,16 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     <div class="webinar-details">
         <div class="container">
             <div class="row">
-                <div class="">
-                    <div class="col-md-12 mx-auto">
-                        <h2 class="section-title">
-                            Webinar Details
-                        </h2>
+                <div class="detail-flex">
+                    <h2 class="section-title">
+                        Webinar Details
+                    </h2>
+                    <div class="copy-join-link">
+                        <i class="fab fa-chromecast"></i>
+                        <div class="link-descriptions">
+                            <span>Joining link</span><br/>
+                            <?= $webinar_link ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -560,6 +565,41 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.detail-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.copy-join-link{
+    font-size: 14px;
+    margin: 20px;
+    font-weight: 400;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+}
+.copy-join-link i{
+    color: #00a0e3;
+    font-size: 40px;
+    margin-right: 5px;
+}
+.link-descriptions{
+    max-width: 250px;
+    position: relative;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.link-descriptions span{
+    font-size: 15px;
+    color: #00a0e3;
+    font-weight: 500;
+}
 .d-flex{
     display: flex;
     align-items: center;
@@ -1325,11 +1365,12 @@ b, strong {
     color: #fff;
 }
 .section-title, .column-title {
+    margin:20px 0;
     font-size: 36px;
     font-weight: 800;
     color: #333;
     position: relative;
-    text-align: center;
+//    text-align: center;
     font-family: lora;
 }
 .section-title span, .column-title span {
