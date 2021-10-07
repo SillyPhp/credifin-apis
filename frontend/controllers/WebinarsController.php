@@ -552,7 +552,7 @@ class WebinarsController extends Controller
                 $c->onCondition(['c.status' => 1, 'c.is_deleted' => 0]);
                 $c->orderBy(['c.created_on' => SORT_DESC]);
                 if (!empty($userIdd)) {
-                    $c->onCondition(['c.created_by' => $userIdd]);
+                    $c->where(['c.created_by' => $userIdd]);
                 }
             }])
             ->andWhere(['a.is_deleted' => 0])
