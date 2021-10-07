@@ -75,7 +75,6 @@ class TestCacheController extends Controller
                     $model->created_on = date('Y-m-d H:i:s');
                     if (!$model->save()) {
                         print_r($model->getErrors());
-                        die();
                     }
                 }
             }
