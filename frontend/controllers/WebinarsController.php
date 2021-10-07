@@ -363,8 +363,6 @@ class WebinarsController extends Controller
                 'a.title',
                 'a.description',
                 'a.seats',
-                'a.other_platforms',
-                'a.webinar_conduct_on',
                 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
             ])
             ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now, $recent) {
@@ -460,7 +458,13 @@ class WebinarsController extends Controller
                     'a1.duration',
                     "ADDDATE(a1.start_datetime, INTERVAL a1.duration MINUTE) as end_datetime",
                     'a1.created_on',
+                    'CONCAT(us.first_name, " ", us.last_name) speakers'
                 ]);
+                $a1->joinWith(['webinarSpeakers ws' => function ($ws){
+                    $ws->joinWith(['speakerEnc sp'=>function($sp){
+                        $sp->joinWith(['userEnc us'],false);
+                    }],false);
+                }],false);
                 $a1->joinWith(['sessionEnc e'], false);
                 $a1->andWhere(['a1.is_deleted' => 0]);
                 $a1->andWhere(['in', 'a1.status', [0, 1]]);
@@ -548,7 +552,7 @@ class WebinarsController extends Controller
                 $c->onCondition(['c.status' => 1, 'c.is_deleted' => 0]);
                 $c->orderBy(['c.created_on' => SORT_DESC]);
                 if (!empty($userIdd)) {
-                    $c->where(['c.created_by' => $userIdd]);
+                    $c->onCondition(['c.created_by' => $userIdd]);
                 }
             }])
             ->andWhere(['a.is_deleted' => 0])
@@ -582,7 +586,15 @@ class WebinarsController extends Controller
 
     public function actionWebinarExpired()
     {
-        return $this->render('webinar-expired');
+        $webinars = self::getWebinars($id);
+        return $this->render('webinar-expired', [
+            'type' => $type,
+            'webinars' => $webinars,
+            'webinarDetail' => $webinarDetail,
+            'dateEvents' => $dateEvents,
+            'upcomingEvent' => $upcomingEvent,
+            'upcomingDateTime' => $upcomingDateTime,
+        ]);
     }
 
 }
