@@ -1,5 +1,8 @@
 <?php
+
 namespace common\models;
+
+use Yii;
 
 /**
  * This is the model class for table "{{%webinar_registrations}}".
@@ -9,6 +12,7 @@ namespace common\models;
  * @property string $webinar_enc_id
  * @property string $referral_enc_id
  * @property int $status 0 as Pending 1 as Approved
+ * @property string $unique_access_link a unique link for user for other plateform, or any kind of unique access link
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_on
@@ -24,7 +28,7 @@ namespace common\models;
 class WebinarRegistrations extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -32,7 +36,7 @@ class WebinarRegistrations extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -41,6 +45,7 @@ class WebinarRegistrations extends \yii\db\ActiveRecord
             [['status', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['register_enc_id', 'webinar_enc_id', 'referral_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['unique_access_link'], 'string', 'max' => 500],
             [['register_enc_id'], 'unique'],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
@@ -48,6 +53,7 @@ class WebinarRegistrations extends \yii\db\ActiveRecord
             [['referral_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Referral::className(), 'targetAttribute' => ['referral_enc_id' => 'referral_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery

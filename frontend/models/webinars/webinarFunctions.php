@@ -5,6 +5,7 @@ namespace frontend\models\webinars;
 use common\models\WebinarRegistrations;
 use Yii;
 use yii\base\Model;
+use yii\db\Expression;
 
 class webinarFunctions extends Model
 {
@@ -29,6 +30,7 @@ class webinarFunctions extends Model
             ->where(['z.webinar_enc_id' => $id, 'z.is_deleted' => 0, 'z.status' => 1])
             ->andWhere(['not', ['c.image' => null]])
             ->andWhere(['not', ['c.image' => '']])
+            ->orderBy(new Expression('rand()'))
             ->limit(6)
             ->asArray()
             ->all();
