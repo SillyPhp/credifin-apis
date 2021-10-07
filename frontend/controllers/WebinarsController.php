@@ -276,15 +276,22 @@ class WebinarsController extends Controller
                 }
                 $model->status = 1;
                 if ($model->save()) {
-                    $get = Users::findOne(['user_enc_id' => $uid]);
+                    $get = Users::findOne(['user_enc_id'=>$uid]);
+                    $data = Webinar::findOne(['webinar_enc_id'=>$wid]);
                     $params = [];
                     $params['email'] = $get->email;
                     $params['name'] = $get->first_name . ' ' . $get->last_name;
                     $params['webinar_id'] = $wid;
                     $params['from'] = Yii::$app->params->from_email;
                     $params['site_name'] = Yii::$app->params->site_name;
+                    $params['first_name'] = $get->first_name;
+                    $params['last_name'] = $get->last_name;
+                    $params["user_id"] = $uid;
                     Yii::$app->notificationEmails->webinarRegistrationEmail($params);
-
+                    if ($data->webinar_conduct_on==1){
+                        $params["webinar_zoom_id"] = $data->platform_webinar_id;
+                        Yii::$app->notificationEmails->zoomRegisterAccess($params);
+                    }
                     return [
                         'status' => 200,
                         'title' => 'Success',
