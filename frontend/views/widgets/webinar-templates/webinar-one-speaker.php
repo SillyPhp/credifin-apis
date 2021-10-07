@@ -22,8 +22,9 @@ use yii\helpers\Url;
                 <div class="share-bar">
                     <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-fb"><i class="fab fa-facebook-f"></i></a>
                     <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                    <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-linkedin"><i class="fab fa-whatsapp"></i></a>
+                    <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
                     <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                    <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
         </div>
@@ -38,7 +39,7 @@ use yii\helpers\Url;
                 <h2>Vishal Verma</h2>
                 <h5>Personality Development Coach</h5>
                 <h5>International IELTS Trainer</h5>
-                <h5>Natitonal Debate Champion</h5>
+                <h5>National Debate Champion</h5>
             </div>
         </div>
     </div>
@@ -71,7 +72,8 @@ use yii\helpers\Url;
         font-family: Roboto;
         text-transform: uppercase;
         font-size: 45px;
-        line-height: 1;
+        line-height: 1.3;
+        text-align: left;
     }
     .date-time span {
         display: block;
@@ -146,8 +148,11 @@ use yii\helpers\Url;
         color: #1DA1F2;
     }
     
-    .share-bar a.share-linkedin {
+    .share-bar a.share-whatsapp {
         color: #25D366;
+    }
+    .share-bar a.share-linkedin {
+        color: #0e76a8;
     }
     
     .share-bar a.tg-tele {
@@ -170,8 +175,11 @@ use yii\helpers\Url;
         background-color: #1DA1F2;
     }
     
-    .share-bar a.share-linkedin:hover {
+    .share-bar a.share-whatsapp:hover {
         background-color: #25D366;
+    }
+    .share-bar a.share-linkedin:hover {
+        background-color: #0e76a8;
     }
     
     .share-bar a.tg-tele:hover {
@@ -233,7 +241,12 @@ use yii\helpers\Url;
             font-size: 35px;
         }
     }
-    @media only screen and (max-width: 768px){
+    @media only screen and (max-width: 767px){
+        .webinar-one-speaker{
+            min-height: 750px;
+            display: flex;
+            align-items: center;
+        }
         .webinar-speaker-img{
             right: -94px;
             top: 30px;
@@ -272,7 +285,7 @@ use yii\helpers\Url;
         }
         .webinar-text h1{
             max-width: 100%;
-            font-size: 30px;
+            font-size: 28px;
         }
         .webinar-text{
             max-width: 100%;
@@ -283,6 +296,9 @@ use yii\helpers\Url;
         .speaker-img{
             width: 100px;
             height: 100px;
+        }
+        .webinar-one-speaker{
+            min-height: 650px;
         }
     }
     @media only screen and (max-width: 375px){

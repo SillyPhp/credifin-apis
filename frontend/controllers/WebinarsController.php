@@ -463,7 +463,13 @@ class WebinarsController extends Controller
                     'a1.duration',
                     "ADDDATE(a1.start_datetime, INTERVAL a1.duration MINUTE) as end_datetime",
                     'a1.created_on',
+                    'CONCAT(us.first_name, " ", us.last_name) speakers'
                 ]);
+                $a1->joinWith(['webinarSpeakers ws' => function ($ws){
+                    $ws->joinWith(['speakerEnc sp'=>function($sp){
+                        $sp->joinWith(['userEnc us'],false);
+                    }],false);
+                }],false);
                 $a1->joinWith(['sessionEnc e'], false);
                 $a1->andWhere(['a1.is_deleted' => 0]);
                 $a1->andWhere(['in', 'a1.status', [0, 1]]);
@@ -585,7 +591,15 @@ class WebinarsController extends Controller
 
     public function actionWebinarExpired()
     {
-        return $this->render('webinar-expired');
+        $webinars = self::getWebinars($id);
+        return $this->render('webinar-expired', [
+            'type' => $type,
+            'webinars' => $webinars,
+            'webinarDetail' => $webinarDetail,
+            'dateEvents' => $dateEvents,
+            'upcomingEvent' => $upcomingEvent,
+            'upcomingDateTime' => $upcomingDateTime,
+        ]);
     }
 
 }

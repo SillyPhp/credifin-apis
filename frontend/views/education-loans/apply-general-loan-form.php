@@ -249,7 +249,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         <div class="radio-heading input-group-text">
                                             Select Country
                                         </div>
-                                        <select class="form-control" name="country_name" id="country_name">
+                                        <select class="form-control js-example-basic-single" name="country_name" id="country_name">
 
                                         </select>
                                     </div>
@@ -1296,20 +1296,22 @@ function substringMatcher (strs) {
             }
         });
     }
+    
+    $('.js-example-basic-single').select2();
     function getCountries() { 
         $.ajax({     
-            url : '/api/v3/countries-list/get-countries-list', 
+            url : 'https://ravinder.eygb.me/api/v3/countries-list/get-countries-list', 
             method : 'POST',
             success : function(res) { 
             if (res.response.status==200){
                 var html = [];
                  res = res.response.countries;
                 $.each(res,function(index,value) 
-                  {   
-                   html.push('<option value="'+value.country_enc_id+'">'+value.name+'</option>');
+                  {
+                    html.push('<option value="">Select Country</option>')
+                    html.push('<option value="'+value.country_enc_id+'">'+value.name+'</option>');
                   }); 
                     $('#country_name').html(html);   
-                    $('#country_name').val(default_country);
                } else
                 {
                     toastr.error(res.response.message, 'Error');
@@ -1333,8 +1335,7 @@ function substringMatcher (strs) {
             }
         });
     } 
-    function getCourses()
-    {
+    function getCourses(){
         var _courses = [];
          $.ajax({     
             url : '/api/v3/education-loan/course-pool-list', 
@@ -1612,8 +1613,7 @@ jQuery.validator.addClassRules('child_loan', {
      todayHighlight: true
 });
     
-function ajaxSubmit()
-{
+function ajaxSubmit(){
     var applicantRadio = $('input[name="applicantRadio"]:checked').val();
     var loan_application_type = $('input[name="applicantTypeRadio"]:checked').val();
     let co_applicants = [];
@@ -1807,8 +1807,7 @@ function _razoPay(ptoken,loan_id,education_loan_id){
       });
 });
 }        
-function processPayment(ptoken,loan_id,education_loan_id)
-{
+function processPayment(ptoken,loan_id,education_loan_id){
     Layer.checkout({ 
         token: ptoken,
         accesskey: access_key
@@ -1850,8 +1849,7 @@ function processPayment(ptoken,loan_id,education_loan_id)
     }
 );
 }
-function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,signature=null)
-{
+function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,signature=null){
     $.ajax({
             url : '/api/v3/education-loan/update-widget-loan-application',
             method : 'POST', 
@@ -1982,8 +1980,7 @@ $this->registerJs($script);
             }
             showTab(currentTab);
         }
-        function createChild()
-        {
+        function createChild(){
             let child = '<div class="col-md-12 padd-20 schoolNameField">\n' +
                 '                                        <div class="form-group">\n' +
                 '                                            <label for="school_name_1" class="input-group-text">\n' +
@@ -2401,3 +2398,5 @@ $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/additional-methods.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css');
