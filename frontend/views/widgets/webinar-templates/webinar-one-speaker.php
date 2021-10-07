@@ -39,7 +39,7 @@ use yii\helpers\Url;
                 <h2>Vishal Verma</h2>
                 <h5>Personality Development Coach</h5>
                 <h5>International IELTS Trainer</h5>
-                <h5>Natitonal Debate Champion</h5>
+                <h5>National Debate Champion</h5>
             </div>
         </div>
     </div>
