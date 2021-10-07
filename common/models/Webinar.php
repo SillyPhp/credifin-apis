@@ -22,6 +22,7 @@ use Yii;
  * @property string $availability
  * @property int $for_all_colleges 1 as all colleges, 0 as selected colleges
  * @property string $other_platforms Other platform links like zoom etc..
+ * @property string $platform_webinar_id webinar unique id by zoom or other platform
  * @property int $webinar_conduct_on 0 as EY, 1 as Other Platform
  * @property string $created_on
  * @property string $created_by
@@ -61,6 +62,7 @@ class Webinar extends \yii\db\ActiveRecord
             [['created_on', 'last_updated_on'], 'safe'],
             [['webinar_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['name', 'title', 'slug', 'image', 'image_location'], 'string', 'max' => 200],
+            [['platform_webinar_id'], 'string', 'max' => 255],
             [['webinar_enc_id'], 'unique'],
             [['slug'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],

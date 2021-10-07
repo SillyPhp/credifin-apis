@@ -176,6 +176,12 @@ class WebinarsController extends Controller
             $userInterest = UserWebinarInterest::findOne(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id]);
             $webinar['start_datetime'] = "";
 
+            $user_link = '';
+
+            if ($webinar['webinar_conduct_on'] == 1) {
+                $user_link = WebinarRegistrations::findOne(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id])->unique_access_link;
+            }
+
             return $this->render('webinar-details', [
                 'webinar' => $webinar,
                 'assignSpeaker' => $assignSpeaker,
@@ -188,6 +194,7 @@ class WebinarsController extends Controller
                 'userInterest' => $userInterest,
                 'dateEvents' => $dateEvents,
                 'nextEvent' => $nextEvent,
+                'webinar_link' => $user_link
             ]);
         } else {
             return $this->redirect('/');
@@ -269,14 +276,15 @@ class WebinarsController extends Controller
                 }
                 $model->status = 1;
                 if ($model->save()) {
-                    $get = Users::findOne(['user_enc_id'=>$uid]);
+                    $get = Users::findOne(['user_enc_id' => $uid]);
                     $params = [];
                     $params['email'] = $get->email;
-                    $params['name'] = $get->first_name.' '.$get->last_name;
+                    $params['name'] = $get->first_name . ' ' . $get->last_name;
                     $params['webinar_id'] = $wid;
                     $params['from'] = Yii::$app->params->from_email;
                     $params['site_name'] = Yii::$app->params->site_name;
                     Yii::$app->notificationEmails->webinarRegistrationEmail($params);
+
                     return [
                         'status' => 200,
                         'title' => 'Success',
@@ -460,11 +468,11 @@ class WebinarsController extends Controller
                     'a1.created_on',
                     'CONCAT(us.first_name, " ", us.last_name) speakers'
                 ]);
-                $a1->joinWith(['webinarSpeakers ws' => function ($ws){
-                    $ws->joinWith(['speakerEnc sp'=>function($sp){
-                        $sp->joinWith(['userEnc us'],false);
-                    }],false);
-                }],false);
+                $a1->joinWith(['webinarSpeakers ws' => function ($ws) {
+                    $ws->joinWith(['speakerEnc sp' => function ($sp) {
+                        $sp->joinWith(['userEnc us'], false);
+                    }], false);
+                }], false);
                 $a1->joinWith(['sessionEnc e'], false);
                 $a1->andWhere(['a1.is_deleted' => 0]);
                 $a1->andWhere(['in', 'a1.status', [0, 1]]);

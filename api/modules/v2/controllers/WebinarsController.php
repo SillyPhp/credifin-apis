@@ -493,6 +493,14 @@ class WebinarsController extends ApiBaseController
                         $params['site_name'] = 'My E-Campus';
                         $params['is_my_campus'] = 1;
                         Yii::$app->notificationEmails->webinarRegistrationEmail($params);
+
+                        if ($webinar['webinar_conduct_on'] == 1) {
+                            $params['first_name'] = $user->first_name;
+                            $params['last_name'] = $user->last_name;
+                            $params["webinar_zoom_id"] = $webinar->platform_webinar_id;
+                            $params["user_id"] = $user->user_enc_id;
+                            Yii::$app->notificationEmails->zoomRegisterAccess($params);
+                        }
                         return $this->response(201, ['status' => 201, 'message' => 'Successfully Registered']);
                     }
                 }
