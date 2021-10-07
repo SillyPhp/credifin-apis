@@ -27,7 +27,7 @@ if (!empty($total_applications)) {
                                 <div class="mt-action-body">
                                     <div class="mt-action-row">
                                         <div class="mt-action-info ">
-                                            <div class="mt-action-details ">
+                                            <div class="mt-action-details text-capitalize">
                                                 <a href="javascript:;" onclick="window.open('<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $application['application_enc_id'], true); ?>', '_blank');" class="mt-action-author" target="_blank"><?= $application['name']; ?></a>
                                                 <p class="mt-action-desc">Expired On <?= date("d-m-Y", strtotime($application['last_date'])); ?></p>
                                             </div>
@@ -106,6 +106,10 @@ Pjax::end();
 </div>
 <?php
 $this->registerCss("
+.mt-action-details a{
+    font-weight:500 !important;
+    font-family:roboto;
+}
 .mt-action-author > a{
     font-family:roboto;
     font-weight: 500;
