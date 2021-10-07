@@ -113,7 +113,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                                         here to Join</a>
                                 <?php } else {
                                     if ($webinar['webinar_conduct_on'] == 1) { ?>
-                                        <a id="joinOtherBtn" href="<?= $webinar['other_platforms'] ?>" target="_blank">Click
+                                        <a id="joinOtherBtn" href="<?= $webinar_link ?>" target="_blank">Click
                                             here to Join</a>
                                     <?php } else { ?>
                                         <a id="joinBtn"
