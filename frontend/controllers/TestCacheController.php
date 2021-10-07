@@ -97,17 +97,57 @@ class TestCacheController extends Controller
             ->offset($offset)
             ->asArray()
             ->all();
+
         if (!empty($data)){
             foreach ($data as $d) {
                 $params = [];
                 $params["webinar_zoom_id"] = $zoom_id;
                 $params["webinar_id"] = $id;
-                $params["email"] = $d['email'];;
+                $params["email"] = $d['email'];
                 $params['first_name'] = $d['first_name'];
                 $params['last_name'] = $d['last_name'];
                 $params["user_id"] = $d['created_by'];
                 Yii::$app->notificationEmails->zoomRegisterAccess($params);
             }
+        }else{
+            return 0;
+        }
+    }
+
+    public function actionBulkReminders($id,$is_my_campus=0,$page=1,$limit=20){
+        $offset = ($page - 1) * $limit;
+        $data = WebinarRegistrations::find()
+            ->alias('a')
+            ->select(['b.first_name','b.email','b.last_name','a.created_by'])
+            ->where(['a.webinar_enc_id'=>$id])
+            ->joinWith(['createdBy b'],false,'INNER JOIN')
+            ->joinWith(['webinarEnc c'],false,'INNER JOIN')
+            ->limit($limit)
+            ->offset($offset);
+        if ($is_my_campus){
+            $data = $data->andWhere(['b.signed_up_through' => 'ECAMPUS', 'b.is_deleted' => 0])->asArray()
+                ->all();
+        }else{
+            $data = $data
+                ->andWhere(['!=','b.signed_up_through','ECAMPUS'])
+                ->andWhere(['b.is_deleted' => 0])
+                ->asArray()
+                ->all();
+        }
+        if (!empty($data)){
+            foreach ($data as $d){
+                $params = [];
+                $params['email'] = $d['email'];
+                $params['name'] = $d['first_name'].' '.$d['last_name'];;
+                $params['webinar_id'] = $id;
+                $params['from'] = Yii::$app->params->from_email;
+                $params['site_name'] = Yii::$app->params->site_name;
+                $params['is_my_campus'] = $is_my_campus;
+                $params['subject'] = '[Reminder] Your Webinar Session is Going To Live Today Stay Tuned !!';
+                Yii::$app->notificationEmails->webinarRegistrationEmail($params);
+            }
+        }else{
+            return 0;
         }
     }
 }

@@ -194,9 +194,16 @@ class NotificationEmails extends Component
         $params['date'] = $data['date'];
         $params['time'] = $data['time'];
         if ($params['is_my_campus']){
+            $params['from'] = 'no-reply@myecampus.in';
+            $params['site_name'] = 'My E-Campus';
             $params['link'] = 'https://www.myecampus.in/webinar-detail?id='.$params['webinar_id'];
         }else{
             $params['link'] = 'https://www.empoweryouth.com/webinar/'.$data['slug'];
+        }
+        if (!empty($params['subject'])){
+            $subject = $params['subject'];
+        }else{
+            $subject = 'Thank you for Registering for This Webinar';
         }
         Yii::$app->mailer->htmlLayout = 'layouts/email';
         $mail = Yii::$app->mailer->compose(
@@ -204,7 +211,7 @@ class NotificationEmails extends Component
         )
             ->setFrom([$params['from'] => $params['site_name']])
             ->setTo([$params['email'] => $params['name']])
-            ->setSubject('Thank you for Registering for This Webinar');
+            ->setSubject($subject);
         if ($mail->send()) {
             return true;
         }
