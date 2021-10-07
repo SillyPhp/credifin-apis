@@ -161,7 +161,7 @@ $this->params['header_dark'] = false;
 </section>
 <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
 
-<?= $this->render('/widgets/webinar-templates/webinar-one-speaker') ?>
+<?= $this->render('/webinars/webinar-carousel')?>
 
 
 <div id="app-data"></div>

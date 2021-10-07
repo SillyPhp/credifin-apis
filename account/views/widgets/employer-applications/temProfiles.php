@@ -88,16 +88,13 @@ $oppType = $type == 'internships' ? 'Internship' : 'Job';
 <!--light box-->
 <?php
 $this->registerCss("
-.disFlex{
+.disFlex {
     position: relative;
-    text-align: center;
-}
-.disFlex a{
-    position: absolute !important;
-    left:10px;
+    margin: 20px 0 0 20px;
+    text-align: left;
 }
 .margin_right{
-margin: 0 6px;
+    margin: 0 6px;
 }
 #no_temp{
     position: absolute;
