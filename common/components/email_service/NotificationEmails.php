@@ -251,7 +251,6 @@ class NotificationEmails extends Component
         $err = curl_error($curl);
 
         curl_close($curl);
-
         if ($err) {
             echo "cURL Error #:" . $err;
         } else {
@@ -260,6 +259,46 @@ class NotificationEmails extends Component
          $get = WebinarRegistrations::findOne(['webinar_enc_id'=>$params['webinar_id'],'created_by'=>$params['user_id']]);
          $get->unique_access_link = $join_url;
          $get->save();
+        }
+    }
+
+    public function zoomRegisterBatchAccess($params){
+        $requestBody = '{
+              "auto_approve": false,
+              "registrants": '.$params['data'].'
+            }';
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api.zoom.us/v2/webinars/".$params["webinar_zoom_id"]."/batch_registrants",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POST => 1,
+            CURLOPT_POSTFIELDS => $requestBody,
+            CURLOPT_HTTPHEADER => array(
+                "authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6ImtWdk05VXp3UWNtZFVXS3hudFZiekEiLCJleHAiOjE2MzQxNTk0MjQsImlhdCI6MTYzMzU1NDYyNX0._mnivTgCBZOo88NW_KGgqVyR8bwPr4xvrxnA1zEiZOE",
+                "content-type: application/json"
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            echo "cURL Error #:" . $err;
+        } else {
+            $data =  json_decode($response,true);
+            foreach ($data['registrants'] as $registrant){
+                $join_url = $registrant['join_url'];
+                $get = WebinarRegistrations::findOne(['webinar_enc_id'=>$params['webinar_id'],'created_by'=>$params['user_id']]);
+                $get->unique_access_link = $join_url;
+                $get->save();
+            }
         }
     }
 }

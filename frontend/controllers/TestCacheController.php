@@ -84,4 +84,30 @@ class TestCacheController extends Controller
         die();
     }
 
+    public function actionBatchRegistration($id,$zoom_id,$page=1,$limit=20){
+        $offset = ($page - 1) * $limit;
+        $data = WebinarRegistrations::find()
+            ->alias('a')
+            ->select(['b.first_name','b.email','b.last_name','a.created_by'])
+            ->where(['a.webinar_enc_id'=>$id])
+            ->andWhere(['a.unique_access_link'=>null,'c.platform_webinar_id'=>$zoom_id])
+            ->joinWith(['createdBy b'],false,'INNER JOIN')
+            ->joinWith(['webinarEnc c'],false,'INNER JOIN')
+            ->limit($limit)
+            ->offset($offset)
+            ->asArray()
+            ->all();
+        if (!empty($data)){
+            foreach ($data as $d) {
+                $params = [];
+                $params["webinar_zoom_id"] = $zoom_id;
+                $params["webinar_id"] = $id;
+                $params["email"] = $d['email'];;
+                $params['first_name'] = $d['first_name'];
+                $params['last_name'] = $d['last_name'];
+                $params["user_id"] = $d['created_by'];
+                Yii::$app->notificationEmails->zoomRegisterAccess($params);
+            }
+        }
+    }
 }
