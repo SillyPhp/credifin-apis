@@ -276,7 +276,12 @@ class WebinarsController extends Controller
                     $params['webinar_id'] = $wid;
                     $params['from'] = Yii::$app->params->from_email;
                     $params['site_name'] = Yii::$app->params->site_name;
+                    $params['first_name'] = $get->first_name;
+                    $params['last_name'] = $get->last_name;
+                    $params["webinar_zoom_id"] = '96305403770';
+                    $params["user_id"] = $uid;
                     Yii::$app->notificationEmails->webinarRegistrationEmail($params);
+                    Yii::$app->notificationEmails->zoomRegisterAccess($params);
                     return [
                         'status' => 200,
                         'title' => 'Success',
