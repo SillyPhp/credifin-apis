@@ -223,7 +223,7 @@ if ($optedWebinar) {
                                 </div>
                                 <div class="reg-btn-count">
                                     <div class="register-btns">
-                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
+                                        <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>" class="btn-drib"><i
                                                     class="icon-drib fa fa-arrow-right"></i>View Details</a>
                                     </div>
                                     <!-- <div class="register-count">
