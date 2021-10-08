@@ -115,11 +115,11 @@ use yii\helpers\Url;
         let index = 0;
 
         function right() {
-            transform((index = index < 3 ? ++index : 0));
+            transform((index = index < 4 ? ++index : 0));
         }
 
         function left() {
-            transform((index = index > 0 ? --index : 3));
+            transform((index = index > 0 ? --index : 4));
         }
 
         navLeft.addEventListener("click", left);
