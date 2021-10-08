@@ -91,16 +91,16 @@ AppAssets::register($this);
                         </div>
                         <div class="col-sm-6">
                             <div class="webinar-name">
-                                How to Get Your Dream Job?
+                                How to build long term wealth in Stock Market?
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="view-detail">
-                                <a href="/webinar/how-to-get-your-dream-job-4790" class="view-btn">
+                                <a href="/webinar/how-to-build-long-term-wealth-in-stock-market-22862" class="view-btn">
                                     View Details
                                 </a>
                             </div>
-                        </div>
+                        </div>  
                     </div>
                 </div>
             </section>
@@ -469,7 +469,7 @@ AppAssets::register($this);
     $this->registerCss('
     .upcoming-webinar{
         width: 100%;
-        background: #0e1c3d;
+        background: #1F1F1F;
         display: flex;
         position: relative;
         margin-top:-39px;
@@ -501,10 +501,10 @@ AppAssets::register($this);
         font-size: 22px;
         text-align: center;
         color: #FFFFFF;
-        //background: url(' .  Url::to("https://user-images.githubusercontent.com/72601463/133762664-79a23bf9-ec89-4f06-8c97-37465d1a16f5.png")  . ');
         background-repeat: no-repeat;
         background-size: 100% 100%;
         height: 100%;
+        letter-spacing: 1.3px;
       }
       .view-btn{
         background: linear-gradient(91.16deg, #FFBB54 -43.72%, #CB650C 125.14%, #DB7E2E 125.14%);
