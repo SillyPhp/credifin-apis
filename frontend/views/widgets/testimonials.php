@@ -145,8 +145,8 @@ use yii\helpers\Url;
     </section>
 
     <script>
-        const navLeft = document.querySelector(".left");
-        const navRight = document.querySelector(".right");
+        const navLeft = document.querySelector(".navigation .left");
+        const navRight = document.querySelector(".navigation .right");
 
         const texts = document.querySelector(".test-text");
         const videos = document.querySelector(".videos");
