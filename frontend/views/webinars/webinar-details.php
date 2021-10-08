@@ -163,13 +163,15 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                     <h2 class="section-title">
                         Webinar Details
                     </h2>
-                    <div class="copy-join-link">
-                        <i class="fab fa-chromecast"></i>
-                        <div class="link-descriptions">
-                            <span>Joining link</span><br/>
-                            <?= $webinar_link ?>
+                    <?php if ($webinar['webinar_conduct_on'] == 1) { ?>
+                        <div class="copy-join-link jj-clipboard" data-link="<?= $webinar_link ?>">
+                            <i class="fab fa-chromecast"></i>
+                            <div class="link-descriptions">
+                                <span>Joining link</span><br/>
+                                <a class="copy-clip" title="Copy Link" ><?= $webinar_link ?></a>
+                            </div>
                         </div>
-                    </div>
+                    <?php } ?>
                 </div>
             </div>
             <div class="row">
@@ -565,15 +567,20 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+span.copy-clip {
+    color: #8b8b8b !important;
+    font-size: 14px !important;
+}
 .detail-flex {
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
+    padding:0 15px;
 }
 .copy-join-link{
     font-size: 14px;
-    margin: 20px;
+    margin: 20px 0;
     font-weight: 400;
     text-align: left;
     display: flex;
@@ -1992,6 +1999,20 @@ $(document).on("click","#joinRegisterBtn", function() {
     $('#registerEventSection').find('button:visible').click();
 });
 
+$(document).on('click', '.jj-clipboard',function (event) {
+        event.preventDefault();
+        var link = $(this).attr('data-link');
+        CopyToClipboard(link, true, "Link copied");
+    });
+
+    function CopyToClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
