@@ -163,7 +163,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                     <h2 class="section-title">
                         Webinar Details
                     </h2>
-                    <?php if ($webinar['webinar_conduct_on'] == 1) { ?>
+                    <?php if ($webinar['webinar_conduct_on'] == 1 && $webinar_link) { ?>
                         <div class="copy-join-link jj-clipboard" data-link="<?= $webinar_link ?>">
                             <i class="fab fa-chromecast"></i>
                             <div class="link-descriptions">
