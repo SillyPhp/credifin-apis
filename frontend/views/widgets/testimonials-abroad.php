@@ -69,9 +69,8 @@ use yii\helpers\Url;
     </section>
 
     <script>
-        const navLeft = document.querySelector(".left");
-        const navRight = document.querySelector(".right");
-
+        const navLeft = document.querySelector(".navigation .left");
+        const navRight = document.querySelector(".navigation .right");
         const texts = document.querySelector(".test-text");
         const videos = document.querySelector(".videos");
 
@@ -142,7 +141,7 @@ $this->registerCss('
 .testimonial-vid iframe {
     margin: 0 0 10px;
 }
-.right, .left {
+.navigation .right, .navigation .left  {
     border: 2px solid #9a9393;
     border-radius: 50%;
     height: 70px;
@@ -220,7 +219,7 @@ $this->registerCss('
     .test-bg h3 {
         font-size: 26px;
     }
-    .right, .left {
+    .navigation .right, .navigation .left  {
         height: 60px;
         width: 60px;
         font-size: 20px;
@@ -247,7 +246,7 @@ $this->registerCss('
     .test-bg h3 {
         font-size: 26px;
     }
-    .right, .left {
+    .navigation .right, .navigation .left  {
         height: 60px;
         width: 60px;
         font-size: 20px;

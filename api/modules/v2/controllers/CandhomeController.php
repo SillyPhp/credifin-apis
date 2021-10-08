@@ -970,6 +970,10 @@ class CandhomeController extends ApiBaseController
             $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
             $webinar['seconds'] = $seconds;
             $webinar['is_started'] = ($seconds < 0 ? true : false);
+            $webinar['user_unique_link'] = null;
+            if ($webinar['webinar_conduct_on'] == 1) {
+                $webinar['user_unique_link'] = WebinarRegistrations::findOne(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id])->unique_access_link;
+            }
             foreach ($webinar['events'] as $k => $a) {
                 $j = 0;
                 foreach ($a as $t) {

@@ -302,6 +302,7 @@ $this->registerCss("
 
 .hr-com-name{
     padding:10px 15px 0 15px;
+    text-transform:capitalize;
 }
 .detail-clg{flex-basis:10%;}
 .appl a span {

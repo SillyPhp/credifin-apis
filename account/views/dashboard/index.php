@@ -129,6 +129,14 @@ endif;
             </div>
 
             <?php
+                if($webinar) {
+                    echo $this->render('/widgets/dashboard-webinar-widget', [
+                           'webinar' => $webinar,
+                    ]);
+                }
+            ?>
+
+            <?php
             if ($loanApplication && Yii::$app->user->identity->type->user_type == 'Individual') {
                 echo $this->render('/widgets/education-loan/loan-detail-individual-dashboard', [
                     'loanApplication' => $loanApplication,

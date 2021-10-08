@@ -1,7 +1,9 @@
 <?php
+
 use common\models\Users;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 $cookies_request = Yii::$app->request->cookies;
 $refcode = $cookies_request->get('ref_csrf-webinar');
 $promo = false;
@@ -50,7 +52,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     <div class="full-width-light"
          style="">
         <div class="title-main">
-                <img src="<?= $webinar['image'] ?>" class="absolute">
+            <img src="<?= $webinar['image'] ?>" class="absolute">
             <div class="element-percent">
                 <h1><?= $webinar['title'] ?></h1>
                 <div class="register-btn" id="registerEventSection">
@@ -72,13 +74,13 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                             <?php
                         } else {
                             if ((int)$webinar['price']) {
-                                if ($promo){ ?>
+                                if ($promo) { ?>
                                     <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
-                               <?php } else { ?>
+                                <?php } else { ?>
                                     <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>
-                                 <?php }
-                                  ?>
-                             <?php
+                                <?php }
+                                ?>
+                                <?php
                             } else {
                                 ?>
                                 <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
@@ -109,12 +111,17 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                                 <?php if (Yii::$app->user->isGuest) { ?>
                                     <a id="joinBtn" href="javascript:;" data-toggle="modal" data-target="#loginModal">Click
                                         here to Join</a>
-                                <?php } else { ?>
-                                    <a id="joinBtn"
-                                       href="javascript:;" data-link="<?= $share_link ?>"
-                                       data-id="<?= $nextEvent['session_enc_id'] ?>">Click
-                                        here to Join</a>
-                                <?php } ?>
+                                <?php } else {
+                                    if ($webinar['webinar_conduct_on'] == 1) { ?>
+                                        <a id="joinOtherBtn" href="<?= $webinar_link ?>" target="_blank">Click
+                                            here to Join</a>
+                                    <?php } else { ?>
+                                        <a id="joinBtn"
+                                           href="javascript:;" data-link="<?= $share_link ?>"
+                                           data-id="<?= $nextEvent['session_enc_id'] ?>">Click
+                                            here to Join</a>
+                                    <?php }
+                                } ?>
                             </div>
                             <div id="counter">
                                 <div class="counter-item">
@@ -237,7 +244,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
             </div>
         </div>
     </div>
-    
+
 </section>
 
 <!-- Schedules event section start here -->
@@ -762,7 +769,7 @@ display:none;
 #counter{
 display:none;
 }
-#joinBtn{
+#joinBtn, #joinOtherBtn{
     font-size: 25px;
     padding: 48px;
     display: block;
