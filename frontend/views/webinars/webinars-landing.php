@@ -222,7 +222,11 @@ if ($optedWebinar) {
                                     <div class="web-des"><?= $opWeb['description'] ?></div>
                                 </div>
                                 <div class="reg-btn-count">
-                                    <div class="register-count">
+                                    <div class="register-btns">
+                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
+                                                    class="icon-drib fa fa-arrow-right"></i>View Details</a>
+                                    </div>
+                                    <!-- <div class="register-count">
                                         <div class="reg-img">
                                             <?php
                                             if (count($opWeb['webinarRegistrations']) > 0) {
@@ -242,7 +246,7 @@ if ($optedWebinar) {
                                             ?>
                                         </div>
                                         <span class="cont"><?= count($opWeb['webinarRegistrations']) ?> Registered</span>
-                                    </div>
+                                    </div> -->
                                     <!--                        <div class="register-btns">-->
                                     <!--                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>-->
                                     <!--                        </div>-->
