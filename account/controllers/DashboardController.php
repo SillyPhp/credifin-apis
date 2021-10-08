@@ -24,6 +24,7 @@ use common\models\InterviewProcessFields;
 use common\models\ScheduledInterview;
 use common\models\UserPreferences;
 use common\models\UserSkills;
+use common\models\WebinarRegistrations;
 use frontend\models\script\scriptModel;
 use Yii;
 use yii\web\Controller;
@@ -310,6 +311,27 @@ class DashboardController extends Controller
                 ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'is_deleted' => 0])
                 ->asArray()
                 ->all();
+
+            $webinar = WebinarRegistrations::find()
+                ->alias('a')
+                ->select(['a.webinar_enc_id', 'b.title', 'CONCAT(b4.first_name, " " ,b4.last_name) as speaker_name',
+                    'CASE WHEN b4.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b4.image_location, "/", b4.image) END speaker_image',
+                    'a.unique_access_link'
+                ])
+                ->joinWith(['webinarEnc b' => function ($b) {
+                    $b->joinWith(['webinarEvents b1' => function($b1){
+                        $b1->joinWith(['webinarSpeakers b2' => function ($b2) {
+                            $b2->joinWith(['speakerEnc b3'=>function($b3){
+                                $b3->joinWith(['userEnc b4']);
+                            }]);
+                        }]);
+                    }]);
+                    $b->andWhere(['b1.status' => [0, 1]]);
+                }], false)
+                ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                ->asArray()
+                ->one();
+
         } else {
             $childs = OrganizationAssignedCategories::find()
                 ->select(['assigned_category_enc_id'])
@@ -381,7 +403,8 @@ class DashboardController extends Controller
             'userValues' => $this->_CompleteProfile(),
             'userPref' => $this->_CompletePreference(),
             'loan' => $loan,
-            'extendModel' => $extendModel
+            'extendModel' => $extendModel,
+            'webinar' => $webinar
         ]);
     }
 
