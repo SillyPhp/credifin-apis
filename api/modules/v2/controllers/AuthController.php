@@ -365,6 +365,10 @@ class AuthController extends ApiBaseController
             ->asArray()
             ->one();
 
+        if ($user_type['user_type'] == 'Executive' || $user_type['user_type'] == 'Skillsup Executive') {
+            $user_type['user_type'] = 'Individual';
+        }
+
         return [
             'user_id' => $source->user_enc_id,
             'username' => $user->username,
@@ -579,6 +583,10 @@ class AuthController extends ApiBaseController
                 ->asArray()
                 ->one();
 
+        }
+
+        if ($user_detail['user_type']== 'Executive' || $user_detail['user_type'] == 'Skillsup Executive') {
+            $user_detail['user_type'] = 'Individual';
         }
 
         $data = [
