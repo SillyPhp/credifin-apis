@@ -315,7 +315,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
-                    <div class="job-txt pos-right">Openings By Locations</div>
+                    <div class="job-txt pos-right" data-toggle="tooltip" data-original-title="To Filter Candidates Click on City Name">Openings By Locations <i class="fa fa-info-circle"></i></div>
                     <div class="main-locations">
                         <?php if ($application_name['applicationPlacementLocations']) { ?>
                             <ul class="location-posts">

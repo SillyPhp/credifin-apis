@@ -157,8 +157,9 @@ class SkillUpController extends Controller
     public function actionCreate()
     {
         $model = new SkillsUpForm();
-
+        $sources = SkillsUpSources::find()->where(['is_deleted' => 0])->asArray()->all();
         if ($model->load(Yii::$app->request->post())) {
+            return $this->render('feeds-form', ['model' => $model, 'sources' => $sources]);
             $data = $model->save();
             if ($data['status'] == 200) {
                 Yii::$app->session->setFlash('success', "Form saved successfully.");
@@ -168,7 +169,7 @@ class SkillUpController extends Controller
                 $this->redirect('/account/skill-up/create');
             }
         } else {
-            $sources = SkillsUpSources::find()->where(['is_deleted' => 0])->asArray()->all();
+//            $sources = SkillsUpSources::find()->where(['is_deleted' => 0])->asArray()->all();
             return $this->render('feeds-form', ['model' => $model, 'sources' => $sources]);
         }
     }
