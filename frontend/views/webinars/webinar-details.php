@@ -159,12 +159,19 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     <div class="webinar-details">
         <div class="container">
             <div class="row">
-                <div class="">
-                    <div class="col-md-12 mx-auto">
-                        <h2 class="section-title">
-                            Webinar Details
-                        </h2>
-                    </div>
+                <div class="detail-flex">
+                    <h2 class="section-title">
+                        Webinar Details
+                    </h2>
+                    <?php if ($webinar['webinar_conduct_on'] == 1) { ?>
+                        <div class="copy-join-link jj-clipboard" data-link="<?= $webinar_link ?>">
+                            <i class="fab fa-chromecast"></i>
+                            <div class="link-descriptions">
+                                <span>Joining link</span><br/>
+                                <a class="copy-clip" title="Copy Link" ><?= $webinar_link ?></a>
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
             <div class="row">
@@ -560,6 +567,46 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+span.copy-clip {
+    color: #8b8b8b !important;
+    font-size: 14px !important;
+}
+.detail-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding:0 15px;
+}
+.copy-join-link{
+    font-size: 14px;
+    margin: 20px 0;
+    font-weight: 400;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+}
+.copy-join-link i{
+    color: #00a0e3;
+    font-size: 40px;
+    margin-right: 5px;
+}
+.link-descriptions{
+    max-width: 250px;
+    position: relative;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.link-descriptions span{
+    font-size: 15px;
+    color: #00a0e3;
+    font-weight: 500;
+}
 .d-flex{
     display: flex;
     align-items: center;
@@ -1325,11 +1372,12 @@ b, strong {
     color: #fff;
 }
 .section-title, .column-title {
+    margin:20px 0;
     font-size: 36px;
     font-weight: 800;
     color: #333;
     position: relative;
-    text-align: center;
+//    text-align: center;
     font-family: lora;
 }
 .section-title span, .column-title span {
@@ -1951,6 +1999,20 @@ $(document).on("click","#joinRegisterBtn", function() {
     $('#registerEventSection').find('button:visible').click();
 });
 
+$(document).on('click', '.jj-clipboard',function (event) {
+        event.preventDefault();
+        var link = $(this).attr('data-link');
+        CopyToClipboard(link, true, "Link copied");
+    });
+
+    function CopyToClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

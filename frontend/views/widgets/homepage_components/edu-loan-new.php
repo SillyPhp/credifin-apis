@@ -198,9 +198,11 @@ $this->registerCss('
 @media only screen and (max-width: 767px) {
     .bg-loans-set{
         background-position: left;
+        padding-top:0;
     }
     .heading-data-set {
         text-align: center;
+        padding-top:20px;
     }
     .heading-data-set h3 {
         font-size: 25px;
