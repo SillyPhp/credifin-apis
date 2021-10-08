@@ -532,7 +532,10 @@ class WebinarsController extends Controller
 
     private function showWebinar($status, $userIdd = null, $sortAsc = true)
     {
-        $currentTime = date('Y-m-d H:i:s');
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $currentTime = $dt->format('Y-m-d H:i:s');
         $webinars = Webinar::find()
             ->alias('a')
             ->select(['a.name', 'a.description', 'a.price', 'a.webinar_enc_id', 'a.gst', 'a.slug',
