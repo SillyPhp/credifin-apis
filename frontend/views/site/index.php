@@ -159,8 +159,10 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
-
 <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
+
+<?= $this->render('/webinars/webinar-carousel')?>
+
 
 <div id="app-data"></div>
 <div id="sectionIsLoading" class="sectionLoad">
@@ -1274,7 +1276,6 @@ if (!Yii::$app->user->isGuest) {
         'getFeaturedInternships',
         'getStats',
         'getProductOffering',
-        'getAiesec',
         'getDropResume',
         'getTopCities',
 //        'getEduAndRedbull',

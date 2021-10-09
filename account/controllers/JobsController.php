@@ -1223,7 +1223,8 @@ class JobsController extends Controller
                 'uo.name as unclaim_org_name',
                 'uo.logo as unclaim_org_logo',
                 'uo.logo_location as unclaim_org_logo_location',
-                'uo.initials_color as unclaim_org_initials_color'])
+                'uo.initials_color as unclaim_org_initials_color',
+                'ea.unclaimed_organization_enc_id'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
             ->joinWith(['applicationEnc b' => function ($a) {
                 $a->joinWith(['appliedApplications k' => function ($y) {

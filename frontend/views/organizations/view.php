@@ -636,6 +636,7 @@ echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
 ]);
 $this->registerCss('
+.footer{margin-top:0 !important;}
 .desc-image {
     text-align: center;
 }

@@ -158,6 +158,7 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
+    </div>
 <?php
 $this->registerCss('
 .mt20{

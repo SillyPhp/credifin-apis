@@ -345,6 +345,9 @@ class LoansController extends ApiBaseController
                 $e->select(['e.loan_purpose_enc_id', 'e.loan_app_enc_id', 'e.fee_component_enc_id', 'e1.name']);
                 $e->joinWith(['feeComponentEnc e1'], false);
             }])
+            ->joinWith(['loanApplicationSchoolFees f' => function ($f) {
+                $f->select(['f.school_fee_enc_id', 'f.loan_app_enc_id', 'f.student_name', 'f.school_name', 'f.class']);
+            }])
             ->where(['a.created_by' => $this->userId(), 'a.is_deleted' => 0, 'a.loan_app_enc_id' => $params['loan_app_enc_id']])
             ->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()
@@ -405,6 +408,20 @@ class LoansController extends ApiBaseController
                 $course_name = $path_lead['course_name'];
             }
 
+            $loan['loan_type'] = '1';
+            if ($loan['loanApplicationSchoolFees']) {
+                $loan['loan_type'] = '0';
+                $loan['child_information'] = [
+                    [
+                        'child_name' => $loan['loanApplicationSchoolFees'][0]['student_name'],
+                        'child_class' => $loan['loanApplicationSchoolFees'][0]['class'],
+                        'child_school' => $loan['loanApplicationSchoolFees'][0]['school_name']
+                    ],
+                ];
+            }
+
+            unset($loan['loanApplicationSchoolFees']);
+
             $loan['course_name'] = $course_name;
             $loan['college_name'] = $college_name;
             $loan['payment_status'] = ucwords($loan['payment_status']);
@@ -434,28 +451,62 @@ class LoansController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information']);
         }
 
-        if ($params['status'] == 'captured') {
-            $loan_application = LoanApplications::find()
-                ->where(['loan_app_enc_id' => $loan_app_id])
-                ->one();
-            if ($loan_application) {
-                $loan_application->status = 0;
-                $loan_application->updated_by = $this->userId();
-                $loan_application->updated_on = date('Y-m-d H:i:s');
-                $loan_application->update();
+        $loan_payment_ids = explode(',', $loan_payment_id);
+
+        if (count($loan_payment_ids) > 1) {
+            foreach ($loan_payment_ids as $payment_id) {
+                $loan_payments = EducationLoanPayments::find()
+                    ->where(['education_loan_payment_enc_id' => $payment_id])
+                    ->one();
+                if ($loan_payments) {
+                    $loan_payments->payment_id = $params['payment_id'];
+                    $loan_payments->payment_status = $params['status'];
+                    $loan_payments->payment_signature = $params['signature'];
+                    $loan_payments->updated_by = $this->userId();
+                    $loan_payments->updated_on = date('Y-m-d H:i:s');
+                    $loan_payments->update();
+                }
             }
+        } else {
+            $payment_token = EducationLoanPayments::find()->where(['education_loan_payment_enc_id' => $loan_payment_ids[0]])->asArray()->all();
+            if ($payment_token) {
+                $update_token_payments = EducationLoanPayments::updateAll([
+                    'payment_id' => $params['payment_id'],
+                    'payment_status' => $params['status'],
+                    'payment_signature' => $params['signature'],
+                    'updated_by' => $this->userId(),
+                    'updated_on' => date('Y-m-d H:i:s'),
+                ], ['and', ['payment_token' => $payment_token[0]['payment_token']]]);
+
+                foreach ($payment_token as $p) {
+                    $loan_application = LoanApplications::find()
+                        ->where(['loan_app_enc_id' => $p['loan_app_enc_id']])
+                        ->one();
+                    if ($loan_application) {
+                        $loan_application->status = 0;
+                        $loan_application->updated_by = $this->userId();
+                        $loan_application->updated_on = date('Y-m-d H:i:s');
+                        $loan_application->update();
+                    }
+                }
+
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'success']);
         }
 
-        $loan_payments = EducationLoanPayments::find()
-            ->where(['education_loan_payment_enc_id' => $loan_payment_id])
-            ->one();
-        if ($loan_payments) {
-            $loan_payments->payment_id = $params['payment_id'];
-            $loan_payments->payment_status = $params['status'];
-            $loan_payments->payment_signature = $params['signature'];
-            $loan_payments->updated_by = $this->userId();
-            $loan_payments->updated_on = date('Y-m-d H:i:s');
-            $loan_payments->update();
+        if ($params['status'] == 'captured') {
+            $loan_app_ids = explode(',', $loan_app_id);
+            foreach ($loan_app_ids as $loan_id) {
+                $loan_application = LoanApplications::find()
+                    ->where(['loan_app_enc_id' => $loan_id])
+                    ->one();
+                if ($loan_application) {
+                    $loan_application->status = 0;
+                    $loan_application->updated_by = $this->userId();
+                    $loan_application->updated_on = date('Y-m-d H:i:s');
+                    $loan_application->update();
+                }
+            }
         }
 
         return $this->response(200, ['status' => 200, 'message' => 'success']);
@@ -1811,9 +1862,10 @@ class LoansController extends ApiBaseController
         }
     }
 
-    public function actionSaveTeachersLoan(){
+    public function actionSaveTeachersLoan()
+    {
         $params = Yii::$app->request->post();
-        if ($params){
+        if ($params) {
             $model = new LoanApplicationsForm();
             $orgDate = $params['applicant_dob'];
             $userId = $this->userId();
@@ -1821,14 +1873,14 @@ class LoansController extends ApiBaseController
                 $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
                 $model->months = (($params['months']) ? $params['months'] : null);
                 if ($model->validate()) {
-                    if ($data = $model->saveTeachersLoan( $userId,'Android',$params)) {
-                        if ($data['status']){
+                    if ($data = $model->saveTeachersLoan($userId, 'Android', $params)) {
+                        if ($data['status']) {
                             $data["name"] = "Empower Youth";
                             $data["description"] = "Application Processing Fee";
                             $data["image"] = Url::to("/assets/common/logos/eylogo2.png", 'https');
                             $data['theme_color'] = "#ff7803";
                             return $this->response(200, ['status' => 200, 'data' => $data]);
-                        }else{
+                        } else {
                             return $this->response(500, ['status' => 500, 'message' => $data['message']]);
                         }
                     }
@@ -1839,6 +1891,109 @@ class LoansController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'Missing information']);
         } else {
             return $this->response(422, ['status' => 422, 'message' => 'Missing information']);
+        }
+    }
+
+    public function actionApply()
+    {
+        try {
+            $params = Yii::$app->request->post();
+            $userId = $this->userId();
+
+            // saving school loan
+            if (isset($params['loan_type']) && $params['loan_type'] == 0) {
+                if ($params) {
+                    if ($params['is_applicant'] != 1) {
+                        $params['child_information'][0]['child_name'] = $params['applicant_name'];
+                        $params['child_information'][0]['child_class'] = $params['child_class'];
+                        $params['child_information'][0]['child_school'] = $params['child_school'];
+                        $params['child_information'][0]['child_loan_amount'] = $params['amount'];
+                    } else {
+                        $params['applicant_name'] = $params['co_applicants'][0]['name'];
+                    }
+                    $model = new LoanApplicationsForm();
+//                    $orgDate = $params['applicant_dob'];
+                    if ($model->load($params, '')) {
+                        $model->applicant_dob = null;
+//                        $model->yearly_income = $params['yearly_income'];
+                        if ($model->validate()) {
+                            if ($data = $model->saveSchoolFeeLoan($userId, 'Android', $params)) {
+                                if ($data['status']) {
+                                    $data['loan_app_enc_id'] = implode(',', $data['loan_app_enc_id']);
+                                    $data['education_loan_payment_enc_id'] = implode(',', $data['education_loan_payment_enc_id']);
+                                    $data["name"] = "Empower Youth";
+                                    $data["description"] = "Application Processing Fee";
+                                    $data["image"] = Url::to("/assets/common/logos/eylogo2.png", 'https');
+                                    $data['theme_color'] = "#ff7803";
+                                    return $this->response(200, ['status' => 200, 'data' => $data]);
+                                } else {
+                                    return $this->response(500, ['status' => 500, 'message' => $data['message']]);
+                                }
+                            }
+                            return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
+                        }
+                        return $this->response(409, ['status' => 409, $model->getErrors()]);
+                    }
+                    return $this->response(422, ['status' => 422, 'message' => 'Modal values not loaded..']);
+                } else {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+                }
+            }
+
+            $c = $params['college_course_info'];
+            unset($params['college_course_info']);
+            $params['college_course_info'][0] = $c;
+            $params['userID'] = $this->userId();
+
+            if ($params) {
+                $organizationObject = new OrganizationList();
+                $model = new LoanApplicationsForm();
+                if ($params['is_addmission_taken'] == 1) {
+                    $parser = $organizationObject->conditionParser($params);
+                    if (!$parser['college_id']) {
+                        return $this->response(500, ['status' => 500, 'message' => 'Unable to Get College Information']);
+                    }
+                    $parser2 = $organizationObject->conditionCourseParser($parser, $params);
+                    if (!$parser2['assigned_course_id']) {
+                        return $this->response(500, ['status' => 500, 'message' => 'Unable to Get Course Information']);
+                    }
+                    $model->college_course_enc_id = $parser2['assigned_course_id'];
+                } else {
+                    $course_name = $course_name = trim($params['college_course_info'][0]['course_text']);
+                    $model->college_course_enc_id = null;
+                    $parser['college_id'] = null;
+                    $parser['is_claim'] = 3;
+                    $pref = explode(',', $params['clg_pref']);
+                }
+
+                $orgDate = $params['applicant_dob'];
+                $userId = $this->userId();
+                if (!$params['is_india']) {
+                    $model->country_enc_id = $params['country_enc_id'];
+                }
+
+                if ($model->load(Yii::$app->request->post(), '')) {
+                    $model->applicant_dob = date("Y-m-d", strtotime($orgDate));
+                    $model->college_course_enc_id = $parser2['assigned_course_id'];
+                    if ($params['loan_purpose']) {
+                        $model->purpose = explode(',', $params['loan_purpose']);
+                    }
+                    if ($model->validate()) {
+                        if ($data = $model->add($params['is_addmission_taken'], $userId, $parser['college_id'], 'Android', $parser['is_claim'], $course_name, $pref)) {
+                            $data["name"] = "Empower Youth";
+                            $data["description"] = "Application Processing Fee";
+                            $data["image"] = Url::to("/assets/common/logos/eylogo2.png", 'https');
+                            $data['theme_color'] = "#ff7803";
+                            return $this->response(200, ['status' => 200, 'data' => $data]);
+                        }
+                        return $this->response(500, ['status' => 500, 'message' => 'Something went wrong...']);
+                    }
+                    return $this->response(409, ['status' => 409, $model->getErrors()]);
+                }
+                return $this->response(422, ['status' => 422, 'message' => 'Modal values not loaded..']);
+            }
+        } catch (\Exception $e) {
+            return $this->response(500, ['error' => $e]);
         }
     }
 
