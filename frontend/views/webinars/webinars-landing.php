@@ -983,6 +983,7 @@ color: #fff !important;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 	background-color:#fff;
 	margin-bottom:20px;
+    min-height: 387px;
 }
 .web-img {
 	position: relative;
