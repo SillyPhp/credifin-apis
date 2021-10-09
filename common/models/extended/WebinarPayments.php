@@ -95,8 +95,6 @@ class WebinarPayments extends \common\models\WebinarPayments
           }
       }
       catch (\Exception $exception) {
-          print_r($exception->getMessage());
-          die();
           $transaction->rollBack();
           return false;
       }
