@@ -463,6 +463,7 @@ class WebinarsController extends Controller
                 'a.availability',
                 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
                 'a.description',
+                'a.price',
             ])
             ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now) {
                 $a1->select([
@@ -605,14 +606,9 @@ class WebinarsController extends Controller
 
     public function actionWebinarExpired()
     {
-        $webinars = self::getWebinars($id);
+        $webinars = self::getWebinars();
         return $this->render('webinar-expired', [
-            'type' => $type,
             'webinars' => $webinars,
-            'webinarDetail' => $webinarDetail,
-            'dateEvents' => $dateEvents,
-            'upcomingEvent' => $upcomingEvent,
-            'upcomingDateTime' => $upcomingDateTime,
         ]);
     }
 

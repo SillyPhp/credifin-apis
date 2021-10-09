@@ -59,7 +59,7 @@ function webDate($webDate)
                         <div class="web-card">
                             <div class="web-img">
                                 <a href="<?= Url::to("/webinar/" . $web['slug']) ?>">
-                                    <img src="<?= $web['banner'] ?>"></a>
+                                    <img src="<?= $web['image'] ?>"></a>
                                 <div class="web-detail-date">
                                     <div class="webinar-date">
                                         <?php
@@ -92,7 +92,7 @@ function webDate($webDate)
                             </div>
                             <div class="reg-btn-count">
                                 <div class="register-count">
-                                    <div class="reg-img">
+                                    <!-- <div class="reg-img">
                                         <?php
                                         if (count($web['webinarRegistrations']) > 0) {
                                             $reg = 1;
@@ -112,7 +112,7 @@ function webDate($webDate)
                                         }
                                         ?>
                                     </div>
-                                    <span class="count"> <?= count($web['webinarRegistrations']) ?> Registered</span>
+                                    <span class="count"> <?= count($web['webinarRegistrations']) ?> Registered</span> -->
                                 </div>
                                 <div class="register-btns">
                                     <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
