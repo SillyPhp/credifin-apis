@@ -463,6 +463,7 @@ class WebinarsController extends Controller
                 'a.availability',
                 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
                 'a.description',
+                'a.price',
             ])
             ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now) {
                 $a1->select([
@@ -532,7 +533,10 @@ class WebinarsController extends Controller
 
     private function showWebinar($status, $userIdd = null, $sortAsc = true)
     {
-        $currentTime = date('Y-m-d H:i:s');
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $currentTime = $dt->format('Y-m-d H:i:s');
         $webinars = Webinar::find()
             ->alias('a')
             ->select(['a.name', 'a.description', 'a.price', 'a.webinar_enc_id', 'a.gst', 'a.slug',
@@ -602,14 +606,9 @@ class WebinarsController extends Controller
 
     public function actionWebinarExpired()
     {
-        $webinars = self::getWebinars($id);
+        $webinars = self::getWebinars();
         return $this->render('webinar-expired', [
-            'type' => $type,
             'webinars' => $webinars,
-            'webinarDetail' => $webinarDetail,
-            'dateEvents' => $dateEvents,
-            'upcomingEvent' => $upcomingEvent,
-            'upcomingDateTime' => $upcomingDateTime,
         ]);
     }
 
