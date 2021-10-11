@@ -89,7 +89,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-6">
+                <div class="col-md-3 col-sm-5">
                     <div class="ushare">
                         <div class="ushare-heading">Share</div>
                         <i class="fab fa-facebook-square"
@@ -102,29 +102,29 @@
                            onclick="window.open('https://api.whatsapp.com/send?text={{review_sharing_link}}', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                     </div>
                 </div>
-                <div class="col-md-8 col-sm-6">
+                <div class="col-md-9 col-sm-7">
                     <div class="usefull-bttn pull-right">
                         <div class="use-bttn">
-                            {{#feedback_type}}
+                            {{#feedback_type_in}}
                                 <button type="button" class="btn_usefull usefull_btn_color" data-key="{{review_enc_id}}" value="one"><i
-                                        class="fas fa-thumbs-up"></i> Usefull
+                                            class="fas fa-thumbs-up"></i> Usefull <span class="usefulNum">{{useful}}</span>
                             </button>
-                            {{/feedback_type}}
-                            {{^feedback_type}}
+                            {{/feedback_type_in}}
+                            {{^feedback_type_in}}
                             <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="one"><i
-                                        class="fas fa-thumbs-up"></i> Usefull
+                                        class="fas fa-thumbs-up"></i> Usefull <span class="usefulNum">{{useful}}</span>
                             </button>
-                            {{/feedback_type}}
+                            {{/feedback_type_in}}
                         </div>
                         <div class="notuse-bttn">
                             {{#feedback_type_not}}
                                 <button type="button" class="btn_usefull notusefull_btn_color" data-key="{{review_enc_id}}" value="zero"><i
-                                        class="fas fa-thumbs-down"></i> Not Usefull
+                                        class="fas fa-thumbs-down"></i> Not Usefull <span class="notUsefulNum">{{not_useful}}</span>
                                 </button>
                             {{/feedback_type_not}}
                             {{^feedback_type_not}}
                             <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="zero"><i
-                                        class="fas fa-thumbs-down"></i> Not Usefull
+                                        class="fas fa-thumbs-down"></i> Not Usefull <span class="notUsefulNum">{{not_useful}}</span>
                                 </button>
                             {{/feedback_type_not}}
                         </div>
@@ -211,6 +211,20 @@ $this->registerCSS('
     border-right: 1px solid #fff;
     min-height: 95px;
 }
+.usefulNum{
+//    background: #00a0e3;
+    padding: 2px 5px;
+    border-radius: 5px;
+    color: #00a0e3;
+    margin-left:4px; 
+}
+.notUsefulNum{
+//    background: #d72a2a;
+    padding: 2px 5px;
+    border-radius: 5px;
+    color: #d72a2a;
+    margin-left:4px; 
+}
 .light-bg {
     background: #f4f4f4 !important;
 }
@@ -281,4 +295,7 @@ $this->registerCSS('
     transform: scale(1); 
 }
 ');
-
+$script = <<<JS
+    
+JS;
+$this->registerJS($script);

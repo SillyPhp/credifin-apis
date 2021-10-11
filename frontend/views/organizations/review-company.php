@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $radios_array = [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5];
-$this->title = $org_details['name'] . ' ' . Yii::$app->params->seo_settings->title_separator . ' Reviews';
+$this->title = htmlspecialchars_decode($org_details['name']) . ' ' . Yii::$app->params->seo_settings->title_separator . ' Reviews';
 Yii::$app->view->registerJs('var slug = "' . $slug . '"', \yii\web\View::POS_HEAD);
 $overall_avg = array_sum($stats) / count($stats);
 $round_avg = round($overall_avg);
@@ -38,12 +38,6 @@ $this->params['seo_tags'] = [
         'fb:app_id' => '973766889447403'
     ],
 ];
-
-echo $this->render('/widgets/drop_resume', [
-    'username' => Yii::$app->user->identity->username,
-    'type' => 'company',
-    'slug' => $slug
-]);
 ?>
 <section class="rh-header">
     <div class="container">
@@ -56,7 +50,7 @@ echo $this->render('/widgets/drop_resume', [
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
-                <div><a href="<?= Url::to('/' . $slug); ?>" class="com-name"><?= ucwords($org_details['name']); ?></a>
+                <div class="com-name-set"><a href="<?= Url::to('/' . $slug); ?>" class="com-name"><?= ucwords($org_details['name']); ?></a>
                 </div>
                 <div class="com-rating-1">
                     <?php for ($i = 1; $i <= 5; $i++) { ?>
@@ -309,6 +303,15 @@ echo $this->render('/widgets/drop_resume', [
                     </div>
                 <?php } ?>
             </div>
+            <div class="col-md-12">
+                <div id="organizations-cards-main" class="row">
+                    <div class="heading-style">Similar Organizations</div>
+                    <div class="divider"></div>
+                    <div class="col-md-12">
+                        <div id="companies-card" class="row"></div>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-12 set-mar">
                 <?=
                 $this->render('/widgets/new-position', [
@@ -526,6 +529,9 @@ echo $this->render('/widgets/drop_resume', [
 <input type="hidden" name="hidden_city_location" class="hidden_city_location">
 </div>
 <?php
+echo $this->render('/widgets/mustache/companies-card', [
+    'hideDropResume' => true,
+]);
 echo $this->render('/widgets/mustache/application-card');
 
 if ($review_type == 'claimed') {
@@ -535,8 +541,13 @@ if ($review_type == 'claimed') {
     echo $this->render('/widgets/mustache/organization-unclaimed-reviews', [
     ]);
 }
-
+echo $this->render('/widgets/drop_resume', [
+    'username' => Yii::$app->user->identity->username,
+    'type' => 'company',
+    'slug' => $slug
+]);
 $this->registerCss('
+.footer{margin-top:0 !important;}
 .control-label{
     font-size:16px !important;
     font-family:roboto;
@@ -1261,7 +1272,8 @@ border: 2px solid #cadfe8 !important;
     }
 }
 
-@media only screen and (max-width: 767px){
+@media only screen and (max-width: 768px){
+    .com-name-set,.com-rating-1,.com-rate{text-align:left;}
     .rh-header{
         background-size:100% 520px;
         text-align:center;
@@ -1284,7 +1296,14 @@ border: 2px solid #cadfe8 !important;
         text-align: center;
         padding-top: 20px;
     }
+    .review-summary{
+        padding-left:0px;
+    }
     
+}
+@media only screen and (max-width: 767px){
+.com-name-set,.com-rating-1,.com-rate{text-align:center;}
+.share-btn{justify-content:center;}
 }
 .i-review-box *{
     font-family: "Roboto Slab";
@@ -1299,7 +1318,45 @@ border: 2px solid #cadfe8 !important;
 }
 ');
 $script = <<< JS
-
+function getCompanies(template=$("#companies-card")) {
+        let params = {};
+        params['page'] = 1;
+        $.ajax({
+            url:window.location.href,
+            method:"POST",
+            data:{'params':params},
+            dataType:'JSON',
+            success:function (response) {
+                if(response.status == 200){
+                    for (var i = 0; i < response.cards.length; i++) {
+                        response.cards[i]['jobs_cnt'] = 0;
+                        response.cards[i]['internships_cnt'] = 0;
+                        for(var j=0; j < response.cards[i]['employerApplications'].length; j++){
+                            if(response.cards[i]['employerApplications'][j]['name'] == 'Jobs'){
+                               response.cards[i]['jobs_cnt'] =  response.cards[i]['employerApplications'][j]['total_application'];
+                            }else if(response.cards[i]['employerApplications'][j]['name'] == 'Internships'){
+                               response.cards[i]['internships_cnt'] =  response.cards[i]['employerApplications'][j]['total_application'];
+                            }
+                        }
+                    }
+                    var get_companies = $('#companies-card-all').html();
+                    template.append(Mustache.render(get_companies, response.cards));
+                    $('[data-toggle="tooltip"]').tooltip();
+                    utilities.initials(); 
+                    $.fn.raty.defaults.path = '/assets/common/new_stars'; 
+                    $('.average-star').raty({
+                    readOnly: true, 
+                    hints:['','','','',''], 
+                    score: function() {
+                        return $(this).attr('data-score');
+                    }
+                });
+                } else{
+                    $('#organizations-cards-main').remove();
+                }
+            }
+        })
+    } 
 $(document).on("click", ".star-rating1 label", function(e){
     e.preventDefault();
     var id = "#" + $(this).attr("for");
@@ -1531,8 +1588,11 @@ document.getElementById("wr").addEventListener("click", function(e){
             popup.open();
         });
 }
+loader = false;
+addToReviewList();
 getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=$slug');
 getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=$slug');
+getCompanies();
 JS;
 $headScript = <<< JS
 function review_post_ajax(data) {
@@ -1565,6 +1625,8 @@ $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');
+$this->registerJsFile('@root/assets/vendor/raty-master/js/jquery.raty.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script id="review-cards" type="text/template">
 

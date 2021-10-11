@@ -49,7 +49,7 @@ class SendEmailModel extends Model
                 '(CASE
                 WHEN logo IS NULL OR logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=", REPLACE(initials_color, "#", ""), "&color=ffffff") ELSE
-                CONCAT("' . Yii::$app->params->empower_youth->url . Yii::$app->params->empower_youth->upload_directories->organizations->logo . '", logo_location, "/", logo) END
+                CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '", logo_location, "/", logo) END
                 ) organization_logo',
             ])->asArray()->one();
         } else {
@@ -60,7 +60,7 @@ class SendEmailModel extends Model
                 '(CASE
                 WHEN logo IS NULL OR logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=", REPLACE(initials_color, "#", ""), "&color=ffffff") ELSE
-                CONCAT("' . Yii::$app->params->empower_youth->url . Yii::$app->params->empower_youth->upload_directories->organizations->logo . '", logo_location, "/", logo) END
+                CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory .  Yii::$app->params->upload_directories->organizations->logo . '", logo_location, "/", logo) END
                 ) organization_logo',
             ])->asArray()->one();
         }
@@ -144,7 +144,7 @@ class SendEmailModel extends Model
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->onCondition(['c.is_deleted' => 0]);
                 $b->joinWith(['benefitEnc d'], false);
-                $b->select(['c.application_enc_id', 'c.benefit_enc_id']);
+                $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'd.benefit', 'd.icon', 'd.icon_location']);
             }])
             ->joinWith(['applicationInterviewQuestionnaires q' => function ($b) {
                 $b->onCondition(['q.is_deleted' => 0]);
@@ -164,7 +164,7 @@ class SendEmailModel extends Model
         $data['organization_logo'] = $org_details['organization_logo'];
 
         $this->subject = "Recommended Application";
-        $this->template = "job-detail-email";
+        $this->template = "job-invite-email";
 
         $utilitiesModel = new Utilities();
         $emailModel = new AppInviteEmailLogs();
@@ -192,8 +192,8 @@ class SendEmailModel extends Model
                     ['html' => $this->template],['data'=>$data]
                 )
                     ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
-                    ->setTo([$this->email => 'Nitesh Sharma'])
-                    ->setSubject('Congratulations! Your Application Has Been Received');
+                    ->setTo([$this->email])
+                    ->setSubject( $data['org_name'] . " has shortlisted you for " . $data['name']);
                 if (!$mail->send()) {
                     return [
                         'status' => 201,

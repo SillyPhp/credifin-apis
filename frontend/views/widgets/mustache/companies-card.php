@@ -1,13 +1,12 @@
 <?php
 
 use yii\helpers\Url;
-
 ?>
     <script id="companies-card-all" type="text/template">
         {{#.}}
         <div class="col-md-4 col-sm-6">
-            <div class="company-main">
-                <a href="{{profile_link}}" target="_blank">
+            <div class="company-main {{#is_org}}company-main-height{{/is_org}}">
+                <a href="/{{profile_link}}" target="_blank">
                     <div class="comp-featured">
                         {{#is_new}}
                         <span class="new-j" data-toggle="tooltip" title="New">
@@ -48,7 +47,7 @@ use yii\helpers\Url;
                             <img src="{{logo}}" class="do-image" data-name="{{name}}" data-width="110" data-height="110" data-color="{{color}}" data-font="45px">
                         </a>
                     </div>
-                    <h3 class="comp-Name"><a href="{{profile_link}}" target="_blank" title="{{{name}}}">{{{name}}}</a>
+                    <h3 class="comp-Name"><a href="/{{profile_link}}" target="_blank" title="{{{name}}}">{{{name}}}</a>
                     </h3>
                     <h3 class="comp-relate">{{business_activity}}</h3>
                     {{#rating}}
@@ -75,6 +74,7 @@ use yii\helpers\Url;
                         <a href="/jobs/list?slug={{slug}}" target="_blank"><span class="jobs">{{jobs_cnt}} Jobs</span></a>
                         <a href="/internships/list?slug={{slug}}" target="_blank"><span class="interns">{{internships_cnt}} Internships</span></a>
                     </div>
+                    {{#is_org}}
                     <div class="flw-rvw">
                         {{#login}}
                         {{#is_followed}}
@@ -90,21 +90,56 @@ use yii\helpers\Url;
                         <a href="javascript:;" data-toggle="modal" data-target="#loginModal">FOLLOW</a>
                         {{/login}}
                         <a href="/{{review_link}}" target="_blank">Review</a>
-                        <a href="javascript:;" class="fab-message-open" id="{{slug}}">DROP RESUME</a>
+                        <?php
+                            if(!$hideDropResume){
+                        ?>
+                            <a href="javascript:;" class="fab-message-open" id="{{slug}}">DROP RESUME</a>
+                        <?php
+                            }
+                        ?>
                     </div>
+                    {{/is_org}}
                 </a>
             </div>
         </div>
         {{/.}}
     </script>
 <?php
-
-echo $this->render('/widgets/drop_resume', [
-    'username' => Yii::$app->user->identity->username,
-    'type' => 'company',
-    'org_cards' => true
-]);
-
+if(!$hideDropResume) {
+    echo $this->render('/widgets/drop_resume', [
+        'username' => Yii::$app->user->identity->username,
+        'type' => 'company',
+        'org_cards' => true
+    ]);
+    $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_drop_resume.js');
+    $this->registerJsFile('/assets/themes/dropresume/main.js');
+    $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
+    $script2 = <<< JS
+        $(document).on('click', '.fab-message-open', function() {
+            var slug = $(this).attr('id');
+            var btn = $(this);
+            $.ajax({
+                type: 'POST',
+                url: '/drop-resume/check-resume',
+                data : {slug:slug},
+                beforeSend:function(){
+                     btn.html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+                    btn.attr("disabled","true");
+                },
+                success: function(response){
+                    btn.html('DROP RESUME');
+                    btn.attr("disabled", false);
+                    $('#dropcv').val(response.message);
+                },
+                complete: function() {
+                    $('#fab-message-open').trigger('click');
+                }
+            });
+            
+        });
+JS;
+    $this->registerJs($script2);
+}
 $this->registercss('
 .follow_btn
 {
@@ -127,7 +162,10 @@ $this->registercss('
 	margin:10px 0 20px;
 	padding: 30px 0px 10px;
 	transition:all .3s;
-	min-height: 390px !important;
+	min-height: 350px !important;
+}
+.company-main-height{
+    min-height: 390px !important;
 }
 .company-main:hover{
 //    transform:scale(1.01);
@@ -143,10 +181,10 @@ $this->registercss('
 	width: 110px;
 	height: 110px;
 	margin: auto;
-	border-radius: 60px;
+//	border-radius: 60px;
 	overflow: hidden;
-	border: 1px solid #eee;
-	box-shadow: 0 0 13px 4px #eee;
+//	border: 1px solid #eee;
+//	box-shadow: 0 0 13px 4px #eee;
 	line-height:104px;
 	margin-top:12px;
 }
@@ -288,32 +326,6 @@ $(document).on('click','.is_follow_up',function(e) {
         }
     }); 
 });
-$(document).on('click', '.fab-message-open', function() {
-    var slug = $(this).attr('id');
-    var btn = $(this);
-    console.log(btn);
-    $.ajax({
-        type: 'POST',
-        url: '/drop-resume/check-resume',
-        data : {slug:slug},
-        beforeSend:function(){
-             btn.html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
-            btn.attr("disabled","true");
-        },
-        success: function(response){
-            btn.html('DROP RESUME');
-            btn.attr("disabled", false);
-            $('#dropcv').val(response.message);
-        },
-        complete: function() {
-            $('#fab-message-open').trigger('click');
-        }
-    });
-    
-});
 JS;
 $this->registerJs($script);
-$this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_drop_resume.js');
-$this->registerJsFile('/assets/themes/dropresume/main.js');
-$this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 

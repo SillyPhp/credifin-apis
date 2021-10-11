@@ -108,8 +108,8 @@ class GovtJobsController extends ApiBaseController
                     if ($pos['MinimumRange']) {
                         $get[$i]['salary'] .= '$' . $pos['MinimumRange'];
                     }
-                    if($pos['RateIntervalCode']){
-                        $get[$i]['salary'] .= ' '.$pos['RateIntervalCode'];
+                    if ($pos['RateIntervalCode']) {
+                        $get[$i]['salary'] .= ' ' . $pos['RateIntervalCode'];
                     }
                 }
                 $data = UsaDepartments::find()
@@ -245,8 +245,8 @@ class GovtJobsController extends ApiBaseController
                 if ($pos['MinimumRange']) {
                     $get[$i]['salary'] .= '$' . $pos['MinimumRange'];
                 }
-                if($pos['RateIntervalCode']){
-                    $get[$i]['salary'] .= ' '.$pos['RateIntervalCode'];
+                if ($pos['RateIntervalCode']) {
+                    $get[$i]['salary'] .= ' ' . $pos['RateIntervalCode'];
                 }
             }
             $data = UsaDepartments::find()
@@ -266,6 +266,29 @@ class GovtJobsController extends ApiBaseController
             return $this->response(200, $get);
         } else {
             return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionUsDeptDetail()
+    {
+
+        $params = Yii::$app->request->post();
+        if (isset($params['slug']) && !empty($params['slug'])) {
+            $slug = $params['slug'];
+        } else {
+            return $this->response(422, 'missing information "slug"');
+        }
+
+        $d = UsaDepartments::find()
+            ->select(['Value', 'slug', 'total_applications', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE CONCAT("https://ui-avatars.com/api/?name=", value, "&size=200&rounded=false&background=random&color=ffffff") END logo'])
+            ->where(['slug' => $slug])
+            ->asArray()
+            ->one();
+
+        if ($d) {
+            return $this->response(200, $d);
+        } else {
+            return $this->response(404, 'Not Found');
         }
     }
 
@@ -354,6 +377,30 @@ class GovtJobsController extends ApiBaseController
         }
     }
 
+    public function actionInDeptDetail()
+    {
+        $params = Yii::$app->request->post();
+
+        if (isset($params['dept_id']) && !empty($params['dept_id'])) {
+            $dept_id = $params['dept_id'];
+        } else {
+            return $this->response(422, 'missing information "dept_id"');
+        }
+
+        $data = IndianGovtDepartments::find()
+            ->select(['dept_enc_id dept_id', 'Value', 'total_applications', 'slug', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE CONCAT("https://ui-avatars.com/api/?name=", value, "&size=200&rounded=false&background=random&color=ffffff") END logo'])
+            ->Where(['or', ['dept_enc_id' => $dept_id], ['slug' => $dept_id]])
+            ->asArray()
+            ->one();
+
+        if ($data) {
+            return $this->response(200, $data);
+        } else {
+            return $this->response(404, 'not found');
+        }
+
+    }
+
     public function actionInJobs()
     {
 
@@ -378,7 +425,7 @@ class GovtJobsController extends ApiBaseController
             ->alias('a')
             ->select(['a.job_id id', 'c.slug company_slug',
 //                'CASE WHEN a.image IS NOT NULL THEN CONCAT("https://eycdn.ams3.digitaloceanspaces.com/' . Yii::$app->params->upload_directories->indian_jobs->departments->image . '", a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.Position, "&size=200&rounded=false&background=random&color=ffffff") END logo',
-                'a.slug','a.image_location','a.image', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
+                'a.slug', 'a.image_location', 'a.image', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
             ->andWhere(['a.is_deleted' => 0])
             ->andFilterWhere([
                 'or',
@@ -403,7 +450,7 @@ class GovtJobsController extends ApiBaseController
                 }
                 if (!empty($d['image']) && !empty($d['image_location'])) {
                     $logo = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
-                    if(file_exists($logo)){
+                    if (file_exists($logo)) {
                         $data[$i]['logo'] = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
                     } else {
                         $data[$i]['logo'] = "https://ui-avatars.com/api/?name=" . $d['Position'] . "&size=200&rounded=false&background=random&color=ffffff";
@@ -447,7 +494,8 @@ class GovtJobsController extends ApiBaseController
                 'c.Value Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
             ->joinWith(['assignedIndianJobs b' => function ($b) use ($dept_id) {
                 $b->joinWith(['deptEnc c'], false);
-                $b->andWhere(['b.dept_enc_id' => $dept_id]);
+                $b->andWhere(['or', ['b.dept_enc_id' => $dept_id],
+                    ['c.slug' => $dept_id]]);
             }], false, 'LEFT JOIN')
             ->limit($limit)
             ->orderBy(['a.created_on' => SORT_DESC])
@@ -462,7 +510,7 @@ class GovtJobsController extends ApiBaseController
                 }
                 if (!empty($d['image']) && !empty($d['image_location'])) {
                     $logo = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
-                    if(file_exists($logo)){
+                    if (file_exists($logo)) {
                         $data[$i]['logo'] = "https://eycdn.ams3.digitaloceanspaces.com/" . Yii::$app->params->upload_directories->indian_jobs->departments->image . $d['image_location'] . DIRECTORY_SEPARATOR . $d['image'];
                     } else {
                         $data[$i]['logo'] = "https://ui-avatars.com/api/?name=" . $d['Position'] . "&size=200&rounded=false&background=random&color=ffffff";

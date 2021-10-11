@@ -26,6 +26,7 @@ class PreferredApplicationCards
         $dataProvider = $modelSearch->search(Yii::$app->request->queryParams);
         $dataProvider->query->andWhere(['z.is_deleted' => 0, 'a.name' => $type, 'e.assigned_to' => $type]);
         $dataProvider->query->andWhere(['z.application_for' => 1]);
+        $dataProvider->query->andWhere(['>=', 'z.last_date', date('Y-m-d')]);
         $dataProvider->query->select([
             'z.application_enc_id application_id', 'z.type',
             'n1.html_code',
@@ -49,6 +50,7 @@ class PreferredApplicationCards
                 ELSE "No Experience"
             END ELSE "" END) as experience', 'z.organization_enc_id', 'z.unclaimed_organization_enc_id',
             '(CASE WHEN d.name IS NOT NULL THEN d.name ELSE q.name END) as city',
+            'ap.application_enc_id as applied'
         ]);
         $dataProvider->query->addSelect(['DATE_FORMAT(z.created_on, "%d-%m-%Y") created_on']);
         if (isset($filters['job_titles'])) {

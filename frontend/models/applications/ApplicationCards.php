@@ -5,6 +5,7 @@ namespace frontend\models\applications;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationSkills;
 use common\models\ApplicationUnclaimOptions;
+use common\models\AppliedApplications;
 use common\models\BusinessActivities;
 use common\models\Countries;
 use common\models\Currencies;
@@ -42,9 +43,9 @@ class ApplicationCards
         return self::_getCardsFromJobs($options);
     }
 
-    public static function gitjobs($page=0,$keyword=null,$loc=null)
+    public static function gitjobs($page = 0, $keyword = null, $loc = null)
     {
-        return self::_gitjobs($page,$keyword,$loc);
+        return self::_gitjobs($page, $keyword, $loc);
     }
 
     public static function getPreference($type)
@@ -97,32 +98,40 @@ class ApplicationCards
             $locations = [];
             $profiles = [];
             $industries = [];
-            foreach ($p['userPreferredIndustries'] as $inds) {
-                array_push($industries, $inds['industry']);
+            if ($p['userPreferredIndustries']) {
+                foreach ($p['userPreferredIndustries'] as $inds) {
+                    array_push($industries, $inds['industry']);
+                }
             }
-            foreach ($p['userPreferredJobProfiles'] as $prof) {
-                array_push($profiles, $prof['name']);
+            if ($p['userPreferredJobProfiles']) {
+                foreach ($p['userPreferredJobProfiles'] as $prof) {
+                    array_push($profiles, $prof['name']);
+                }
             }
-            foreach ($p['userPreferredSkills'] as $s) {
-                array_push($skills, $s['skill']);
+            if ($p['userPreferredSkills']) {
+                foreach ($p['userPreferredSkills'] as $s) {
+                    array_push($skills, $s['skill']);
+                }
             }
-            foreach ($p['userPreferredLocations'] as $l) {
-                $loc = $l['city_name'] . ", " . $l['state_name'] . ", " . $l['country_name'];
-                array_push($locations, $loc);
+            if ($p['userPreferredLocations']) {
+                foreach ($p['userPreferredLocations'] as $l) {
+                    $loc = $l['city_name'] . ", " . $l['state_name'] . ", " . $l['country_name'];
+                    array_push($locations, $loc);
+                }
             }
             return [
                 'profiles' => array_unique($profiles),
                 'industries' => array_unique($industries),
                 'skills' => array_unique($skills),
                 'locations' => array_unique($locations),
-                'working_days' => $p['working_days'],
-                'experience' => $p['experience'],
-                'min_expected_salary' => $p['min_expected_salary'],
-                'max_expected_salary' => $p['max_expected_salary'],
-                'timings_from' => $p['timings_from'],
-                'timings_to' => $p['timings_to'],
-                'salary' => $p['salary'],
-                'work_type' => $p['type'],
+                'working_days' => isset($p['working_days']) ? $p['working_days'] : "",
+                'experience' => isset($p['experience']) ? $p['experience'] : "",
+                'min_expected_salary' => isset($p['min_expected_salary']) ? $p['min_expected_salary'] : "",
+                'max_expected_salary' => isset($p['max_expected_salary']) ? $p['max_expected_salary'] : "",
+                'timings_from' => isset($p['timings_from']) ? $p['timings_from'] : "",
+                'timings_to' => isset($p['timings_to']) ? $p['timings_to'] : "",
+                'salary' => isset($p['salary']) ? $p['salary'] : "",
+                'work_type' => isset($p['type']) ? $p['type'] : "",
             ];
         }
     }
@@ -145,13 +154,12 @@ class ApplicationCards
                         array_push($locations, $loc);
                     }
                 }
-                if ($userId) {
+                if ($userId && !Yii::$app->user->identity->organization->organization_enc_id) {
                     $resumeModel = new ResumeData();
                     $resumeData = $resumeModel->getResumeData($userId);
                     $job_preference = self::getPreference('Jobs');
-
                     if (!empty($job_preference) || !empty($resumeData)) {
-                        if (!empty($job_preference['locations'])) {
+                        if (!empty($job_preference['locations']) && $job_preference['locations']) {
                             foreach ($job_preference['locations'] as $loc) {
                                 $expLoc = explode(", ", $loc);
                                 foreach ($expLoc as $el) {
@@ -159,10 +167,10 @@ class ApplicationCards
                                 }
                             }
                         }
-                        if (!empty($resumeData['userSkills'])) {
+                        if (!empty($resumeData['userSkills']) && $resumeData['userSkills']) {
                             $resumeSkills = ArrayHelper::getColumn($resumeData['userSkills'], 'skill');
                         }
-                        if (!empty($resumeData['userWorkExperiences'])) {
+                        if (!empty($resumeData['userWorkExperiences']) && $resumeData['userWorkExperiences']) {
                             foreach ($resumeData['userWorkExperiences'] as $exp) {
                                 array_push($jobTitles, $exp['title']);
                                 array_push($locations, $exp['city'], $exp['state'], $exp['country']);
@@ -189,6 +197,9 @@ class ApplicationCards
                 if (!empty($options['location'])) {
                     $optLocation = $options['location'];
                 }
+                if (!empty($options['skills'])) {
+                    $skills = explode(',', $options['skills']);
+                }
         }
 
         if (isset($options['limit'])) {
@@ -204,7 +215,7 @@ class ApplicationCards
                 new Expression('NULL as sector'),
                 'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
                 'a.created_on created',
-                'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+                'xt.html_code', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/job/", a.slug) link',
                 'CONCAT("job/", a.slug) share_link',
                 'CONCAT("/", d.slug) organization_link',
@@ -236,7 +247,9 @@ class ApplicationCards
                 'm.wage_duration as salary_duration',
                 'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
-                '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
+                '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city',
+                'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ", ") skills',
+                'ap.application_enc_id as applied',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -256,9 +269,13 @@ class ApplicationCards
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+            ->leftJoin(ApplicationSkills::tableName() . 'as sy', 'sy.application_enc_id = a.application_enc_id')
+            ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
+            ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = sy.skill_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['a.application_for' => 1])
             //->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
+            ->groupBy(['a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
         $cards2 = (new \yii\db\Query())
@@ -272,7 +289,7 @@ class ApplicationCards
                END) as sector',
                 'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
                 'a.created_on created',
-                'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+                'xt.html_code', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 '(CASE
                 WHEN a.source = 3 THEN CONCAT("/job/muse/",a.slug,"/",a.unique_source_id)
                 WHEN a.source = 2 THEN CONCAT("/job/git-hub/",a.slug,"/",a.unique_source_id)
@@ -310,6 +327,8 @@ class ApplicationCards
                 WHEN g.name IS NULL THEN x.location_name
                 ELSE g.name
                END) as city',
+                'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ", ") skills',
+                'ap.application_enc_id as applied',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->leftJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -322,9 +341,13 @@ class ApplicationCards
             ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
+            ->leftJoin(ApplicationSkills::tableName() . 'as sy', 'sy.application_enc_id = a.application_enc_id')
+            ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
+            ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = sy.skill_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['a.application_for' => 1])
-           // ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
+            // ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
+            ->groupBy(['a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
 
@@ -340,7 +363,6 @@ class ApplicationCards
                 ['in', 'i.name', $profiles],
             ]);
         }
-
 
         if (isset($industries) && !empty($industries)) {
             $cards1->orWhere(['in', 'h.industry', $industries]);
@@ -438,13 +460,12 @@ class ApplicationCards
             ]);
         }
         if (isset($options['slug'])) {
-            $cards1->andWhere(['d.slug'=>$options['slug']]);
-            $cards2->andWhere(['d.slug'=>$options['slug']]);
+            $cards1->andWhere(['d.slug' => $options['slug']]);
+            $cards2->andWhere(['d.slug' => $options['slug']]);
         }
         if (isset($options['keyword'])) {
-             $search = trim($options['keyword'], " ");
-            if ($search == "remote" || $search == "work from home")
-            {
+            $search = trim($options['keyword'], " ");
+            if ($search == "remote" || $search == "work from home") {
                 $cards1->andFilterWhere([
                     'or',
                     ['like', 'a.type', $search],
@@ -455,8 +476,7 @@ class ApplicationCards
                     ['like', 'a.type', $search],
                     ['like', 'c.name', $search],
                 ]);
-            }
-            else{
+            } else {
                 $search_pattern = self::makeSQL_search_pattern($search);
                 $cards1->andFilterWhere([
                     'or',
@@ -577,6 +597,9 @@ class ApplicationCards
                 ->all();
         }
         $i = 0;
+        if(empty($result)){
+            return $result = [];
+        }
         foreach ($result as $val) {
             $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
             $currency = (($val['html_code']) ? $val['html_code'] : '₹ ');
@@ -622,9 +645,7 @@ class ApplicationCards
                         $result[$i]['salary'] = $currency . (string)($val['max_salary']) . ' p.a.';
                     }
                 }
-            }
-            else
-            {
+            } else {
                 $result[$i]['salary'] = null;
                 $result[$i]['sal'] = 1; //for api jobs where every thing for salary is blank
             }
@@ -655,6 +676,7 @@ class ApplicationCards
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("internship/", a.slug) share_link',
                 'CONCAT("/", d.slug) organization_link',
+                'a.slug application_slug',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -666,7 +688,8 @@ class ApplicationCards
                 'm.wage_duration as salary_duration',
                 'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
-                '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
+                '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city',
+                'ap.application_enc_id as applied',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -685,6 +708,7 @@ class ApplicationCards
             ->leftJoin(States::tableName() . 'as v', 'v.state_enc_id = x.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
+            ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['a.application_for' => 1])
@@ -697,10 +721,11 @@ class ApplicationCards
             ->select([
                 'DATE_FORMAT(a.created_on, "%d-%m-%Y") created_on',
                 'a.created_on created',
-                'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
+                'xt.html_code', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("internship/", a.slug) share_link',
                 'CONCAT("/internship/", a.slug) organization_link',
+                'a.slug application_slug',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -712,7 +737,8 @@ class ApplicationCards
                 'v.wage_duration as salary_duration',
                 'REPLACE(d.name, "&amp;", "&") as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
-                'g.name city'
+                'g.name city',
+                'ap.application_enc_id as applied',
             ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -725,6 +751,7 @@ class ApplicationCards
             ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
+            ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['a.application_for' => 1])
             ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
@@ -805,8 +832,8 @@ class ApplicationCards
             ]);
         }
         if (isset($options['slug'])) {
-            $cards1->andWhere(['d.slug'=>$options['slug']]);
-            $cards2->andWhere(['d.slug'=>$options['slug']]);
+            $cards1->andWhere(['d.slug' => $options['slug']]);
+            $cards2->andWhere(['d.slug' => $options['slug']]);
         }
         if (isset($options['keyword'])) {
             $options['keyword'] = trim($options['keyword'], " ");
@@ -1026,9 +1053,10 @@ class ApplicationCards
             ->all();
         return $result;
     }
+
     public static function makeSQL_search_pattern($search)
     {
-        if ($search==null||empty($search)){
+        if ($search == null || empty($search)) {
             return "";
         }
         $search_pattern = false;

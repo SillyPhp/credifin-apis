@@ -82,7 +82,7 @@ $intern_primary_cat = ArrayHelper::map($internprimaryfields, 'category_enc_id', 
                                 <div class="col-lg-12">
                                     <div class="pf-field no-margin">
                                         <ul class="tags skill_tag_list">
-                                            <?php if (!empty($juser_skills)) {
+                                            <?php if (!empty($juser_skills) && $juser_skills) {
                                                 foreach ($juser_skills as $skill) { ?>
                                                     <li class="addedTag"><?= $skill['skill'] ?><span
                                                                 onclick="$(this).parent().remove();"
@@ -98,9 +98,9 @@ $intern_primary_cat = ArrayHelper::map($internprimaryfields, 'category_enc_id', 
                                                     <?= $form->field($applicationpreferenceformModel, 'key_skills', ['template' => '{input}'])->textInput(['autocomplete' => 'off', 'placeholder' => $applicationpreferenceformModel->getAttributeLabel('Skills'), 'id' => 'search-skill', 'class' => "skill-input"])->label(false); ?>
 
                                                 </div>
-                                    </div>
                                     </li>
                                     </ul>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -970,12 +970,15 @@ $script = <<< JS
                 }
                 
                 var data = $(this).serialize();
-                
+                $('.save_job_preference').prop('disabled', true);
+                $('.save_job_preference').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
                 $.ajax({
                     url: "/account/preferences/index",
                     method: "POST",
                     data: data,
                     success: function (res) {
+                        $('.save_job_preference').prop('disabled', false);
+                        $('.save_job_preference').html('Submit');
                         if($("#candidatepreferenceform-weekoptsat").val() == null){
                             $("#candidatepreferenceform-weekoptsat").val('Always');    
                         }
@@ -984,9 +987,9 @@ $script = <<< JS
                         }
                         var response = JSON.parse(res);
                         if(response.status == 201){
-                            toastr.error(response.message, 'error');   
+                            toastr.error(response.message, 'An error has occurred.');   
                         }if(response.status == 200){
-                            toastr.success(response.message, 'success');
+                            toastr.success(response.message, 'Successfully Updated');
                         }
                     }
                 });
@@ -1001,11 +1004,15 @@ $script = <<< JS
                     $("#intern_weekoptsun").val('');    
                 }
                 var data = $(this).serialize();
+                $('.save_intern_preference').prop('disabled', true);
+                $('.save_intern_preference').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
                 $.ajax({
                     url: "/account/preferences/index",
                     method: "POST",
                     data: data,
                     success: function (res) {
+                        $('.save_intern_preference').prop('disabled', false);
+                        $('.save_intern_preference').html('Submit');
                         if($("#intern_weekoptsat").val() == null){
                             $("#intern_weekoptsat").val('Always');    
                         }
@@ -1014,9 +1021,9 @@ $script = <<< JS
                         }
                         var response = JSON.parse(res);
                         if(response.status == 201){
-                            toastr.error(response.message, 'error');   
+                            toastr.error(response.message, 'An error has occurred.');   
                         }if(response.status == 200){
-                            toastr.success(response.message, 'success');   
+                            toastr.success(response.message, 'Successfully Updated');   
                         }
                     }
                 });

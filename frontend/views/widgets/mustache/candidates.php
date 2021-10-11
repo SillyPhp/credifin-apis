@@ -1,6 +1,6 @@
 <script id="candidates" type="text/template">
     {{#.}}
-    <div class="col-lg-6 col-md-6 col-sm-6 p-category-main">
+    <div class="col-lg-4 col-md-6 col-sm-12 p-category-main">
         <div class="paid-candidate-container">
 <!--                        --><?php //if (Yii::$app->user->identity->organization) { ?>
 <!--                            <span class="shortlist-main" id="{{user_enc_id}}">-->
@@ -19,7 +19,7 @@
                 </div>
                 <div class="paid-candidate-box-extra">
                     <ul>
-                        <li class="skills-h">Skills :</li>
+                        <li class="skills-h"><i class="fas fa-pencil-ruler"></i></li>
                         {{#skills}}
                         {{{.}}}
                         {{/skills}}
@@ -27,10 +27,8 @@
                 </div>
                 <div class="paid-candidate-box-extra">
                     <ul>
-                        <li class="skills-h">Location :</li>
-                        {{#city_name}}
-                        {{{.}}}
-                        {{/city_name}}
+                        <li class="skills-h"><i class="fas fa-map-marker-alt"></i></li>
+                        <li style="font-weight: 400;">{{#city_name}} {{{.}}}{{/city_name}}</li>
                     </ul>
 <!--                    <div class="desination"><i class="fa fa-map-marker-alt"></i> {{city_name}}</div>-->
                 </div>
@@ -41,7 +39,12 @@
                     <a href="/{{username}}" class="btn btn-paid-candidate bt-1">View Detail</a>
                 </span>
                 <span class="short-btn">
-                    <a href="javascript:;" class="btn btn-paid-candidate bt-1 shortlist-main" id="{{user_enc_id}}">Shortlist</a>
+                    {{#is_shortlisted}}
+                    <a href="javascript:;" class="btn btn-paid-candidate bt-1 shortlist-main" id="{{user_enc_id}}" style="background: #0082b9; color: #fff">Shortlisted</a>
+                    {{/is_shortlisted}}
+                    {{^is_shortlisted}}
+                        <a href="javascript:;" class="btn btn-paid-candidate bt-1 shortlist-main" id="{{user_enc_id}}" style="background: #00a0e3; color: #fff">Shortlist</a>
+                    {{/is_shortlisted}}
                 </span>
                 <?php } else{ ?>
                 <span class="v-detail full-wi">

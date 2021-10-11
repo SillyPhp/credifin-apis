@@ -4,12 +4,17 @@ use yii\helpers\Url;
 Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var college_id = "' . $wid . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->prod->apiKey . '"', \yii\web\View::POS_HEAD);
-?> 
+?>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <section class="bg-blue">
         <div class="sign-up-details bg-white" id="sd">
-            <div class="row">
-                <div class="col-md-12">
+<!--            <div class="row">-->
+<!--                <div class="col-md-12">-->
+                    <div class="ey_partner_div">
+                        <img src="<?= Url::to($college_logo) ?>">
+                        <p>In Partnership With</p>
+                        <img src="<?= Url::to('@commonAssets/logos/logo.svg')?>">
+                    </div>
                     <div class="form-start">
                         <form action="" id="myForm">
                             <div class="tab" id="step1">
@@ -17,115 +22,114 @@ Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->
                                     <div class="col-md-12">
                                         <h1 class="heading-style">Education Loan</h1>
                                     </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label for="number" class="input-group-text">
-                                            Name of Applicant (Student Name)
-                                        </label>
-                                        <input type="text" class="form-control text-capitalize" id="applicant_name"
-                                               name="applicant_name" placeholder="Enter Full Name">
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="number" class="input-group-text">
+                                                Name of Applicant (Student Name)
+                                            </label>
+                                            <input type="text" class="form-control text-capitalize" id="applicant_name"
+                                                   name="applicant_name" placeholder="Enter Full Name">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label for="number" class="input-group-text">
-                                            Date Of Birth (mm/dd/yyyy)
-                                        </label>
-                                        <div class="input-group date" data-provide="datepicker" class="datepicker3">
-                                            <input type="text" class="form-control" name="dob" id="dob"
-                                                   placeholder="Date Of Birth">
-                                            <div class="input-group-addon">
-                                                <span class=""><i class="fas fa-calendar-alt"></i></span>
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="number" class="input-group-text">
+                                                Date Of Birth (mm/dd/yyyy)
+                                            </label>
+                                            <div class="input-group date" data-provide="datepicker" class="datepicker3">
+                                                <input type="text" class="form-control" name="dob" id="dob"
+                                                       placeholder="Date Of Birth">
+                                                <div class="input-group-addon">
+                                                    <span class=""><i class="fas fa-calendar-alt"></i></span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label class="input-group-text" for="inputGroupSelect02">
-                                            Current city where you live
-                                        </label>
-                                        <input type="text" name="location" id="location" class="form-control text-capitalize"
-                                               autocomplete="off" placeholder="City"/>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <div class="radio-heading input-group-text">
-                                            Which degree do you want to pursue
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label class="input-group-text" for="inputGroupSelect02">
+                                                Current city where you live
+                                            </label>
+                                            <input type="text" name="location" id="location" class="form-control text-capitalize"
+                                                   autocomplete="off" placeholder="City"/>
                                         </div>
-                                        <select class="form-control" name="degree" id="degree">
-                                            <option value="Diploma">Diploma</option>
-                                            <option value="Graduation">Graduation</option>
-                                            <option value="Post Graduation">Post Graduation</option>
-                                            <option value="Professional Course">Professional Course</option>
-                                            <option value="Others">Others</option>
-                                        </select>
                                     </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <div class="radio-heading input-group-text">
-                                            Select Course
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <div class="radio-heading input-group-text">
+                                                Which degree do you want to pursue
+                                            </div>
+                                            <select class="form-control" name="degree" id="degree">
+                                                <option value="Diploma">Diploma</option>
+                                                <option value="Graduation">Graduation</option>
+                                                <option value="Post Graduation">Post Graduation</option>
+                                                <option value="Professional Course">Professional Course</option>
+                                                <option value="Others">Others</option>
+                                            </select>
                                         </div>
-                                       <div id="the-basics">
-                                           <input type="text" id="course-list-college" placeholder="Enter Course Name" name="course-list-college" class="form-control text-capitalize typeahead">
-                                       </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6 padd-20">
-                                    <div class="form-group">
-                                        <div class="radio-heading input-group-text">
-                                            Year
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <div class="radio-heading input-group-text">
+                                                Select Course
+                                            </div>
+                                           <div id="the-basics">
+                                               <input type="text" id="course-list-college" placeholder="Enter Course Name" name="course-list-college" class="form-control text-capitalize typeahead">
+                                           </div>
                                         </div>
-                                        <select class="form-control" name="years" id="years">
-                                            <option value="1">1st Year</option>
-                                            <option value="2">2st Year</option>
-                                            <option value="3">3rd Year</option>
-                                            <option value="4">4th Year</option>
-                                            <option value="5">5th Year</option>
-                                        </select>
                                     </div>
-                                </div>
-                                <div class="col-md-6 padd-20">
-                                    <div class="form-group">
-                                        <div class="radio-heading input-group-text">
-                                            Semester
+                                    <div class="col-md-6 padd-20">
+                                        <div class="form-group">
+                                            <div class="radio-heading input-group-text">
+                                                Year
+                                            </div>
+                                            <select class="form-control" name="years" id="years">
+                                                <option value="1">1st Year</option>
+                                                <option value="2">2st Year</option>
+                                                <option value="3">3rd Year</option>
+                                                <option value="4">4th Year</option>
+                                                <option value="5">5th Year</option>
+                                            </select>
                                         </div>
-                                        <select class="form-control" value="semesters" id="semesters">
-                                            <option value="1">1st Semester</option>
-                                            <option value="2">2nd Semester</option>
-                                            <option value="3">3rd Semester</option>
-                                            <option value="4">4th Semester</option>
-                                            <option value="5">5th Semester</option>
-                                            <option value="6">6th Semester</option>
-                                            <option value="7">7th Semester</option>
-                                            <option value="8">8th Semester</option>
-                                            <option value="9">9th Semester</option>
-                                            <option value="10">10th Semester</option>
-                                        </select>
                                     </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label for="number" class="input-group-text">
-                                            Phone Number (WhatsApp & Call)
-                                        </label>
-                                        <input type="text" class="form-control" id="mobile" name="mobile"
-                                               placeholder="Enter Phone Number">
+                                    <div class="col-md-6 padd-20">
+                                        <div class="form-group">
+                                            <div class="radio-heading input-group-text">
+                                                Semester
+                                            </div>
+                                            <select class="form-control" value="semesters" id="semesters">
+                                                <option value="1">1st Semester</option>
+                                                <option value="2">2nd Semester</option>
+                                                <option value="3">3rd Semester</option>
+                                                <option value="4">4th Semester</option>
+                                                <option value="5">5th Semester</option>
+                                                <option value="6">6th Semester</option>
+                                                <option value="7">7th Semester</option>
+                                                <option value="8">8th Semester</option>
+                                                <option value="9">9th Semester</option>
+                                                <option value="10">10th Semester</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label for="email" class="input-group-text">
-                                            Email Address
-                                        </label>
-                                        <input type="text" class="form-control" id="email" name="email"
-                                               placeholder="Enter Email Address">
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="number" class="input-group-text">
+                                                Phone Number (WhatsApp & Call)
+                                            </label>
+                                            <input type="text" class="form-control" id="mobile" name="mobile"
+                                                   placeholder="Enter Phone Number">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="email" class="input-group-text">
+                                                Email Address
+                                            </label>
+                                            <input type="text" class="form-control" id="email" name="email"
+                                                   placeholder="Enter Email Address">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 padd-20">
                                     <div class="input-group padd-20">
                                         <div class="btn-center">
                                             <button type="button" class="button-slide" id="nextBtn">
@@ -134,180 +138,184 @@ Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->
                                         </div>
                                     </div>
                                 </div>
+                                </div>
                             </div>
                             <div class="tab" id="step2">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <h1 class="heading-style">Additional Details</h1>
                                     </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group ">
-                                        <div class="radio-heading input-group-text">
-                                            Gender
-                                        </div>
-                                        <ul class="displayInline">
-                                            <li>
-                                                <label class="container-radio">Male
-                                                    <input type="radio" checked="checked" name="genderRadio" value="1">
-                                                    <span class="checkmark"></span>
-                                                </label>
-                                            </li>
-                                            <li>
-                                                <label class="container-radio">Female
-                                                    <input type="radio" name="genderRadio" value="2">
-                                                    <span class="checkmark"></span>
-                                                </label>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label for="annulIncome" class="input-group-text">
-                                            Loan Amount Required
-                                        </label>
-                                        <input type="text" class="form-control" id="loanamount" name="loanamount"
-                                               placeholder="Enter Loan Amount">
-                                    </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label for="aadhaarnumber" class="input-group-text">
-                                            Aadhaar Card Number
-                                        </label>
-                                        <input type="text" class="form-control" id="aadhaarnumber" name="aadhaarnumber"
-                                               placeholder="Enter 12 digits Aadhaar Card Number">
-                                    </div>
-                                </div>
-                                <div id="loan_purpose_div">
                                     <div class="col-md-12 padd-20">
-                                        <div class="form-group">
+                                        <div class="form-group ">
                                             <div class="radio-heading input-group-text">
-                                                Purpose Of Loan (You Can Select Multiple)
+                                                Gender
                                             </div>
-                                            <ul id="loan-purpose">
-
+                                            <ul class="displayInline">
+                                                <li>
+                                                    <label class="container-radio">Male
+                                                        <input type="radio" checked="checked" name="genderRadio" value="1">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
+                                                <li>
+                                                    <label class="container-radio">Female
+                                                        <input type="radio" name="genderRadio" value="2">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </li>
                                             </ul>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
-                                    <div id="addAnotherCo">
-                                        <div class="coapplicant">
-                                            <div class="col-md-12 padd-20 display-flex"><span class="input-group-text">Borrower's Details</span>
-                                            </div>
-                                            <div class="col-md-12 padd-20">
-                                                <div class="form-group">
-                                                    <label for="co-name[]" class="input-group-text">
-                                                        Name
-                                                    </label>
-                                                    <input type="text" name="co-name[1]" class="form-control text-capitalize"
-                                                           id="co-name" placeholder="Enter Full Name">
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="annulIncome" class="input-group-text">
+                                                Loan Amount Required
+                                            </label>
+                                            <input type="text" class="form-control" id="loanamount" name="loanamount"
+                                                   placeholder="Enter Loan Amount">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 padd-20">
+                                        <div class="form-group">
+                                            <label for="aadhaarnumber" class="input-group-text">
+                                                Aadhaar Card Number
+                                            </label>
+                                            <input type="text" class="form-control" id="aadhaarnumber" name="aadhaarnumber"
+                                                   placeholder="Enter 12 digits Aadhaar Card Number">
+                                        </div>
+                                    </div>
+                                    <div id="loan_purpose_div">
+                                        <div class="col-md-12 padd-20">
+                                            <div class="form-group">
+                                                <div class="radio-heading input-group-text">
+                                                    Purpose Of Loan (You Can Select Multiple)
                                                 </div>
-                                            </div>
-                                            <div class="col-md-12 padd-20">
-                                                <div class="form-group">
-                                                    <div class="radio-heading input-group-text">
-                                                        Relation
-                                                    </div>
-                                                    <ul id="co-relation-ul-1">
-                                                        <li class="service-list">
-                                                            <input type="radio" value="Father" checked="checked"
-                                                                   name="co-relation[1]" id="co-father-1"
-                                                                   class="checkbox-input services">
-                                                            <label for="co-father-1">Father</label>
-                                                        </li>
-                                                        <li class="service-list">
-                                                            <input type="radio" value="Mother" name="co-relation[1]"
-                                                                   id="co-mother-1" class="checkbox-input services">
-                                                            <label for="co-mother-1">Mother</label>
-                                                        </li>
-                                                        <li class="service-list">
-                                                            <input type="radio" value="Brother" name="co-relation[1]"
-                                                                   id="co-brother-1" class="checkbox-input services">
-                                                            <label for="co-brother-1">Brother</label>
-                                                        </li>
-                                                        <li class="service-list">
-                                                            <input type="radio" value="Sister" name="co-relation[1]"
-                                                                   id="co-sister-1" class="checkbox-input services">
-                                                            <label for="co-sister-1">Sister</label>
-                                                        </li>
-                                                        <li class="service-list">
-                                                            <input type="radio" value="Guardian" name="co-relation[1]"
-                                                                   id="co-guardian-1" class="checkbox-input services">
-                                                            <label for="co-guardian-1">Guardian</label>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12 padd-20">
-                                                <div class="form-group">
-                                                    <div class="radio-heading input-group-text">
-                                                        Employment type ?
-                                                    </div>
-                                                    <ul class="displayInline">
-                                                        <li>
-                                                            <label class="container-radio">Salaried
-                                                                <input type="radio" value="1" checked="checked"
-                                                                       name="co-emptype[1]">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label class="container-radio">Self-Employed
-                                                                <input type="radio" value="2" name="co-emptype[1]">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </li>
-                                                        <li>
-                                                            <label class="container-radio">Non-Working
-                                                                <input type="radio" value="0" name="co-emptype[1]">
-                                                                <span class="checkmark"></span>
-                                                            </label>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12 padd-20">
-                                                <div class="form-group">
-                                                    <label for="co-anualincome" class="input-group-text">
-                                                        Annual Income
-                                                    </label>
-                                                    <input type="text" name="co-anualincome[1]" class="form-control"
-                                                           id="co-anualincome" placeholder="Enter Annual Income">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12 padd-20">
-                                                <div class="form-group">
-                                                    <label for="co-pancard" class="input-group-text">
-                                                        Pan Card Number
-                                                    </label>
-                                                    <input type="text" name="co-pancard[1]" class="form-control"
-                                                           id="co-pancard" placeholder="Enter 10 Digit Pan Card Number">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12 padd-20">
-                                                <div class="form-group">
-                                                    <label for="coaadhaarnumber" class="input-group-text">
-                                                        Aadhaar Number
-                                                    </label>
-                                                    <input type="text" name="co-aadhaarnumber[1]" class="form-control"
-                                                           id="coaadhaarnumber"
-                                                           placeholder="Enter 12 Digit Aadhaar Number">
-                                                </div>
+                                                <ul id="loan-purpose">
+
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-12 padd-20 displayFlex" id="addAnotherButton">
-                                        <button type="button" class="addAnotherCo input-group-text"
-                                                onclick="addAnotherCo(value = randomVal())"><i
-                                                    class="fas fa-plus-square"></i> Add Another Co-Borrower (You Can Add
-                                            Multiple If You Want)
-                                        </button>
+                                    <div class="col-md-12 padd-20">
+                                        <div id="addAnotherCo">
+                                            <div class="coapplicant">
+                                                <div class="col-md-12 padd-20 display-flex"><span class="input-group-text">Borrower's Details</span>
+                                                </div>
+                                                <div class="col-md-12 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="co-name[]" class="input-group-text">
+                                                            Name
+                                                        </label>
+                                                        <input type="text" name="co-name[1]" class="form-control text-capitalize"
+                                                               id="co-name" placeholder="Enter Full Name">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 padd-20">
+                                                    <div class="form-group">
+                                                        <div class="radio-heading input-group-text">
+                                                            Relation
+                                                        </div>
+                                                        <ul id="co-relation-ul-1">
+                                                            <li class="service-list">
+                                                                <input type="radio" value="Father" checked="checked"
+                                                                       name="co-relation[1]" id="co-father-1"
+                                                                       class="checkbox-input services">
+                                                                <label for="co-father-1">Father</label>
+                                                            </li>
+                                                            <li class="service-list">
+                                                                <input type="radio" value="Mother" name="co-relation[1]"
+                                                                       id="co-mother-1" class="checkbox-input services">
+                                                                <label for="co-mother-1">Mother</label>
+                                                            </li>
+                                                            <li class="service-list">
+                                                                <input type="radio" value="Brother" name="co-relation[1]"
+                                                                       id="co-brother-1" class="checkbox-input services">
+                                                                <label for="co-brother-1">Brother</label>
+                                                            </li>
+                                                            <li class="service-list">
+                                                                <input type="radio" value="Sister" name="co-relation[1]"
+                                                                       id="co-sister-1" class="checkbox-input services">
+                                                                <label for="co-sister-1">Sister</label>
+                                                            </li>
+                                                            <li class="service-list">
+                                                                <input type="radio" value="Guardian" name="co-relation[1]"
+                                                                       id="co-guardian-1" class="checkbox-input services">
+                                                                <label for="co-guardian-1">Guardian</label>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 padd-20">
+                                                    <div class="form-group">
+                                                        <div class="radio-heading input-group-text">
+                                                            Employment type ?
+                                                        </div>
+                                                        <ul class="displayInline">
+                                                            <li>
+                                                                <label class="container-radio">Salaried
+                                                                    <input type="radio" value="1" checked="checked"
+                                                                           name="co-emptype[1]">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label class="container-radio">Self-Employed
+                                                                    <input type="radio" value="2" name="co-emptype[1]">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                            <li>
+                                                                <label class="container-radio">Non-Working
+                                                                    <input type="radio" value="0" name="co-emptype[1]">
+                                                                    <span class="checkmark"></span>
+                                                                </label>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="co-anualincome" class="input-group-text">
+                                                            Annual Income
+                                                        </label>
+                                                        <input type="text" name="co-anualincome[1]" class="form-control"
+                                                               id="co-anualincome" placeholder="Enter Annual Income">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="co-pancard" class="input-group-text">
+                                                            Pan Card Number
+                                                        </label>
+                                                        <input type="text" name="co-pancard[1]" class="form-control"
+                                                               id="co-pancard" placeholder="Enter 10 Digit Pan Card Number">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-12 padd-20">
+                                                    <div class="form-group">
+                                                        <label for="coaadhaarnumber" class="input-group-text">
+                                                            Aadhaar Number
+                                                        </label>
+                                                        <input type="text" name="co-aadhaarnumber[1]" class="form-control"
+                                                               id="coaadhaarnumber"
+                                                               placeholder="Enter 12 Digit Aadhaar Number">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 padd-20 displayFlex" id="addAnotherButton">
+                                            <button type="button" class="addAnotherCo input-group-text"
+                                                    onclick="addAnotherCo(value = randomVal())"><i
+                                                        class="fas fa-plus-square"></i> Add Another Co-Borrower (You Can Add
+                                                Multiple If You Want)
+                                            </button>
+                                        </div>
+                                        <div class="col-md-12 padd-20">
+                                            <p class="termsText">By clicking submit you agree to our
+                                                <a href="<?= Url::to('/education-loans/terms-and-conditions')?>">terms and conditions</a> </p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
+                                    <div class="col-md-12 padd-20">
                                     <div class="input-group padd-20">
                                         <div class="btn-center">
                                             <button type="button" class="button-slide" id="prevBtn">
@@ -322,17 +330,18 @@ Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->
                                         </div>
                                     </div>
                                 </div>
+                                </div>
                             </div>
                         </form>
                     </div>
-                </div>
-            </div>
+<!--                </div>-->
+<!--            </div>-->
         </div>
         <div class="college-logo" id="cl">
             <div class="row">
                 <div class="col-md-12">
                     <div class="el-pos-rel">
-                        <div class="max-300">
+                        <div class="righDivDetails">
                             <div class="cl-heading">Get the Best Education Loan</div>
                             <ul class="loan-benefits">
                                 <li>- <span>No Security</span> Loans upto 2 Lakhs.</li>
@@ -342,8 +351,32 @@ Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->
                                 <li>- Loan will be <span>repaid</span> with in the semester</li>
                             </ul>
                             <div class="cl-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/edu-loan-icon.png') ?>"
-                                     alt="">
+                               <div class="row">
+                                   <div class="col-md-3">
+                                        <div class="widget-benfit">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-minimal-paper-work.png') ?>">
+                                            <p>Minimal Paper Work</p>
+                                        </div>
+                                   </div>
+                                   <div class="col-md-3">
+                                       <div class="widget-benfit">
+                                           <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-faster-processing-time.png') ?>">
+                                           <p>Faster Processing Time</p>
+                                       </div>
+                                   </div>
+                                   <div class="col-md-3">
+                                       <div class="widget-benfit">
+                                           <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-approval-in-minutes.png') ?>">
+                                           <p>Approval In Minutes</p>
+                                       </div>
+                                   </div>
+                                   <div class="col-md-3">
+                                       <div class="widget-benfit">
+                                           <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-quick-disbursement.png') ?>">
+                                           <p>Quick Disbursement</p>
+                                       </div>
+                                   </div>
+                               </div>
                             </div>
                         </div>
                     </div>
@@ -354,18 +387,89 @@ Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->
 <?php
 $this->registerCss('
 #loadBtn{
-display:none;
+    display:none;
+}
+.termsText{
+    font-size: 12px;
+    font-family: roboto;
+    text-align: center;
+}
+.termsText a{
+    color: #00a0e3;
 }
 
+.termsText a:hover{
+    color: #ff7803;
+    transition: .3s ease;
+}
+.righDivDetails{
+    text-align: left;
+    max-width: 550px;
+    margin: auto;
+}
+.heading-style {
+    font-family: lobster;
+    font-size: 23pt;
+    text-align: left;
+    margin: 0px 5px 20px;
+}
+.heading-style:before {
+    content: "";
+    position: absolute;
+    width: 0;
+    top: -5px;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 5px 52px;
+    border-color: #f07706;
+    /* margin-bottom: 11px; */
+    padding: 0px;
+    margin: 0px;
+    line-height: 0;
+}
+.ey_partner_div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 35px;
+    background: #fafafa;
+    padding: 10px 10px
+}
+.ey_partner_div img{
+    max-width: 100px;
+    max-height: 50px;
+    margin: 0px 15px;
+}
+.ey_partner_div p{
+    margin: 10px 0;
+}
+.widget-benfit{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 30px;
+}
+.widget-benfit img{
+    max-width: 60px;
+    margin-bottom: 10px;
+}
+.widget-benfit p{
+    color: #fff;
+    font-size: 16px;
+    line-height: 20px;
+    
+} 
 .padd-20{
-    padding-bottom: 20px;
+    padding-bottom: 5px;
 }
 .loan-benefits{
     padding-inline-start: 0px;
 }
 .loan-benefits li{
     color:#f3f3f2;
-    font-size: 16px;    
+    font-size: 16px;   
+    margin-bottom: 5px; 
 }
 .loan-benefits{
     list-style:none
@@ -374,9 +478,9 @@ display:none;
     font-weight: bold;
     color:#fff;
 }
-button{
-border: 1px solid #ddd !important;
-}
+//button{ 
+//border: 1px solid #ddd !important;
+//}
 #countryName{
     display: none;
 }
@@ -420,13 +524,15 @@ border: 1px solid #ddd !important;
     display:inline-block;
     padding-right:20px;
 }
-.cl-icon img{
-    margin-top: 30px;
-    max-height: 300px;
-}
 .form-start{
-    max-width:400px;
+    max-width:420px;
     margin: 0 auto;
+    padding: 0 15px;
+}
+.form-control{
+    box-shadow: none;
+    height: 37px;
+    border: 1px solid #ccc;
 }
 .custom-select:active{
     border:none;
@@ -446,7 +552,7 @@ border: 1px solid #ddd !important;
     -moz-transition: .3s all;
     -webkit-transition: .3s all;
     transition: .3s all;
-    color: #222;
+    color: #00a0e3;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
     margin-left: 5px;
     background: #fff;
@@ -455,20 +561,23 @@ border: 1px solid #ddd !important;
 .btn-center button:hover{
     background-color: #00a0e3;
     color: #fff;
+   transition: .3s all; 
 }
 .max-300{
     max-width:350px;
     margin:0 auto;
 }
 .sign-up-details {
-    padding: 60px 25px 0 25px;
+    padding: 0px 0px 0 0px;
     background: linear-gradient(to bottom, #e9f5f5 0%, #fefefe 100%);
     min-height: 100%;
     width:50vw;
     position:absolute;
     min-height:100vh;
 }
-#loan_purpose_div{display:none}
+#loan_purpose_div{
+    display:none
+}
 .college-logo {
     margin-left:50vw;
     padding:60px 25px 0 25px;
@@ -477,7 +586,9 @@ border: 1px solid #ddd !important;
     width:50vw;
     min-height:100vh;
     position:fixed;
-    background:#00a0e3;
+    background-color: #045de9;
+    background-image: linear-gradient(315deg, #045de9 0%, #09c6f9 74%);
+//    background:#00a0e3;
 }
 @media only screen and (max-width: 500px){
     .sign-up-details{
@@ -514,8 +625,9 @@ border: 1px solid #ddd !important;
 }
 .cl-heading{
     color:#fff;
-    font-size:20px;
+    font-size:30px;
     padding-top:30px;
+    margin-bottom: 10px;
     font-weight:bold;
 }
 .footer{
@@ -528,16 +640,17 @@ border: 1px solid #ddd !important;
 //    background:#00a0e3;
 //}
 .input-group-text{
-    font-weight: bold;
-    font-family: lora;
+     font-weight: 500;
+    font-family: roboto;
     color: #000;
-    font-size: 15px;
+    font-size: 14px;
+    padding-bottom: 3px;
 }
 .head-padding{
     padding-top:50px;
 }
 .radio-heading{
-    padding-bottom:10px;
+//    padding-bottom:10px;
 }
 form label {
     font-family: lora, sans-serif;
@@ -699,6 +812,12 @@ color:#e65332;
     font-family: auto !important;
 }
 @media screen and (max-width: 500px){
+    .ey_partner_div{
+        flex-direction: column;
+    }
+    .ey_partner_div p {
+        margin: 10px 0;
+    }
     .bg-blue{
         display:flex;
         flex-direction: column;
@@ -707,7 +826,6 @@ color:#e65332;
         position: relative;
         width: 100vw;
         min-height: unset;
-        order:2;
         padding-bottom: 30px;
     }
     .college-logo{
@@ -716,7 +834,6 @@ color:#e65332;
         margin-left: 0px;
         min-height: unset;
         height: auto !important;
-        order: 1;
         padding-top: 50px; 
     }
     .cl-heading{
@@ -733,6 +850,9 @@ color:#e65332;
     }
     .loan-benefits{
         padding-inline-start: 0px;
+    }
+    .form-start{
+        max-width: 100vw;
     }
 }
 
@@ -1170,7 +1290,7 @@ function _razoPay(ptoken,loan_id,education_loan_id){
     var options = {
     "key": access_key, 
     "name": "Empower Youth",
-    "description": "Application Processing Fee",
+    "description": "Application Login Fee",
     "image": "/assets/common/logos/logo.svg",
     "order_id": ptoken,
     "handler": function (response){

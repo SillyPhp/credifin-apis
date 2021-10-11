@@ -4,23 +4,60 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
+
+$this->title = 'Study in Australia';
+$keywords = 'Study in Australia | Empower Youth';
+$description = 'Do not let financial burden stop you from fulfilling your desire to study in your dream college.';
+$image = Url::to('@eyAssets/images/pages/education-loans/study-in-australia.png', 'https');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
-<section class="study-in-usa-bg">
-    <div class="opacity-div"></div>
+
+<section class="study-in-aus-bg">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <h1>
-                    <span class="typewrite" data-period="2000"
-                          data-type='["Study In AUSTRALIA.", "Education Loan.", "Easy Apply.", "Easy EMIs To Pay.", "Less Paperwork." ]'>
+            <div class="col-md-7 col-sm-7">
+                <div class="australia-text">
+                    <h1>
+                        <span class="typewrite" data-period="2000"
+                              data-type='["Study In AUSTRALIA.", "Education Loan.", "Easy Apply.", "Easy EMIs To Pay.", "Less Paperwork." ]'>
                         <span class="wrap"></span>
-                    </span>
-                </h1>
-                <p>Don't let financial burden stop you from fulfilling <br> your desire to study in your dream college.</p>
-                <ul>
-                    <li><a href="#contact" class="apply-now btn-orange">Reach Us</a></li>
-                    <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
-                </ul>
+                        </span>
+                    </h1>
+                    <p>Don't let <span class="bold-fontt">financial burden stop you</span> from fulfilling <br>
+                        your desire to <span class="bold-fontt">study in your dream college<span class="bold-fontt">.</p>
+                    <ul>
+                        <li><a href="#contact" class="apply-now btn-orange">Reach Us</a></li>
+                        <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-5 col-sm-5">
+                <div class="australia-vector">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/australia-img.png')?>" alt="">
+                </div>
             </div>
         </div>
     </div>
@@ -88,8 +125,17 @@ use borales\extensions\phoneInput\PhoneInput;
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
 <?= $this->render('/widgets/education-loan-faqs');?>
+<?php
+if($blogs['blogs']){
+    echo $this->render('/widgets/education-loan/blogs',[
+        'blogs' => $blogs,
+        'param' => 'study-in-australia'
+    ]);
+};
+?>
 <?= $this->render('/widgets/loan-form-detail',[
-    'model' => $model
+    'model' => $model,
+    'param' => 'Study in Australia'
 ]); ?>
 <?= $this->render('/widgets/press-releasee',[
     'data' => $data,
@@ -98,6 +144,73 @@ use borales\extensions\phoneInput\PhoneInput;
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+/* study in australia header css */
+
+.bold-fontt {
+    font-weight: bold;
+}
+.study-in-aus-bg {
+    background: url(' . Url::to('@eyAssets/images/pages/education-loans/roadmaps.png') . ') top right, url(' . Url::to('@eyAssets/images/pages/education-loans/circles.png') . ') 70% 70%, linear-gradient(90deg, #D9FFFE -2.4%, #FFFFFF 61.98%);
+	background-repeat: no-repeat;
+    background-size: 50%, 20%;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    text-align: left;
+    height: 90vh;
+    max-height: 700px;
+}
+.australia-text {
+    margin-top: 60px;
+}
+.australia-text h1{
+    font-size: 45px;
+	margin-bottom: 20px;
+	color: #FF7803;
+	font-weight: 700;
+	font-family: roboto;
+}
+.australia-text p{
+    font-size: 24px;
+	font-family: roboto;
+	color: #000;
+	padding: 0 0 18px;
+	line-height: 30px;
+}
+.australia-text ul li{
+    display: inline;
+    margin-right: 10px;
+}
+.apply-now{
+    padding: 10px 15px;
+	background: #00A0E3;
+	color: #fff;
+	border: 1px solid #00A0E3;
+	box-shadow: 0 5px 10px rgba(0,0,0,.3);
+	font-size: 16px;
+	font-family: roboto;
+	border-radius: 4px;
+	display: inline-block;
+	width: 150px;
+	text-align: center;
+}
+.btn-orange{
+    background: #ff7803 !important;
+    border: 1px solid #ff7803 !important;
+}
+.apply-now:hover{
+    background: #ff7803; 
+    color: #fff;
+    border: 1px solid #ff7803;
+    transition: .3s ease;
+}
+.btn-orange:hover{
+    background: #00a0e3 !important;
+    border: 1px solid #00a0e3 !important;
+}
+/* css ends */
+
 .studyus-head {
     padding: 30px;
 }
@@ -147,44 +260,10 @@ $this->registerCss('
     border-radius: 10px;
     padding: 15px;
 }
-.le-img {
-    box-shadow: 0 1px 11px 0px #d4cdcd;
-}
 #typed{
     font-size: 25px;
     color: #fff;
 }
-.study-in-usa-bg ul li{
-    display: inline;
-    margin-right: 10px;
-}
-.apply-now{
-    padding: 10px 15px;
-	background: #00A0E3;
-	color: #fff;
-	border: 1px solid #00A0E3;
-	box-shadow: 0 5px 10px rgba(0,0,0,.3);
-	font-size: 16px;
-	font-family: roboto;
-	border-radius: 4px;
-	display: inline-block;
-	width: 150px;
-}
-.btn-orange{
-    background: #ff7803 !important;
-    border: 1px solid #ff7803 !important;
-}
-.apply-now:hover{
-    background: #ff7803; 
-    color: #fff;
-    border: 1px solid #ff7803;
-    transition: .3s ease;
-}
-.btn-orange:hover{
-    background: #00a0e3 !important;
-    border: 1px solid #00a0e3 !important;
-}
-
 .padd-15{
     padding: 0 15px;
 }
@@ -222,40 +301,6 @@ $this->registerCss('
 .cus-number a:hover{
     box-shadow: 0 0 10px rgba(0,0,0,.3);
     transition: .3s ease;
-}
-.study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/australia-hdr.png') . ');
-	min-height: 500px;
-	background-repeat: no-repeat;
-	background-size: cover;
-	display: flex;
-	align-items: center;
-	position: relative;
-	text-align: center;
-	height: 100vh;
-	max-height: 700px;
-}
-.opacity-div{
-    position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0,0,0,.4);
-}
-.study-in-usa-bg p{
-    font-size: 24px;
-	font-family: roboto;
-	color: #fff;
-	padding: 0 0 18px;
-	line-height: 30px;
-}
-.study-in-usa-bg h1{
-    font-size: 45px;
-	margin-bottom: 20px;
-	color: #FF7803;
-	font-weight: 700;
-	font-family: roboto;
 }
 .footer{
     margin-top: 0px !important;
@@ -555,6 +600,102 @@ label {
         margin-right:1%;
     }
 }
+@media only screen and (max-width: 1024px) and (min-width:992px){
+    .study-in-aus-bg {
+        background: url(' . Url::to('@eyAssets/images/pages/education-loans/roadmaps.png') . ') top right, url(' . Url::to('@eyAssets/images/pages/education-loans/circles.png') . ') 70% 65%, linear-gradient(90deg, #D9FFFE -2.4%, #FFFFFF 61.98%);
+        background-repeat: no-repeat;
+        background-size: 50%, 20%;
+        height: 85vh;
+    }
+    .australia-text {
+        margin-top: 0px;
+    }
+}
+
+@media only screen and (max-width: 991px) and (min-width:768px){
+    .study-in-aus-bg {
+        background: url(' . Url::to('@eyAssets/images/pages/education-loans/roadmaps.png') . ') top right, url(' . Url::to('@eyAssets/images/pages/education-loans/circles.png') . ') 72% 65%, linear-gradient(90deg, #D9FFFE -2.4%, #FFFFFF 61.98%);
+        background-repeat: no-repeat;
+        background-size: 50%, 20%;
+        height: 85vh;
+    }
+    .australia-text {
+        margin-top: 0px;
+    }
+    .australia-text h1 {
+        font-size: 28px;
+    }
+    .australia-text p {
+        font-size: 18px;
+        line-height: 26px;
+    }
+    .apply-now {
+        font-size: 14px;
+        width: 130px;
+    }
+}
+
+@media only screen and (max-width: 767px) and (min-width:454px){
+    .study-in-aus-bg {
+        background: url(/assets/themes/ey/images/pages/education-loans/roadmaps.png) top right, linear-gradient(90deg, #D9FFFE -2.4%, #FFFFFF 61.98%);
+        background-repeat: no-repeat;
+        background-size: 50%;
+        height: 100vh;
+    }
+    .australia-text {
+        margin-top: 60px;
+        text-align: center;
+    }
+    .australia-text h1 {
+        font-size: 32px;
+    }
+    .australia-text p {
+        font-size: 20px;
+        line-height: 28px;
+    }
+    .apply-now {
+        font-size: 14px;
+        width: 130px;
+    }
+    .australia-vector {
+        text-align: center;
+    }
+    .australia-vector img {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+@media only screen and (max-width: 453px) and (min-width:320px){
+    .study-in-aus-bg {
+        background: url(/assets/themes/ey/images/pages/education-loans/roadmaps.png) top right, linear-gradient(90deg, #D9FFFE -2.4%, #FFFFFF 61.98%);
+        background-repeat: no-repeat;
+        background-size: 50%;
+        height: 100vh;
+    }
+    .australia-text {
+        margin-top: 60px;
+        text-align: center;
+    }
+    .australia-text h1 {
+        font-size: 32px;
+    }
+    .australia-text p {
+        font-size: 18px;
+        line-height: 25px;
+    }
+    .apply-now {
+        font-size: 14px;
+        width: 130px;
+    }
+    .australia-vector {
+        text-align: center;
+    }
+    .australia-vector img {
+        width: 100%;
+        max-width: 270px;
+    }
+}
+
 ');
 $script = <<<JS
 setTimeout(function (){

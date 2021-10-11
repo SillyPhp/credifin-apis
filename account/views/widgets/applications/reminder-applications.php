@@ -1,8 +1,8 @@
 <?php
 
+use kartik\widgets\DatePicker;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
-use kartik\widgets\DatePicker;
 use yii\widgets\Pjax;
 
 $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Awaiting response', 'I need to respond', 'No initial response yet', 'Not Interested'];
@@ -19,7 +19,7 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
         </div>
         <div class="descrip">
             A Gentle reminder about your upcoming interviews and current applications of jobs/internships.
-            Keep a track of all your scheduled  job/internships.
+            Keep a track of all your scheduled job/internships.
         </div>
         <div class="portlet-body">
             <div class="add-reminder">
@@ -134,13 +134,12 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
                                     <span id="remove-reminder" class="closed" data-id="<?= $app['reminder_enc_id']; ?>">&times;</span>
                                 </div>
                             </div>
-                            <div class="userdata">
-                                <div id="<?= $app['reminder_enc_id']; ?>" class="collapse">
-                                    <a href="javascript:;" data-href="<?= $app['link']; ?>" target="_blank"class="open-link-new-tab"><?= $app['link']; ?> </a><span class="g"></span>
-                                    <textarea class="boxx" id="descriptionField" data-key="description"
-                                              data-id="<?= $app['reminder_enc_id']; ?>" rows="5" cols="70"
-                                              placeholder="Write notes here"><?= $app['description']; ?></textarea>
-                                </div>
+                            <div id="<?= $app['reminder_enc_id']; ?>" class="collapse userdata">
+                                <a href="javascript:;" data-href="<?= $app['link']; ?>" target="_blank"
+                                   class="open-link-new-tab"><?= $app['link']; ?> </a><span class="g"></span>
+                                <textarea class="boxx" id="descriptionField" data-key="description"
+                                          data-id="<?= $app['reminder_enc_id']; ?>" rows="5" cols="70"
+                                          placeholder="Write notes here"><?= $app['description']; ?></textarea>
                             </div>
                         </div>
                     </div>
@@ -158,7 +157,7 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
                         <div class="reminderbox">
                             <div class="innerpart">
                                 <a type="button" data-toggle="collapse"
-                                   data-target="#demo">
+                                   data-target="#demo-reminder">
                                 <span class="review-list-toggler" href="#">
                                     <i class="fa fa-chevron-right"></i>
                                 </span>
@@ -191,11 +190,10 @@ $status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Await
                                 </div>
                             </div>
                         </div>
-                        <div class="userdata">
-                            <div id="demo" class="collapse">
-                                <a href="#" target="_blank">https://www.applied-job-url.com </a><span class="g"></span>
-                                <textarea class="boxx" id="descriptionField" rows="5" cols="70" placeholder="Write notes here">Description here.</textarea>
-                            </div>
+                        <div id="demo-reminder" class="collapse userdata">
+                            <a href="#" target="_blank">https://www.applied-job-url.com </a><span class="g"></span>
+                            <textarea class="boxx" id="descriptionField" rows="5" cols="70"
+                                      placeholder="Write notes here">Description here.</textarea>
                         </div>
                     </div>
                 </div>
@@ -223,20 +221,21 @@ $this->registerCss("
 .review-list-toggler {
 	position: absolute;
 	display: block;
-	top: 4px;
+	top: 7px;
 	left: 20px;
 	pointer-events: all;
 	line-height: 36px;
 	transform: rotate(-0deg);
+    transition: all .3s;
 }
 .innerpart1 {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-wrap: wrap;
-	flex-basis: 42%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    flex-basis: 35%;
 }
-.innerpart a[aria-expanded='true'] span{transform: rotate(-270deg);}
+.innerpart a[aria-expanded='true'] span{transform: rotate(90deg);}
 .review-list-toggler i{
     display: block;
     line-height: 33px;
@@ -264,12 +263,14 @@ $this->registerCss("
     font-weight:300;
 }
 .reminderbox {
-	width: 95%;
-	padding: 10px 5px;
-	margin: 0 auto;
-	display: flex;
-	border-bottom: 1px solid #adadad;
-	align-items: center;
+    width: 95%;
+    padding: 10px 5px;
+    margin: 0 auto;
+    display: flex;
+    border-bottom: 1px solid #adadad;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 .reminderbox a{
     color:black;
@@ -284,7 +285,7 @@ $this->registerCss("
 }
 .applied-platfrom{
     font-size:15px;
-    padding:0px 40px;
+    padding:0px 5px;
 }
 .applied-platfrom span{
     font-weight:bold;
@@ -297,7 +298,7 @@ $this->registerCss("
     display:inline-block;
 }
 .salarybox, .listing{
-    flex-basis: 40%;
+    flex-basis: 30%;
     text-align: center;
 }
 .salarybox1 {
@@ -318,13 +319,14 @@ $this->registerCss("
 	border-bottom: 1px solid #333;
 } 
  .userdata {
-    width: 90%;
-    padding: 15px 90px;
+    width: 99%;
+    padding: 15px;
 }
   .boxx{     
     display: inline-block;
     color: #888;
     width: 100%;
+    max-width: 857px;
     font-size: 16px;
     line-height: 1.2;
     margin-top: 10px;

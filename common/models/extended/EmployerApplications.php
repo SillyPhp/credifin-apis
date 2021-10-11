@@ -93,14 +93,13 @@ class EmployerApplications extends \common\models\EmployerApplications
                         return false;
                     }
                 }
-
                 $rowEducationReq1 = ApplicationEducationalRequirements::findAll(['application_enc_id' => $id]);
-                if (!empty($rowEducationReq) && count($rowEducationReq) > 0) {
+                if (!empty($rowEducationReq1) && count($rowEducationReq1) > 0) {
                     foreach ($rowEducationReq1 as $educationalRequirements) {
-                        $rowEducationReq2 = new EducationalRequirements();
+                        $rowEducationReq2 = new ApplicationEducationalRequirements();
                         $rowEducationReq2->attributes = $educationalRequirements->attributes;
                         $rowEducationReq2->id = Null;
-                        $rowEducationReq2->educational_requirement_enc_id = Yii::$app->security->generateRandomString(12);;
+                        $rowEducationReq2->application_educational_requirement_enc_id = Yii::$app->security->generateRandomString(12);;
                         $rowEducationReq2->application_enc_id = $row2->application_enc_id;
                         $rowEducationReq2->isNewRecord = true;
                         if (!$rowEducationReq2->save()) {
@@ -108,7 +107,6 @@ class EmployerApplications extends \common\models\EmployerApplications
                         }
                     }
                 }
-
                 $rowInterviewLocation1 = ApplicationInterviewLocations::findAll(['application_enc_id' => $id]);
                 if (!empty($rowInterviewLocation1) && count($rowInterviewLocation1) > 0) {
                     foreach ($rowInterviewLocation1 as $interviewLocations) {

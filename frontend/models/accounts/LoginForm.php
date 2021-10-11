@@ -18,6 +18,7 @@ class LoginForm extends Model
 
     public $username;
     public $password;
+    public $referer;
     public $rememberMe = true;
     public $user_type = NULL;
     private $_user = false;
@@ -36,6 +37,8 @@ class LoginForm extends Model
         return [
             // username and password are both required
             [['username', 'password'], 'required'],
+            [['referer'], 'safe'],
+            ['referer', 'string'],
             [['username'], 'string', 'length' => [3, 50]],
             [['password'], 'string', 'length' => [8, 20]],
             [['username'], 'match', 'pattern' => '/^[a-zA-Z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],

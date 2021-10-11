@@ -27,14 +27,25 @@ use yii\helpers\Url;
 <section>
     <div class="container">
         <div class="row">
+            <?php if ($webinars){ ?>
             <?= $this->render('/widgets/mentorships/webinar-card', [
                 'webinars' => $webinars,
             ]) ?>
+            <?php }else { ?>
+            <span class="empty_text">More Webinars Will Be Available Soon.. Stay Tuned !!!</span>
+            <?php  } ?>
         </div>
     </div>
 </section>
 <?php
 $this->registerCss('
+.empty_text{
+font-size:36px;
+	font-family: lora;
+	margin: 0;
+	text-transform: capitalize;
+	font-weight:600;
+}
 .mentee-heading{
     font-size:30px;
     font-family: lora;

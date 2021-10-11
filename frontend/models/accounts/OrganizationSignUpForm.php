@@ -12,14 +12,15 @@ use common\models\UserTypes;
 use common\models\Users;
 use common\models\Usernames;
 use common\models\Organizations;
-use borales\extensions\phoneInput\PhoneInputValidator;
-use borales\extensions\phoneInput\PhoneInputBehavior;
+//use borales\extensions\phoneInput\PhoneInputValidator;
+//use borales\extensions\phoneInput\PhoneInputBehavior;
 
 class OrganizationSignUpForm extends Model
 {
 
     public $username;
     public $email;
+    public $referer;
     public $new_password;
     public $confirm_password;
     public $first_name;
@@ -33,15 +34,15 @@ class OrganizationSignUpForm extends Model
     public $user_type;
     private $_flag = false;
 
-    public function behaviors()
-    {
-        return [
-            [
-                'class' => PhoneInputBehavior::className(),
-                'countryCodeAttribute' => 'countryCode',
-            ],
-        ];
-    }
+//    public function behaviors()
+//    {
+//        return [
+//            [
+//                'class' => PhoneInputBehavior::className(),
+//                'countryCodeAttribute' => 'countryCode',
+//            ],
+//        ];
+//    }
 
     public function formName()
     {
@@ -54,6 +55,8 @@ class OrganizationSignUpForm extends Model
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_name', 'organization_email', 'organization_phone'], 'required'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'trim'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
+            [['referer'], 'safe'],
+            ['referer', 'string'],
             [['organization_name'], 'string', 'max' => 100],
             [['username'], 'string', 'length' => [3, 20]],
             [['email', 'organization_email'], 'string', 'max' => 50],
@@ -64,7 +67,7 @@ class OrganizationSignUpForm extends Model
             [['username'], 'match', 'pattern' => '/^([A-Za-z]+[0-9]|[0-9]+[A-Za-z]|[a-zA-Z])[A-Za-z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             [['email', 'organization_email'], 'email'],
             [['organization_website'], 'url', 'defaultScheme' => 'http'],
-            [['phone', 'organization_phone'], PhoneInputValidator::className()],
+//            [['phone', 'organization_phone'], PhoneInputValidator::className()],
             [['confirm_password'], 'compare', 'compareAttribute' => 'new_password'],
             ['email', 'unique', 'targetClass' => Users::className(), 'message' => 'This email address has already been used.'],
             ['organization_email', 'unique', 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_email' => 'email'], 'message' => 'This email address has already been used.'],

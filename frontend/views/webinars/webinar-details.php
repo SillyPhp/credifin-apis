@@ -1,31 +1,21 @@
 <?php
+
 use common\models\Users;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 $cookies_request = Yii::$app->request->cookies;
 $refcode = $cookies_request->get('ref_csrf-webinar');
 $promo = false;
 $promo = \frontend\models\referral\PromoCodes::getVarify($refcode);
-if (Yii::$app->params->paymentGateways->mec->icici) {
-    $configuration = Yii::$app->params->paymentGateways->mec->icici;
-    if ($configuration->mode === "production") {
-        $access_key = $configuration->credentials->production->access_key;
-        $secret_key = $configuration->credentials->production->secret_key;
-        $url = $configuration->credentials->production->url;
-    } else {
-        $access_key = $configuration->credentials->sandbox->access_key;
-        $secret_key = $configuration->credentials->sandbox->secret_key;
-        $url = $configuration->credentials->sandbox->url;
-    }
-}
 $time = date('Y/m/d H:i:s', strtotime($nextEvent['start_datetime']));
 $registeration_status = $webResig['status'];
 $interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
 $this->title = $webinar['title'];
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/webinar-sharing-promote.png');
+$image = $webinar['image'];
 $keywords = $webinar['title'];
-$description = $webinar['description'];
+$description = 'Present-day education is radically different from that of the past. The youth are unaware of and oblivious to the importance of recognizing and embracing these changes. They are also utterly lost on their career path and have no idea where their career is taking them.';
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
@@ -52,16 +42,17 @@ $this->params['seo_tags'] = [
 ];
 Yii::$app->view->registerJs('var webinar_id = "' . $webinar['webinar_enc_id'] . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var user_id = "' . Yii::$app->user->identity->user_enc_id . '"', \yii\web\View::POS_HEAD);
-Yii::$app->view->registerJs('var access_key = "' . $access_key . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->prod->apiKey . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var registeration_status = "' . $registeration_status . '"', \yii\web\View::POS_HEAD);
 ?>
-<script id="context" type="text/javascript" src="https://payments.open.money/layer"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <section>
     <div class="full-width-light"
          style="">
         <div class="title-main">
+            <img src="<?= $webinar['image'] ?>" class="absolute">
             <div class="element-percent">
                 <h1><?= $webinar['title'] ?></h1>
                 <div class="register-btn" id="registerEventSection">
@@ -83,13 +74,13 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                             <?php
                         } else {
                             if ((int)$webinar['price']) {
-                                if ($promo){ ?>
+                                if ($promo) { ?>
                                     <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
-                               <?php } else { ?>
+                                <?php } else { ?>
                                     <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>
-                                 <?php }
-                                  ?>
-                             <?php
+                                <?php }
+                                ?>
+                                <?php
                             } else {
                                 ?>
                                 <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
@@ -120,12 +111,17 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                                 <?php if (Yii::$app->user->isGuest) { ?>
                                     <a id="joinBtn" href="javascript:;" data-toggle="modal" data-target="#loginModal">Click
                                         here to Join</a>
-                                <?php } else { ?>
-                                    <a id="joinBtn"
-                                       href="javascript:;" data-link="<?= $share_link ?>"
-                                       data-id="<?= $nextEvent['session_enc_id'] ?>">Click
-                                        here to Join</a>
-                                <?php } ?>
+                                <?php } else {
+                                    if ($webinar['webinar_conduct_on'] == 1) { ?>
+                                        <a id="joinOtherBtn" href="<?= $webinar_link ?>" target="_blank">Click
+                                            here to Join</a>
+                                    <?php } else { ?>
+                                        <a id="joinBtn"
+                                           href="javascript:;" data-link="<?= $share_link ?>"
+                                           data-id="<?= $nextEvent['session_enc_id'] ?>">Click
+                                            here to Join</a>
+                                    <?php }
+                                } ?>
                             </div>
                             <div id="counter">
                                 <div class="counter-item">
@@ -163,12 +159,19 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     <div class="webinar-details">
         <div class="container">
             <div class="row">
-                <div class="">
-                    <div class="col-md-12 mx-auto">
-                        <h2 class="section-title">
-                            Webinar Details
-                        </h2>
-                    </div>
+                <div class="detail-flex">
+                    <h2 class="section-title">
+                        Webinar Details
+                    </h2>
+                    <?php if ($webinar['webinar_conduct_on'] == 1 && $webinar_link) { ?>
+                        <div class="copy-join-link jj-clipboard" data-link="<?= $webinar_link ?>">
+                            <i class="fab fa-chromecast"></i>
+                            <div class="link-descriptions">
+                                <span>Joining link</span><br/>
+                                <a class="copy-clip" title="Copy Link" ><?= $webinar_link ?></a>
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
             <div class="row">
@@ -248,133 +251,9 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
             </div>
         </div>
     </div>
-</section>
-<!-- sharing widget start -->
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <?php
-            $sharingLink = Url::base('https') . '/webinar/' . $webinar['slug'];
-            echo $this->render('/widgets/sharing-widget-webinar', [
-                'sharingLink' => $sharingLink
-            ]) ?>
-        </div>
-    </div>
-</div>
-<!-- sharing widget end -->
-<!-- problem widget start -->
-<section class="cntct">
-    <div class="container">
-        <div class="row">
-            <div class="contact-req">
-                <h3>if you are facing any problem during registration call us on :</h3>
-                <a href="tel:9501771965">+919501771965</a>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- problem widget end -->
-<!-- ts speaker start-->
-<section id="ts-speakers" class="ts-speakers speaker-classic">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 mx-auto">
-                <h2 class="section-title text-center">
-                    <span>Listen to the</span>
-                    Event Speakers
-                </h2>
-            </div><!-- col end-->
-        </div><!-- row end-->
-        <div class="row">
-            <?php if (!empty($assignSpeaker)) {
-            foreach ($assignSpeaker
 
-            as $as) {
-            $designation = ucwords($designation);
-            ?>
-            <div class="col-lg-3 col-md-6">
-                <div class="ts-speaker open-sp-modal">
-                    <div class="speaker-img">
-                        <?php if ($as['speaker_image']) { ?>
-                            <img class="img-fluid" src="<?= $as['speaker_image'] ?>">
-                        <?php } else { ?>
-                            <img class="img-fluid" src="<?= $as['speaker_image_fake'] ?>">
-                        <?php } ?>
-                        <a href="#<?= $as['speaker_enc_id'] ?>" class="view-speaker ts-image-popup"
-                           data-effect="mfp-zoom-in">
-                            <i class="fas fa-plus"></i>
-                        </a>
-                    </div>
-                    <div class="ts-speaker-info">
-                        <h3 class="ts-title"><a href="#"><?= $as['fullname'] ?></a></h3>
-                        <p>
-                            <?php if ($designation) { ?>
-                                <?= $designation ?>
-                            <?php } ?>
-                        </p>
-                    </div>
-                </div>
-                <!-- popup start-->
-                <div id="<?= $as['speaker_enc_id'] ?>" class="container ts-speaker-popup mfp-hide">
-                    <div class="row">
-                        <div class="speaker-flex">
-                            <?php
-                            if ($as['speaker_image']) {
-                                $image = $as['speaker_image'];
-                            } else {
-                                $image = $as['speaker_image_fake'];
-                            }
-                            ?>
-                            <div class="speak-img" style="background-image: url('<?= $image; ?>');">
-
-                            </div><!-- col end-->
-                            <div class="speak-cntnt">
-                                <div class="ts-speaker-popup-content">
-                                    <h3 class="ts-title"><?= $as['fullname'] ?></h3>
-                                    <?php if ($designation) { ?>
-                                        <span class="speakder-designation"><?= $designation ?></span>
-                                    <?php }
-                                    if ($as['org_image']) {
-                                        ?>
-                                        <img class="company-logo"
-                                             src="<?= $as['org_image'] ?>">
-                                    <?php }
-                                    if ($as['org_name']) { ?>
-                                        <span class="speakder-designation"><?= $as['org_name'] ?></span>
-                                    <?php }
-                                    if ($as['description']) {
-                                        ?>
-                                        <p>
-                                            <?= $as['description'] ?>
-                                        </p>
-                                    <?php } ?>
-                                    <div class="ts-speakers-social">
-                                        <?php if ($as['facebook']) { ?><a
-                                            href="https://www.facebook.com/<?= $as['facebook'] ?>" target="_blank"><i
-                                                        class="fab fa-facebook-f"></i></a><?php } ?>
-                                        <?php if ($as['twitter']) { ?><a
-                                            href="https://twitter.com/<?= $as['twitter'] ?>"
-                                            target="_blank"><i class="fab fa-twitter"></i>
-                                            </a><?php } ?>
-                                        <?php if ($as['instagram']) { ?><a
-                                            href="https://www.instagram.com/<?= $as['instagram'] ?>" target="_blank"><i
-                                                        class="fab fa-instagram"></i></a><?php } ?>
-                                        <?php if ($as['linkedin']) { ?><a
-                                            href="https://www.linkedin.com/in/<?= $as['linkedin'] ?>" target="_blank"><i
-                                                        class="fab fa-linkedin-in"></i></a><?php } ?>
-                                    </div>
-                                </div><!-- ts-speaker-popup-content end-->
-                            </div><!-- col end-->
-                        </div>
-                    </div><!-- row end-->
-                </div><!-- popup end-->
-            </div>
-            <?php }
-            } ?><!-- col end-->
-        </div><!-- row end-->
-    </div><!-- container end-->
 </section>
-<!-- ts speaker end-->
+
 <!-- Schedules event section start here -->
 <section class="ts-schedule">
     <div class="container">
@@ -468,6 +347,135 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     </div><!-- container end-->
 </section>
 <!-- Schedules event section end here -->
+
+
+<!-- sharing widget start -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <?php
+            $sharingLink = Url::base('https') . '/webinar/' . $webinar['slug'];
+            echo $this->render('/widgets/sharing-widget-webinar', [
+                'sharingLink' => $sharingLink
+            ]) ?>
+        </div>
+    </div>
+</div>
+<!-- sharing widget end -->
+<!-- problem widget start -->
+<section class="cntct">
+    <div class="container">
+        <div class="row">
+            <div class="contact-req">
+                <h3>if you are facing any problem during registration call us on :</h3>
+                <a href="tel:+917009076638">+917009076638</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- problem widget end -->
+<!-- ts speaker start-->
+<section id="ts-speakers" class="ts-speakers speaker-classic">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 mx-auto">
+                <h2 class="section-title text-center">
+                    <span>Listen to the</span>
+                    Event Speakers
+                </h2>
+            </div><!-- col end-->
+        </div><!-- row end-->
+        <div class="row d-flex">
+            <?php if (!empty($assignSpeaker)) {
+            foreach ($assignSpeaker
+
+            as $as) {
+            $designation = ucwords($designation);
+            ?>
+            <div class="col-lg-3 col-md-6">
+                <div class="ts-speaker open-sp-modal">
+                    <div class="speaker-img">
+                        <?php if ($as['speaker_image']) { ?>
+                            <img class="img-fluid" src="<?= $as['speaker_image'] ?>">
+                        <?php } else { ?>
+                            <img class="img-fluid" src="<?= $as['speaker_image_fake'] ?>">
+                        <?php } ?>
+                        <a href="#<?= $as['speaker_enc_id'] ?>" class="view-speaker ts-image-popup"
+                           data-effect="mfp-zoom-in">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                    </div>
+                    <div class="ts-speaker-info">
+                        <h3 class="ts-title"><a href="#"><?= $as['fullname'] ?></a></h3>
+                        <p>
+                            <?php if ($designation) { ?>
+                                <?= $designation ?>
+                            <?php } ?>
+                        </p>
+                    </div>
+                </div>
+                <!-- popup start-->
+                <div id="<?= $as['speaker_enc_id'] ?>" class="container ts-speaker-popup mfp-hide">
+                    <div class="row">
+                        <div class="speaker-flex">
+                            <?php
+                            if ($as['speaker_image']) {
+                                $image = $as['speaker_image'];
+                            } else {
+                                $image = $as['speaker_image_fake'];
+                            }
+                            ?>
+                            <div class="speak-img" style="background-image: url('<?= $image; ?>');">
+
+                            </div><!-- col end-->
+                            <div class="speak-cntnt">
+                                <div class="ts-speaker-popup-content">
+                                    <h3 class="ts-title"><?= $as['fullname'] ?></h3>
+                                    <?php if ($designation) { ?>
+                                        <span class="speakder-designation"><?= $designation ?></span>
+                                    <?php }
+                                    if ($as['org_image']) {
+                                        ?>
+                                        <img class="company-logo"
+                                             src="<?= $as['org_image'] ?>">
+                                    <?php }
+                                    if ($as['org_name']) { ?>
+                                        <span class="speakder-designation"><?= $as['org_name'] ?></span>
+                                    <?php }
+                                    if ($as['description']) {
+                                        ?>
+                                        <p>
+                                            <?= $as['description'] ?>
+                                        </p>
+                                    <?php } ?>
+                                    <div class="ts-speakers-social">
+                                        <?php if ($as['facebook']) { ?><a
+                                            href="https://www.facebook.com/<?= $as['facebook'] ?>" target="_blank"><i
+                                                        class="fab fa-facebook-f"></i></a><?php } ?>
+                                        <?php if ($as['twitter']) { ?><a
+                                            href="https://twitter.com/<?= $as['twitter'] ?>"
+                                            target="_blank"><i class="fab fa-twitter"></i>
+                                            </a><?php } ?>
+                                        <?php if ($as['instagram']) { ?><a
+                                            href="https://www.instagram.com/<?= $as['instagram'] ?>" target="_blank"><i
+                                                        class="fab fa-instagram"></i></a><?php } ?>
+                                        <?php if ($as['linkedin']) { ?><a
+                                            href="https://www.linkedin.com/in/<?= $as['linkedin'] ?>" target="_blank"><i
+                                                        class="fab fa-linkedin-in"></i></a><?php } ?>
+                                    </div>
+                                </div><!-- ts-speaker-popup-content end-->
+                            </div><!-- col end-->
+                        </div>
+                    </div><!-- row end-->
+                </div><!-- popup end-->
+            </div>
+            <?php }
+            } ?><!-- col end-->
+        </div><!-- row end-->
+    </div><!-- container end-->
+</section>
+<!-- ts speaker end-->
+
 <!-- ts intro start -->
 <?php if (!empty($outComes)) { ?>
     <section class="ts-intro-outcome">
@@ -489,14 +497,12 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                     $color_code = '#' . $oc['bg_colour'];
                     $reduceColor = createPalette($color_code, $colorCount = 1);
                     ?>
-                    <div class="ts-single-outcome"
-                         style="background-image: linear-gradient(110deg,<?= $color_code ?> 15%,<?= $reduceColor[0] ?> 95%)">
+                    <div class="ts-single-outcome">
                         <?php } else {
                         $color_code = '#000';
                         $reduceColor = createPalette($color_code, $colorCount = 1);
                         ?>
-                        <div class="ts-single-outcome"
-                             style="background: linear-gradient(110deg,<?= $color_code ?> 15%,<?= $reduceColor[0] ?> 95%)">
+                        <div class="ts-single-outcome">
                             <?php } ?>
                             <?php if ($oc['icon']) { ?>
                                 <div class="out-img">
@@ -516,78 +522,6 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     </section>
 <?php } ?>
 <!-- ts intro end-->
-<!-- ts VC start-->
-<section>
-    <?php Pjax::begin(['id' => 'webinar_join_registations']); ?>
-    <div class="container-fluid">
-        <div class="row md-flex">
-            <div class="col-md-6 ts-book-seat">
-                <div class="book-seat-content text-center mb-100">
-                    <h3 class="section-title white">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/edupreneur_village.png') ?>"/><br>
-                        Edupreneur Village Challenge 2.0<br/><br/>
-                    </h3>
-                    <ul class="section-list">
-                        <li>For EdTech startups at an ideation / Validation stage</li>
-                        <li>Investment upto 25 lacs, Cash Prizes and Incubation Support</li>
-                        <li>Partnership with the Auro Scholar Programme of Sri Aurobindo Society</li>
-                        <li>Scholarship available for top 5 startups for Education Entrepreneurship Certification
-                            Program
-                        </li>
-                    </ul>
-                    <div class="text-center us-marg" v-if="userType === 'Individual'">
-                        <?php
-                        if ($user_id) {
-                            if ($registeration_status != 1) {
-                                ?>
-                                <button class="vc-ra-btn" id="joinRegisterBtn">Join Webinar to learn more</button>
-                                <?php
-                            }
-                            ?>
-                            <?php
-                        } else {
-                            ?>
-                            <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn">
-                                Join Webinar to learn more
-                            </button>
-                            <?php
-                        }
-                        ?>
-                    </div>
-                </div><!-- book seat end-->
-            </div><!-- col end-->
-            <div class="col-md-6 ts-book-seat second">
-                <div class="book-seat-content text-center mb-100">
-                    <h3 class="section-title white">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/red_bull_logo.png') ?>"/> <br>
-                        Red Bull Basement is where students come to innovate, collaborate, and drive change on campus
-                        through DIY-based technological solutions.
-                    </h3>
-                    <div class="text-center">
-                        <?php
-                        if ($user_id) {
-                            if ($registeration_status != 1) {
-                                ?>
-                                <button class="vc-ra-btn" id="joinRegisterBtn">Join Webinar to learn more</button>
-                                <?php
-                            }
-                            ?>
-                            <?php
-                        } else {
-                            ?>
-                            <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn">
-                                Join Webinar to learn more
-                            </button>
-                            <?php
-                        }
-                        ?>
-                    </div>
-                </div><!-- book seat end-->
-            </div><!-- col end-->
-        </div><!-- row end-->
-    </div><!-- container end-->
-    <?php Pjax::end(); ?>
-</section>
 
 <?php
 function color_mod($hex, $diff)
@@ -633,6 +567,52 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+span.copy-clip {
+    color: #8b8b8b !important;
+    font-size: 14px !important;
+}
+.detail-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding:0 15px;
+}
+.copy-join-link{
+    font-size: 14px;
+    margin: 20px 0;
+    font-weight: 400;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+}
+.copy-join-link i{
+    color: #00a0e3;
+    font-size: 40px;
+    margin-right: 5px;
+}
+.link-descriptions{
+    max-width: 250px;
+    position: relative;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.link-descriptions span{
+    font-size: 15px;
+    color: #00a0e3;
+    font-weight: 500;
+}
+.d-flex{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 .cntct{
     background: linear-gradient(178deg, #00a0e3 20%, #fff 110%);
     padding-bottom: 20px;
@@ -805,7 +785,7 @@ $this->registerCss('
     max-width: 50%;
 }
 .speak-img {
-    background-position: center;
+    background-position: top;
     background-size: cover;
 }
 .flex-use {
@@ -836,7 +816,7 @@ display:none;
 #counter{
 display:none;
 }
-#joinBtn{
+#joinBtn, #joinOtherBtn{
     font-size: 25px;
     padding: 48px;
     display: block;
@@ -1066,7 +1046,6 @@ transform: rotate(100deg);
 
 .speaker-classic {
     padding-top: 50px;
-    margin-top: 50px;
     background-image:url(' . Url::to('@eyAssets/images/pages/webinar/speakers-bg.png') . ');
     background-repeat: no-repeat;
     background-size: cover;
@@ -1235,9 +1214,9 @@ transform: rotate(100deg);
     -ms-border-radius: 50%;
     width: 250px;
     height: 250px;
-    // background-image: -webkit-linear-gradient(340deg, #FC6076 0%, #FF9A44 100%);
-    // background-image: -o-linear-gradient(340deg, #FC6076 0%, #FF9A44 100%);
-    // background-image: linear-gradient(110deg, #FC6076 0%, #FF9A44 100%);
+    background-image: -webkit-linear-gradient(-60deg, #ff5858 0%, #f09819 100%);
+    background-image: -o-linear-gradient(-60deg, #ff5858 0%, #f09819 100%);
+    background-image: linear-gradient(-60deg, #ff5858 0%, #f09819 100%);
     -webkit-box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
     box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
     padding: 55px 0;
@@ -1267,6 +1246,7 @@ transform: rotate(100deg);
 }
 .ts-single-outcome .ts-title {
     color: #fff;
+    text-transform: capitalize;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -1284,11 +1264,46 @@ transform: rotate(100deg);
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both; 
 }
+.outcome-item:nth-of-type(6n-1) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
+    background-image: -o-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
+    background-image: linear-gradient(110deg, #fc6076 0%, #ff9a44 100%);
+}
+
+.outcome-item:nth-of-type(6n-2) .ts-single-outcome {
+    background-image: -webkit-radial-gradient(50% 50%, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
+    background-image: -o-radial-gradient(50% 50%, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
+    background-image: radial-gradient(50% 50%, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
+}
+
+.outcome-item:nth-of-type(6n-3) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
+    background-image: -o-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
+    background-image: linear-gradient(-45deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
+}
+
+.outcome-item:nth-of-type(6n-4) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
+    background-image: -o-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
+    background-image: linear-gradient(-45deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
+}
+
+.outcome-item:nth-of-type(6n-5) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(to top, #7028e4 0%, #e5b2ca 100%);
+    background-image: -o-linear-gradient(to top, #7028e4 0%, #e5b2ca 100%);
+    background-image: linear-gradient(to top, #7028e4 0%, #e5b2ca 100%);
+}
+
+.outcome-item:nth-of-type(6n-6) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+    background-image: -o-linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+    background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+}
 
 .ts-count-down {
     padding: 0;
     margin: -80px 0 0 0;
-    z-index: 1;
+    z-index: 3;
     position: relative;
 }
 .gradient {
@@ -1369,11 +1384,12 @@ b, strong {
     color: #fff;
 }
 .section-title, .column-title {
+    margin:20px 0;
     font-size: 36px;
     font-weight: 800;
     color: #333;
     position: relative;
-    text-align: center;
+//    text-align: center;
     font-family: lora;
 }
 .section-title span, .column-title span {
@@ -1487,12 +1503,23 @@ a:link, a:visited {
 }
 
 .title-main {
-    background: url(' . Url::to('@eyAssets/images/pages/webinar/webinar-cover.png') . ');
+//    background: url(' . Url::to('@eyAssets/images/pages/webinar/webinar-cover.png') . ');
     height: 90vh;
     background-size: cover;
     background-position: center;
+    position: relative;
 }
-
+.absolute{
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    max-height: 90vh;
+    height:100%; 
+    object-fit: cover;
+    object-position: top center;
+}
 .element-percent {
     background:#5e6a6fb8;
     width: 100%;
@@ -1500,6 +1527,8 @@ a:link, a:visited {
     height: 90vh;
     display: inline-block;
     padding-top: 28vh;
+    z-index: 2;
+    position: relative;
 }
 .element-percent h1 {
     color: #fff;
@@ -1807,7 +1836,8 @@ $(document).on('click','#paidRegisterBtn',function(event){
                 var payment_enc_id = callback.payment_enc_id;
                 var reg_id = callback.registration_enc_id;
                 if (ptoken!=null || ptoken !=""){
-                    processPayment(ptoken,payment_enc_id,webinar_id,reg_id);
+                    //processPayment(ptoken,payment_enc_id,webinar_id,reg_id);
+                    _razoPay(ptoken,payment_enc_id,webinar_id);
                 } else{
                     swal({
                         title:"Error",
@@ -1925,61 +1955,45 @@ $(document).on('click','#joinBtn', function (e){
         }   
     }
 });  
-
-function processPayment(ptoken,payment_enc_id,webinar_id,reg_id)
-{
-    Layer.checkout({ 
-        token: ptoken,
-        accesskey: access_key
-    }, 
-    function(response) {
-          // response.payment_token_id
-           // response.payment_id  
-        if (response.status == "captured") {
-            updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
-               swal({
-                    title: "",
-                    text: "Your Registration Successfully",
-                    type:'success',
-                    showCancelButton: false,  
-                    confirmButtonClass: "btn-primary",
-                    confirmButtonText: "Close",
-                    closeOnConfirm: true, 
-                    closeOnCancel: true
-                     },
-                        function (isConfirm) { 
-                         location.reload(true);
-                     }
-                );
-        } else if (response.status == "created") {
-            updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
-        } else if (response.status == "pending") {
-          updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
-        } else if (response.status == "failed") { 
-           updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
-        } else if (response.status == "cancelled") {
-          updateStatus(payment_enc_id,response.payment_id,response.status, reg_id);
-        }
+function _razoPay(ptoken,payment_enc_id,webinar_id){
+    var options = {
+    "key": access_key, 
+    "name": "Empower Youth",
+    "description": "Application Processing Fee",
+    "image": "/assets/common/logos/logo.svg",
+    "order_id": ptoken, 
+    "handler": function (response){
+        updateStatus(payment_enc_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
     },
-    function(err) { 
-        swal({ 
-                title:"Error",
-                text: "Some Internal Server Error, Please Try After Some Time",
-         });
+    "prefill": {
+        "name": $('#applicant_name').val(),
+        "email": $('#email').val(),
+        "contact": $('#mobile').val()
+    },
+    "theme": {
+        "color": "#ff7803"
     }
-);
-} 
-
-function updateStatus(payment_enc_id, payment_id, status,reg_id)
+};
+     var rzp1 = new Razorpay(options);
+     rzp1.open();
+     rzp1.on('payment.failed', function (response){
+         updateStatus(payment_enc_id,null,"failed");
+      swal({
+      title:"Error",
+      text: response.error.description,
+      });
+});
+}
+function updateStatus(payment_enc_id,payment_id=null,status,signature=null)
 {
     $.ajax({
         url : '/api/v3/webinar/update-status',
         method : 'POST', 
         data : {
-          payment_status:status,
           payment_enc_id:payment_enc_id,
           payment_id: payment_id, 
-          registration_enc_id: reg_id, 
+          signature:signature,
+          status:status, 
         },
         success:function(resp)
         {
@@ -1997,6 +2011,20 @@ $(document).on("click","#joinRegisterBtn", function() {
     $('#registerEventSection').find('button:visible').click();
 });
 
+$(document).on('click', '.jj-clipboard',function (event) {
+        event.preventDefault();
+        var link = $(this).attr('data-link');
+        CopyToClipboard(link, true, "Link copied");
+    });
+
+    function CopyToClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -2005,7 +2033,7 @@ $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
-$this->registerCssFile('ps://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css');
+$this->registerCssFile('//code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 ?>
 <script>

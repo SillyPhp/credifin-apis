@@ -44,7 +44,7 @@ use borales\extensions\phoneInput\PhoneInput;
                             <?= $form->field($model, 'email', ['enableAjaxValidation' => true, 'template' => '<div class="E-mail col-md-7 pdng">{label}{input}{error}</div>'])->textInput(['placeholder' => 'Enter your E-mail'])->label('E-mail Address'); ?>
                             <?= $form->field($model, 'phone', ['enableAjaxValidation' => true, 'template' => '<div class="phone col-md-5 pdng">{label}{input}{error}</div>'])->textInput(['placeholder' => 'Enter your Phone No'])->widget(PhoneInput::className(), [
                                 'jsOptions' => [
-                                    'allowExtensions' => false,
+                                    'allowExtensions' => true,
                                     'preferredCountries' => ['in'],
                                     'nationalMode' => false,
                                 ]

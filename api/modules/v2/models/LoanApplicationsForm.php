@@ -2,12 +2,15 @@
 
 namespace api\modules\v2\models;
 
+use common\models\AssignedLoanProvider;
 use common\models\Countries;
 use common\models\EducationLoanPayments;
 use common\models\extended\PaymentsModule;
+use common\models\LoanApplicationOptions;
 use common\models\LoanApplications;
 use common\models\LoanApplicationSchoolFee;
 use common\models\LoanApplicationsCollegePreference;
+use common\models\LoanApplicationTeacherLoan;
 use common\models\LoanCoApplicants;
 use common\models\LoanPurpose;
 use common\models\LoanTypes;
@@ -16,6 +19,7 @@ use common\models\PathToClaimOrgLoanApplication;
 use common\models\PathToOpenLeads;
 use common\models\PathToUnclaimOrgLoanApplication;
 use common\models\Referral;
+use common\models\User;
 use common\models\Users;
 use Yii;
 use yii\base\Model;
@@ -31,7 +35,7 @@ class LoanApplicationsForm extends LoanApplications
     public function rules()
     {
         return [
-            [['applicant_name', 'applicant_dob', 'applicant_current_city', 'phone', 'email', 'amount'], 'required'],
+            [['applicant_name', 'applicant_current_city', 'phone', 'email', 'amount'], 'required'],
             [['co_applicants', 'country_enc_id', 'aadhaar_number', 'purpose', 'gender', 'years', 'semesters', 'loan_type_enc_id', 'course_enc_id', 'college_course_enc_id', 'degree'], 'safe'],
             [['degree'], 'string'],
             [['years', 'semesters', 'gender', 'status'], 'integer'],
@@ -41,7 +45,7 @@ class LoanApplicationsForm extends LoanApplications
         ];
     }
 
-    public function add($addmission_taken = 1, $userId, $college_id, $source = 'Mec', $is_claimed = 1, $course_name = null, $pref = [], $refferal_id = null)
+    public function add($addmission_taken = 1, $userId, $college_id, $source = 'Mec', $is_claimed = 1, $course_name = null, $pref = [], $refferal_id = null,$is_applicant=null,$getLender=null)
     {
         $loan_type = LoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
         if (empty($this->country_enc_id)) {
@@ -54,9 +58,7 @@ class LoanApplicationsForm extends LoanApplications
             ->one();
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $utilitiesModel = new \common\models\Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $this->loan_app_enc_id = $utilitiesModel->encrypt();
+            $this->loan_app_enc_id = Yii::$app->security->generateRandomString(15);
             $this->course_enc_id = $this->college_course_enc_id;
             $this->college_course_enc_id = NULL;
             $this->source = $source;
@@ -80,9 +82,7 @@ class LoanApplicationsForm extends LoanApplications
 
             if ($is_claimed == 1) {
                 $path_to_claim = new PathToClaimOrgLoanApplication();
-                $utilitiesModel = new \common\models\Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $path_to_claim->bridge_enc_id = $utilitiesModel->encrypt();
+                $path_to_claim->bridge_enc_id = Yii::$app->security->generateRandomString(15);
                 $path_to_claim->loan_app_enc_id = $this->loan_app_enc_id;
                 $path_to_claim->assigned_course_enc_id = $this->course_enc_id;
                 $path_to_claim->country_enc_id = $this->country_enc_id;
@@ -96,9 +96,7 @@ class LoanApplicationsForm extends LoanApplications
                 }
             } else if ($is_claimed == 2) {
                 $path_to_Unclaim = new PathToUnclaimOrgLoanApplication();
-                $utilitiesModel = new \common\models\Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $path_to_Unclaim->bridge_enc_id = $utilitiesModel->encrypt();
+                $path_to_Unclaim->bridge_enc_id = Yii::$app->security->generateRandomString(15);
                 $path_to_Unclaim->loan_app_enc_id = $this->loan_app_enc_id;
                 $path_to_Unclaim->assigned_course_enc_id = $this->course_enc_id;
                 $path_to_Unclaim->country_enc_id = $this->country_enc_id;
@@ -113,9 +111,7 @@ class LoanApplicationsForm extends LoanApplications
             } else if ($is_claimed == 3) {
                 if (!empty($course_name)) {
                     $path_to_leads = new PathToOpenLeads();
-                    $utilitiesModel = new \common\models\Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $path_to_leads->bridge_enc_id = $utilitiesModel->encrypt();
+                    $path_to_leads->bridge_enc_id = Yii::$app->security->generateRandomString(15);
                     $path_to_leads->loan_app_enc_id = $this->loan_app_enc_id;
                     $path_to_leads->course_name = $course_name;
                     $path_to_leads->country_enc_id = $this->country_enc_id;
@@ -130,37 +126,14 @@ class LoanApplicationsForm extends LoanApplications
                 } else {
                     $transaction->rollback();
                     $this->_flag = false;
-                }
-
-                if (!empty($pref))
-                    $c = 1;
-                foreach ($pref as $p) {
-                    if (!empty($p)) {
-                        $preferenceModel = new LoanApplicationsCollegePreference();
-                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                        $preferenceModel->preference_enc_id = $utilitiesModel->encrypt();
-                        $preferenceModel->loan_app_enc_id = $this->loan_app_enc_id;
-                        $preferenceModel->created_by = (($userId) ? $userId : null);
-                        $preferenceModel->college_name = trim($p);
-                        $preferenceModel->sequence = $c;
-                        if (!$preferenceModel->save()) {
-                            $transaction->rollback();
-                            $this->_flag = false;
-                            throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($preferenceModel->errors, 0, false)));
-                        } else {
-                            $c++;
-                            $this->_flag = true;
-                        }
-                    }
+                    throw new \Exception ("<br /> Course Cannot Be Blank");
                 }
             }
 
             if (!empty($this->purpose)) {
                 foreach ($this->purpose as $p) {
                     $purpose = new LoanPurpose();
-                    $utilitiesModel = new \common\models\Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $purpose->loan_purpose_enc_id = $utilitiesModel->encrypt();
+                    $purpose->loan_purpose_enc_id = Yii::$app->security->generateRandomString(15);
                     $purpose->fee_component_enc_id = $p;
                     $purpose->loan_app_enc_id = $this->loan_app_enc_id;
                     $purpose->created_by = (($userId) ? $userId : null);;
@@ -178,8 +151,7 @@ class LoanApplicationsForm extends LoanApplications
             if ($this->co_applicants && !empty($this->co_applicants) && $this->co_applicants != null) {
                 foreach ($this->co_applicants as $key => $applicant) {
                     $model = new LoanCoApplicants();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $model->loan_co_app_enc_id = $utilitiesModel->encrypt();
+                    $model->loan_co_app_enc_id = Yii::$app->security->generateRandomString(15);
                     $model->loan_app_enc_id = $this->loan_app_enc_id;
                     $model->name = $applicant['name'];
                     $model->relation = $applicant['relation'];
@@ -216,8 +188,7 @@ class LoanApplicationsForm extends LoanApplications
             if (isset($response['status']) && $response['status'] == 'created') {
                 $token = $response['id'];
                 $loan_payment = new EducationLoanPayments();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $loan_payment->education_loan_payment_enc_id = $utilitiesModel->encrypt();
+                $loan_payment->education_loan_payment_enc_id = Yii::$app->security->generateRandomString(15);
                 $loan_payment->college_enc_id = $college_id;
                 $loan_payment->loan_app_enc_id = $this->loan_app_enc_id;
                 $loan_payment->payment_token = $token;
@@ -228,91 +199,38 @@ class LoanApplicationsForm extends LoanApplications
                 if (!$loan_payment->save()) {
                     $transaction->rollBack();
                     $this->_flag = false;
-                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
-                } else {
-                    $transaction->commit();
-                    $data = [];
-                    $data['loan_app_enc_id'] = $this->loan_app_enc_id;
-                    $data['education_loan_payment_enc_id'] = $loan_payment->education_loan_payment_enc_id;
-                    $data['payment_id'] = $loan_payment->payment_token;
-                    return $data;
-                }
-            }
-            if ($this->_flag) {
-                $transaction->commit();
-                $data = [];
-                $data['loan_app_enc_id'] = $this->loan_app_enc_id;
-                $data['education_loan_payment_enc_id'] = '';
-                $data['payment_id'] = '';
-                return $data;
-            } else {
-                $transaction->rollBack();
-                return false;
-            }
-        } catch (\Exception $exception) {
-            $transaction->rollBack();
-            return $exception->getMessage();
-        }
-    }
-    public function saveSchoolFeeLoan($userId,$source,$params){
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-            $utilitiesModel = new \common\models\Utilities();
-            $this->loan_app_enc_id = Yii::$app->security->generateRandomString(8);
-            $this->source = $source;
-            $this->had_taken_addmission = 0;
-            $this->created_by = (($userId) ? $userId : null);
-            $this->created_on = date('Y-m-d H:i:s');
-            if (!$this->save()) {
-                $transaction->rollback();
-                $this->_flag = false;
-                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($this->errors, 0, false)));
-            } else {
-                $this->_flag = true;
-            }
-            $total_amount = PaymentsModule::_defaultPayment();
-            $gst = PaymentsModule::_defaultGst();
-            $percentage = ($total_amount * $gst) / 100;
-            $total_amount = $total_amount + $percentage;
-            $args = [];
-            $args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
-            $args['currency'] = "INR";
-            $args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
-            $response = PaymentsModule::_authPayToken($args);
-            if (isset($response['status']) && $response['status'] == 'created') {
-                $token = $response['id'];
-                $loan_payment = new EducationLoanPayments();
-                $loan_payment->education_loan_payment_enc_id = Yii::$app->security->generateRandomString(8);
-                $loan_payment->loan_app_enc_id = $this->loan_app_enc_id;
-                $loan_payment->payment_token = $token;
-                $loan_payment->payment_amount = $total_amount;
-                $loan_payment->payment_gst = $gst;
-                $loan_payment->created_by = (($userId) ? $userId : null);
-                $loan_payment->created_on = date('Y-m-d H:i:s');
-                if (!$loan_payment->save()) {
-                    $transaction->rollBack();
-                    $this->_flag = false;
                     throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_payment->errors, 0, false)));
-                } else{
+                } else {
                     $this->_flag = true;
                 }
             }
 
             if ($this->_flag){
-                foreach ($params['child_information'] as $information){
-                    $loanSchool = new LoanApplicationSchoolFee();
-                    $loanSchool->school_fee_enc_id = Yii::$app->security->generateRandomString(8);
-                    $loanSchool->loan_app_enc_id = $this->loan_app_enc_id;
-                    $loanSchool->student_name = $information['child_name'];
-                    $loanSchool->school_name = $information['child_school'];
-                    $loanSchool->class = $information['child_class'];
-                    $loanSchool->created_by = (($userId) ? $userId : null);
-                    $loanSchool->created_on = date('Y-m-d H:i:s');
-                    if (!$loanSchool->save()) {
-                        $transaction->rollBack();
+                $loanOptions = new LoanApplicationOptions();
+                $loanOptions->option_enc_id = Yii::$app->security->generateRandomString(15);
+                $loanOptions->loan_app_enc_id = $this->loan_app_enc_id;
+                $loanOptions->application_by = (int)$is_applicant;
+                $loanOptions->created_by = (($userId) ? $userId : null);
+                $loanOptions->created_on = date('Y-m-d H:i:s');
+                if (!$loanOptions->save()) {
+                    $transaction->rollBack();
+                    $this->_flag = false;
+                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanOptions->errors, 0, false))." ".$loanOptions::tableName());
+                } else{
+                    $this->_flag = true;
+                }
+
+                if (!empty($getLender)){
+                    $assignLoanProvider = new AssignedLoanProvider();
+                    $assignLoanProvider->assigned_loan_provider_enc_id = Yii::$app->security->generateRandomString(15);
+                    $assignLoanProvider->provider_enc_id = $getLender;
+                    $assignLoanProvider->loan_application_enc_id = $this->loan_app_enc_id;
+                    $assignLoanProvider->created_by = Users::findOne(['username'=> 'admin'])->user_enc_id;
+                    if (!$assignLoanProvider->save()) {
+                        $transaction->rollback();
                         $this->_flag = false;
-                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanSchool->errors, 0, false)));
-                    } else{
+                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($assignLoanProvider->errors, 0, false)));
+                    } else {
                         $this->_flag = true;
                     }
                 }
@@ -341,14 +259,159 @@ class LoanApplicationsForm extends LoanApplications
             ];
         }
     }
-    public function saveTeachersLoan($userId,$source){
+    public function saveSchoolFeeLoan($userId,$source,$params){
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            $utilitiesModel = new \common\models\Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $this->loan_app_enc_id = $utilitiesModel->encrypt();
+            $total_student = count($params['child_information']);
+            $total_amount = PaymentsModule::_defaultPayment();
+            $total_amount = $total_amount*$total_student;
+            $gst = PaymentsModule::_defaultGst();
+            $percentage = ($total_amount * $gst) / 100;
+            $total_amount = $total_amount + $percentage;
+            $args = [];
+            $args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
+            $args['currency'] = "INR";
+            $args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
+            $response = PaymentsModule::_authPayToken($args);
+            $education_loan_payment_id = [];
+            $loan_id = [];
+            if (isset($response['status']) && $response['status'] == 'created') {
+                $token = $response['id'];
+                if (!empty($params['child_information'])){
+                    foreach ($params['child_information'] as $information){
+                        $this->loan_app_enc_id = Yii::$app->security->generateRandomString(8);
+                        $this->source = $source;
+                        $this->had_taken_addmission = 0;
+                        $this->amount = $information['child_loan_amount'];
+                        $this->loan_type = 'School Fee Loan';
+                        $this->created_by = (($userId) ? $userId : null);
+                        $this->created_on = date('Y-m-d H:i:s');
+                        $this->setIsNewRecord(true);
+                        $this->id = null;
+                        if (!$this->save()) {
+                            $transaction->rollback();
+                            $this->_flag = false;
+                            throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($this->errors, 0, false))." ".$this::tableName());
+                        } else {
+                            $loan_id[]=$this->loan_app_enc_id;
+                            $loanSchool = new LoanApplicationSchoolFee();
+                            $loanSchool->school_fee_enc_id = Yii::$app->security->generateRandomString(8);
+                            $loanSchool->loan_app_enc_id = $this->loan_app_enc_id;
+                            $loanSchool->student_name = $information['child_name'];
+                            $loanSchool->school_name = $information['child_school'];
+                            $loanSchool->loan_amount = $information['child_loan_amount'];
+                            $loanSchool->class = $information['child_class'];
+                            $loanSchool->created_by = (($userId) ? $userId : null);
+                            $loanSchool->created_on = date('Y-m-d H:i:s');
+                            if (!$loanSchool->save()) {
+                                $transaction->rollBack();
+                                $this->_flag = false;
+                                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanSchool->errors, 0, false))." ".$loanSchool::tableName());
+                            } else{
+                                $this->_flag = true;
+                            }
+                            if (!empty($params['getLender'])){
+                                $assignLoanProvider = new AssignedLoanProvider();
+                                $assignLoanProvider->assigned_loan_provider_enc_id = Yii::$app->security->generateRandomString(15);
+                                $assignLoanProvider->provider_enc_id = $params['getLender'];
+                                $assignLoanProvider->loan_application_enc_id = $this->loan_app_enc_id;
+                                $assignLoanProvider->created_by = Users::findOne(['username'=> 'admin'])->user_enc_id;
+                                if (!$assignLoanProvider->save()) {
+                                    $transaction->rollback();
+                                    $this->_flag = false;
+                                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($assignLoanProvider->errors, 0, false)));
+                                } else {
+                                    $this->_flag = true;
+                                }
+                            }
+                            $loanOptions = new LoanApplicationOptions();
+                            $loanOptions->option_enc_id = Yii::$app->security->generateRandomString(8);
+                            $loanOptions->loan_app_enc_id = $this->loan_app_enc_id;
+                            $loanOptions->application_by = (int)$params['is_applicant'];
+                            $loanOptions->created_by = (($userId) ? $userId : null);
+                            $loanOptions->created_on = date('Y-m-d H:i:s');
+                            if (!$loanOptions->save()) {
+                                $transaction->rollBack();
+                                $this->_flag = false;
+                                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanOptions->errors, 0, false))." ".$loanOptions::tableName());
+                            } else{
+                                $this->_flag = true;
+                            }
+                            $loan_payment = new EducationLoanPayments();
+                            $loan_payment->education_loan_payment_enc_id = Yii::$app->security->generateRandomString(8);
+                            $loan_payment->loan_app_enc_id = $this->loan_app_enc_id;
+                            $loan_payment->payment_token = $token;
+                            $loan_payment->payment_amount = $total_amount/$total_student;
+                            $loan_payment->payment_gst = $gst;
+                            $loan_payment->created_by = (($userId) ? $userId : null);
+                            $loan_payment->created_on = date('Y-m-d H:i:s');
+                            if (!$loan_payment->save()) {
+                                $transaction->rollBack();
+                                $this->_flag = false;
+                                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_payment->errors, 0, false))." ".$loan_payment::tableName());
+                            } else{
+                                $education_loan_payment_id[] = $loan_payment->education_loan_payment_enc_id;
+                                $this->_flag = true;
+                            }
+
+                            if ($this->co_applicants && !empty($this->co_applicants) && $this->co_applicants != null) {
+                                foreach ($this->co_applicants as $key => $applicant) {
+                                    $model = new LoanCoApplicants();
+                                    $model->loan_co_app_enc_id = Yii::$app->security->generateRandomString(8);
+                                    $model->loan_app_enc_id = $this->loan_app_enc_id;
+                                    $model->name = $applicant['name'];
+                                    $model->relation = $applicant['relation'];
+                                    $model->employment_type = $applicant['employment_type'];
+                                    $model->annual_income = $applicant['annual_income'];
+                                    $model->created_by = (($userId) ? $userId : null);
+                                    $model->created_on = date('Y-m-d H:i:s');
+                                    if (!$model->save()) {
+                                        $transaction->rollback();
+                                        $this->_flag = false;
+                                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
+                                    } else {
+                                        $this->_flag = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }else{
+                    $transaction->rollback();
+                    $this->_flag = false;
+                    throw new \Exception ("Child Information is Empty");
+                }
+            }
+            if ($this->_flag) {
+                $transaction->commit();
+                $data = [];
+                $data['loan_app_enc_id'] = $loan_id;
+                $data['education_loan_payment_enc_id'] = $education_loan_payment_id;
+                $data['payment_id'] = $loan_payment->payment_token;
+                $data['status'] = true;
+                return $data;
+            } else {
+                $transaction->rollBack();
+                return [
+                    'message'=>'Unable to Save',
+                    'status'=>false
+                ];
+            }
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return [
+                'message'=>$exception->getMessage(),
+                'status'=>false
+            ];
+        }
+    }
+    public function saveTeachersLoan($userId,$source,$params){
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $this->loan_app_enc_id = Yii::$app->security->generateRandomString(8);
             $this->source = $source;
             $this->had_taken_addmission = 0;
+            $this->loan_type = 'Teacher Loan';
             $this->created_by = (($userId) ? $userId : null);
             $this->created_on = date('Y-m-d H:i:s');
             if (!$this->save()) {
@@ -370,8 +433,7 @@ class LoanApplicationsForm extends LoanApplications
             if (isset($response['status']) && $response['status'] == 'created') {
                 $token = $response['id'];
                 $loan_payment = new EducationLoanPayments();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $loan_payment->education_loan_payment_enc_id = $utilitiesModel->encrypt();
+                $loan_payment->education_loan_payment_enc_id = Yii::$app->security->generateRandomString(8);;
                 $loan_payment->loan_app_enc_id = $this->loan_app_enc_id;
                 $loan_payment->payment_token = $token;
                 $loan_payment->payment_amount = $total_amount;
@@ -381,7 +443,25 @@ class LoanApplicationsForm extends LoanApplications
                 if (!$loan_payment->save()) {
                     $transaction->rollBack();
                     $this->_flag = false;
-                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)));
+                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan_payment->errors, 0, false)));
+                } else{
+                    $this->_flag = true;
+                }
+            }
+            if ($this->_flag) {
+                $loanTeacherForm = new LoanApplicationTeacherLoan();
+                $loanTeacherForm->teacher_loan_enc_id = Yii::$app->security->generateRandomString(8);;
+                $loanTeacherForm->loan_app_enc_id = $this->loan_app_enc_id;
+                $loanTeacherForm->years = $params['years'];
+                $loanTeacherForm->months = (($params['months'])?$params['months']:0);
+                $loanTeacherForm->employement_type = $params['employement_type'];
+                $loanTeacherForm->institution_name = $params['institution'];
+                $loanTeacherForm->created_by = (($userId) ? $userId : null);
+                $loanTeacherForm->created_on = date('Y-m-d H:i:s');
+                if (!$loanTeacherForm->save()) {
+                    $transaction->rollBack();
+                    $this->_flag = false;
+                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loanTeacherForm->errors, 0, false)));
                 } else{
                     $this->_flag = true;
                 }

@@ -143,31 +143,42 @@ $this->registerCss('
 }
 .finance-text{
     margin: 10px 0;
-    font-size: 15px;
+    font-size: 14px;
     font-family: roboto;
-    font-weight: 700;
+    font-weight: 600;
     text-align: center;
-    color: #333;
+    color: #808080;
+    padding: 0 5px;
 }
 .finance-icon{
     text-align: center;
-    width: 100px;
+    width: 70px;
     margin: 0px auto;
-    height: 100px;
+    height: 70px;
 }
 .finance{
     width: 100%;
-    height: 185px;
+    height: 155px;
     box-shadow: 0 0 11px -4px #999;
     margin-bottom: 30px;
     background-color: #fff;
     transition: all .2s;
     position: relative;
-    padding: 20px;
+    padding: 20px 0;
 }
 .finance-icon img {
-    width: 100px;
-    height: 100px;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
+}
+@media only screen and (max-width: 550px){
+    .finance-icon{
+        width: 70px;
+        height: 70px;
+    }
+    .finance-icon img{
+        width: 70px;
+        height: 70px;
+    }
 }
 ');

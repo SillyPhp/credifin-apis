@@ -13,14 +13,14 @@ use yii\helpers\Url;
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <div class="view-all-news">
-                        <a href="<?= Url::to('/news')?>">View All</a>
+                        <a href="<?= Url::to('/news') ?>">View All</a>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <?php
                 $newsUpdates = ExternalNewsUpdate::find()
-                    ->where(['is_deleted' => 0, 'status' => 1])
+                    ->where(['is_deleted' => 0, 'status' => 1, 'is_visible' => 1])
                     ->orderBy(['created_on' => SORT_DESC])
                     ->limit(9)
                     ->all();

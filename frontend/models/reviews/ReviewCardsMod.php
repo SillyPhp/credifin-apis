@@ -32,10 +32,15 @@ class ReviewCardsMod
         if (Yii::$app->user->identity->user_enc_id) {
             $is_login = 1;
         }
+        $is_org = 1;
+        if(Yii::$app->user->identity->organization){
+            $is_org = "";
+        }
+
         $q1 = Organizations::find()
             ->distinct()
             ->alias('a')
-            ->select([new Expression('"' . $is_login . '" as login'), new Expression(' "1" as is_claimed'), '(CASE
+            ->select([new Expression('"' . $is_login . '" as login'), new Expression ('"'. $is_org .'" as is_org'), new Expression(' "1" as is_claimed'), '(CASE
                 WHEN fo.followed = "1" THEN fo.followed ELSE NULL
                END) as is_followed', 'a.slug',
                 'a.organization_enc_id', 'a.name', 'a.initials_color color',
@@ -80,6 +85,7 @@ class ReviewCardsMod
                     $l->onCondition(['le.is_deleted' => 0]);
                 }], false);
             }], false)
+            ->joinWith(['industryEnc in'],false)
             ->andWhere(['a.is_deleted' => 0])
             ->andWhere(['a.status' => 'Active'])
             ->orderBy(['is_featured' => SORT_DESC, 'a.created_on' => SORT_DESC]);
@@ -87,6 +93,12 @@ class ReviewCardsMod
             $q1->andWhere([
                 'or',
                 ['in', 'y.business_activity', $options['business_activity']]
+            ]);
+        }
+        if (isset($options['industry'])) {
+            $q1->andWhere([
+                'or',
+                ['in', 'in.industry', $options['industry']]
             ]);
         }
         if (isset($options['keyword'])) {
@@ -119,7 +131,7 @@ class ReviewCardsMod
         $q2 = UnclaimedOrganizations::find()
             ->distinct()
             ->alias('a')
-            ->select([new Expression('"' . $is_login . '" as login'), new Expression(' "0" as is_claimed'), '(CASE
+            ->select([new Expression('"' . $is_login . '" as login'), new Expression ('"'. $is_org .'" as is_org'), new Expression(' "0" as is_claimed'), '(CASE
                 WHEN fo.followed = "1" THEN fo.followed ELSE NULL
                END) as is_followed', 'a.slug',
                 'a.organization_enc_id', 'a.name', 'a.initials_color color',
@@ -161,12 +173,19 @@ class ReviewCardsMod
                     $le->onCondition(['le.is_deleted' => 0]);
                 }], false);
             }], false)
+            ->joinWith(['unclaimAssignedIndustries ui'], false)
             ->andWhere(['a.is_deleted' => 0])
             ->orderBy(['is_featured' => SORT_DESC, 'a.created_on' => SORT_DESC]);
         if (isset($options['business_activity'])) {
             $q2->andWhere([
                 'or',
                 ['in', 'y.business_activity', $options['business_activity']]
+            ]);
+        }
+        if (isset($options['industry'])) {
+            $q2->andWhere([
+                'or',
+                ['in', 'ui.industry_string_value', $options['industry']]
             ]);
         }
         if (isset($options['keyword'])) {
@@ -206,7 +225,7 @@ class ReviewCardsMod
         $data = array_merge($data, $q2);
         return [
             'total' => $count,
-            'cards' => $data
+            'cards' => $data,
         ];
     }
 

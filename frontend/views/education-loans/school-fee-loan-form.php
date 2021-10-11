@@ -4,7 +4,7 @@ $this->params['header_dark'] = true;
 $this->title = '';
 $keywords = '';
 $description = '';
-$image = Url::to('@eyAssets/images/pages/education-loans/teacher-edu-p.png', 'https');
+$image = Url::to('@eyAssets/images/pages/education-loans/school-student-loan.png', 'https');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
@@ -47,11 +47,36 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                             <div class="row">
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
+                                        <label class="input-group-text" for="inputGroupSelect01">
+                                            Filling Application As ?
+                                        </label>
+                                        <ul class="displayInline">
+                                            <li>
+                                                <label class="container-radio">
+                                                    <input type="radio" checked="checked" id="parent" value="1" onclick="showChildren(this)" name="applicantRadio">
+                                                    Parent
+                                                </label>
+                                            </li>
+                                            <li>
+                                                <label class="container-radio">
+                                                    <input type="radio" id="applicant" value="0" onclick="hideChildren(this)" name="applicantRadio">
+                                                    Student
+                                                </label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
                                         <label for="number" class="input-group-text">
-                                            Name (Parent Name)
+                                            Name
                                         </label>
                                         <input type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
                                     </div>
+                                </div>
+                                <div id="schooInfo">
+
                                 </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
@@ -81,7 +106,7 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label for="annulIncome" class="input-group-text">
-                                            Annual Income (<i class="fa fa-inr" id="rp_symbol" aria-hidden="true"></i>)
+                                            Annual Income Of Family (<i class="fa fa-inr" id="rp_symbol" aria-hidden="true"></i>)
                                         </label>
                                         <input type="text" class="form-control" minlength="4" maxlength="8" id="salary" name="salary"
                                                placeholder="Enter Salary">
@@ -114,18 +139,24 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                                placeholder="Enter Email Address">
                                     </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="input-group-text" for="inputGroupSelect02">
-                                           Number Of Children (Applying Loan For)
-                                        </label>
-                                        <input type="text" class="form-control" id="noChild" name="noChild"
-                                            onkeyup="checkChildInfo(this)" maxlength="1"  placeholder="Enter Number Of Children">
-                                        <p class="errorMsg"></p>
-                                   </div>
+                                <div id="hideDiveChild">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="input-group-text" for="inputGroupSelect02">
+                                                Number Of Children (Applying Loan For)
+                                            </label>
+                                            <input type="text" class="form-control" id="noChild" name="noChild"
+                                                   onkeyup="checkChildInfo(this)" maxlength="1"  placeholder="Enter Number Of Children">
+                                            <p class="errorMsg"></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="child-info-div"></div>
+<!--                            <div class="col-md-12 padd-20">-->
+<!--                                <p class="termsText">By clicking submit you agree to our-->
+<!--                                    <a href="--><?//= Url::to('/education-loans/terms-and-conditions')?><!--">terms and conditions</a> </p>-->
+<!--                            </div>-->
                             <div class="row">
                                 <div class="col-md-12 padd-20">
                                 <div class="input-group padd-20">
@@ -156,59 +187,89 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                     With the rise in school tuition expenses and overall cost of learning, we’re left seeking
                                     quality education without soaring education fees. Now, with our <span>School Fee Loan</span>
                                     you can conveniently pay your child’s school fees without any worry.</li>
+
                             </ul>
+                            <p class="lenders">More Than <span>20+</span> Lenders</p>
                             <div class="cl-icon">
-                                <p>Our Lenders</p>
-                                <ul>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?>">
-                                            </span>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="widget-benfit">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-minimal-paper-work.png') ?>">
+                                            <p>Minimal Paper Work</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?>">
-                                            </span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="widget-benfit">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-faster-processing-time.png') ?>">
+                                            <p>Faster Processing Time</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?>">
-                                            </span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="widget-benfit">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-approval-in-minutes.png') ?>">
+                                            <p>Approval In Minutes</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?>">
-                                            </span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="widget-benfit">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-quick-disbursement.png') ?>">
+                                            <p>Quick Disbursement</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span class="li-text">+10 More</span>
-                                        </div>
-                                    </li>
-                                </ul>
+                                    </div>
+                                </div>
                             </div>
+<!--                            <div class="cl-icon">-->
+<!--                                <p>Our Lenders</p>-->
+<!--                                <ul>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span class="li-text">+10 More</span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -217,10 +278,46 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
     </section>
 <?php
 $this->registerCss('
+.widget-benfit{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 30px;
+}
+.widget-benfit img{
+    max-width: 60px;
+    margin-bottom: 10px;
+}
+.widget-benfit p{
+    color: #fff;
+    font-size: 16px !important;
+    line-height: 20px;
+    font-weight: 400 !important;
+} 
+.lenders{
+    margin-top: 20px;
+    color: #f3f3f2;
+    font-size: 16px;
+}
+.lenders span{
+    font-weight: 600;
+}
 #loadBtn{
     display:none;
 }
-
+.termsText{
+    font-size: 12px;
+    font-family: roboto;
+    text-align: center;
+}
+.termsText a{
+    color: #00a0e3;
+}
+.termsText a:hover{
+    color: #ff7803;
+    transition: .3s ease;
+}
 .padd-20{
     padding-bottom: 10px;
 }
@@ -813,8 +910,8 @@ $.validator.addMethod("check_date_of_birth", function (value, element) {
     mydate.setFullYear(year, month - 1, day);
     
     var maxDate = new Date();
-    if ((maxDate.getFullYear()-year) <= 18) {
-        $.validator.messages.check_date_of_birth = "Sorry, only persons above or equal the age of 18 can be covered";
+    if ((maxDate.getFullYear()-year) <= 1) {
+        $.validator.messages.check_date_of_birth = "Sorry, only persons above or equal the age of 1 can be covered";
         return false;
     }
     return true;
@@ -823,7 +920,7 @@ function _razoPay(ptoken,loan_id,education_loan_id){
     var options = {
     "key": access_key, 
     "name": "Empower Youth",
-    "description": "Application Processing Fee",
+    "description": "Application Login Fee",
     "image": "/assets/common/logos/logo.svg",
     "order_id": ptoken, 
     "handler": function (response){
@@ -896,9 +993,11 @@ function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,s
 }
 function ajaxSubmit()
 {
+    var applicantRadio = $('input[name="applicantRadio"]:checked').val();
     let child_information = [];
     var obj = {};
-    for (var i= 0; i<$('#noChild').val();i++){
+    if (applicantRadio=='1'){
+        for (var i= 0; i<$('#noChild').val();i++){
         obj['child_name'] = $('.child_name:eq('+i+')').val();
         obj['child_class'] = $('.child_class:eq('+i+')').val();
         if (document.getElementById("checkmark")){
@@ -913,16 +1012,24 @@ function ajaxSubmit()
         child_information.push(obj);
         obj = {};
     }
+    }else{
+        obj['child_name'] = $('#applicant_name').val();
+        obj['child_class'] = $('.child_class:eq(0)').val();
+        obj['child_school'] = $('.child_school:eq(0)').val();
+        child_information.push(obj);
+    }
     $.ajax({
             url : '/api/v3/education-loan/save-school-fee-loan',
             method : 'POST', 
             data : {
                 applicant_name:$('#applicant_name').val(),
                 applicant_dob:$('#dob').val(),
+                is_applicant:applicantRadio,
                 applicant_current_city:$('#location').val(),
                 phone:$('#mobile').val(),
                 email:$('#email').val(),
                 amount:$('#loanamount').val(),   
+                yearly_income:$('#salary').val(),   
                 child_information:child_information,
                 userID:userID
                 },  
@@ -1111,6 +1218,7 @@ $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/boot
         } else  {
             parentElem.querySelector('.errorMsg').style.display = "none";
             let childDiv = document.querySelector('.child-info-div');
+            childDiv.innerHTML = '';
             let count = 1;
             for (let i = 1; i <= num; i++) {
                 let childForm = childrenInfoForm(count, num);
@@ -1183,5 +1291,61 @@ $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/boot
             </div>
         </div>`
         return childInfoForm;
+    }
+function createChild()
+{
+    let child = '<div class="col-md-12 padd-20 schoolNameField">\n' +
+        '                                        <div class="form-group">\n' +
+        '                                            <label for="school_name_1" class="input-group-text">\n' +
+        '                                                School Name\n' +
+        '                                            </label>\n' +
+        '                                            <input type="text" minlength="3" class="form-control text-capitalize child_school" id="school_name_1" name="school_name_1" placeholder="School Name">\n' +
+        '                                        </div>\n' +
+        '                                    </div>\n' +
+        '                                    <div class="col-md-12 padd-20">\n' +
+        '                                        <div class="form-group">\n' +
+        '                                            <label for="class_name_1" class="input-group-text">\n' +
+        '                                                Class\n' +
+        '                                            </label>\n' +
+        '                                            <input type="text" minlength="3" class="form-control text-capitalize child_class" id="class_name_1" name="class_name_1" placeholder="Class Name">\n' +
+        '                                        </div>\n' +
+        '                                    </div>'
+    return child;
+}
+function removeChild() {
+
+}
+    function showChildren(ths){
+        let radioValue = ths.value;
+        const countryName = document.getElementById('hideDiveChild');
+        const schoolInfo = document.getElementById('schooInfo');
+        if(radioValue == '1'){
+            countryName.style.display = "block";
+            schoolInfo.innerHTML = "";
+            document.getElementById('noChild').value = "";
+        }else{
+            countryName.style.display = "none";
+            schoolInfo.innerHTML = createChild();
+            let childFormBox = document.querySelectorAll('.childFormBox');
+            let num = 1;
+            removeChildFormBox(num, childFormBox);
+        }
+    }
+
+    function hideChildren(ths){
+        let radioValue = ths.value;
+        const countryName = document.getElementById('hideDiveChild');
+        const schoolInfo = document.getElementById('schooInfo');
+        if(radioValue == '0'){
+            countryName.style.display = "none";
+            schoolInfo.innerHTML = createChild();
+            let childFormBox = document.querySelectorAll('.childFormBox');
+            let num = 1;
+            removeChildFormBox(num, childFormBox);
+        }else{
+            countryName.style.display = "block";
+            schoolInfo.innerHTML = "";
+            document.getElementById('noChild').value = "";
+        }
     }
 </script>

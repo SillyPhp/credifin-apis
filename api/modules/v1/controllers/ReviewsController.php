@@ -143,7 +143,11 @@ class ReviewsController extends ApiBaseController
         //if parameter not empty then find data of organization claimed
         $org = Organizations::find()
             ->select(['organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "claimed" END) as org_type', 'slug', 'initials_color', 'name', 'website', 'email', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
-            ->where(['organization_enc_id' => $org_enc_id, 'is_deleted' => 0])
+            ->where(['is_deleted' => 0])
+            ->andWhere(['or',
+                ['organization_enc_id' => $org_enc_id],
+                ['slug' => $org_enc_id]
+            ])
             ->asArray()
             ->one();
 
@@ -154,8 +158,11 @@ class ReviewsController extends ApiBaseController
             ->select(['a.organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'b.business_activity', 'a.slug', 'a.initials_color', 'a.name', 'a.website', 'a.email', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->where([
-                'a.organization_enc_id' => $org_enc_id,
                 'a.status' => 1
+            ])
+            ->andWhere(['or',
+                ['a.organization_enc_id' => $org_enc_id],
+                ['a.slug' => $org_enc_id]
             ])
             ->asArray()
             ->one();
@@ -408,7 +415,11 @@ class ReviewsController extends ApiBaseController
         //if parameter not empty then find data of organization claimed
         $org = Organizations::find()
             ->select(['organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "claimed" END) as org_type', 'slug', 'initials_color', 'name', 'website', 'email', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
-            ->where(['organization_enc_id' => $org_enc_id, 'is_deleted' => 0])
+            ->where(['is_deleted' => 0])
+            ->andWhere(['or',
+                ['organization_enc_id' => $org_enc_id],
+                ['slug' => $org_enc_id]
+            ])
             ->asArray()
             ->one();
 
@@ -419,8 +430,11 @@ class ReviewsController extends ApiBaseController
             ->select(['a.organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'b.business_activity', 'a.slug', 'a.initials_color', 'a.name', 'a.website', 'a.email', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->where([
-                'a.organization_enc_id' => $org_enc_id,
                 'a.status' => 1
+            ])
+            ->andWhere(['or',
+                ['a.organization_enc_id' => $org_enc_id],
+                ['a.slug' => $org_enc_id]
             ])
             ->asArray()
             ->one();
@@ -430,7 +444,7 @@ class ReviewsController extends ApiBaseController
 
             $reviews = OrganizationReviews::find()
                 ->alias('a')
-                ->where(['a.organization_enc_id' => $org_enc_id, 'a.status' => 1])
+                ->where(['a.organization_enc_id' => $org['organization_enc_id'], 'a.status' => 1])
                 ->joinWith(['createdBy b'], false)
                 ->joinWith(['categoryEnc c'], false)
                 ->joinWith(['organizationReviewLikeDislikes d' => function ($d) use ($candidate) {
@@ -1227,16 +1241,24 @@ class ReviewsController extends ApiBaseController
 
         $org = Organizations::find()
             ->select(['organization_enc_id'])
-            ->where(['organization_enc_id' => $org_enc_id, 'is_deleted' => 0])
-            ->exists();
+            ->where(['is_deleted' => 0])
+            ->andWhere(['or',
+                ['organization_enc_id' => $org_enc_id],
+                ['slug' => $org_enc_id]
+            ])
+            ->asArray()
+            ->one();
 
         $unclaimed_org = UnclaimedOrganizations::find()
             ->alias('a')
             ->select(['a.organization_enc_id', 'b.business_activity'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->where([
-                'a.organization_enc_id' => $org_enc_id,
                 'a.status' => 1
+            ])
+            ->andWhere(['or',
+                ['a.organization_enc_id' => $org_enc_id],
+                ['a.slug' => $org_enc_id]
             ])
             ->asArray()
             ->one();
@@ -1261,7 +1283,7 @@ class ReviewsController extends ApiBaseController
                     'b.first_name',
                     'b.last_name'
                 ])
-                ->where(['a.organization_enc_id' => $org_enc_id, 'a.created_by' => $candidate->user_enc_id])
+                ->where(['a.organization_enc_id' => $org['organization_enc_id'], 'a.created_by' => $candidate->user_enc_id])
                 ->joinWith(['createdBy b'], false)
                 ->asArray()
                 ->one();
@@ -1312,7 +1334,7 @@ class ReviewsController extends ApiBaseController
                 'alias' => 'b'
             ];
 
-            $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
+            $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
             $options['condition'][] = ['in', 'a.reviewer_type', [0, 1]];
 
             $options['quant'] = 'one';
@@ -1348,7 +1370,7 @@ class ReviewsController extends ApiBaseController
                     'alias' => 'b'
                 ];
 
-                $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
+                $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
                 $options['condition'][] = ['in', 'a.reviewer_type', [2, 3]];
                 $options['quant'] = 'one';
 
@@ -1384,7 +1406,7 @@ class ReviewsController extends ApiBaseController
                     'alias' => 'b'
                 ];
 
-                $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
+                $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
                 $options['condition'][] = ['in', 'a.reviewer_type', [4, 5]];
                 $options['quant'] = 'one';
 
@@ -1420,7 +1442,7 @@ class ReviewsController extends ApiBaseController
                     'alias' => 'b'
                 ];
 
-                $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
+                $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
                 $options['condition'][] = ['in', 'a.reviewer_type', [6, 7]];
                 $options['quant'] = 'one';
 

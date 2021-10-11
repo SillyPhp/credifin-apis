@@ -360,6 +360,7 @@ $this->registerCssFile('https://webdemo.agora.io/agora-web-showcase/examples/17-
 //$this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
 $this->registerCssFile('@eyAssets/fonts/fontawesome-5/css/all.css');
 $this->registerCssFile('https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css');
-$this->registerJsFile('https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.1.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+//$this->registerJsFile('https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.1.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.6.5.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

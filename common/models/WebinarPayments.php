@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+
 /**
  * This is the model class for table "{{%webinar_payments}}".
  *
@@ -14,6 +15,7 @@ namespace common\models;
  * @property double $payment_gst gst if applicable
  * @property string $payment_id transaction id
  * @property string $payment_status payment status
+ * @property string $payment_signature
  * @property int $payment_mode 0 as gateway payment, 1 as NEFT, 2 as RTGS, 3 as IMPS, 4 as Cheque, 5 as UPI, 6 as DD
  * @property string $reference_number Number of payment mode
  * @property string $created_by created by user
@@ -29,7 +31,7 @@ namespace common\models;
 class WebinarPayments extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -37,7 +39,7 @@ class WebinarPayments extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -47,6 +49,7 @@ class WebinarPayments extends \yii\db\ActiveRecord
             [['payment_mode'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
             [['payment_enc_id', 'webinar_enc_id', 'registration_enc_id', 'payment_token', 'payment_id', 'payment_status', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['payment_signature'], 'string', 'max' => 255],
             [['reference_number'], 'string', 'max' => 50],
             [['payment_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
@@ -56,9 +59,7 @@ class WebinarPayments extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
+
     /**
      * @return \yii\db\ActiveQuery
      */

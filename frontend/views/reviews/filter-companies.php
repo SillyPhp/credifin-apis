@@ -37,7 +37,7 @@ use yii\bootstrap\ActiveForm;
                             <span></span>
                             <span></span>
                         </div>
-                        <input type="text" name="keywords" id="search_comp" value="<?= $keywords ?>" class="s-input"
+                        <input type="text" name="keyword" id="search_comp" value="<?= $keyword ?>" class="s-input"
                                placeholder="Search Company">
                         <button type="submit" class="s-btn"><i class="fas fa-search"></i></button>
                     </div>

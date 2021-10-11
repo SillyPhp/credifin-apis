@@ -132,21 +132,21 @@ $this->params['seo_tags'] = [
                             </div>
                             <?php
                             foreach ($similar_posts as $related) {
-                                $path = Yii::$app->params->upload_directories->posts->featured_image . $related->featured_image_location;
-                                $image = $path . DIRECTORY_SEPARATOR . $related->featured_image;
-                                if (empty($related->featured_image)) {
+                                $path = Yii::$app->params->upload_directories->posts->featured_image . $related['featured_image_location'];
+                                $image = $path . DIRECTORY_SEPARATOR . $related['featured_image'];
+                                if (empty($related['featured_image'])) {
                                     $image = '//placehold.it/250x200';
                                 }
                                 ?>
                                 <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-10 col-xs-offset-1">
                                     <div class="video-container">
-                                        <a href="/blog/<?= $related->slug ?>">
+                                        <a href="/blog/<?= $related['slug'] ?>">
                                             <div class="video-icon">
                                                 <img src="<?= $image ?>">
                                             </div>
                                             <div class="r-video">
-                                                <div class="r-v-name"><?= $related->title ?></div>
-                                                <div class="r-ch-name"><?= $related->excerpt ?></div>
+                                                <div class="r-v-name"><?= $related['title'] ?></div>
+                                                <div class="r-ch-name"><?= $related['excerpt'] ?></div>
                                             </div>
                                         </a>
                                     </div>

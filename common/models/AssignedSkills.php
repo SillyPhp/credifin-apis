@@ -11,6 +11,8 @@ namespace common\models;
  * @property string $skill_enc_id Foreign Key to Skills Table
  * @property string $category_enc_id Foreign Key to Categories Table
  * @property string $assigned_to Assigned To
+ * @property double $level
+ * @property double $importance
  * @property string $created_on On which date Assigned Skill information was added to database
  * @property string $created_by By which User Assigned Skill information was added
  * @property string $last_updated_on On which date Assigned Skill information was updated
@@ -41,6 +43,7 @@ class AssignedSkills extends \yii\db\ActiveRecord
         return [
             [['assigned_skill_enc_id', 'skill_enc_id', 'category_enc_id', 'created_on'], 'required'],
             [['assigned_to', 'status'], 'string'],
+            [['level', 'importance'], 'number'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['assigned_skill_enc_id', 'skill_enc_id', 'category_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],

@@ -125,10 +125,11 @@ class SchedularController extends Controller
             ->select(['field_enc_id', 'field_name', 'field_label', 'sequence'])
             ->where([
                 'interview_process_enc_id' => $interview_process['interview_process_enc_id']
-            ])
-            ->andWhere(['<>', 'field_name', 'Get Applications']);
+            ]);
         if ($round != null) {
             $rounds->andWhere(['sequence' => $round]);
+        } else {
+            $rounds->andWhere(['<>', 'field_name', 'Get Applications']);
         }
         $rounds = $rounds->asArray()
             ->all();
@@ -545,6 +546,17 @@ class SchedularController extends Controller
 
                 } elseif ($data['type'] == 'flexible') {
 
+                    $interview_options = new InterviewOptions();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $interview_options->interview_options_enc_id = $utilitiesModel->encrypt();
+                    $interview_options->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
+                    $interview_options->process_field_enc_id = $data['selected_round'];
+                    array_push($required_data, $interview_options);
+                    if (!$interview_options->save()) {
+                        $transaction->rollback();
+                        return false;
+                    }
+
                     foreach ($candidate_applications as $application_enc_id) {
                         $candidate_data = [];
                         $interview_candidate = new InterviewCandidates();
@@ -662,7 +674,7 @@ class SchedularController extends Controller
         return $type->interview_type_enc_id;
     }
 
-    public function actionUpdateInterview()
+    public function actionDashboard()
     {
         if (Yii::$app->user->identity->organization->organization_enc_id) {
             return $this->render('update');
@@ -686,9 +698,7 @@ class SchedularController extends Controller
                     'o.interview_date_enc_id',
                     'o.interview_date',
                     'z.designation',
-//                    'p.from',
-//                    'p.to',
-//                    'p.interview_date_timing_enc_id',
+                    'q1.field_name round'
                 ])
                 ->innerJoinWith(['applicationEnc b' => function ($b) {
                     $b->joinWith(['designationEnc z']);
@@ -709,6 +719,13 @@ class SchedularController extends Controller
                     $o->joinWith(['interviewDateTimings p' => function ($p) {
                         $p->andWhere(['p.is_deleted' => 1]);
                     }]);
+                }])
+                ->joinWith(['interviewOptions q' => function ($q) {
+                    $q->joinWith(['processFieldEnc q1']);
+                }], false)
+                ->joinWith(['interviewers r' => function ($r) {
+                    $r->select(['r.interviewer_enc_id', 'r.scheduled_interview_enc_id', 'r1.name', 'r1.email', 'r1.phone']);
+                    $r->joinWith(['interviewerDetails r1'], false);
                 }])
                 ->where(['a.status' => 1])
                 ->asArray()
@@ -734,6 +751,8 @@ class SchedularController extends Controller
                 $fixed_data['Start'] = $interview_date;
                 $fixed_data['End'] = $interview_date;
                 $fixed_data['application_enc_id'] = $f['application_enc_id'];
+                $fixed_data['round'] = $f['round'];
+                $fixed_data['interviewers'] = $f['interviewers'];
                 $ti = $f['interviewDates'][$i]['interviewDateTimings'];
                 if ($f['interview_type'] == 'fixed') {
                     if ($f['scheduled_interview_enc_id'] == $old_id) {
@@ -805,7 +824,7 @@ class SchedularController extends Controller
 
             $application_process = $this->findApplicationFields($id);
             $all_data['application_process'] = $application_process;
-            $applied_candidates = $this->findAppliedCandidates($id);
+            $applied_candidates = $this->findAppliedCandidates($id, $data['process_field_enc_id']);
             $all_data['applied_candidates'] = $applied_candidates;
 
             $all_data['application_location'] = $application_locations;
@@ -835,7 +854,7 @@ class SchedularController extends Controller
             ->where(['a.scheduled_interview_enc_id' => $s_id])
             ->groupBy('a.scheduled_interview_enc_id')
             ->asArray()
-            ->all();
+            ->one();
 
         return $data;
     }

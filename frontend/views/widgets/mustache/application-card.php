@@ -19,10 +19,9 @@ switch ([$controller_id, $action_id]) {
         {{#.}}
         <div class="col-md-4 col-sm-12 col-xs-12">
             <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
-                 class="application-card-main shadow">
-                <div class="app-box" style="<?= ($type == 'Internships')?'height:170px':''; ?>">
-                    <div class="hidden overlay" onclick="off()"></div>
-                    <div class="row">
+                 class="application-card-main">
+                <div class="app-box">
+                    <div class="app-card-main">
                         <div class="application-card-img">
                             <a href="{{organization_link}}" target="_blank" title="{{organization_name}}">
                                 {{#logo}}
@@ -34,33 +33,31 @@ switch ([$controller_id, $action_id]) {
                                 {{/logo}}
                             </a>
                         </div>
-                        <div class="comps-name-1 application-card-description" data-slug="{{application_slug}}">
-                            <span class="skill">
+                        <div class="side-description" data-slug="{{application_slug}}">
+                            <div class="ji-title">
                                 <a href="{{link}}" title="{{title}}" class="application-title capitalize">
                                     {{title}}
                                 </a>
-                            </span>
-                            <a href="{{link}}" target="_blank" title="{{organization_name}}"
-                               style="text-decoration:none;">
-                                <h4 class="org_name comp-name org_name">{{{organization_name}}}</h4>
-                            </a>
-                        </div>
-                        {{#city}}
-                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
-                              data-long="{{longitude}}">
-                             <i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
-                        </span>
-                        {{/city}}
-                        {{^city}}
-                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
-                              data-long="{{longitude}}"
-                              data-locations="">
-                        <i class="fas fa-map-marker-alt"></i>&nbsp;Work From Home
-                        </span>
-                        {{/city}}
-                        </span>
-                        <div class="detail-loc application-card-description">
-                            <div class="job-loc">
+                            </div>
+                            <div class="ji-orgname">
+                                <a href="{{link}}" target="_blank" title="{{organization_name}}">
+                                    <h4 class="org_name comp-name org_name">{{{organization_name}}}</h4>
+                                </a>
+                            </div>
+                            <div class="ji-city">
+                                {{#city}}
+                                <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                                      data-long="{{longitude}}"><i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
+                                </span>
+                                {{/city}}
+                                {{^city}}
+                                <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                                      data-long="{{longitude}}" data-locations=""><i
+                                            class="fas fa-map-marker-alt"></i>&nbsp;Work From Home
+                                </span>
+                                {{/city}}
+                            </div>
+                            <div class="ji-salarydata">
                                 {{#salary}}
                                 <h5 class="salary">{{salary}}</h5>
                                 {{/salary}}
@@ -82,57 +79,96 @@ switch ([$controller_id, $action_id]) {
                                 {{#sector}}
                                 <h5 class="salary"><i class="fas fa-puzzle-piece"></i> : {{sector}}</h5>
                                 {{/sector}}
-                                {{#created_on}}
-                                <h5 class="salary fbold" title="Created On">Created On : {{created_on}}</h5>
-                                {{/created_on}}
                             </div>
-                            <div class="clear"></div>
                         </div>
                     </div>
-                    <div class="application-card-wrapper">
-                        <a href="{{link}}" class="application-card-open" target="_blank" title="View Detail">View
-                            Detail</a>
-                        <a href="javascript:;" class="<?= $btn_id ?>" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
+                    <div class="application-card-bottom">
+                        <?php
+                        if (!Yii::$app->user->isGuest) {
+                            ?>
+                        {{#unclaimed_organization_enc_id}}
+                        <?php
+                        if (Yii::$app->user->identity->organization->organization_enc_id) {
+                            ?>
+                            <a href="javascript:;" class="ji-apply disabled no-anim" title="Apply Now">Apply Now</a>
+                            <?php
+                        } else {
+                            ?>
+                            <a href="{{link}}" target="_blank" class="ji-apply" title="Apply Now">Apply Now</a>
+                        <?php
+                        }
+                        ?>
+                        {{/unclaimed_organization_enc_id}}
+                        {{^unclaimed_organization_enc_id}}
+                            {{#applied}}
+                            <a href="javascript:;" class="ji-apply no-anim" title="Applied">Applied</a>
+                            {{/applied}}
+                            {{^applied}}
+                                <a href="javascript:;" data-app="{{application_id}}" data-org="{{organization_enc_id}}" class="ji-apply <?= ((Yii::$app->user->identity->organization->organization_enc_id) ? 'disabled no-anim' : 'applyApplicationNow')?> {{application_id}}-apply-now" title="<?= ((Yii::$app->user->identity->organization->organization_enc_id) ? 'Login as Candidate' : 'Apply Now')?>">Apply Now</a>
+                            {{/applied}}
+                        {{/unclaimed_organization_enc_id}}
+                        <?php
+                        } else{
+                        ?>
+                            <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ji-apply" title="Apply Now">Apply Now</a>
+                        <?php
+                        }
+                        ?>
+                        <a href="{{link}}" class="application-card-open" target="_blank" title="View Detail">View Detail</a>
+                        <a href="javascript:;" class="<?= $btn_id ?> ji-plus-btn" title="Add to Review List">&nbsp;<i
+                                    class="fas fa-plus"></i>&nbsp;</a>
                         <a href="javascript:;" class="share-b" title="Share">&nbsp;<i class="fas fa-share-alt"></i>&nbsp</a>
                         <div class="sharing-links">
                             <div class="inner">
                                 <div class="fb">
-                                    <a href="javascript:;" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="j-facebook j-linkedin share_btn tt" type="button" data-toggle="tooltip"
                                        title="Share on Facebook">
                                         <span><i class="fab fa-facebook-f"></i></span></a>
                                 </div>
                                 <div class="wts-app">
-                                    <a href="javascript:;" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="j-whatsapp share_btn tt" type="button" data-toggle="tooltip"
                                        title="Share on Whatsapp">
                                         <span><i class="fab fa-whatsapp"></i></span>
                                     </a>
                                 </div>
                                 <div class="tw">
-                                    <a href="javascript:;" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
 
                                        class="j-twitter share_btn tt" type="button" data-toggle="tooltip"
                                        title="Share on Twitter">
                                         <span><i class="fab fa-twitter"></i></span></a>
                                 </div>
                                 <div class="linkd">
-                                    <a href="javascript:;" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
                                        title="Share on LinkedIn">
                                         <span><i class="fab fa-linkedin"></i></span></a>
                                 </div>
                                 <div class="male">
-                                    <a href="javascript:;" onclick="window.open('<?= Url::to('mailto:?&body=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('mailto:?&body=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
                                        title="Share via E-Mail">
                                         <span><i class="far fa-envelope"></i></span></a>
                                 </div>
                                 <div class="tele">
-                                    <a href="javascript:;" onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
                                        title="Share on Telegram">
                                         <span><i class="fab fa-telegram-plane"></i></span></a>
+                                </div>
+                                <div class="copy-app-link">
+                                    <a href="javascript:;" class="clipb tt detail-clipboard" type="button" data-toggle="tooltip"
+                                       title="Copy Link" data-link="{{link}}">
+                                        <i class="fas fa-clipboard"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -142,6 +178,13 @@ switch ([$controller_id, $action_id]) {
         </div>
         {{/.}}
     </script>
+    <div class="modal fade bs-modal-lg in" id="job-apply-widget-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="applyModalData">
+
+            </div>
+        </div>
+    </div>
 <?php
 $c_user = Yii::$app->user->identity->user_enc_id;
 $script = <<< JS
@@ -308,6 +351,20 @@ function getFeaturedCard(itemid) {
     });
 }
 
+$(document).on('click', '.applyApplicationNow', function() {
+    $('#applyModalData').html('<div class="p-20"><i class="fas fa-circle-notch fa-spin fa-fw"></i> Loading...</div>')
+    let app_id = $(this).attr('data-app');
+    let org_id = $(this).attr('data-org');
+    $('#job-apply-widget-modal').modal('show');
+     $.ajax({
+            method: "POST",
+            url : "/jobs/application-apply-modal",
+            data:{app_id:app_id,org_id:org_id},
+            success: function(response) {
+                $('#applyModalData').html(response);
+            }
+    })
+})
 
 function addToReviewList(){
     if(loader === false){
@@ -418,79 +475,87 @@ function checkSkills2(){
     });
 }
 $(document).on('click', '.share-b', function(){
-    $(this).next().slideToggle(); 
     let parentElem = $(this).parentsUntil('.app-box').parent();
-    $(parentElem).find('.overlay').toggleClass('hidden');
-});
+    $(parentElem).find('.sharing-links').toggleClass('moveright');
+    });
+
 $(document).on('mouseleave', '.app-box', function(){
-    $(this).find('.sharing-links').css('display', 'none');
-    $(this).find('.overlay').addClass('hidden');
+    $(this).find('.sharing-links').removeClass('moveright');
 });
+$(document).on('click', '.detail-clipboard',function (event) {
+            event.preventDefault();
+            var link = window.location.hostname + $(this).attr('data-link');
+            CopyClipboard(link, true, "Link copied");
+        });
+function CopyClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
 JS;
 $this->registerJs($script);
 $this->registerCss('
-.overlay {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0,0,0,0.5);
-  z-index: 2;
-  cursor: pointer;
-}
-.fbold{font-weight:600 !important;}
-.share-b {
-    background-color: #00a0e3;
-}
-.text-center{font-family:roboto;}
-.city
-{
-text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.application-card-description h5{
-    margin-top:0px !important;
-    margin-bottom: 6px !important;
-}
-.application-card-main {
-    background-color: transparent !important;
-    margin-bottom: 20px !important;
-    border-radius: 10px;
-}
-.not-found{
-    max-width: 400px;
-    margin: auto;
-    display: block;
-}
+.ji-apply.disabled{
+    cursor:not-allowed;
+} 
+.moveright{right:13% !important;}
 .app-box {
     text-align: left;
-    padding: 10px;
-    border-radius: 10px;
-    position:relative;
-    background:#fff;
-    height:188px;
+    padding: 22px 0 0;
+    border-radius: 8px;
+    position: relative;
+    background: #fff;
+    overflow: hidden;
+    box-shadow: 0 0 8px 0px #c7c7c7;
 }
-.img{
-    max-width: 66px;
+.app-card-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding:0 10px;
+    min-height:124px;
 }
-.cover-box{
+.job-fill {
+    padding: 2px 10px !important;
+    background-color: #63c6f0 !important;
+    color: #fff !important;
+    border-radius: 0px 8px 0px 8px !important;
+    position: absolute !important;
+    right: 0px !important;
+    top: 0px !important;
+    max-width: 200px;
+    letter-spacing: .3px;
+    font-size: 12px;
+}
+.application-card-img {
     display: inline-block;
-    padding-left: 13px;
+//    box-shadow: 0 0 8px 0px #eee;
+//    border-radius: 50%;
+    overflow: hidden;
+    min-width: 90px;
+    text-align: center;
+    line-height: 85px;
+    height: 90px;
+    width: 90px;
+    margin-top:10px;
 }
-.comps-name-1{
-    padding-left: 15px;
-    padding-top: 20px;
+.application-card-img img, .application-card-img canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
-.org_name{display:block;}
-.skill a{
+.ji-title a {
     color: black;
     font-size: 16px;
-    font-weight: bold;
+    font-family:roboto;
+    font-weight: 500;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 .comp-name{
     font-weight: 700;
@@ -499,157 +564,170 @@ text-overflow: ellipsis;
     margin:0;
     font-family:roboto;
 }
-.detail-loc{
-    margin-top:5px;
-}
-.location{
-    margin-right: 4px;
-}
-.fa-inr{
-    color:lightgray;
-    margin-right: 10px;
-
-}
-.city, .city i{
-    color: #fff;
-}
-.show-responsive{
-    display:none;
-}
-
-.job-fill{
-    padding: 5px 10px 4px !important;
-    margin: 3px !important;
-    background-color:#ff7803 !important;
-    color: #fff !important;
-    border-radius: 0px 10px 0px 10px !important;
-    float: right !important;
-    position:absolute !important;
-    right: -4px !important;
-    top: -3px !important;
-    max-width:255px;
-}
-.clear{
-    clear:both;
-}
-.sal{
-    margin-right: 5px;
-}
-.tag-box{
-    border-top: 1px solid lightgray;
-    padding-left:15px;
-    padding-top:10px;
-}
-.tags{
-    font-size: 17px;
-    color:gray;
-    font-family: Georgia !important;
-    display:inline-block;
-}
-.after{
-    padding-right: 25px;
-    padding-left: 16px;
-}
-.after{
-    background: #eee;
-    border-radius: 3px 0 0 3px;
-    color: #777;
-    display: inline-block;
-    height: 26px;
-    line-height: 25px;
-    padding: 0 21px 0 11px;
-    position: relative;
-    margin: 0 9px 3px 0;
-    text-decoration: none;
-    -webkit-transition: color 0.2s;
-}
-.after::after{
-    background: #fff;
-    border-bottom: 13px solid transparent;
-    border-left: 10px solid #eee;
-    border-top: 13px solid transparent;
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-.city-box{
-    padding-bottom:5px;
-}
-.ADD-more{
-    background-color: #eeeeee;
-    padding: 4px 10px 4px 10px;
-    border-radius: 5px;
-}
-.more-skills{
-    background-color: #00a0e3;
-    color: #fff;
-    padding: 5px 15px;
-    border-radius: 20px;
-    display:inline-block;
-}
 .salary{ 
-    padding-left: 16px;
+    font-family:roboto;
     text-transform: capitalize;
     font-size:14px;
     font-weight:500 !important;
+    margin:5px 0 0;
 }
-.lg-skill{
+.application-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #ececec;
+    margin-top: 5px;
+    padding-right: 10px;
+    width:100%;
+    position:relative;
+}
+.ji-apply, .ji-apply:focus {
+    font-family: Roboto;
+    background-color: #ff7803;
+    color: #fff;
+    padding: 4px 0px;
+    font-weight: 500;
+    text-align: center;
+    display: inline-block;
+    width: 35%;
+    transition:all .2s;
+}
+.ji-apply:hover{
+    color: #fff;
+    transform:scale(1.1);
+}
+.no-anim:hover{
+    transform:scale(1);
+}
+.application-card-open {
+    width: 35%;
+    text-align: center;
+    font-weight: 500;
+    font-family: Roboto;
+    display: inline-block;
+    padding: 4px 0;
+}
+.application-card-open:hover {
+    color: #00a0e3;
+    transition: all .1s;
+    transform:scale(1.1);
+}
+.ji-plus-btn, .ji-plus-btn:focus{
+    color: #ff7803;
+    width: 10%;
+    text-align: center;
+}
+.ji-plus-btn:hover{
+    color:#ff7803;
+    transform:scale(1.2);
+    transition:all .1s;
+    }
+.share-b, .share-b:focus{
+    color: #00a0e3;
+    width: 10%;
+    text-align: center;
+}
+.share-b:hover{
+    color:#00a0e3;
+    transform:scale(1.2);
+    transition:all .1s;
+    }
+.sharing-links {
+    width: calc(100% - 12%);
+    height:100%;
+    position: absolute;
+    right: -90%;
+    top: 0px;
+    text-align: center;
+    background-color: #fff;
+    padding: 3px 4px;
+    transition:all .5s;
+}
+.salary, .comp-name, .salary a{
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.side-description {
+    width: calc(100% - 105px);
+    margin-left:15px;
+}
+.city
+{
+    text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
+}
+.application-card-main {
+    margin-bottom: 20px !important;
+}
+.not-found{
+    max-width: 400px;
+    margin: auto;
     display: block;
 }
-.sharing-links {
-	position: absolute;
-	background-color: #eee;
-	left: 15%;
-	bottom: 65px;
-	border-radius: 6px;
-	text-align: center;
-	padding: 10px;
-	display: none;
+.img{
+    max-width: 66px;
 }
 .inner {
     display: flex;
+    justify-content:right;
 }
-.fb {
-    background: #236dce;
+.wts-app i, .fb i, .tw i, .linkd i, .male i, .tele i, .copy-app-link i{
+    width: 25px;
+    text-align: center;
+    border-radius: 50px;
+    height: 25px;
+    font-size: 14px;
+    margin: 0 5px;
+    border: 1px solid transparent;
+    padding-top: 5px;
+    transition:all .3s;
 }
-.tw {
-    background-color: #1c99e9;
-}
-.linkd {
-    background-color: #0e76a8;
-}
-.male {
-    background-color: #BB001B;
-}
-.tele {
-    background-color: #0088cc;
-}
-.wts-app{
-    background-color:#4FCE5D;
-}
-.wts-app, .fb, .tw, .linkd, .male, .tele {
-	width: 30px;
-	text-align: center;
-	border-radius: 50px;
-	height: 30px;
-	font-size: 16px;
-	padding-top: 2px;
-	margin: 0 5px;
-}
-.wts-app a, .linkd a, .tw a, .fb a, .male a, .tele a {
+.fb i {color: #236dce;}
+.fb i:hover {background-color: #236dce;}
+.tw i{color: #1c99e9;}
+.tw i:hover{background-color: #1c99e9;}
+.linkd i{color: #0e76a8;}
+.linkd i:hover{background-color: #0e76a8;}
+.male i{color: #BB001B;}
+.male i:hover{background-color: #BB001B;}
+.tele i{color: #0088cc;}
+.tele i:hover{background-color: #0088cc;}
+.wts-app i{color:#4FCE5D;}
+.wts-app i:hover{background-color:#4FCE5D;}
+.copy-app-link i{color:#22577A;}
+.copy-app-link i:hover{background-color:#22577A;}
+.wts-app i:hover, .linkd i:hover, .tw i:hover, .fb i:hover, .male i:hover, .tele i:hover, .copy-app-link i:hover{
 	color: #fff;
 }
 .share-b:hover .sharing-links, .sharing-links:hover{display:block !Important;}
-@media only screen and (max-width: 974px){
-    .city-box{padding-left: 18px; padding-bottom: 10px;}
-    .hide-responsive{display:none;}
-    .show-responsive{display:inline;}
-    .hide-resp{display:none;}
-}
 /*cards-box css*/
+@media screen and (max-width: 1250px) and (min-width: 992px) {
+    .wts-app i, .fb i, .tw i, .linkd i, .male i, .tele i, .copy-app-link i{
+        width: 22px;
+        height: 22px;
+        font-size: 14px;
+        margin: 0px 5px;
+        padding-top:2px;
+    }
+    .sharing-links{padding:1px;}
+}
+@media screen and (max-width: 768px) {
+    .inner{justify-content:center;}
+}
+@media screen and (max-width: 550px) {
+  .ji-apply, .application-card-open{
+    font-size:12px;
+    padding:6px 0;
+}
+ .wts-app i, .fb i, .tw i, .linkd i, .male i, .tele i, .copy-app-link i{
+        font-size: 14px;
+        margin: 0px 2px;
+        padding-top:3px;
+    }
+}
+
 ');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

@@ -151,7 +151,7 @@ class CollegeIndexController extends ApiBaseController
                 ->distinct()
                 ->joinWith(['organizationEnc b' => function ($x) use ($req) {
                     $x->groupBy('organization_enc_id');
-                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $x->joinWith(['businessActivityEnc e'], false);
                     $x->joinWith(['employerApplications c' => function ($y) use ($req) {
                         $y->innerJoinWith(['erexxEmployerApplications f']);
@@ -959,11 +959,11 @@ class CollegeIndexController extends ApiBaseController
             if (isset($data['name']) && !empty($data['name'])) {
                 $candidates->having(['like', 'user_full_name', $data['name']]);
             }
-            if (isset($data['course_name']) && !empty($data['course_name'])) {
-                $candidates->andWhere(['c1.course_name' => $data['course_name']]);
+            if (isset($data['courses']) && !empty($data['courses'])) {
+                $candidates->andWhere(['c1.course_name' => $data['courses']]);
             }
-            if (isset($data['semester']) && !empty($data['semester'])) {
-                $candidates->andWhere(['like', 'a.semester', $data['semester']]);
+            if (isset($data['semesters']) && !empty($data['semesters'])) {
+                $candidates->andWhere(['a.semester' => $data['semesters']]);
             }
             if (isset($data['roll_no']) && !empty($data['roll_no'])) {
                 $candidates->andWhere(['like', 'a.university_roll_number', $data['roll_no']]);
@@ -1001,6 +1001,9 @@ class CollegeIndexController extends ApiBaseController
                 'e2.name title',
                 'e1.name profile',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
+                'a.current_round',
+//                'COUNT(CASE WHEN cc.is_completed = 1 THEN 1 END) as active',
+//                'COUNT(cc.is_completed) total',
             ])
             ->joinWith(['applicationEnc b' => function ($b) {
                 $b->innerJoinWith(['erexxEmployerApplications c']);
@@ -1014,6 +1017,11 @@ class CollegeIndexController extends ApiBaseController
             ->joinWith(['appliedApplicationLocations f' => function ($f) {
                 $f->select(['f.application_location_enc_id', 'f.applied_application_enc_id', 'f.city_enc_id', 'f1.name city_name']);
                 $f->joinWith(['cityEnc f1'], false);
+            }])
+            ->joinWith(['appliedApplicationProcesses cc' => function ($cc) {
+                $cc->joinWith(['fieldEnc dd'], false);
+                $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.field_name', 'dd.icon', 'dd.sequence']);
+                $cc->orderBy('dd.sequence');
             }])
             ->where([
                 'a.created_by' => $user_id,
@@ -1424,11 +1432,21 @@ class CollegeIndexController extends ApiBaseController
                 }
             }
 
-            $candidates = $candidates->orderBy(
-                [
-                    new \yii\db\Expression('college_actions IS NULL DESC,college_actions ASC')
-                ]
-            )->asArray()
+            if (isset($data['order']) && isset($data['order_type']) && !empty($data['order'])) {
+                if ($data['order_type'] == 'asc') {
+                    $candidates->orderBy([$data['order'] => SORT_ASC]);
+                } else {
+                    $candidates->orderBy([$data['order'] => SORT_DESC]);
+                }
+            } else {
+
+                $candidates = $candidates->orderBy(
+                    [
+                        new \yii\db\Expression('college_actions IS NULL DESC,college_actions ASC')
+                    ]
+                );
+            }
+            $candidates = $candidates->asArray()
                 ->all();
 
             $i = 0;

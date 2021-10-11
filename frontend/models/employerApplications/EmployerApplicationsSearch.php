@@ -71,6 +71,9 @@ class EmployerApplicationsSearch extends EmployerApplications
                 }]);
             }]);
         }], false);
+        $query->joinWith(['appliedApplications as ap' => function ($ap) {
+            $ap->onCondition(['ap.created_by' => Yii::$app->user->identity->user_enc_id]);
+        }], false);
         $query->joinWith(['title0 e' => function ($aa) {
             $aa->joinWith(['categoryEnc f']);
             $aa->joinWith(['parentEnc g']);

@@ -4,6 +4,9 @@ $col = 'col-md-12 col-sm-4';
 if(!empty($size)){
     $col = $size;
 }
+if(!$category){
+    $category = '';
+}
 ?>
 <script id="whats-new-blog" type="text/template">
     {{#.}}
@@ -112,13 +115,21 @@ a.wn-overlay-text {
 ');
 if($is_ajax){
 $script = <<<JS
+let data = {};
+if('$category'){
+    data['category'] = '$category';
+}
 $.ajax({
     method: "POST",
     url : '/blog',
+    data:data,
     success: function(response) {
         if(response.status === 200) {
             var wn_data = $('#whats-new-blog').html();
             $("#whats-new").html(Mustache.render(wn_data, response.popular_posts));
+            if($('#blogs-main-section') && !response.popular_posts.length){
+                $('#blogs-main-section').remove();
+            }
         }
     }
 });

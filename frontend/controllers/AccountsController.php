@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\LoanApplications;
+use common\models\Organizations;
 use common\models\Users;
 use Yii;
 use yii\filters\AccessControl;
@@ -66,6 +67,7 @@ class AccountsController extends Controller
         }
 
         $loginFormModel = new LoginForm();
+        $loginFormModel->referer = Yii::$app->getUser()->getReturnUrl();
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $loginFormModel->load(Yii::$app->request->post());
@@ -73,6 +75,7 @@ class AccountsController extends Controller
                 $loginFormModel->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
                 if (Yii::$app->user->identity->organization)
                 {
+//                    return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
                     return $this->redirect('/account/dashboard');
                 }
                 return $response = [
@@ -88,19 +91,20 @@ class AccountsController extends Controller
                 ];
             }
         }
-        if (!Yii::$app->session->has("backURL")) {
-            Yii::$app->session->set("backURL", Yii::$app->request->referrer);
-        }
         if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
+         if (!Yii::$app->session->has("backURL")) {
+                Yii::$app->session->set("backURL", Yii::$app->request->referrer);
+            }
             $loginFormModel->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
             if ($loginFormModel->isMaster) {
                 Yii::$app->session->set('userSessionTimeout', time() + Yii::$app->params->session->timeout);
             }
             if (Yii::$app->user->identity->organization)
             {
-                Yii::$app->session->set("backURL", '/account/dashboard');
+//                return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
+                return $this->redirect('/account/dashboard');
             }
-            return $this->redirect(Yii::$app->session->get("backURL"));
+            return $this->goBack($loginFormModel->referer);
         }
 
         return $this->render('login', [
@@ -114,9 +118,48 @@ class AccountsController extends Controller
         return $this->redirect('/login');
     }
 
-    public function actionSignup($type,$loan_id_ref=null)
+    public function actionValidateField()
     {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $type = Yii::$app->request->post('type');
+            $field = Yii::$app->request->post('field');
+            $value = Yii::$app->request->post('value');
+            if($type == 'user'){
+                $user = Users::find()
+                    ->where([$field => $value])
+                    ->exists();
+                if ($user == 1) {
+                    $response = [
+                        'status' => 200,
+                    ];
+                } else {
+                    $response = [
+                        'status' => 201,
+                    ];
+                }
+                return $response;
+            } else{
+                $org = Organizations::find()
+                    ->where([$field => $value])
+                    ->exists();
+                if ($org == 1) {
+                    $response = [
+                        'status' => 200,
+                    ];
+                } else {
+                    $response = [
+                        'status' => 201,
+                    ];
+                }
+                return $response;
+            }
+        }
 
+    }
+
+    public function actionSignup($type, $loan_id_ref = null)
+    {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -127,9 +170,9 @@ class AccountsController extends Controller
 
         if ($type == 'individual') {
             $model = new IndividualSignUpForm();
-            $loan_ref = LoanApplications::find()->where(['loan_app_enc_id'=>$loan_id_ref,'created_by'=>null])->exists();
+            $loan_ref = LoanApplications::find()->where(['loan_app_enc_id' => $loan_id_ref, 'created_by' => null])->exists();
             if (!empty($loan_id_ref)) {
-                if ($loan_ref){
+                if ($loan_ref) {
                     $cookies = Yii::$app->response->cookies;
                     $cookies->add(new \yii\web\Cookie([
                         'name' => 'loan_id_ref',
@@ -137,6 +180,7 @@ class AccountsController extends Controller
                     ]));
                 }
             }
+
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $model->load(Yii::$app->request->post());
@@ -145,12 +189,13 @@ class AccountsController extends Controller
 
             if ($model->load(Yii::$app->request->post())) {
                 $model->user_type = 'Individual';
+                $backURL = $model->referer;
                 if ($model->add()) {
                     $data['username'] = $model->username;
                     $data['password'] = $model->new_password;
                     $model = new IndividualSignUpForm();
                     if ($this->login($data)) {
-                        return $this->redirect('/account/dashboard');
+                        return $this->redirect((($backURL) ? $backURL : '/account/dashboard'));
                     }
                 } else {
                     Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
@@ -172,12 +217,13 @@ class AccountsController extends Controller
 
             if ($model->load(Yii::$app->request->post())) {
                 $model->user_type = 'Organization Admin';
+                $backURL = $model->referer;
                 if ($model->add()) {
                     $data['username'] = $model->username;
                     $data['password'] = $model->new_password;
                     $model = new OrganizationSignUpForm();
                     if ($this->login($data)) {
-                        return $this->redirect('/account/dashboard');
+                        return $this->redirect((($backURL) ? $backURL : '/account/dashboard'));
                     }
                 } else {
                     Yii::$app->session->setFlash('error', 'An error has occurred. Please try again later.');
@@ -270,7 +316,7 @@ class AccountsController extends Controller
                 return $this->render('/site/message', [
                     'message' => 'An email with instructions has been sent to your email address (please also check your spam folder).'
                 ]);
-            } elseif($model->forgotPassword() === 'User Not Exist') {
+            } elseif ($model->forgotPassword() === 'User Not Exist') {
                 return $this->render('/site/message', [
                     'message' => 'Enter Valid Email Address.'
                 ]);

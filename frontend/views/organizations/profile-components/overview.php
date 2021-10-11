@@ -1,6 +1,9 @@
 <?php
 
 use yii\helpers\Url;
+
+$currentUrl = explode('/', Yii::$app->request->url);
+$slug = $currentUrl[1];
 ?>
 
     <div class="container">
@@ -11,100 +14,17 @@ use yii\helpers\Url;
                 <div class="h-points">
 
                 </div>
-                <!--                <div class="h-points">-->
-                <!--                    <div class="h-point1">-->
-                <!--                        <div class="fa-icon"><i class="fas fa-university"></i></div>-->
-                <!--                        <div class="fa-text">-->
-                <!--                            <h3>Established or University Type</h3>-->
-                <!--                            <p>AAA</p>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                    <div class="h-point1">-->
-                <!--                        <div class="fa-icon"><i class="fab fa-affiliatetheme"></i></div>-->
-                <!--                        <div class="fa-text">-->
-                <!--                            <h3>Affiliated to</h3>-->
-                <!--                            <p></p>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                    <div class="h-point1">-->
-                <!--                        <div class="fa-icon"><i class="fas fa-clipboard-check"></i></div>-->
-                <!--                        <div class="fa-text">-->
-                <!--                            <h3>Accredited to</h3>-->
-                <!--                            <p>AAA</p>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                    <div class="h-point1">-->
-                <!--                        <div class="fa-icon"><i class="fas fa-scroll"></i></div>-->
-                <!--                        <div class="fa-text">-->
-                <!--                            <h3>Entrance Exam</h3>-->
-                <!--                            <p>AAA</p>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                    <div class="h-point1">-->
-                <!--                        <div class="fa-icon"><i class="fas fa-microchip"></i></div>-->
-                <!--                        <div class="fa-text">-->
-                <!--                            <h3>Total Programs</h3>-->
-                <!--                            <p>AAA</p>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                    <div class="h-point1">-->
-                <!--                        <div class="fa-icon"><i class="fas fa-list"></i></div>-->
-                <!--                        <div class="fa-text">-->
-                <!--                            <h3>Popular Courses</h3>-->
-                <!--                            <p>AAA</p>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                    <div class="h-point1">-->
-                <!--                        <div class="fa-icon"><i class="fas fa-rupee-sign"></i></div>-->
-                <!--                        <div class="fa-text">-->
-                <!--                            <h3>Application Mode | Fees</h3>-->
-                <!--                            <p>AAA</p>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                    <div class="h-point1">-->
-                <!--                        <div class="fa-icon"><i class="fas fa-user"></i></div>-->
-                <!--                        <div class="fa-text">-->
-                <!--                            <h3>Top Recruiters</h3>-->
-                <!--                            <p>AAA</p>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                    <div class="h-point1">-->
-                <!--                        <div class="fa-icon"><i class="fas fa-clipboard-list"></i></div>-->
-                <!--                        <div class="fa-text">-->
-                <!--                            <h3>Facilities available</h3>-->
-                <!--                            <p>AAA</p>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                    <div class="h-point1">-->
-                <!--                        <div class="fa-icon"><i class="fas fa-graduation-cap"></i></div>-->
-                <!--                        <div class="fa-text">-->
-                <!--                            <h3>LPU Brochure</h3>-->
-                <!--                            <p>AAA</p>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                    <div class="h-point1">-->
-                <!--                        <div class="fa-icon"><i class="fas fa-link"></i></div>-->
-                <!--                        <div class="fa-text">-->
-                <!--                            <h3>Official Website</h3>-->
-                <!--                            <p>AAA</p>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                </div>-->
             </div>
-            <!--            <div class="set-sticky">-->
-            <!--                <h3 class="heading-style">About College</h3>-->
-            <!--                <p>-->
-            <!--                    What is Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting-->
-            <!--                    industry Lorem Ipsum has been the industry's standard dummy text ever since the 1500s-->
-            <!--                    when-->
-            <!--                </p>-->
-            <!--            </div>-->
+            <div class="set-sticky">
+                <h3 class="heading-style">About College</h3>
+                <p class="aboutCollege"></p>
+            </div>
             <div class="set-sticky">
                 <h3 class="heading-style">All Courses</h3>
                 <div class="course-main">
                 </div>
                 <div class="view-btn">
-                    <a href="javascript:;">View All Courses <i class="fas fa-angle-down"></i></a>
+                    <a href="<?= Url::to($slug.'/courses')?>">View All Courses</a>
                 </div>
             </div>
 
@@ -443,70 +363,6 @@ function initCourse(){
     });
     $('.course-main').append(htmlData);
 }
-function showAllCourses(){
-    $('.view-btn a').on('click',function(e) {
-        e.preventDefault();
-        $('.view-btn').toggleClass('show');
-        if ($('.view-btn').hasClass('show')) {
-            $(this).html("View Less <i class='fas fa-angle-up'></i>");
-            $('.maxData').slideDown('fast');
-        } else {
-            $(this).html("View All Courses <i class='fas fa-angle-down'></i>");
-            $('.maxData').slideUp('slow');
-        }
-    });
-}
-showAllCourses();
-
-var baseUrl = '';
-function getCollegeStats(){
-    $.ajax({
-        url: baseUrl+"/api/v3/ey-college-profile/college-detail",
-        method: 'POST',
-        data: {slug:slug},
-        success: function (res){
-            if(res.response.status == 200){
-                var response = res.response.data;
-                Hpoints = overviewTemp(res);
-                if(Hpoints){
-                    $('.h-points').append(Hpoints);
-                }else{ 
-                    Hpoints = `<p class="noResults">No Highlights Added </p>`;
-                    $('.h-points').append(Hpoints);
-                    $('.view-btn').hide();
-                }
-            }
-        }
-    })
-}
-getCollegeStats();
-function overviewTemp(res){
-    const {affiliated_to, website, website_link} = res.response.data;
-    let mainTemp = '';
-    if(res.response.data['affiliated_to']){
-        var affiliatedTemp = `<div class="h-point1">
-                                <div class="fa-icon"><i class="fab fa-affiliatetheme"></i></div>
-                                <div class="fa-text">
-                                    <h3>Affiliated to</h3>
-                                    <p>`+affiliated_to+`</p>
-                                </div>
-                            </div>`;
-        mainTemp += affiliatedTemp;
-    }
-    
-    if(website){
-        var websiteTemp= `<div class="h-point1">
-                            <div class="fa-icon"><i class="fas fa-link"></i></div>
-                            <div class="fa-text">
-                                <h3>Official Website</h3>
-                                <p><a href="`+website_link+`">
-                                `+website+`</a></p>
-                            </div>
-                        </div>`;        
-        mainTemp += websiteTemp;
-    }
-    return mainTemp;
-}
 
 function getCourses() {
   $.ajax({
@@ -516,7 +372,8 @@ function getCourses() {
     success: function(res) {
         if(res.response.status == 200){
             for(var i = 0; i < res.response.courses.length; i++ ){
-               courseCard(res.response.courses[i]); 
+                let courseData = res.response.courses[i];
+                courseCard(courseData); 
             }
            initCourse();
         }else{
@@ -534,7 +391,7 @@ function courseCard(res) {
     let Cduration = course_duration == 1 ? course_duration+'Year' : course_duration+'Years';
     var collegeCard = `<div class="course-box" >
                         <a href="">
-                            <h3>`+course_name+`</h3>
+                            <h3>`+course_name.replace(/</g, '&lt;').replace(/>/g, '&gt;')+`</h3>
                             <div class="seats">Duration : <span>`+Cduration+`</span></div>
                         </a>
                     </div>`;
@@ -543,3 +400,113 @@ function courseCard(res) {
 }
 JS;
 $this->registerJS($script);
+
+?>
+<script>
+obj = {
+        value: "",
+        showStats(collegeStats){
+            let stats = `<div class="h-point1">
+                            <div class="fa-icon"><i class="fas fa-calendar-alt"></i></div>
+                            <div class="fa-text">
+                                <h3>Established</h3>
+                                <p>${collegeStats.established_in ? collegeStats.established_in : '-'}</p>
+                            </div>
+                        </div>
+                        <div class="h-point1">
+                            <div class="fa-icon"><i class="fab fa-affiliatetheme"></i></div>
+                            <div class="fa-text">
+                                <h3>Affiliated to</h3>
+                                <p>${collegeStats.affiliated_to ? collegeStats.affiliated_to : '-'}</p>
+                            </div>
+                        </div>
+                        <div class="h-point1">
+                            <div class="fa-icon"><i class="fas fa-university"></i></div>
+                            <div class="fa-text">
+                                <h3>University Type</h3>
+                                <p>${collegeStats.university_type ? collegeStats.university_type : '-'}</p>
+                            </div>
+                        </div>
+                        <div class="h-point1">
+                            <div class="fa-icon"><i class="fas fa-clipboard-check"></i></div>
+                            <div class="fa-text">
+                                <h3>Accredited to</h3>
+                                <p>${collegeStats.accredited_to ? collegeStats.accredited_to : '-'}</p>
+                            </div>
+                        </div>
+                        <div class="h-point1">
+                            <div class="fa-icon"><i class="fas fa-scroll"></i></div>
+                            <div class="fa-text">
+                                <h3>Entrance Exam</h3>
+                                <p class="text-capitalize">${collegeStats.entrance_exam ? collegeStats.entrance_exam : '-'}</p>
+                            </div>
+                        </div>
+                        <div class="h-point1">
+                            <div class="fa-icon"><i class="fas fa-clipboard-list"></i></div>
+                            <div class="fa-text">
+                                <h3>Total Programs</h3>
+                                <p>${collegeStats.total_programs ? collegeStats.total_programs : '-'}</p>
+                            </div>
+                        </div>
+                        <div class="h-point1">
+                            <div class="fa-icon"><i class="fas fa-copy"></i></div>
+                            <div class="fa-text">
+                                <h3>Popular Courses</h3>
+                                <p class="text-capitalize">${collegeStats.popular_course ? collegeStats.popular_course : '-'}</p>
+                            </div>
+                        </div>
+                        <div class="h-point1">
+                            <div class="fa-icon"><i class="fas fa-money-bill-wave"></i></div>
+                            <div class="fa-text">
+                                <h3>Average Fees</h3>
+                                <p>${collegeStats.fees ? collegeStats.fees : '-'}</p>
+                            </div>
+                        </div>
+                        <div class="h-point1">
+                            <div class="fa-icon"><i class="fas fa-envelope-open-text"></i></div>
+                            <div class="fa-text">
+                                <h3>Application Mode</h3>
+                                <p class="text-capitalize">${collegeStats.application_mode ? `${collegeStats.application_mode == 'both' ? 'Online & Offline' : collegeStats.application_mode }` : '-'}</p>
+                            </div>
+                        </div>
+                        <div class="h-point1">
+                            <div class="fa-icon"><i class="fas fa-building"></i></div>
+                            <div class="fa-text">
+                                <h3>Top Recruiters</h3>
+                                <p class="text-capitalize">${collegeStats.top_recruiter ? collegeStats.top_recruiter : '-'}</p>
+                            </div>
+                        </div>
+                        <div class="h-point1">
+                            <div class="fa-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="fa-text">
+                                <h3>Brochure</h3>
+                                <p>${collegeStats.brochure ? collegeStats.brochure : '-'}</p>
+                            </div>
+                        </div>
+                        <div class="h-point1">
+                            <div class="fa-icon"><i class="fas fa-link"></i></div>
+                            <div class="fa-text">
+                                <h3>Official Website</h3>
+                                <p>${collegeStats.website ? `<a href='${collegeStats.website_link}'>${collegeStats.website}</a>` : '-'}</p>
+                            </div>
+                        </div>`;
+            document.querySelector('.h-points').innerHTML = stats;
+
+            if(collegeStats.description == null){
+                document.querySelector('.aboutCollege').innerHTML = '<p class="noResults">Description not added</p>';
+            }else{
+                document.querySelector('.aboutCollege').innerText = collegeStats.description;
+            }
+        },
+        get testVar(){
+            return this.value;
+        },
+        set testVar(value){
+            this.value = value;
+            this.showStats(value);
+        }
+}
+if(collegeStats != null) {
+    obj.showStats(collegeStats)
+}
+</script>

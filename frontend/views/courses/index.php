@@ -74,6 +74,8 @@ $this->params['seo_tags'] = [
         </div>
     </section>
 
+    <?= $this->render('/webinars/webinar-carousel')?>
+
     <section class="popular-skills">
         <h3>Popular Categories</h3>
         <div class="container" id="popular-category"></div>
@@ -117,7 +119,7 @@ $this->params['seo_tags'] = [
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="col-md-6 col-sm-6 col-xs-6 p-0">
                     <div class="heading-style">Courses</div>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6">
@@ -238,11 +240,11 @@ if (Yii::$app->user->isGuest) {
 
     <script id="courses-categories" type="text/template">
         {{#.}}
-        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+        <div class="col-md-2 col-sm-4 col-xs-6 pc-main">
             <a href="/courses/courses-list?cat={{title}}">
                 <div class="newset">
                     <div class="imag">
-                        <img src="/assets/themes/ey/images/pages/learning-corner/othercategory.png" alt="{{title}}"/>
+                        <img src="/assets/themes/ey/images/pages/learning-corner/{{icon_name}}.png" alt="{{title}}"/>
                     </div>
                     <div class="txt">{{title}}</div>
                 </div>
@@ -550,7 +552,8 @@ button.lc-item-video-menu {
     line-height: 210px;
     position: relative;
     width:100%;
-    margin-bottom:20px;
+    margin-bottom:20px !important;
+    margin:0 auto;
 }
 .imag{
     text-align: right;

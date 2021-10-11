@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Url;
+
 $this->params['header_dark'] = true;
 
 use yii\web\JqueryAsset;
@@ -102,132 +103,138 @@ if ($type == 'jobs') {
         </div>
     </div>
 </div>
+<div class="modal fade bs-modal-lg in" id="job-apply-widget-modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="applyModalData">
 
+        </div>
+    </div>
+</div>
 <script id="cards" type="text/template">
     {{#.}}
     <div class="col-md-12 col-sm-6 col-xs-12">
         <div id="card-hover" data-id="{{application_enc_id}}" data-key="{{application_enc_id}}-{{location_id}}"
-             class="application-card-main shadow">
-            <div class="app-box">
-                <div class="hidden overlay" onclick="off()"></div>
-                <div class="row">
-                    <div class="col-md-3 col-sm-3 col-xs-3">
-                        <div class="application-card-img img-main">
-                            <a href="{{organization_link}}" title="{{organization_name}}" id="organization-slug">
-                                {{#logo}}
-                                <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}"
-                                     class="company_logo" id="{{logo}}">
-                                {{/logo}}
-                                {{^logo}}
-                                <canvas class="user-icon company-logo" name="{{organization_name}}" width="80"
-                                        height="80"
-                                        color="{{color}}" font="35px"></canvas>
-                                {{/logo}}
-                            </a>
-                        </div>
+             class="application-card-main">
+            <div class="app-box shadow">
+                <div class="app-card-main">
+                    <div class="application-card-img">
+                        <a href="{{organization_link}}" class="orgSlug" target="_blank" title="{{organization_name}}">
+                            {{#logo}}
+                            <img src="{{logo}}" class="companyLogo" alt="{{organization_name}}" title="{{organization_name}}" color="{{color}}">
+                            {{/logo}}
+                            {{^logo}}
+                            <canvas class="user-icon" name="{{organization_name}}" width="80" height="80"
+                                    color="{{color}}" font="35px"></canvas>
+                            {{/logo}}
+                        </a>
                     </div>
-                    <div class="col-md-9 col-sm-9 col-xs-9">
-                        <div class="comps-name-1 application-card-description" data-slug="{{application_slug}}">
-                            <span class="skill">
-                                <a href="{{link}}" title="{{title}}" class="application-title capitalize org_name">
-                                    {{title}}
-                                </a>
-                            </span>
-                            <a href="{{organization_link}}" title="{{organization_name}}" style="text-decoration:none;">
-                                <h4 class="org_name comp-name">{{{organization_name}}}</h4>
+                    <div class="side-description" data-slug="{{application_slug}}">
+                        <div class="ji-title">
+                            <a href="{{link}}" title="{{title}}" class="application-title capitalize">
+                                {{title}}
                             </a>
                         </div>
-                        {{#city}}
-                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
-                              data-long="{{longitude}}">
-                             <i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
-                        </span>
-                        {{/city}}
-                        {{^city}}
-                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
-                              data-long="{{longitude}}"
-                              data-locations="">
-                        <i class="fas fa-map-marker-alt"></i>&nbsp;All India
-                        </span>
-                        {{/city}}
-                        </span>
-                        <div class="detail-loc">
-                            <div class="application-card-description job-loc">
-                                {{#salary}}
-                                <h5 class="salary"><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
-                                {{/salary}}
-                                {{^salary}}
-                                <h5 class="salary">Negotiable</h5>
-                                {{/salary}}
-                                {{#type}}
-                                <h5 class="type">{{type}}</h5>
-                                {{/type}}
-                                {{#experience}}
-                                <h5 class="exp"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
-                                {{/experience}}
-                            </div>
-                            <div class="clear"></div>
+                        <div class="ji-orgname">
+                            <a href="{{link}}" target="_blank" title="{{organization_name}}">
+                                <h4 class="org_name comp-name org_name">{{{organization_name}}}</h4>
+                            </a>
+                        </div>
+                        <div class="ji-city">
+                            {{#city}}
+                                <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                                  data-long="{{longitude}}"><i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
+                                </span>
+                            {{/city}}
+                            {{^city}}
+                            <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                                  data-long="{{longitude}}" data-locations=""><i
+                                        class="fas fa-map-marker-alt"></i>&nbsp;Work From Home
+                                </span>
+                            {{/city}}
+                        </div>
+                        <div class="ji-salarydata">
+                            {{#salary}}
+                            <h5 class="salary dataSalary">{{salary}}</h5>
+                            {{/salary}}
+                            {{^salary}}
+                            {{#sal}}
+                            <h5 class="salary"><a href="{{link}}" target="_blank"><i
+                                            class="far fa-money-bill-alt"></i> View In Details</a></h5>
+                            {{/sal}}
+                            {{^sal}}
+                                <h5 class="salary dataSalary">Negotiable</h5>
+                            {{/sal}}
+                            {{/salary}}
+                            {{#type}}
+                            <h5 class="salary salaryType">{{type}}</h5>
+                            {{/type}}
+                            {{#experience}}
+                            <h5 class="salary dataExp"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
+                            {{/experience}}
+                            {{#sector}}
+                            <h5 class="salary dataSector"><i class="fas fa-puzzle-piece"></i> : {{sector}}</h5>
+                            {{/sector}}
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12 p-0 skills-main">
-                        <div class="tag-box">
-                            <div class="tags">
-                                {{#skill}}
-                                <span class="after skills">{{.}}</span>
-                                {{/skill}}
-                                {{^skill}}
-                                <span class="after skills">Multiple Skills</span>
-                                {{/skill}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="application-card-wrapper">
-                    <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
-                    <a href="javascript:;" class="application-card-add" title="Add to Review List">&nbsp;<i
-                                class="fas fa-plus"></i>&nbsp;</a>
-                    <a href="javascript:;" class="share-b" title="Share">&nbsp;<i class="fas fa-share-alt"></i>&nbsp</a>
-                    <div class="sharing-links">
-                        <div class="inner">
-                            <div class="fb">
-                                <a href="javascript:;" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . Url::to('{{link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                   class="j-facebook j-linkedin share_btn tt" type="button" data-toggle="tooltip"
-                                   title="Share on Facebook">
-                                    <span><i class="fab fa-facebook-f"></i></span></a>
-                            </div>
-                            <div class="wts-app">
-                                <a href="javascript:;" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . Url::to('{{link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                   class="j-whatsapp share_btn tt" type="button" data-toggle="tooltip"
-                                   title="Share on Whatsapp">
-                                    <span><i class="fab fa-whatsapp"></i></span>
-                                </a>
-                            </div>
-                            <div class="tw">
-                                <a href="javascript:;" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . Url::to('{{link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                <div class="application-card-bottom">
+                    <a href="{{link}}" class="application-card-open" target="_blank" title="View Detail">View Detail</a>
+                    <div>
+                        <a href="javascript:;" class="application-card-add ji-plus-btn mr-10" title="Add to Review List">&nbsp;<i
+                                    class="fas fa-plus"></i>&nbsp;</a>
+                        <a href="javascript:;" class="share-b" title="Share">&nbsp;<i class="fas fa-share-alt"></i>&nbsp</a>
+                        <div class="sharing-links">
+                            <div class="inner">
+                                <div class="fb">
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="j-facebook j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                                       title="Share on Facebook">
+                                        <span><i class="fab fa-facebook-f"></i></span></a>
+                                </div>
+                                <div class="wts-app">
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="j-whatsapp share_btn tt" type="button" data-toggle="tooltip"
+                                       title="Share on Whatsapp">
+                                        <span><i class="fab fa-whatsapp"></i></span>
+                                    </a>
+                                </div>
+                                <div class="tw">
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
 
-                                   class="j-twitter share_btn tt" type="button" data-toggle="tooltip"
-                                   title="Share on Twitter">
-                                    <span><i class="fab fa-twitter"></i></span></a>
-                            </div>
-                            <div class="linkd">
-                                <a href="javascript:;" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to('{{link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                   class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
-                                   title="Share on LinkedIn">
-                                    <span><i class="fab fa-linkedin"></i></span></a>
-                            </div>
-                            <div class="male">
-                                <a href="javascript:;" onclick="window.open('<?= Url::to('mailto:?&body=' . Url::to('{{link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                   class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
-                                   title="Share via E-Mail">
-                                    <span><i class="far fa-envelope"></i></span></a>
-                            </div>
-                            <div class="tele">
-                                <a href="javascript:;" onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . Url::to('{{link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                                   class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
-                                   title="Share on Telegram">
-                                    <span><i class="fab fa-telegram-plane"></i></span></a>
+                                       class="j-twitter share_btn tt" type="button" data-toggle="tooltip"
+                                       title="Share on Twitter">
+                                        <span><i class="fab fa-twitter"></i></span></a>
+                                </div>
+                                <div class="linkd">
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                                       title="Share on LinkedIn">
+                                        <span><i class="fab fa-linkedin"></i></span></a>
+                                </div>
+                                <div class="male">
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('mailto:?&body=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                                       title="Share via E-Mail">
+                                        <span><i class="far fa-envelope"></i></span></a>
+                                </div>
+                                <div class="tele">
+                                    <a href="javascript:;"
+                                       onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . Url::to('{{share_link}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                       class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                                       title="Share on Telegram">
+                                        <span><i class="fab fa-telegram-plane"></i></span></a>
+                                </div>
+                                <div class="copy-app-link">
+                                    <a href="javascript:;" class="clipb tt detail-clipboard" type="button" data-toggle="tooltip"
+                                       title="Copy Link" data-link="{{link}}">
+                                        <i class="fas fa-clipboard"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -240,65 +247,6 @@ if ($type == 'jobs') {
 
 <?php
 $this->registerCss('
-.overlay {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0,0,0,0.5);
-  z-index: 2;
-  cursor: pointer;
-}
-.share-b {
-    background-color: #00a0e3;
-}
-.sharing-links {
-	position: absolute;
-	background-color: #eee;
-	left: 15%;
-	bottom: 65px;
-	border-radius: 6px;
-	text-align: center;
-	padding: 10px;
-	display: none;
-}
-.inner {
-    display: flex;
-}
-.fb {
-    background: #236dce;
-}
-.tw {
-    background-color: #1c99e9;
-}
-.linkd {
-    background-color: #0e76a8;
-}
-.male {
-    background-color: #BB001B;
-}
-.tele {
-    background-color: #0088cc;
-}
-.wts-app{
-    background-color:#4FCE5D;
-}
-.wts-app, .fb, .tw, .linkd, .male, .tele {
-	width: 30px;
-	text-align: center;
-	border-radius: 50px;
-	height: 30px;
-	font-size: 16px;
-	padding-top: 2px;
-	margin: 0 5px;
-}
-.wts-app a, .linkd a, .tw a, .fb a, .male a, .tele a {
-	color: #fff;
-}
-.share-b:hover .sharing-links, .sharing-links:hover{display:block !Important;}
 .near-me-map{
     float:right !important;
 }
@@ -508,34 +456,11 @@ body {
   scroll-behavior: smooth;
 }
 /*new card css*/
-.application-card-description{
-    margin:0 0 0 14px !important;
-    width:100% !important;
-}
-.application-card-description h5{
-    margin-top:0px !important;
-    margin-bottom: 8px !important;
-}
-.application-card-main {
-    background-color: transparent !important;
-    margin-bottom: 20px !important;
-    border-radius: 10px;
-}
-.mb-0{
-    margin-bottom: 0px !important;
-}
+
 .not-found{
     max-width: 400px;
     margin: auto;
     display: block;
-}
-.app-box {
-    text-align: left;
-    padding: 10px;
-    border-radius: 10px;
-    position:relative;
-    background:#fff;
-    min-width: 330px;
 }
 .img{
     max-width: 66px;
@@ -544,31 +469,7 @@ body {
     display: inline-block;
     padding-left: 13px;
 }
-.comps-name-1{
-    display: block;
-    vertical-align: middle;
-    padding-left: 12px;
-    padding-top: 15px;
-}
-.org_name{display:block;}
-.skill a{
-    color: black;
-    font-size: 18px;
-    font-weight: bold;
-}
-.comp-name{
-    font-weight: 700;
-    font-size: 15px;
-    color:#0173b2;
-    margin:0;
-    font-family:roboto;
-}
-.detail-loc{
-    margin-top:5px;
-}
-.location{
-    margin-right: 4px;
-}
+
 .fa-inr{
     color:lightgray;
     margin-right: 10px;
@@ -579,89 +480,216 @@ body {
 .show-responsive{
     display:none;
 }
-.job-fill{
-    padding: 5px 10px 4px !important;
-    margin: 3px !important;
-    background-color:#ff7803 !important;
-    color: #fff !important;
-    border-radius: 0px 10px 0px 10px !important;
-    float: right !important;
-    position:absolute;
-    right: 2px;
-    top: -13px;
-}
+
 .clear{
     clear:both;
 }
-.sal{
-    margin-right: 5px;
+.moveright{right:10% !important;}
+.app-box {
+    text-align: left;
+    padding: 22px 0 0;
+    border-radius: 8px;
+    position: relative;
+    background: #fff;
+    overflow: hidden;
+    box-shadow: 0 0 8px 0px #c7c7c7;
 }
-.salary{
+.app-card-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding:0 10px;
+    min-height:124px;
+}
+.job-fill {
+    padding: 2px 10px !important;
+    background-color: #63c6f0 !important;
+    color: #fff !important;
+    border-radius: 0px 10px 0px 8px !important;
+    position: absolute !important;
+    right: 0px !important;
+    top: 0px !important;
+    max-width: 200px;
+    letter-spacing: .3px;
+    font-size: 12px;
+}
+.application-card-img {
+    display: inline-block;
+//    box-shadow: 0 0 8px 0px #eee;
+//    border-radius: 50%;
+    overflow: hidden;
+    min-width: 90px;
+    text-align: center;
+    line-height: 85px;
+    height: 90px;
+    width: 90px;
+    margin-top:10px;
+}
+.application-card-img img, .application-card-img canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.ji-title a {
+    color: black;
+    font-size: 16px;
+    font-family:roboto;
+    font-weight: 500;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.comp-name{
+    font-weight: 700;
+    font-size: 15px;
+    color:#0173b2;
+    margin:0;
     font-family:roboto;
 }
-.tag-box{
-    border-top: 1px solid lightgray;
-    padding-left:15px;
-    padding-top:10px;
+.salary{ 
+    font-family:roboto;
+    text-transform: capitalize;
+    font-size:14px;
+    font-weight:500 !important;
+    margin:5px 0 0;
 }
-.tags{
-    font-size: 17px;
-    color:gray;
-    font-family: Georgia !important;
-}
-.after{
-    padding-right: 25px;
-    padding-left: 16px;
-}
-.after{
-    background: #eee;
-    border-radius: 3px 0 0 3px;
-    color: #777;
-    display: inline-block;
-    height: 26px;
-    line-height: 25px;
-    padding: 0 21px 0 11px;
+.application-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #ececec;
+    margin-top: 5px;
+    padding-right: 10px;
+    width:100%;
     position: relative;
-    margin: 0 9px 3px 0;
-    text-decoration: none;
-    -webkit-transition: color 0.2s;
 }
-.after::after{
-    background: #fff;
-    border-bottom: 13px solid transparent;
-    border-left: 10px solid #eee;
-    border-top: 13px solid transparent;
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-.city-box{
-    padding-bottom:5px;
-}
-.ADD-more{
-    background-color: #eeeeee;
-    padding: 4px 10px 4px 10px;
-    border-radius: 5px;
-}
-.img-main{
-    display: inline-block;
-}
-.comps-name-1{
-    float: none;
-    margin: 0px !important;
-}
-.more-skills{
-    background-color: #00a0e3;
+.ji-apply, .ji-apply:focus {
+    font-family: Roboto;
+    background-color: #ff7803;
     color: #fff;
-    padding: 5px 15px;
-    border-radius: 20px;
+    padding: 4px 0px;
+    font-weight: 500;
+    text-align: center;
+    display: inline-block;
+    width: 35%;
 }
-@media only screen and (max-width: 1200px) and (min-width:992px){
-.application-card-img{
-    margin-left: 5px;
-    margin-top: 20px;
+.application-card-open {
+    width: 35%;
+    text-align: center;
+    font-weight: 500;
+    font-family: Roboto;
+    display: inline-block;
+    padding: 4px 0;
+}
+
+.ji-plus-btn, .ji-plus-btn:focus, .ji-plus-btn:hover{
+    color: #ff7803;
+    width: 10%;
+    text-align: center;
+}
+.share-b, .share-b:focus, .share-b:hover {
+    color: #00a0e3;
+    width: 10%;
+    text-align: center;
+}
+.ji-apply:hover {
+    color: #fff;
+}
+.sharing-links {
+    width: calc(100% - 8%);
+    position: absolute;
+    height: 100%;
+    right: -90%;
+    bottom: 0px;
+    text-align: center;
+    background-color: #fff;
+    padding: 3px 4px;
+    transition:all .5s;
+}
+.salary, .comp-name, .salary a{
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.side-description {
+    width: calc(100% - 105px);
+    margin-left:15px;
+}
+.city
+{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.application-card-main {
+    margin-bottom: 20px !important;
+}
+.not-found{
+    max-width: 400px;
+    margin: auto;
+    display: block;
+}
+.img{
+    max-width: 66px;
+}
+.inner {
+    display: flex;
+    justify-content:center;
+}
+.wts-app i, .fb i, .tw i, .linkd i, .male i, .tele i, .copy-app-link i{
+    width: 25px;
+    text-align: center;
+    border-radius: 50px;
+    height: 25px;
+    font-size: 14px;
+    margin: 0 5px;
+    border: 1px solid transparent;
+    padding-top: 5px;
+    transition:all .3s;
+}
+.fb i {color: #236dce;}
+.fb i:hover {background-color: #236dce;}
+.tw i{color: #1c99e9;}
+.tw i:hover{background-color: #1c99e9;}
+.linkd i{color: #0e76a8;}
+.linkd i:hover{background-color: #0e76a8;}
+.male i{color: #BB001B;}
+.male i:hover{background-color: #BB001B;}
+.tele i{color: #0088cc;}
+.tele i:hover{background-color: #0088cc;}
+.wts-app i{color:#4FCE5D;}
+.wts-app i:hover{background-color:#4FCE5D;}
+.copy-app-link i{color:#22577A;}
+.copy-app-link i:hover{background-color:#22577A;}
+.wts-app i:hover, .linkd i:hover, .tw i:hover, .fb i:hover, .male i:hover, .tele i:hover, .copy-app-link i:hover{
+	color: #fff;
+}
+.share-b:hover .sharing-links, .sharing-links:hover{display:block !Important;}
+.mb-0{
+    margin-bottom: 0px !important;
+}
+/*cards-box css*/
+@media screen and (max-width: 1250px) and (min-width: 992px) {
+    .wts-app, .fb, .tw, .linkd, .male, .tele {
+        width: 22px;
+        height: 22px;
+        font-size: 12px;
+        margin: 0px 2px;
+        padding-top:1px;
     }
+    .sharing-links{padding:2px;}
+}
+@media screen and (max-width: 550px) {
+  .ji-apply, .application-card-open{
+    font-size:12px;
+    padding:6px 0;
+}
+}
+
+@media only screen and (max-width: 1200px) and (min-width:992px){
+
 #map{
     height:calc(50vh - 50px)
 }
@@ -721,6 +749,21 @@ body {
 ');
 $controller = Yii::$app->controller->id;
 $script = <<< JS
+$(document).on('click', '.detail-clipboard',function (event) {
+            event.preventDefault();
+            var link = window.location.hostname + $(this).attr('data-link');
+            CopyClipboard(link, true, "Link copied");
+        });
+function CopyClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
+
+
 $(window).animate({scrollTop:0}, '300');
 $('body').css('overflow','hidden');
 setTimeout(
@@ -892,7 +935,6 @@ function card(){
                     $('#near-me-cards').append(rendered);
                     utilities.initials();
                     vals.num += 20;
-                    checkSkills();
                     
                     if(response.length < 20){
                         $('#loadMore').hide();
@@ -944,22 +986,21 @@ $(document).on("click","#card-hover",function() {
         infowindow.close();
      }
     
-     var types = $(this).find('.type').text();
-     var salary = $(this).find('.salary').text();
+     var types = $(this).find('.salaryType').text();
+     var salary = $(this).find('.dataSalary').text();
      var lat = $(this).find('.location').attr('data-lat');
      var lon = $(this).find('.location').attr('data-long');
      var titles = $(this).find('.application-title').text();
      var locations =  $(this).find('.location').text();
-     var last_date = $(this).find('.last-date').attr('id');
-     var exp = $(this).find('.exp').text();
+     var exp = $(this).find('.dataExp').text();
      var company =  $(this).find('.comp-name').text();
-     var logo = $(this).find('.company_logo').attr('src');
-     var logo_color = $(this).find('.company-logo').attr('color');
+     var logo = $(this).find('.companyLogo').attr('src');
+     var logo_color = $(this).find('.companyLogo').attr('color');
      var link = $(this).find('.application-card-open').attr('href');
-     var org_link = $(this).find('#organization-slug').attr('href');
+     var org_link = $(this).find('.orgSlug').attr('href');
+     var dataSector = $(this).find('.dataSector').text();
      var application_id = $(this).attr('data-id');
      var application_key = $(this).attr('data-key');
-     var skills = $(this).find('.skills-main').html();
      var job_type = '$job_type';
      if(!logo){
         logo = '<canvas class="user-icon company-logo" name="'+$.trim(company)+'" width="80" height="80"color="'+logo_color+'" font="35px"></canvas>'
@@ -973,7 +1014,48 @@ $(document).on("click","#card-hover",function() {
          salary = '<h5 class="salary"><i class="fas fa-rupee-sign"></i>&nbsp;'+salary+'</h5>';
      }
      // var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"><div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main in-map"><span class="application-card-type location"><i class="fas fa-map-marker-alt"></i>&nbsp;'+locations+'</span><div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom"><div class="application-card-img"><a href="/'+org_slug+'">'+logo+'</a></div><div class="application-card-description"><a href="/'+job_type+'/'+slug+'"><h4 class="application-title">'+titles+'</h4></a><h5><i class="fas fa-rupee-sign"></i>&nbsp;'+salary+'</h5><h5 class="type">'+types+'</h5><h5 class="exp"><i class="far fa-clock"></i>&nbsp;'+exp+'</h5></div></div><h4 class="col-md-12 org_name text-right pr-10 company-name">'+company+'</h4><div class="application-card-wrapper"><a href="/'+job_type+'/'+slug+'" class="application-card-open">View Detail</a><a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a></div></div></div>';
-     var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"> <div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main shadow mb-0"> <div class="app-box"> <div class="row"> <div class="col-md-3"> <div class="application-card-img img-main"> <a href="'+org_link+'" title="'+company+'">'+logo+'</a> </div></div><div class="col-md-9"> <div class="comps-name-1 application-card-description"> <span class="skill"> <a href="'+link+'" title="'+titles+'" class="application-title capitalize org_name">'+titles+'</a></span> <a href="'+org_link+'" style="text-decoration:none;"> <h4 class="org_name comp-name org_name">'+company+'</h4> </a> </div><span class="job-fill application-card-type location city" data-lat="'+lat+'" data-long="'+lon+'"> <i class="fas fa-map-marker-alt"></i>&nbsp;'+locations+'</span> <div class="detail-loc"> <div class="application-card-description job-loc">'+salary+'<h5>'+types+'</h5><h5><i class="far fa-clock"></i>&nbsp;'+exp+'</h5></div><div class="clear"></div></div></div></div><div class="row">'+skills+'</div><div class="application-card-wrapper"> <a href="'+link+'" class="application-card-open" title="View Detail">View Detail</a> <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a> </div></div></div></div>';
+     var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0">' +
+      '<div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main mb-0">' +
+       '<div class="app-box pb-20">' +
+         '<div class="app-card-main">' +
+            '<div class="application-card-img">' +
+                '<a href="'+org_link+'" title="'+company+'">'+logo+'</a>' +
+            '</div>' +
+              '<div class="side-description">' +
+               '<div class="ji-title">' +
+                    '<a href="'+link+'" title="'+titles+'" class="application-title capitalize">'+titles+'</a>' +
+                '</div>' +
+               '<div class="ji-orgname">' +
+                    '<a href="'+org_link+'">' +
+                       '<h4 class="org_name comp-name org_name">'+company+'</h4>' +
+                    '</a>' +
+                '</div>' +
+               '<div class="ji-city">' +
+                    '<span class="job-fill application-card-type location city" data-lat="'+lat+'" data-long="'+lon+'">' +
+                        '<i class="fas fa-map-marker-alt"></i>&nbsp;'+locations+'' +
+                    '</span>' +
+                '</div>' +
+                 '<div class="ji-salarydata">' +
+                    '<h5 class="salary">'+salary+'</h5>' +
+                    // '<h5 class="salary">' +
+                    //     '<a href="'+link+'" target="_blank">' +
+                    //         '<i class="far fa-money-bill-alt"></i>' +
+                    //          'View In Details' +
+                    //     '</a>' +
+                    // '</h5>' +
+                    '<h5 class="salary">'+types+'</h5>' +
+                    '<h5 class="salary"><i class="far fa-clock"></i>&nbsp;'+exp+'</h5>'+
+                    '<h5 class="salary">'+dataSector+'</h5>' +
+                    '</div>' +
+                  '</div>' +
+                   '</div>' +
+                   //  '<div class="application-card-bottom">' +
+                   //      '<a href="'+link+'" class="application-card-open" title="View Detail">View Detail</a>' +
+                   //      '<a href="javascript:;" class="application-card-add ji-plus-btn" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>' +
+                   // '</div>' +
+                   '</div>' +
+               '</div>' +
+           '</div>';
      infowindow = new google.maps.InfoWindow({
       content: contentString
      });
@@ -1072,7 +1154,6 @@ function getReviewList(sidebarpage){
         data:{type:type},
         success: function(response) {
             reviewlists(response);
-            check_list();
             utilities.initials();
         }
     });
@@ -1148,47 +1229,35 @@ $(document).on('click','.jd-close', function(){
 });
 var ps = new PerfectScrollbar('.near-me-filters');
 
-function checkSkills(){
-    $('.application-card-main').each(function(){
-       var elems = $(this).find('.after');
-       var i = 0;
-       $(elems).each(function() {
-            if($(this).width() > 100 && $(this).text() != 'Multiple Skills' || i >= 2){
-                $(this).addClass('hidden');
-            }
-            i++;
-       });
-       var skillsMain = $(this).find('.tags');
-       var hddn = $(this).find('.after.hidden');
-       var hasMore = $(this).find('span.more-skills');
-       if(hddn.length != 0){
-           if(elems.length === hddn.length){
-               $(elems[0]).removeClass('hidden');
-               var countMore = hddn.length - 1;
-               if(countMore != 0 && hasMore.length == 0){
-                   skillsMain.append('<span class="more-skills">+ ' + countMore + '</span>');
-               }
-           } else if(hasMore.length == 0) {
-                skillsMain.append('<span class="more-skills">+ ' + hddn.length + '</span>');
-           }
-       }
-    });
-}
 $(document).on('click', '.share-b', function(){
-    $(this).next().slideToggle(); 
     let parentElem = $(this).parentsUntil('.app-box').parent();
-    $(parentElem).find('.overlay').toggleClass('hidden');
-});
+    $(parentElem).find('.sharing-links').toggleClass('moveright');
+    });
+
 $(document).on('mouseleave', '.app-box', function(){
-    $(this).find('.sharing-links').css('display', 'none');
-    $(this).find('.overlay').addClass('hidden');
+    $(this).find('.sharing-links').removeClass('moveright');
 });
+
+$(document).on('click', '.applyApplicationNow', function() {
+    $('#applyModalData').html('<div class="p-20"><i class="fas fa-circle-notch fa-spin fa-fw"></i> Loading...</div>')
+    let app_id = $(this).attr('data-app');
+    let org_id = $(this).attr('data-org');
+    $('#job-apply-widget-modal').modal('show');
+     $.ajax({
+            method: "POST",
+            url : "/jobs/application-apply-modal",
+            data:{app_id:app_id,org_id:org_id},
+            success: function(response) {
+                $('#applyModalData').html(response);
+            }
+    })
+})
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/css/ion.rangeSlider.min.css');
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
-$this->registerJsFile('@backendAssets/global/scripts/app.min.js');
+$this->registerJsFile('@backendAssets/global/scripts/app.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js', ['depends' => [JqueryAsset::className()]]);

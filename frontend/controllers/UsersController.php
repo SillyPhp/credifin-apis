@@ -3,8 +3,11 @@
 namespace frontend\controllers;
 
 use common\models\AppliedApplications;
+use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Cities;
+use common\models\EmployerApplications;
+use common\models\ShortlistedApplicants;
 use common\models\States;
 use common\models\UserAchievements;
 use common\models\UserEducation;
@@ -144,11 +147,13 @@ class UsersController extends Controller
                 'ROUND(DATEDIFF(CURDATE(),
                  a.dob)/ 365.25) as age',
                 'b.name as city',
-                'c.name as job_profile'
+                'c.name as job_profile',
+                'IF(d.candidate_enc_id != "", "true", "false") as is_shortlisted'
             ])
             ->leftJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
             ->leftJoin(Categories::tableName() . 'as c', 'c.category_enc_id = a.job_function')
-            ->where(['username' => $username, 'status' => 'Active', 'is_deleted' => 0])
+            ->leftJoin(ShortlistedApplicants::tableName() . 'as d', 'd.candidate_enc_id = a.user_enc_id')
+            ->where(['a.username' => $username, 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->asArray()
             ->one();
 
@@ -199,6 +204,34 @@ class UsersController extends Controller
                 ->andWhere(['z.applied_application_enc_id' => $id, 'z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->asArray()
                 ->one();
+            $userAppliedData = AppliedApplications::find()
+                ->alias('z')
+                ->select(['z.*','ag.name as category', 'af.name as parent', 'bb.slug', 'aa.name as type', 'af.icon'])
+                ->joinWith(['applicationEnc bb' => function ($bb) {
+                    $bb->joinWith(['applicationTypeEnc aa'], false);
+                    $bb->joinWith(['title ac' => function ($ac) {
+                        $ac->joinWith(['categoryEnc ag']);
+                        $ac->joinWith(['parentEnc af']);
+                    }], false);
+                }], false)
+                ->andWhere(['z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'bb.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->andWhere(['not', ['z.applied_application_enc_id' => $id]])
+                ->asArray()
+                ->all();
+        } else{
+            $userAppliedData = AppliedApplications::find()
+                ->alias('z')
+                ->select(['z.*','ag.name as category', 'af.name as parent', 'bb.slug', 'aa.name as type', 'af.icon'])
+                ->joinWith(['applicationEnc bb' => function ($bb) {
+                    $bb->joinWith(['applicationTypeEnc aa']);
+                    $bb->joinWith(['title ac' => function ($ac) {
+                        $ac->joinWith(['categoryEnc ag']);
+                        $ac->joinWith(['parentEnc af']);
+                    }]);
+                }], false)
+                ->andWhere(['z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'bb.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->asArray()
+                ->all();
         }
         $education = UserEducation::find()
             ->where(['user_enc_id' => $user['user_enc_id']])
@@ -242,6 +275,7 @@ class UsersController extends Controller
             'language' => $language,
             'userCv' => $userCv,
             'userApplied' => $userApplied,
+            'userAppliedData' => $userAppliedData,
             'job_preference' => $job_preference,
             'internship_preference' => $internship_preference,
             'education' => $education,
@@ -250,7 +284,8 @@ class UsersController extends Controller
             'hobbies' => $hobbies,
             'interests' => $interests,
             'slug' => $slug,
-            'profileProcess' => $profileProcess
+            'profileProcess' => $profileProcess,
+            'available_applications' => $this->getApplications(),
         ];
 
         if (Yii::$app->user->isGuest) {
@@ -303,12 +338,33 @@ class UsersController extends Controller
         }
     }
 
+
+    private function getApplications()
+    {
+        if(Yii::$app->user->identity->organization->organization_enc_id) {
+            $employer_applications = EmployerApplications::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.title', 'c.category_enc_id', 'd.name', 'e.name application_type'])
+                ->joinWith(['title c' => function ($x) {
+                    $x->joinWith(['categoryEnc d'], false);
+                }], false)
+                ->joinWith(['organizationEnc b'], false)
+                ->joinWith(['applicationTypeEnc e'], false)
+                ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.application_for' => 1])
+//            ->andWhere(['c.assigned_to' => $type])
+                ->asArray()
+                ->all();
+
+            return $employer_applications;
+        }
+    }
+
     public function actionUpdateBasicDetail()
     {
         $basicDetails = new UserProfileBasicEdit();
         if ($basicDetails->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            if ($basicDetails->update()) {
+            if ($basicDetails->update(Yii::$app->request->post())) {
                 $response = [
                     'status' => 'success',
                     'title' => 'Success',
@@ -395,9 +451,92 @@ class UsersController extends Controller
             } catch (\Exception $e) {
                 return [
                     'status' => 500,
-                    'message' => 'an error occurred'
+                    'message' => $e->getMessage()
                 ];
             }
+        }
+    }
+    public function actionUpdateUser()
+    {
+        if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $params = Yii::$app->request->post();
+            $user = Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
+            if (isset($params['skills']) && !empty($params['skills'])) {
+
+            } elseif (isset($params['languages']) && !empty($params['languages'])) {
+
+            } elseif (isset($params['job_title']) && !empty($params['job_title'])) {
+                $category_execute = Categories::find()
+                    ->alias('a')
+                    ->where(['name' => $params['job_title']]);
+                $chk_cat = $category_execute->asArray()->one();
+                if (empty($chk_cat)) {
+                    $categoriesModel = new Categories;
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+                    $categoriesModel->name = $params['job_title'];
+                    $utilitiesModel->variables['name'] = $params['job_title'];
+                    $utilitiesModel->variables['table_name'] = Categories::tableName();
+                    $utilitiesModel->variables['field_name'] = 'slug';
+                    $categoriesModel->slug = $utilitiesModel->create_slug();
+                    $categoriesModel->created_on = date('Y-m-d H:i:s');
+                    $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    if ($categoriesModel->save()) {
+                        if($id = $this->addNewAssignedCategory($categoriesModel->category_enc_id, $user)){
+                            $params['job_function'] = $categoriesModel -> category_enc_id;
+                        }
+                        $this->addNewAssignedCategory($categoriesModel->category_enc_id, $user);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    $chk_assigned = $category_execute
+                        ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                        ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id', 'b.parent_enc_id', 'b.assigned_to'])
+                        ->andWhere(['not', ['b.parent_enc_id' => null]])
+                        ->andWhere(['b.assigned_to' => 'Profiles', 'b.parent_enc_id' => $this->category])
+                        ->asArray()
+                        ->one();
+                    if (empty($chk_assigned)) {
+                        $this->addNewAssignedCategory($chk_cat['category_enc_id'], $user);
+                    } else {
+                        $user->job_function = $chk_assigned['category_enc_id'];
+                        $user->asigned_job_function = $chk_assigned['assigned_category_enc_id'];
+                    }
+                }
+            } else {
+                if (isset($params['dob']) && !empty($params['dob'])){
+                    $params['dob'] = date('Y-m-d', strtotime($params['dob']));
+                }else if(isset($params['year']) && isset($params['month'])){
+                    $params['experience'] = json_encode([$params['year'], $params['month']]);
+                    unset($params['year']);
+                    unset($params['month']);
+                }
+                if (!$user->updateAttributes($params)) {
+                    return ['status' => 500, 'title' => 'error', 'isSaved' => 0];
+                }
+                return ['status' => 200, 'title' => 'success', 'isSaved' => 1];
+            }
+        }
+    }
+
+    private function addNewAssignedCategory($category_id, $profile)
+    {
+        $assignedCategoryModel = new AssignedCategories();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $assignedCategoryModel->assigned_category_enc_id = $utilitiesModel->encrypt();
+        $assignedCategoryModel->category_enc_id = $category_id;
+        $assignedCategoryModel->parent_enc_id = $profile;
+        $assignedCategoryModel->assigned_to = 'Profiles';
+        $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
+        $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
+        if ($assignedCategoryModel->save()) {
+            return $assignedCategoryModel -> assigned_category_enc_id;
+        } else {
+            return false;
         }
     }
 

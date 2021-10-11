@@ -46,7 +46,7 @@ class ReviewedApplicationsController extends Controller{
                     ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
                     ->leftJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
                     ->leftJoin(ApplicationPlacementLocations::tablename() . 'as f', 'f.application_enc_id = a.application_enc_id')
-                    ->andwhere(['b.is_deleted' => 0])
+                    ->andwhere(['b.is_deleted' => 0, 'b.application_for' =>1, 'b.status' => 'Active'])
                     ->joinWith(['applicationEnc g' => function($g){
                         $g->distinct();
                         $g->joinWith(['applicationTypeEnc h']);
@@ -63,7 +63,6 @@ class ReviewedApplicationsController extends Controller{
                     'cards' => $review_list,
                     'status' => 200,
                     'title' => 'Success',
-                    'message' => 'Your Experience has been added.',
                 ];
             } else {
                 return [

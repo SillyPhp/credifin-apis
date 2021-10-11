@@ -77,6 +77,13 @@ color: #2b7cb7;
 .main-content{
     min-height:100vh !important;
 }
+@media screen and (max-width: 1250px) and (min-width: 992px) {
+    .ji-apply{padding:5px;}
+    .application-card-bottom a {
+        font-size: 11px;
+    }
+    .sharing-links{padding:4px;}
+}
 ');
 ?>
 
@@ -90,11 +97,10 @@ color: #2b7cb7;
                 ?>
             </div>
             <div class="col-md-10 col-sm-9 col-xs-12">
-                <?=
-                $this->render('/widgets/search-bar1',['type'=>'jobs']);
-                ?>
-
                 <div class=" col-md-12 col-sm-12">
+                    <?=
+                    $this->render('/widgets/search-bar1',['type'=>'jobs']);
+                    ?>
                     <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
                     <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>
                     <a href="#" id="loadMore"

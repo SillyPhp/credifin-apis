@@ -31,14 +31,44 @@ use yii\widgets\Pjax;
                                     <div class="topic-con"> 
                                         <div class="hr-company-box">
                                             <div class="hr-com-icon">
-                                                <img src="<?= Url::to('@commonAssets/categories/' . $review["icon"]); ?>" class="img-responsive ">
+                                                <?php
+                                                if($review['unclaimed_organization_enc_id'] != null){
+                                                    $unclaimed_organization_enc_id = \common\models\UnclaimedOrganizations::findOne(['organization_enc_id' => $review['unclaimed_organization_enc_id']]);
+                                                    if ($unclaimed_organization_enc_id->logo) {
+                                                        $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $unclaimed_organization_enc_id->logo_location . DIRECTORY_SEPARATOR . $unclaimed_organization_enc_id->logo;
+                                                    } else {
+                                                        $organizationLogo = "https://ui-avatars.com/api/?name=" . $unclaimed_organization_enc_id->name . "&size=200&rounded=false&background=" . str_replace("#", "", $unclaimed_organization_enc_id->initials_color) . "&color=ffffff";
+                                                    }
+                                                }else {
+                                                    if ($review['logo']) {
+                                                        $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $review['logo_location'] . DIRECTORY_SEPARATOR . $review['logo'];
+                                                    } else {
+                                                        $organizationLogo = "https://ui-avatars.com/api/?name=" . $review['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $review['initials_color']) . "&color=ffffff";
+                                                    }
+                                                }
+                                                ?>
+                                                <img src="<?= $organizationLogo ?>" class="img-responsive ">
                                             </div>
-                                            <div class="hr-com-name">
-                                                <?= $review['title']; ?>
+                                            <div class="hr-com-name job-title-name">
+                                                <?= ((!empty($review['org_name'])) ? $review['org_name'] : $review['unclaim_org_name']); ?>
                                             </div>
-                                            <div class="hr-com-field"></div>
+                                            <div class="merge-name-icon">
+                                                <div class="cat-icon">
+                                                    <img src="<?= Url::to('@commonAssets/categories/' . $review["icon"]); ?>"
+                                                         class="img-responsive ">
+                                                </div>
+                                                <div class="hr-com-field">
+                                                    <?= $review['title']; ?>
+                                                </div>
+                                            </div>
                                             <div class="opening-txt">
-                                                <?= $review["positions"]; ?> Openings
+                                                <?php
+                                                if($review['positions'] || $review['unclaim_positions']){
+                                                    ?>
+                                                    <?= (($review['positions']) ? $review['positions'] : $review['unclaim_positions']); ?> Openings
+                                                    <?php
+                                                }
+                                                ?>
                                             </div>
                                             <div class="overlay2">
                                                 <div class="text-o">
@@ -47,6 +77,10 @@ use yii\widgets\Pjax;
                                                     <?php }else{?>
                                                         <a href="/job/<?= $review['slug']; ?>" class="over-bttn ob1 hover_short apply-btn">Apply</a>
                                                     <?php } ?>
+                                                    <a class="over-bttn ob2 shortlist"
+                                                       id="<?= $review['slug']; ?>" data-key="<?= $review['application_enc_id']; ?>">
+                                                        <span class="hover-change"><i class="fa fa-heart-o"></i> Shortlist</span>
+                                                    </a>
                                                 </div>
                                             </div>
                                             <div class="hr-com-jobs">
@@ -94,6 +128,27 @@ use yii\widgets\Pjax;
 
 <?php
 $this->registerCss('
+.merge-name-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:0 10px;
+}
+.cat-icon img {
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    object-fit: contain;
+    margin-right:5px;
+}
+.hr-com-icon img {
+//    border-radius: 50% !important;
+    object-fit: contain;
+    overflow: hidden;
+}
+.hr-com-name.job-title-name {
+    padding: 0;
+}
 .j-grid > a {
     font-family: Open Sans;
     font-size: 11px;
@@ -104,15 +159,16 @@ $this->registerCss('
     -ms-border-radius: 20px !important;
     -o-border-radius: 20px !important;
     border-radius: 20px !important;
-    margin:10px 0;
+    margin:0 0 10px 0;
     padding: 6px 12px;  
 }
-.hr-com-field{height:21px;}
+.hr-com-field{height:22px;}
 .opening-txt {
     padding-top: 2px;
     padding-bottom: 10px;
     font-size: 14px;
     color: #080808;
+    height:31px;
 }
 .hr-company-box{padding: 20px 0px !Important;padding-bottom:0px !Important;}
 .hr-com-jobs{margin-top:0px !important;padding: 10px 0 0px !Important;}
@@ -149,7 +205,7 @@ a:hover{
   top: 0px;
   left: 0;
   right: 0;
-  background: rgba(208, 208, 208, 0.5);
+  background: rgb(64 63 63 / 50%);;
   overflow: hidden;
   width: 100%;
   height: 0;
@@ -160,14 +216,26 @@ a:hover{
   border-radius:10px 10px 0px 0px !important;
 }
 button.over-bttn, .ob1, button.over-bttn, .ob2{
-    background:#00a0e3 !important; 
-    border:2px solid #00a0e3; 
-    border-radius:5px !important;
+    background:#00a0e3; 
+    border:1px solid #00a0e3; 
+    border-radius:4px !important;
     padding:6px 12px;
     color:#fff;
+    font-family:roboto;
 }
 button.over-bttn, .ob2{
     background:#ff7803 !important; 
+    border: 1px solid #ff7803;
+}                  
+.ob1:hover{
+    background:#fff !important;
+    color:#00a0e3; 
+    transition:.3s all;
+}                 
+.ob2:hover{
+    background:#fff !important; 
+    color:#ff7803; 
+    transition:.3s all;
 }
 .tab-empty{
     padding:20px;

@@ -360,58 +360,35 @@ $EducationalLoanForm = ActiveForm::begin([
                         help you plan your education.
                         With offers that provide up to 100% of your required loan amount, planning for your education
                         is now more easier than ever.
+                        <p>More Than 20+ Lenders</p>
                     </div>
                     <div class="cl-icon">
-                        <p>Our Lenders</p>
-                        <ul>
-                            <li>
-                                <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?>">
-                                            </span>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="widget-benfit">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-minimal-paper-work.png') ?>">
+                                    <p>Minimal Paper Work</p>
                                 </div>
-                            </li>
-                            <li>
-                                <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?>">
-                                            </span>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="widget-benfit">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-faster-processing-time.png') ?>">
+                                    <p>Faster Processing Time</p>
                                 </div>
-                            </li>
-                            <li>
-                                <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?>">
-                                            </span>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="widget-benfit">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-approval-in-minutes.png') ?>">
+                                    <p>Approval In Minutes</p>
                                 </div>
-                            </li>
-                            <li>
-                                <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?>">
-                                            </span>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="widget-benfit">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-quick-disbursement.png') ?>">
+                                    <p>Quick Disbursement</p>
                                 </div>
-                            </li>
-                            <li>
-                                <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?>">
-                                            </span>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>">
-                                            </span>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="lender-icon">
-                                    <span class="li-text">+10 More</span>
-                                </div>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -422,6 +399,23 @@ $EducationalLoanForm = ActiveForm::begin([
 </section>
 <?php
 $this->registerCss('
+.widget-benfit{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 30px;
+}
+.widget-benfit img{
+    max-width: 60px;
+    margin-bottom: 10px;
+}
+.widget-benfit p{
+    color: #fff;
+    font-size: 16px;
+    line-height: 20px;
+    
+} 
 .form-start{
     max-width:400px;
     margin: 0 auto;

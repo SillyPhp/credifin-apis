@@ -100,7 +100,7 @@ if (!empty($total_applications)) {
                                title="Share on Telegram">
                                 <i class="fa fa-telegram"></i>
                             </a>
-                            <a href="javascript:;" class="clipb tt" type="button" data-toggle="tooltip"
+                            <a href="javascript:;" class="clipb tt jj-clipboard" type="button" data-toggle="tooltip"
                                title="Copy Link" data-link="<?= $link ?>">
                                 <i class="fa fa-clipboard"></i>
                             </a>
@@ -114,12 +114,31 @@ if (!empty($total_applications)) {
                                    data-id="<?= $applications[$next]['application_enc_id'] ?>"
                                    data-date="<?= date("d-m-Y", strtotime($application['last_date'])); ?>">
                                     <div class="expring-btn" data-toggle="tooltip" title="Extend Date">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/expired-job4.png') ?>"
-                                             alt="expring icon">
+                                        <svg width="20px" height="20px" viewBox="0 0 73 88" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                            <g id="hourglass">
+                                                <path d="M63.8761664,86 C63.9491436,84.74063 64,83.4707791 64,82.1818182 C64,65.2090455 57.5148507,50.6237818 48.20041,44 C57.5148507,37.3762182 64,22.7909545 64,5.81818182 C64,4.52922091 63.9491436,3.25937 63.8761664,2 L10.1238336,2 C10.0508564,3.25937 10,4.52922091 10,5.81818182 C10,22.7909545 16.4851493,37.3762182 25.79959,44 C16.4851493,50.6237818 10,65.2090455 10,82.1818182 C10,83.4707791 10.0508564,84.74063 10.1238336,86 L63.8761664,86 Z" id="glass" fill="#ddd"></path>
+                                                <rect id="top-plate" fill="#333" x="0" y="0" width="74" height="8" rx="2"></rect>
+                                                <rect id="bottom-plate" fill="#333" x="0" y="80" width="74" height="8" rx="2"></rect>
+                                                <g id="top-sand" transform="translate(18, 21)">
+                                                    <clipPath id="top-clip-path" fill="white">
+                                                        <rect x="0" y="0" width="38" height="21"></rect>
+                                                    </clipPath>
+                                                    <path fill="#00a0e3" clip-path="url(#top-clip-path)" d="M38,0 C36.218769,7.51704545 24.818769,21 19,21 C13.418769,21 1.9,7.63636364 0,0 L38,0 Z"></path>
+                                                </g>
+                                                <g id="bottom-sand" transform="translate(18, 55)">
+                                                    <clipPath id="bottom-clip-path" fill="white">
+                                                        <rect x="0" y="0" width="38" height="21"></rect>
+                                                    </clipPath>
+                                                    <g clip-path="url(#bottom-clip-path)">
+                                                        <path fill="#00a0e3" d="M0,21 L38,21 C36.1,13.3636364 24.581231,0 19,0 C13.181231,0 1.781231,13.4829545 0,21 Z"></path>
+                                                    </g>
+                                                </g>
+                                            </g>
+                                        </svg>
                                     </div>
                                 </a>
                                 <div class="exp-soon-msg">
-                                    Expring Soon
+                                    <?= $type ?> Expiring Soon
                                 </div>
                             </div>
                             <?php
@@ -153,10 +172,10 @@ if (!empty($total_applications)) {
                             </div>
                         </a>
                         <div class="hr-com-jobs">
-                            <a href="<?= Url::to($applications[$next]["link"], true); ?>" data-toggle="tooltip"
-                               class="detail-clg"
-                               title="View Details"><i
-                                        class="fa fa-info-circle"></i></a>
+                            <a href="javascript:;" onclick="window.open('<?= Url::to($applications[$next]["link"], true); ?>', '_blank');"
+                               class="detail-clg" title="View Details">
+                                <i class="fa fa-info-circle"></i>
+                            </a>
                             <div class="appl">
                                 <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $applications[$next]['application_enc_id'], true); ?>">
                                     <?php
@@ -211,19 +230,60 @@ Pjax::end();
 
 <?php
 $this->registerCss(" 
+@keyframes top-clip {
+	0%{}
+	50%{transform: translateY(21px);}
+	100%{transform: translateY(21px);}
+}
+@keyframes bottom-sand-path {
+	0%{}
+	50%{transform: translateY(0);}
+	100%{transform: translateY(0);}
+}
+@keyframes bottom-sand-g {
+	0%{}
+	85%{transform: translateY(0);}
+	100%{transform: translateY(-8px);}
+}
+@keyframes hourglass-rotation {
+	50%{transform: rotateZ(0);}
+	100%{transform: rotateZ(180deg);}
+}
+#top-sand #top-clip-path rect,
+#bottom-sand path,
+#bottom-sand g,
+.expring-btn svg {
+	animation-duration: 5s;
+	animation-delay: 1s;
+	animation-iteration-count: infinite;
+}
+#top-sand #top-clip-path rect {
+	animation-name: top-clip;
+}
+#bottom-sand path {
+	transform: translateY(21px);
+	animation-name: bottom-sand-path;
+}
+#bottom-sand g {
+	animation-name: bottom-sand-g;
+}
+.expring-btn svg{
+	animation-name: hourglass-rotation;
+}
 .lf-bttn{
     transition:all .3s;
     opacity:0;
     left:0;
+    top:5px;
 }
 .hr-company-box:hover > .lf-bttn{
-    left:13px;
+    left:0px;
     opacity:1;
 }
 .lf-bttn a{
     display:block;
     padding:5px 7px;
-    border-radius: 0 0 8px 0;
+    border-radius: 0 8px 8px 0;
 }
 .fb-book{color:#3b5998;}
 .fb-book:hover{background-color:#3b5998;color:#fff;}
@@ -242,6 +302,7 @@ $this->registerCss("
 
 .hr-com-name{
     padding:10px 15px 0 15px;
+    text-transform:capitalize;
 }
 .detail-clg{flex-basis:10%;}
 .appl a span {
@@ -313,21 +374,22 @@ $this->registerCss("
     min-width:80px;
     max-width:150px;
 }
-.exp-soon-msg{
-     box-shadow: 0 0 10px rgba(0,0,0,.2);
+.exp-soon-msg.exp-soon-msg {
+    box-shadow: 0 0 10px rgb(0 0 0 / 20%);
     padding: 5px;
     position: absolute;
-    top: 51px;
-    right: -2px;
-    max-width: 60px;
-    font-size: 12px;
+    top: 58px;
+    right: 4px;
+    max-width: 80px;
+    font-size: 11px;
+    font-family: roboto;
+    font-weight:500;
     border-radius: 0 5px 5px;
-    display:none;
-    
-     -webkit-animation: myOrbit 4s linear infinite; /* Chrome, Safari 5 */
-       -moz-animation: myOrbit 4s linear infinite; /* Firefox 5-15 */
-         -o-animation: myOrbit 4s linear infinite; /* Opera 12+ */
-            animation: myOrbit 4s linear infinite; /* Chrome, Firefox 16+, IE 10+, Safari 5 */
+    display: none;
+    -webkit-animation: myOrbit 4s linear infinite;
+    -moz-animation: myOrbit 4s linear infinite;
+    -o-animation: myOrbit 4s linear infinite;
+    animation: myOrbit 4s linear infinite;
 }
 @-webkit-keyframes myOrbit {
     from { -webkit-transform: rotate(0deg) translateX(2px) rotate(0deg); }
@@ -356,9 +418,9 @@ $this->registerCss("
     animation-play-state: paused !important;
     transform: scale(1) !important;
 }
-.exp-soon-main:hover .exp-soon-msg  {
-    display:none !important;
-}
+//.exp-soon-main:hover .exp-soon-msg  {
+//    display:none !important;
+//}
 .expring-btn img{
    animation: BigSmall .5s linear infinite;
 }
@@ -369,7 +431,7 @@ $this->registerCss("
 .expring-btn{
     position:absolute;
     top:35px;
-    right:50px;
+    right:35px;
 }
 
 .tab-empty{
@@ -501,7 +563,7 @@ $(document).on('click','.j-closed',function(e){
          });
 });
 
-        $(document).on('click', '.j-clipboard',function (event) {
+        $(document).on('click', '.jj-clipboard',function (event) {
             event.preventDefault();
             var link = $(this).attr('data-link');
             CopyToClipboard(link, true, "Link copied");

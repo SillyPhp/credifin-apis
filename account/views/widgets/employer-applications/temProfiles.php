@@ -1,6 +1,8 @@
 <?php
 use yii\helpers\Url;
 Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEAD);
+$oppType = $type == 'internships' ? 'Internship' : 'Job';
+
 ?>
 <!--light box-->
 <div id="job_profile_light">
@@ -15,7 +17,7 @@ Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEA
                                 <a href="<?= Url::to('/account/dashboard')?>" id="wizard-back-cont" type="button" class="btn btn-primary wizard-back-cont">
                                     <i class="fa fa-arrow-left" aria-hidden="true"></i> Back To Dashboard
                                 </a>
-                                <h3 class="text-center" style="font-family: roboto;">Select Profile For Your Job</h3>
+<!--                                <h3 class="text-center" style="font-family: roboto;">Select Profile For Your --><?//= $oppType ?><!--</h3>-->
                             </div>
                         </div>
                     </div>
@@ -34,7 +36,7 @@ Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEA
                                 </div>
                             </div>
                 <div class="tab_pane" id="tab_index_2">
-                        <h3 class="text-center" id="choose_temp" style="font-family: roboto;">We Have Some Awsome Templates To Make Your Job Process Faster, Check Out..</h3>
+                        <h3 class="text-center" id="choose_temp" style="font-family: roboto;">We Have Some Awesome Templates To Make Your <?= $oppType ?> Process Faster, Check Out..</h3>
                     <div class="load-suggestions">
                         <span></span>
                         <span></span>
@@ -86,16 +88,13 @@ Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEA
 <!--light box-->
 <?php
 $this->registerCss("
-.disFlex{
+.disFlex {
     position: relative;
-    text-align: center;
-}
-.disFlex a{
-    position: absolute !important;
-    left:10px;
+    margin: 20px 0 0 20px;
+    text-align: left;
 }
 .margin_right{
-margin: 0 6px;
+    margin: 0 6px;
 }
 #no_temp{
     position: absolute;
@@ -108,58 +107,52 @@ margin: 0 6px;
     height: 100%;
     height: 100%;
 }
-.service-list {
-        display: inline-block;
-        min-width: 90px;
-        text-align: center;
-        margin: 2px 5px;
-    }
+.service-list > label {
+    width: 100%;
+    display: inline-block;
+    background-color: rgba(255, 255, 255, .9);
+    border: 2px solid rgba(139, 139, 139, .3);
+    color: #333;
+    font-weight:normal;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin: 3px 0px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all .2s;
+}
 
-    .service-list > label {
-        width: 100%;
-        display: inline-block;
-        background-color: rgba(255, 255, 255, .9);
-        border: 2px solid rgba(139, 139, 139, .3);
-        color: #333;
-        font-weight:normal;
-        border-radius: 4px;
-        white-space: nowrap;
-        margin: 3px 0px;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        -webkit-tap-highlight-color: transparent;
-        transition: all .2s;
-    }
-
-    .service-list > label {
-        padding: 8px 5px;
-        cursor: pointer;
-    }
-    .relationList {
+.service-list > label {
+    padding: 8px 5px;
+    cursor: pointer;
+}
+.relationList {
     padding: 20px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
 }
 
-    .service-list > input[type='radio']:checked + label, .service-list > label:hover {
-        border: 2px solid #00a0e3;
-        background-color: #00a0e3;
-        color: #fff;
-        transition: all .2s;
-    }
+.service-list > input[type='radio']:checked + label, .service-list > label:hover {
+    border: 2px solid #00a0e3;
+    background-color: #00a0e3;
+    color: #fff;
+    transition: all .2s;
+    transform: scale(1.03);
+}
 
-    .service-list > input {
-        position: absolute;
-        opacity: 0;
-    }
+.service-list > input {
+    position: absolute;
+    opacity: 0;
+}
 
-    .service-list > input[type='radio']:focus + label {
-        border: 2px solid #00a0e3;
-    }
+.service-list > input[type='radio']:focus + label {
+    border: 2px solid #00a0e3;
+}
 
 .light-box-modal{
     position: fixed;
@@ -228,15 +221,16 @@ margin: 0 6px;
 .service-list {
     display: inline-block;
     min-width: 120px;
-    margin: 0 5px;
+    margin: 0 5px 5px;
     text-align: left;
-    width: 230px;
+    width: 280px;
 }
 .service-list label{
     width: 100%;
     display: inline-block;
-    background-color: rgba(255, 255, 255, .9);
-    border: 2px solid rgba(139, 139, 139, .3);
+    background-color: rgb(253 251 251 / 90%);
+    border: 2px solid rgb(249 246 246 / 30%);
+    box-shadow: 0 2px 4px 0 #e5e1e1;
     color: #333;
     border-radius: 4px;
     white-space: nowrap;
@@ -249,14 +243,23 @@ margin: 0 6px;
     -webkit-tap-highlight-color: transparent;
     transition: all .2s;
 }
+.service-list img {
+    margin-right: 15px;
+}
 
 .service-list label {
-    padding: 8px 12px;
+    display: flex;
+    padding: 10px 12px;
     cursor: pointer;
-    text-align:center;
+    text-align: center;
+    align-items: center;
+    color: #706c6c;
 }
 .service-list label > div {
+    font-weight: 500;
     margin: 8px 0;
+    font-family: 'Roboto';
+    letter-spacing: 0.3px;
 }
 .service-list label::before {
     display: inline-block;
@@ -381,14 +384,15 @@ $script = <<< JS
         goNext(p);
  })
  function goNext(id) {
-         tabs1.hide();
-         ajaxFunction(id);
-         tabs2.show();
-         Btback.show();
-         BtContinue.show();
-         BTskip.show();
-         BTnext.hide();
+    tabs1.hide();
+    ajaxFunction(id)
+    tabs2.show();
+    // Btback.show();
+    // BtContinue.show();
+    // BTskip.show();
+    // BTnext.hide();
  }
+ 
  $(document).on('click','#tab_key_back',function(e) {
    e.preventDefault();
     var tabs1 = $('#tab_index_1');
@@ -414,46 +418,56 @@ $script = <<< JS
          }
      }else {window.location.href = '/account/'+type+'/'+$('#hidden_profile').val()+'/create';   }
  }); 
-  $(document).on('click','#tab_key_skip',function(e) {
+$(document).on('click','#tab_key_skip',function(e) {
    e.preventDefault();
    skipable();
    })
-   
+
  function skipable() {
    swal({
-                        title: "",
-                        text: "Continue Without Template ?",
-                        type:'warning',
-                        showCancelButton: true,  
-                        confirmButtonClass: "btn-primary",
-                        confirmButtonText: "Yes",
-                        closeOnConfirm: true, 
-                        closeOnCancel: true
-                         },
-                            function (isConfirm) { 
-                             if (isConfirm){
-                              window.location.href = '/account/'+type+'/'+$('#hidden_profile').val()+'/create';   
-                             }
-                         }
-                        );
+    title: "",
+    text: "Continue Without Template ?",
+    type:'warning',
+    showCancelButton: true,  
+    confirmButtonClass: "btn-primary",
+    confirmButtonText: "Yes",
+    closeOnConfirm: true, 
+    closeOnCancel: true
+     },
+        function (isConfirm) { 
+         if (isConfirm){
+          window.location.href = '/account/'+type+'/'+$('#hidden_profile').val()+'/create';   
+         }
+     }
+    );
  }  
- function ajaxFunction(id) {
+ function ajaxFunction(id, noTemp) {
+    var oppType = type == 'internships' ? 'Internship' : 'Job';
    $.ajax({
      url:'/api/v3/job/get-templates',
      method:'POST',
      data:{id:id,type:type},
      beforeSend:function() {
-       $('.load-suggestions').show();
-       $('#choose_temp').show();
-       $('#tab2_content').html(null);
+        Btback.hide();
+        BtContinue.hide();
+        BTskip.hide();
+        BTnext.hide();
+        $('.load-suggestions').show()
+        $('#choose_temp').hide();
+        $('#tab2_content').html(null);
      },
      success:function(res) {
-       $('.load-suggestions').hide();
        if (res.response.status==200){
-           $('#tab2_content').html(Mustache.render($('#temp-card').html(), res.response.data));
+            $('#choose_temp').show();
+            $('.load-suggestions').hide();
+            $('#tab2_content').html(Mustache.render($('#temp-card').html(), res.response.data));
+            Btback.show();
+            BtContinue.show();
+            BTskip.show();
        }else {
-           $('#choose_temp').hide();
-           $('#tab2_content').html('<div id="no_temp"><h3 class="text-center" style="font-family: roboto;">Sorry No Available Templates For This Profile,<br> Creating Job With Your Current Selected Profile</h3><button class="tab_key_continue btn btn-default">Continue</button></div>')
+            $('.load-suggestions').show()
+            $('#tab2_content').html('<div id="no_temp"><h3 class="text-center" style="font-family: roboto;">Creating '+oppType+' With Your Current Selected Profile</h3></div>');
+            window.location.href = '/account/'+type+'/'+$('#hidden_profile').val()+'/create';
        }
      }
    })

@@ -297,6 +297,9 @@ namespace common\models;
  * @property SchoolStudentsReview[] $schoolStudentsReviews0
  * @property Seo[] $seos
  * @property Seo[] $seos0
+ * @property ShortlistedApplicants[] $shortlistedApplicants
+ * @property ShortlistedApplicants[] $shortlistedApplicants0
+ * @property ShortlistedApplicants[] $shortlistedApplicants1
  * @property Skills[] $skills
  * @property Skills[] $skills0
  * @property SkillsUpEmbedPosts[] $skillsUpEmbedPosts
@@ -4192,5 +4195,33 @@ class Users extends \yii\db\ActiveRecord
     public function getWebinars0()
     {
         return $this->hasMany(Webinars::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShortlistedApplicants()
+    {
+        return $this->hasMany(ShortlistedApplicants::className(), ['candidate_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShortlistedApplicants0()
+    {
+        return $this->hasMany(ShortlistedApplicants::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShortlistedApplicants1()
+    {
+        return $this->hasMany(ShortlistedApplicants::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+    public function getSkillsUpPosts0()
+    {
+        return $this->hasMany(SkillsUpPosts::className(), ['created_by' => 'user_enc_id']);
     }
 }

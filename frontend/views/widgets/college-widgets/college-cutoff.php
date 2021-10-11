@@ -4,61 +4,84 @@ use yii\helpers\url;
 
 ?>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="set-sticky">
-                    <p class="title ou-head">B-TECH</p>
-                    <div class="text">GENERAL - 50%</div>
-                    <div class="process-bar general"></div>
-                    <div class="text">OBC - 60%</div>
-                    <div class="process-bar obc"></div>
-                    <div class="text">SC - 90%</div>
-                    <div class="process-bar sc"></div>
-                    <div class="text">ST - 90%</div>
-                    <div class="process-bar st"></div>
-                    <div class="text">PWD - 90%</div>
-                    <div class="process-bar pwd"></div>
-                    <div class="text">EWS - 90%</div>
-                    <div class="process-bar ews"></div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="set-sticky">
-                    <p class="title ou-head">M-TECH</p>
-                    <div class="text">GENERAL - 50%</div>
-                    <div class="process-bar general"></div>
-                    <div class="text">OBC - 60%</div>
-                    <div class="process-bar obc"></div>
-                    <div class="text">SC - 90%</div>
-                    <div class="process-bar sc"></div>
-                    <div class="text">ST - 90%</div>
-                    <div class="process-bar st"></div>
-                    <div class="text">PWD - 90%</div>
-                    <div class="process-bar pwd"></div>
-                    <div class="text">EWS - 90%</div>
-                    <div class="process-bar ews"></div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="set-sticky">
-                    <p class="title ou-head">BCA</p>
-                    <div class="text">GENERAL - 50%</div>
-                    <div class="process-bar general"></div>
-                    <div class="text">OBC - 60%</div>
-                    <div class="process-bar obc"></div>
-                    <div class="text">SC - 90%</div>
-                    <div class="process-bar sc"></div>
-                    <div class="text">ST - 90%</div>
-                    <div class="process-bar st"></div>
-                    <div class="text">PWD - 90%</div>
-                    <div class="process-bar pwd"></div>
-                    <div class="text">EWS - 90%</div>
-                    <div class="process-bar ews"></div>
-                </div>
-            </div>
-        </div>
+<div class="container cutoff">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>CutOff</h1>
     </div>
+    <div class='col-md-12 cutoff-table'>
+      <table>
+        <thead>
+          <tr>
+            <th>Course Name</th>
+            <th>General</th>
+            <th>SC</th>
+            <th>ST</th>
+            <th>OBC</th>
+            <th>PWD</th>
+            <th>EWS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>B.Tech</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+          </tr>
+          <tr>
+            <td>B.Tech</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+          </tr>
+          <tr>
+            <td>B.Tech</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+          </tr>
+          <tr>
+            <td>B.Tech</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+          </tr>
+          <tr>
+            <td>B.Tech</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+          </tr>
+          <tr>
+            <td>B.Tech</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+            <td>50%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 <?php
 $this->registerCss('
 .title{
@@ -69,62 +92,28 @@ $this->registerCss('
   margin:15px 0 5px 0px;
   animation: text 2s ease;
 }
-/* Processbar*/
-.process-bar{
+.cutoff-table{
+  overflow: auto;
+}
+.cutoff h1{
+  font-family: Roboto;
+  font-weight: 700;
+  color: #00A0E3;
+  font-size: 28pt;
+  margin-bottom: 20px;
+}
+table{
+  min-width: 600px;
   width: 100%;
-  height: 12px;
-  background-color: #eee;
-  position: relative;
-  border-radius: 10px;
 }
-.process-bar:before{
-  content: \'\';
-  position: absolute;
-  width: 50%;
-  height: 12px;
-  border-radius: 10px;
-  animation: processbar 2s ease-in;
-  background-color: #f89872;
+table tbody tr:nth-child(2n-1) {
+  background: #DAE9FF;
 }
-//.general:before{background-color: #33323a;}
-//.obc:before{background-color: #7472f8;}
-//.sc:before{background-color: #f58954;}
-//.st:before{background-color: #6dc2c6;}
-//.pwd:before{background-color: #b1deaa;}
-//.ews:before{background-color: #f4c1c6;}
-.process-bar:last-child {
-    margin-bottom: 20px;
+table tr {
+  background: #fff;
+  box-shadow: 1px 0 4px 0 #c3c3c3;
 }
-/* Animation Title */
-@keyframes translate{
-  from{
-    transform: translate(0,-100px);
-  }
-  to{
-    transform: translate(0);
-  }
+table td, table th {
+  padding: 10px;
 }
-/* End Anamation Title */
-
-/* Animation Text */
-@keyframes text{
-  from{
-    transform: scale(0);
-  }
-  to{
-    transform: scale(1);
-  }
-}
-/* End Animation Text */
-
-/* Animation Wordpress */
-@keyframes processbar{
-  from{
-    width: 0;
-  }
-  to{
-    width: 50%;
-  }
-}
-/* End Animation Wordpress*/
 ');

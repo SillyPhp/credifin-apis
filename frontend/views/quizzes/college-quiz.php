@@ -69,8 +69,8 @@ if ($result == Null) {
 ?>
     <section class="container">
         <div class="col-md-3">
-            <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"
-                 data-ad-client="ca-pub-2186770765824304" data-ad-slot="first"></ins>
+<!--            <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"-->
+<!--                 data-ad-client="ca-pub-2186770765824304" data-ad-slot="first"></ins>-->
         </div>
         <div class="col-md-6">
             <div class="questionBox">
@@ -142,8 +142,8 @@ if ($result == Null) {
             </div>
         </div>
         <div class="col-md-3">
-            <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"
-                 data-ad-client="ca-pub-2186770765824304" data-ad-slot="second"></ins>
+<!--            <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"-->
+<!--                 data-ad-client="ca-pub-2186770765824304" data-ad-slot="second"></ins>-->
         </div>
     </section>
     <script id="c-quiz-options" type="text/template">

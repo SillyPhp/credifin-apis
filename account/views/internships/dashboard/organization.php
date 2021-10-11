@@ -174,6 +174,9 @@ use yii\widgets\Pjax;
                                     <a href="<?= Url::to('/tweets/internship/create'); ?>" data-toggle="tooltip"
                                        title="Post Internship Tweet" class="tweet">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>
+                                    <a href="<?= Url::toRoute('/internships/quick-internship'); ?>" data-toggle="tooltip"
+                                       title="Create Quick Internship" class="quick">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png'); ?>"></a>
                                     <a href="<?= Url::toRoute('/internships/active-internships'); ?>"
                                        data-toggle="tooltip"
                                        title="View All" class="view">
@@ -187,6 +190,7 @@ use yii\widgets\Pjax;
                                 echo $this->render('/widgets/applications/card', [
                                     'applications' => $applications['data'],
                                     'per_row' => 4,
+                                    'type' => 'Internship',
                                     'col_width' => 'col-lg-4 col-md-4 col-sm-4',
                                 ]);
                             } else {
@@ -233,8 +237,9 @@ use yii\widgets\Pjax;
                             if ($erexx_applications['total'] > 0) {
                                 echo $this->render('/widgets/applications/card', [
                                     'applications' => $erexx_applications['data'],
-                                    'card_type'=>'mec_card',
+                                    'card_type' => 'mec_card',
                                     'per_row' => 4,
+                                    'type' => 'Internship',
                                     'col_width' => 'col-lg-4 col-md-4 col-sm-4',
                                 ]);
                             } else {
@@ -261,12 +266,45 @@ use yii\widgets\Pjax;
             <?php }
             ?>
 
+            <?php if ($shortlistedApplicants['count'] > 0) { ?>
+                <div class="row">
+                    <div class="col-lg-12 col-xs-12 col-sm-12">
+                        <div class="portlet light nd-shadow">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class=" icon-social-twitter font-dark hide"></i>
+                                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Shortlisted Candidates'); ?><span
+                                                data-toggle="tooltip" title="shortlisted candidates"><i
+                                                    class="fa fa-info-circle"></i></span></span>
+                                </div>
+                                <?php if ($shortlistedApplicants['count'] > 3) { ?>
+                                    <div class="actions">
+                                        <div class="set-im">
+                                            <a href="<?= Url::toRoute('shortlisted-candidates'); ?>"
+                                               data-toggle="tooltip"
+                                               title="View All">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                            <div class="portlet-body">
+                                <div class="row">
+                                    <?= $this->render('/widgets/applications/shortlisted-candidates', [
+                                        'shortlistedApplicants' => $shortlistedApplicants,
+                                        'type' => 'internship'
+                                    ]); ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+
             <div class="row">
                 <div class="col-lg-6 col-xs-12 col-sm-12">
-                    <?= $this->render('/widgets/drop-resume/drop_resume', [
-                        'data' => $primary_fields,
-                        'type' => 'Internships'
-                    ]); ?>
+                    <?= $this->render('/widgets/drop-resume/drop_resume', ['data' => $primary_fields,
+                        'type' => 'Internships']); ?>
 
                     <div class="portlet light nd-shadow">
                         <div class="portlet-title">
@@ -294,11 +332,9 @@ use yii\widgets\Pjax;
                                 <div class="col-lg-12">
                                     <?php
                                     if ($questionnaire['total'] > 0) {
-                                        echo $this->render('/widgets/questionnaire/card', [
-                                            'questionnaire' => $questionnaire['data'],
+                                        echo $this->render('/widgets/questionnaire/card', ['questionnaire' => $questionnaire['data'],
                                             'per_row' => 2,
-                                            'col_width' => 'col-lg-6 col-md-6 col-sm-6',
-                                        ]);
+                                            'col_width' => 'col-lg-6 col-md-6 col-sm-6',]);
                                     } else {
                                         ?>
                                         <div class="tab-empty">
@@ -319,7 +355,6 @@ use yii\widgets\Pjax;
 
                     <?php
                     Pjax::begin(['id' => 'pjax_closed_jobs']);
-                    if ($closed_application['total'] > 0) {
                         ?>
                         <div class="portlet light nd-shadow">
                             <div class="portlet-title">
@@ -331,30 +366,25 @@ use yii\widgets\Pjax;
                                                     class="fa fa-info-circle"></i></span></span>
                                 </div>
                                 <div class="actions">
-                                    <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All">
+                                    <a href="<?= Url::toRoute('/internships/all-closed-internships'); ?>" data-toggle="tooltip" title="View All">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                                 </div>
                             </div>
                             <div class="portlet-body">
                                 <?php
-                                echo $this->render('/widgets/applications/closed-jobs-cards', [
-                                    'applications' => $closed_application['data'],
-                                    'model' => $model,
-                                ]);
+                                echo $this->render('/widgets/applications/closed-jobs-cards', ['applications' => $closed_application['data'],
+                                    'model' => $model,'type' => 'internships']);
                                 ?>
                             </div>
                         </div>
                         <?php
-                    }
                     Pjax::end();
                     ?>
                 </div>
                 <div class="col-lg-6 col-xs-12 col-sm-12">
                     <?php
-                    echo $this->render('/widgets/applied-applications/users-card', [
-                        'applied_applications' => $applied_applications,
-                        'type' => 'internships'
-                    ]); ?>
+                    echo $this->render('/widgets/applied-applications/users-card', ['applied_applications' => $applied_applications,
+                        'type' => 'internships']); ?>
 
                     <div class="portlet light nd-shadow">
                         <div class="portlet-title">
@@ -382,11 +412,9 @@ use yii\widgets\Pjax;
                                 <div class="col-lg-12">
                                     <?php
                                     if ($interview_processes['total'] > 0) {
-                                        echo $this->render('/widgets/processes/card', [
-                                            'processes' => $interview_processes['data'],
+                                        echo $this->render('/widgets/processes/card', ['processes' => $interview_processes['data'],
                                             'per_row' => 2,
-                                            'col_width' => 'col-lg-6 col-md-6 col-sm-6',
-                                        ]);
+                                            'col_width' => 'col-lg-6 col-md-6 col-sm-6',]);
                                     } else {
                                         ?>
                                         <div class="tab-empty">
@@ -409,7 +437,7 @@ use yii\widgets\Pjax;
         </div>
     </div>
     <div class="pos-relative">
-        <?= $this->render('/widgets/college-list-modal')?>
+        <?= $this->render('/widgets/college-list-modal') ?>
     </div>
 
 <?php
@@ -684,6 +712,166 @@ $this->registerCss('
 .mt-actions .mt-action .mt-action-body .mt-action-row .mt-action-buttons {
     width:170px;
 }
+/*shortlist jobs and saved candidates css start here*/
+.divRel{
+    position: relative;
+    width: 100%;
+    margin-bottom: 30px;
+}
+.shortText{
+    text-transform: capitalize;
+    font-size: 13px;
+}
+.short-main {
+    border: 2px solid #eef1f5;
+    padding: 10px 10px 0;
+    position: relative;
+    transition: all .3s;
+    border-radius: 6px;
+    z-index:0;
+}
+.short-main:hover .remove-btn{
+    opacity:1;
+}
+.short-main:hover{
+    box-shadow:0 0 10px rgb(0 0 0 / 10%);
+    border-color:transparent;
+}
+.flex-short {
+    display: flex;
+    align-items: center;
+}
+.short-logo img {
+    width: 60px;
+    height: 60px;
+    object-fit: fill;
+}
+.short-details {
+    flex-basis: 80%;
+    padding-left: 15px;
+}
+.short-job {
+    color: #00a0e3;
+    font-size: 16px;
+    font-family: Roboto;
+    text-transform: capitalize;
+    margin: 5px 0 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.short-name {
+    color: #999;
+    font-family: Roboto;
+    display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+.short-name i{
+    margin-right: 5px;
+}
+.remove-btn {
+    position: absolute;
+    right: 0px;
+    top: 2px;
+    opacity:0;
+    transition:all .3s;
+}
+.remove-btn button {
+    border: none;
+    background: none !important;
+    color: #d75946;
+    line-height: 0;
+}
+.short-skills {
+    border-radius: 8px;
+    margin: 10px 0;
+    display: flex;
+    padding-left: 6px;
+    font-family:roboto;
+    flex-wrap: wrap;
+    height: 22px;
+    overflow: hidden;
+}
+.short-skills a {
+    color: #333;
+    font-family: roboto;
+    margin-bottom: 5px;
+    text-transform:capitalize;
+    transition:all .3s;
+}
+.short-skills span {
+    font-weight: 500;
+}
+.short-skills a:hover {
+    color: #00a0e3;
+}
+.slide-btn {
+    margin-bottom: -1px;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0px);
+}
+.slide-bttn{
+    background:#00a0e3;
+    border:none;
+    color:#fff;
+    border-radius:10px 10px 0 0 !important;
+    padding:1px 15px;
+}
+.slide-bttn:hover{
+    box-shadow:0px -2px 8px rgba(0, 0, 0, .3);
+    transition:.3s all;     
+    -webkit-transition:.3s all;     
+    -moz-transition:.3s all;     
+    -o-transition:.3s all; 
+}
+.rotate180{
+    animation: rotate180 1s 1;
+    transform: rotate(180deg);
+    transition: .5s ease;
+}
+.slide-bttn:focus{
+    outline:none;
+}
+.cd-box-border{
+    border:2px solid #eef1f4; 
+    border-top:none;
+    padding:10px; 
+    background:#fff; 
+    border-radius:0 0 4px 4px !important; 
+    color:#999999;
+    margin:0; 
+    position: absolute;
+    z-index: 9;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 40px);
+}
+.cd-box-border table{margin:0 !important;}
+.tt {
+    transition: .5s ease;
+}
+.unblockBtn{
+    position: absolute;
+    top:0px; 
+    right:0px;
+}
+.unblock-cand{
+    background: #00a0e3;
+    color: #fff;
+    padding: 2px 7px;
+    border: 1px solid #00a0e3;
+    border-radius: 0 5px 0;
+    font-size: 12px;
+}
+.short-skills > .question_list:nth-child(n + 3):before {
+    content: ",";
+}
+/*shortlist jobs and saved candidates css end here*/
 ');
 $script = <<<JS
 $(document).on('click', '.remov_btn', function (e) {

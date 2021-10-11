@@ -1,6 +1,7 @@
 <?php
 use kartik\widgets\TimePicker;
 use kartik\widgets\DatePicker;
+use kartik\select2\Select2;
 ?>
 <div class="row">
     <div class="col-md-3">
@@ -177,8 +178,17 @@ use kartik\widgets\DatePicker;
         }
         else
             {
-              echo $form->field($model, 'industry')->dropDownList($industry, ['prompt' => 'Preferred industry','disabled' => true])->label(false);
-            }
+//              echo $form->field($model, 'industry')->dropDownList($industry, ['prompt' => 'Preferred industry','disabled' => true])->label(false);
+            echo $form->field($model, 'industry')->widget(Select2::classname(), [
+                'name' => 'kv-state-210',
+                'data' => $industry,
+                'size' => Select2::MEDIUM,
+                'options' => ['placeholder' => 'Preferred Industry', 'multiple' => false,],
+                'pluginOptions' => [
+                    'allowClear' => true,
+                ],
+            ])->label(false);
+        }
         ?>
     </div>
 </div>

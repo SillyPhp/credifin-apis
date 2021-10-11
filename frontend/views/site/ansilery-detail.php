@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-
+$link = Url::to( 'site/', true);
 ?>
 
     <section class="ansilery-bg">
@@ -15,10 +15,6 @@ use yii\helpers\Url;
                             candidates. Feel free to modify responsibilities and requirements based on your needs.</p>
                     </div>
                 </div>
-
-<!--                <div class="col-md-5 ansilery-icon">-->
-<!--                    <img src="--><?//= Url::to('@eyAssets/images/pages/blog/blog-icon.png') ?><!--"/>-->
-<!--                </div>-->
             </div>
         </div>
     </section>
@@ -81,6 +77,11 @@ use yii\helpers\Url;
                                 </li>
                             </ul>
                         </div>
+                    </div>
+                    <div>
+                        <?= $this->render('/widgets/sharing-widget-new',[
+                            'link' => $link,
+                        ]); ?>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-5">

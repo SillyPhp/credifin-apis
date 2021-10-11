@@ -4,23 +4,58 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
+
+$this->title = 'Study in India';
+$keywords = 'Study in India | Empower Youth';
+$description = 'Do not let financial burden stop you from fulfilling your desire to study in your dream college.';
+$image = Url::to('@eyAssets/images/pages/education-loans/study-loan-for-india.png', 'https');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 <section class="study-in-usa-bg">
-    <div class="opacity-div"></div>
+<!--    <div class="opacity-div"></div>-->
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6 col-sm-12 col-xs-12">
                 <h1>
                     <span class="typewrite" data-period="2000"
                           data-type='["Study In INDIA.", "Education Loan.", "Easy Apply.", "Easy EMIs To Pay.", "Less Paperwork." ]'>
                         <span class="wrap"></span>
                     </span>
                 </h1>
-                <p>Don't let financial burden stop you from fulfilling <br> your desire to study in your dream college.</p>
+                <p>Don't let <span class="bold-fontt">financial burden stop you</span> from fulfilling <br>
+                    your desire to <span class="bold-fontt">study in your dream college<span class="bold-fontt">.</p>
                 <ul>
                     <li><a href="#contact" class="apply-now btn-orange">Reach Us</a></li>
                     <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
                 </ul>
+            </div>
+            <div class="col-md-6">
+                <div class="india-vector">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/india1.png') ?>">
+                </div>
             </div>
         </div>
     </div>
@@ -81,12 +116,22 @@ use borales\extensions\phoneInput\PhoneInput;
 <?= $this->render('/widgets/loan-process-ease') ?>
 <?php $is_show = 1; ?>
 <?= $this->render('/widgets/loan-table',['is_show'=>$is_show])?>
+<?= $this->render('/widgets/testimonials-india') ?>
 <section class="bg-blue">
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
 <?= $this->render('/widgets/education-loan-faqs');?>
+<?php
+if($blogs['blogs']){
+    echo $this->render('/widgets/education-loan/blogs',[
+        'blogs' => $blogs,
+        'param' => 'study-in-india'
+    ]);
+};
+?>
 <?= $this->render('/widgets/loan-form-detail',[
-    'model' => $model
+    'model' => $model,
+    'param' => 'Study In India'
 ]); ?>
 <?= $this->render('/widgets/press-releasee',[
     'data' => $data,
@@ -95,6 +140,9 @@ use borales\extensions\phoneInput\PhoneInput;
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+.bold-fontt {
+    font-weight: bold;
+}
 .studyus-head {
     padding: 30px;
 }
@@ -144,9 +192,6 @@ $this->registerCss('
     border-radius: 10px;
     padding: 15px;
 }
-.le-img {
-    box-shadow: 0 1px 11px 0px #d4cdcd;
-}
 #typed{
     font-size: 25px;
     color: #fff;
@@ -166,6 +211,7 @@ $this->registerCss('
 	border-radius: 4px;
 	display: inline-block;
 	width: 150px;
+	text-align: center;
 }
 .btn-orange{
     background: #ff7803 !important;
@@ -222,16 +268,17 @@ $this->registerCss('
 }
 
 .study-in-usa-bg{
-       background: url(' . Url::to('@eyAssets/images/pages/education-loans/india-hdrr.jpg') . ');
-       min-height: 500px;
+       background: url(' . Url::to('@eyAssets/images/pages/education-loans/bg1.png') . ');
 	   background-repeat: no-repeat;
 	   background-size: cover;
+	   min-height: 500px;
 	   display: flex;
 	   align-items: center;
 	   position: relative;
-	   text-align: center;
-	   height: 100vh;
+	   text-align: left;
+	   height: 90vh;
 	   max-height: 700px;
+	   background-position: right;
 }
 .opacity-div{
     position: absolute;
@@ -244,7 +291,7 @@ $this->registerCss('
 .study-in-usa-bg p{
     font-size: 24px;
 	font-family: roboto;
-	color: #fff;
+	color: #000;
 	padding: 0 0 18px;
 	line-height: 30px;
 }
@@ -254,6 +301,14 @@ $this->registerCss('
 	color: #FF7803;
 	font-weight: 700;
 	font-family: roboto;
+}
+.india-vector {
+    padding-top: 90px;
+}
+.india-vector img {
+    width: 100%;
+    max-width: 600px;
+    transform: scale(1.3);
 }
 .footer{
     margin-top: 0px !important;
@@ -313,9 +368,6 @@ display:none;
      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
-
-
-
 .tt-hint {
   color: #999
 }
@@ -359,7 +411,6 @@ display:none;
     text-align: left !important;
     color: #800000 !important;
 }
-
 .form-control{
     margin: 10px auto;
     padding: 12px 12px;
@@ -406,7 +457,6 @@ display:none;
     align-content: center;
     margin: 0 auto;
 } 
-
 .form-flex-2{
     display: flex;
     width: 100%;
@@ -452,7 +502,6 @@ label {
   align-items: center;
   cursor: pointer;
 }
-
 .check {
   margin-right: 7px;
   width: 1.35rem;
@@ -548,7 +597,66 @@ label {
 .course-box:nth-child(3n+0){
     margin-right:1%;
 }
-
+}
+@media only screen and (max-width: 768px) and (min-width: 500px){
+    .india-vector img {
+        max-width: 75%;
+    }
+    .study-in-usa-bg {
+        text-align: center;
+        background-position: left;
+    }
+    .study-in-usa-bg h1 {
+        font-size: 30px;
+        padding-top: 50px;
+    }
+    .study-in-usa-bg p {
+        font-size: 16px;
+        line-height: 26px;
+        font-family: roboto;
+    }
+    .apply-now {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+}
+@media only screen and (max-width: 499px) and (min-width: 320px){
+    .india-vector img {
+        max-width: 260px;
+    }
+    .study-in-usa-bg {
+        text-align: center;
+        background-position: left;
+    }
+    .study-in-usa-bg p {
+        font-size: 16px;
+        line-height: 26px;
+        font-family: roboto;
+    }
+    .apply-now {
+        margin-bottom: 10px;
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+    .study-in-usa-bg h1 {
+        font-size: 30px;
+    }
+    .india-vector img {
+        display: none;
+    }
+}
+@media only screen and (max-width: 1230px) and (min-width: 990px){
+    .study-in-usa-bg p {
+        font-size: 21px;
+        line-height: 28px;
+    }
+    .india-vector img {
+        max-width: 100%;
+    }
+    .india-vector {
+        padding-top: 110px;
+    }
+}
 ');
 $script = <<<JS
 setTimeout(function (){

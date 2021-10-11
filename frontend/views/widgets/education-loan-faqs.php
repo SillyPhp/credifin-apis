@@ -2,12 +2,16 @@
 use yii\helpers\Url;
 ?>
 <section class="faq-s">
-    <div class="faq-s-bg"></div>
     <div class="container">
-        <div class="row">
+        <div class="row us-flex">
+            <div class="col-md-5">
+                <div class="faq-img text-center">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/FAQ-vector.png')?>" alt="">
+                </div>
+            </div>
             <div class="col-md-7 col-sm-12">
                 <div class="faq-main">
-                    <h2>Frequently Asked Questions</h2>
+                    <h2 class="heading-style">FAQ</h2>
                     <ul class="questions-faq">
                         <li>
                             <a class="faqs" data-toggle="collapse" data-target="#documents">1. What all documents are required for the approval of loan via EmpowerYouth?
@@ -95,42 +99,31 @@ $this->registerCSS('
     position: relative;
     overflow-x: hidden;
 }
-.faq-s-bg{
-    position: absolute;
-    background-image: url(' . Url::to('@eyAssets/images/pages/education-loans/qna-iccn.png') . ');
-    background-repeat: no-repeat;
-    background-position: right bottom;
-    background-size: contain;
-    width: 100%;
-    height: 100%;
-    right: 0px;
-    max-width: 650px;
-}
 .faq-main {
     padding: 30px 0 50px;
 }
-.faq-main h2 {
-    color: #539ffe;
-    font-family: lora;
-    font-size: 34px;
-    font-weight: bold;
-    margin: 0 0 15px;
+.us-flex{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 .questions-faq li {
-    background-color: #fff;
+//    background-color: #fff;
     margin-bottom: 7px;
-    padding: 8px 20px;
+    padding: 8px 20px 8px 0;
     font-family: roboto;
-    border-radius: 4px;
+//    border-radius: 4px;
     cursor: pointer;
 }
 .questions-faq li a {
     color: #333;
     display: block;
-    font-size: 15px;
+    font-size: 16px;
     position:relative;
     font-weight:500;
 }
+.using-pd{margin-top:10px;}
 .questions-faq li .collapse {
     cursor: auto;
 }

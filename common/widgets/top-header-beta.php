@@ -4,7 +4,7 @@
         if ($data) {
             foreach ($data as $grandParents) {
                 ?>
-                <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+                <li class="ey-nav-item ey-header-item ey-header-item-is-menu <?= $grandParents['value']['css_class']; ?>">
                     <a href="<?= $grandParents['value']['route']; ?>">
                         <?= $grandParents['value']['name']; ?>
                         <?php
@@ -28,6 +28,7 @@
                                                 ?>
                                                 <li class="
                                             <?php
+                                                echo ' ' . $parents['value']['css_class'] . ' ';
                                                 if ($parents['childs']) {
                                                     foreach ($parents['childs'] as $children) {
                                                         if ($children) {
@@ -48,7 +49,7 @@
                                                                 if ($parents['childs']) {
                                                                     foreach ($parents['childs'] as $children) {
                                                                         ?>
-                                                                        <li class="ey-head-sub-menu-icon">
+                                                                        <li class="ey-head-sub-menu-icon <?= $children['value']['css_class']?>">
                                                                             <a href="<?= $children['value']['route']; ?>">
                                                                                 <div>
                                                                                     <span class="ey-services-icons ai"
@@ -532,7 +533,7 @@ $this->registerCss('
     left: 50%;
     position: absolute;
     right: 0;
-    top: 63px;
+    top: 62px;
     z-index: 4;
     height:0px;
     width: 100vw;
@@ -694,6 +695,7 @@ $this->registerCss('
     flex: 1 0 100%;
     max-width: 100%;
     padding: 30px;
+    padding-top: 50px;
 }
 
 .ey-mobile-menu .ey-mobile-menu-inner-content nav {
@@ -1053,6 +1055,17 @@ $this->registerCss('
 }
 .ey-menu-login {
     margin: 0px !important;
+}
+.highlight-item{
+    background-color: #f07704;
+    padding: 5px 15px !Important;
+    z-index: 9;
+}
+.highlight-item a{
+    color:#fff !important;
+}
+.highlight-item:hover a{
+    color: #444 !important;
 }
 ');
 ?>

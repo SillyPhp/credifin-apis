@@ -87,8 +87,11 @@ $careerAdviceCategories = [
                     </div>
                 </div>
             </div>
-        </div>
+        </div> 
     </section>
+
+    <?= $this->render('/webinars/webinar-carousel') ?>
+
     <section class="background-mirror blog-section-0">
         <div class="container">
                 <div class="row">
@@ -290,7 +293,7 @@ $careerAdviceCategories = [
                                         $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
                                         $image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
                                         if (!file_exists($image_path)) {
-                                            $image = '//placehold.it/330x200';
+                                            $image = 'https://via.placeholder.com/330x200?text=Image';
                                         }
                                         ?>
                                         <div class="col-md-12">
@@ -582,11 +585,11 @@ $this->registerCss('
 }
 .zoom {
     transition: transform .4s;
-    width: 253px;
+    max-width: 253px;
     height: 320px;
     margin: 0 auto;
     padding: 50px 0;
-    top:-10px;
+    top:-10px;i
     left:-10px;
     transition-timing-function: linear;
     z-index:300;

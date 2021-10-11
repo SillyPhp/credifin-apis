@@ -53,6 +53,7 @@ class UserProfileBasicEdit extends Model
             ['exp_month', 'integer', 'max' => 11],
             ['category', 'safe'],
             ['exp_year', 'integer', 'max' => 99],
+            [['description'], 'string', 'max' => 1600],
             [
                 ['job_title'], 'required', 'when' => function ($model, $attribute) {
                 return $model->category != '';
@@ -65,187 +66,195 @@ class UserProfileBasicEdit extends Model
         ];
     }
 
-    public function update()
+    public function update($params)
     {
         $flag = 0;
         $usersModel = new Users();
         $user = $usersModel->find()
             ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
             ->one();
-        $user->dob = date('Y-m-d', strtotime($this->dob));
-        $user->city_enc_id = $this->city;
-        $user->is_available = $this->availability;
-        $user->experience = json_encode(['' . $this->exp_year . '', '' . $this->exp_month . '']);
-        $user->description = $this->description;
-        $user->gender = $this->gender;
-        if (!empty($this->job_title)) {
-            $category_execute = Categories::find()
-                ->alias('a')
-                ->where(['name' => $this->job_title]);
-            $chk_cat = $category_execute->asArray()->one();
-            if (empty($chk_cat)) {
-                $categoriesModel = new Categories;
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
-                $categoriesModel->name = $this->job_title;
-                $utilitiesModel->variables['name'] = $this->job_title;
-                $utilitiesModel->variables['table_name'] = Categories::tableName();
-                $utilitiesModel->variables['field_name'] = 'slug';
-                $categoriesModel->slug = $utilitiesModel->create_slug();
-                $categoriesModel->created_on = date('Y-m-d H:i:s');
-                $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
-                if ($categoriesModel->save()) {
-                    $this->addNewAssignedCategory($categoriesModel->category_enc_id, $user, $flag);
-                } else {
-                    return false;
-                }
-            } else {
-                $chk_assigned = $category_execute
-                    ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                    ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id', 'b.parent_enc_id', 'b.assigned_to'])
-                    ->andWhere(['not', ['b.parent_enc_id' => null]])
-                    ->andWhere(['b.assigned_to' => 'Profiles', 'b.parent_enc_id' => $this->category])
-                    ->asArray()
-                    ->one();
-                if (empty($chk_assigned)) {
-                    $this->addNewAssignedCategory($chk_cat['category_enc_id'], $user, $flag);
-                } else {
-                    $user->job_function = $chk_assigned['category_enc_id'];
-                    $user->asigned_job_function = $chk_assigned['assigned_category_enc_id'];
-                    $flag++;
-                }
-            }
-        } else {
-            $user->job_function = null;
-        }
-        if (!empty($this->skills)) {
-            $skill_set = [];
-            foreach ($this->skills as $val) {
-                $chk_skill = Skills::find()
-                    ->distinct()
-                    ->select(['skill_enc_id'])
-                    ->where(['skill' => $val])
-                    ->asArray()
-                    ->one();
-                if (!empty($chk_skill)) {
-                    $skill_set[] = $chk_skill['skill_enc_id'];
-                } else {
-                    $skillsModel = new Skills();
+        $user->dob = $this->dob ? date('Y-m-d', strtotime($this->dob)) : $user->dob;
+        $user->city_enc_id = $this->city ? $this->city : $user->city_enc_id;
+        $user->is_available = $this->availability ? $this->availability : $user->is_available;
+        $user->experience = $this->exp_year ? json_encode(['' . $this->exp_year . '', '' . $this->exp_month . '']) : $user->experience;
+        $user->description = $this->description ? $this->description : $user->description;
+        $user->gender = $this->gender ? $this->gender : $user->gender;
+        $user->last_updated_on = date('Y-m-d H:i:s');
+        if (isset($params['job_title'])) {
+            if (!empty($this->job_title)) {
+                $category_execute = Categories::find()
+                    ->alias('a')
+                    ->where(['name' => $this->job_title]);
+                $chk_cat = $category_execute->asArray()->one();
+                if (empty($chk_cat)) {
+                    $categoriesModel = new Categories;
                     $utilitiesModel = new Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $skillsModel->skill_enc_id = $utilitiesModel->encrypt();
-                    $skillsModel->skill = $val;
+                    $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+                    $categoriesModel->name = $this->job_title;
+                    $utilitiesModel->variables['name'] = $this->job_title;
+                    $utilitiesModel->variables['table_name'] = Categories::tableName();
+                    $utilitiesModel->variables['field_name'] = 'slug';
+                    $categoriesModel->slug = $utilitiesModel->create_slug();
+                    $categoriesModel->created_on = date('Y-m-d H:i:s');
+                    $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    if ($categoriesModel->save()) {
+                        $this->addNewAssignedCategory($categoriesModel->category_enc_id, $user, $flag);
+                    } else {
+                        return false;
+                    }
+                } else {
+                    $chk_assigned = $category_execute
+                        ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                        ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id', 'b.parent_enc_id', 'b.assigned_to'])
+                        ->andWhere(['not', ['b.parent_enc_id' => null]])
+                        ->andWhere(['b.assigned_to' => 'Profiles', 'b.parent_enc_id' => $this->category])
+                        ->asArray()
+                        ->one();
+                    if (empty($chk_assigned)) {
+                        $this->addNewAssignedCategory($chk_cat['category_enc_id'], $user, $flag);
+                    } else {
+                        $user->job_function = $chk_assigned['category_enc_id'];
+                        $user->asigned_job_function = $chk_assigned['assigned_category_enc_id'];
+                        $flag++;
+                    }
+                }
+            } else {
+                $user->job_function = null;
+            }
+        }
+        if (isset($params['skills'])) {
+            if (!empty($this->skills)) {
+                $skill_set = [];
+                foreach ($this->skills as $val) {
+                    $chk_skill = Skills::find()
+                        ->distinct()
+                        ->select(['skill_enc_id'])
+                        ->where(['skill' => $val])
+                        ->asArray()
+                        ->one();
+                    if (!empty($chk_skill)) {
+                        $skill_set[] = $chk_skill['skill_enc_id'];
+                    } else {
+                        $skillsModel = new Skills();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $skillsModel->skill_enc_id = $utilitiesModel->encrypt();
+                        $skillsModel->skill = $val;
+                        $skillsModel->created_on = date('Y-m-d H:i:s');
+                        $skillsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                        if (!$skillsModel->save()) {
+                            return false;
+                        }
+                        $skill_set[] = $skillsModel->skill_enc_id;
+                    }
+                }
+            } else {
+                $skill_set = [];
+            }
+
+            $userSkills = UserSkills::find()
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
+                ->andWhere(['is_deleted' => 0])
+                ->asArray()
+                ->all();
+            $skillArray = ArrayHelper::getColumn($userSkills, 'skill_enc_id');
+            $new_skill = array_diff($skill_set, $skillArray);
+            $delet_skill = array_diff($skillArray, $skill_set);
+            if (!empty($new_skill)) {
+                foreach ($new_skill as $val) {
+                    $skillsModel = new UserSkills();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $skillsModel->user_skill_enc_id = $utilitiesModel->encrypt();
+                    $skillsModel->skill_enc_id = $val;
                     $skillsModel->created_on = date('Y-m-d H:i:s');
                     $skillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$skillsModel->save()) {
                         return false;
+                    } else {
+                        $flag++;
                     }
-                    $skill_set[] = $skillsModel->skill_enc_id;
                 }
             }
-        } else {
-            $skill_set = [];
-        }
-        $userSkills = UserSkills::find()
-            ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
-            ->andWhere(['is_deleted' => 0])
-            ->asArray()
-            ->all();
-        $skillArray = ArrayHelper::getColumn($userSkills, 'skill_enc_id');
-        $new_skill = array_diff($skill_set, $skillArray);
-        $delet_skill = array_diff($skillArray, $skill_set);
-        if (!empty($new_skill)) {
-            foreach ($new_skill as $val) {
-                $skillsModel = new UserSkills();
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $skillsModel->user_skill_enc_id = $utilitiesModel->encrypt();
-                $skillsModel->skill_enc_id = $val;
-                $skillsModel->created_on = date('Y-m-d H:i:s');
-                $skillsModel->created_by = Yii::$app->user->identity->user_enc_id;
-                if (!$skillsModel->save()) {
-                    return false;
-                } else {
-                    $flag++;
+            if (!empty($delet_skill)) {
+                foreach ($delet_skill as $val) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(UserSkills::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'skill_enc_id' => $val])
+                        ->execute();
+                    if (!$update) {
+                        return false;
+                    } else {
+                        $flag++;
+                    }
                 }
             }
         }
-        if (!empty($delet_skill)) {
-            foreach ($delet_skill as $val) {
-                $update = Yii::$app->db->createCommand()
-                    ->update(UserSkills::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'skill_enc_id' => $val])
-                    ->execute();
-                if (!$update) {
-                    return false;
-                } else {
-                    $flag++;
+        if (isset($params['languages'])) {
+            if (!empty($this->languages)) {
+                $language_set = [];
+                foreach ($this->languages as $val) {
+                    $chk_language = SpokenLanguages::find()
+                        ->distinct()
+                        ->select(['language_enc_id'])
+                        ->where(['language' => $val])
+                        ->asArray()
+                        ->one();
+                    if (!empty($chk_language)) {
+                        $language_set[] = $chk_language['language_enc_id'];
+                    } else {
+                        $languageModel = new SpokenLanguages();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $languageModel->language_enc_id = $utilitiesModel->encrypt();
+                        $languageModel->language = $val;
+                        $languageModel->created_on = date('Y-m-d H:i:s');
+                        $languageModel->created_by = Yii::$app->user->identity->user_enc_id;
+                        if (!$languageModel->save()) {
+                            return false;
+                        }
+                        $language_set[] = $languageModel->language_enc_id;
+                    }
+
                 }
+            } else {
+                $language_set = [];
             }
-        }
-        if (!empty($this->languages)) {
-            $language_set = [];
-            foreach ($this->languages as $val) {
-                $chk_language = SpokenLanguages::find()
-                    ->distinct()
-                    ->select(['language_enc_id'])
-                    ->where(['language' => $val])
-                    ->asArray()
-                    ->one();
-                if (!empty($chk_language)) {
-                    $language_set[] = $chk_language['language_enc_id'];
-                } else {
-                    $languageModel = new SpokenLanguages();
+            $userLanguage = UserSpokenLanguages::find()
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
+                ->andWhere(['is_deleted' => 0])
+                ->asArray()
+                ->all();
+            $languageArray = ArrayHelper::getColumn($userLanguage, 'language_enc_id');
+            $new_language = array_diff($language_set, $languageArray);
+            $delte_language = array_diff($languageArray, $language_set);
+            if (!empty($new_language)) {
+                foreach ($new_language as $val) {
+                    $languageModel = new UserSpokenLanguages();
                     $utilitiesModel = new Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $languageModel->language_enc_id = $utilitiesModel->encrypt();
-                    $languageModel->language = $val;
+                    $languageModel->user_language_enc_id = $utilitiesModel->encrypt();
+                    $languageModel->language_enc_id = $val;
                     $languageModel->created_on = date('Y-m-d H:i:s');
                     $languageModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$languageModel->save()) {
                         return false;
+                    } else {
+                        $flag++;
                     }
-                    $language_set[] = $languageModel->language_enc_id;
-                }
-
-            }
-        } else {
-            $language_set = [];
-        }
-        $userLanguage = UserSpokenLanguages::find()
-            ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
-            ->andWhere(['is_deleted' => 0])
-            ->asArray()
-            ->all();
-        $languageArray = ArrayHelper::getColumn($userLanguage, 'language_enc_id');
-        $new_language = array_diff($language_set, $languageArray);
-        $delte_language = array_diff($languageArray, $language_set);
-        if (!empty($new_language)) {
-            foreach ($new_language as $val) {
-                $languageModel = new UserSpokenLanguages();
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $languageModel->user_language_enc_id = $utilitiesModel->encrypt();
-                $languageModel->language_enc_id = $val;
-                $languageModel->created_on = date('Y-m-d H:i:s');
-                $languageModel->created_by = Yii::$app->user->identity->user_enc_id;
-                if (!$languageModel->save()) {
-                    return false;
-                } else {
-                    $flag++;
                 }
             }
-        }
 
-        if (!empty($delte_language)) {
-            foreach ($delte_language as $val) {
-                $update = Yii::$app->db->createCommand()
-                    ->update(UserSpokenLanguages::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'language_enc_id' => $val])
-                    ->execute();
-                if (!$update) {
-                    return false;
-                } else {
-                    $flag++;
+            if (!empty($delte_language)) {
+                foreach ($delte_language as $val) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(UserSpokenLanguages::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'language_enc_id' => $val])
+                        ->execute();
+                    if (!$update) {
+                        return false;
+                    } else {
+                        $flag++;
+                    }
                 }
             }
         }

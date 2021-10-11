@@ -25,7 +25,57 @@ if (!empty($userApplied) && Yii::$app->user->identity->organization->organizatio
     }
 }
 $this->params['header_dark'] = false;
+$uId = $user['user_enc_id'];
 ?>
+
+    <!--Modal-->
+    <div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" id="profiles">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="submit" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-center" style="font-family: roboto; font-size: 20px;">Choose
+                        Applications to Shortlist for</h4>
+                </div>
+                <div class="modal-body">
+                    <?php
+                    if ($available_applications && count($available_applications) > 0) {
+                        foreach ($available_applications as $a) {
+                            ?>
+                            <div class="row padd10">
+                                <div class="col-md-12 text-center">
+                                    <div class="radio_questions">
+                                        <div class="inputGroup process_radio">
+                                            <input type="radio" name="applications" id="<?= $a['application_enc_id'] ?>"
+                                                   value="<?= $a['application_enc_id'] ?>" class="application_list">
+                                            <label for="<?= $a['application_enc_id'] ?>">
+                                                <?= $a['name'] ?>
+                                                <span class="<?= (($a['application_type'] == 'Jobs') ? 'colorBlue' : 'colorOrange') ?>"> ( <?= substr_replace($a['application_type'], "", -1) ?> ) </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php
+                        }
+                    }
+                    ?>
+                </div>
+
+                <div class="modal-footer">
+                    <?php if ($available_applications && count($available_applications) > 0) { ?>
+                        <button id="submitData" type="submit" class="btn btn-primary" data-dismiss="modal">Submit
+                        </button>
+                    <?php } else { ?>
+                        <a class="btn btn-primary" href="/account/<?= $type ?>/create">Create New <?= $type ?></a>
+                    <?php } ?>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <section class="inner-header-page">
         <div class="container">
             <div class="col-md-7 col-sm-10 col-md-offset-1 col-sm-offset-1">
@@ -72,6 +122,15 @@ $this->params['header_dark'] = false;
                                     <div class="progress-bar <?= $processClr ?>"
                                          style="width:<?= $profileProcess ?>%"></div>
                                 </div>
+                                <?php
+                                if ($profileProcess < 100) {
+                                    ?>
+                                    <p class="progress-bar-description">To complete your profile and to make it more
+                                        impressive, fill Educational Details in Resume Builder, Skills, Experience and
+                                        Job Profile in Edit Profile.</p>
+                                    <?php
+                                }
+                                ?>
                             </div>
                             <?php
                         }
@@ -124,6 +183,7 @@ $this->params['header_dark'] = false;
                                 <?php }
                             } ?>
                         </li>
+
                     </ul>
                     <ul class="social-info">
                         <?php if (!empty($user['facebook'])) { ?>
@@ -183,7 +243,8 @@ $this->params['header_dark'] = false;
                                 ?>
                                 <li class="talking">
                                     <a href="javascript:;" class="open_chat" data-id="<?= $user['user_enc_id']; ?>"
-                                       data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>">
+                                       data-key="<?= $user['first_name'] . " " . $user['last_name'] ?>"
+                                       data-img="<?= (($image) ? $image : "https://ui-avatars.com/api/?name=" . $user['first_name'] . " " . $user['last_name'] . "&size=200&rounded=false&background=" . str_replace('#', '', $user['initials_color']) . "&color=ffffff"); ?>">
                                         <i class="fa fa-comments"></i>
                                     </a>
                                 </li>
@@ -193,19 +254,36 @@ $this->params['header_dark'] = false;
 
                         </li>
                     </ul>
-                    <?php if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
-                        if (!empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
-                            if (!empty($userCv['resume_location']) && !empty($userCv['resume'])) {
+                    <?php if (Yii::$app->user->identity->organization->organization_enc_id) {
+                        ?>
+                        <div class="down-res">
+                            <?php
+                            if ($user['is_shortlisted'] == "true") {
                                 ?>
-                                <div class="down-res">
-                                    <a href="javascript:;" target="_blank" title="Download Resume" class="download-resume"
+                                <a href="javascript:;" title="Shortlist" class="shortlist-main">
+                                    Shortlisted<i class="fas fa-heart"></i>
+                                </a>
+                                <?php
+                            } else {
+                                ?>
+                                <a href="javascript:;" title="Shortlist" class="shortlist-main">
+                                    Shortlist<i class="far fa-heart"></i>
+                                </a>
+                                <?php
+                            }
+                            if (!empty($userApplied) && !empty($userApplied['applied_application_enc_id']) && !empty($userApplied['resume'])) {
+                                if (!empty($userCv['resume_location']) && !empty($userCv['resume'])) {
+                                    ?>
+                                    <a href="javascript:;" target="_blank" title="Download Resume"
+                                       class="download-resume"
                                        data-key="<?= $userCv['resume_location'] ?>" data-id="<?= $userCv['resume'] ?>">Download
                                         Resume<i
                                                 class="fas fa-download"></i></a>
-                                </div>
-                            <?php }
-                        }
-                    } ?>
+                                    <?php
+                                }
+                            } ?>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>
@@ -279,8 +357,8 @@ $this->params['header_dark'] = false;
                                             <!--                                    <img src="-->
                                             <?//= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?><!--"/>-->
                                             <canvas class="user-icon" name="<?= $edu['institute'] ?>" width="80"
-                                                    height="80"
-                                                    font="30px"></canvas>
+                                                    height="80" font="30px"
+                                                    color="<?= $edu['initials_color']; ?>"></canvas>
                                         </div>
                                         <div class="prof-inner">
                                             <div class="uni-name s-text"><?= $edu['institute'] ?>
@@ -307,8 +385,8 @@ $this->params['header_dark'] = false;
                                     <div class="set">
                                         <div class="prof-p">
                                             <canvas class="user-icon" name="<?= $exp['company'] ?>" width="80"
-                                                    height="80"
-                                                    font="30px"></canvas>
+                                                    height="80" font="30px"
+                                                    color="<?= $exp['initials_color']; ?>"></canvas>
                                         </div>
                                         <div class="prof-inner">
                                             <div class="uni-name s-text"><?= $exp['company'] . ', ' . $exp['city_name'] ?>
@@ -451,10 +529,54 @@ $this->params['header_dark'] = false;
                 </div>
                 <?php
             }
+            if ($userAppliedData && Yii::$app->user->identity->organization->organization_enc_id) {
+                ?>
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="portlet light border-rad">
+                            <div class="portlet-title tabbable-line">
+                                <div class="caption">
+                                    <?php
+                                    if ($_GET['id']) {
+                                        echo '<span class="caption-subject font-dark bold uppercase">Also Applied In</span>';
+                                    } else {
+                                        echo '<span class="caption-subject font-dark bold uppercase">Applied In</span>';
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                            <div class="portlet-body over-scroll">
+                                <div class="mt-comments">
+                                    <?php
+                                    foreach ($userAppliedData as $data) {
+                                        ?>
+                                        <a href="/<?= (($data['type'] == 'Jobs') ? 'job/' : 'internship/') . $data['slug'] ?>"
+                                           class="mt-comment">
+                                            <div class="mt-comment-img">
+                                                <img src="/assets/common/categories/<?= (($data['icon']) ? $data['icon'] : 'others.svg') ?>">
+                                            </div>
+                                            <div class="mt-comment-body">
+                                                <div class="mt-comment-info">
+                                                    <span class="mt-comment-author"><?= $data['category'] ?></span>
+                                                    <span class="mt-comment-date"><?= (($data['type'] == 'Jobs') ? 'Job' : 'Internship') ?></span>
+                                                </div>
+                                                <div class="mt-comment-text"> <?= $data['parent'] ?></div>
+                                            </div>
+                                        </a>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+            }
             ?>
         </div>
         <!--End Sidebar-->
-        </div>
+        <!--        </div>-->
     </section>
 <?php
 if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
@@ -466,6 +588,23 @@ if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user
     }
 }
 $this->registerCss('
+.over-scroll {
+    position: relative;
+    max-height: 550px;
+    overflow-y: scroll;
+}
+.border-rad{
+    border-radius:6px;
+    box-shadow: 0 5px 6px rgb(0 0 0 / 20%);
+}
+.mt-comment-author {
+    width: 70%;
+    display: -webkit-box !important;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+  line-height:20px;
+}
 .pro-text {
 	text-align: right;
 	font-family: roboto;
@@ -506,6 +645,9 @@ $this->registerCss('
 .down-res{
     text-align:center;
     margin-top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .social-info{
     text-align: center;
@@ -515,7 +657,7 @@ $this->registerCss('
 }
 .down-res a{
     background-color: #00a0e3;
-    padding: 8px 20px;
+    padding: 8px 12px;
     text-align: center;
     border-radius: 6px;
     color: #fff;
@@ -564,6 +706,9 @@ $this->registerCss('
     object-fit: cover;
     object-position: center;
 }
+.prof-p canvas {
+    border-radius: 50%;
+}
 .prof-inner {
 	margin: 0 0 0 10px;
 }
@@ -588,7 +733,7 @@ body{background-color:#f9f9f9;}
     color:#000;
 }
 .education-detail, .experience-detail, .achievements-detail, .Interests-detail, .hobbies-detail {
-    padding-bottom: 20px;
+    padding-bottom: 15px;
 }
 .set {
     margin-bottom: -1px;
@@ -611,7 +756,7 @@ body{background-color:#f9f9f9;}
     padding: 3px 15px;
     border: 1px solid #b9c5ce;
     border-radius: 6px;
-    margin: 0 5px 0 0;
+    margin: 0 5px 10px 0;
     font-weight: 500;
     color: #605c5c;
 }
@@ -732,6 +877,7 @@ body{background-color:#f9f9f9;}
 	left: -19%;
 	top: 5%;
 	width: 240px;
+	overflow:hidden;
 }
 .inner-header-page .freelance-image img, .inner-header-page .freelance-image canvas{
 //	max-width:140px;
@@ -997,7 +1143,7 @@ img.img-responsive.payment-img {
 .sidebar-container {
 	background: #ffffff;
 	overflow: hidden;
-	margin-bottom: 30px;
+	margin-bottom: 25px;
 	position: relative;
 	transition: .4s;
 	/* padding: 0px 15px 10px 15px; */
@@ -1008,7 +1154,6 @@ img.img-responsive.payment-img {
 .sidebar-container:hover, .sidebar-container:focus{
     transform: translateY(-5px);
     -webkit-transform: translateY(-5px);
-	cursor:pointer;
 }
 .sidebar-box{
     text-align: center;
@@ -1148,6 +1293,177 @@ ul.status-detail li>strong {
     -webkit-transition: .3s all;
     transition: .3s all;
 }
+.portlet {
+        margin-bottom: 25px;
+        padding: 12px 20px 15px;
+        background-color: #fff;
+    }
+    .portlet>.portlet-title {
+        border-bottom: 1px solid #eee;
+        padding: 0;
+        margin-bottom: 10px;
+        min-height: 48px;
+    }
+    .portlet>.portlet-title>.caption {
+        float: left;
+        display: inline-block;
+        font-size: 18px;
+        line-height: 18px;
+        padding: 10px 0;
+        color: #666;
+    }
+    .portlet.light>.portlet-title>.caption>.caption-subject {
+        font-size: 16px;
+        color: #2f353b;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+    .portlet.light .portlet-body {
+        padding-top: 8px;
+        clear: both;
+    }
+    .mt-comments .mt-comment {
+        padding: 10px;
+        margin: 0 0 10px;
+        display:block;
+    }
+    .mt-comments .mt-comment .mt-comment-img {
+        width: 40px;
+        float: left;
+        margin-right: 8px;
+    }
+    .mt-comments .mt-comment .mt-comment-img>img {
+        border-radius: 50%!important;
+        width:40px;
+        height: 40px;
+    }
+    .mt-comments .mt-comment .mt-comment-body {
+        padding-left: 10px;
+        position: relative;
+        /*overflow: hidden;*/
+    }
+    .mt-comments .mt-comment .mt-comment-body .mt-comment-info .mt-comment-author {
+        margin: 0px;
+        color: #060606;
+        font-weight: 600;
+        width: 70%;
+        display: -webkit-box !important;
+        -webkit-line-clamp:1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 20px;
+    }
+    .mt-comments .mt-comment .mt-comment-body .mt-comment-info .mt-comment-date {
+        display: inline-block;
+        float: right;
+        background: #00a0e3;
+        color: #fff;
+        padding: 2px 10px;
+        border-radius: 50px;
+        font-size: 12px;
+    }
+    .mt-comments .mt-comment .mt-comment-body .mt-comment-text {
+        color: #999;
+    }
+    .radio_questions {
+	max-width: 100%;
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 36px;
+	position: relative;
+}
+.inputGroup {
+	background-color: #fff;
+	display: block;
+	margin: 10px 0;
+	position: relative;
+}
+.inputGroup input {
+	width: 32px;
+	height: 32px;
+	order: 1;
+	z-index: 2;
+	position: absolute;
+	right: 30px;
+	top: 50%;
+	transform: translateY(-50%);
+	cursor: pointer;
+	visibility: hidden;
+}
+.inputGroup input:checked~label {
+	color: #fff;
+	box-shadow: 0 0 10px rgba(0, 0, 0, .3) !important;
+}
+.inputGroup label {
+	padding: 6px 75px 6px 25px !important;
+	width: 96%;
+	display: block;
+	margin: auto;
+	text-align: left;
+	color: #3C454C !important;
+	cursor: pointer;
+	position: relative;
+	z-index: 2;
+	transition: color 1ms ease-out;
+	overflow: hidden;
+	border-radius: 8px;
+	border: 1px solid #eee;
+	font-size:16px;
+    font-family: Roboto;
+}
+.inputGroup input:checked~label:before {
+	transform: translate(-50%, -50%) scale3d(56, 56, 1);
+	opacity: 1;
+}
+.inputGroup label:before {
+	width: 100%;
+	height: 10px;
+	border-radius: 50%;
+	content: \'\';
+	background-color: #fff;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%) scale3d(1, 1, 1);
+	transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+	opacity: 0;
+	z-index: -1;
+	box-shadow: 0 0 10px rgba(0, 0, 0, .5) !important;
+}
+.inputGroup input:checked ~ label:after {
+	background-color: #00a0e3;
+	border-color: #00a0e3;
+}
+.colorOrange{
+    color: #ff7803;
+}
+.colorBlue{
+    color: #00a0e3;
+}
+.process_radio label:after {
+	width: 26px;
+	height: 26px;
+	content: \'\';
+	border: 2px solid #D1D7DC;
+	background-color: #fff;
+	background-repeat: no-repeat;
+	background-position: 2px 3px;
+	background-image: url("data:image/svg+xml,%3Csvg width=\'26\' height=\'26\' viewBox=\'0 0 32 32\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z\' fill=\'%23fff\' fill-rule=\'nonzero\'/%3E%3C/svg%3E ");
+	border-radius: 50%;
+	z-index: 2;
+	position: absolute;
+	right: 30px;
+	top: 50%;
+	transform: translateY(-50%);
+	cursor: pointer;
+	transition: all 200ms ease-in;
+}
+.progress-bar-description{
+    font-size: 12px !important;
+    color: #777;
+    font-weight: 500;
+    font-style: italic;
+}
 @media screen and (max-width: 525px){
     .header-details {
         margin-top: 0px;
@@ -1186,6 +1502,7 @@ ul.status-detail li>strong {
 }
 ');
 $script = <<< JS
+var user_id = "$uId";
 $(document).on('click','#phone-val',function(e) {
   e.preventDefault();
   var phone = $(this).attr('value');
@@ -1233,9 +1550,67 @@ $(document).on('click','.download-resume',function (e){
                     alert('an error occurerd')
                 }
             }
-        })    
+        })
 })
+if($('.over-scroll').length){
+    var ps = new PerfectScrollbar('.over-scroll');
+}
+$(document).on('click', '.shortlist-main', function (event) {
+	event.preventDefault();
+	$('.application_list:checked').prop('checked',false);
+	$.ajax({
+		type: "POST",
+		url: "/candidates/get-data",
+		data: {
+			user_id: user_id
+		},
+		success: function (response) {
+			var res = JSON.parse(response);
+			if (res["status"] == 404) {
+				$('#shortList').modal('toggle');
+			} else {
+				for (var i = 0; i < res.length; i++) {
+					$('.application_list').each(function () {
+						if ($(this).attr('id') == res[i]['application_enc_id']) {
+							$(this).attr('name', 'already-checked-' + i);
+							$(this).prop('checked', true);
+							$(this).prop('disabled', true);
+						}
+					})
+				}
+				$('#shortList').modal('toggle');
+			}
+		}
+	});
+});
+document.getElementById('submitData').addEventListener('click', function () {
+	var applications = document.getElementsByName('applications');
+	var selected_value;
+	for (var i = 0; i < applications.length; i++) {
+		if (applications[i].checked) {
+			app_id = applications[i].value;
+		}
+	}
+	$.ajax({
+		type: "POST",
+		url: "/candidates/shortlist",
+		data: {
+			user_id: user_id,
+			app_id: app_id
+		},
+		success: function (response) {
+			if (JSON.parse(response)["status"] == 200) {
+			    $('.shortlist-main').html('Shortlisted<i class="fas fa-heart"></i>');
+				// toastr.success('successfully shortlisted', 'success');
+			} else {
+				// toastr.error('an error occurred', 'error');
+			}
+		}
+	});
+});
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
+$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

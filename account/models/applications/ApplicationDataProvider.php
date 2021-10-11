@@ -22,6 +22,7 @@ class ApplicationDataProvider extends Model
 {
     public function setValues($model, $aidk)
     {
+
         $object = EmployerApplications::find()
             ->alias('a')
             ->where(['a.application_enc_id' => $aidk])
@@ -39,17 +40,17 @@ class ApplicationDataProvider extends Model
             ->joinWith(['designationEnc n'], false)
             ->joinWith(['applicationOptions b'], false, 'INNER JOIN')
             ->joinWith(['applicationJobDescriptions i' => function ($b) {
-                $b->andWhere(['i.is_deleted' => 0]);
+                $b->onCondition(['i.is_deleted' => 0]);
                 $b->joinWith(['jobDescriptionEnc j'], false, 'INNER JOIN');
                 $b->select(['i.application_enc_id', 'j.job_description']);
             }])
             ->joinWith(['applicationSkills g' => function ($b) {
-                $b->andWhere(['g.is_deleted' => 0]);
+                $b->onCondition(['g.is_deleted' => 0]);
                 $b->joinWith(['skillEnc h'], false, 'INNER JOIN');
                 $b->select(['g.application_enc_id', 'h.skill']);
             }])
             ->joinWith(['applicationEducationalRequirements e' => function ($b) {
-                $b->andWhere(['e.is_deleted' => 0]);
+                $b->onCondition(['e.is_deleted' => 0]);
                 $b->joinWith(['educationalRequirementEnc f'], false);
                 $b->select(['e.application_enc_id', 'f.educational_requirement']);
             }])

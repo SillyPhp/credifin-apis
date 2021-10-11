@@ -167,6 +167,24 @@ class OrganizationsController extends Controller
             return $this->actionCollegeLoans($organization);
         }
 
+        if($type === "courses" && $organization["business_activity"] === "College"){
+            return $this->actionCollegeCourses($organization);
+        }
+        if($type === "infrastructure" && $organization["business_activity"] === "College"){
+            return $this->actionCollegeInfrastructure($organization);
+        }
+        if($type === "faculty" && $organization["business_activity"] === "College"){
+            return $this->actionCollegeFaculty($organization);
+        }
+        if($type === "placement" && $organization["business_activity"] === "College"){
+            return $this->actionCollegePlacement($organization);
+        }
+        if($type === "cutoff" && $organization["business_activity"] === "College"){
+            return $this->actionCollegeCutoff($organization);
+        }
+        if($type === "scholarship" && $organization["business_activity"] === "College"){
+            return $this->actionCollegeScholarship($organization);
+        }
         if ($type === "reviews" && $organization["business_activity"] !== "College") {
             return $this->actionReviews($slug, null);
         } else {
@@ -184,6 +202,84 @@ class OrganizationsController extends Controller
 
         return $this->render('college-profile', [
             "component" => "overview",
+            "isAjax" => 0
+        ]);
+    }
+
+    public function actionCollegeCourses($organization)
+    {
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('profile-components/courses',[
+                   "isAjax" => 1
+                ]);
+        }
+
+        return $this->render('college-profile', [
+            "component" => "courses",
+            "isAjax" => 0
+        ]);
+    }
+
+    public function actionCollegeInfrastructure($organization){
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('profile-components/infrastructure', [
+                "isAjax" => 1
+            ]);
+        }
+
+        return $this->render('college-profile', [
+            "component" => "infrastructure",
+            "isAjax" => 0
+        ]);
+    }
+
+    public function actionCollegeFaculty($organization){
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('profile-components/faculty', [
+                "isAjax" => 1
+            ]);
+        }
+
+        return $this->render('college-profile', [
+            "component" => "faculty",
+            "isAjax" => 0
+        ]);
+    }
+
+    public function actionCollegePlacement($organization){
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('profile-components/placement', [
+                "isAjax" => 1
+            ]);
+        }
+
+        return $this->render('college-profile', [
+            "component" => "placement",
+            "isAjax" => 0
+        ]);
+    }
+
+    public function actionCollegeCutoff($organization){
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('profile-components/cutoff', [
+                "isAjax" => 1
+            ]);
+        }
+
+        return $this->render('college-profile', [
+            "component" => "cutoff",
+            "isAjax" => 0
+        ]);
+    }
+    public function actionCollegeScholarship($organization){
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('profile-components/scholarship', [
+                "isAjax" => 1
+            ]);
+        }
+
+        return $this->render('college-profile', [
+            "component" => "scholarship",
             "isAjax" => 0
         ]);
     }
@@ -236,17 +332,20 @@ class OrganizationsController extends Controller
             $count_opportunities = \common\models\EmployerApplications::find()
                 ->where(['organization_enc_id' => $organization['organization_enc_id'], 'for_careers' => 0, 'is_deleted' => 0])
                 ->count();
+            $from_date_app = date("Y-m-d", strtotime("-180 day"));
             $jobs_count = EmployerApplications::find()
                 ->alias('a')
                 ->joinWith(['applicationTypeEnc b'])
                 ->where(['b.name' => 'Jobs', 'a.status' => 'Active', 'a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
                 ->andWhere(['a.application_for' => 1])
+                ->having(['>=', 'a.created_on', $from_date_app])
                 ->count();
             $internships_count = EmployerApplications::find()
                 ->alias('a')
                 ->joinWith(['applicationTypeEnc b'])
                 ->where(['b.name' => 'Internships', 'a.status' => 'Active', 'a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
                 ->andWhere(['a.application_for' => 1])
+                ->having(['>=', 'a.created_on', $from_date_app])
                 ->count();
             if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -980,13 +1079,20 @@ class OrganizationsController extends Controller
         $model = new ApplicationForm();
         $primary_cat = $model->getPrimaryFields();
         $org = Organizations::find()
-            ->select(['organization_enc_id', 'CONCAT(slug, "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo'])
-            ->where([
-                'slug' => $slug,
-                'is_deleted' => 0
+            ->alias('z')
+            ->select(['z.organization_enc_id', 'CONCAT(z.slug, "' . $referral . '") as slug', 'z.initials_color', 'z.name', 'z.website','e.business_activity', 'z.email', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",z.logo_location, "/", z.logo) END logo','d.name as city_name','b.industry'])
+            ->andWhere([
+                'z.slug' => $slug,
+                'z.is_deleted' => 0
             ])
+            ->joinWith(['organizationLocations a'=>function($a){
+                $a->joinwith(['cityEnc d'],false);
+            }],false)
+            ->joinWith(['industryEnc b'],false)
+            ->joinWith(['businessActivityEnc e'],false)
             ->asArray()
             ->one();
+
         $unclaimed_org = UnclaimedOrganizations::find()
             ->alias('a')
             ->select(['organization_enc_id', 'b.business_activity', 'CONCAT(slug, "/reviews", "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo'])
@@ -1079,6 +1185,30 @@ class OrganizationsController extends Controller
                 return $this->render('review-college-company', ['review_type' => $review_type, 'follow' => $follow, 'reviews_students' => $reviews_students, 'primary_cat' => $primary_cat, 'editReviewForm' => $editReviewForm, 'edit' => $edit_review, 'slug' => $slug, 'stats_students' => $stats_students, 'stats' => $stats, 'org_details' => $org, 'reviews' => $reviews, 'stats' => $stats]);
             }
         }
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $get = new ReviewCardsMod();
+            $options = [];
+            if ($org['business_activity']) {
+                $options['business_activity'] = $org['business_activity'];
+            }
+            if ($org['industry']) {
+                $options['industry'] = $org['industry'];
+            }
+            if ($org['city_name']) {
+                $options['city'] = $org['city_name'];
+            }
+            $options['limit'] = 3;
+            $cards = $get->getAllCompanies($options);
+            if ($cards) {
+                $cards['status'] = 200;
+                return $cards;
+            } else {
+                return $response = [
+                    'status' => 201,
+                ];
+            }
+        }
 
         return $this->render('review-company', [
             'review_type' => $review_type,
@@ -1124,7 +1254,6 @@ class OrganizationsController extends Controller
             $model->load(Yii::$app->request->post());
             return ActiveForm::validate($model);
         }
-
         if (Yii::$app->request->isAjax) {
             return $this->renderAjax('profile-components/loans', [
                 "isAjax" => 1,

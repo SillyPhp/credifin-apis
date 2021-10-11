@@ -608,6 +608,7 @@ a.wn-overlay-text {
     padding: 0 10px;
     position: relative;
     display: -webkit-box;
+    min-height: 82px;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;

@@ -1,7 +1,6 @@
 {
-    "name": "yiisoft/yii2-app-advanced",
-    "description": "Yii 2 Advanced Project Template",
-    "keywords": ["yii2", "framework", "advanced", "project template"],
+    "name": "empower_youth/webapp",
+    "description": "Career Development Platform",
     "homepage": "https://www.empoweryouth.com",
     "type": "project",
     "license": "BSD-3-Clause",
@@ -21,11 +20,16 @@
         "kartik-v/yii2-widgets": "*",
         "borales/yii2-phone-input": "*",
         "skeeks/yii2-assets-auto-compress": "*",
-        "2amigos/yii2-ckeditor-widget": "^2.1",
         "yiisoft/yii2-sphinx": "^2.0",
         "kartik-v/yii2-slider": "dev-master",
         "kartik-v/yii2-field-range": "dev-master",
-        "hashids/hashids": "^1.0"
+        "hashids/hashids": "^1.0",
+        "samdark/sitemap": "^2.2",
+        "kartik-v/yii2-mpdf": "dev-master",
+        "yiisoft/yii2-authclient": "^2.2",
+        "sendgrid/sendgrid": "^7.8",
+        "sociallydev/spaces-api": "v2",
+        "razorpay/razorpay": "^2.5"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

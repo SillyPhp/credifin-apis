@@ -75,7 +75,7 @@ $industries = Json::encode($industries);
                             <div class="logo-absolute">
                                 <div class="logo-box">
                                     <div class="logo">
-                                        <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image" data-name="<?= $organization['name'] ?>" data-width="110" data-height="110" data-color="<?= $organization['initials_color'] ?>" data-font="45px">
+                                        <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image" data-name="<?= $organization['name'] ?>" data-width="200" data-height="200" data-color="<?= $organization['initials_color'] ?>" data-font="95px">
                                         <?php
                                         $form = ActiveForm::begin([
                                             'id' => 'upload-logo',
@@ -771,7 +771,7 @@ $this->registerCss('
 }
 .team-icon{
     width:100%;
-    height:186px;
+    height:230px;
     overflow:hidden;
     object-fit:cover;
     position:relative;
@@ -820,17 +820,38 @@ $this->registerCss('
 }
 /*----office view ends----*/
 /*----address----*/
-.office-heading{
-    font-weight:bold;
-    font-size:18px;
-    text-transform:uppercase;
+/*----address----*/
+.head-office {
+	display: flex;
+	flex-wrap: wrap;
+}
+.org-location {
+	border: 1px solid #eee;
+	padding: 10px;
+	margin: 0 1% 1% 0;
+	box-shadow: 0 0 5px -1px rgba(0,0,0,0.1);
+	flex-basis: 49%;
+	height: 148px;
+	overflow:hidden;
+}
+.office-heading {
+	font-weight: bold;
+	font-size: 16px;
+	text-transform: uppercase;
+	font-family: lora;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	max-height: 55px;
+	cursor: pointer;
 }
 .office-heading img{
     max-width:25px;
     margin-top:-5px;
 }
 .office-loc{
-    padding:10px 20px;
+    font-family:roboto;
 }
 .o-h2 img{
     max-width:15px;
@@ -950,7 +971,7 @@ a.web{
 #enable, #enable:hover, a.facebook-social, .facebook-social:hover,
 a.twitter, .twitter:hover, a.linkedin-social, .linkedin-social:hover, a.web, .web:hover{
     transition:.3s all;
-}
+}l
 /*----follow btn ends----*/
 /*----tabs----*/
 .nav-tabs > li.active a, .nav-tabs > li.active a:hover, .nav-tabs > li.active a:focus{
@@ -1622,7 +1643,7 @@ var cover_vanilla = new Croppie(cr, {
 function renderCrop(img){
     vanilla.bind({
         url: img,
-        points: [20,20,20,20]
+        // points: [20,20,20,20]
         // orientation: 4
     });
 }

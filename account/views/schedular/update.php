@@ -5,8 +5,22 @@ echo $this->render('/widgets/header/secondary-header', [
 ?>
 
 
-    <h2>Scheduled Interview Selection</h2>
-    <div id="calendar"></div>
+<!--    <h2>Scheduled Interview Selection</h2>-->
+    <h2>Scheduled Interviews</h2>
+<!--    <div id="calendar"></div>-->
+    <div class="actions">
+        <div class="btn-group dashboard-button">
+            <a href="/account/schedular/interview" class="viewall-jobs">Schedule Interview</a>
+        </div>
+    </div>
+    <br/>
+<br/>
+<br/>
+    <div class="console-log">
+        <div class="log-content">
+            <div class="--noshadow" id="demoEvoCalendar"></div>
+        </div>
+    </div>
 
     <div id="myModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -132,6 +146,18 @@ $this->registerCss('
     padding: 0;
     background-color: transparent;
 }
+.evo-calendar{
+    z-index: 0 !important;
+}
+button.icon-button>span.bars{
+    overflow:visible !important;
+}
+.royal-navy .calendar-sidebar>span#sidebarToggler{
+    padding-top:4px;
+}
+.event-container>.event-icon>div[class^="event-bullet-"], .event-indicator>.type-bullet>div[class^="type-"]{
+    background-color: #ff9665;
+}
 ');
 $script = <<< JS
 
@@ -169,87 +195,87 @@ $(document).on('change','.radio3_4',function(){
     }
 });
 
-FetchEventAndRenderCalendar(); 
-
-function FetchEventAndRenderCalendar(){
-    events = [];
-    $.ajax({
-        type: 'GET',
-        url: 'get-interview-data',
-        async: false,
-        success: function(data) {
-            data = JSON.parse(data);
-            $.each(data, function(i,v) {
-                events.push({
-                    eventID: v.scheduled_interview_enc_id,
-                    title: v.Subject,
-                    profile: v.Profile,
-                    start: moment(v.Start),
-                    end: moment(v.End),
-                    color: v.ThemeColor,
-                    type:v.interview_type,
-                    interview_at:v.interview_at,
-                    application_enc_id:v.application_enc_id,
-                    designation:v.designation,
-                    date_enc_id:v.interview_date_enc_id,
-                    time:v.time,
-                })
-            });
-            GenerateCalendar(events);
-        }
-    })
-}
-
-function GenerateCalendar(events){
-    $('#calendar').fullCalendar('destroy');
-    $('#calendar').fullCalendar({
-        contentHeight: 400,
-        defaultDate: new Date(),
-        // timeFormat: 'h(:mm)a',
-        header: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'month,basicWeek,basicDay,agenda'
-        },
-        eventLimit: true,
-        eventColor: '#378006',
-        events: events,
-        eventClick: function (calEvent, jsEvent, view) {
-            selectedEvent = calEvent;
-            
-            $('#myModal #eventTitle').text(calEvent.title + ' - ' + calEvent.designation);
-            $('#profile').html('<b>Profile: </b>' + calEvent.profile);
-            $('#interview_type').html('<b>Type: </b>' + calEvent.type);
-            $('#interview_at').html('<b>Interview At: </b>' + calEvent.interview_at);
-            $('#myModal').modal();
-        },
-        selectable: true,
-        select: function(start, end){
-            selectedEvent = {
-                eventID: 0,
-                title: '',
-                description: '',
-                start: start,
-                end: end,
-                color: ''
-            };
-            openAddEditForm();
-            $('#calendar').fullCalendar('unselect');
-        },
-        editable: true,
-        eventDrop: function(event){
-            var data = {
-                EventID: event.eventID,
-                Subject: event.title,
-                Start: event.start.format('DD/MM/YYYY HH:mm A'),
-                End: event.end.format('DD/MM/YYYY HH:mm A'),
-                Description: event.description,
-                ThemeColor: event.color,
-            };
-            saveEvent(data);
-        }
-    })
-}
+//FetchEventAndRenderCalendar(); 
+//
+//function FetchEventAndRenderCalendar(){
+//    events = [];
+//    $.ajax({
+//        type: 'GET',
+//        url: 'get-interview-data',
+//        async: false,
+//        success: function(data) {
+//            data = JSON.parse(data);
+//            $.each(data, function(i,v) {
+//                events.push({
+//                    eventID: v.scheduled_interview_enc_id,
+//                    title: v.Subject,
+//                    profile: v.Profile,
+//                    start: moment(v.Start),
+//                    end: moment(v.End),
+//                    color: v.ThemeColor,
+//                    type:v.interview_type,
+//                    interview_at:v.interview_at,
+//                    application_enc_id:v.application_enc_id,
+//                    designation:v.designation,
+//                    date_enc_id:v.interview_date_enc_id,
+//                    time:v.time,
+//                })
+//            });
+//            // GenerateCalendar(events);
+//        }
+//    })
+//}
+//
+//function GenerateCalendar(events){
+//    $('#calendar').fullCalendar('destroy');
+//    $('#calendar').fullCalendar({
+//        contentHeight: 400,
+//        defaultDate: new Date(),
+//        // timeFormat: 'h(:mm)a',
+//        header: {
+//            left: 'prev,next today',
+//            center: 'title',
+//            right: 'month,basicWeek,basicDay,agenda'
+//        },
+//        eventLimit: true,
+//        eventColor: '#378006',
+//        events: events,
+//        eventClick: function (calEvent, jsEvent, view) {
+//            selectedEvent = calEvent;
+//            
+//            $('#myModal #eventTitle').text(calEvent.title + ' - ' + calEvent.designation);
+//            $('#profile').html('<b>Profile: </b>' + calEvent.profile);
+//            $('#interview_type').html('<b>Type: </b>' + calEvent.type);
+//            $('#interview_at').html('<b>Interview At: </b>' + calEvent.interview_at);
+//            $('#myModal').modal();
+//        },
+//        selectable: true,
+//        select: function(start, end){
+//            selectedEvent = {
+//                eventID: 0,
+//                title: '',
+//                description: '',
+//                start: start,
+//                end: end,
+//                color: ''
+//            };
+//            openAddEditForm();
+//            $('#calendar').fullCalendar('unselect');
+//        },
+//        editable: true,
+//        eventDrop: function(event){
+//            var data = {
+//                EventID: event.eventID,
+//                Subject: event.title,
+//                Start: event.start.format('DD/MM/YYYY HH:mm A'),
+//                End: event.end.format('DD/MM/YYYY HH:mm A'),
+//                Description: event.description,
+//                ThemeColor: event.color,
+//            };
+//            saveEvent(data);
+//        }
+//    })
+//}
 
 $('#btnUpdate').click(function() {
     openEditForm();
@@ -425,11 +451,18 @@ $this->registerCssFile('@backendAssets/plugins/schedular/css/semantic.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css');
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css');
-$this->registerCssFile('@eyAssets/fullcalendar/fullcalendar.min.css');
+//$this->registerCssFile('@eyAssets/fullcalendar/fullcalendar.min.css');
 $this->registerJsFile('@eyAssets/fullcalendar/moment.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('@eyAssets/fullcalendar/fullcalendar.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+//$this->registerJsFile('@eyAssets/fullcalendar/fullcalendar.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/plugins/schedular/js/semantic.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@eyAssets/evo-calendar/css/evo-calendar.min.css');
+$this->registerCssFile('@eyAssets/evo-calendar/css/evo-calendar.orange-coral.min.css');
+//$this->registerCssFile('@eyAssets/evo-calendar/css/evo-calendar.midnight-blue.min.css');
+//$this->registerCssFile('@eyAssets/evo-calendar/css/evo-calendar.royal-navy.min.css');
+//$this->registerJsFile('@eyAssets/fullcalendar/moment.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@eyAssets/evo-calendar/js/evo-calendar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@eyAssets/evo-calendar/js/scheduled_interview_org.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

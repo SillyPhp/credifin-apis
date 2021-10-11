@@ -15,17 +15,17 @@ $news_title = urlencode($news_title);
             </a>
         </div>
         <div class="tw-share">
-            <a href="#!" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$news_title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+            <a href="javascript:;" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$news_title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
                 <span class="tw-btn"><i class="fab fa-twitter marg"></i> Twitter</span>
             </a>
         </div>
         <div class="li-share">
-            <a href="#!" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$news_title.'&summary='.$news_title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-elem-main">
+            <a href="javascript:;" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$news_title.'&summary='.$news_title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-elem-main">
                 <span class="li-btn"><i class="fab fa-linkedin-in marg"></i> LinkedIn</span>
             </a>
         </div>
         <div class="wa-share">
-            <a href="#!" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+            <a href="javascript:;" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
                 <span class="wa-btn"><i class="fab fa-whatsapp"></i> Whatsapp</span>
             </a>
         </div>
@@ -46,6 +46,7 @@ $this->registercss('
     box-shadow: 0 0 10px 0px #eee;
     width:100%;
     background-color:#1d759a;
+    margin-bottom:20px;
 }
 .fb-share, .tw-share, .li-share, .wa-share{
     display:inline-block;

@@ -1,52 +1,95 @@
 <?php
 use yii\helpers\Url;
+
+$this->title = 'School Fee Finance';
+$keywords = 'School Fee Finance | Empower Youth';
+$description = 'A Good Education Is Foundation For A Better Future Lay Your Child Career Path Right From School.';
+$image = Url::to('@eyAssets/images/pages/education-loans/School-Fee-Finance.png', 'https');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
-<section class="study-in-usa-bg">
-    <div class="headerOverlay"></div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <h1>
-                    <span class="typewrite" data-period="2000"
-                          data-type='["School Fee Finance."]'>
-                        <span class="wrap"></span>
-                    </span>
-                </h1>
-                <p>A good education is foundation for a better future<br>
-                Lay your child's career path right from school.</p>
-                <ul>
-                    <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
-                                        <li><a href="/education-loans/school-fee-finance/apply" class="apply-now">Apply Now</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
-<section class="pt30">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-5 tac">
-                <div class="whystudy">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/sf-icon.png')?>" alt="">
+<section class="school-fee-finance">
+    <section class="school-fee-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="header-text">
+                        <h1>
+                            School Fee Finance
+                        </h1>
+                        <p>A Good Education Is Foundation For A Better Future Lay Your Child's Career Path Right From School.</p>
+                        <div class="header-btn">
+                            <a href="/education-loans/school-fee-finance/apply" class="apply-now btn-orange">Apply Now</a>
+                            <a href="#contact" class="enq-now">Enquire Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="header-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/school-fee-header.png')?>">
+                    </div>
                 </div>
             </div>
-            <div class="col-md-7">
-                <h3 class="heading-style">School Fee Finance</h3>
-                <p class="why-des">With increasing inflation, gone are the days when school fees was affordable without financial planning. To make your child study in top schools has become a task. Schools' fees are high and most schools need to be paid in annual modes. Today, school fees can have a major impact on a family’s financial plans and require a financial solution as well.
-                    To make it easier and less worrisome for the parents, EmpowerYouth has introduced school fee financing which is beneficial for both parents and
-                    schools. We believe everyone has a right to a great education and we can help turn aspirations into reality.
+        </div>
+    </section>
+    <section class="school-fee-info">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="school-fee-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/school-fee-info.png')?>">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="school-fee-text">
+                        <h2>School Fee Finance</h2>
+                        <p>With increasing inflation, gone are the days when school fees was affordable without financial planning. To make your child study in top schools has become a task. Schools' fees are high and most schools need to be paid in annual modes. Today, school fees can have a major impact on a family’s financial plans and require a financial solution as well. To make it easier and less worrisome for the parents, EmpowerYouth has introduced school fee financing which is beneficial for both parents and schools. We believe everyone has a right to a great education and we can help turn aspirations into reality.</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 </section>
+<?= $this->render('/widgets/covid-offer-banner', ['availUrl' => '/education-loans/school-fee-finance/apply']) ?>
 <?= $this->render('/widgets/benefits-for-parents')?>
 <?= $this->render('/widgets/Our-lending-partners');?>
 <section class="bg-blue">
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
 <?= $this->render('/widgets/education-loan-faqs');?>
+<?php
+if($blogs['blogs']){
+    echo $this->render('/widgets/education-loan/blogs',[
+        'blogs' => $blogs,
+        'param' => 'refinance'
+    ]);
+};
+?>
 <?= $this->render('/widgets/loan-form-detail',[
-    'model' => $model
+    'model' => $model,
+    'param' => 'School Fee Finance'
 ]); ?>
 <?= $this->render('/widgets/press-releasee',[
     'data'=>$data,
@@ -56,117 +99,45 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .footer{
-    margin-top: 0px !important;
+    margin-top: 0 !important;
 }
-.benefit-bg{
-    background: #fff !important;
+.school-fee-finance{
+    margin-bottom: 25px;
 }
-.pt30{
-    padding-top: 30px;
-    padding-bottom: 30px;
+.school-fee-header{
+    background: url(' . Url::to('@eyAssets/images/pages/education-loans/school-fee-header-bg.png') . ');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: bottom center;
 }
-.why-des{
-    font-size: 16px;
-    line-height: 26px;
-    color: #000;
-    font-family: roboto;
-    text-align: justify;
+.school-fee-header{
+    min-height: 550px;
 }
-.whystudy img {
-    height: 100%;
-    max-height: 300px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px 0px #797979;
+.school-fee-header .container{
+    min-height: inherit;
 }
-.displayFlex{
-    display: flex; 
-    flex-wrap: wrap;
-    justify-content: center;
-}
-.edu-loan-products{
-    text-align: center;
-    box-shadow: -19px 19px 0px -11px #eee;
-    min-height: 200px;
-    margin-bottom: 30px;
+.school-fee-header .row{
+    min-height: inherit;
     display: flex;
-    border: 1px solid #eee;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    margin: 15px 10px;
-    padding: 15px;
-    width: 200px;
-    letter-spacing: .5px;
-    font-family: roboto;
 }
-.edu-loan-products:hover{
-    box-shadow: -19px 19px 0px -11px #00a0e3;
-    transition: .3s ease;
-    cursor: pointer
-}
-.edu-loan-products a{
-    color: #00a0e3;
-    font-size: 15px;
+.header-text h1{
+    font-size: 45px;
+    font-family: Roboto;
     font-weight: 500;
+    color: #ffff;
+    margin-bottom: 0;
 }
-.edu-loan-products a:hover{
-    color: #ff7803;
-    transition: .3s ease;
+.header-text p{
+    max-width: 530px;
+    color: #dddddd;
+    font-size: 18px;
 }
-.edu-loan-products img{
-    max-height: 50px;
+.header-btn{
+    margin-top: 30px;
 }
-.edu-loan-products p{
-    margin-top: 15px;
-    font-size: 15px;
-    text-transform: capitalise;
-    line-height: 20px;
-
-}
-.study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/schoolfee.png') . ');
-	min-height: 500px;
-	background-repeat: no-repeat;
-	background-size: cover;
-	display: flex;
-	align-items: center;
-	justify-content: center; 
-	position: relative;
-	max-height: 700px;
-	background-position:center;
-}
-.headerOverlay{
-    background: rgba(0,0,0, .8);
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-}
-.study-in-usa-bg h1 {
-	font-size: 35px;
-	margin-bottom: 10px;
-	color: #ff7803;
-	font-weight: bold;
-	font-family: roboto;
-}
-.study-in-usa-bg p {
-	font-size: 24px;
-	font-family: roboto;
-	color: #fff;
-	padding: 0 0 5px;
-	line-height: 40px;
-	max-width: 700px;
-	text-transform: capitalize;
-    margin: 10px auto 20px;
- 
-}
-.study-in-usa-bg ul li{
-    display: inline;
-    margin-right: 10px;
-}
-.apply-now {
-	padding: 10px 15px;
+.enq-now, .apply-now{
+    padding: 8px 20px;
 	background: #00A0E3;
 	color: #fff;
 	border: 1px solid #00A0E3;
@@ -175,57 +146,95 @@ $this->registerCss('
 	font-family: roboto;
 	border-radius: 4px;
 	display: inline-block;
-	width: 150px;
-	text-align:center;
 }
-
 .btn-orange{
     background: #ff7803 !important;
     border: 1px solid #ff7803 !important;
-}
-.apply-now:hover{
-    background: #ff7803; 
-    color: #fff;
-    border: 1px solid #ff7803;
+    margin-right: 10px;
     transition: .3s ease;
 }
+.enq-now:hover{
+    background: #fff; 
+    color: #00a0e3;
+    border: 1px solid #fff;
+    transition: .3s ease;
+    font-weight: 700;
+    
+}
 .btn-orange:hover{
-    background: #00a0e3 !important;
-    border: 1px solid #00a0e3 !important;
+    background: #fff !important;
+    border: 1px solid #fff !important;
+    color: #ff7803;
+    font-weight: 700;
+    transition: .3s ease;
 }
-/**/
-.lp-box {
-    box-shadow: 0 0 5px rgba(0,0,0,.3);
+
+.school-fee-header .buttons{
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+}
+.header-img img{
+    width: 70%;
+}
+.header-img{
     text-align: center;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    padding: 10px;
-    background: #fff;
+    margin-top: 70px;
 }
-.loan-logo img {
-    max-width: 80px;
-    max-height: 80px;
-    height: 65px;
-    object-fit: contain;
+.school-fee-info .row{
+    display: flex;
+    align-items: center;
 }
-.lp-name {
-    text-transform: capitalize;
-    font-weight: 500;
-    font-family: roboto;
-    padding: 5px 0 0 0;
-    color: #333;
-    line-height: 20px;
-    min-height: 45px;
-    max-height: 45px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+.school-fee-text h2{
+    color: #323232;
+    font-size: 28pt;
+    font-weight: 700;
+    font-family: Roboto;
 }
-.padd30, .pb3{
-    padding-bottom: 30px;
+.school-fee-text p{
+    color: #535353;
+    line-height: 23px;
+}
+@media only screen and (max-width: 767px){
+    .header-img img{
+        display: none;
+    }
+    .header-text h1{
+        font-size: 25px;
+    }
+    .header-text p, .enq-now, .apply-now{
+        font-size: 14px;
+    }
+    .school-fee-text h2{
+        font-size: 21pt;
+    }
+    .school-fee-img{
+        display: none;
+    }
+}
+@media only screen and (max-width: 992px){
+    .school-fee-img img{
+        max-width: 275px;
+    }
+    
+    .header-img{
+        margin-top: 0;
+    }
 }
 ');
+
+$script = <<<JS
+$("a[href^='#']").click(function(e) {
+        e.preventDefault();
+
+        var position = $($(this).attr("href")).offset().top;
+        $("body, html").animate({
+            scrollTop: position
+        }, 1500 );
+    });
+JS;
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.9/jquery.lazy.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJS($script);
 ?>
 <script>
     var TxtType = function(el, toRotate, period) {

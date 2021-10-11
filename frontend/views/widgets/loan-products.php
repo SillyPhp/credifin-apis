@@ -18,52 +18,52 @@ use yii\helpers\Url;
                         <!--                            <a href="/education-loans/education-institution-loan">Learn More</a>-->
                         <!--                        </div>-->
                         <div>
-                            <a href="/education-loans/annual-fee-financing" class="edu-loan-products">
+                            <a href="/education-loans/annual-fee-financing" class="edu-loan-products" target="_blank">
                                 <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/Annual-Fee-Financing-Loans.png') ?>">
                                 <p>Annual Fee Finance</p>
                                 <span>Learn More</span>
                             </a>
                         </div>
                         <div>
-                            <a href="/education-loans/study-in-india" class="edu-loan-products">
+                            <a href="/education-loans/study-in-india" class="edu-loan-products" target="_blank">
                                 <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/General-Edu-Loans.png') ?>">
                                 <p>Education Loan With Moratorium</p>
                                 <span>Learn More</span>
                             </a>
                         </div>
                         <div>
-                            <a href="/education-loans/school-fee-finance" class="edu-loan-products">
+                            <a href="/education-loans/school-fee-finance" class="edu-loan-products" target="_blank">
                                 <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/school-fee.png') ?>">
                                 <p>School Fee Finance</p>
                                 <span>Learn More</span>
                             </a>
                         </div>
                         <div>
-                            <a href="/education-loans/interest-free" class="edu-loan-products">
+                            <a href="/education-loans/interest-free" class="edu-loan-products" target="_blank">
                                 <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/school-fee-financing.png') ?>">
                                 <p>Interest Free Loan</p>
                                 <span>Learn More</span>
                             </a>
                         </div>
                         <div>
-                            <a href="/education-loans/study-abroad" class="edu-loan-products">
+                            <a href="/education-loans/study-abroad" class="edu-loan-products" target="_blank">
                                 <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/Abroad-Edu-Loans.png') ?>">
                                 <p>Abroad Education Loans</p>
                                 <span>Learn More</span>
                             </a>
                         </div>
                         <div>
-                            <a href="/education-loans/refinance" class="edu-loan-products">
+                            <a href="/education-loans/refinance" class="edu-loan-products" target="_blank">
                                 <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/Refinancing-Edu-Loans.png') ?>">
                                 <p>Education Loan Refinance </p>
                                 <span>Learn More</span>
                             </a>
                         </div>
                         <div>
-                            <a href="/education-loans/loan-for-teachers/apply" class="edu-loan-products">
+                            <a href="/education-loans/teachers-loan" class="edu-loan-products" target="_blank">
                                 <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/teacher-loan-icon.png') ?>">
                                 <p>Teacher Loan</p>
-                                <span>Apply Now</span>
+                                <span>Learn More</span>
                             </a>
                         </div>
                         <div>
@@ -126,5 +126,15 @@ $this->registerCss('
     font-size: 15px;
     text-transform: capitalise;
     line-height: 20px;
+}
+
+@media only screen and (max-width: 550px){
+    .displayFlex{
+        justify-content: space-around;
+    }
+    .displayFlex > div{
+        flex-basis: 50%;
+        margin-bottom: 25px;
+    }
 }
 ');

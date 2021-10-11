@@ -45,7 +45,7 @@ class ProcessApplicationsController extends Controller
                 $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
                 $b->distinct();
             }])
-            ->joinWith(['appliedApplications aa' => function($aa){
+            ->joinWith(['appliedApplications aa' => function ($aa) {
                 $aa->select(['aa.application_enc_id']);
             }])
             ->joinWith(['applicationOptions ao'], false)
@@ -63,10 +63,10 @@ class ProcessApplicationsController extends Controller
         $model = new SendEmailModel();
         $whatsAppmodel = new whatsAppShareForm();
         if (Yii::$app->request->post()) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                $model->email = Yii::$app->request->post('email');
-                $model->application_id = Yii::$app->request->post('application_id');
-                return $model->sendEmails();
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->email = Yii::$app->request->post('email');
+            $model->application_id = Yii::$app->request->post('application_id');
+            return $model->sendEmails();
         }
         if (Yii::$app->user->identity->organization) {
             $application_name = EmployerApplications::find()
@@ -122,8 +122,12 @@ class ProcessApplicationsController extends Controller
                     ->distinct()
                     ->alias('a')
                     ->where(['a.application_enc_id' => $application_id])
-                    ->select(['a.current_round', 'a.id', 'e.resume', 'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, b.initials_color, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(DISTINCT(c.is_completed)) total', 'a.created_by', 'a.created_on', 'a.rejection_window'])
+                    ->select(['a.current_round', 'a.id', 'e.resume', 'b.phone', 'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, b.initials_color, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(DISTINCT(c.is_completed)) total', 'a.created_by', 'a.created_on', 'a.rejection_window'])
                     ->joinWith(['resumeEnc e'], false)
+                    ->joinWith(['appliedApplicationLocations aal' => function ($aal) {
+                        $aal->select(['aal.applied_application_enc_id', 'aal.city_enc_id', 'ce.name']);
+                        $aal->joinWith(['cityEnc as ce'], false);
+                    }])
                     ->joinWith(['appliedApplicationProcesses c' => function ($c) {
                         $c->joinWith(['fieldEnc d'], false);
                         $c->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon', 'c.is_completed']);
@@ -165,6 +169,10 @@ class ProcessApplicationsController extends Controller
                                 }], false);
                             }]);
                         }]);
+                        $cr->joinWith(['candidateRejectionReasons cr1' => function ($cr1) {
+                            $cr1->select(['cr1.candidate_rejection_enc_id', 'cr1.rejection_reasons_enc_id', 'cr2.reason']);
+                            $cr1->joinWith(['rejectionReasonsEnc cr2'], false);
+                        }]);
                         $cr->groupBy(['cr.candidate_rejection_enc_id']);
                     }])
                     ->groupBy(['a.applied_application_enc_id'])
@@ -186,6 +194,7 @@ class ProcessApplicationsController extends Controller
                     ->where(['reason_by' => 1, 'is_deleted' => 0, 'status' => 'Approved'])
                     ->asArray()
                     ->all();
+
                 return $this->render('index', [
                     'fields' => $applied_users,
                     'que' => $question,

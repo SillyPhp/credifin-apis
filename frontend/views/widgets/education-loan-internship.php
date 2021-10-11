@@ -5,17 +5,17 @@ use yii\helpers\Url;
     <div class="bg-Green-overlay"></div>
     <div class="container">
         <div class="row row-flex">
-            <div class="col-md-6">
+            <div class="col-sm-6 col-xs-12">
                 <div class="internshipHeading">
-                    <h5>Worried About Paying For Your <br>Education While Studying?</h5>
+                    <h5>Worried About Paying For Your Education While Studying?</h5>
                     <p>Apply for Our <span>Education Loan</span> + <span>Internship Programme</span>.<br>
                     Pay For Your Education Loan Yourself By Earning With Our <br>
                         High Paying <span>Internship Programme</span>.</p>
                 </div>
             </div>
-            <div class="col-md-6 text-center">
-                <div class="internshipHeading">
-                    <a href="https://www.empoweryouth.com/internship/marketing-education-loan-28751616658499">Apply Now</a>
+            <div class="col-sm-6 col-xs-12">
+                <div class="internship-btn text-center">
+                    <a href="https://www.empoweryouth.com/internship/marketing-education-loan-28751616658499" target="_blank">Apply Now</a>
                 </div>
             </div>
         </div>
@@ -57,6 +57,7 @@ $this->registerCss('
     display: flex;
     align-items: center;
     position: relative;
+    padding: 60px 0;
 }
 .bg-Green-overlay{
     position: absolute;
@@ -85,13 +86,35 @@ $this->registerCss('
     bottom: 0px;
     right: 0px;
 }
-.internshipHeading a{
+.internshipHeading{
+    max-width: 450px;
+}
+.internship-btn a{
     padding: 20px 40px;
     border: 1px solid #ff7803;
     background: #ff7803;
     color: #fff;
     font-size: 20px;
     text-transform: uppercase;
+    display: inline-block;
+}
+@media only screen and (max-width: 767px){
+    .row-flex{
+        display: block;
+    }
+    .bg-Green{
+        background: linear-gradient(to right, #073b4c 59%, #073b4c02 233%);
+    }
+    .internship-btn a{
+        padding: 8px 35px;
+    }
+    .internshipHeading p{
+        //text-align: center;
+        font-size: 14px;
+    }
+    .internship-btn{
+        text-align: left;
+    }
 }
 ')
 ?>

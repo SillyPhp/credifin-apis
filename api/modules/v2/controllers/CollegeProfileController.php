@@ -10,9 +10,15 @@ use common\models\ApplicationEducationalRequirements;
 use common\models\AppliedApplications;
 use common\models\AssignedCollegeCourses;
 use common\models\Cities;
+use common\models\CollegeAdmissionDetail;
+use common\models\CollegeCourses;
 use common\models\CollegeCoursesPool;
 use common\models\CollegeCutoff;
 use common\models\CollegeFaculty;
+use common\models\CollegeInfrastructure;
+use common\models\CollegeInfrastructureDetail;
+use common\models\CollegePlacementHighlights;
+use common\models\CollegeRecruitmentByCourse;
 use common\models\CollegeScholarships;
 use common\models\CollegeSections;
 use common\models\CollegeSettings;
@@ -25,6 +31,7 @@ use common\models\InterviewProcessFields;
 use common\models\OrganizationOtherDetails;
 use common\models\Organizations;
 use common\models\ReferralReviewTracking;
+use common\models\spaces\Spaces;
 use common\models\Teachers;
 use common\models\User;
 use common\models\Users;
@@ -50,6 +57,8 @@ class CollegeProfileController extends ApiBaseController
             'actions' => [
                 'get-image' => ['POST', 'OPTIONS'],
                 'upload-logo' => ['POST', 'OPTIONS'],
+                'add-course-recruitment' => ['POST', 'OPTIONS'],
+                'update-course-recruitment' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -156,7 +165,7 @@ class CollegeProfileController extends ApiBaseController
             $streams = AssignedCollegeCourses::find()
                 ->distinct()
                 ->alias('a')
-                ->select(['a.assigned_college_enc_id', 'c.course_name stream'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name stream', 'a.course_enc_id'])
                 ->joinWith(['courseEnc c'], false)
                 ->where(['a.organization_enc_id' => $organizations['organization_enc_id'], 'a.is_deleted' => 0, 'c.type' => 'Stream'])
                 ->orderBy(['c.course_name' => SORT_ASC])
@@ -267,13 +276,48 @@ class CollegeProfileController extends ApiBaseController
             $req = Yii::$app->request->post();
             $college_id = $this->getOrgId();
 
-            if (!isset($req['course_duration']) && empty($req['course_duration'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
-            } elseif (!isset($req['type']) && empty($req['type'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
-            } elseif (!isset($req['course_name']) && empty($req['course_name'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            if (!isset($req['courses'])) {
+                if (!isset($req['course_duration']) && empty($req['course_duration'])) {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+                } elseif (!isset($req['type']) && empty($req['type'])) {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+                } elseif (!isset($req['course_name']) && empty($req['course_name'])) {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+                }
+
+                $res = $this->saveCourse($req);
+                if ($res['status'] == 500) {
+                    return $this->response(500, ['status' => 500, 'message' => 'There is an error']);
+                } elseif ($res['status'] == 409) {
+                    return $this->response(409, ['status' => 409, 'message' => 'already added']);
+                }
+
+                return $this->response(200, ['status' => 200, 'courses' => $res]);
+
+            } else {
+
+                foreach ($req['courses'] as $val) {
+                    if (!empty($val['course_name'])) {
+                        $res = $this->saveCourse($val, true);
+                        if ($res['status'] == 500) {
+                            return $this->response(500, ['status' => 500, 'message' => 'There is an error']);
+                        }
+                    }
+                }
+
+                return $this->response(200, ['status' => 200, 'courses' => $res]);
             }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function saveCourse($req, $is_bulk = false)
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $college_id = $this->getOrgId();
 
             $already_have = AssignedCollegeCourses::find()
                 ->alias('a')
@@ -296,6 +340,8 @@ class CollegeProfileController extends ApiBaseController
                     $college_course_id->created_by = $user->user_enc_id;
                     $college_course_id->created_on = date('Y-m-d H:i:s');
                     if (!$college_course_id->save()) {
+                        print_r($college_course_id->getErrors());
+                        die();
                         return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                     }
                 }
@@ -306,8 +352,19 @@ class CollegeProfileController extends ApiBaseController
                 $course->assigned_college_enc_id = $utilities->encrypt();
                 $course->organization_enc_id = $college_id;
                 $course->course_enc_id = $college_course_id->course_enc_id;
-                $course->course_duration = (int)$req['course_duration'];
-                $course->type = $req['type'];
+                if ($is_bulk) {
+                    if (!empty($req['years'])) {
+                        $course->course_duration = (int)$req['years'];
+                        $course->type = 'Years';
+                    } elseif (!empty($req['semesters'])) {
+                        $course->course_duration = (int)$req['semesters'];
+                        $course->type = 'Semesters';
+                    }
+                } else {
+                    $course->course_duration = (int)$req['course_duration'];
+                    $course->type = $req['type'];
+                }
+
                 $course->created_by = $user->user_enc_id;
                 $course->created_on = date('Y-m-d H:i:s');
                 if ($course->save()) {
@@ -326,31 +383,37 @@ class CollegeProfileController extends ApiBaseController
                         }
                     }
 
-                    $courses = AssignedCollegeCourses::find()
-                        ->distinct()
-                        ->alias('a')
-                        ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
-                        ->joinWith(['courseEnc c'], false)
-                        ->joinWith(['collegeSections b' => function ($b) {
-                            $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
-                            $b->onCondition(['b.is_deleted' => 0]);
-                        }])
-                        ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
-//                        ->groupBy(['b.course_name'])
-                        ->asArray()
-                        ->all();
-
-                    return $this->response(200, ['status' => 200, 'courses' => $courses]);
+                    return $this->getCourses();
                 } else {
-                    return $this->response(500, ['status' => 500, 'message' => 'There is an error']);
+                    return ['status' => 500];
                 }
             } else {
-                return $this->response(409, ['status' => 409, 'message' => 'already added']);
+                if ($is_bulk) {
+                    return $this->getCourses();
+                }
+                return ['status' => 409];
             }
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    private function getCourses()
+    {
+        $college_id = $this->getOrgId();
+
+        $courses = AssignedCollegeCourses::find()
+            ->distinct()
+            ->alias('a')
+            ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+            ->joinWith(['courseEnc c'], false)
+            ->joinWith(['collegeSections b' => function ($b) {
+                $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
+                $b->onCondition(['b.is_deleted' => 0]);
+            }])
+            ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        return $courses;
     }
 
     public function actionUpdateCourse()
@@ -1625,10 +1688,12 @@ class CollegeProfileController extends ApiBaseController
                 ->one();
 
             if ($org) {
-                $org->description = $params['description'];
-                $org->website = $params['website'];
-                if (!$org->update()) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                if (isset($params['description']) || isset($params['website'])) {
+                    $org->description = $params['description'] ? $params['description'] : $org->description;
+                    $org->website = $params['website'] ? $params['website'] : $org->website;
+                    if (!$org->update()) {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
                 }
             }
 
@@ -1644,7 +1709,11 @@ class CollegeProfileController extends ApiBaseController
                 $org_other_detail->total_programs = $params['total_programs'];
                 $org_other_detail->popular_course = $params['popular_course'];
                 $org_other_detail->top_recruiter = $params['top_recruiter'];
-//                $org_other_detail->brochure = $params['brochure'];
+                $org_other_detail->brochure = $params['brochure'];
+                $org_other_detail->established_in = $params['established_in'];
+                $org_other_detail->university_type = $params['university_type'];
+                $org_other_detail->application_mode = $params['application_mode'];
+                $org_other_detail->fees = $params['fees'];
                 $org_other_detail->updated_on = date('Y-m-d H:i:s');
                 if (!$org_other_detail->save()) {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
@@ -1652,13 +1721,17 @@ class CollegeProfileController extends ApiBaseController
                 return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
             }
 
-            $org_other_detail->affiliated_to = $params['affiliated_to'];
-            $org_other_detail->accredited_to = $params['accredited_to'];
-            $org_other_detail->entrance_exam = $params['entrance_exam'];
-            $org_other_detail->total_programs = $params['total_programs'];
-            $org_other_detail->popular_course = $params['popular_course'];
-            $org_other_detail->top_recruiter = $params['top_recruiter'];
-//            $org_other_detail->brochure = $params['brochure'];
+            $org_other_detail->affiliated_to = $params['affiliated_to'] ? $params['affiliated_to'] : $org_other_detail->affiliated_to;
+            $org_other_detail->accredited_to = $params['accredited_to'] ? $params['accredited_to'] : $org_other_detail->accredited_to;
+            $org_other_detail->entrance_exam = $params['entrance_exam'] ? $params['entrance_exam'] : $org_other_detail->entrance_exam;
+            $org_other_detail->total_programs = $params['total_programs'] ? $params['total_programs'] : $org_other_detail->total_programs;
+            $org_other_detail->popular_course = $params['popular_course'] ? $params['popular_course'] : $org_other_detail->popular_course;
+            $org_other_detail->top_recruiter = $params['top_recruiter'] ? $params['top_recruiter'] : $org_other_detail->top_recruiter;
+            $org_other_detail->brochure = $params['brochure'] ? $params['brochure'] : $org_other_detail->brochure;
+            $org_other_detail->established_in = $params['established_in'] ? $params['established_in'] : $org_other_detail->established_in;
+            $org_other_detail->university_type = $params['university_type'] ? $params['university_type'] : $org_other_detail->university_type;
+            $org_other_detail->application_mode = $params['application_mode'] ? $params['application_mode'] : $org_other_detail->application_mode;
+            $org_other_detail->fees = $params['fees'] ? $params['fees'] : $org_other_detail->fees;
             $org_other_detail->updated_on = date('Y-m-d H:i:s');
             if (!$org_other_detail->update()) {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
@@ -1666,6 +1739,32 @@ class CollegeProfileController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
         }
         return $this->response(401, ['status' => 401, 'unauthorized']);
+    }
+
+    public function actionGetInfo()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $info = OrganizationOtherDetails::find()
+                ->alias('a')
+                ->select(['a.organization_other_details_enc_id', 'a.organization_enc_id',
+                    'a.total_programs', 'a.established_in', 'a.application_mode', 'a.affiliated_to', 'a.accredited_to',
+                    'a.entrance_exam', 'a.popular_course', 'a.top_recruiter', 'a.brochure', 'a.university_type',
+                    'b.description', 'b.website'])
+                ->joinWith(['organizationEnc b'], false)
+                ->where(['a.organization_enc_id' => $this->getOrgId()])
+                ->asArray()
+                ->one();
+
+            if ($info) {
+                return $this->response(200, ['status' => 200, 'org_info' => $info]);
+            }
+
+            return $this->response(404, ['status' => 401, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 
     public function actionSaveScholarships()
@@ -1695,11 +1794,114 @@ class CollegeProfileController extends ApiBaseController
         }
     }
 
+    public function actionUpdateScholarships()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (isset($params['scholarship_id']) && !empty($params['scholarship_id'])) {
+                $scholarship = CollegeScholarships::findOne(['college_scholarship_enc_id' => $params['scholarship_id']]);
+
+                if ($scholarship) {
+                    $scholarship->title = $params['title'];
+                    $scholarship->amount = $params['amount'];
+                    $scholarship->detail = $params['detail'];
+                    $scholarship->apply_link = $params['apply_link'];
+                    $scholarship->updated_by = $user->user_enc_id;
+                    $scholarship->updated_on = date('Y-m-d H:i:s');
+                    if (!$scholarship->update()) {
+                        return $this->response(500, ['status' => 500, 'error' => $scholarship->getErrors()]);
+                    }
+
+                    return $this->response(200, ['status' => 200, 'message' => 'updated']);
+                }
+
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "scholarship_id"']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetScholarships()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $scholarship = CollegeScholarships::find()
+                ->select(['college_scholarship_enc_id', 'title', 'amount', 'detail', 'apply_link'])
+                ->where(['college_enc_id' => $this->getOrgId(), 'is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            if ($scholarship) {
+                return $this->response(200, ['status' => 200, 'scholarships' => $scholarship]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionRemoveScholarships()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['scholarship_id']) || empty($params['scholarship_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "scholarship_id"']);
+            }
+
+            $scholarships = CollegeScholarships::findOne(['college_scholarship_enc_id' => $params['scholarship_id'], 'is_deleted' => 0]);
+
+            if ($scholarships) {
+                $scholarships->is_deleted = 1;
+                $scholarships->updated_by = $user->user_enc_id;
+                $scholarships->updated_on = date('Y-m-d H:i:s');
+                if (!$scholarships->update()) {
+                    return $this->response(500, ['status' => 500, 'error' => $scholarships->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'removed']);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
     public function actionSaveCutoff()
     {
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
+
+            $cutoff = CollegeCutoff::findOne(['assgined_course_enc_id' => $params['course_id'], 'college_enc_id' => $this->getOrgId()]);
+
+            if ($cutoff) {
+                $cutoff->general = $params['general'];
+                $cutoff->obc = $params['obc'];
+                $cutoff->sc = $params['sc'];
+                $cutoff->st = $params['st'];
+                $cutoff->pwd = $params['pwd'];
+                $cutoff->ews = $params['ews'];
+                $cutoff->mode = $params['mode'];
+                $cutoff->last_updated_by = $user->user_enc_id;
+                $cutoff->last_updated_on = date('Y-m-d H:i:s');
+                if (!$cutoff->update()) {
+                    return $this->response(500, $cutoff->getErrors());
+                }
+
+                return $this->response(200, ['status' => 200, 'successfully updated']);
+            }
 
             $cutoff = new CollegeCutoff();
             $utilitiesModel = new \common\models\Utilities();
@@ -1716,9 +1918,71 @@ class CollegeProfileController extends ApiBaseController
             $cutoff->created_by = $user->user_enc_id;
             $cutoff->created_on = date('Y-m-d H:i:s');
             if (!$cutoff->save()) {
+                print_r($cutoff->getErrors());
+                die();
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionCutoffList()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $college_id = $this->getOrgId();
+
+            $cutoffs = CollegeCutoff::find()
+                ->alias('a')
+                ->select(['a.college_cut_off_enc_id', 'a.assgined_course_enc_id', 'c.course_name', 'a.college_enc_id', 'a.general', 'a.obc',
+                    'a.sc', 'a.st', 'a.pwd', 'a.ews', 'a.mode'])
+                ->joinWith(['assginedCourseEnc b' => function ($b) {
+                    $b->joinWith(['courseEnc c']);
+                }], false)
+                ->where(['a.is_deleted' => 0, 'a.college_enc_id' => $college_id])
+                ->asArray()
+                ->all();
+
+            if ($cutoffs) {
+                return $this->response(200, ['status' => 200, 'cutoff' => $cutoffs]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionRemoveCutoff()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['cutoff_id']) || empty($params['cutoff_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "cutoff_id"']);
+            }
+
+            $cutoff = CollegeCutoff::findOne(['college_cut_off_enc_id' => $params['cutoff_id'], 'is_deleted' => 0]);
+
+            if ($cutoff) {
+
+                $cutoff->is_deleted = 1;
+                $cutoff->last_updated_by = $user->user_enc_id;
+                $cutoff->last_updated_on = date('Y-m-d H:i:s');
+                if (!$cutoff->update()) {
+                    return $this->response(500, ['status' => 500, 'error' => $cutoff->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'removed']);
+
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -1730,19 +1994,134 @@ class CollegeProfileController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
-            $faculty = new CollegeFaculty();
-            $faculty->college_faculty_enc_id = '';
-            $faculty->college_enc_id = '';
-            $faculty->faculty_name = '';
-            $faculty->designation_enc_id = '';
-            $faculty->department = '';
-            $faculty->experience = '';
-            $faculty->created_by = $user->user_enc_id;
-            $faculty->created_on = date('Y-m-d H:i:s');
-            if (!$faculty->save()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+//            $image = UploadedFile::getInstanceByName('image');
+
+            // this is for update
+            if (isset($params['faculty_id']) && !empty($params['faculty_id'])) {
+                $faculty = CollegeFaculty::findOne(['college_faculty_enc_id' => $params['faculty_id'], 'is_deleted' => 0]);
+
+                if (!$faculty) {
+                    return $this->response(404, ['status' => 404, 'message' => 'not found']);
+                }
+
+                $faculty->last_updated_by = $user->user_enc_id;
+                $faculty->last_updated_on = date('Y-m-d H:i:s');
+
+            } else {
+
+                $faculty = new CollegeFaculty();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $faculty->college_faculty_enc_id = $utilitiesModel->encrypt();
+                $faculty->college_enc_id = $this->getOrgId();
+                $faculty->created_by = $user->user_enc_id;
+                $faculty->created_on = date('Y-m-d H:i:s');
+
             }
-            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+            $faculty->faculty_name = $params['name'];
+            $faculty->designation_enc_id = $this->saveDesignation($params['designation']);
+            $faculty->department_enc_id = $this->saveDepartment($params['department']);
+            $faculty->experience = $params['experience'];
+
+            if (isset($params['image']) && !empty($params['image']) && $params['image'] != '') {
+
+                $image = base64_decode($params['image']);
+
+                $faculty->image_location = \Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->collegeProfile->faculty_image . $faculty->image_location . '/';
+
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $encrypted_string = $utilitiesModel->encrypt();
+                if (substr($encrypted_string, -1) == '.') {
+                    $encrypted_string = substr($encrypted_string, 0, -1);
+                }
+
+                $faculty->image = $encrypted_string . '.png';
+                $file = dirname(__DIR__, 4) . '/files/temp/' . $user->image;
+                if (file_put_contents($file, $image)) {
+                    $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                    $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                    $result = $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $faculty->image, "public");
+                    if (file_exists($file)) {
+                        unlink($file);
+                    }
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'file put error']);
+                }
+            }
+
+            if (isset($params['faculty_id']) && !empty($params['faculty_id'])) {
+                if (!$faculty->update()) {
+                    return $this->response(500, ['status' => 500, 'error' => $faculty->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+            } else {
+
+                if (!$faculty->save()) {
+                    return $this->response(500, ['status' => 500, 'error' => $faculty->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionFacultyList()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $faculty = CollegeFaculty::find()
+                ->alias('a')
+                ->select(['a.college_faculty_enc_id', 'a.faculty_name', 'a.experience', 'b.designation', 'c.name department',
+                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->collegeProfile->faculty_image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image'])
+                ->joinWith(['designationEnc b'], false)
+                ->joinWith(['departmentEnc c'], false)
+                ->where(['a.is_deleted' => 0, 'a.college_enc_id' => $this->getOrgId()])
+                ->orderBy(['a.created_on' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            if ($faculty) {
+                return $this->response(200, ['status' => 200, 'faculty_list' => $faculty]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionRemoveFaculty()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['faculty_id']) || empty($params['faculty_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "faculty_id"']);
+            }
+
+            $faculty = CollegeFaculty::findOne(['college_faculty_enc_id' => $params['faculty_id']]);
+
+            if ($faculty) {
+                $faculty->is_deleted = 1;
+                $faculty->last_updated_by = $user->user_enc_id;
+                $faculty->last_updated_on = date('Y-m-d H:i:s');
+                if (!$faculty->update()) {
+                    return $this->response(500, ['status' => 500, 'error' => $faculty->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'removed']);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -1779,15 +2158,556 @@ class CollegeProfileController extends ApiBaseController
         return false;
     }
 
-    private function saveDepartment($department)
+    private function saveDepartment($departmentt)
     {
+
+        $department = Departments::findOne(['name' => $departmentt]);
+
+        if ($department) {
+            return $department->department_enc_id;
+        }
+
         $department = new Departments();
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $department->department_enc_id = $utilitiesModel->encrypt();
-        $department->name = $department;
+        $department->name = $departmentt;
         if (!$department->save()) {
+            print_r($department->getErrors());
+            die();
+            return false;
+        }
 
+        return $department->department_enc_id;
+    }
+
+    public function actionSaveCoursesFee()
+    {
+        if ($user = $this->isAuthorized()) {
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $params = Yii::$app->request->post();
+
+                $already_have = AssignedCollegeCourses::find()
+                    ->alias('a')
+                    ->joinWith(['courseEnc b'])
+                    ->where(['a.organization_enc_id' => $this->getOrgId(), 'b.course_name' => $params['course_name'], 'a.is_deleted' => 0])
+                    ->one();
+
+                if ($already_have) {
+                    return $this->response(409, ['status' => 409, 'message' => 'conflict, course already exists']);
+                }
+
+                $course = CollegeCoursesPool::findOne(['course_name' => $params['course_name']]);
+
+                if (!$course) {
+                    $course = new CollegeCoursesPool();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $course->course_enc_id = $utilitiesModel->encrypt();
+                    $course->course_name = $params['course_name'];
+                    $course->created_by = $user->user_enc_id;
+                    $course->created_on = date('Y-m-d H:i:s');
+                    if (!$course->save()) {
+                        $transaction->rollback();
+                        return $this->response(500, ['status' => 500, 'message' => $course->getErrors()]);
+                    }
+
+                    if (isset($params['stream_id']) && !empty($params['stream_id'])) {
+                        $stream = CollegeCoursesPool::findOne(['course_enc_id' => $course->course_enc_id]);
+                        $stream->parent_enc_id = $params['stream_id'];
+                        $stream->updated_by = $user->user_enc_id;
+                        $stream->updated_on = date('Y-m-d H:i:s');
+                        if (!$stream->update()) {
+                            $transaction->rollback();
+                            return $this->response(500, ['status' => 500, 'message' => $stream->getErrors()]);
+                        }
+                    }
+                } else {
+
+                    if (isset($params['stream_id']) && !empty($params['stream_id'])) {
+                        if ($course->parent_enc_id == null) {
+                            $stream = CollegeCoursesPool::findOne(['course_enc_id' => $course->course_enc_id]);
+                            $stream->parent_enc_id = $params['stream_id'];
+                            $stream->updated_by = $user->user_enc_id;
+                            $stream->updated_on = date('Y-m-d H:i:s');
+                            if (!$stream->update()) {
+                                $transaction->rollback();
+                                return $this->response(500, ['status' => 500, 'message' => $stream->getErrors()]);
+                            }
+                        }
+                    }
+
+                }
+
+                $assigned_college_courses = new AssignedCollegeCourses();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $assigned_college_courses->assigned_college_enc_id = $utilitiesModel->encrypt();
+                $assigned_college_courses->course_enc_id = $course->course_enc_id;
+                $assigned_college_courses->organization_enc_id = $this->getOrgId();
+                $assigned_college_courses->course_duration = $params['duration'];
+                $assigned_college_courses->type = $params['type'];
+                $assigned_college_courses->created_by = $user->user_enc_id;
+                $assigned_college_courses->created_on = date('Y-m-d H:i:s');
+                if (!$assigned_college_courses->save()) {
+                    $transaction->rollback();
+                    return $this->response(500, ['status' => 500, 'message' => $assigned_college_courses->getErrors()]);
+                }
+
+                $college_admission_detail = new CollegeAdmissionDetail();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $college_admission_detail->admission_detail_enc_id = $utilitiesModel->encrypt();
+                $college_admission_detail->assigned_course_id = $assigned_college_courses->assigned_college_enc_id;
+                $college_admission_detail->fees = $params['fees'];
+                if (isset($params['scholarship_id']) && !empty($params['scholarship_id'])) {
+                    $college_admission_detail->scholarship_enc_id = $params['scholarship_id'];
+                }
+                $college_admission_detail->created_by = $user->user_enc_id;
+                $college_admission_detail->created_on = date('Y-m-d H:i:s');
+                if (!$college_admission_detail->save()) {
+                    $transaction->rollback();
+                    return $this->response(500, ['status' => 500, 'message' => $college_admission_detail->getErrors()]);
+                }
+
+
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+            } catch (\Exception $e) {
+                $transaction->rollback();
+                return $this->response(500, ['status' => 500, 'message' => $e->getMessage()]);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionEditAdmissionDetail()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            $admissionDetail = CollegeAdmissionDetail::findOne(['assigned_course_id' => $params['college_course_id']]);
+
+            if (isset($params['duration']) && !empty($params['duration'])) {
+                $assignedCourse = AssignedCollegeCourses::findOne(['assigned_college_enc_id' => $params['college_course_id']]);
+                $assignedCourse->course_duration = $params['duration'];
+                $assignedCourse->type = $params['type'];
+                $assignedCourse->updated_by = $user->user_enc_id;
+                $assignedCourse->updated_on = date('Y-m-d H:i:s');
+                if (!$assignedCourse->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => $assignedCourse->getErrors()]);
+                }
+            }
+
+            if ($admissionDetail) {
+                $admissionDetail->fees = $params['fees'];
+                $admissionDetail->registration_fee = $params['registration_fee'];
+                if (isset($params['scholarship_id']) && !empty($params['scholarship_id'])) {
+                    $admissionDetail->scholarship_enc_id = $params['scholarship_id'];
+                }
+                $admissionDetail->selection_process = $params['selection_process'];
+                $admissionDetail->eligibility_criteria = $params['eligibility_criteria'];
+                $admissionDetail->other_details = $params['other_details'];
+                $admissionDetail->updated_by = $user->user_enc_id;
+                $admissionDetail->updated_on = date('Y-m-d H:i:s');
+                if (!$admissionDetail->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => $admissionDetail->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+            } else {
+                $admissionDetail = new CollegeAdmissionDetail();
+                $admissionDetail->admission_detail_enc_id = Yii::$app->security->generateRandomString();
+                $admissionDetail->assigned_course_id = $params['college_course_id'];
+                $admissionDetail->fees = $params['fees'];
+                $admissionDetail->registration_fee = $params['registration_fee'];
+                if (isset($params['scholarship_id']) && !empty($params['scholarship_id'])) {
+                    $admissionDetail->scholarship_enc_id = $params['scholarship_id'];
+                }
+                $admissionDetail->selection_process = $params['selection_process'];
+                $admissionDetail->eligibility_criteria = $params['eligibility_criteria'];
+                $admissionDetail->other_details = $params['other_details'];
+                $admissionDetail->created_by = $user->user_enc_id;
+                $admissionDetail->created_on = date('Y-m-d H:i:s');
+                if (!$admissionDetail->save()) {
+                    return $this->response(500, ['status' => 500, 'message' => $admissionDetail->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetAdmissionCourses()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $courses = AssignedCollegeCourses::find()
+                ->alias('a')
+                ->select(['a.assigned_college_enc_id', 'a.course_enc_id', 'b.course_name', 'a.course_duration', 'a.type', 'b1.course_name stream',
+                    'c.selection_process', 'c.eligibility_criteria', 'c.other_details', 'c.fees', 'c.assigned_course_id', 'c.scholarship_enc_id', 'c1.title scholarship_title'])
+                ->joinWith(['courseEnc b' => function ($b) {
+                    $b->joinWith(['parentEnc b1']);
+                }], false)
+                ->joinWith(['collegeAdmissionDetails c' => function ($c) {
+                    $c->joinWith(['scholarshipEnc c1']);
+                }], false)
+                ->where(['a.organization_enc_id' => $this->getOrgId(), 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            if ($courses) {
+                return $this->response(200, ['status' => 200, 'courses' => $courses]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAddInfra()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['name']) || empty($params['name'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "name"']);
+            }
+
+            $icon = UploadedFile::getInstanceByName('icon');
+
+            $infra = new CollegeInfrastructure();
+            $infra->college_infrastructure_enc_id = Yii::$app->security->generateRandomString();
+            $infra->infra_name = $params['name'];
+            $infra->created_by = $user->user_enc_id;
+            $infra->created_on = date('Y-m-d H:i:s');
+            if ($icon) {
+
+                $infra->icon_location = \Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->collegeProfile->infrastructure_icon . $infra->icon_location . '/';
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+
+                $encrypted_string = $utilitiesModel->encrypt();
+                if (substr($encrypted_string, -1) == '.') {
+                    $encrypted_string = substr($encrypted_string, 0, -1);
+                }
+
+                $infra->icon = $encrypted_string . '.png';
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $result = $my_space->uploadFile($icon->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $infra->icon, "public");
+            }
+            if (!$infra->save()) {
+                return $this->response(500, ['status' => 500, 'error' => $infra->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved', 'college_infrastructure_enc_id' => $infra->college_infrastructure_enc_id]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionInfraList()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $infra_list = CollegeInfrastructure::find()
+                ->select(['college_infrastructure_enc_id', 'infra_name',
+                    'CASE WHEN icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->collegeProfile->infrastructure_icon, 'https') . '", icon_location, "/", icon) ELSE NULL END icon',
+                ])
+                ->where(['is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            if ($infra_list) {
+                return $this->response(200, ['status' => 200, 'infrastructure_list' => $infra_list]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAddInfraDetail()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            $infra = CollegeInfrastructureDetail::findOne(['college_infrastructure_enc_id' => $params['college_infra_id'], 'college_enc_id' => $this->getOrgId()]);
+
+            if ($infra) {
+
+                $infra->description = $params['description'];
+                $infra->is_deleted = 0;
+                $infra->last_updated_by = $user->user_enc_id;
+                $infra->last_updated_on = date('Y-m-d H:i:s');
+                if (!$infra->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => $infra->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+            } else {
+
+                $infra = new CollegeInfrastructureDetail();
+                $infra->college_infrastructure_detail_enc_id = Yii::$app->security->generateRandomString();
+                $infra->college_infrastructure_enc_id = $params['college_infra_id'];
+                $infra->college_enc_id = $this->getOrgId();
+                $infra->description = $params['description'];
+                $infra->created_by = $user->user_enc_id;
+                $infra->created_on = date('Y-m-d H:i:s');
+                if (!$infra->save()) {
+                    return $this->response(500, ['status' => 500, 'message' => $infra->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'saved']);
+            }
+
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionInfraDetailList()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $list = CollegeInfrastructureDetail::find()
+                ->select(['college_infrastructure_detail_enc_id', 'college_infrastructure_enc_id',
+                    'description'])
+                ->where(['college_enc_id' => $this->getOrgId(), 'is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            if ($list) {
+                return $this->response(200, ['status' => 200, 'list' => $list]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionRemoveInfra()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['college_infra_id']) || empty($params['college_infra_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "college_infra_id"']);
+            }
+
+            $infra = CollegeInfrastructureDetail::findOne(['college_infrastructure_enc_id' => $params['college_infra_id'], 'college_enc_id' => $this->getOrgId()]);
+
+            if ($infra) {
+
+                $infra->is_deleted = 1;
+                $infra->last_updated_by = $user->user_enc_id;
+                $infra->last_updated_on = date('Y-m-d H:i:s');
+                if (!$infra->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => $infra->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'removed']);
+
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAddPlacementHighlights()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            $highlights = CollegePlacementHighlights::findOne(['college_enc_id' => $this->getOrgId()]);
+
+            if (!$highlights) {
+                $highlights = new CollegePlacementHighlights();
+                $highlights->college_placement_highlight_enc_id = Yii::$app->security->generateRandomString();
+                $highlights->college_enc_id = $this->getOrgId();
+                $highlights->companies_visited = $params['companies_visited'];
+                $highlights->top_recruiter = $params['top_recruiter'];
+                $highlights->companies_offering_dream_packages = $params['dream_packages'];
+                $highlights->highest_stipend_offered = $params['highest_stipend_offered'];
+                $highlights->highest_placement_package = $params['highest_placement_package'];
+                $highlights->created_by = $user->user_enc_id;
+                $highlights->created_on = date('Y-m-d H:i:s');
+                if (!$highlights->save()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $highlights->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'data saved']);
+            }
+
+            $highlights->companies_visited = $params['companies_visited'] ? $params['companies_visited'] : $highlights->companies_visited;
+            $highlights->top_recruiter = $params['top_recruiter'] ? $params['top_recruiter'] : $highlights->top_recruiter;
+            $highlights->companies_offering_dream_packages = $params['dream_packages'] ? $params['dream_packages'] : $highlights->companies_offering_dream_packages;
+            $highlights->highest_stipend_offered = $params['highest_stipend_offered'] ? $params['highest_stipend_offered'] : $highlights->highest_stipend_offered;
+            $highlights->highest_placement_package = $params['highest_placement_package'] ? $params['highest_placement_package'] : $highlights->highest_placement_package;
+            $highlights->updated_by = $user->user_enc_id;
+            $highlights->updated_on = date('Y-m-d H:i:s');
+            if (!$highlights->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $highlights->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'data updated']);
+
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionShowPlacementHighlights()
+    {
+        if ($user = $this->isAuthorized()) {
+            $highlights = CollegePlacementHighlights::find()
+                ->select(['college_placement_highlight_enc_id', 'companies_visited', 'top_recruiter', 'companies_offering_dream_packages',
+                    'highest_stipend_offered', 'highest_placement_package'])
+                ->where(['college_enc_id' => $this->getOrgId()])
+                ->asArray()
+                ->one();
+
+            if ($highlights) {
+                return $this->response(200, ['status' => 200, 'highlights' => $highlights]);
+            }
+
+            return $this->response(404, ['status' => 404, 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAddCourseRecruitment()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            $recruitment = new CollegeRecruitmentByCourse();
+            $recruitment->college_recruitment_by_course_enc_id = Yii::$app->security->generateRandomString();
+            $recruitment->college_enc_id = $this->getOrgId();
+            $recruitment->assigned_course_enc_id = $params['assigned_course_enc_id'];
+            $recruitment->average_package = $params['average_package'];
+            $recruitment->highest_package = $params['highest_package'];
+            $recruitment->total_offers = $params['total_offers'];
+            $recruitment->students_placed = $params['students_placed'];
+            $recruitment->companies_visiting = $params['companies_visiting'];
+            $recruitment->created_by = $user->user_enc_id;
+            $recruitment->created_on = date('Y-m-d H:i:s');
+            if (!$recruitment->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $recruitment->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'saved']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionUpdateCourseRecruitment()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['recruitment_id']) || empty($params['recruitment_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "recruitment_id"']);
+            }
+
+            $recruitment = CollegeRecruitmentByCourse::findOne(['college_recruitment_by_course_enc_id' => $params['recruitment_id']]);
+
+            $recruitment->average_package = $params['average_package'] ? $params['average_package'] : $recruitment->average_package;
+            $recruitment->highest_package = $params['highest_package'] ? $params['highest_package'] : $recruitment->highest_package;
+            $recruitment->total_offers = $params['total_offers'] ? $params['total_offers'] : $recruitment->total_offers;
+            $recruitment->students_placed = $params['students_placed'] ? $params['students_placed'] : $recruitment->students_placed;
+            $recruitment->companies_visiting = $params['companies_visiting'] ? $params['companies_visiting'] : $recruitment->companies_visiting;
+            $recruitment->updated_by = $user->user_enc_id;
+            $recruitment->updated_on = date('Y-m-d H:i:s');
+            if (!$recruitment->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $recruitment->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'updated']);
+        } else {
+            return $this->response(401, ['status' => 401, 'mesasge' => 'unauthorized']);
+        }
+    }
+
+    public function actionShowCourseRecruitments()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $recruitments = CollegeRecruitmentByCourse::find()
+                ->alias('a')
+                ->select(['a.college_recruitment_by_course_enc_id', 'a.assigned_course_enc_id', 'a.average_package', 'a.highest_package', 'a.total_offers',
+                    'a.students_placed', 'a.companies_visiting', 'b1.course_name'])
+                ->joinWith(['assignedCourseEnc b' => function ($b) {
+                    $b->joinWith(['courseEnc b1'], false);
+                }], false)
+                ->where(['a.is_deleted' => 0, 'a.college_enc_id' => $this->getOrgId()])
+                ->asArray()
+                ->all();
+
+            if ($recruitments) {
+                return $this->response(200, ['status' => 200, 'recruitments' => $recruitments]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionRemoveCourseRecruitment()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['recruitment_id']) || empty($params['recruitment_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "recruitment_id"']);
+            }
+
+            $recruitment = CollegeRecruitmentByCourse::findOne(['college_recruitment_by_course_enc_id' => $params['recruitment_id']]);
+
+            $recruitment->is_deleted = 1;
+            $recruitment->updated_by = $user->user_enc_id;
+            $recruitment->updated_on = date('Y-m-d H:i:s');
+            if (!$recruitment->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $recruitment->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'removed']);
+        } else {
+            return $this->response(401, ['status' => 401, 'mesasge' => 'unauthorized']);
         }
     }
 

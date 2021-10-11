@@ -48,4 +48,25 @@ class FramedWidgetsController extends Controller
        ]);
    }
 
+    public function actionLender($id)
+    {
+        $getLender = Organizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id'])
+            ->joinWith(['selectedServices b'=>function($b){
+                $b->joinWith(['serviceEnc c'],false,'INNER JOIN');
+            }],false,'INNER JOIN')
+            ->where(['a.organization_enc_id'=>$id])
+            ->andWhere(['c.name'=>'Loans'])
+            ->one();
+        if ($getLender){
+            $india = Countries::findOne(['name' => 'India'])->country_enc_id;
+            return $this->render('/education-loans/apply-general-loan-form', [
+                'india' => $india,
+                'getLender' => $getLender['organization_enc_id'],
+            ]);
+        }else{
+            return 'Unauthorized';
+        }
+    }
 }

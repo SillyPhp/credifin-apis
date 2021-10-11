@@ -26,7 +26,7 @@ use yii\bootstrap\ActiveForm;
                                         </div>
                                         <input type="text" id="search_company" class="form-control"
                                                placeholder="Search Companies, Colleges, Schools, Educational Institutes"
-                                               name="keywords">
+                                               name="keyword">
                                         <div class="input-group-btn">
                                             <button class="loader_btn_search"><i class="fas fa-search"></i></button>
                                         </div>
@@ -93,6 +93,9 @@ use yii\bootstrap\ActiveForm;
         </div>
     </section>
 
+    
+<?= $this->render('/webinars/webinar-carousel')?>
+
 <?= $this->render('/widgets/review/quick-review'); ?>
 
     <section class="top-com">
@@ -132,6 +135,8 @@ use yii\bootstrap\ActiveForm;
         </div>
     </section>
     <!---->
+
+
     <section class="top-com">
         <div class="container">
             <h1 class="heading-style">Top Schools</h1>
@@ -141,6 +146,8 @@ use yii\bootstrap\ActiveForm;
             </div>
         </div>
     </section>
+
+
     <section>
         <div class="container">
             <h1 class="heading-style">Top Educational Institutes</h1>
@@ -170,6 +177,8 @@ use yii\bootstrap\ActiveForm;
         </div>
     </section>
 
+
+
     <!--Subscribe Widget start-->
 <?php
 if (Yii::$app->user->isGuest) {
@@ -177,6 +186,8 @@ if (Yii::$app->user->isGuest) {
 }
 ?>
     <!--Subscribe Widget ends-->
+    
+
 <?php
 echo $this->render('/widgets/mustache/review-cards');
 echo $this->render('/widgets/mustache/latest-reviews');

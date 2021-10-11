@@ -126,8 +126,17 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                 </div>
                             </div>
                             <div class="col-md-12 padd-20">
+                                <div class="form-group">
+                                    <label for="institution" class="input-group-text">
+                                        Name of The Institution
+                                    </label>
+                                    <input type="text" class="form-control" id="institution" name="institution"
+                                           placeholder="Enter Name of The Institution">
+                                </div>
+                            </div>
+                            <div class="col-md-12 padd-20">
                                 <div class="radio-heading input-group-text">
-                                    History With Intitution
+                                    History With Institution
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -146,6 +155,9 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                                     </div>
                                 </div>
                             </div>
+<!--                            <div class="col-md-12 padd-20">-->
+<!--                                <p class="termsText">By clicking submit you agree to our <a href="--><?//= Url::to('terms-and-conditions')?><!--">terms and conditions</a> </p>-->
+<!--                            </div>-->
                             <div class="col-md-12 padd-20">
                                 <div class="input-group padd-20">
                                     <div class="btn-center">
@@ -172,59 +184,88 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
                             <ul class="loan-benefits">
                                 <li>- <span>Get considerable loan amount</span> with our loan for teachers, you can get a loan upto
                                     50% of your salary amount to help you meet your urgent <span>financial</span> needs.</li>
+                                <li>- More Than <span>20+</span> Lenders</li>
                             </ul>
                             <div class="cl-icon">
-                                <p>Our Lenders</p>
-                                <ul>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?>">
-                                            </span>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="widget-benfit">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-minimal-paper-work.png') ?>">
+                                            <p>Minimal Paper Work</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?>">
-                                            </span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="widget-benfit">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-faster-processing-time.png') ?>">
+                                            <p>Faster Processing Time</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?>">
-                                            </span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="widget-benfit">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-approval-in-minutes.png') ?>">
+                                            <p>Approval In Minutes</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?>">
-                                            </span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="widget-benfit">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/widget-quick-disbursement.png') ?>">
+                                            <p>Quick Disbursement</p>
                                         </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?>">
-                                            </span>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="lender-icon">
-                                            <span class="li-text">+10 More</span>
-                                        </div>
-                                    </li>
-                                </ul>
+                                    </div>
+                                </div>
                             </div>
+<!--                            <div class="cl-icon">-->
+<!--                                <p>Our Lenders</p>-->
+<!--                                <ul>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/wepay.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/education-loans/ezcapital.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span>-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/index2/AG-logo.png')?><!--">-->
+<!--                                            </span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                    <li>-->
+<!--                                        <div class="lender-icon">-->
+<!--                                            <span class="li-text">+10 More</span>-->
+<!--                                        </div>-->
+<!--                                    </li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -233,10 +274,39 @@ Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_en
     </section>
 <?php
 $this->registerCss('
+.widget-benfit{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 30px;
+}
+.widget-benfit img{
+    max-width: 60px;
+    margin-bottom: 10px;
+}
+.widget-benfit p{
+    color: #fff;
+    font-size: 16px !important;
+    line-height: 20px;
+    font-weight: 400 !important;    
+} 
 #loadBtn{
     display:none;
 }
+.termsText{
+    font-size: 12px;
+    font-family: roboto;
+    text-align: center;
+}
+.termsText a{
+    color: #00a0e3;
+}
 
+.termsText a:hover{
+    color: #ff7803;
+    transition: .3s ease;
+}
 .padd-20{
     padding-bottom: 20px;
 }
@@ -806,6 +876,10 @@ $('#years, #months').mask("#", {reverse: true});
 					required: true,
 					maxlength: 100
 				},
+				'institution': {
+					required: true,
+					maxlength: 200
+				},
 				'dob':{
 				    required:true,
 				    check_date_of_birth: true
@@ -839,6 +913,9 @@ $('#years, #months').mask("#", {reverse: true});
 			messages: {
 				'applicant_name': {
 					required: "Applicant Name Required",
+				},
+				'institution': {
+					required: "Institution Name Required",
 				},
 				'dob': {
 					required: "Enter Date Of Birth",
@@ -894,7 +971,8 @@ $('#years, #months').mask("#", {reverse: true});
                 months:$('#months').val(),
                 phone:$('#mobile').val(),
                 email:$('#email').val(),
-                amount:$('#loanamount').val(),   
+                amount:$('#loanamount').val(), 
+                institution:$('#institution').val(),   
                 employement_type:$('input[name="emptype"]:checked').val(),  
                 userID:userID, 
                 country_enc_id:$('#country_name').val()

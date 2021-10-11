@@ -32,7 +32,7 @@ class OrganizationsController extends ApiBaseController
     {
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
-            'except' => ['detail', 'opportunities', 'locations'],
+            'except' => ['detail', 'opportunities', 'locations', 'index'],
             'class' => HttpBearerAuth::className()
         ];
         $behaviors['verbs'] = [
@@ -178,7 +178,10 @@ class OrganizationsController extends ApiBaseController
 
             $organization = Organizations::find()
                 ->select(['organization_enc_id', 'name', 'slug username', 'email', 'tag_line', 'initials_color', 'establishment_year', 'description', 'mission', 'vision', 'value', 'website', 'phone', 'fax', 'facebook', 'google', 'twitter', 'linkedin', 'instagram', 'number_of_employees', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo', 'CASE WHEN cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '", cover_image_location, "/", cover_image) ELSE NULL END cover_image'])
-                ->where(['organization_enc_id' => $req['id']])
+                ->andWhere(['or',
+                    ['organization_enc_id' => $req['id']],
+                    ['slug' => $req['id']]
+                ])
                 ->andWhere(['status' => 'Active'])
                 ->andWhere(['is_deleted' => 0])
                 ->asArray()

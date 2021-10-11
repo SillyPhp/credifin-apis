@@ -23,18 +23,14 @@ class LoanSanctionedForm extends LoanApplications
     public $fldg;
     public $documents;
     public $loan_app_id;
+    public $rate_of_interest;
     public $_flag;
 
     public function rules()
     {
         return [
-            [['loan_app_id', 'file_number', 'loan_amount', 'processing_fee'], 'required'],
+            [['rate_of_interest', 'loan_app_id', 'file_number', 'loan_amount', 'processing_fee'], 'required'],
             [['total_installments', 'discounting', 'approved_by', 'fldg', 'documents'], 'safe'],
-//            [['degree'], 'string'],
-//            [['years', 'semesters', 'gender', 'status'], 'integer'],
-//            [['amount'], 'number'],
-//            [['applicant_name', 'loan_type_enc_id', 'college_course_enc_id', 'applicant_current_city', 'email'], 'string', 'max' => 100],
-//            [['phone'], 'string', 'max' => 15],
         ];
     }
 
@@ -54,6 +50,7 @@ class LoanSanctionedForm extends LoanApplications
             $model->file_number = $this->file_number;
             $model->loan_amount = $this->loan_amount;
             $model->processing_fee = $this->processing_fee;
+            $model->rate_of_interest = $this->rate_of_interest;
             $model->total_installments = $this->total_installments;
             $model->discounting = $this->discounting;
             $model->approved_by = $this->approved_by;

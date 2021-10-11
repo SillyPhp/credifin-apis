@@ -344,6 +344,14 @@ class WebinarsController extends ApiBaseController
 
     public function actionDetail()
     {
+        $param = Yii::$app->request->post();
+
+        if (isset($param['webinar_id']) && !empty($param['webinar_id'])) {
+            $webinar_id = $param['webinar_id'];
+        } else {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
         if ($user = $this->isAuthorized()) {
 
             $user_id = $user->user_enc_id;
@@ -356,51 +364,54 @@ class WebinarsController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $param = Yii::$app->request->post();
-
-            if (isset($param['webinar_id']) && !empty($param['webinar_id'])) {
-                $webinar_id = $param['webinar_id'];
-            } else {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
-            }
-
             $webinar = new \common\models\extended\Webinar();
             $webinar = $webinar->webinarDetail($college_id['organization_enc_id'], $webinar_id);
+        } else {
+            $webinar = new \common\models\extended\Webinar();
+            $webinar = $webinar->webinarDetail(null, $webinar_id);
+        }
 
-            if (!empty($webinar)) {
-                $registered_count = WebinarRegistrations::find()
-                    ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
-                    ->count();
-                $webinar['registered_count'] = $registered_count;
+
+        if (!empty($webinar)) {
+            if ($user = $this->isAuthorized()) {
+
+                $user_id = $user->user_enc_id;
                 $user_registered = $this->userRegistered($webinar['webinar_enc_id'], $user_id);
-                $webinar['is_registered'] = $user_registered;
                 $webinar['interest_status'] = $this->interested($webinar['webinar_enc_id'], $user_id);
-                $date = new \DateTime($webinar['event']['start_datetime']);
-                $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
-                $webinar['seconds'] = $seconds;
-                $webinar['is_started'] = ($seconds < 0 ? true : false);
-                foreach ($webinar['events'] as $k => $a) {
-                    $j = 0;
-                    foreach ($a as $t) {
-                        $date = new \DateTime($t['start_datetime']);
-                        $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
-                        $is_started = ($seconds < 0 ? true : false);
-                        $webinar['events'][$k][$j]['seconds'] = $seconds;
-                        $webinar['events'][$k][$j]['is_started'] = $is_started;
-                        $j++;
-                    }
+            } else {
+                $user_registered = 0;
+                $webinar['interest_status'] = null;
+            }
+            $registered_count = WebinarRegistrations::find()
+                ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
+                ->count();
+            $webinar['registered_count'] = $registered_count;
+
+            $webinar['is_registered'] = $user_registered;
+
+            $date = new \DateTime($webinar['event']['start_datetime']);
+            $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+            $webinar['seconds'] = $seconds;
+            $webinar['is_started'] = ($seconds < 0 ? true : false);
+            foreach ($webinar['events'] as $k => $a) {
+                $j = 0;
+                foreach ($a as $t) {
+                    $date = new \DateTime($t['start_datetime']);
+                    $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+                    $is_started = ($seconds < 0 ? true : false);
+                    $webinar['events'][$k][$j]['seconds'] = $seconds;
+                    $webinar['events'][$k][$j]['is_started'] = $is_started;
+                    $j++;
                 }
             }
-
-            if ($webinar) {
-                return $this->response(200, ['status' => 200, 'data' => $webinar]);
-            } else {
-                return $this->response(404, ['status' => 404, 'message' => 'not found']);
-            }
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+
+        if ($webinar) {
+            return $this->response(200, ['status' => 200, 'data' => $webinar]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+
     }
 
     private function interested($webinar_id, $user_id)
@@ -473,6 +484,23 @@ class WebinarsController extends ApiBaseController
                     $model->created_by = $user->user_enc_id;
                     $model->created_on = date('Y-m-d h:i:s');
                     if ($model->save()) {
+                        $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
+                        $params = [];
+                        $params['webinar_id'] = $webinar_id;
+                        $params['email'] = $user->email;
+                        $params['name'] = $user->first_name . ' ' . $user->last_name;
+                        $params['from'] = 'no-reply@myecampus.in';
+                        $params['site_name'] = 'My E-Campus';
+                        $params['is_my_campus'] = 1;
+                        Yii::$app->notificationEmails->webinarRegistrationEmail($params);
+
+                        if ($webinar['webinar_conduct_on'] == 1) {
+                            $params['first_name'] = $user->first_name;
+                            $params['last_name'] = $user->last_name;
+                            $params["webinar_zoom_id"] = $webinar->platform_webinar_id;
+                            $params["user_id"] = $user->user_enc_id;
+                            Yii::$app->notificationEmails->zoomRegisterAccess($params);
+                        }
                         return $this->response(201, ['status' => 201, 'message' => 'Successfully Registered']);
                     }
                 }
@@ -492,7 +520,7 @@ class WebinarsController extends ApiBaseController
             }
             $args = [
                 'payment_enc_id' => $params['payment_enc_id'],
-                'payment_status' => $params['status'],
+                'payment_status' => $params['payment_status'],
                 'registration_enc_id' => $params['registration_enc_id'],
                 'payment_id' => $params['payment_id']
             ];

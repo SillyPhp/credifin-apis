@@ -8,8 +8,11 @@ use common\models\Categories;
 use common\models\Cities;
 use common\models\Countries;
 use common\models\Designations;
+use common\models\Organizations;
 use common\models\Qualifications;
 use common\models\States;
+use common\models\UnclaimedOrganizations;
+use common\models\Usernames;
 use yii\helpers\ArrayHelper;
 use Yii;
 use yii\helpers\Url;
@@ -136,5 +139,61 @@ class ApiUtilitiesController extends ApiBaseController
         } else {
             return $this->response(404, 'not found');
         }
+    }
+
+    public function actionCheckUsername()
+    {
+        $param = Yii::$app->request->post();
+
+        if (!isset($param['username']) || empty($param['username'])) {
+            return $this->response(422, 'missing information');
+        }
+
+        $username = $param['username'];
+
+        $username = Usernames::findOne(['username' => $username]);
+
+        $data = [];
+
+        if ($username->assigned_to === 1) {
+
+            $data['user_type'] = 'individual';
+            $data['business_activity'] = '';
+            $data['org_type'] = '';
+
+        } elseif ($username->assigned_to === 2) {
+
+            $organization = Organizations::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id', 'b.business_activity'])
+                ->joinWith(['businessActivityEnc b'], false)
+                ->where(['a.slug' => $username])
+                ->asArray()
+                ->one();
+
+            $data['user_type'] = 'organization';
+            $data['business_activity'] = $organization['business_activity'];
+            $data['org_type'] = 'claimed';
+
+        } elseif ($username->assigned_to === 3) {
+            $un_org = UnclaimedOrganizations::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id', 'b.business_activity'])
+                ->joinWith(['organizationTypeEnc b'], false)
+                ->where(['a.slug' => $username])
+                ->asArray()
+                ->one();
+
+            $data['user_type'] = 'organization';
+            $data['business_activity'] = $un_org['business_activity'];
+            $data['org_type'] = 'unclaimed';
+        }
+
+        if ($data) {
+            return $this->response(200, $data);
+        }
+
+        return $this->response(404, 'not found');
+
     }
 }

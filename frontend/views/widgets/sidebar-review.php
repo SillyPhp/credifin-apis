@@ -65,7 +65,7 @@ $c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
 .sidebar-logo-main{
     padding:0 !important;
-    box-shadow:0px 0px 10px -2px rgba(0,0,0,0.2);
+//    box-shadow:0px 0px 10px -2px rgba(0,0,0,0.2);
     margin:auto;
     overflow:hidden;
 }
@@ -184,10 +184,17 @@ li.draggable-item.ui-sortable-placeholder {
 .sidebar-logo-main > canvas{
     margin-left: 0px;
     margin-top: 0px;
-    border-radius: 50%;
+//    border-radius: 50%;
 }
 .secondary-top-header{display:none !important;}
 .review-list-hint, .review-list-toggler{display:none;}
+.text-wrap-ellipsis{
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    padding: 0 8px 0 0!important;
+}
 @media only screen and (max-width: 991px) and (min-width: 768px)  {
     .profile-sidebar {
         margin-top: 40px;
@@ -313,6 +320,7 @@ function reviewlists(response){
     
         var review = $('#review-cards').html();
         $("#ilist").append(Mustache.render(review, response.cards));
+        check_list()
 }
 
 
@@ -360,7 +368,7 @@ function widget(selector) {
     var company = $.trim(selector.find('.org_name').text());
     var location = $.trim(selector.find('.location').text());
     var period = $.trim(selector.find('.period').text());
-    var slug = $.trim(selector.find('.application-card-description').attr('data-slug'));
+    var slug = $.trim(selector.find('.side-description').attr('data-slug'));
     var lastDate = $.trim(selector.find('.lastDate').text());
     var lat = $.trim(selector.find('.location').attr('data-lat'));
     var long = $.trim(selector.find('.location').attr('data-long'));
@@ -523,7 +531,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                 <p class="mb-0 text-wrap-ellipsis">
                     <strong>{{title}}</strong>
                 </p>
-                <p class="mb-5 text-wrap-ellipsis">{{org_name}}</p>
+                <p class="mb-5 text-wrap-ellipsis">{{{org_name}}}</p>
             </div>
         </div>
     </li>

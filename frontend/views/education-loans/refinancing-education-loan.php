@@ -6,18 +6,55 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
 
+$this->title = 'Refinance Education Loan';
+$keywords = 'Refinance Education Loan | Empower Youth';
+$description = 'So you’ve taken a loan. What if we have cool options to slash your outstanding?';
+$image = Url::to('@eyAssets/images/pages/education-loans/refinance-education-loan.png', 'https');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 
-<section class="study-in-usa-bg">
+<section class="refinance-header">
+    <div class="bg-overlay"></div>
+    <div class="bg-circle circle1"></div>
+    <div class="bg-circle circle2"></div>
+    <img class="bg-icons rupee-icon" src="<?= Url::to('@eyAssets/images/pages/education-loans/rupee-sign.png')?>" alt="Rupee Icon">
+    <img class="bg-icons percent-icon" src="<?= Url::to('@eyAssets/images/pages/education-loans/percent-sign.png')?>" alt="Percent Icon">
+    <svg class="waves" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" ><path  d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill" fill="#FFFFFF" fill-opacity="1"></path></svg>
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <h1>Refinancing Education Loan</h1>
                 <p>So you’ve taken a loan. What if we have cool options to slash your outstanding?</p>
                 <ul>
                     <li><a href="#contact" class="apply-now btn-orange">Enquire Now</a></li>
                     <!--                    <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>-->
                 </ul>
+            </div>
+            <div class="col-md-6">
+                <img class="refinance-img" src="<?= Url::to('@eyAssets/images/pages/education-loans/refinance-edu-img.png')?>" alt="Refinace Education Loan">
             </div>
         </div>
     </div>
@@ -129,8 +166,17 @@ use borales\extensions\phoneInput\PhoneInput;
 </section>
 <?= $this->render('/widgets/Our-lending-partners');?>
 <?= $this->render('/widgets/education-loan-faqs');?>
+<?php
+if($blogs['blogs']){
+    echo $this->render('/widgets/education-loan/blogs',[
+        'blogs' => $blogs,
+        'param' => 'Refinance'
+    ]);
+};
+?>
 <?= $this->render('/widgets/loan-form-detail',[
-    'model' => $model
+    'model' => $model,
+    'param' => 'Refinance'
 ]); ?>
 <?= $this->render('/widgets/press-releasee',[
     'data' => $data,
@@ -259,36 +305,80 @@ $this->registerCss('
 }
 .conIcon{
 }
-.study-in-usa-bg {
-	background: url(' . Url::to('@eyAssets/images/pages/education-loans/finance.png') . ');
-	min-height: 500px;
-	background-repeat: no-repeat;
-	background-size: cover;
-	display: flex;
-	align-items: center;
+.refinance-header {
+	min-height: 550px;
 	position: relative;
-//	text-align: center;
-	max-height: 700px;
-	background-position:left bottom;
+	display: flex; 
+	align-items: center;
+	overflow: hidden;
 }
-.study-in-usa-bg h1 {
+.refinance-header .bg-overlay{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: linear-gradient(279.71deg, rgba(61, 132, 255, 0.51) -4.16%, rgba(142, 182, 255, 0.51) 121.19%);
+    backdrop-filter: blur(5px);
+    z-index: 0;
+}
+.refinance-header .container .row{
+    display: flex;
+    align-items: center;
+}
+.refinance-header .container .row > div{
+    flex-basis: 50%
+}
+.bg-icons{
+    position: absolute;
+    width: 70px;
+    z-index: -1;
+}
+.rupee-icon{
+    top: 0;
+    left: 30%;
+}
+.percent-icon{
+    bottom: 1%;
+    left: 2%;
+}
+.bg-circle{
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: rgba(0, 160, 227, 0.36);
+    filter: blur(100px);
+    border-radius: 50%;
+    z-index: -1;
+}
+.circle1{
+    left: -1%;
+    bottom: 0;
+}
+.circle2{
+    right: -1%;
+    top: 0;
+}
+.waves{
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%; 
+    height: 35px;
+    transform: rotate(180deg);    
+}
+.refinance-header h1 {
 	font-size: 35px;
 	margin-bottom: 10px;
-	color: #fff;
+	color: #000;
 	font-weight: bold;
 	font-family: lora;
 }
-.study-in-usa-bg p {
+.refinance-header p {
 	font-size: 20px;
 	font-family: roboto;
-	color: #fff;
+	color: #505050;
 	padding: 0 0 18px;
 	line-height: 30px;
 	max-width: 500px;
-}
-.study-in-usa-bg ul li{
-    display: inline;
-    margin-right: 10px;
 }
 
 .apply-now {
@@ -303,6 +393,7 @@ $this->registerCss('
 	display: inline-block;
 	width: 150px;
 	text-align:center;
+	transition: .3s ease;
 }
 .btn-orange{
     background: #ff7803 !important;
@@ -394,6 +485,33 @@ $this->registerCss('
 .le-img img {
     border-radius: 15px;
 }
+
+
+@media (min-width: 768px) and (max-width: 992px){
+    .refinance-header h1{
+        font-size: 30px;
+    }
+    .refinance-header p{
+        font-size: 19px;
+    }
+}
+
+@media only screen and (max-width: 767px){
+    .refinance-header .container .row{
+        flex-direction: column-reverse;
+        text-align: center;
+    }
+    .refinance-img{
+        width: 50%;
+    }
+    .refinance-header h1{
+        font-size: 28px;
+    }
+    .refinance-header p{
+        font-size: 18px;
+    }
+}
+
 ');
 ?>
 <script>

@@ -4,23 +4,59 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
+
+$this->title = 'Study In Abroad';
+$keywords = 'Study In Abroad | Empower Youth';
+$description = 'Do not let financial burden stop you from fulfilling your desire to study in your dream college.';
+$image = Url::to('@eyAssets/images/pages/education-loans/study-in-abroad.png', 'https');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
+
 <section class="study-in-usa-bg">
-    <div class="opacity-div"></div>
+<!--    <div class="opacity-div"></div>-->
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6 col-sm-12 col-xs-12">
                 <h1>
                     <span class="typewrite" data-period="2000"
                           data-type='["Study ABROAD.", "Education Loan.", "Easy Apply.", "Easy EMIs To Pay.", "Less Paperwork." ]'>
                         <span class="wrap"></span>
                     </span>
                 </h1>
-                <p>Don't let financial burden stop you from fulfilling <br> your desire to study in your dream college.</p>
+                <p>Don't let <span class="black-bold">financial burden stop you</span> from fulfilling <br>
+                    your desire to <span class="black-bold">study in your dream college<span class="black-bold">.</p>
                 <ul>
                     <li><a href="#contact" class="apply-now btn-orange">Reach Us</a></li>
                     <li><a href="/education-loans/apply" class="apply-now">Apply Now</a></li>
                 </ul>
+            </div>
+            <div class="col-md-6">
+                <div class="abroad-vector">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/study-abroad-icon.png') ?>">
+                </div>
             </div>
         </div>
     </div>
@@ -57,13 +93,24 @@ use borales\extensions\phoneInput\PhoneInput;
 </section>
 <?= $this->render('/widgets/loan-process-ease') ?>
 <?= $this->render('/widgets/loan-table')?>
+<?= $this->render('/widgets/testimonials-abroad')?>
 <section class="bg-blue">
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
 <?= $this->render('/widgets/education-loan-faqs');?>
+<?php
+if($blogs['blogs']){
+    echo $this->render('/widgets/education-loan/blogs',[
+        'blogs' => $blogs,
+        'param' => 'study-abroad'
+    ]);
+};
+?>
 <?= $this->render('/widgets/loan-form-detail',[
-    'model' => $model
+    'model' => $model,
+    'param' => 'Study Abroad'
 ]); ?>
+
 <?= $this->render('/widgets/press-releasee',[
     'data' => $data,
     'viewBtn' => true,
@@ -71,6 +118,9 @@ use borales\extensions\phoneInput\PhoneInput;
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+.black-bold {
+    font-weight: bold;
+}
 .padd30{
     padding-bottom: 30px;
 }
@@ -120,22 +170,16 @@ $this->registerCss('
     border-radius: 10px;
     padding: 15px;
 }
-.le-img {
-    box-shadow: 0 1px 11px 0px #d4cdcd;
-}
 #typed{
     font-size: 25px;
     color: #fff;
-}
-.study-in-usa-bg{
-    padding-top: 100px;
 }
 .study-in-usa-bg ul li{
     display: inline;
     margin-right: 10px;
 }
 .apply-now{
-    padding: 10px 15px;
+    padding: 10px 20px;
 	background: #00A0E3;
 	color: #fff;
 	border: 1px solid #00A0E3;
@@ -144,11 +188,11 @@ $this->registerCss('
 	font-family: roboto;
 	border-radius: 4px;
 	display: inline-block;
-	width: 150px;
 }
 .btn-orange{
     background: #ff7803 !important;
     border: 1px solid #ff7803 !important;
+    text-align: center
 }
 .apply-now:hover{
     background: #ff7803; 
@@ -201,16 +245,13 @@ $this->registerCss('
 }
 
 .study-in-usa-bg{
-    background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-u.png') . ');
-    min-height: 500px;
+    background: url(' . Url::to('@eyAssets/images/pages/education-loans/study-abroad-bg.png') . ');
 	background-repeat: no-repeat;
 	background-size: cover;
 	display: flex;
-//	align-items: center;
+	align-items: center;
 	position: relative;
-	text-align: center;
-	height: 100vh;
-//	max-height: 700px;
+	min-height: 550px;
 }
 .opacity-div{
     position: absolute;
@@ -220,10 +261,13 @@ $this->registerCss('
 	height: 100%;
 	background: rgba(0,0,0,.4);
 }
+.abroad-vector img {
+    max-width: 100%;
+}
 .study-in-usa-bg p{
     font-size: 24px;
 	font-family: roboto;
-	color: #fff;
+	color: #000;
 	padding: 0 0 18px;
 	line-height: 30px;
 }
@@ -513,10 +557,26 @@ label {
     top:10px !important;
 }
 
-
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 1024px) and (min-width: 992px){
+    .study-in-usa-bg p {
+        font-size: 21px;
+        line-height: 28px;
+    }
+}
+@media only screen and (max-width: 768px) {
+.study-in-usa-bg {
+    text-align: center;
+}
 .study-in-usa-bg h1{
     font-size: 30px;
+}
+.study-map-box{
+    width:50%;
+    border: none;
+    margin-bottom: 20px;
+}
+.study-maps-sec{
+    margin-top:30px;
 }
 .h-point1 {
     width: 50%;
@@ -527,7 +587,12 @@ label {
 .course-box:nth-child(3n+0){
     margin-right:1%;
 }
-
+.abroad-vector img {
+    display: none;
+}   
+}
+@media only screen and (max-width: 500px) {
+.study-map-box{width:100%;}
 ');
 $script = <<<JS
 setTimeout(function (){

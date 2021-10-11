@@ -37,10 +37,11 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
         </div>
     </div>
 </section>
+
 <section>
     <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
         <div class="">
-            <a href="/internships/profiles" data-hover="Desultory">All Internships</a>
+            <a href="/internships/list" data-hover="Desultory">All Internships</a>
             <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
             <a href="/internships/compare" data-hover="Sumptuous">Compare Internships</a>
             <a href="/internships/near-me" data-hover="Scintilla">Internships Near Me</a>
@@ -98,6 +99,9 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
 </section>
 
 
+
+<?= $this->render('/webinars/webinar-carousel')?>
+
 <?php
 echo $this->render('/widgets/info-stats');
 
@@ -131,6 +135,8 @@ echo $this->render('/widgets/internships-by-tag');
         </div>
     </div>
 </section>
+
+
 <section class="j-tweets">
     <div class="container">
         <div class="row">

@@ -708,20 +708,20 @@ class JobsController extends ApiBaseController
 
                 if ($user) {
                     $hasApplied = AppliedApplications::find()
-                        ->where(['application_enc_id' => $req['id']])
+                        ->where(['application_enc_id' => $data['application_enc_id']])
                         ->andWhere(['created_by' => $user->user_enc_id])
                         ->exists();
                     $data['hasApplied'] = $hasApplied;
 
                     $shortlist = ShortlistedApplications::find()
                         ->select('shortlisted')
-                        ->where(['shortlisted' => 1, 'application_enc_id' => $req['id'], 'created_by' => $user->user_enc_id])
+                        ->where(['shortlisted' => 1, 'application_enc_id' => $data['application_enc_id'], 'created_by' => $user->user_enc_id])
                         ->exists();
                     $data["hasShortlisted"] = $shortlist;
 
                     $reviewlist = ReviewedApplications::find()
                         ->select(['review'])
-                        ->where(['review' => 1, 'application_enc_id' => $req['id'], 'created_by' => $user->user_enc_id])
+                        ->where(['review' => 1, 'application_enc_id' => $data['application_enc_id'], 'created_by' => $user->user_enc_id])
                         ->exists();
                     $data["hasReviewed"] = $reviewlist;
                 } else {
@@ -765,7 +765,7 @@ class JobsController extends ApiBaseController
             $data['hasQuestionnaire'] = ApplicationInterviewQuestionnaire::find()
                 ->alias('a')
                 ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
-                ->where(['a.application_enc_id' => $req['id']])
+                ->where(['a.application_enc_id' => $data['application_enc_id']])
                 ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
                 ->andWhere(['b.field_name' => 'Get Applications'])
                 ->exists();
@@ -818,9 +818,10 @@ class JobsController extends ApiBaseController
         $application = EmployerApplications::find()
             ->select(['organization_enc_id', 'unclaimed_organization_enc_id'])
             ->where([
-                'application_enc_id' => $id,
+//                'application_enc_id' => $id,
                 'is_deleted' => 0,
             ])
+            ->andWhere(['or', ['application_enc_id' => $id], ['slug' => $id]])
             ->asArray()
             ->one();
 
@@ -828,9 +829,10 @@ class JobsController extends ApiBaseController
             ->alias('a')
             ->distinct()
             ->where([
-                'a.application_enc_id' => $id,
+//                'a.application_enc_id' => $id,
                 'a.is_deleted' => 0,
             ])
+            ->andWhere(['or', ['a.application_enc_id' => $id], ['a.slug' => $id]])
             ->joinWith(['applicationTypeEnc r' => function ($x) {
                 $x->andWhere(['r.name' => 'Jobs']);
             }], false)

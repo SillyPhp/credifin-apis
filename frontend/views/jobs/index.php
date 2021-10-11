@@ -41,7 +41,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
         <div class="row">
             <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
                 <div class="container">
-                    <a href="/jobs/profiles" data-hover="Desultory">All Jobs</a>
+                    <a href="/jobs/list" data-hover="Desultory">All Jobs</a>
                     <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
                     <a href="/jobs/compare" data-hover="Sumptuous">Compare Jobs</a>
                     <a href="/jobs/near-me" data-hover="Scintilla">Jobs Near Me</a>
@@ -52,13 +52,15 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
     </div>
 </section>
 
+
+
 <section>
     <div class="container">
         <div class="row mt-20">
-            <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="col-md-6 col-sm-8 col-xs-12">
                 <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Job Profiles'); ?></h1>
             </div>
-            <div class="col-md-6 col-sm-6 col-xs-12">
+            <div class="col-md-6 col-sm-4 col-xs-12">
                 <div class="type-1">
                     <div>
                         <a href="<?= Url::to('/jobs/profiles'); ?>" class="btn btn-3">
@@ -75,6 +77,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
     </div>
 </section>
 
+<?= $this->render('/webinars/webinar-carousel')?>
 
 <?php
 echo $this->render('/widgets/info-stats');
@@ -113,6 +116,7 @@ echo $this->render('/widgets/jobs-by-tag');
 <?= $this->render('/widgets/usa_and_govt_jobs'); ?>
 
 <?= $this->render('/widgets/international-jobs'); ?>
+
 
 <section class="j-tweets">
     <div class="container">

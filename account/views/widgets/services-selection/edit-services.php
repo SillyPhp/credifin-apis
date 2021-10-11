@@ -10,6 +10,10 @@ use yii\helpers\ArrayHelper;
         'id' => 'services_form',
         'enableClientValidation' => true,
         'validateOnBlur' => false,
+        'action' => [
+            '/dashboard/services'
+        ],
+        'method' => 'post',
         'fieldConfig' => [
             'template' => "",
         ]
@@ -124,7 +128,9 @@ input:checked + .slider:before {
   -ms-transform: translateX(26px);
   transform: translateX(26px);
 }
-
+#jstatus{
+    text-align: right;
+}
 /* Rounded sliders */
 .slider.round {
   border-radius: 34px;
@@ -140,7 +146,7 @@ input:checked + .slider:before {
 //    float: right;
 }
 .status-activity{
-    margin-top:20px;
+    margin:20px 0;
     background:#fff;
 }
 .module-active{
@@ -190,6 +196,12 @@ input:checked + .slider:before {
     display:none;
 }
 /*Activity Status Ends*/
+
+@media only screen and (max-width: 550px){
+    .module-active{
+        font-size: 16px;
+    }
+}
 ");
 ?>
 <script>
