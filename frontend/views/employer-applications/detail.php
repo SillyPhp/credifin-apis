@@ -450,6 +450,19 @@ if ($settings["showNewPositionsWidget"]):
 
 <div class="container">
     <div class="row">
+        <div class="col-md-12">
+            <div class="heading-style">Similar Companies</div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <?=
+        $this->render('/widgets/similar-companies', ['companies' => $similar_companies]);
+        ?>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
         <div class="col-md-8 col-sm-8 col-xs-12">
             <div class="heading-style">Courses</div>
         </div>
@@ -583,6 +596,7 @@ if (!empty($data2) && Yii::$app->params->options->showSchema) {
                 "value": "<?= (($data2['fixed_wage']) ? $data2['fixed_wage'] : $data2['max_wage']) ?>"
             }
         }
+
 
 
 

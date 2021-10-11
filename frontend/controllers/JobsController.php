@@ -459,7 +459,7 @@ class JobsController extends Controller
         }
         $app = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'l.name profile_name','a.story_image', 'a.square_image', 'l.category_enc_id profile_id', 'a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
+            ->select(['a.application_enc_id', 'l.name profile_name', 'a.story_image', 'a.square_image', 'l.category_enc_id profile_id', 'a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
             ->where(['a.unique_source_id' => $eaidk, 'a.status' => 'ACTIVE'])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
@@ -605,8 +605,9 @@ class JobsController extends Controller
         $get = new ReviewCardsMod();
         $options = [];
         $options['industry'] = $data2['industry'];
-        $options['limit'] = 6;
+        $options['limit'] = 3;
         $cards = $get->getAllCompanies($options);
+
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
@@ -620,6 +621,7 @@ class JobsController extends Controller
             'searchItems' => $searchItems,
             'cat_name' => $cat_name,
             'whatsAppmodel' => $whatsAppForm,
+            'similar_companies' => $cards['cards']
         ]);
     }
 
@@ -855,9 +857,9 @@ class JobsController extends Controller
                 WHEN a.source = 2 THEN CONCAT("/job/git-hub/",a.slug,"/",a.unique_source_id)
                 ELSE CONCAT("/job/", a.slug)
                 END) as link', 'ap.application_enc_id as applied'])
-                ->joinWith(['appliedApplications as ap' => function($ap){
+                ->joinWith(['appliedApplications as ap' => function ($ap) {
                     $ap->onCondition(['ap.created_by' => Yii::$app->user->identity->user_enc_id]);
-                }],false)
+                }], false)
                 ->where([
                     'a.slug' => $eaidk,
                     'a.is_deleted' => 0
@@ -870,13 +872,13 @@ class JobsController extends Controller
             }
 
             $claimedOrg = Organizations::find()
-                ->select(['name org_name', 'tag_line', 'initials_color color', 'slug as org_slug','CONCAT("/",slug) as org_link','email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
+                ->select(['name org_name', 'tag_line', 'initials_color color', 'slug as org_slug', 'CONCAT("/",slug) as org_link', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
                 ->where(['organization_enc_id' => $application_details['organization_enc_id']])
                 ->asArray()
                 ->one();
 
             $unclaimedOrg = UnclaimedOrganizations::find()
-                ->select(['name org_name', 'initials_color color', 'slug as org_slug','CONCAT("/",slug,"/reviews") org_link','email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
+                ->select(['name org_name', 'initials_color color', 'slug as org_slug', 'CONCAT("/",slug,"/reviews") org_link', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
                 ->where(['organization_enc_id' => $application_details['unclaimed_organization_enc_id']])
                 ->asArray()
                 ->one();
@@ -1592,7 +1594,8 @@ class JobsController extends Controller
         }
     }
 
-    public function actionApplicationApplyModal(){
+    public function actionApplicationApplyModal()
+    {
         $app_id = Yii::$app->request->post('app_id');
         $org_id = Yii::$app->request->post('org_id');
         if (Yii::$app->request->isAjax && $app_id && $org_id && !Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
@@ -1652,7 +1655,7 @@ class JobsController extends Controller
                 'locations' => $locations,
                 'que' => $app_que,
                 'resumes' => $resumes]);
-        } else{
+        } else {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
     }
