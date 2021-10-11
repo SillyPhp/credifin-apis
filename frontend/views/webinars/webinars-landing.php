@@ -226,7 +226,30 @@ if ($optedWebinar) {
                                         <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>" class="btn-drib"><i
                                                     class="icon-drib fa fa-arrow-right"></i>View Details</a>
                                     </div>
-
+                                    <!-- <div class="register-count">
+                                        <div class="reg-img">
+                                            <?php
+                                            if (count($opWeb['webinarRegistrations']) > 0) {
+                                                $reg = 1;
+                                                foreach ($opWeb['webinarRegistrations'] as $uImage) {
+                                                    ?>
+                                                    <span class="reg<?= $reg ?> reg">
+                                                            <img src="<?= $uImage['createdBy']['image'] ?>">
+                                                        </span>
+                                                    <?php
+                                                    $reg++;
+                                                    if ($reg == 4) {
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            ?>
+                                        </div>
+                                        <span class="cont"><?= count($opWeb['webinarRegistrations']) ?> Registered</span>
+                                    </div> -->
+                                    <!--                        <div class="register-btns">-->
+                                    <!--                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>-->
+                                    <!--                        </div>-->
                                 </div>
                             </div>
                         </div>
@@ -960,6 +983,7 @@ color: #fff !important;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 	background-color:#fff;
 	margin-bottom:20px;
+    min-height: 387px;
 }
 .web-img {
 	position: relative;
