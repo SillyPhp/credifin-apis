@@ -22,26 +22,11 @@ use yii\helpers\Url;
                     <div class="sim-comp-jobs-intern">
                         <a href="/jobs/list?slug=<?= $c['slug']?>" target="_blank"><span
                                     class="jobs">
-                                <?php if ($c['employerApplications'][0]['name'] == 'Jobs') {
-                                    echo $c['employerApplications'][0]['total_application'];
-                                } else {
-                                    if ($c['employerApplications'][1]['name'] == 'Jobs') {
-                                        echo $c['employerApplications'][1]['total_application'];
-                                    } else {
-                                        echo 0;
-                                    }
-                                } ?>
+                                <?= $c['employerApplications'][0]['name'] == 'Jobs' ? $c['employerApplications'][0]['total_application'] : ($c['employerApplications'][1]['name'] == 'Jobs' ? $c['employerApplications'][1]['total_application'] : 0) ?>
                                 Jobs</span></a>
                         <a href="/internships/list?slug=<?= $c['slug']?>" target="_blank"><span class="interns">
-                                <?php if ($c['employerApplications'][0]['name'] == 'Internships') {
-                                    echo $c['employerApplications'][0]['total_application'];
-                                } else {
-                                    if ($c['employerApplications'][1]['name'] == 'Internships') {
-                                        echo $c['employerApplications'][1]['total_application'];
-                                    } else {
-                                        echo 0;
-                                    }
-                                } ?> Internships</span></a>
+                                <?= $c['employerApplications'][0]['name'] == 'Internships' ? $c['employerApplications'][0]['total_application'] : ($c['employerApplications'][1]['name'] == 'Internships' ? $c['employerApplications'][1]['total_application'] : 0) ?>
+                                Internships</span></a>
                     </div>
                     <div class="sim-view-detail">
                         <a href="/<?= $c['slug'] ?>">View Detail</a>
