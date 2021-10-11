@@ -28,6 +28,7 @@ use frontend\models\applications\PreferredApplicationCards;
 use frontend\models\curl\RollingCurl;
 use frontend\models\curl\RollingCurlRequest;
 use frontend\models\curl\RollingRequest;
+use frontend\models\reviews\ReviewCardsMod;
 use frontend\models\script\Box;
 use frontend\models\script\Color;
 use frontend\models\script\scriptModel;
@@ -592,6 +593,11 @@ class JobsController extends Controller
         $industry = $application_details->preferredIndustry->industry;
         array_push($searchItems, $app_title, $industry);
         $searchItems = implode(',', $searchItems);
+        $get = new ReviewCardsMod();
+        $options = [];
+        $options['industry'] = $data2['industry'];
+        $options['limit'] = 6;
+        $cards = $get->getAllCompanies($options);
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
