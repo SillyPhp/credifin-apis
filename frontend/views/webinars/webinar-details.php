@@ -1959,7 +1959,7 @@ function _razoPay(ptoken,payment_enc_id,webinar_id){
     var options = {
     "key": access_key, 
     "name": "Empower Youth",
-    "description": "Application Processing Fee",
+    "description": "Registration Fee",
     "image": "/assets/common/logos/logo.svg",
     "order_id": ptoken, 
     "handler": function (response){
@@ -1995,14 +1995,15 @@ function updateStatus(payment_enc_id,payment_id=null,status,signature=null)
           signature:signature,
           status:status, 
         },
-        success:function(resp)
+        success:function(res)
         {
-            if(res.response.status != 200){
+            if(res.response.status == 200){
                 swal({ 
                     title:"Message",
                     text: "Payment Successfully Captured & It will reflect in sometime..",
                  });
             }
+            location.reload();
         }
     })
 }
