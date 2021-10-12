@@ -5,6 +5,7 @@ namespace common\components;
 use Yii;
 use yii\base\Component;
 use common\models\Seo;
+use yii\helpers\Url;
 
 class SeoComponent extends Component
 {
@@ -28,7 +29,7 @@ class SeoComponent extends Component
                 }
                 $object->view->params['seo_tags'] = [
                     'rel' => [
-                        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+                        'canonical' => Url::to(Yii::$app->request->url,true),
                     ],
                     'name' => [
                         'keywords' => $seoDetails->keywords,
