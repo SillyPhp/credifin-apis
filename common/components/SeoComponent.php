@@ -29,7 +29,7 @@ class SeoComponent extends Component
                 }
                 $object->view->params['seo_tags'] = [
                     'rel' => [
-                        'canonical' => Url::to(Yii::$app->request->url,true),
+                        'canonical' => Url::to(Yii::$app->request->url,'https'),
                     ],
                     'name' => [
                         'keywords' => $seoDetails->keywords,
