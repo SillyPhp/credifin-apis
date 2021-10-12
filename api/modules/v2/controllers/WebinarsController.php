@@ -523,7 +523,8 @@ class WebinarsController extends ApiBaseController
                 'status' => $params['payment_status'],
                 'registration_enc_id' => $params['registration_enc_id'],
                 'payment_id' => $params['payment_id'],
-                'signature' => $params['signature']
+                'signature' => $params['signature'],
+                'is_campus' => true
             ];
             $payment = new \common\models\extended\WebinarPayments();
             if ($payment->updateStatus($args)) {

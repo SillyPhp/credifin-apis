@@ -2,6 +2,7 @@
 
 namespace common\models\extended;
 
+use common\models\Users;
 use common\models\Utilities;
 use common\models\Webinar;
 use common\models\WebinarRegistrations;
@@ -115,6 +116,29 @@ class WebinarPayments extends \common\models\WebinarPayments
                 if (!$registration->update()) {
                     return false;
                 } else {
+                    $user = Users::findOne(['user_enc_id' => $registration->created_by]);
+                    $params = [];
+                    $params['webinar_id'] = $registration->webinar_enc_id;
+                    $params['email'] = $user->email;
+                    $params['name'] = $user->first_name . ' ' . $user->last_name;
+                    if (isset($args['is_campus']) && $args['is_campus']) {
+                        $params['from'] = 'no-reply@myecampus.in';
+                        $params['site_name'] = 'My E-Campus';
+                        $params['is_my_campus'] = 1;
+                    } else {
+                        $params['from'] = Yii::$app->params->from_email;
+                        $params['site_name'] = Yii::$app->params->site_name;
+                    }
+                    Yii::$app->notificationEmails->webinarRegistrationEmail($params);
+
+                    $webinar = Webinar::findOne(['webinar_enc_id' => $registration->webinar_enc_id]);
+                    if ($webinar->webinar_conduct_on == 1) {
+                        $params['first_name'] = $user->first_name;
+                        $params['last_name'] = $user->last_name;
+                        $params["webinar_zoom_id"] = $webinar->platform_webinar_id;
+                        $params["user_id"] = $user->user_enc_id;
+                        Yii::$app->notificationEmails->zoomRegisterAccess($params);
+                    }
                     return true;
                 }
             }
