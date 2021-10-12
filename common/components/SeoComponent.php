@@ -46,7 +46,7 @@ class SeoComponent extends Component
                         'og:locale' => 'en',
                         'og:type' => 'website',
                         'og:site_name' => Yii::$app->params->site_name,
-                        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+                        'og:url' => Url::to(Yii::$app->request->url,'https'),
                         'og:title' => $seoDetails->og_title,
                         'og:description' => $seoDetails->og_description,
                         'og:image' => $image,
