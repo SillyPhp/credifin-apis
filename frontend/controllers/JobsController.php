@@ -604,7 +604,7 @@ class JobsController extends Controller
         $searchItems = implode(',', $searchItems);
         $get = new ReviewCardsMod();
         $options = [];
-        $options['industry'] = $data2['industry'];
+        $options['industry'] = [$data2['industry']];
         $options['limit'] = 3;
         $cards = $get->getAllCompanies($options);
 

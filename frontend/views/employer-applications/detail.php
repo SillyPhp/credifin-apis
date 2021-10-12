@@ -447,7 +447,9 @@ if ($settings["showNewPositionsWidget"]):
         <div class="blogbox"></div>
     </div>
 </div>
-
+<?php
+ if($similar_companies){
+?>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -460,6 +462,7 @@ if ($settings["showNewPositionsWidget"]):
         ?>
     </div>
 </div>
+<?php } ?>
 
 <div class="container">
     <div class="row">
