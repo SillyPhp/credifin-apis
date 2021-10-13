@@ -560,7 +560,7 @@ class MentorsController extends Controller
                     'c.logo org_logo', 'c.logo_location org_logo_location',
                     'c.name org_name'
                 ])
-                ->where(['a.is_deleted' => 0])
+                ->where(['a.is_deleted' => 0, 'is_star' =>1])
                 ->joinWith(['designationEnc b'], false)
                 ->joinWith(['unclaimedOrg c'], false)
                 ->joinWith(['speakerExpertises d' => function ($d) {
