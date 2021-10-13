@@ -150,7 +150,7 @@ $this->registerCss("
     display: flex;
     align-items: center;
     justify-content: center;
-    background: url(' . Url::to('@eyAssets/images/pages/webinar/wbg.png') . ');
+    background: url(" . Url::to('@eyAssets/images/pages/webinar/wbg.png') . ");
     background-size: cover;
     background-repeat: no-repeat;
 }
