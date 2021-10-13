@@ -92,7 +92,7 @@ function webDate($webDate)
                             </div>
                             <div class="reg-btn-count">
                                 <div class="register-count">
-                                    <div class="reg-img">
+                                    <!-- <div class="reg-img">
                                         <?php
                                         if (count($web['webinarRegistrations']) > 0) {
                                             $reg = 1;
@@ -112,7 +112,7 @@ function webDate($webDate)
                                         }
                                         ?>
                                     </div>
-                                    <span class="count"> <?= count($web['webinarRegistrations']) ?> Registered</span>
+                                    <span class="count"> <?= count($web['webinarRegistrations']) ?> Registered</span> -->
                                 </div>
                                 <div class="register-btns">
                                     <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
@@ -150,7 +150,7 @@ $this->registerCss("
     display: flex;
     align-items: center;
     justify-content: center;
-    background: url(' . Url::to('@eyAssets/images/pages/webinar/wbg.png') . ');
+    background: url(" . Url::to('@eyAssets/images/pages/webinar/wbg.png') . ");
     background-size: cover;
     background-repeat: no-repeat;
 }

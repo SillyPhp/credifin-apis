@@ -520,18 +520,17 @@ class WebinarsController extends ApiBaseController
             }
             $args = [
                 'payment_enc_id' => $params['payment_enc_id'],
-                'payment_status' => $params['payment_status'],
+                'status' => $params['payment_status'],
                 'registration_enc_id' => $params['registration_enc_id'],
-                'payment_id' => $params['payment_id']
+                'payment_id' => $params['payment_id'],
+                'signature' => $params['signature'],
+                'is_campus' => true
             ];
             $payment = new \common\models\extended\WebinarPayments();
-            if ($payment->load($args, '')) {
-                $payment->registration_enc_id = $args['registration_enc_id'];
-                if ($payment->updateStatus()) {
-                    return $this->response(200, ['status' => 200, 'message' => 'success']);
-                } else {
-                    return $this->response(500, ['status' => 500, 'message' => 'Something Went Wrong On Server Side..']);
-                }
+            if ($payment->updateStatus($args)) {
+                return $this->response(200, ['status' => 200, 'message' => 'success']);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'Something Went Wrong On Server Side..']);
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);

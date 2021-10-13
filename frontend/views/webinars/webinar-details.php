@@ -159,12 +159,19 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     <div class="webinar-details">
         <div class="container">
             <div class="row">
-                <div class="">
-                    <div class="col-md-12 mx-auto">
-                        <h2 class="section-title">
-                            Webinar Details
-                        </h2>
-                    </div>
+                <div class="detail-flex">
+                    <h2 class="section-title">
+                        Webinar Details
+                    </h2>
+                    <?php if ($webinar['webinar_conduct_on'] == 1 && $webinar_link) { ?>
+                        <div class="copy-join-link jj-clipboard" data-link="<?= $webinar_link ?>">
+                            <i class="fab fa-chromecast"></i>
+                            <div class="link-descriptions">
+                                <span>Joining link</span><br/>
+                                <a class="copy-clip" title="Copy Link" ><?= $webinar_link ?></a>
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
             </div>
             <div class="row">
@@ -560,6 +567,46 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+span.copy-clip {
+    color: #8b8b8b !important;
+    font-size: 14px !important;
+}
+.detail-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding:0 15px;
+}
+.copy-join-link{
+    font-size: 14px;
+    margin: 20px 0;
+    font-weight: 400;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    cursor: pointer;
+}
+.copy-join-link i{
+    color: #00a0e3;
+    font-size: 40px;
+    margin-right: 5px;
+}
+.link-descriptions{
+    max-width: 250px;
+    position: relative;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.link-descriptions span{
+    font-size: 15px;
+    color: #00a0e3;
+    font-weight: 500;
+}
 .d-flex{
     display: flex;
     align-items: center;
@@ -1167,9 +1214,9 @@ transform: rotate(100deg);
     -ms-border-radius: 50%;
     width: 250px;
     height: 250px;
-    // background-image: -webkit-linear-gradient(340deg, #FC6076 0%, #FF9A44 100%);
-    // background-image: -o-linear-gradient(340deg, #FC6076 0%, #FF9A44 100%);
-    // background-image: linear-gradient(110deg, #FC6076 0%, #FF9A44 100%);
+    background-image: -webkit-linear-gradient(-60deg, #ff5858 0%, #f09819 100%);
+    background-image: -o-linear-gradient(-60deg, #ff5858 0%, #f09819 100%);
+    background-image: linear-gradient(-60deg, #ff5858 0%, #f09819 100%);
     -webkit-box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
     box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
     padding: 55px 0;
@@ -1217,28 +1264,40 @@ transform: rotate(100deg);
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both; 
 }
-.outcome-item:nth-of-type(1) .ts-single-outcome {
+.outcome-item:nth-of-type(6n-1) .ts-single-outcome {
     background-image: -webkit-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
     background-image: -o-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
     background-image: linear-gradient(110deg, #fc6076 0%, #ff9a44 100%);
 }
 
-.outcome-item:nth-of-type(2) .ts-single-outcome {
+.outcome-item:nth-of-type(6n-2) .ts-single-outcome {
     background-image: -webkit-radial-gradient(50% 50%, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
     background-image: -o-radial-gradient(50% 50%, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
     background-image: radial-gradient(50% 50%, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
 }
 
-.outcome-item:nth-of-type(3) .ts-single-outcome {
+.outcome-item:nth-of-type(6n-3) .ts-single-outcome {
     background-image: -webkit-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
     background-image: -o-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
     background-image: linear-gradient(-45deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
 }
 
-.outcome-item:nth-of-type(4) .ts-single-outcome {
+.outcome-item:nth-of-type(6n-4) .ts-single-outcome {
     background-image: -webkit-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
     background-image: -o-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
     background-image: linear-gradient(-45deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
+}
+
+.outcome-item:nth-of-type(6n-5) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(to top, #7028e4 0%, #e5b2ca 100%);
+    background-image: -o-linear-gradient(to top, #7028e4 0%, #e5b2ca 100%);
+    background-image: linear-gradient(to top, #7028e4 0%, #e5b2ca 100%);
+}
+
+.outcome-item:nth-of-type(6n-6) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+    background-image: -o-linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+    background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
 }
 
 .ts-count-down {
@@ -1325,11 +1384,12 @@ b, strong {
     color: #fff;
 }
 .section-title, .column-title {
+    margin:20px 0;
     font-size: 36px;
     font-weight: 800;
     color: #333;
     position: relative;
-    text-align: center;
+//    text-align: center;
     font-family: lora;
 }
 .section-title span, .column-title span {
@@ -1899,7 +1959,7 @@ function _razoPay(ptoken,payment_enc_id,webinar_id){
     var options = {
     "key": access_key, 
     "name": "Empower Youth",
-    "description": "Application Processing Fee",
+    "description": "Registration Fee",
     "image": "/assets/common/logos/logo.svg",
     "order_id": ptoken, 
     "handler": function (response){
@@ -1935,14 +1995,15 @@ function updateStatus(payment_enc_id,payment_id=null,status,signature=null)
           signature:signature,
           status:status, 
         },
-        success:function(resp)
+        success:function(res)
         {
-            if(res.response.status != 200){
+            if(res.response.status == 200){
                 swal({ 
                     title:"Message",
                     text: "Payment Successfully Captured & It will reflect in sometime..",
                  });
             }
+            location.reload();
         }
     })
 }
@@ -1951,6 +2012,20 @@ $(document).on("click","#joinRegisterBtn", function() {
     $('#registerEventSection').find('button:visible').click();
 });
 
+$(document).on('click', '.jj-clipboard',function (event) {
+        event.preventDefault();
+        var link = $(this).attr('data-link');
+        CopyToClipboard(link, true, "Link copied");
+    });
+
+    function CopyToClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

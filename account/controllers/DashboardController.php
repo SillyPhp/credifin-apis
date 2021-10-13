@@ -312,23 +312,30 @@ class DashboardController extends Controller
                 ->asArray()
                 ->all();
 
+            $dt = new \DateTime();
+            $tz = new \DateTimeZone('Asia/Kolkata');
+            $dt->setTimezone($tz);
+            $date_now = $dt->format('Y-m-d H:i:s');
+
             $webinar = WebinarRegistrations::find()
                 ->alias('a')
                 ->select(['a.webinar_enc_id', 'b.title', 'CONCAT(b4.first_name, " " ,b4.last_name) as speaker_name',
                     'CASE WHEN b4.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b4.image_location, "/", b4.image) END speaker_image',
                     'a.unique_access_link'
                 ])
-                ->joinWith(['webinarEnc b' => function ($b) {
-                    $b->joinWith(['webinarEvents b1' => function($b1){
+                ->joinWith(['webinarEnc b' => function ($b) use ($date_now) {
+                    $b->joinWith(['webinarEvents b1' => function($b1) use ($date_now){
                         $b1->joinWith(['webinarSpeakers b2' => function ($b2) {
                             $b2->joinWith(['speakerEnc b3'=>function($b3){
                                 $b3->joinWith(['userEnc b4']);
                             }]);
                         }]);
+                        $b1->onCondition(['>=','b1.start_datetime', $date_now]);
                     }]);
                     $b->andWhere(['b1.status' => [0, 1]]);
                 }], false)
                 ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                ->orderBy(['b1.start_datetime' => SORT_ASC])
                 ->asArray()
                 ->one();
 
