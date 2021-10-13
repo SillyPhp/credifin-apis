@@ -178,6 +178,10 @@ class WebinarsController extends Controller
                     'status' => 1,
                 ])
                 ->one();
+            $interestCount = UserWebinarInterest::find()
+                ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'interest_status'=>1])
+                ->count();
+
             $userInterest = UserWebinarInterest::findOne(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id]);
             $webinar['start_datetime'] = "";
 
@@ -189,6 +193,7 @@ class WebinarsController extends Controller
 
             return $this->render('webinar-details', [
                 'webinar' => $webinar,
+                'interestCount'=>$interestCount,
                 'assignSpeaker' => $assignSpeaker,
                 'is_expired' => $is_expired,
                 'outComes' => $outComes,
