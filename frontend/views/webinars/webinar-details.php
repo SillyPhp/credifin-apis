@@ -164,14 +164,16 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                         Webinar Details
                     </h2>
                     <?php if ($webinar['webinar_conduct_on'] == 1 && $webinar_link) { ?>
+
                         <div class="copy-join-link jj-clipboard" data-link="<?= $webinar_link ?>">
-                            <i class="fab fa-chromecast"></i>
                             <div class="link-descriptions">
-                                <span>Joining link</span><br/>
-                                <a class="copy-clip" title="Copy Link" ><?= $webinar_link ?></a>
+                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/zoom-icon.png')?>" alt="">
+                                <a class="copy-clip view-link" title="Copy link">View Join Link</a>
                             </div>
                         </div>
+
                     <?php } ?>
+                    
                 </div>
             </div>
             <div class="row">
@@ -601,11 +603,25 @@ span.copy-clip {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    background: #4a8cff;
+    padding: 4px 10px;
+    border-radius: 0 10px 0 10px;
 }
 .link-descriptions span{
     font-size: 15px;
     color: #00a0e3;
     font-weight: 500;
+}
+.link-descriptions img{
+    width: 25px;
+    height: 25px;
+    margin-right: 6px;
+}
+.link-descriptions a {
+    color: #fff;
+    font-weight: 600;
 }
 .d-flex{
     display: flex;
