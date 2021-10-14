@@ -27,7 +27,7 @@ class Webinar extends \common\models\Webinar
                 'a.seats',
                 'a.slug',
                 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
-
+                'GROUP_CONCAT(DISTINCT(CONCAT(f.first_name, " " ,f.last_name)) SEPARATOR ",") speakers'
             ])
             ->joinWith(['assignedWebinarTos b'], false)
             ->joinWith(['webinarRegistrations d' => function ($d) {
@@ -46,6 +46,16 @@ class Webinar extends \common\models\Webinar
             }])
             ->joinWith(['webinarEvents c' => function ($c) {
                 $c->select(['c.event_enc_id', 'c.webinar_enc_id', "DATE_FORMAT(c.start_datetime, '%Y/%m/%d %H:%i:%s') start_datetime", 'c.session_enc_id']);
+                $c->groupBy(['c.webinar_enc_id']);
+                $c->joinWith(['webinarSpeakers dd' => function ($d) {
+                    $d->select(['dd.speaker_enc_id', 'dd.webinar_event_enc_id']);
+                    $d->joinWith(['speakerEnc e' => function ($e) {
+                        $e->select(['e.speaker_enc_id', 'e.user_enc_id']);
+                        $e->joinWith(['userEnc f' => function ($f) {
+                            $f->select(['f.user_enc_id', 'f.first_name', 'f.last_name']);
+                        }]);
+                    }]);
+                }], false);
                 $c->onCondition(['c.is_deleted' => 0, 'c.status' => [0, 1]]);
                 $c->orderBy(['c.start_datetime' => SORT_ASC]);
             }])

@@ -955,14 +955,19 @@ class CandhomeController extends ApiBaseController
                 $user_id = $user->user_enc_id;
                 $user_registered = $this->userRegistered($webinar['webinar_enc_id'], $user_id);
                 $webinar['interest_status'] = $this->interested($webinar['webinar_enc_id'], $user_id);
-            }else{
+            } else {
                 $user_registered = 0;
                 $webinar['interest_status'] = null;
             }
             $registered_count = WebinarRegistrations::find()
                 ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
                 ->count();
+
+            $interested_count = UserWebinarInterest::find()
+                ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'interest_status' => 1])->count();
+
             $webinar['registered_count'] = $registered_count;
+            $webinar['interested_count'] = $interested_count;
 
             $webinar['is_registered'] = $user_registered;
 
