@@ -229,14 +229,14 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                                 if (Yii::$app->user->isGuest && !$is_expired) {
                                     ?>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
-                                       value="interested">Interested</a>
+                                       value="interested">Interested <span id="interestCount">(<?= 50 + rand(1,10) + $interestCount?>)</span></a>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
                                        value="not interested">Not Interested</a>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn">Attending</a>
                                 <?php } else if($registeration_status != 1 && !$is_expired) { ?>
                                     <button class="ra-btn interestBtn <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
                                             id="interested" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="1">Interested
+                                            value="1">Interested <span id="interestCount">(<?= 50 + rand(1,10) + $interestCount?>)</span>
                                     </button>
                                     <button class="ra-btn interestBtn <?php echo $interest_status == 2 ? 'actionColor' : '' ?>"
                                             id="notInterested" data-key="<?= $webinar['webinar_enc_id'] ?>"
