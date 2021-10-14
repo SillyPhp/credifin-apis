@@ -58,7 +58,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                 <div class="register-btn" id="registerEventSection">
                     <?php
                     $btnName = 'Register Now';
-                    if (Yii::$app->user->isGuest) {
+                    if (Yii::$app->user->isGuest && !$is_expired) {
                         ?>
                         <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
                            class="ra-btn"><?= $btnName ?></a>
@@ -68,7 +68,11 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                             Processing <i class="fas fa-spinner fa-spin"></i>
                         </button>
                         <?php
-                        if ($registeration_status == 1) {
+                        if($is_expired){
+                            ?>
+                            <a href="<?= Url::to('/webinars')?>" class="ra-btn">Back To Home</a>
+                            <?php
+                        } else if($registeration_status == 1) {
                             ?>
                             <button class="ra-btn">Registered</button>
                             <?php
@@ -102,9 +106,9 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                 <?php Pjax::begin(['id' => 'webinar_join_link']); ?>
                 <div class="col-lg-10 col-lg-offset-1">
                     <div class="countdown gradient clearfix">
-                        <?php if ($status == 2) { ?>
+                        <?php if ($is_expired) { ?>
                             <div>
-                                <a id="joinBtn">Webinar Expired</a>
+                                <a id="joinBtn">This Webinar Is Expired</a>
                             </div>
                         <?php } elseif ($webinar['status'] == 1 || $webinar['status'] == 0) { ?>
                             <div id="join">
@@ -164,14 +168,16 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                         Webinar Details
                     </h2>
                     <?php if ($webinar['webinar_conduct_on'] == 1 && $webinar_link) { ?>
+
                         <div class="copy-join-link jj-clipboard" data-link="<?= $webinar_link ?>">
-                            <i class="fab fa-chromecast"></i>
                             <div class="link-descriptions">
-                                <span>Joining link</span><br/>
-                                <a class="copy-clip" title="Copy Link" ><?= $webinar_link ?></a>
+                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/zoom-icon.png')?>" alt="">
+                                <a class="copy-clip view-link" title="Copy link">View Join Link</a>
                             </div>
                         </div>
+
                     <?php } ?>
+                    
                 </div>
             </div>
             <div class="row">
@@ -220,17 +226,17 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                             <?php Pjax::end(); ?>
                             <div class="register-action">
                                 <?php
-                                if (Yii::$app->user->isGuest) {
+                                if (Yii::$app->user->isGuest && !$is_expired) {
                                     ?>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
-                                       value="interested">Interested</a>
+                                       value="interested">Interested <span id="interestCount">(<?= 50 + rand(1,10) + $interestCount?>)</span></a>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
                                        value="not interested">Not Interested</a>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn">Attending</a>
-                                <?php } else { ?>
+                                <?php } else if($registeration_status != 1 && !$is_expired) { ?>
                                     <button class="ra-btn interestBtn <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
                                             id="interested" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="1">Interested
+                                            value="1">Interested <span id="interestCount">(<?= 50 + rand(1,10) + $interestCount?>)</span>
                                     </button>
                                     <button class="ra-btn interestBtn <?php echo $interest_status == 2 ? 'actionColor' : '' ?>"
                                             id="notInterested" data-key="<?= $webinar['webinar_enc_id'] ?>"
@@ -601,11 +607,25 @@ span.copy-clip {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    background: #4a8cff;
+    padding: 4px 10px;
+    border-radius: 0 10px 0 10px;
 }
 .link-descriptions span{
     font-size: 15px;
     color: #00a0e3;
     font-weight: 500;
+}
+.link-descriptions img{
+    width: 25px;
+    height: 25px;
+    margin-right: 6px;
+}
+.link-descriptions a {
+    color: #fff;
+    font-weight: 600;
 }
 .d-flex{
     display: flex;

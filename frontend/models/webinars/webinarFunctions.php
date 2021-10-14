@@ -25,12 +25,12 @@ class webinarFunctions extends Model
     {
         $data = WebinarRegistrations::find()
             ->alias('z')
-            ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.created_by', 'c.image', 'c.image_location'])
+            ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.created_by', 'c.image', 'c.image_location', 'z.created_on'])
             ->joinWith(['createdBy c'], false)
             ->where(['z.webinar_enc_id' => $id, 'z.is_deleted' => 0, 'z.status' => 1])
             ->andWhere(['not', ['c.image' => null]])
             ->andWhere(['not', ['c.image' => '']])
-            ->orderBy(new Expression('rand()'))
+            ->orderBy(['z.created_on' => SORT_DESC])
             ->limit(6)
             ->asArray()
             ->all();

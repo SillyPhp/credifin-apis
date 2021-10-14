@@ -86,8 +86,13 @@ class WebinarsController extends Controller
         $user_id = Yii::$app->user->identity->user_enc_id;
         $model = new webinarFunctions();
         $webinar = self::getWebianrDetail($slug, true);
+        $is_expired = false;
         if (empty($webinar)) {
-            throw new HttpException(404, Yii::t('frontend', 'Page not found'));
+            $webinar = self::getWebianrDetail($slug, false);
+            $is_expired = true;
+            if (empty($webinar)) {
+                throw new HttpException(404, Yii::t('frontend', 'Page not found'));
+            }
         }
         $nextEvent = $webinar['webinarEvents'][0];
         if (empty($nextEvent)) {
@@ -173,6 +178,10 @@ class WebinarsController extends Controller
                     'status' => 1,
                 ])
                 ->one();
+            $interestCount = UserWebinarInterest::find()
+                ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'interest_status'=>1])
+                ->count();
+
             $userInterest = UserWebinarInterest::findOne(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id]);
             $webinar['start_datetime'] = "";
 
@@ -184,7 +193,9 @@ class WebinarsController extends Controller
 
             return $this->render('webinar-details', [
                 'webinar' => $webinar,
+                'interestCount'=>$interestCount,
                 'assignSpeaker' => $assignSpeaker,
+                'is_expired' => $is_expired,
                 'outComes' => $outComes,
                 'register' => $register,
                 'webinarRegistrations' => $webinarRegistrations,
@@ -381,7 +392,7 @@ class WebinarsController extends Controller
                 'a.webinar_conduct_on',
                 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
             ])
-            ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now, $recent) {
+            ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now, $recent, $status) {
                 $a1->select([
                     'a1.event_enc_id',
                     'a1.webinar_enc_id',
@@ -501,7 +512,7 @@ class WebinarsController extends Controller
             }])
             ->andWhere(['a.is_deleted' => 0])
             ->andWhere(['not', ['a.session_for' => 2]])
-            ->orderBy(['a.created_on' => SORT_DESC])
+//            ->orderBy(['a.created_on' => SORT_DESC])
             ->groupBy('a.webinar_enc_id')
             ->asArray()
             ->all();
