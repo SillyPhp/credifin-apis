@@ -1,4 +1,5 @@
 <?php
+
 namespace common\models;
 
 /**
@@ -9,6 +10,7 @@ namespace common\models;
  * @property string $user_enc_id
  * @property string $unclaimed_org_id
  * @property string $designation_enc_id
+ * @property int $is_star 0 as false, 1 as True
  * @property string $created_by
  * @property string $created_on
  * @property string $updated_by
@@ -22,12 +24,13 @@ namespace common\models;
  * @property Users $userEnc
  * @property Users $updatedBy
  * @property WebinarModerators[] $webinarModerators
+ * @property WebinarRequestSpeakers[] $webinarRequestSpeakers
  * @property WebinarSpeakers[] $webinarSpeakers
  */
 class Speakers extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -35,14 +38,14 @@ class Speakers extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
             [['speaker_enc_id', 'user_enc_id', 'created_by'], 'required'],
+            [['is_star', 'is_deleted'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
-            [['is_deleted'], 'integer'],
             [['speaker_enc_id', 'user_enc_id', 'unclaimed_org_id', 'designation_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['speaker_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
@@ -52,7 +55,6 @@ class Speakers extends \yii\db\ActiveRecord
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
         ];
     }
-
 
     /**
      * @return \yii\db\ActiveQuery
@@ -108,6 +110,14 @@ class Speakers extends \yii\db\ActiveRecord
     public function getWebinarModerators()
     {
         return $this->hasMany(WebinarModerators::className(), ['speaker_enc_id' => 'speaker_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWebinarRequestSpeakers()
+    {
+        return $this->hasMany(WebinarRequestSpeakers::className(), ['speaker_enc_id' => 'speaker_enc_id']);
     }
 
     /**
