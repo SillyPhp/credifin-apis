@@ -260,7 +260,11 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     </div>
 
 </section>
-
+<?php
+    if($webinar["slug"] == 'new-age-investment-strategies-10407'){
+        echo $this->render('/widgets/webinar-quiz-banner');
+    }
+?>
 <!-- Schedules event section start here -->
 <section class="ts-schedule">
     <div class="container">
