@@ -34,9 +34,14 @@ class Webinar extends \common\models\Webinar
                 $d->select([
                     'd.webinar_enc_id',
                     'd.register_enc_id',
-                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", d1.first_name, "&size=200&rounded=false&background=", REPLACE(d1.initials_color, "#", ""), "&color=ffffff") END image',
+                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image',
                 ]);
-                $d->joinWith(['createdBy d1'], false);
+                $d->joinWith(['createdBy d1' => function ($d1) {
+                    $d1->onCondition(['or',
+                        ['<>', 'd1.image', null],
+                        ['<>', 'd1.image', '']
+                    ]);
+                }], false);
                 $d->onCondition(['d.is_deleted' => 0, 'd.status' => 1]);
             }])
             ->joinWith(['webinarEvents c' => function ($c) {
@@ -78,9 +83,14 @@ class Webinar extends \common\models\Webinar
                 $d->select([
                     'd.webinar_enc_id',
                     'd.register_enc_id',
-                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", d1.first_name, "&size=200&rounded=false&background=", REPLACE(d1.initials_color, "#", ""), "&color=ffffff") END image'
+                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
                 ]);
-                $d->joinWith(['createdBy d1'], false);
+                $d->joinWith(['createdBy d1' => function ($d1) {
+                    $d1->onCondition(['or',
+                        ['<>', 'd1.image', null],
+                        ['<>', 'd1.image', '']
+                    ]);
+                }], false);
                 $d->onCondition(['d.is_deleted' => 0, 'd.status' => 1]);
             }])
             ->joinWith(['webinarOutcomes e' => function ($e) {
