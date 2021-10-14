@@ -280,7 +280,7 @@ if ($optedWebinar) {
                 <div class="col-md-4 col-sm-6">
                     <div class="web-card">
                         <div class="web-img">
-                            <a href="<?= Url::to("/webinar/webinar-expired")?>">
+                            <a href="<?= Url::to("/webinar/". $pWeb['slug'])?>">
                                 <img src="<?= $pWeb['image'] ?>">
                             </a>
                             <div class="web-detail-date">
@@ -1053,7 +1053,7 @@ color: #fff !important;
 	-webkit-line-clamp: 3;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
-	height: 75px;
+	height: 70px;
 }
 .opted-web {
 	background-image: url(" . Url::to('@eyAssets/images/pages/webinar/wb2.png') . "); 
