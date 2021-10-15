@@ -1053,7 +1053,7 @@ color: #fff !important;
 	-webkit-line-clamp: 3;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
-	height: 75px;
+	height: 70px;
 }
 .opted-web {
 	background-image: url(" . Url::to('@eyAssets/images/pages/webinar/wb2.png') . "); 
