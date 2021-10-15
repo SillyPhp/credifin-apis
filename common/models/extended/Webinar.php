@@ -38,8 +38,8 @@ class Webinar extends \common\models\Webinar
                 ]);
                 $d->joinWith(['createdBy d1' => function ($d1) {
                     $d1->onCondition(['or',
-                        ['<>', 'd1.image', null],
-                        ['<>', 'd1.image', '']
+                        ['not', ['d1.image' => null]],
+                        ['not', ['d1.image' => '']]
                     ]);
                 }], false);
                 $d->onCondition(['d.is_deleted' => 0, 'd.status' => 1]);
