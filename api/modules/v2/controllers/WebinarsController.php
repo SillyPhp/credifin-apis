@@ -114,8 +114,8 @@ class WebinarsController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $webinar = new \common\models\extended\Webinar();
-            $webinar = $webinar->webinarsList($college_id['organization_enc_id']);
+            $webinar_model = new \common\models\extended\Webinar();
+            $webinar = $webinar_model->webinarsList($college_id['organization_enc_id']);
 
             $webinars = [];
             if (!empty($webinar)) {
@@ -127,6 +127,7 @@ class WebinarsController extends ApiBaseController
                     $webinar[$i]['count'] = $registered_count;
                     $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
                     $webinar[$i]['is_registered'] = $user_registered;
+                    $webinar[$i]['webinarRegistrations'] = $webinar_model->registeredUsers($w['webinar_enc_id']);
                     $webinar[$i]['is_paid'] = $w['price'] ? true : false;
                     if ($w['webinarEvents']) {
                         array_push($webinars, $webinar[$i]);

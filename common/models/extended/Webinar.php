@@ -6,6 +6,7 @@ namespace common\models\extended;
 use common\models\Speakers;
 use common\models\WebinarEvents;
 use common\models\WebinarModerators;
+use common\models\WebinarRegistrations;
 use common\models\WebinarSpeakers;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
@@ -30,20 +31,20 @@ class Webinar extends \common\models\Webinar
                 'GROUP_CONCAT(DISTINCT(CONCAT(f.first_name, " " ,f.last_name)) SEPARATOR ",") speakers'
             ])
             ->joinWith(['assignedWebinarTos b'], false)
-            ->joinWith(['webinarRegistrations d' => function ($d) {
-                $d->select([
-                    'd.webinar_enc_id',
-                    'd.register_enc_id',
-                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image',
-                ]);
-                $d->joinWith(['createdBy d1' => function ($d1) {
-                    $d1->onCondition(['or',
-                        ['not', ['d1.image' => null]],
-                        ['not', ['d1.image' => '']]
-                    ]);
-                }], false);
-                $d->onCondition(['d.is_deleted' => 0, 'd.status' => 1]);
-            }])
+//            ->joinWith(['webinarRegistrations d' => function ($d) {
+//                $d->select([
+//                    'd.webinar_enc_id',
+//                    'd.register_enc_id',
+//                    'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image',
+//                ]);
+//                $d->joinWith(['createdBy d1' => function ($d1) {
+//                    $d1->onCondition(['or',
+//                        ['not', ['d1.image' => null]],
+//                        ['not', ['d1.image' => '']]
+//                    ]);
+//                }], false);
+//                $d->onCondition(['d.is_deleted' => 0, 'd.status' => 1]);
+//            }])
             ->joinWith(['webinarEvents c' => function ($c) {
                 $c->select(['c.event_enc_id', 'c.webinar_enc_id', "DATE_FORMAT(c.start_datetime, '%Y/%m/%d %H:%i:%s') start_datetime", 'c.session_enc_id']);
                 $c->groupBy(['c.webinar_enc_id']);
@@ -369,6 +370,22 @@ class Webinar extends \common\models\Webinar
         }
 
         return $past;
+    }
+
+    public function registeredUsers($webinar_id)
+    {
+        return WebinarRegistrations::find()
+            ->alias('z')
+            ->select(['z.webinar_enc_id', 'z.register_enc_id', 'z.created_by',
+                'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", c.image_location, "/", c.image) END image',])
+            ->joinWith(['createdBy c'], false)
+            ->where(['z.webinar_enc_id' => $webinar_id, 'z.is_deleted' => 0, 'z.status' => 1])
+            ->andWhere(['not', ['c.image' => null]])
+            ->andWhere(['not', ['c.image' => '']])
+            ->orderBy(['z.created_on' => SORT_DESC])
+            ->limit(3)
+            ->asArray()
+            ->all();
     }
 
 }
