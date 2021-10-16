@@ -108,7 +108,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                     <div class="countdown gradient clearfix">
                         <?php if ($is_expired) { ?>
                             <div>
-                                <a id="joinBtn">This Webinar Is Expired</a>
+                                <p class="expiredtext">This Webinar Is Expired</p>
                             </div>
                         <?php } elseif ($webinar['status'] == 1 || $webinar['status'] == 0) { ?>
                             <div id="join">
@@ -259,7 +259,11 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     </div>
 
 </section>
-
+<?php
+    if($webinar["slug"] == 'new-age-investment-strategies-10407'){
+        echo $this->render('/widgets/webinar-quiz-banner');
+    }
+?>
 <!-- Schedules event section start here -->
 <section class="ts-schedule">
     <div class="container">
@@ -837,7 +841,8 @@ display:none;
 #counter{
 display:none;
 }
-#joinBtn, #joinOtherBtn{
+
+#joinBtn, #joinOtherBtn, .expiredtext{
     font-size: 25px;
     padding: 48px;
     display: block;
