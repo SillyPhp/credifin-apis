@@ -498,7 +498,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                     </h2>
                 </div>
             </div><!-- row end-->
-            <div class="row">
+            <div class="row outflex">
                 <?php foreach ($outComes
 
                 as $oc){ ?>
@@ -577,6 +577,12 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.outflex {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
 .show-l{display:none;}
 span.copy-clip {
     color: #8b8b8b !important;
