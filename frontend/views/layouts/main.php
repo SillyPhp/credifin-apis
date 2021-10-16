@@ -91,12 +91,12 @@ AppAssets::register($this);
                         </div>
                         <div class="col-sm-6">
                             <div class="webinar-name">
-                                How to build long term wealth in Stock Market?
+                                New Investment Strategy
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="view-detail">
-                                <a href="/webinar/how-to-build-long-term-wealth-in-stock-market-22862" class="view-btn">
+                                <a href="/webinar/new-age-investment-strategies-10407" class="view-btn">
                                     View Details
                                 </a>
                             </div>
