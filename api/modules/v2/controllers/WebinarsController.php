@@ -353,6 +353,8 @@ class WebinarsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information']);
         }
 
+        $webinar_model = new \common\models\extended\Webinar();
+
         if ($user = $this->isAuthorized()) {
 
             $user_id = $user->user_enc_id;
@@ -365,11 +367,10 @@ class WebinarsController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $webinar = new \common\models\extended\Webinar();
-            $webinar = $webinar->webinarDetail($college_id['organization_enc_id'], $webinar_id);
+
+            $webinar = $webinar_model->webinarDetail($college_id['organization_enc_id'], $webinar_id);
         } else {
-            $webinar = new \common\models\extended\Webinar();
-            $webinar = $webinar->webinarDetail(null, $webinar_id);
+            $webinar = $webinar_model->webinarDetail(null, $webinar_id);
         }
 
 
@@ -386,6 +387,7 @@ class WebinarsController extends ApiBaseController
             $registered_count = WebinarRegistrations::find()
                 ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
                 ->count();
+            $webinar['webinarRegistrations'] = $webinar_model->registeredUsers($webinar['webinar_enc_id']);
             $webinar['registered_count'] = $registered_count;
 
             $webinar['is_registered'] = $user_registered;
@@ -562,5 +564,66 @@ class WebinarsController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    public function actionAll()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $user_id = $user->user_enc_id;
+
+            $college = Users::findOne(['user_enc_id' => $user_id]);
+            $student_college = UserOtherDetails::findOne(['user_enc_id' => $user_id]);
+
+            $webinar_model = new \common\models\extended\Webinar();
+
+            $org_id = $college->organization_enc_id;
+            if (!$college->organization_enc_id) {
+                $org_id = $student_college->organization_enc_id;
+            }
+
+            $webinar_upcoming = $webinar_model->webinarsList($org_id, null, 'upcoming');
+            $webinar_opted = $webinar_model->webinarsList($org_id, $user_id, 'opted');
+            $webinar_past = $webinar_model->webinarsList($org_id, null, null);
+
+            $webinar_upcoming = $this->getOtherWebinarData($webinar_upcoming, $user_id);
+            $webinar_opted = $this->getOtherWebinarData($webinar_opted, $user_id);
+            $webinar_past = $this->getOtherWebinarData($webinar_past, $user_id);
+
+            $webinars['upcoming'] = $webinar_upcoming;
+            $webinars['past'] = $webinar_past;
+            $webinars['opted'] = $webinar_opted;
+
+            return $this->response(200, ['status' => 200, 'webinars' => $webinars]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function getOtherWebinarData($webinar, $user_id)
+    {
+        $webinar_model = new \common\models\extended\Webinar();
+
+        $webinars = [];
+        if (!empty($webinar)) {
+            $i = 0;
+            foreach ($webinar as $w) {
+                $registered_count = WebinarRegistrations::find()
+                    ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $w['webinar_enc_id']])
+                    ->count();
+                $webinar[$i]['count'] = $registered_count;
+                $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
+                $webinar[$i]['is_registered'] = $user_registered;
+                $webinar[$i]['webinarRegistrations'] = $webinar_model->registeredUsers($w['webinar_enc_id']);
+                $webinar[$i]['is_paid'] = $w['price'] ? true : false;
+                if ($w['webinarEvents']) {
+                    array_push($webinars, $webinar[$i]);
+                }
+                $i++;
+            }
+        }
+
+        return $webinars;
     }
 }
