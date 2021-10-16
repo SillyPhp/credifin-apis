@@ -172,7 +172,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                         <div class="copy-join-link">
                             <div class="link-descriptions" id="link-show">
                                 <img src="<?= Url::to('@eyAssets/images/pages/webinar/zoom-logo.png')?>" alt="">
-                                <a class="copy-clip view-link" title="View link" id="link-cop" data-link="<?= $webinar_link ?>">View Join Link</a>
+                                <a class="copy-clip view-link" title="View link" id="link-cop" data-link="<?= $webinar_link ?>">Copy Joining Link</a>
                             </div>
                         </div>
 
@@ -1152,6 +1152,9 @@ transform: rotate(100deg);
 
 .ts-speaker-popup .ts-speaker-popup-img img {
     width: 100%;
+    height: 80vh;
+    object-fit: cover;
+    object-position: top;
 }
 
 .ts-speaker-popup .ts-speaker-popup-content {
