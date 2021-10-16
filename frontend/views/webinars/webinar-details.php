@@ -171,10 +171,9 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
 
                         <div class="copy-join-link">
                             <div class="link-descriptions" id="link-show">
-                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/zoom-icon.png')?>" alt="">
+                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/zoom-logo.png')?>" alt="">
                                 <a class="copy-clip view-link" title="View link" id="link-cop" data-link="<?= $webinar_link ?>">View Join Link</a>
                             </div>
-                            <p class="show-l"><?= $webinar_link ?></p>
                         </div>
 
                     <?php } ?>
@@ -597,10 +596,19 @@ span.copy-clip {
     position: relative;
     display: flex;
     align-items: center;
-    background: #4a8cff;
-    padding: 4px 10px;
+    padding: 1px 6px;
     border-radius: 0 10px 0 10px;
     cursor: pointer;
+    border: 2px solid #4a8cff;
+    transition: all .3s ease-out;
+}
+.link-descriptions:hover{
+    background: #4a8cff;
+    transition: all .3s ease-out;
+}
+.link-descriptions:hover a{
+    color: #fff;
+    transition: all .3s ease-out;
 }
 p.show-l {
     max-width: 250px;
@@ -609,13 +617,15 @@ p.show-l {
     margin: 0;
     text-align: right;
 }
-.link-descriptions img{
-    width: 25px;
-    height: 25px;
-    margin-right: 6px;
+.link-descriptions img {
+    width: 30px;
+    height: 30px;
+    margin-right: 4px;
+    object-fit: cover;
 }
 .link-descriptions a {
-    color: #fff;
+    transition: all .3s ease-out;
+    color: #4a8cff;
     font-weight: 600;
 }
 .d-flex{
@@ -2036,16 +2046,11 @@ $(document).on("click","#joinRegisterBtn", function() {
     
     
     $("#link-show").click(function () {
-        if($("#link-show").hasClass('jj-clipboard')){
-            var link = $('#link-cop').attr('data-link');
-            CopyToClipboard(link, true, "Link copied");
-            $("#link-cop").removeClass("jj-clipboard")
-        }else{
-            $("#link-cop").html("Copy Joining Link");
-            $(".show-l").show();
-            $("#link-show").addClass("jj-clipboard");
-        }
+        var link = $('#link-cop').attr('data-link');
+        CopyToClipboard(link, true, "Link copied");
     });
+
+    
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
