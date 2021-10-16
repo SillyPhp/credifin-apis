@@ -298,11 +298,28 @@ class WebinarsController extends Controller
                     $params['first_name'] = $get->first_name;
                     $params['last_name'] = $get->last_name;
                     $params["user_id"] = $uid;
+                    $interestedUser = UserWebinarInterest::findOne(['webinar_enc_id'=>$wid, 'created_by' => $uid]);
+                    if($interestedUser){
+                        $interestedUser->interest_status = 1;
+                        $interestedUser->is_deleted = 0;
+                        $interestedUser->last_updated_on = date('Y-m-d H:i:s');
+                    } else {
+                        $interestedUser = new UserWebinarInterest();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $interestedUser->webinar_interest_enc_id = $utilitiesModel->encrypt();
+                        $interestedUser->interest_status = 1;
+                        $interestedUser->webinar_enc_id = $wid;
+                        $interestedUser->created_by = $uid;
+                        $interestedUser->created_on = date('Y-m-d H:i:s');
+                    }
+                    $interestedUser->save();
                     Yii::$app->notificationEmails->webinarRegistrationEmail($params);
                     if ($data->webinar_conduct_on==1){
                         $params["webinar_zoom_id"] = $data->platform_webinar_id;
                         Yii::$app->notificationEmails->zoomRegisterAccess($params);
                     }
+
                     return [
                         'status' => 200,
                         'title' => 'Success',
