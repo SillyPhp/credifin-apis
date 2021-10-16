@@ -934,6 +934,8 @@ class CandhomeController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information']);
         }
 
+        $webinar_model = new \common\models\extended\Webinar();
+
         if ($user = $this->isAuthorized()) {
 
             $user_id = $user->user_enc_id;
@@ -944,11 +946,9 @@ class CandhomeController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $webinar = new \common\models\extended\Webinar();
-            $webinar = $webinar->webinarDetail($college_id['organization_enc_id'], $webinar_id);
+            $webinar = $webinar_model->webinarDetail($college_id['organization_enc_id'], $webinar_id);
         } else {
-            $webinar = new \common\models\extended\Webinar();
-            $webinar = $webinar->webinarDetail(null, $webinar_id);
+            $webinar = $webinar_model->webinarDetail(null, $webinar_id);
         }
 
         if (!empty($webinar)) {
@@ -964,6 +964,7 @@ class CandhomeController extends ApiBaseController
                 ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
                 ->count();
 
+            $webinar['webinarRegistrations'] = $webinar_model->registeredUsers($webinar['webinar_enc_id']);
             $interested_count = UserWebinarInterest::find()
                 ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'interest_status' => 1])->count();
 
