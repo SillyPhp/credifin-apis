@@ -3,6 +3,7 @@
 namespace api\modules\v2\controllers;
 
 use common\models\Speakers;
+use common\models\User;
 use common\models\UserOtherDetails;
 use common\models\Users;
 use common\models\UserWebinarInterest;
@@ -12,6 +13,8 @@ use common\models\WebinarConversations;
 use common\models\WebinarEvents;
 use common\models\WebinarPayments;
 use common\models\WebinarRegistrations;
+use common\models\WebinarRequest;
+use common\models\WebinarRequestSpeakers;
 use common\models\Webinars;
 use common\models\WebinarSessions;
 use common\models\Utilities;
@@ -625,5 +628,85 @@ class WebinarsController extends ApiBaseController
         }
 
         return $webinars;
+    }
+
+    public function actionRequest()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            $webinar_request = new WebinarRequest();
+            $webinar_request->request_enc_id = Yii::$app->security->generateRandomString();
+            $webinar_request->title = $params['title'];
+            $webinar_request->date = date('Y-m-d', strtotime($params['date']));
+            $webinar_request->seats = $params['seats'];
+            $webinar_request->objectives = $params['objectives'];
+            $webinar_request->created_by = $user->user_enc_id;
+            $webinar_request->created_on = date('Y-m-d H:i:s');
+            if (!$webinar_request->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $webinar_request->getErrors()]);
+            }
+
+            foreach ($params['speakers'] as $s) {
+                $speaker_request = new WebinarRequestSpeakers();
+                $speaker_request->request_speaker_enc_id = Yii::$app->security->generateRandomString();
+                $speaker_request->speakerEnc = $s;
+                $speaker_request->webinar_request_enc_id = $webinar_request->request_enc_id;
+                $speaker_request->created_by = $user->user_enc_id;
+                $speaker_request->created_on = date('Y-m-d H:i:s');
+                if (!$speaker_request->save()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $speaker_request->getErrors()]);
+                }
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionStudentsList()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $param = Yii::$app->request->post();
+
+            if (isset($param['webinar_id']) && !empty($param['webinar_id'])) {
+                $webinar_id = $param['webinar_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $college_id = Users::findOne(['user_enc_id' => $user->user_enc_id])->organization_enc_id;
+
+            $students = WebinarRegistrations::find()
+                ->alias('a')
+                ->select(['a.register_enc_id', 'a.created_by', 'a.status', 'CONCAT(b.first_name, " ", b.last_name) full_name'])
+                ->joinWith(['createdBy b' => function ($b) {
+                    $b->innerJoinWith(['userOtherInfo b1']);
+                }], false)
+                ->joinWith(['webinarEnc c' => function ($c) {
+                    $c->joinWith(['assignedWebinarTos c1'], false);
+                }], false)
+                ->where(['a.webinar_enc_id' => $webinar_id, 'a.is_deleted' => 0])
+                ->andWhere(['b1.organization_enc_id' => $college_id])
+                ->andWhere(['or',
+                    ['c1.organization_enc_id' => $college_id],
+                    ['c.for_all_colleges' => 1]
+                ])
+                ->asArray()
+                ->all();
+
+            if ($students) {
+                return $this->response(200, ['status' => 200, 'list' => $students]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 }

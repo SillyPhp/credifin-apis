@@ -11,7 +11,9 @@ use common\models\Countries;
 use common\models\EmailLogs;
 use common\models\Organizations;
 use common\models\Referral;
+use common\models\Speakers;
 use common\models\States;
+use common\models\WebinarSpeakers;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
@@ -275,6 +277,27 @@ class UtilitiesController extends ApiBaseController
             ->all();
 
         return $courses;
+    }
+
+    public function actionWebinarSpeakers($keyword = null)
+    {
+        $speakers = Speakers::find()
+            ->alias('a')
+            ->select(['a.speaker_enc_id', 'a.user_enc_id', 'CONCAT(b.first_name, " ", b.last_name) full_name',])
+            ->joinWith(['userEnc b'], false)
+            ->where(['a.is_deleted' => 0]);
+        if ($keyword != null) {
+            $speakers->andFilterWhere(['like', 'CONCAT(b.first_name, " ", b.last_name)', $keyword]);
+        }
+        $speakers = $speakers->limit(10)
+            ->asArray()
+            ->all();
+
+        if ($speakers) {
+            return $this->response(200, ['status' => 200, 'speakers' => $speakers]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
     }
 
 }
