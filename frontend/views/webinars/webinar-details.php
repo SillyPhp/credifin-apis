@@ -167,7 +167,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                     <h2 class="section-title">
                         Webinar Details
                     </h2>
-                    <?php if ($webinar['webinar_conduct_on'] == 1 && $webinar_link) { ?>
+                    <?php if ($webinar['webinar_conduct_on'] == 1 && $webinar_link && !$is_expired) { ?>
 
                         <div class="copy-join-link">
                             <div class="link-descriptions" id="link-show">
