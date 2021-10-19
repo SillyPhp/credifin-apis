@@ -179,7 +179,9 @@ class NotificationEmails extends Component
     public function webinarRegistrationEmail($params){
         $data = Webinar::find()
             ->alias('a')
-            ->select(['a.webinar_enc_id','slug','a.title','other_platforms','GROUP_CONCAT(DISTINCT CONCAT(e.first_name," ",e.last_name)) speakers','GROUP_CONCAT(DISTINCT DATE_FORMAT(b.start_datetime, "%d-%M-%y")) date','GROUP_CONCAT(DISTINCT DATE_FORMAT(b.start_datetime, "%H:%i %p")) time'])
+            ->select(['a.webinar_enc_id',
+                'CASE WHEN a.email_sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.email_sharing_image_location, "/", a.email_sharing_image) END image',
+                'slug','a.title','other_platforms','GROUP_CONCAT(DISTINCT CONCAT(e.first_name," ",e.last_name)) speakers','GROUP_CONCAT(DISTINCT DATE_FORMAT(b.start_datetime, "%d-%M-%y")) date','GROUP_CONCAT(DISTINCT DATE_FORMAT(b.start_datetime, "%H:%i %p")) time'])
             ->joinWith(['webinarEvents b'=>function($b){
                 $b->joinWith(['webinarSpeakers c'=>function($b){
                     $b->joinWith(['speakerEnc d'=>function($b){
@@ -188,11 +190,13 @@ class NotificationEmails extends Component
                 }]);
             }],false)
             ->where(['a.webinar_enc_id'=>$params['webinar_id']])
-            ->asArray()->one();
+            ->asArray()
+            ->one();
         $params['title'] = $data['title'];
         $params['speakers'] = $data['speakers'];
         $params['date'] = $data['date'];
         $params['time'] = $data['time'];
+        $params['image'] = $data['image'];
         if ($params['is_my_campus']){
             $params['from'] = 'no-reply@myecampus.in';
             $params['site_name'] = 'My E-Campus';

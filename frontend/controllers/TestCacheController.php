@@ -83,4 +83,8 @@ class TestCacheController extends Controller
         print_r('done');
         die();
     }
+
+    public function actionModule(){
+       return Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image;
+    }
 }
