@@ -1,8 +1,5 @@
 <?php
-
 namespace common\models;
-
-use Yii;
 
 /**
  * This is the model class for table "{{%webinar}}".
@@ -17,6 +14,8 @@ use Yii;
  * @property string $slug
  * @property string $image
  * @property string $image_location
+ * @property string $email_sharing_image
+ * @property string $email_sharing_image_location
  * @property double $price
  * @property double $gst
  * @property string $availability
@@ -61,7 +60,7 @@ class Webinar extends \yii\db\ActiveRecord
             [['price', 'gst'], 'number'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['webinar_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['name', 'title', 'slug', 'image', 'image_location'], 'string', 'max' => 200],
+            [['name', 'title', 'slug', 'image', 'image_location', 'email_sharing_image', 'email_sharing_image_location'], 'string', 'max' => 200],
             [['platform_webinar_id'], 'string', 'max' => 255],
             [['webinar_enc_id'], 'unique'],
             [['slug'], 'unique'],
@@ -69,7 +68,6 @@ class Webinar extends \yii\db\ActiveRecord
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
-
 
     /**
      * @return \yii\db\ActiveQuery
