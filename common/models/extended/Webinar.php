@@ -50,11 +50,12 @@ class Webinar extends \common\models\Webinar
                 }], false);
                 if ($status == 'upcoming' || $status == 'opted') {
                     $c->andWhere(['>', 'c.start_datetime', $currentTime]);
+                    $c->orderBy(['c.start_datetime' => SORT_ASC]);
                 } else {
                     $c->andWhere(['<', 'c.start_datetime', $currentTime]);
+                    $c->orderBy(['c.start_datetime' => SORT_DESC]);
                 }
 //                $c->onCondition(['c.is_deleted' => 0, 'c.status' => [0, 1]]);
-                $c->orderBy(['c.start_datetime' => SORT_ASC]);
             }])
             ->joinWith(['webinarRegistrations c1' => function ($c) use ($status, $user_id) {
                 $c->joinWith(['createdBy cc']);
