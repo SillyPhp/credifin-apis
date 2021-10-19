@@ -1,7 +1,9 @@
 <?php
+
 use common\models\Users;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 $cookies_request = Yii::$app->request->cookies;
 $refcode = $cookies_request->get('ref_csrf-webinar');
 $promo = false;
@@ -11,9 +13,9 @@ $registeration_status = $webResig['status'];
 $interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
 $this->title = $webinar['title'];
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/webinar-sharing-promote.png');
+$image = $webinar['image'];
 $keywords = $webinar['title'];
-$description = $webinar['description'];
+$description = 'Present-day education is radically different from that of the past. The youth are unaware of and oblivious to the importance of recognizing and embracing these changes. They are also utterly lost on their career path and have no idea where their career is taking them.';
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
@@ -50,12 +52,13 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     <div class="full-width-light"
          style="">
         <div class="title-main">
+            <img src="<?= $webinar['image'] ?>" class="absolute">
             <div class="element-percent">
                 <h1><?= $webinar['title'] ?></h1>
                 <div class="register-btn" id="registerEventSection">
                     <?php
                     $btnName = 'Register Now';
-                    if (Yii::$app->user->isGuest) {
+                    if (Yii::$app->user->isGuest && !$is_expired) {
                         ?>
                         <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
                            class="ra-btn"><?= $btnName ?></a>
@@ -65,19 +68,23 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                             Processing <i class="fas fa-spinner fa-spin"></i>
                         </button>
                         <?php
-                        if ($registeration_status == 1) {
+                        if($is_expired){
+                            ?>
+                            <a href="<?= Url::to('/webinars')?>" class="ra-btn">Back To Home</a>
+                            <?php
+                        } else if($registeration_status == 1) {
                             ?>
                             <button class="ra-btn">Registered</button>
                             <?php
                         } else {
                             if ((int)$webinar['price']) {
-                                if ($promo){ ?>
+                                if ($promo) { ?>
                                     <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
-                               <?php } else { ?>
+                                <?php } else { ?>
                                     <button class="ra-btn" id="paidRegisterBtn"><?= $btnName ?></button>
-                                 <?php }
-                                  ?>
-                             <?php
+                                <?php }
+                                ?>
+                                <?php
                             } else {
                                 ?>
                                 <button class="ra-btn registerBtn" id="registerBtn"><?= $btnName ?></button>
@@ -99,21 +106,26 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                 <?php Pjax::begin(['id' => 'webinar_join_link']); ?>
                 <div class="col-lg-10 col-lg-offset-1">
                     <div class="countdown gradient clearfix">
-                        <?php if ($status == 2) { ?>
+                        <?php if ($is_expired) { ?>
                             <div>
-                                <a id="joinBtn">Webinar Expired</a>
+                                <p class="expiredtext">This Webinar Is Expired</p>
                             </div>
                         <?php } elseif ($webinar['status'] == 1 || $webinar['status'] == 0) { ?>
                             <div id="join">
                                 <?php if (Yii::$app->user->isGuest) { ?>
                                     <a id="joinBtn" href="javascript:;" data-toggle="modal" data-target="#loginModal">Click
                                         here to Join</a>
-                                <?php } else { ?>
-                                    <a id="joinBtn"
-                                       href="javascript:;" data-link="<?= $share_link ?>"
-                                       data-id="<?= $nextEvent['session_enc_id'] ?>">Click
-                                        here to Join</a>
-                                <?php } ?>
+                                <?php } else {
+                                    if ($webinar['webinar_conduct_on'] == 1) { ?>
+                                        <a id="joinOtherBtn" href="<?= $webinar_link ?>" target="_blank">Click
+                                            here to Join</a>
+                                    <?php } else { ?>
+                                        <a id="joinBtn"
+                                           href="javascript:;" data-link="<?= $share_link ?>"
+                                           data-id="<?= $nextEvent['session_enc_id'] ?>">Click
+                                            here to Join</a>
+                                    <?php }
+                                } ?>
                             </div>
                             <div id="counter">
                                 <div class="counter-item">
@@ -151,12 +163,21 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     <div class="webinar-details">
         <div class="container">
             <div class="row">
-                <div class="">
-                    <div class="col-md-12 mx-auto">
-                        <h2 class="section-title">
-                            Webinar Details
-                        </h2>
-                    </div>
+                <div class="detail-flex">
+                    <h2 class="section-title">
+                        Webinar Details
+                    </h2>
+                    <?php if ($webinar['webinar_conduct_on'] == 1 && $webinar_link && !$is_expired) { ?>
+
+                        <div class="copy-join-link">
+                            <div class="link-descriptions" id="link-show">
+                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/zoom-logo.png')?>" alt="">
+                                <a class="copy-clip view-link" title="View link" id="link-cop" data-link="<?= $webinar_link ?>">Copy Joining Link</a>
+                            </div>
+                        </div>
+
+                    <?php } ?>
+                    
                 </div>
             </div>
             <div class="row">
@@ -205,17 +226,17 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                             <?php Pjax::end(); ?>
                             <div class="register-action">
                                 <?php
-                                if (Yii::$app->user->isGuest) {
+                                if (Yii::$app->user->isGuest && !$is_expired) {
                                     ?>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
-                                       value="interested">Interested</a>
+                                       value="interested">Interested <span id="interestCount">(<?= 50 + rand(1,10) + $interestCount?>)</span></a>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
                                        value="not interested">Not Interested</a>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn">Attending</a>
-                                <?php } else { ?>
+                                <?php } else if($registeration_status != 1 && !$is_expired) { ?>
                                     <button class="ra-btn interestBtn <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
                                             id="interested" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="1">Interested
+                                            value="1">Interested <span id="interestCount">(<?= 50 + rand(1,10) + $interestCount?>)</span>
                                     </button>
                                     <button class="ra-btn interestBtn <?php echo $interest_status == 2 ? 'actionColor' : '' ?>"
                                             id="notInterested" data-key="<?= $webinar['webinar_enc_id'] ?>"
@@ -236,133 +257,13 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
             </div>
         </div>
     </div>
-</section>
-<!-- sharing widget start -->
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <?php
-            $sharingLink = Url::base('https') . '/webinar/' . $webinar['slug'];
-            echo $this->render('/widgets/sharing-widget-webinar', [
-                'sharingLink' => $sharingLink
-            ]) ?>
-        </div>
-    </div>
-</div>
-<!-- sharing widget end -->
-<!-- problem widget start -->
-<section class="cntct">
-    <div class="container">
-        <div class="row">
-            <div class="contact-req">
-                <h3>if you are facing any problem during registration call us on :</h3>
-                <a href="tel:9501771965">+919501771965</a>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- problem widget end -->
-<!-- ts speaker start-->
-<section id="ts-speakers" class="ts-speakers speaker-classic">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 mx-auto">
-                <h2 class="section-title text-center">
-                    <span>Listen to the</span>
-                    Event Speakers
-                </h2>
-            </div><!-- col end-->
-        </div><!-- row end-->
-        <div class="row">
-            <?php if (!empty($assignSpeaker)) {
-            foreach ($assignSpeaker
 
-            as $as) {
-            $designation = ucwords($designation);
-            ?>
-            <div class="col-lg-3 col-md-6">
-                <div class="ts-speaker open-sp-modal">
-                    <div class="speaker-img">
-                        <?php if ($as['speaker_image']) { ?>
-                            <img class="img-fluid" src="<?= $as['speaker_image'] ?>">
-                        <?php } else { ?>
-                            <img class="img-fluid" src="<?= $as['speaker_image_fake'] ?>">
-                        <?php } ?>
-                        <a href="#<?= $as['speaker_enc_id'] ?>" class="view-speaker ts-image-popup"
-                           data-effect="mfp-zoom-in">
-                            <i class="fas fa-plus"></i>
-                        </a>
-                    </div>
-                    <div class="ts-speaker-info">
-                        <h3 class="ts-title"><a href="#"><?= $as['fullname'] ?></a></h3>
-                        <p>
-                            <?php if ($designation) { ?>
-                                <?= $designation ?>
-                            <?php } ?>
-                        </p>
-                    </div>
-                </div>
-                <!-- popup start-->
-                <div id="<?= $as['speaker_enc_id'] ?>" class="container ts-speaker-popup mfp-hide">
-                    <div class="row">
-                        <div class="speaker-flex">
-                            <?php
-                            if ($as['speaker_image']) {
-                                $image = $as['speaker_image'];
-                            } else {
-                                $image = $as['speaker_image_fake'];
-                            }
-                            ?>
-                            <div class="speak-img" style="background-image: url('<?= $image; ?>');">
-
-                            </div><!-- col end-->
-                            <div class="speak-cntnt">
-                                <div class="ts-speaker-popup-content">
-                                    <h3 class="ts-title"><?= $as['fullname'] ?></h3>
-                                    <?php if ($designation) { ?>
-                                        <span class="speakder-designation"><?= $designation ?></span>
-                                    <?php }
-                                    if ($as['org_image']) {
-                                        ?>
-                                        <img class="company-logo"
-                                             src="<?= $as['org_image'] ?>">
-                                    <?php }
-                                    if ($as['org_name']) { ?>
-                                        <span class="speakder-designation"><?= $as['org_name'] ?></span>
-                                    <?php }
-                                    if ($as['description']) {
-                                        ?>
-                                        <p>
-                                            <?= $as['description'] ?>
-                                        </p>
-                                    <?php } ?>
-                                    <div class="ts-speakers-social">
-                                        <?php if ($as['facebook']) { ?><a
-                                            href="https://www.facebook.com/<?= $as['facebook'] ?>" target="_blank"><i
-                                                        class="fab fa-facebook-f"></i></a><?php } ?>
-                                        <?php if ($as['twitter']) { ?><a
-                                            href="https://twitter.com/<?= $as['twitter'] ?>"
-                                            target="_blank"><i class="fab fa-twitter"></i>
-                                            </a><?php } ?>
-                                        <?php if ($as['instagram']) { ?><a
-                                            href="https://www.instagram.com/<?= $as['instagram'] ?>" target="_blank"><i
-                                                        class="fab fa-instagram"></i></a><?php } ?>
-                                        <?php if ($as['linkedin']) { ?><a
-                                            href="https://www.linkedin.com/in/<?= $as['linkedin'] ?>" target="_blank"><i
-                                                        class="fab fa-linkedin-in"></i></a><?php } ?>
-                                    </div>
-                                </div><!-- ts-speaker-popup-content end-->
-                            </div><!-- col end-->
-                        </div>
-                    </div><!-- row end-->
-                </div><!-- popup end-->
-            </div>
-            <?php }
-            } ?><!-- col end-->
-        </div><!-- row end-->
-    </div><!-- container end-->
 </section>
-<!-- ts speaker end-->
+<?php
+    if($webinar["slug"] == 'new-age-investment-strategies-10407'){
+        echo $this->render('/widgets/webinar-quiz-banner');
+    }
+?>
 <!-- Schedules event section start here -->
 <section class="ts-schedule">
     <div class="container">
@@ -456,6 +357,135 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     </div><!-- container end-->
 </section>
 <!-- Schedules event section end here -->
+
+
+<!-- sharing widget start -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <?php
+            $sharingLink = Url::base('https') . '/webinar/' . $webinar['slug'];
+            echo $this->render('/widgets/sharing-widget-webinar', [
+                'sharingLink' => $sharingLink
+            ]) ?>
+        </div>
+    </div>
+</div>
+<!-- sharing widget end -->
+<!-- problem widget start -->
+<section class="cntct">
+    <div class="container">
+        <div class="row">
+            <div class="contact-req">
+                <h3>if you are facing any problem during registration call us on :</h3>
+                <a href="tel:+917009076638">+917009076638</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- problem widget end -->
+<!-- ts speaker start-->
+<section id="ts-speakers" class="ts-speakers speaker-classic">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 mx-auto">
+                <h2 class="section-title text-center">
+                    <span>Listen to the</span>
+                    Event Speakers
+                </h2>
+            </div><!-- col end-->
+        </div><!-- row end-->
+        <div class="row d-flex">
+            <?php if (!empty($assignSpeaker)) {
+            foreach ($assignSpeaker
+
+            as $as) {
+            $designation = ucwords($designation);
+            ?>
+            <div class="col-lg-3 col-md-6">
+                <div class="ts-speaker open-sp-modal">
+                    <div class="speaker-img">
+                        <?php if ($as['speaker_image']) { ?>
+                            <img class="img-fluid" src="<?= $as['speaker_image'] ?>">
+                        <?php } else { ?>
+                            <img class="img-fluid" src="<?= $as['speaker_image_fake'] ?>">
+                        <?php } ?>
+                        <a href="#<?= $as['speaker_enc_id'] ?>" class="view-speaker ts-image-popup"
+                           data-effect="mfp-zoom-in">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                    </div>
+                    <div class="ts-speaker-info">
+                        <h3 class="ts-title"><a href="#"><?= $as['fullname'] ?></a></h3>
+                        <p>
+                            <?php if ($designation) { ?>
+                                <?= $designation ?>
+                            <?php } ?>
+                        </p>
+                    </div>
+                </div>
+                <!-- popup start-->
+                <div id="<?= $as['speaker_enc_id'] ?>" class="container ts-speaker-popup mfp-hide">
+                    <div class="row">
+                        <div class="speaker-flex">
+                            <?php
+                            if ($as['speaker_image']) {
+                                $image = $as['speaker_image'];
+                            } else {
+                                $image = $as['speaker_image_fake'];
+                            }
+                            ?>
+                            <div class="speak-img" style="background-image: url('<?= $image; ?>');">
+
+                            </div><!-- col end-->
+                            <div class="speak-cntnt">
+                                <div class="ts-speaker-popup-content">
+                                    <h3 class="ts-title"><?= $as['fullname'] ?></h3>
+                                    <?php if ($designation) { ?>
+                                        <span class="speakder-designation"><?= $designation ?></span>
+                                    <?php }
+                                    if ($as['org_image']) {
+                                        ?>
+                                        <img class="company-logo"
+                                             src="<?= $as['org_image'] ?>">
+                                    <?php }
+                                    if ($as['org_name']) { ?>
+                                        <span class="speakder-designation"><?= $as['org_name'] ?></span>
+                                    <?php }
+                                    if ($as['description']) {
+                                        ?>
+                                        <p>
+                                            <?= $as['description'] ?>
+                                        </p>
+                                    <?php } ?>
+                                    <div class="ts-speakers-social">
+                                        <?php if ($as['facebook']) { ?><a
+                                            href="https://www.facebook.com/<?= $as['facebook'] ?>" target="_blank"><i
+                                                        class="fab fa-facebook-f"></i></a><?php } ?>
+                                        <?php if ($as['twitter']) { ?><a
+                                            href="https://twitter.com/<?= $as['twitter'] ?>"
+                                            target="_blank"><i class="fab fa-twitter"></i>
+                                            </a><?php } ?>
+                                        <?php if ($as['instagram']) { ?><a
+                                            href="https://www.instagram.com/<?= $as['instagram'] ?>" target="_blank"><i
+                                                        class="fab fa-instagram"></i></a><?php } ?>
+                                        <?php if ($as['linkedin']) { ?><a
+                                            href="https://www.linkedin.com/in/<?= $as['linkedin'] ?>" target="_blank"><i
+                                                        class="fab fa-linkedin-in"></i></a><?php } ?>
+                                    </div>
+                                </div><!-- ts-speaker-popup-content end-->
+                            </div><!-- col end-->
+                        </div>
+                    </div><!-- row end-->
+                </div><!-- popup end-->
+            </div>
+            <?php }
+            } ?><!-- col end-->
+        </div><!-- row end-->
+    </div><!-- container end-->
+</section>
+<!-- ts speaker end-->
+
 <!-- ts intro start -->
 <?php if (!empty($outComes)) { ?>
     <section class="ts-intro-outcome">
@@ -468,7 +498,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                     </h2>
                 </div>
             </div><!-- row end-->
-            <div class="row">
+            <div class="row outflex">
                 <?php foreach ($outComes
 
                 as $oc){ ?>
@@ -477,14 +507,12 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                     $color_code = '#' . $oc['bg_colour'];
                     $reduceColor = createPalette($color_code, $colorCount = 1);
                     ?>
-                    <div class="ts-single-outcome"
-                         style="background-image: linear-gradient(110deg,<?= $color_code ?> 15%,<?= $reduceColor[0] ?> 95%)">
+                    <div class="ts-single-outcome">
                         <?php } else {
                         $color_code = '#000';
                         $reduceColor = createPalette($color_code, $colorCount = 1);
                         ?>
-                        <div class="ts-single-outcome"
-                             style="background: linear-gradient(110deg,<?= $color_code ?> 15%,<?= $reduceColor[0] ?> 95%)">
+                        <div class="ts-single-outcome">
                             <?php } ?>
                             <?php if ($oc['icon']) { ?>
                                 <div class="out-img">
@@ -504,78 +532,6 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     </section>
 <?php } ?>
 <!-- ts intro end-->
-<!-- ts VC start-->
-<section>
-    <?php Pjax::begin(['id' => 'webinar_join_registations']); ?>
-    <div class="container-fluid">
-        <div class="row md-flex">
-            <div class="col-md-6 ts-book-seat">
-                <div class="book-seat-content text-center mb-100">
-                    <h3 class="section-title white">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/edupreneur_village.png') ?>"/><br>
-                        Edupreneur Village Challenge 2.0<br/><br/>
-                    </h3>
-                    <ul class="section-list">
-                        <li>For EdTech startups at an ideation / Validation stage</li>
-                        <li>Investment upto 25 lacs, Cash Prizes and Incubation Support</li>
-                        <li>Partnership with the Auro Scholar Programme of Sri Aurobindo Society</li>
-                        <li>Scholarship available for top 5 startups for Education Entrepreneurship Certification
-                            Program
-                        </li>
-                    </ul>
-                    <div class="text-center us-marg" v-if="userType === 'Individual'">
-                        <?php
-                        if ($user_id) {
-                            if ($registeration_status != 1) {
-                                ?>
-                                <button class="vc-ra-btn" id="joinRegisterBtn">Join Webinar to learn more</button>
-                                <?php
-                            }
-                            ?>
-                            <?php
-                        } else {
-                            ?>
-                            <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn">
-                                Join Webinar to learn more
-                            </button>
-                            <?php
-                        }
-                        ?>
-                    </div>
-                </div><!-- book seat end-->
-            </div><!-- col end-->
-            <div class="col-md-6 ts-book-seat second">
-                <div class="book-seat-content text-center mb-100">
-                    <h3 class="section-title white">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/red_bull_logo.png') ?>"/> <br>
-                        Red Bull Basement is where students come to innovate, collaborate, and drive change on campus
-                        through DIY-based technological solutions.
-                    </h3>
-                    <div class="text-center">
-                        <?php
-                        if ($user_id) {
-                            if ($registeration_status != 1) {
-                                ?>
-                                <button class="vc-ra-btn" id="joinRegisterBtn">Join Webinar to learn more</button>
-                                <?php
-                            }
-                            ?>
-                            <?php
-                        } else {
-                            ?>
-                            <button href="javascript:;" data-toggle="modal" data-target="#loginModal" class="vc-ra-btn">
-                                Join Webinar to learn more
-                            </button>
-                            <?php
-                        }
-                        ?>
-                    </div>
-                </div><!-- book seat end-->
-            </div><!-- col end-->
-        </div><!-- row end-->
-    </div><!-- container end-->
-    <?php Pjax::end(); ?>
-</section>
 
 <?php
 function color_mod($hex, $diff)
@@ -621,6 +577,73 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.outflex {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.show-l{display:none;}
+span.copy-clip {
+    color: #8b8b8b !important;
+    font-size: 14px !important;
+}
+.detail-flex {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding:0 15px;
+}
+.copy-join-link {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.link-descriptions{
+    margin: 20px 0 5px;
+    max-width: 164px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 1px 6px;
+    border-radius: 0 10px 0 10px;
+    cursor: pointer;
+    border: 2px solid #4a8cff;
+    transition: all .3s ease-out;
+}
+.link-descriptions:hover{
+    background: #4a8cff;
+    transition: all .3s ease-out;
+}
+.link-descriptions:hover a{
+    color: #fff;
+    transition: all .3s ease-out;
+}
+p.show-l {
+    max-width: 250px;
+    overflow: hidden;
+    max-height: 25px;
+    margin: 0;
+    text-align: right;
+}
+.link-descriptions img {
+    width: 30px;
+    height: 30px;
+    margin-right: 4px;
+    object-fit: cover;
+}
+.link-descriptions a {
+    transition: all .3s ease-out;
+    color: #4a8cff;
+    font-weight: 600;
+}
+.d-flex{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 .cntct{
     background: linear-gradient(178deg, #00a0e3 20%, #fff 110%);
     padding-bottom: 20px;
@@ -793,7 +816,7 @@ $this->registerCss('
     max-width: 50%;
 }
 .speak-img {
-    background-position: center;
+    background-position: top;
     background-size: cover;
 }
 .flex-use {
@@ -824,7 +847,8 @@ display:none;
 #counter{
 display:none;
 }
-#joinBtn{
+
+#joinBtn, #joinOtherBtn, .expiredtext{
     font-size: 25px;
     padding: 48px;
     display: block;
@@ -1054,7 +1078,6 @@ transform: rotate(100deg);
 
 .speaker-classic {
     padding-top: 50px;
-    margin-top: 50px;
     background-image:url(' . Url::to('@eyAssets/images/pages/webinar/speakers-bg.png') . ');
     background-repeat: no-repeat;
     background-size: cover;
@@ -1129,6 +1152,9 @@ transform: rotate(100deg);
 
 .ts-speaker-popup .ts-speaker-popup-img img {
     width: 100%;
+    height: 80vh;
+    object-fit: cover;
+    object-position: top;
 }
 
 .ts-speaker-popup .ts-speaker-popup-content {
@@ -1223,9 +1249,9 @@ transform: rotate(100deg);
     -ms-border-radius: 50%;
     width: 250px;
     height: 250px;
-    // background-image: -webkit-linear-gradient(340deg, #FC6076 0%, #FF9A44 100%);
-    // background-image: -o-linear-gradient(340deg, #FC6076 0%, #FF9A44 100%);
-    // background-image: linear-gradient(110deg, #FC6076 0%, #FF9A44 100%);
+    background-image: -webkit-linear-gradient(-60deg, #ff5858 0%, #f09819 100%);
+    background-image: -o-linear-gradient(-60deg, #ff5858 0%, #f09819 100%);
+    background-image: linear-gradient(-60deg, #ff5858 0%, #f09819 100%);
     -webkit-box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
     box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
     padding: 55px 0;
@@ -1255,6 +1281,7 @@ transform: rotate(100deg);
 }
 .ts-single-outcome .ts-title {
     color: #fff;
+    text-transform: capitalize;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -1272,11 +1299,46 @@ transform: rotate(100deg);
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both; 
 }
+.outcome-item:nth-of-type(6n-1) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
+    background-image: -o-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
+    background-image: linear-gradient(110deg, #fc6076 0%, #ff9a44 100%);
+}
+
+.outcome-item:nth-of-type(6n-2) .ts-single-outcome {
+    background-image: -webkit-radial-gradient(50% 50%, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
+    background-image: -o-radial-gradient(50% 50%, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
+    background-image: radial-gradient(50% 50%, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
+}
+
+.outcome-item:nth-of-type(6n-3) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
+    background-image: -o-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
+    background-image: linear-gradient(-45deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
+}
+
+.outcome-item:nth-of-type(6n-4) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
+    background-image: -o-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
+    background-image: linear-gradient(-45deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
+}
+
+.outcome-item:nth-of-type(6n-5) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(to top, #7028e4 0%, #e5b2ca 100%);
+    background-image: -o-linear-gradient(to top, #7028e4 0%, #e5b2ca 100%);
+    background-image: linear-gradient(to top, #7028e4 0%, #e5b2ca 100%);
+}
+
+.outcome-item:nth-of-type(6n-6) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+    background-image: -o-linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+    background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+}
 
 .ts-count-down {
     padding: 0;
     margin: -80px 0 0 0;
-    z-index: 1;
+    z-index: 3;
     position: relative;
 }
 .gradient {
@@ -1357,11 +1419,12 @@ b, strong {
     color: #fff;
 }
 .section-title, .column-title {
+    margin:20px 0;
     font-size: 36px;
     font-weight: 800;
     color: #333;
     position: relative;
-    text-align: center;
+//    text-align: center;
     font-family: lora;
 }
 .section-title span, .column-title span {
@@ -1475,12 +1538,23 @@ a:link, a:visited {
 }
 
 .title-main {
-    background: url(' . Url::to('@eyAssets/images/pages/webinar/webinar-cover.png') . ');
+//    background: url(' . Url::to('@eyAssets/images/pages/webinar/webinar-cover.png') . ');
     height: 90vh;
     background-size: cover;
     background-position: center;
+    position: relative;
 }
-
+.absolute{
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    max-height: 90vh;
+    height:100%; 
+    object-fit: cover;
+    object-position: top center;
+}
 .element-percent {
     background:#5e6a6fb8;
     width: 100%;
@@ -1488,6 +1562,8 @@ a:link, a:visited {
     height: 90vh;
     display: inline-block;
     padding-top: 28vh;
+    z-index: 2;
+    position: relative;
 }
 .element-percent h1 {
     color: #fff;
@@ -1918,7 +1994,7 @@ function _razoPay(ptoken,payment_enc_id,webinar_id){
     var options = {
     "key": access_key, 
     "name": "Empower Youth",
-    "description": "Application Processing Fee",
+    "description": "Registration Fee",
     "image": "/assets/common/logos/logo.svg",
     "order_id": ptoken, 
     "handler": function (response){
@@ -1954,14 +2030,15 @@ function updateStatus(payment_enc_id,payment_id=null,status,signature=null)
           signature:signature,
           status:status, 
         },
-        success:function(resp)
+        success:function(res)
         {
-            if(res.response.status != 200){
+            if(res.response.status == 200){
                 swal({ 
                     title:"Message",
                     text: "Payment Successfully Captured & It will reflect in sometime..",
                  });
             }
+            location.reload();
         }
     })
 }
@@ -1970,6 +2047,24 @@ $(document).on("click","#joinRegisterBtn", function() {
     $('#registerEventSection').find('button:visible').click();
 });
 
+
+
+    function CopyToClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
+    
+    
+    $("#link-show").click(function () {
+        var link = $('#link-cop').attr('data-link');
+        CopyToClipboard(link, true, "Link copied");
+    });
+
+    
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

@@ -9,6 +9,8 @@ use common\models\SkillsUpPostAssignedBlogs;
 use common\models\Users;
 use common\models\RandomColors;
 use common\models\Utilities;
+use common\models\Webinar;
+use common\models\WebinarRegistrations;
 use yii\helpers\Url;
 use yii\web\Controller;
 use Yii;
@@ -31,116 +33,54 @@ class TestCacheController extends Controller
         }
     }
 
-//    public function actionSms(){
-//        return Yii::$app->sms->send('7814871632','EYOUTH','hello');
-//    }
-
-    public function actionImages()
+    public function actionEmail()
     {
-        $canvas = null;
-        $profile = 'others.png';
-        $company_logo = null;
-        $application_enc_id = 'test';
-        $job_title = 'Shift Supervisor Management Trainee';
-        $company_name = 'CVS Health';
-        $locations = 'Ludhiana, Jalandhar';
-        $content = [
-            'job_title' => $job_title,
-            'company_name' => $company_name,
-            'canvas' => (($canvas) ? false : true),
-            'bg_icon' => $profile,
-            'logo' => (($company_logo) ? $company_logo : null),
-            'initial_color' => RandomColors::one(),
-            'location' => $locations,
-            'app_id' => $application_enc_id,
-            'permissionKey' => Yii::$app->params->EmpowerYouth->permissionKey
-        ];
-        $story= \frontend\models\script\StoriesImageScript::widget(['content' => $content]);
-        echo $story;
-    }
-    public function actionEmail(){
         $params = AppliedApplications::find()
-         ->alias('a')
-         ->select(['CONCAT(b.first_name," ",b.last_name) name','b.email','a.applied_application_enc_id applied_id'])
-         ->where(['application_enc_id'=>'2DeBxPEjOGdjkjgnV3beQpqANyVYw9','current_round'=>2])
-         ->innerJoin(Users::tableName().'as b','b.user_enc_id = a.created_by')
-         ->asArray()
-         ->all();
-        $k = 0;
-        foreach ($params as $param){
-            Yii::$app->mailer->htmlLayout = 'layouts/email';
-            $mail = Yii::$app->mailer->compose(
-                ['html' => 'job-process-status'],['data'=>$param]
-            )
-                ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
-                ->setTo([$param['email'] => $param['name']])
-                ->setSubject('Your Job Application Has Been Accepted');
-            if ($mail->send()) {
-               $k++;
-            }
-        }
-        echo $k;
-    }
-
-    public function actionSkill(){
-        $data = SkillsUpPostAssignedBlogs::find()
             ->alias('a')
-            ->select(['b.is_visible','b.post_enc_id'])
-            ->joinWith(['blogPostEnc b'],false,'INNER JOIN')
-            ->asArray()->all();
-        $k = 0;
-        foreach ($data as $d){
-            $update = Posts::findOne(['post_enc_id'=>$d['post_enc_id']]);
-            $update->is_visible = 0;
-            $update->update();
-            $k++;
-        }
-        return $k;
+            ->select(['CONCAT(b.first_name," ",b.last_name) name', 'b.email', 'a.applied_application_enc_id applied_id'])
+            ->where(['application_enc_id' => '2DeBxPEjOGdjkjgnV3beQpqANyVYw9'])
+            ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id = a.created_by')
+            ->asArray()
+            ->one();
+        $params['subject'] = 'Your Application has been selected';
+        Yii::$app->notificationEmails->candidateProcessNotification($params);
     }
 
+    public function actionJava()
+    {
+        $this->layout = 'widget-layout';
+        return $this->render('pdf');
+    }
 
-    public function actionEmailTest($get=null,$start=null,$end=null){
-            $csv = [];
-            $i = 0;
-            if (($handle = fopen(Url::to('@rootDirectory/files/temp/dav.csv'), "r")) !== false) {
-                $columns = fgetcsv($handle, 1000, ",");
-                while (($row = fgetcsv($handle, 1000, ",")) !== false) {
-                    $csv[$i] = array_combine($columns, $row);
-                    $i++;
-                }
-                fclose($handle);
-            }
-            $start = $start;
-            $end = $end;
-            $data = [];
-        $data['slug'] = 'marketing-executive-marketing-executive-52101628924998';
-        $data['cat_name'] = 'Marketing Executive';
-        $data['organization_logo'] = 'https://eycdn.ams3.digitaloceanspaces.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/Knsww6dU-GqWw97vqQGrox62CaBfwYze/XGpD9mA68oPv0g01X6rOQBVl4kwJne.png';
-        $data['organization_name'] = 'Empower Youth';
-        $data['org_name'] = 'Empower Youth';
-        $data['application_type'] = 'Job';
-        $data['name'] = 'Marketing';
-        $data['industry'] = 'Same Industry';
-        $data['designation'] = 'Marketing Executive';
-        $data['amount'] = '180000 p.a';
-        $data['profile_icon'] = 'marketing.png';
-        $data['preferred_gender'] = 0;
-        $data['experience'] = null;
-        $data['applicationEmployeeBenefits']=null;
-        $data['working_days'] = [1,2,3,4,5,6];
-            for ($i=$start;$i<=$end;$i++){
-                if (!empty($csv[$i]['Email'])){
-                    Yii::$app->mailer->htmlLayout = 'layouts/email';
-                    $mail = Yii::$app->mailer->compose(
-                        ['html' => 'job-detail-email-myecampus-demo.php'],['data'=>$data]
-                    )
-                        ->setFrom(['no-reply@myecampus.in'=>'MyECampus'])
-                        ->setTo([$csv[$i]['Email'] => $csv[$i]['Name']])
-                        ->setSubject('Empower Youth has shortlisted you for Marketing Executive');
-                    if ($mail->send()) {
-                        echo $i.'<br>';
+    public function actionRecentUserRegis($id)
+    {
+        $users = Users::find()
+            ->where(['signed_up_through' => 'ECAMPUS', 'is_deleted' => 0])
+            ->andWhere(['between', 'created_on', "2021-10-02", "2021-10-08"])
+            ->asArray()
+            ->all();
+
+        if ($users) {
+            foreach ($users as $u) {
+                $registered = WebinarRegistrations::findOne(['created_by' => $u['user_enc_id']]);
+                if (!$registered) {
+                    $webinar_id = Webinar::findOne(['webinar_enc_id' => $id])->webinar_enc_id;
+                    $model = new WebinarRegistrations();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $model->register_enc_id = $utilitiesModel->encrypt();
+                    $model->webinar_enc_id = $webinar_id;
+                    $model->status = 1;
+                    $model->created_by = $u['user_enc_id'];
+                    $model->created_on = date('Y-m-d H:i:s');
+                    if (!$model->save()) {
+                        print_r($model->getErrors());
                     }
                 }
             }
         }
+
+        print_r('done');
+        die();
+    }
 }

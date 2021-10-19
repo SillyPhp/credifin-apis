@@ -29,7 +29,7 @@ class LoanApplication extends Model
     public function rules()
     {
         return [
-            [['current_city', 'applicantName', 'loanPurpose', 'loanType', 'email', 'contact', 'loanAmount'], 'required'],
+            [['current_city', 'applicantName', 'loanPurpose', 'loanType', 'contact', 'loanAmount'], 'required'],
             [['applicantName', 'loanPurpose', 'email'], 'trim'],
             [['applicantName'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],

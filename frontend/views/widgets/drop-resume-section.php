@@ -217,6 +217,7 @@ $this->registerCss('
     color: #6f6f6f;
     font-size: 13px;
     font-weight: 500;
+    min-height: 32px;
 }
 .dr-how-text h3:after {
     width: 40px;
@@ -235,6 +236,11 @@ $this->registerCss('
     font-family: roboto;
     font-weight: 500;
     font-size: 20pt;
+}
+@media only screen and (max-width: 425px){
+    .dr-box p {
+        min-height: 48px;
+    }
 }
 @media screen and (max-width: 1200px) and (min-width: 1000px) {
     .drop-image {

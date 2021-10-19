@@ -2,6 +2,9 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+use kartik\widgets\DatePicker;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
 
 //echo $this->render('/widgets/header/secondary-header', [
 //    'for' => 'Dashboard',
@@ -124,6 +127,14 @@ endif;
                     </div>
                 </div>
             </div>
+
+            <?php
+                if($webinar) {
+                    echo $this->render('/widgets/dashboard-webinar-widget', [
+                           'webinar' => $webinar,
+                    ]);
+                }
+            ?>
 
             <?php
             if ($loanApplication && Yii::$app->user->identity->type->user_type == 'Individual') {
@@ -304,6 +315,7 @@ endif;
                         echo $this->render('/widgets/applications/card', [
                             'applications' => $applications['jobs']['data'],
                             'per_row' => 3,
+                            'type' => 'Job',
                             'col_width' => 'col-lg-4 col-md-4 col-sm-6',
                         ]);
                     } else {
@@ -360,6 +372,7 @@ endif;
                         echo $this->render('/widgets/applications/card', [
                             'applications' => $applications['internships']['data'],
                             'per_row' => 3,
+                            'type' => 'Internship',
                             'col_width' => 'col-lg-4 col-md-4 col-sm-6',
                         ]);
                     } else {
@@ -379,6 +392,39 @@ endif;
             </div>
 
             <?= $this->render('@common/widgets/career-page-section') ?>
+            <div id="form_modal2" class="modal fade in" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">Re-Open The Application</h4>
+                        </div>
+                        <div class="modal-body">
+                            <?php
+                            $extendModelform = ActiveForm::begin([
+                                'id'=>'extends_job',
+                                'action'=>'/account/jobs/extends-date',
+                            ]);
+                            echo $extendModelform->field($extendModel, 'date')->widget(DatePicker::classname(), [
+                                'options' => ['placeholder' => 'Last Date To Apply'],
+                                'readonly' => true,
+                                'pluginOptions' => [
+                                    'autoclose' => true,
+                                    'format' => 'dd-M-yyyy',
+                                    'name' => 'date',
+                                    'todayHighlight' => true,
+                                    'startDate' => '+0d',
+                                ]])->label(false);
+                            echo $extendModelform->field($extendModel, 'application_enc_id', ['template' => '{input}'])->hiddenInput(['id' => 'application_enc_id'])->label(false);
+                            ?>
+                            <div class="modal-footer">
+                                <?= Html::submitButton('Save',['class'=>'btn btn-c-save']) ?>
+                            </div>
+                        </div>
+                        <?php ActiveForm::end(); ?>
+                    </div>
+                </div>
+            </div>
 
         <?php endif; ?>
         <!--            <div class="portlet light portlet-fit nd-shadow">-->
@@ -762,17 +808,38 @@ p{
 .quick-review-img{
     text-align: center;
 }
-
-
- 
+.modal {
+  text-align: center;
+}
+@media screen and (min-width: 768px) { 
+  .modal:before {
+    display: inline-block;
+    vertical-align: middle;
+    content: '';
+    height: 100%;
+  }
+}
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+.datepicker > div {
+    display: block;
+}
 ");
-    $script = <<< JS
-$(document).ready(function(){
-  $('[data-toggle="tooltip"]').tooltip();   
-});
+$script = <<< JS
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();   
+    });
+    $(document).on('click','.datepicker_opn',function(e) {
+        e.preventDefault();
+        $('#application_enc_id').val($(this).attr('data-id'));
+        $('#form_modal2').modal('show');
+    });
 JS;
-    $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
-    $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-    $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.min.css');
-    $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-    $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.min.css');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJs($script);

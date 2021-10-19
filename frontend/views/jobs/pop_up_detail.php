@@ -257,10 +257,9 @@ if ($type == 'Internships') {
                                        onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                         <i class="fab fa-telegram-plane"></i>
                                     </a>
-                                    <a href="javascript:;" class="copy" id="copy-btn"
-                                       onclick="copyFunction()">
-                                       <span class="tooltiptext" id="myTooltip">Copy Link</span>
-                                       <i class="fas fa-copy"></i>
+                                    <a href="javascript:;" class="copy jj-clipboard" type="button" data-toggle="tooltip"
+                                       title="Copy Link" data-link="<?= $application_details['link'] ?>">
+                                        <i class="fas fa-clipboard"></i>
                                     </a>
                                 </div>
                             </div>
@@ -416,17 +415,34 @@ $this->registerCss('
 	-o-border-radius: 8px;
 	border-radius: 8px;
 	padding:15px;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: flex-start;
-	align-items: flex-start;
     background: #fff;
+    height: 359px;
+    overflow: auto;
 }
+.job-overviews::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+    border-radius: 0 8px 8px 0;
+}
+
+.job-overviews::-webkit-scrollbar
+{
+	width: 8px;
+	background-color: #F5F5F5;
+}
+
+.job-overviews::-webkit-scrollbar-thumb
+{
+	background-color: #999999;
+    border-radius: 0 8px 8px 0;
+}
+
 .job-overviews li {
 	width: 100%;
 	position: relative;
 	padding-left: 50px;
-	margin: 8px 2px;
+	margin-bottom: 15px;
 	min-height: 45px;
 }
 .job-overviews li i {
@@ -693,8 +709,8 @@ h3.job-detail {
     width: 100px;
     height: 100px;
     overflow: hidden;
-    box-shadow: 0 0 10px 0px rgb(0 0 0 / 30%);
-    border-radius: 70px;
+    // box-shadow: 0 0 10px 0px rgb(0 0 0 / 30%);
+    // border-radius: 70px;
     min-width: 100px;
 }
 .company-logo img {
@@ -836,6 +852,19 @@ $script = <<<js
 //       status.addClass('j-textt');
 //   }
 // });
+$(document).on('click', '.jj-clipboard',function (event) {
+            event.preventDefault();
+            var link = window.location.hostname + $(this).attr('data-link');
+            CopyToClipboard(link, true, "Link copied");
+        });
+function CopyToClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
 if(document.getElementsByClassName('j-text')[0].scrollHeight <= 394){
     document.getElementsByClassName('read-more')[0].classList.add('hidden');
 }
@@ -847,27 +876,5 @@ $(document).on("click", ".jd-close", function(){
     $("#pop_up_modal").modal("hide");
     $("#pop_up_modal").html(load_template);    
 });
-
-
-var copyBtn = document.querySelector("#copy-btn");
-var copyTooltip = document.querySelector("#myTooltip");
-copyBtn.addEventListener("mouseover", () => {
-    copyTooltip.style.display = "inline";
-});
-copyBtn.addEventListener("mouseout", () => {
-    copyTooltip.style.display = "none";
-});
-
-
-function copyFunction() {
-    var detailLink = document.querySelector(".view-detail").getAttribute("href");
-    navigator.clipboard.writeText("empoweryouth.com" + detailLink);
-    copyTooltip.innerHTML = "Copied";
-
-    setTimeout(function() {
-        copyTooltip.innerHTML = "Copy Link";
-    }, 5000);
-}
-
 ');
 $this->registerJs($script);

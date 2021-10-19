@@ -170,12 +170,13 @@ $this->params['seo_tags'] = [
 if($blogs['blogs']){
     echo $this->render('/widgets/education-loan/blogs',[
         'blogs' => $blogs,
-        'param' => 'refinance'
+        'param' => 'Refinance'
     ]);
 };
 ?>
 <?= $this->render('/widgets/loan-form-detail',[
-    'model' => $model
+    'model' => $model,
+    'param' => 'Refinance'
 ]); ?>
 <?= $this->render('/widgets/press-releasee',[
     'data' => $data,

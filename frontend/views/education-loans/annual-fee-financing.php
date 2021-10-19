@@ -108,6 +108,9 @@ $this->params['seo_tags'] = [
     </div>
 </section>
 
+<?= $this->render('/widgets/covid-offer-banner', ['availUrl' => '/education-loans/apply']) ?>
+
+
 <section class="benefit-bg">
     <div class="container">
         <div class="row">
@@ -208,7 +211,8 @@ if($blogs['blogs']){
 ?>
 
 <?= $this->render('/widgets/loan-form-detail',[
-    'model' => $model
+    'model' => $model,
+    'param' => 'Annual Fee Finance'
 ]); ?>
 
 <?= $this->render('/widgets/press-releasee',[

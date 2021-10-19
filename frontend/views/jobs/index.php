@@ -52,6 +52,8 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
     </div>
 </section>
 
+
+
 <section>
     <div class="container">
         <div class="row mt-20">
@@ -75,6 +77,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
     </div>
 </section>
 
+<?= $this->render('/webinars/webinar-carousel')?>
 
 <?php
 echo $this->render('/widgets/info-stats');
@@ -113,6 +116,7 @@ echo $this->render('/widgets/jobs-by-tag');
 <?= $this->render('/widgets/usa_and_govt_jobs'); ?>
 
 <?= $this->render('/widgets/international-jobs'); ?>
+
 
 <section class="j-tweets">
     <div class="container">
