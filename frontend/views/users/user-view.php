@@ -316,9 +316,8 @@ $uId = $user['user_enc_id'];
                         <p><?= Html::encode($user['description']); ?></p>
                     </div>
                     <?php if ($skills) { ?>
-                        <div class="apply-job-detail">
-                            <h5>Skills <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" id="edit-skills"></i>
-                            </h5>
+                        <div class="apply-job-detail awesome-size">
+                            <h5>Skills <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" id="edit-skills"></i></h5>
                             <ul class="skills">
                                 <?php
                                 foreach ($skills as $sk) { ?>
@@ -331,7 +330,7 @@ $uId = $user['user_enc_id'];
                     <?php }
                     if ($language) {
                         ?>
-                        <div class="apply-job-detail">
+                        <div class="apply-job-detail awesome-size">
                             <h5>Spoken Languages <i class="fas fa-pencil-alt edit-profile-pen edit-btnn"
                                                     id="edit-languages"></i></h5>
                             <ul class="skills">
@@ -434,10 +433,9 @@ $uId = $user['user_enc_id'];
                     }
                     if ($achievement) {
                         ?>
-                        <div class="achievements-detail set-li">
-                            <h5 class="education-head">Achievements <i class="fas fa-pencil-alt edit-profile-pen"
-                                                                       type="button" data-toggle="modal"
-                                                                       data-target="#editModal"></i></h5>
+                        <div class="achievements-detail set-li awesome-size">
+                            <h5 class="achievements-head all-head">Achievements
+                                <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" id="add-achievements"></i></h5>
                             <ul>
                                 <?php
                                 foreach ($achievement as $achive) {
@@ -452,10 +450,9 @@ $uId = $user['user_enc_id'];
                     }
                     if ($hobbies) {
                         ?>
-                        <div class="hobbies-detail set-li">
-                            <h5 class="education-head">Hobbies <i class="fas fa-pencil-alt edit-profile-pen"
-                                                                  type="button" data-toggle="modal"
-                                                                  data-target="#editModal"></i></h5>
+                        <div class="hobbies-detail set-li awesome-size">
+                            <h5 class="hobbies-head all-head">Hobbies
+                                <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" id="add-hobbies"></i></h5>
                             <ul>
                                 <?php
                                 foreach ($hobbies as $hobby) {
@@ -470,10 +467,8 @@ $uId = $user['user_enc_id'];
                     }
                     if ($interests) {
                         ?>
-                        <div class="Interests-detail set-li">
-                            <h5 class="education-head">Interests <i class="fas fa-pencil-alt edit-profile-pen"
-                                                                    type="button" data-toggle="modal"
-                                                                    data-target="#editModal"></i></h5>
+                        <div class="Interests-detail set-li awesome-size">
+                            <h5 class="interest-head all-head">Interests <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" id="add-interest"></i></h5>
                             <ul>
                                 <?php
                                 foreach ($interests as $intrst) {
@@ -639,8 +634,18 @@ $uId = $user['user_enc_id'];
                         <form>
                             <div class="form-group">
                                 <label for="skills-name" class="label-edit">Skills</label>
-                                <input type="text" class="form-control form-control-edit" id="skills-name"
-                                       placeholder="Enter Skills">
+                                <ul class="old-skills">
+                                    <?php
+                                    foreach ($skills as $sk) { ?>
+                                        <li class="addedskills"><?= $sk['skills']; ?>
+                                            <span class="tagRemove">x</span>
+                                            <input type="hidden" name="skills[]" value="">
+                                        </li>
+                                        <?php
+                                    }
+                                    ?>
+                                    <input type="text" class="form-control form-control-edit" id="skills-name" placeholder="Enter Skills">
+                                </ul>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
@@ -649,8 +654,18 @@ $uId = $user['user_enc_id'];
                         <form>
                             <div class="form-group">
                                 <label for="language-name" class="label-edit">Spoken Languages</label>
-                                <input type="text" class="form-control form-control-edit" id="language-name"
-                                       placeholder="Enter Languages">
+                                <ul class="old-languages">
+                                    <?php
+                                    foreach ($language as $lg) { ?>
+                                        <li class="addedskills"><?= $lg['language']; ?>
+                                            <span class="tagRemove">x</span>
+                                            <input type="hidden" name="skills[]" value="">
+                                        </li>
+                                        <?php
+                                    }
+                                    ?>
+                                    <input type="text" class="form-control form-control-edit" id="language-name" placeholder="Enter Languages">
+                                </ul>
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
@@ -781,6 +796,51 @@ $uId = $user['user_enc_id'];
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                     </div>
+                    <div class="add-achievements col-md-12">
+                        <form>
+                            <div class="form-group">
+                                <label for="achievements-name" class="label-edit">Achievements</label>
+                                <ul class="old-achievements">
+                                    <li class="addedskills">gold medal
+                                        <span class="tagRemove">x</span>
+                                        <input type="hidden" name="skills[]" value="">
+                                    </li>
+                                    <input type="text" class="form-control form-control-edit" id="achievements-name" placeholder="Enter Achievements">
+                                </ul>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    <div class="add-interest col-md-12">
+                        <form>
+                            <div class="form-group">
+                                <label for="interest-name" class="label-edit">Interests</label>
+                                <ul class="old-interest">
+                                    <li class="addedskills">games
+                                        <span class="tagRemove">x</span>
+                                        <input type="hidden" name="skills[]" value="">
+                                    </li>
+                                    <input type="text" class="form-control form-control-edit" id="interest-name" placeholder="Enter interest">
+                                </ul>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    <div class="add-hobbies col-md-12">
+                        <form>
+                            <div class="form-group">
+                                <label for="hobbies-name" class="label-edit">Hobbies</label>
+                                <ul class="old-interest">
+                                    <li class="addedskills">games
+                                        <span class="tagRemove">x</span>
+                                        <input type="hidden" name="skills[]" value="">
+                                    </li>
+                                    <input type="text" class="form-control form-control-edit" id="hobbies-name" placeholder="Enter hobbies">
+                                </ul>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -797,6 +857,55 @@ if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user
     }
 }
 $this->registerCss('
+.awesome-size h5 i, .side-btns i, .edit-profile-pen i{
+    font-size:14px !important;
+    cursor: pointer;
+}
+ul.old-skills, ul.old-languages, ul.old-interest, ul.old-achievements {
+    border: 2px solid #eee;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}
+ul.old-skills input, ul.old-languages input, ul.old-interest input, ul.old-achievements input{
+    width: 180px;
+    height: 34px;
+}
+li.addedskills {
+    background: #f4f5fa;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    display: inline-block;
+    border-radius: 8px;
+    font-family: Open Sans;
+    font-size: 13px;
+    padding: 6px 15px;
+    margin: 0 10px 5px 0;
+    position: relative;
+}
+span.tagRemove {
+    position: absolute;
+    right: -6px;
+    top: -5px;
+    width: 16px;
+    height: 16px;
+    font-style: normal;
+    background: #00a0e3;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    border-radius: 50%;
+    color: #ffffff;
+    text-align: center;
+    line-height: 13px;
+    font-size: 10px;
+    font-family: Open Sans;
+    cursor: pointer;
+}
 .form-textarea {
     padding: 8px 15px;
     border: 1px solid #ddd;
@@ -861,11 +970,11 @@ $this->registerCss('
     margin-bottom:4px;
 }
 .form-control-edit {
-    padding: 8px 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 4px 8px;
+    border: 1px solid #eee;
+    border-radius: 8px;
     height: 40px;
-    font-family:Roboto;
+    font-family: Roboto;
 }
 .modal {
   text-align: center;
@@ -1033,6 +1142,14 @@ body{background-color:#f9f9f9;}
 //    filter: blur(5px);
 //    -webkit-filter: blur(5px);
 //}
+.all-head{
+    font-size: 18px;
+    font-weight: 500;
+    font-family: roboto;
+    padding-bottom: 3px;
+    letter-spacing: 1px;
+    color:#000;
+}
 .education-head {
     font-size: 18px;
     font-weight: 500;

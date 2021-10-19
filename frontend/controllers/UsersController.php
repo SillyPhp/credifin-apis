@@ -296,7 +296,7 @@ class UsersController extends Controller
                 $page = 'view';
             } else {
                 if (Yii::$app->user->identity->user_enc_id == $user['user_enc_id']) {
-                    $page = 'user-view';
+                    $page = 'view';
                 } else {
                     $page = 'guest-view';
                 }
