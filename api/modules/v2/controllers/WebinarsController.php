@@ -3,6 +3,7 @@
 namespace api\modules\v2\controllers;
 
 use common\models\Speakers;
+use common\models\User;
 use common\models\UserOtherDetails;
 use common\models\Users;
 use common\models\UserWebinarInterest;
@@ -12,6 +13,8 @@ use common\models\WebinarConversations;
 use common\models\WebinarEvents;
 use common\models\WebinarPayments;
 use common\models\WebinarRegistrations;
+use common\models\WebinarRequest;
+use common\models\WebinarRequestSpeakers;
 use common\models\Webinars;
 use common\models\WebinarSessions;
 use common\models\Utilities;
@@ -114,8 +117,8 @@ class WebinarsController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $webinar = new \common\models\extended\Webinar();
-            $webinar = $webinar->webinarsList($college_id['organization_enc_id']);
+            $webinar_model = new \common\models\extended\Webinar();
+            $webinar = $webinar_model->webinarsList($college_id['organization_enc_id']);
 
             $webinars = [];
             if (!empty($webinar)) {
@@ -127,6 +130,7 @@ class WebinarsController extends ApiBaseController
                     $webinar[$i]['count'] = $registered_count;
                     $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
                     $webinar[$i]['is_registered'] = $user_registered;
+                    $webinar[$i]['webinarRegistrations'] = $webinar_model->registeredUsers($w['webinar_enc_id']);
                     $webinar[$i]['is_paid'] = $w['price'] ? true : false;
                     if ($w['webinarEvents']) {
                         array_push($webinars, $webinar[$i]);
@@ -352,6 +356,8 @@ class WebinarsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information']);
         }
 
+        $webinar_model = new \common\models\extended\Webinar();
+
         if ($user = $this->isAuthorized()) {
 
             $user_id = $user->user_enc_id;
@@ -364,11 +370,10 @@ class WebinarsController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $webinar = new \common\models\extended\Webinar();
-            $webinar = $webinar->webinarDetail($college_id['organization_enc_id'], $webinar_id);
+
+            $webinar = $webinar_model->webinarDetail($college_id['organization_enc_id'], $webinar_id);
         } else {
-            $webinar = new \common\models\extended\Webinar();
-            $webinar = $webinar->webinarDetail(null, $webinar_id);
+            $webinar = $webinar_model->webinarDetail(null, $webinar_id);
         }
 
 
@@ -385,6 +390,7 @@ class WebinarsController extends ApiBaseController
             $registered_count = WebinarRegistrations::find()
                 ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
                 ->count();
+            $webinar['webinarRegistrations'] = $webinar_model->registeredUsers($webinar['webinar_enc_id']);
             $webinar['registered_count'] = $registered_count;
 
             $webinar['is_registered'] = $user_registered;
@@ -520,18 +526,17 @@ class WebinarsController extends ApiBaseController
             }
             $args = [
                 'payment_enc_id' => $params['payment_enc_id'],
-                'payment_status' => $params['payment_status'],
+                'status' => $params['payment_status'],
                 'registration_enc_id' => $params['registration_enc_id'],
-                'payment_id' => $params['payment_id']
+                'payment_id' => $params['payment_id'],
+                'signature' => $params['signature'],
+                'is_campus' => true
             ];
             $payment = new \common\models\extended\WebinarPayments();
-            if ($payment->load($args, '')) {
-                $payment->registration_enc_id = $args['registration_enc_id'];
-                if ($payment->updateStatus()) {
-                    return $this->response(200, ['status' => 200, 'message' => 'success']);
-                } else {
-                    return $this->response(500, ['status' => 500, 'message' => 'Something Went Wrong On Server Side..']);
-                }
+            if ($payment->updateStatus($args)) {
+                return $this->response(200, ['status' => 200, 'message' => 'success']);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'Something Went Wrong On Server Side..']);
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -558,6 +563,147 @@ class WebinarsController extends ApiBaseController
             $all_data['past_webinars'] = $past;
             $all_data['upcoming_webinars'] = $upcoming;
             return $this->response(200, ['status' => 200, 'data' => $all_data]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAll()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $user_id = $user->user_enc_id;
+
+            $college = Users::findOne(['user_enc_id' => $user_id]);
+            $student_college = UserOtherDetails::findOne(['user_enc_id' => $user_id]);
+
+            $webinar_model = new \common\models\extended\Webinar();
+
+            $org_id = $college->organization_enc_id;
+            if (!$college->organization_enc_id) {
+                $org_id = $student_college->organization_enc_id;
+            }
+
+            $webinar_upcoming = $webinar_model->webinarsList($org_id, null, 'upcoming');
+            $webinar_opted = $webinar_model->webinarsList($org_id, $user_id, 'opted');
+            $webinar_past = $webinar_model->webinarsList($org_id, null, null);
+
+            $webinar_upcoming = $this->getOtherWebinarData($webinar_upcoming, $user_id);
+            $webinar_opted = $this->getOtherWebinarData($webinar_opted, $user_id);
+            $webinar_past = $this->getOtherWebinarData($webinar_past, $user_id);
+
+            $webinars['upcoming'] = $webinar_upcoming;
+            $webinars['past'] = $webinar_past;
+            $webinars['opted'] = $webinar_opted;
+
+            return $this->response(200, ['status' => 200, 'webinars' => $webinars]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function getOtherWebinarData($webinar, $user_id)
+    {
+        $webinar_model = new \common\models\extended\Webinar();
+
+        $webinars = [];
+        if (!empty($webinar)) {
+            $i = 0;
+            foreach ($webinar as $w) {
+                $registered_count = WebinarRegistrations::find()
+                    ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $w['webinar_enc_id']])
+                    ->count();
+                $webinar[$i]['count'] = $registered_count;
+                $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
+                $webinar[$i]['is_registered'] = $user_registered;
+                $webinar[$i]['webinarRegistrations'] = $webinar_model->registeredUsers($w['webinar_enc_id']);
+                $webinar[$i]['is_paid'] = $w['price'] ? true : false;
+                if ($w['webinarEvents']) {
+                    array_push($webinars, $webinar[$i]);
+                }
+                $i++;
+            }
+        }
+
+        return $webinars;
+    }
+
+    public function actionRequest()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            $webinar_request = new WebinarRequest();
+            $webinar_request->request_enc_id = Yii::$app->security->generateRandomString();
+            $webinar_request->title = $params['title'];
+            $webinar_request->date = date('Y-m-d', strtotime($params['date']));
+            $webinar_request->seats = $params['seats'];
+            $webinar_request->objectives = $params['objectives'];
+            $webinar_request->created_by = $user->user_enc_id;
+            $webinar_request->created_on = date('Y-m-d H:i:s');
+            if (!$webinar_request->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $webinar_request->getErrors()]);
+            }
+
+            foreach ($params['speakers'] as $s) {
+                $speaker_request = new WebinarRequestSpeakers();
+                $speaker_request->request_speaker_enc_id = Yii::$app->security->generateRandomString();
+                $speaker_request->speakerEnc = $s;
+                $speaker_request->webinar_request_enc_id = $webinar_request->request_enc_id;
+                $speaker_request->created_by = $user->user_enc_id;
+                $speaker_request->created_on = date('Y-m-d H:i:s');
+                if (!$speaker_request->save()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $speaker_request->getErrors()]);
+                }
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionStudentsList()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $param = Yii::$app->request->post();
+
+            if (isset($param['webinar_id']) && !empty($param['webinar_id'])) {
+                $webinar_id = $param['webinar_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $college_id = Users::findOne(['user_enc_id' => $user->user_enc_id])->organization_enc_id;
+
+            $students = WebinarRegistrations::find()
+                ->alias('a')
+                ->select(['a.register_enc_id', 'a.created_by', 'a.status', 'CONCAT(b.first_name, " ", b.last_name) full_name'])
+                ->joinWith(['createdBy b' => function ($b) {
+                    $b->innerJoinWith(['userOtherInfo b1']);
+                }], false)
+                ->joinWith(['webinarEnc c' => function ($c) {
+                    $c->joinWith(['assignedWebinarTos c1'], false);
+                }], false)
+                ->where(['a.webinar_enc_id' => $webinar_id, 'a.is_deleted' => 0])
+                ->andWhere(['b1.organization_enc_id' => $college_id])
+                ->andWhere(['or',
+                    ['c1.organization_enc_id' => $college_id],
+                    ['c.for_all_colleges' => 1]
+                ])
+                ->asArray()
+                ->all();
+
+            if ($students) {
+                return $this->response(200, ['status' => 200, 'list' => $students]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);

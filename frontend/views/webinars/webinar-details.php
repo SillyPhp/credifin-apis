@@ -58,7 +58,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                 <div class="register-btn" id="registerEventSection">
                     <?php
                     $btnName = 'Register Now';
-                    if (Yii::$app->user->isGuest) {
+                    if (Yii::$app->user->isGuest && !$is_expired) {
                         ?>
                         <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
                            class="ra-btn"><?= $btnName ?></a>
@@ -68,7 +68,11 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                             Processing <i class="fas fa-spinner fa-spin"></i>
                         </button>
                         <?php
-                        if ($registeration_status == 1) {
+                        if($is_expired){
+                            ?>
+                            <a href="<?= Url::to('/webinars')?>" class="ra-btn">Back To Home</a>
+                            <?php
+                        } else if($registeration_status == 1) {
                             ?>
                             <button class="ra-btn">Registered</button>
                             <?php
@@ -102,9 +106,9 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                 <?php Pjax::begin(['id' => 'webinar_join_link']); ?>
                 <div class="col-lg-10 col-lg-offset-1">
                     <div class="countdown gradient clearfix">
-                        <?php if ($status == 2) { ?>
+                        <?php if ($is_expired) { ?>
                             <div>
-                                <a id="joinBtn">Webinar Expired</a>
+                                <p class="expiredtext">This Webinar Is Expired</p>
                             </div>
                         <?php } elseif ($webinar['status'] == 1 || $webinar['status'] == 0) { ?>
                             <div id="join">
@@ -163,15 +167,17 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                     <h2 class="section-title">
                         Webinar Details
                     </h2>
-                    <?php if ($webinar['webinar_conduct_on'] == 1 && $webinar_link) { ?>
-                        <div class="copy-join-link jj-clipboard" data-link="<?= $webinar_link ?>">
-                            <i class="fab fa-chromecast"></i>
-                            <div class="link-descriptions">
-                                <span>Joining link</span><br/>
-                                <a class="copy-clip" title="Copy Link" ><?= $webinar_link ?></a>
+                    <?php if ($webinar['webinar_conduct_on'] == 1 && $webinar_link && !$is_expired) { ?>
+
+                        <div class="copy-join-link">
+                            <div class="link-descriptions" id="link-show">
+                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/zoom-logo.png')?>" alt="">
+                                <a class="copy-clip view-link" title="View link" id="link-cop" data-link="<?= $webinar_link ?>">Copy Joining Link</a>
                             </div>
                         </div>
+
                     <?php } ?>
+                    
                 </div>
             </div>
             <div class="row">
@@ -220,17 +226,17 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                             <?php Pjax::end(); ?>
                             <div class="register-action">
                                 <?php
-                                if (Yii::$app->user->isGuest) {
+                                if (Yii::$app->user->isGuest && !$is_expired) {
                                     ?>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
-                                       value="interested">Interested</a>
+                                       value="interested">Interested <span id="interestCount">(<?= 50 + rand(1,10) + $interestCount?>)</span></a>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
                                        value="not interested">Not Interested</a>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn">Attending</a>
-                                <?php } else { ?>
+                                <?php } else if($registeration_status != 1 && !$is_expired) { ?>
                                     <button class="ra-btn interestBtn <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
                                             id="interested" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="1">Interested
+                                            value="1">Interested <span id="interestCount">(<?= 50 + rand(1,10) + $interestCount?>)</span>
                                     </button>
                                     <button class="ra-btn interestBtn <?php echo $interest_status == 2 ? 'actionColor' : '' ?>"
                                             id="notInterested" data-key="<?= $webinar['webinar_enc_id'] ?>"
@@ -253,7 +259,11 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
     </div>
 
 </section>
-
+<?php
+    if($webinar["slug"] == 'new-age-investment-strategies-10407'){
+        echo $this->render('/widgets/webinar-quiz-banner');
+    }
+?>
 <!-- Schedules event section start here -->
 <section class="ts-schedule">
     <div class="container">
@@ -488,7 +498,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                     </h2>
                 </div>
             </div><!-- row end-->
-            <div class="row">
+            <div class="row outflex">
                 <?php foreach ($outComes
 
                 as $oc){ ?>
@@ -567,45 +577,66 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.outflex {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.show-l{display:none;}
 span.copy-clip {
     color: #8b8b8b !important;
     font-size: 14px !important;
 }
 .detail-flex {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     flex-wrap: wrap;
     padding:0 15px;
 }
-.copy-join-link{
-    font-size: 14px;
-    margin: 20px 0;
-    font-weight: 400;
-    text-align: left;
+.copy-join-link {
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    cursor: pointer;
-}
-.copy-join-link i{
-    color: #00a0e3;
-    font-size: 40px;
-    margin-right: 5px;
+    flex-direction: column;
+    align-items: flex-end;
 }
 .link-descriptions{
-    max-width: 250px;
+    margin: 20px 0 5px;
+    max-width: 164px;
     position: relative;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    padding: 1px 6px;
+    border-radius: 0 10px 0 10px;
+    cursor: pointer;
+    border: 2px solid #4a8cff;
+    transition: all .3s ease-out;
 }
-.link-descriptions span{
-    font-size: 15px;
-    color: #00a0e3;
-    font-weight: 500;
+.link-descriptions:hover{
+    background: #4a8cff;
+    transition: all .3s ease-out;
+}
+.link-descriptions:hover a{
+    color: #fff;
+    transition: all .3s ease-out;
+}
+p.show-l {
+    max-width: 250px;
+    overflow: hidden;
+    max-height: 25px;
+    margin: 0;
+    text-align: right;
+}
+.link-descriptions img {
+    width: 30px;
+    height: 30px;
+    margin-right: 4px;
+    object-fit: cover;
+}
+.link-descriptions a {
+    transition: all .3s ease-out;
+    color: #4a8cff;
+    font-weight: 600;
 }
 .d-flex{
     display: flex;
@@ -816,7 +847,8 @@ display:none;
 #counter{
 display:none;
 }
-#joinBtn, #joinOtherBtn{
+
+#joinBtn, #joinOtherBtn, .expiredtext{
     font-size: 25px;
     padding: 48px;
     display: block;
@@ -1120,6 +1152,9 @@ transform: rotate(100deg);
 
 .ts-speaker-popup .ts-speaker-popup-img img {
     width: 100%;
+    height: 80vh;
+    object-fit: cover;
+    object-position: top;
 }
 
 .ts-speaker-popup .ts-speaker-popup-content {
@@ -1214,9 +1249,9 @@ transform: rotate(100deg);
     -ms-border-radius: 50%;
     width: 250px;
     height: 250px;
-    // background-image: -webkit-linear-gradient(340deg, #FC6076 0%, #FF9A44 100%);
-    // background-image: -o-linear-gradient(340deg, #FC6076 0%, #FF9A44 100%);
-    // background-image: linear-gradient(110deg, #FC6076 0%, #FF9A44 100%);
+    background-image: -webkit-linear-gradient(-60deg, #ff5858 0%, #f09819 100%);
+    background-image: -o-linear-gradient(-60deg, #ff5858 0%, #f09819 100%);
+    background-image: linear-gradient(-60deg, #ff5858 0%, #f09819 100%);
     -webkit-box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
     box-shadow: 0px 20px 30px 0px rgba(0, 0, 0, 0.12);
     padding: 55px 0;
@@ -1264,28 +1299,40 @@ transform: rotate(100deg);
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both; 
 }
-.outcome-item:nth-of-type(1) .ts-single-outcome {
+.outcome-item:nth-of-type(6n-1) .ts-single-outcome {
     background-image: -webkit-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
     background-image: -o-linear-gradient(340deg, #fc6076 0%, #ff9a44 100%);
     background-image: linear-gradient(110deg, #fc6076 0%, #ff9a44 100%);
 }
 
-.outcome-item:nth-of-type(2) .ts-single-outcome {
+.outcome-item:nth-of-type(6n-2) .ts-single-outcome {
     background-image: -webkit-radial-gradient(50% 50%, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
     background-image: -o-radial-gradient(50% 50%, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
     background-image: radial-gradient(50% 50%, #57c6e1 0%, #b49fda 0%, #7ac5d8 0%, #eea2a2 0%, #b1aff0 0%, #836df0 100%);
 }
 
-.outcome-item:nth-of-type(3) .ts-single-outcome {
+.outcome-item:nth-of-type(6n-3) .ts-single-outcome {
     background-image: -webkit-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
     background-image: -o-linear-gradient(135deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
     background-image: linear-gradient(-45deg, #22ffa4 0%, #43c47a 49%, #10ae23 100%);
 }
 
-.outcome-item:nth-of-type(4) .ts-single-outcome {
+.outcome-item:nth-of-type(6n-4) .ts-single-outcome {
     background-image: -webkit-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
     background-image: -o-linear-gradient(135deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
     background-image: linear-gradient(-45deg, #22e1ff 0%, #1d8fe1 49%, #625eb1 100%);
+}
+
+.outcome-item:nth-of-type(6n-5) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(to top, #7028e4 0%, #e5b2ca 100%);
+    background-image: -o-linear-gradient(to top, #7028e4 0%, #e5b2ca 100%);
+    background-image: linear-gradient(to top, #7028e4 0%, #e5b2ca 100%);
+}
+
+.outcome-item:nth-of-type(6n-6) .ts-single-outcome {
+    background-image: -webkit-linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+    background-image: -o-linear-gradient(to top, #ff0844 0%, #ffb199 100%);
+    background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%);
 }
 
 .ts-count-down {
@@ -1947,7 +1994,7 @@ function _razoPay(ptoken,payment_enc_id,webinar_id){
     var options = {
     "key": access_key, 
     "name": "Empower Youth",
-    "description": "Application Processing Fee",
+    "description": "Registration Fee",
     "image": "/assets/common/logos/logo.svg",
     "order_id": ptoken, 
     "handler": function (response){
@@ -1983,14 +2030,15 @@ function updateStatus(payment_enc_id,payment_id=null,status,signature=null)
           signature:signature,
           status:status, 
         },
-        success:function(resp)
+        success:function(res)
         {
-            if(res.response.status != 200){
+            if(res.response.status == 200){
                 swal({ 
                     title:"Message",
                     text: "Payment Successfully Captured & It will reflect in sometime..",
                  });
             }
+            location.reload();
         }
     })
 }
@@ -1999,11 +2047,7 @@ $(document).on("click","#joinRegisterBtn", function() {
     $('#registerEventSection').find('button:visible').click();
 });
 
-$(document).on('click', '.jj-clipboard',function (event) {
-        event.preventDefault();
-        var link = $(this).attr('data-link');
-        CopyToClipboard(link, true, "Link copied");
-    });
+
 
     function CopyToClipboard(value, showNotification, notificationText) {
         var temp = $("<input>");
@@ -2013,6 +2057,14 @@ $(document).on('click', '.jj-clipboard',function (event) {
         temp.remove();
         toastr.success("", "Link Copy to Clipboard");
     }
+    
+    
+    $("#link-show").click(function () {
+        var link = $('#link-cop').attr('data-link');
+        CopyToClipboard(link, true, "Link copied");
+    });
+
+    
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/magnific-popup.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

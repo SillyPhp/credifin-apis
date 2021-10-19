@@ -86,8 +86,13 @@ class WebinarsController extends Controller
         $user_id = Yii::$app->user->identity->user_enc_id;
         $model = new webinarFunctions();
         $webinar = self::getWebianrDetail($slug, true);
+        $is_expired = false;
         if (empty($webinar)) {
-            throw new HttpException(404, Yii::t('frontend', 'Page not found'));
+            $webinar = self::getWebianrDetail($slug, false);
+            $is_expired = true;
+            if (empty($webinar)) {
+                throw new HttpException(404, Yii::t('frontend', 'Page not found'));
+            }
         }
         $nextEvent = $webinar['webinarEvents'][0];
         if (empty($nextEvent)) {
@@ -173,6 +178,10 @@ class WebinarsController extends Controller
                     'status' => 1,
                 ])
                 ->one();
+            $interestCount = UserWebinarInterest::find()
+                ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'interest_status'=>1])
+                ->count();
+
             $userInterest = UserWebinarInterest::findOne(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id]);
             $webinar['start_datetime'] = "";
 
@@ -184,7 +193,9 @@ class WebinarsController extends Controller
 
             return $this->render('webinar-details', [
                 'webinar' => $webinar,
+                'interestCount'=>$interestCount,
                 'assignSpeaker' => $assignSpeaker,
+                'is_expired' => $is_expired,
                 'outComes' => $outComes,
                 'register' => $register,
                 'webinarRegistrations' => $webinarRegistrations,
@@ -287,11 +298,28 @@ class WebinarsController extends Controller
                     $params['first_name'] = $get->first_name;
                     $params['last_name'] = $get->last_name;
                     $params["user_id"] = $uid;
+                    $interestedUser = UserWebinarInterest::findOne(['webinar_enc_id'=>$wid, 'created_by' => $uid]);
+                    if($interestedUser){
+                        $interestedUser->interest_status = 1;
+                        $interestedUser->is_deleted = 0;
+                        $interestedUser->last_updated_on = date('Y-m-d H:i:s');
+                    } else {
+                        $interestedUser = new UserWebinarInterest();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $interestedUser->webinar_interest_enc_id = $utilitiesModel->encrypt();
+                        $interestedUser->interest_status = 1;
+                        $interestedUser->webinar_enc_id = $wid;
+                        $interestedUser->created_by = $uid;
+                        $interestedUser->created_on = date('Y-m-d H:i:s');
+                    }
+                    $interestedUser->save();
                     Yii::$app->notificationEmails->webinarRegistrationEmail($params);
                     if ($data->webinar_conduct_on==1){
                         $params["webinar_zoom_id"] = $data->platform_webinar_id;
                         Yii::$app->notificationEmails->zoomRegisterAccess($params);
                     }
+
                     return [
                         'status' => 200,
                         'title' => 'Success',
@@ -381,7 +409,7 @@ class WebinarsController extends Controller
                 'a.webinar_conduct_on',
                 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
             ])
-            ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now, $recent) {
+            ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now, $recent, $status) {
                 $a1->select([
                     'a1.event_enc_id',
                     'a1.webinar_enc_id',
@@ -461,8 +489,9 @@ class WebinarsController extends Controller
                 'a.slug',
                 'a.title',
                 'a.availability',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
                 'a.description',
+                'a.price',
             ])
             ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now) {
                 $a1->select([
@@ -500,7 +529,7 @@ class WebinarsController extends Controller
             }])
             ->andWhere(['a.is_deleted' => 0])
             ->andWhere(['not', ['a.session_for' => 2]])
-            ->orderBy(['a.created_on' => SORT_DESC])
+//            ->orderBy(['a.created_on' => SORT_DESC])
             ->groupBy('a.webinar_enc_id')
             ->asArray()
             ->all();
@@ -605,14 +634,9 @@ class WebinarsController extends Controller
 
     public function actionWebinarExpired()
     {
-        $webinars = self::getWebinars($id);
+        $webinars = self::getWebinars();
         return $this->render('webinar-expired', [
-            'type' => $type,
             'webinars' => $webinars,
-            'webinarDetail' => $webinarDetail,
-            'dateEvents' => $dateEvents,
-            'upcomingEvent' => $upcomingEvent,
-            'upcomingDateTime' => $upcomingDateTime,
         ]);
     }
 

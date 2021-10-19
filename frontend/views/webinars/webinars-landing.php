@@ -280,7 +280,7 @@ if ($optedWebinar) {
                 <div class="col-md-4 col-sm-6">
                     <div class="web-card">
                         <div class="web-img">
-                            <a href="<?= Url::to("/webinar/webinar-expired")?>">
+                            <a href="<?= Url::to("/webinar/". $pWeb['slug'])?>">
                                 <img src="<?= $pWeb['image'] ?>">
                             </a>
                             <div class="web-detail-date">
@@ -307,12 +307,7 @@ if ($optedWebinar) {
                             </div>
                         </div>
                         <div class="web-inr">
-                            <div class="web-title"><a href="<?php
-                                if ($pWeb['webinarEvents'][0]['status'] == 2) {
-                                    echo "/webinar/webinar-expired";
-                                } else {
-                                    echo Url::to("/webinar/" . $pWeb['slug']);
-                                } ?>">
+                            <div class="web-title"><a href="<?= Url::to("/webinar/" . $pWeb['slug']); ?>">
                                     <?= $pWeb['name'] ?></a></div>
                             <div class="web-speaker">
                                 <span><?= str_replace(',', ', </span><span>', trim($pWeb['speakers'])) ?></span></div>
@@ -983,6 +978,7 @@ color: #fff !important;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 	background-color:#fff;
 	margin-bottom:20px;
+    min-height: 387px;
 }
 .web-img {
 	position: relative;
@@ -1052,7 +1048,7 @@ color: #fff !important;
 	-webkit-line-clamp: 3;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
-	height: 75px;
+	height: 70px;
 }
 .opted-web {
 	background-image: url(" . Url::to('@eyAssets/images/pages/webinar/wb2.png') . "); 
