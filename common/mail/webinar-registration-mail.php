@@ -158,7 +158,11 @@ img + div{
     </div>
     <div class="white-bg">
         <div class="web-img">
-            <img src="https://www.empoweryouth.com/assets/themes/email/images/rNap3jW8EobD27J5vG5LQB0yYn7GXq.png">
+            <?php if ($data['image']){ ?>
+                <img src="<?= $data['image']; ?>">
+            <?php }else{ ?>
+                <img src="https://www.empoweryouth.com/assets/themes/email/images/rNap3jW8EobD27J5vG5LQB0yYn7GXq.png">
+           <?php } ?>
         </div>
         <div class="content">
             <h3>Greetings from <span class="blue">Empower</span><span class="orange">Youth</span></h3>
