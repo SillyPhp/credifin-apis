@@ -3,7 +3,6 @@
 
 namespace common\models\extended;
 
-use common\models\Speakers;
 use common\models\WebinarEvents;
 use common\models\WebinarModerators;
 use common\models\WebinarRegistrations;
@@ -14,7 +13,7 @@ use Yii;
 
 class Webinar extends \common\models\Webinar
 {
-    public function webinarsList($college_id, $user_id = null, $status = null)
+    public function webinarsList($college_id, $user_id = null, $status = null, $webinar_id = null)
     {
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
@@ -70,8 +69,11 @@ class Webinar extends \common\models\Webinar
             ->andWhere(['or',
                 ['b.organization_enc_id' => $college_id],
                 ['a.for_all_colleges' => 1]
-            ])
-            ->asArray()
+            ]);
+        if ($webinar_id != null) {
+            $webinar->andWhere(['not', ['a.webinar_enc_id' => $webinar_id]]);
+        }
+        $webinar = $webinar->asArray()
             ->all();
 
         return $webinar;
@@ -267,6 +269,7 @@ class Webinar extends \common\models\Webinar
             $webinar_detail['events'] = $dateEvents;
             $webinar_detail['speaker_count'] = $speaker_count;
             $webinar_detail['speakers'] = $speakers;
+            $webinar_detail['upcoming'] = $this->webinarsList($college_id, null, 'upcoming',$webinar_id);
         }
 
         return $webinar_detail;
