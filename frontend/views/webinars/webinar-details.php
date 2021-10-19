@@ -167,12 +167,12 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                     <h2 class="section-title">
                         Webinar Details
                     </h2>
-                    <?php if ($webinar['webinar_conduct_on'] == 1 && $webinar_link) { ?>
+                    <?php if ($webinar['webinar_conduct_on'] == 1 && $webinar_link && !$is_expired) { ?>
 
                         <div class="copy-join-link">
                             <div class="link-descriptions" id="link-show">
                                 <img src="<?= Url::to('@eyAssets/images/pages/webinar/zoom-logo.png')?>" alt="">
-                                <a class="copy-clip view-link" title="View link" id="link-cop" data-link="<?= $webinar_link ?>">View Join Link</a>
+                                <a class="copy-clip view-link" title="View link" id="link-cop" data-link="<?= $webinar_link ?>">Copy Joining Link</a>
                             </div>
                         </div>
 
@@ -498,7 +498,7 @@ Yii::$app->view->registerJs('var registeration_status = "' . $registeration_stat
                     </h2>
                 </div>
             </div><!-- row end-->
-            <div class="row">
+            <div class="row outflex">
                 <?php foreach ($outComes
 
                 as $oc){ ?>
@@ -577,6 +577,12 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.outflex {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
 .show-l{display:none;}
 span.copy-clip {
     color: #8b8b8b !important;
@@ -1146,6 +1152,9 @@ transform: rotate(100deg);
 
 .ts-speaker-popup .ts-speaker-popup-img img {
     width: 100%;
+    height: 80vh;
+    object-fit: cover;
+    object-position: top;
 }
 
 .ts-speaker-popup .ts-speaker-popup-content {
