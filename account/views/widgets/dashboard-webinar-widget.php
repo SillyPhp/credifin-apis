@@ -17,7 +17,7 @@ use Yii\helpers\Url;
       <div class="banner-right-side">
         <h1>UPCOMING WEBINAR</h1>
         <h6>
-          Oct 23, 2021 | 4:00 PM - 5:00 PM
+          Oct 23, 2021 | 4:00 PM - 5:00 PM 
         </h6>
         <div class="banner-text">
           <h1>
