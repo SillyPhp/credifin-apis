@@ -180,7 +180,7 @@ class NotificationEmails extends Component
         $data = Webinar::find()
             ->alias('a')
             ->select(['a.webinar_enc_id',
-                'CASE WHEN a.email_sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.email_sharing_image_location, "/", a.email_sharing_image) END image',
+                'CASE WHEN a.email_sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", a.email_sharing_image_location, "/", a.email_sharing_image) END image',
                 'slug','a.title','other_platforms','GROUP_CONCAT(DISTINCT CONCAT(e.first_name," ",e.last_name)) speakers','GROUP_CONCAT(DISTINCT DATE_FORMAT(b.start_datetime, "%d-%M-%y")) date','GROUP_CONCAT(DISTINCT DATE_FORMAT(b.start_datetime, "%H:%i %p")) time'])
             ->joinWith(['webinarEvents b'=>function($b){
                 $b->joinWith(['webinarSpeakers c'=>function($b){
