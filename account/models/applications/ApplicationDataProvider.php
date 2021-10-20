@@ -171,6 +171,9 @@ class ApplicationDataProvider extends Model
         $employerApplicationsModel->last_date = date('Y-m-d', strtotime($model->last_date));
         $employerApplicationsModel->last_updated_on = date('Y-m-d H:i:s');
         $employerApplicationsModel->last_updated_by = Yii::$app->user->identity->user_enc_id;
+        $employerApplicationsModel->image = null;
+        $employerApplicationsModel->square_image = null;
+        $employerApplicationsModel->story_image = null;
         if ($employerApplicationsModel->save())
         {
             $flag++;
