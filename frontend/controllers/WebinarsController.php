@@ -205,7 +205,8 @@ class WebinarsController extends Controller
                 'userInterest' => $userInterest,
                 'dateEvents' => $dateEvents,
                 'nextEvent' => $nextEvent,
-                'webinar_link' => $user_link
+                'webinar_link' => $user_link,
+                'upcoming' =>  $upcomingWebinar = self::showWebinar($status = 'upcoming')
             ]);
         } else {
             return $this->redirect('/');
