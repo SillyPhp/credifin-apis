@@ -562,7 +562,6 @@ if ($upcoming) {
         </div>
         <div class="row">
             <?php
-            if ($upcoming) {
                 foreach ($upcoming as $web) {
                     ?>
                     <div class="col-md-4 col-sm-6">
@@ -633,7 +632,6 @@ if ($upcoming) {
                     </div>
                     <?php
                 }
-            }
             ?>
         </div>
     </div>
