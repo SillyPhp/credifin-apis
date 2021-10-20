@@ -562,6 +562,7 @@ if ($upcoming) {
         </div>
         <div class="row">
             <?php
+            if ($upcoming) {
                 foreach ($upcoming as $web) {
                     ?>
                     <div class="col-md-4 col-sm-6">
@@ -570,7 +571,7 @@ if ($upcoming) {
                                 <a href="<?= Url::to("/webinar/" . $web['slug']) ?>">
                                     <img src="<?= $web['image'] ?>"></a>
                                 <div class="web-detail-date">
-                                    <div class="webinar-date">
+                                    <div class="web-date">
                                         <?php
                                         $eventDate = webDate($web['webinarEvents'][0]['start_datetime']);
                                         echo $eventDate;
@@ -585,53 +586,54 @@ if ($upcoming) {
                                 </div>
                             </div>
                             <div class="web-inr">
-                                <div class="web-title"><a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['title'] ?></a></div>
+                                <div class="web-title"><a
+                                            href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a>
+                                </div>
                                 <div class="web-speaker">
-                                    <ul class="speakersList">
-                                        <?php
-                                        foreach ($web['webinarEvents'] as $speakers) {
-                                            ?>
-                                            <li> <?= $speakers['speakers'] ?></li>
-                                            <?php
-                                        }
-                                        ?>
-                                    </ul>
+                                    <span><?= str_replace(',', ', </span><span>', trim($web['speakers'])) ?></span>
                                 </div>
                                 <div class="web-des"><?= $web['description'] ?></div>
                             </div>
                             <div class="reg-btn-count">
                                 <div class="register-count">
-                                    <!-- <div class="reg-img">
+                                    <div class="reg-img">
                                         <?php
-                                    if (count($web['webinarRegistrations']) > 0) {
-                                        $reg = 1;
-                                        foreach ($web['webinarRegistrations'] as $uImage) {
-                                            if ($uImage['image']) {
-                                                ?>
+                                        if (count($web['webinarRegistrations']) > 0) {
+                                            $reg = 1;
+                                            foreach ($web['webinarRegistrations'] as $uImage) {
+                                                if ($uImage['createdBy']['image']) {
+                                                    ?>
                                                     <span class="reg<?= $reg ?> reg">
-                                        <img src="<?= $uImage['image'] ?>">
+                                        <img src="<?= $uImage['createdBy']['image'] ?>">
                                     </span>
                                                     <?php
-                                                $reg++;
-                                            }
-                                            if ($reg == 4) {
-                                                break;
+                                                    $reg++;
+                                                }
+                                                if ($reg == 4) {
+                                                    break;
+                                                }
                                             }
                                         }
-                                    }
-                                    ?>
+                                        ?>
                                     </div>
-                                    <span class="count"> <?= count($web['webinarRegistrations']) ?> Registered</span> -->
+                                    <span class="cont"> <?= count($web['webinarRegistrations']) ?> Registered</span>
                                 </div>
-                                <div class="register-btns">
-                                    <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
-                                                class="icon-drib fa fa-arrow-right"></i> Register Now</a>
-                                </div>
+                                <?php if (array_search(Yii::$app->user->identity->user_enc_id, array_column($web['webinarRegistrations'], 'created_by'))) { ?>
+                                    <div class="register-btns">
+                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"> Registered</a>
+                                    </div>
+                                <?php } else { ?>
+                                    <div class="register-btns">
+                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
+                                                    class="icon-drib fa fa-arrow-right"></i> Register Now</a>
+                                    </div>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
                     <?php
                 }
+            }
             ?>
         </div>
     </div>
@@ -1109,6 +1111,26 @@ transform: rotate(100deg);
 .req-icon {
     max-width: 350px;
     margin: 0 auto;
+}
+.register-count {
+	font-family: roboto;
+	color: #f97364;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+}
+.reg img {
+    width: 35px;
+    border-radius: 81px;
+    height: 30px;
+    object-fit: cover;
+    border: 2px solid #fff;
+}
+.reg2.reg, .reg3.reg {
+    margin-left: -25px;
+}
+.cont {
+    margin-left: 5px;
 }
 .web-card {
 	border-radius: 6px;

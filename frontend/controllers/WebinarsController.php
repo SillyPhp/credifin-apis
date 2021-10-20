@@ -206,7 +206,7 @@ class WebinarsController extends Controller
                 'dateEvents' => $dateEvents,
                 'nextEvent' => $nextEvent,
                 'webinar_link' => $user_link,
-                'upcoming' =>  $upcomingWebinar = self::showWebinar($status = 'upcoming')
+                'upcoming' =>  self::showWebinar($status = 'upcoming', $webinar_id = $webinar['webinar_enc_id'])
             ]);
         } else {
             return $this->redirect('/');
@@ -560,7 +560,7 @@ class WebinarsController extends Controller
         ]);
     }
 
-    private function showWebinar($status, $userIdd = null, $sortAsc = true)
+    private function showWebinar($status, $userIdd = null, $sortAsc = true, $webinar_id = null)
     {
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
@@ -607,8 +607,11 @@ class WebinarsController extends Controller
             ->andWhere(['a.is_deleted' => 0])
             ->groupBy(['a.webinar_enc_id'])
             ->orderBy(['b.start_datetime' => $sortAsc ? SORT_ASC : SORT_DESC])
-            ->limit(6)
-            ->asArray()
+            ->limit(6);
+            if ($webinar_id != null) {
+                $webinars->andWhere(['not', ['a.webinar_enc_id' => $webinar_id]]);
+            }
+            $webinars = $webinars->asArray()
             ->all();
         return $webinars;
     }
