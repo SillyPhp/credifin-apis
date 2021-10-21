@@ -321,7 +321,7 @@ class DashboardController extends Controller
                 ->alias('a')
                 ->select(['a.webinar_enc_id', 'b.title', 'CONCAT(b4.first_name, " " ,b4.last_name) as speaker_name',
                     'CASE WHEN b4.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b4.image_location, "/", b4.image) END speaker_image',
-                    'a.unique_access_link'
+                    'a.unique_access_link', 'b1.start_datetime', 'b1.duration', 'b.webinar_conduct_on'
                 ])
                 ->joinWith(['webinarEnc b' => function ($b) use ($date_now) {
                     $b->joinWith(['webinarEvents b1' => function($b1) use ($date_now){
