@@ -10,6 +10,7 @@ use yii\web\View;
 use yii\widgets\Pjax;
 use frontend\assets\AppAssets;
 use frontend\widgets\login;
+use frontend\widgets\upcomingWebinar;
 
 AppAssets::register($this);
 ?>
@@ -81,29 +82,9 @@ AppAssets::register($this);
                
             
             
-            <section class="upcoming-webinar">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <div class="webinar-heading">
-                                Upcoming Webinar
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="webinar-name">
-                                New Investment Strategy
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="view-detail">
-                                <a href="/webinar/new-age-investment-strategies-10407" class="view-btn">
-                                    View Details
-                                </a>
-                            </div>
-                        </div>  
-                    </div>
-                </div>
-            </section>
+                <?php
+                echo upcomingWebinar::widget();
+                ?>
 
 
                 <?php
