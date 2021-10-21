@@ -66,6 +66,7 @@ function webDate($webDate)
     $newDate = date('d-M', $sec);
     return $newDate;
 }
+$baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory;
 ?>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <section>
@@ -536,7 +537,7 @@ function webDate($webDate)
                             <?php } ?>
                             <?php if ($oc['icon']) { ?>
                                 <div class="out-img">
-                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->webinars->outcome->icon . $oc['icon_location'] . DIRECTORY_SEPARATOR . $oc['icon']) ?>">
+                                    <img src="<?= Url::to($baseUrl.Yii::$app->params->upload_directories->webinars->outcome->icon . $oc['icon_location'] . DIRECTORY_SEPARATOR . $oc['icon']) ?>">
                                 </div>
                             <?php } else { ?>
                                 <div class="out-img">
