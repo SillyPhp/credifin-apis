@@ -1583,7 +1583,8 @@ $(document).on('click', '.shortlist-main', function (event) {
 		}
 	});
 });
-document.getElementById('submitData').addEventListener('click', function () {
+if(document.getElementById('submitData')){
+    document.getElementById('submitData').addEventListener('click', function () {
 	var applications = document.getElementsByName('applications');
 	var selected_value;
 	for (var i = 0; i < applications.length; i++) {
@@ -1608,6 +1609,7 @@ document.getElementById('submitData').addEventListener('click', function () {
 		}
 	});
 });
+}
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
