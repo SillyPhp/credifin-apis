@@ -1,12 +1,28 @@
 <?php
 
 use Yii\helpers\Url;
+
+$start_datetime = explode(' ', $webinar['start_datetime']);
+$date = date_create($start_datetime[0]);
+$time = date_create($start_datetime[1]);
+$startDate = date_format($date, 'd M Y');
+$startTime = date_format($time, 'h:i A');
+$endTime = date("h:i A", strtotime($startTime." + ".$webinar['duration']." minutes"));
+
+$speakers = explode(',', $webinar['speaker_name']);
+
 ?>
 
 <section class="webinar-banner">
   <img src="https://user-images.githubusercontent.com/72601463/136373680-e55a74a7-30df-4519-97cc-d7d6fdfc4ebc.png" class="left-bottom">
   <img src="https://user-images.githubusercontent.com/72601463/138056538-d1315d68-ce92-4d30-a68b-589838662d9d.png" class="right-top">
-  <span class="on-zoom">On Zoom</span>
+    <?php
+        if($webinar['webinar_conduct_on'] == 1){
+    ?>
+        <span class="on-zoom">On Zoom</span>
+    <?php
+        }
+    ?>
   <div class="row">
     <div class="col-md-4">
       <div class="banner-img">
@@ -17,13 +33,20 @@ use Yii\helpers\Url;
       <div class="banner-right-side">
         <h1>UPCOMING WEBINAR</h1>
         <h6>
-          Oct 23, 2021 | 4:00 PM - 5:00 PM 
+          <?= $startDate ?> | <?= $startTime ?> - <?= $endTime ?>
         </h6>
         <div class="banner-text">
           <h1>
             <?= $webinar['title'] ?>
           </h1>
-          <p><span><?= $webinar['speaker_name'] ?></span></p>
+            <?php
+                foreach($speakers as $speaker){
+                    ?>
+                    <p><span><?= $speaker ?></span></p>
+                    <?php
+                }
+            ?>
+
         </div>
         <div class="banner-btn">
           <a href="<?= $webinar['unique_access_link'] ?>" class="join-link">View Detail</a>
