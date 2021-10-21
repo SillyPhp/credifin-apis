@@ -651,7 +651,7 @@ class WebinarsController extends ApiBaseController
             foreach ($params['speakers'] as $s) {
                 $speaker_request = new WebinarRequestSpeakers();
                 $speaker_request->request_speaker_enc_id = Yii::$app->security->generateRandomString();
-                $speaker_request->speakerEnc = $s;
+                $speaker_request->speaker_enc_id = $s['speaker_enc_id'];
                 $speaker_request->webinar_request_enc_id = $webinar_request->request_enc_id;
                 $speaker_request->created_by = $user->user_enc_id;
                 $speaker_request->created_on = date('Y-m-d H:i:s');
