@@ -393,18 +393,6 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
     </div>
 </div>
 <!-- sharing widget end -->
-<!-- problem widget start -->
-<section class="cntct">
-    <div class="container">
-        <div class="row">
-            <div class="contact-req">
-                <h3>if you are facing any problem during registration call us on :</h3>
-                <a href="tel:+917009076638">+917009076638</a>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- problem widget end -->
 <!-- ts speaker start-->
 <section id="ts-speakers" class="ts-speakers speaker-classic">
     <div class="container">
@@ -640,6 +628,18 @@ if ($upcoming) {
 <?php
 }
 ?>
+<!-- problem widget start -->
+<section class="cntct">
+    <div class="container">
+        <div class="row">
+            <div class="contact-req">
+                <h3>if you are facing any problem during registration call us on :</h3>
+                <a href="tel:+917009076638">+917009076638</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- problem widget end -->
 <?php
 function color_mod($hex, $diff)
 {
