@@ -129,7 +129,7 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                     <div class="countdown gradient clearfix">
                         <?php if ($is_expired) { ?>
                             <div>
-                                <p class="expiredtext">This Webinar Is Expired</p>
+                                <p class="expiredtext">This Webinar Has Expired</p>
                             </div>
                         <?php } elseif ($webinar['status'] == 1 || $webinar['status'] == 0) { ?>
                             <div id="join">
