@@ -49,7 +49,7 @@ $speakers = explode(',', $webinar['speaker_name']);
 
         </div>
         <div class="banner-btn">
-          <a href="<?= 'webinar/'.$webinar['slug'] ?>" class="join-link">View Detail</a>
+          <a href="<?= '/webinar/'.$webinar['slug'] ?>" class="join-link">View Detail</a>
         </div>
       </div>
     </div>
