@@ -23,9 +23,10 @@ class upcomingWebinar extends Widget
             ->orderBy(['b.start_datetime' => SORT_ASC])
             ->asArray()
             ->one();
-
-        return $this->render('@frontend/views/widgets/WebinarHeaderBar', [
-            'upcomingWebinar' => $upcomingWebinar
-        ]);
+        if($upcomingWebinar){
+            return $this->render('@frontend/views/widgets/WebinarHeaderBar', [
+                'upcomingWebinar' => $upcomingWebinar
+            ]);
+        }
     }
 }

@@ -16,7 +16,7 @@ use yii\helpers\Url;
                         Enjoy <span>0</span> Processing Fee on Education Loans
                     </h1>
                     <p class="banner-description">
-                        Offer valid till 15th of October
+                        Offer valid till 5th of November
                     </p>
                     <a href="<?= $availUrl ?>" class="avail-btn">
                         <span>Avail Now</span>

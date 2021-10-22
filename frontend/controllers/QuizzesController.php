@@ -7,6 +7,8 @@ use common\models\QuizAnswersPool;
 use common\models\QuizPool;
 use common\models\QuizSubmittedAnswers;
 use common\models\Quizzes;
+use common\models\Webinar;
+use common\models\WebinarRegistrations;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -238,6 +240,14 @@ class QuizzesController extends Controller
                 ]);
                 break;
             case 6:
+                if ($slug == 'investment-strategies-quiz') {
+                    $webinar_id = Webinar::findOne(['slug' => 'new-age-investment-strategies-10407', 'is_deleted' => 0])->webinar_enc_id;
+                    $user_reg = WebinarRegistrations::findOne(['webinar_enc_id' => $webinar_id, 'created_by' => Yii::$app->user->identity->user_enc_id, 'status' => 1, 'is_deleted' => 0]);
+                    if (!$user_reg) {
+                        Yii::$app->session->setFlash('success', "Please Register This Webinar to play quiz");
+                        return $this->redirect(['/webinar/new-age-investment-strategies-10407']);
+                    }
+                }
                 $this->layout = 'quiz6-main';
                 $result = QuizSubmittedAnswers::find()
                     ->select(['answer_enc_id'])
@@ -316,10 +326,12 @@ class QuizzesController extends Controller
             ];
         }
     }
+
     public function actionSubjectPage()
     {
         return $this->render('subject-page');
     }
+
     public function actionTopics()
     {
         return $this->render('topics');

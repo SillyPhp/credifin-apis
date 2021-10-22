@@ -85,6 +85,6 @@ class TestCacheController extends Controller
     }
 
     public function actionModule(){
-       return Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image;
+       return Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image;
     }
 }

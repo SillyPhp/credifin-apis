@@ -31,7 +31,7 @@ class Webinar extends \common\models\Webinar
                 'a.price',
                 'a.seats',
                 'a.slug',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", a.image_location, "/", a.image) END image',
                 'GROUP_CONCAT(DISTINCT(CONCAT(f.first_name, " " ,f.last_name)) SEPARATOR ",") speakers'
             ])
             ->joinWith(['assignedWebinarTos b'], false)
@@ -100,7 +100,7 @@ class Webinar extends \common\models\Webinar
                 'a.availability',
                 'a.webinar_conduct_on',
                 'a.other_platforms',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", a.image_location, "/", a.image) END image',
             ])
             ->joinWith(['assignedWebinarTos b'], false)
             ->joinWith(['webinarOutcomes e' => function ($e) {
@@ -109,7 +109,7 @@ class Webinar extends \common\models\Webinar
                     'e.webinar_enc_id',
                     'e1.name',
                     'e1.bg_colour',
-                    'CASE WHEN e1.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->webinars->outcome->icon, 'https') . '", e1.icon_location, "/", e1.icon) ELSE "' . Url::to('@eyAssets/images/pages/webinar/default-outcome.png', 'https') . '" END icon'
+                    'CASE WHEN e1.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->outcome->icon, 'https') . '", e1.icon_location, "/", e1.icon) ELSE "' . Url::to('@eyAssets/images/pages/webinar/default-outcome.png', 'https') . '" END icon'
                 ]);
                 $e->joinWith(['outcomePoolEnc e1'], false);
             }])
@@ -339,7 +339,7 @@ class Webinar extends \common\models\Webinar
                 'a.price',
                 'a.seats',
                 'a.slug',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", a.image_location, "/", a.image) END image',
 
             ])
             ->joinWith(['assignedWebinarTos b'], false)
