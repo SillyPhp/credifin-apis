@@ -11,7 +11,7 @@ var screenClient = AgoraRTC.createClient({mode: 'rtc', codec: 'vp8'});
 var mainStreamId; // reference to main stream
 // set video profile
 // [full list: https://docs.agora.io/en/Interactive%20Broadcast/videoProfile_web?platform=Web#video-profile-table]
-var cameraVideoProfile = "720_2"; // 960 × 720 @ 30fps  & 750kbs
+var cameraVideoProfile = "480p"; // 960 × 720 @ 30fps  & 750kbs
 var sharingProfileRes = "720p_1";
 
 // keep track of streams

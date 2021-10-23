@@ -127,7 +127,7 @@ class WebinarsController extends ApiBaseController
                     $registered_count = WebinarRegistrations::find()
                         ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $w['webinar_enc_id']])
                         ->count();
-                    $webinar[$i]['count'] = $registered_count;
+                    $webinar[$i]['count'] = ($w['slug'] == 'new-age-investment-strategies-10407') ? ($registered_count * 2) : $registered_count;
                     $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
                     $webinar[$i]['is_registered'] = $user_registered;
                     $webinar[$i]['webinarRegistrations'] = $webinar_model->registeredUsers($w['webinar_enc_id']);
@@ -269,7 +269,7 @@ class WebinarsController extends ApiBaseController
 
             $webinar = WebinarEvents::find()
                 ->alias('a')
-                ->select(['a.event_enc_id', 'a.webinar_enc_id', 'a.start_datetime', 'a.title', 'a.description'])
+                ->select(['a.event_enc_id', 'a.webinar_enc_id', 'a.start_datetime', 'a.title', 'a.description', 'a.show_chat'])
                 ->joinWith(['webinarSpeakers b' => function ($b) {
                     $b->select(['b.webinar_event_enc_id',
                         'b.speaker_enc_id',
@@ -391,7 +391,7 @@ class WebinarsController extends ApiBaseController
                 ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
                 ->count();
             $webinar['webinarRegistrations'] = $webinar_model->registeredUsers($webinar['webinar_enc_id']);
-            $webinar['registered_count'] = $registered_count;
+            $webinar['registered_count'] = ($webinar['slug'] == 'new-age-investment-strategies-10407') ? ($registered_count * 2) : $registered_count;
 
             $webinar['is_registered'] = $user_registered;
 
