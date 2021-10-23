@@ -38,10 +38,22 @@ $time = date('Y/m/d H:i:s', strtotime($upcomingDateTime));
                 </div>
             </div>
             <div class="msg-input">
+                <?php
+                if($showChat == 1){
+                ?>
                 <form class="form-flex">
                     <textarea class="send-msg" placeholder="Message"></textarea>
                     <button type="button" class="sendMessage"><i class="fas fa-comment"></i></button>
                 </form>
+                <?php }
+                else {
+                    ?>
+                    <form class="form-flex">
+                        <textarea placeholder="Chat has been disabled by admin" style="width:100%;" disabled></textarea>
+                    </form>
+                <?php
+                }
+                ?>
             </div>
         </div>
     </div>
@@ -604,7 +616,10 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             document.getElementById('viewers').innerText = result2.length + tempData;
         });
     });
+<?php
 
+if ($showChat == 1) {
+?>
     document.querySelector('.sendMessage').addEventListener('click', sendMessage);
     let messageText = document.querySelector('.send-msg')
     messageText.addEventListener('keyup', function (event) {
@@ -651,7 +666,9 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             document.getElementById('scroll-chat').scrollTop = myElement;
         }
     }
-
+<?php
+}
+?>
     function uniqueId() {
         var result = '';
         var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
