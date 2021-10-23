@@ -48,7 +48,7 @@ if ($result == Null) {
             <h3><?= $quiz['name'] ?></h3>
             <hr/>
             <div class="detail-body">
-                <h4>Before you begin</h4>
+                <h4 style="color:red;font-style: italic;">Before you begin</h4>
                 <p>Quiz must be completed in one session, make sure that you have a stable internet connection & you must
                     finish the quiz.</p>
                 <p>Your results will be displayed at the end of the quiz.</p>
