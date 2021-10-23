@@ -318,6 +318,7 @@ class MentorsController extends Controller
             ]);
         }
         $webinars = self::getWebianrs($id);
+        $showChat = WebinarEvents::findOne(['session_enc_id' => $id])->show_chat;
         return $this->render('webinar-view', [
             'type' => $type,
             'webinars' => $webinars,
@@ -325,6 +326,7 @@ class MentorsController extends Controller
             'dateEvents' => $dateEvents,
             'upcomingEvent' => $upcomingEvent,
             'upcomingDateTime' => $upcomingDateTime,
+            'showChat'=>$showChat
         ]);
     }
 
@@ -340,11 +342,13 @@ class MentorsController extends Controller
         if (!in_array($user_id, $speakerUserIds) && $nextEvent['session_enc_id'] != $id) {
             throw new HttpException(404, Yii::t('frontend', 'Page not found'));
         }
+
         if (in_array(Yii::$app->user->identity->user_enc_id, $speakerUserIds)) {
             return $this->render('webinar-view', [
                 'type' => $type,
                 'webinars' => $webinars,
-                'webinarDetail' => $webinarDetail
+                'webinarDetail' => $webinarDetail,
+                'showChat'=>1
             ]);
         } else {
             return $this->render('non-authorized');
