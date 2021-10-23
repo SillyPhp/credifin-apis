@@ -122,7 +122,7 @@ if ($result == Null) {
                                     <i class="fa fa-check-circle-o is-active"></i>
                                 </span>
                                     <h2 class="title">You have already taken this quiz!</h2>
-                                    <p class="subtitle">Total score: <?= $result; ?> / <?= $noOfQuestion['num_of_ques'];?></p>
+                                    <p class="subtitle">Your score: <?= $result; ?> / <?= $noOfQuestion['num_of_ques'];?></p>
                                 </div>
                             </div>
                         </div>
