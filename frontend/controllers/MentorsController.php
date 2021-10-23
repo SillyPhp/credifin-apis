@@ -418,6 +418,7 @@ class MentorsController extends Controller
                     'a1.description',
                     "ADDDATE(a1.start_datetime, INTERVAL a1.duration MINUTE) as end_datetime",
                     'a1.status',
+                    'a1.show_chat'
                 ]);
                 $a1->joinWith(['sessionEnc e'], false);
                 $a1->joinWith(['webinarSpeakers a2' => function ($d) {
@@ -560,7 +561,7 @@ class MentorsController extends Controller
                     'c.logo org_logo', 'c.logo_location org_logo_location',
                     'c.name org_name'
                 ])
-                ->where(['a.is_deleted' => 0, 'is_star' =>1])
+                ->where(['a.is_deleted' => 0, 'is_star' => 1])
                 ->joinWith(['designationEnc b'], false)
                 ->joinWith(['unclaimedOrg c'], false)
                 ->joinWith(['speakerExpertises d' => function ($d) {

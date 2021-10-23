@@ -269,7 +269,7 @@ class WebinarsController extends ApiBaseController
 
             $webinar = WebinarEvents::find()
                 ->alias('a')
-                ->select(['a.event_enc_id', 'a.webinar_enc_id', 'a.start_datetime', 'a.title', 'a.description'])
+                ->select(['a.event_enc_id', 'a.webinar_enc_id', 'a.start_datetime', 'a.title', 'a.description','a.show_chat'])
                 ->joinWith(['webinarSpeakers b' => function ($b) {
                     $b->select(['b.webinar_event_enc_id',
                         'b.speaker_enc_id',
