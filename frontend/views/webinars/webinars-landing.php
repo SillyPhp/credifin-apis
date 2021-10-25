@@ -42,7 +42,9 @@ function webDate($webDate)
         </div>
     </div>
 </section>
-
+<?php
+if ($upcomingWebinar) {
+?>
 <section class="upcoming-web">
     <div class="container">
         <div class="row">
@@ -50,7 +52,7 @@ function webDate($webDate)
         </div>
         <div class="row">
             <?php
-            if ($upcomingWebinar) {
+
                 foreach ($upcomingWebinar as $web) {
                     ?>
                     <div class="col-md-4 col-sm-6">
@@ -128,12 +130,13 @@ function webDate($webDate)
                     </div>
                     <?php
                 }
-            }
             ?>
         </div>
     </div>
 </section>
-
+<?php
+}
+?>
 <section class="how-it-works">
     <div class="container">
         <div class="row">
