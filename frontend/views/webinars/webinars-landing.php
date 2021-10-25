@@ -82,14 +82,10 @@ if ($upcomingWebinar) {
                                 <div class="web-speaker">
                                     <span><?= str_replace(',', ', </span><span>', trim($web['speakers'])) ?></span>
                                 </div>
-                                <div class="web-info">
-                                    <p><img src="<?= Url::to('@eyAssets/images/pages/webinar/icons8-calendar.png') ?>" alt=""><span>Oct 31, 2021</span></p>
-                                    <p><img src="<?= Url::to('@eyAssets/images/pages/webinar/icons8-time.png') ?>" alt=""><span>4:00PM-5:00PM</span></p>
-                                    <p><img src="<?= Url::to('@eyAssets/images/pages/webinar/icons8-user.png') ?>" alt=""><span>12 Registered</span></p>
-                            </div>
+                                <div class="web-des"><?= $web['description'] ?></div>
                             </div>
                             <div class="reg-btn-count">
-                                <!-- <div class="register-count">
+                                <div class="register-count">
                                     <div class="reg-img">
                                         <?php
                                         if (count($web['webinarRegistrations']) > 0) {
@@ -110,8 +106,8 @@ if ($upcomingWebinar) {
                                         }
                                         ?>
                                     </div>
-                                    <span class="cont"> <?= ($web["slug"] == "new-age-investment-strategies-10407") ? 2 * count($web['webinarRegistrations']) : count($web['webinarRegistrations']); ?> Registered</span>
-                                </div> -->
+                                    <span class="cont"> <?= count($web['webinarRegistrations']) ?> Registered</span>
+                                </div>
                                 <?php if (array_search(Yii::$app->user->identity->user_enc_id, array_column($web['webinarRegistrations'], 'created_by'))) { ?>
                                     <div class="register-btns">
                                         <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib">
@@ -123,8 +119,6 @@ if ($upcomingWebinar) {
                                                     class="icon-drib fa fa-arrow-right"></i> Register Now</a>
                                     </div>
                                 <?php } ?>
-
-                                <div class="price">Rs. 120</div>
                             </div>
                         </div>
                     </div>
@@ -224,11 +218,7 @@ if ($optedWebinar) {
                                 <div class="web-speaker">
                                     <span><?= str_replace(',', ', </span><span>', trim($opWeb['speakers'])) ?></span></span>
                                 </div>
-                                <div class="web-info">
-                                    <p><img src="<?= Url::to('@eyAssets/images/pages/webinar/icons8-calendar.png') ?>" alt=""><span>Oct 31, 2021</span></p>
-                                    <p><img src="<?= Url::to('@eyAssets/images/pages/webinar/icons8-time.png') ?>" alt=""><span>4:00PM-5:00PM</span></p>
-                                    <p><img src="<?= Url::to('@eyAssets/images/pages/webinar/icons8-users.png') ?>" alt=""><span>12 Registered</span></p>
-                            </div>
+                                <div class="web-des"><?= $opWeb['description'] ?></div>
                             </div>
                             <div class="reg-btn-count">
                                 <div class="register-btns">
@@ -320,11 +310,7 @@ if ($optedWebinar) {
                                     <?= $pWeb['name'] ?></a></div>
                             <div class="web-speaker">
                                 <span><?= str_replace(',', ', </span><span>', trim($pWeb['speakers'])) ?></span></div>
-                            <div class="web-info">
-                                    <p><img src="<?= Url::to('@eyAssets/images/pages/webinar/icons8-calendar.png') ?>" alt=""><span>Oct 31, 2021</span></p>
-                                    <p><img src="<?= Url::to('@eyAssets/images/pages/webinar/icons8-time.png') ?>" alt=""><span>4:00PM-5:00PM</span></p>
-                                    <p><img src="<?= Url::to('@eyAssets/images/pages/webinar/icons8-users.png') ?>" alt=""><span>12 Registered</span></p>
-                            </div>
+                            <div class="web-des"><?= $pWeb['description'] ?></div>
                         </div>
                     </div>
                 </div>
