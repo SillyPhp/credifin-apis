@@ -839,7 +839,7 @@ color: #fff !important;
     margin-top: 0px !important;
 }
 .ornge {
-    color: #ff7803;
+    color: #000;
     font-weight:500;
 }
 .speakers{
