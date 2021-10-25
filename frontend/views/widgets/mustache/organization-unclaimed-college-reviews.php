@@ -31,8 +31,8 @@ $link = Url::to($org_slug . '/reviews', true);
                 <div class="col-md-10 col-sm-10 user-review-main">
                     <div class="col-md-6 col-sm-6">
                         <div class="com-rating">
-                            <div class="average-star" data-score="{{average}}"></div>
-                            <div class="num-rate">{{average}}/5</div>
+                            <div class="average-star" data-score="{{average_rating}}"></div>
+                            <div class="num-rate">{{average_rating}}/5</div>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
@@ -57,31 +57,31 @@ $link = Url::to($org_slug . '/reviews', true);
                     <div class="row">
                         <div class="col-md-12 user-rating">
                             <div class="ur-bg padd-lr-5">
-                                <div class="urating">{{academics}}/5</div>
+                                <div class="urating">{{rating.Academics}}/5</div>
                                 <div class="uratingtitle">Academics</div>
                             </div>
                             <div class="ur-bg light-bg padding-none">
-                                <div class="urating">{{faculty_teaching_quality}}/5</div>
+                                <div class="urating">{{rating.Faculty_Teaching_Quality}}/5</div>
                                 <div class="uratingtitle">Faculty & Teaching Quality</div>
                             </div>
                             <div class="ur-bg">
-                                <div class="urating">{{infrastructure}}/5</div>
+                                <div class="urating">{{rating.Infrastructure}}/5</div>
                                 <div class="uratingtitle">Infrastructure</div>
                             </div>
                             <div class="ur-bg light-bg">
-                                <div class="urating">{{accomodation_food}}/5</div>
+                                <div class="urating">{{rating.Accomodation_Food}}/5</div>
                                 <div class="uratingtitle">Accomodation Food</div>
                             </div>
                             <div class="ur-bg">
-                                <div class="urating">{{placements_internships}}/5</div>
+                                <div class="urating">{{rating.Placements_Internships}}/5</div>
                                 <div class="uratingtitle">Placements /Internships</div>
                             </div>
                             <div class="ur-bg light-bg">
-                                <div class="urating">{{social_life_extracurriculars}}/5</div>
+                                <div class="urating">{{rating.Social_Life_Extracurriculars}}/5</div>
                                 <div class="uratingtitle">Social Life & Extracurriculars</div>
                             </div>
                             <div class="ur-bg">
-                                <div class="urating">{{culture_diversity}}/5</div>
+                                <div class="urating">{{rating.Culture_Diversity}}/5</div>
                                 <div class="uratingtitle">Culture Diversity</div>
                             </div>
                         </div>
@@ -92,11 +92,11 @@ $link = Url::to($org_slug . '/reviews', true);
                             <i class="fab fa-facebook-square"
                                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                             <i class="fab fa-twitter-square"
-                               onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                               onclick="window.open('https://twitter.com/intent/tweet?text={{seo_title}}&url= {{seo_link}}', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                             <i class="fab fa-linkedin"
-                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                               onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url={{seo_link}}&title={{seo_title}}&summary={{seo_title}}', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                             <i class="fab fa-whatsapp wa_icon_hover"
-                               onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                               onclick="window.open('https://api.whatsapp.com/send?text={{seo_link}}', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
@@ -118,6 +118,10 @@ $link = Url::to($org_slug . '/reviews', true);
     </script>
 <?php
 $this->registerCss("
+.rev-image {
+	text-align: center;
+	margin: 40px;
+}
 .ur-bg{
    background:#edecec;
     color: #000;
@@ -132,9 +136,10 @@ $this->registerCss("
     text-align:center;
     padding-top:20px;
 }
-.heading_style_1
-{
-font-size:18px;
+.heading_style_1 {
+	font-size: 18px;
+	text-align: center;
+	font-family: roboto;
 }
 @media only screen and (max-width: 767px){
     .ur-bg {
@@ -185,7 +190,7 @@ function getStudentReviews(limit=null,offset=null) {
                        $('#load_more_btn1').hide();
                    }
             } else if(response.status === 201){
-                $("#org-students-reviews").html('<div class = "heading_style_1">Currenlty No Review Has Been Given To This Company</div>');
+                $("#org-students-reviews").html('<div><div class = "rev-image"><img src="/assets/themes/ey/images/pages/landing/no-reviews.png"></div><p class = "heading_style_1">Currenlty No Review Has Been Given To This Company</p></div>');
                 $('.viewbtn').hide();
                 $('#load_more_btn1').hide();
             }

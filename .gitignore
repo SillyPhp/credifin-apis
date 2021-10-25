@@ -11,3 +11,4 @@ common/models/RandomColors.php
 common/models/UserLogin.php
 common/models/Utilities.php
 vendor
+.vscode

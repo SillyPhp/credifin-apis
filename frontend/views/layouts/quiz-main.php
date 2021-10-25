@@ -18,12 +18,17 @@ $this->beginPage();
         <title><?= Html::encode((!empty($this->title)) ? Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name : Yii::$app->params->site_name); ?></title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
-        <?php
+        <?php if(Yii::$app->params->options->crawl) { ?>
+            <meta name="robots" content="index"/>
+        <?php } else { ?>
+            <meta name="robots" content="noindex,nofollow"/>
+            <meta name="googlebot" content="noindex,nofollow">
+        <?php }
         if ($this->params['seo_tags']) {
             foreach ($this->params['seo_tags']['rel'] as $key => $value) {
                 $this->registerLinkTag([
                     'rel' => $key,
-                    'href' => $value,
+                    'href' => Url::to($value,'https'),
                 ]);
             }
             foreach ($this->params['seo_tags']['name'] as $key => $value) {

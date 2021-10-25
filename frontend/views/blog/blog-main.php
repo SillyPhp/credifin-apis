@@ -6,14 +6,26 @@ $this->registerCssFile('@eyAssets/css/blog-main.css');
 ?>
 
     <section class="blog-header">
-        <img src="<?= Url::to('@eyAssets/images/pages/blog/blog-cover.png ') ?>" alt=""/>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12 set-flex">
+                    <div class="blog-txt">
+                        <h1>Blogging</h1>
+                        <h2>100+ Interesting Blogs & Articles to Read</h2>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 blog-icon col-xs-12">
+                    <img src="<?= Url::to('@eyAssets/images/pages/blog/blog-icon.png') ?>"/>
+                </div>
+            </div>
+        </div>
     </section>
     <section class="background-mirror blog-section-0">
         <div class="container">
             <div class="row">
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
-                        <h2 class="heading-style"><?= Yii::t('frontend', 'Featured Blog'); ?></h2>
+                        <h1 class="heading-style"><?= Yii::t('frontend', 'Informative Blogs to Read'); ?></h1>
                     </div>
                     <div class="col-md-3 col-xs-3">
                         <!-- Controls -->
@@ -76,8 +88,11 @@ $this->registerCssFile('@eyAssets/css/blog-main.css');
                     </div>
                 </div>
             </div>
-
-
+            <div class="row">
+                <div class="view-all-articles">
+                    <a href="<?= Url::to('/blog/category/articles'); ?>" class="artic">view all</a>
+                </div>
+            </div>
         </div>
     </section>
     <!--    <section class="blog-section-1">-->
@@ -172,68 +187,63 @@ $this->registerCssFile('@eyAssets/css/blog-main.css');
     <!--            </div>-->
     <!--        </div>-->
     <!--    </section>-->
-<!--    <section class="bg-black">-->
-<!--        <div class="container">-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-6 col-xs-4">-->
-<!--                    <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>-->
-<!--                    <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;">--><?//= Yii::t('frontend', 'Quiz'); ?><!--</h3>-->
-<!--                </div>-->
-<!--                <div class="col-md-6 col-sm-6">-->
-<!--                    <div class="type-1">-->
-<!--                        <div>-->
-<!--                            <a href="--><?//= Url::to('/site/all-quiz'); ?><!--" class="btn btn-3">-->
-<!--                                <span class="txt">--><?//= Yii::t('frontend', 'View all Quizzes'); ?><!--</span>-->
-<!--                                <span class="round"><i class="fas fa-chevron-right"></i></span>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-4">-->
-<!--                    <div class="q-box">-->
-<!--                        <a title="world-cup-quiz-volume-3" href="/quiz/world-cup-quiz-volume-3">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/vlm3.png') ?><!--" alt="World Cup 2019 Quiz"-->
-<!--                                 class="q-box-img">-->
-<!--                            <div class="q-box-hover">-->
-<!--                                <div class="text2">Take Quiz</div>-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-4">-->
-<!--                    <div class="q-box">-->
-<!--                        <a title="Independence Quiz" href="/quiz/how-well-do-you-know-about-independence-daylevel-three">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/independence.jpg') ?><!--"-->
-<!--                                 alt="World Cup 2019 Quiz vol-2" class="q-box-img">-->
-<!--                            <div class="q-box-hover">-->
-<!--                                <div class="text2">Take Quiz</div>-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-4">-->
-<!--                    <div class="q-box">-->
-<!--                        <a title="History Quiz" href="/quiz/history-quiz">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/history.jpg') ?><!--"-->
-<!--                                 alt="Yuvraj Singh Quiz" class="q-box-img">-->
-<!--                            <div class="q-box-hover">-->
-<!--                                <div class="text2">Take Quiz</div>-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
+    <!--    <section class="bg-black">-->
+    <!--        <div class="container">-->
+    <!--            <div class="row">-->
+    <!--                <div class="col-md-6 col-xs-4">-->
+    <!--                    <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>-->
+    <!--                    <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;">--><? //= Yii::t('frontend', 'Quiz'); ?><!--</h3>-->
+    <!--                </div>-->
+    <!--                <div class="col-md-6 col-sm-6">-->
+    <!--                    <div class="type-1">-->
+    <!--                        <div>-->
+    <!--                            <a href="--><? //= Url::to('/site/all-quiz'); ?><!--" class="btn btn-3">-->
+    <!--                                <span class="txt">--><? //= Yii::t('frontend', 'View all Quizzes'); ?><!--</span>-->
+    <!--                                <span class="round"><i class="fas fa-chevron-right"></i></span>-->
+    <!--                            </a>-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--            <div class="row">-->
+    <!--                <div class="col-md-4">-->
+    <!--                    <div class="q-box">-->
+    <!--                        <a title="world-cup-quiz-volume-3" href="/quiz/world-cup-quiz-volume-3">-->
+    <!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/quiz/vlm3.png') ?><!--" alt="World Cup 2019 Quiz"-->
+    <!--                                 class="q-box-img">-->
+    <!--                            <div class="q-box-hover">-->
+    <!--                                <div class="text2">Take Quiz</div>-->
+    <!--                            </div>-->
+    <!--                        </a>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--                <div class="col-md-4">-->
+    <!--                    <div class="q-box">-->
+    <!--                        <a title="Independence Quiz" href="/quiz/how-well-do-you-know-about-independence-daylevel-three">-->
+    <!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/quiz/independence.jpg') ?><!--"-->
+    <!--                                 alt="World Cup 2019 Quiz vol-2" class="q-box-img">-->
+    <!--                            <div class="q-box-hover">-->
+    <!--                                <div class="text2">Take Quiz</div>-->
+    <!--                            </div>-->
+    <!--                        </a>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--                <div class="col-md-4">-->
+    <!--                    <div class="q-box">-->
+    <!--                        <a title="History Quiz" href="/quiz/history-quiz">-->
+    <!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/quiz/history.jpg') ?><!--"-->
+    <!--                                 alt="Yuvraj Singh Quiz" class="q-box-img">-->
+    <!--                            <div class="q-box-hover">-->
+    <!--                                <div class="text2">Take Quiz</div>-->
+    <!--                            </div>-->
+    <!--                        </a>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </section>-->
     <section class="blog-section-2">
         <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h2 class="heading-style"><?= Yii::t('frontend', 'Other Blogs'); ?></h2>
-                </div>
-            </div>
             <div class="col-md-3 col-sm-12">
                 <div class="row">
                     <div class="col-md-12">
@@ -258,6 +268,11 @@ $this->registerCssFile('@eyAssets/css/blog-main.css');
             </div>
             <div class="col-md-3">
                 <div class="trending-posts">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?= $this->render('/widgets/follow-widget') ?>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="trending-heading">Trending Posts</div>
@@ -296,6 +311,9 @@ $this->registerCssFile('@eyAssets/css/blog-main.css');
             </div>
         </div>
     </section>
+
+<?= $this->render('/widgets/news-update') ?>
+
 <?php
 if (!empty($quotes)) {
     ?>
@@ -314,7 +332,7 @@ if (!empty($quotes)) {
         <div class="my-container">
             <div class="container pt-20 pb-5">
                 <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
-                <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Food Of Thoughts'); ?></h3>
+                <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Food for Thoughts'); ?></h3>
                 <div class="row">
                     <div class="col-md-12">
                         <article class="post clearfix">
@@ -360,6 +378,79 @@ echo $this->render('/widgets/blogs/whats-new');
 echo $this->render('/widgets/blogs/popular-blogs');
 echo $this->render('/widgets/blogs/trending-posts');
 $this->registerCss('
+.set-flex {
+    display: flex;
+	justify-content: flex-start;
+	align-items: flex-end;
+	padding-left: 60px;
+	min-height: 380px;
+}
+.blog-header{
+    background-image: url(' . Url::to('@eyAssets/images/pages/blog/blog-hdrbg.png') . ');
+    background-repeat: no-repeat;
+    background-position: left top;
+    min-height: 450px;
+    background-size: cover;
+}
+.blog-icon img{
+    width: 580px;
+}
+.blog-icon{
+    text-align: right;
+	padding: 0;
+	min-height: 430px;
+	display: flex;
+	align-items: flex-end;
+	justify-content: flex-end;
+}
+.blog-txt h1{
+    font-family: lobster;
+    font-size: 60px;
+    font-weight: 600;
+}
+.blog-txt h2{
+    font-family: lora;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.col-item {
+	box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+.col-item .photo img{
+    object-fit:cover !important;
+}
+.col-item .info{
+    text-align:center;
+    font-family:roboto;
+}
+.col-item .price h5{
+    font-size:16px;
+    display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+.view-all-articles {
+	text-align: center;
+	margin: 25px 0 0;
+}
+.artic {
+    border:2px solid transparent;
+	background-color: #00a0e3;
+	color: #fff;
+	font-size: 18px;
+	font-family: roboto;
+	padding: 7px 30px;
+	border-radius: 4px;
+	text-transform: capitalize;
+	transition: all .3s;
+}
+.artic:hover{
+    background-color:#fff;
+    color:#00a0e3;
+    border:2px solid #00a0e3;
+}
 .price > h5{
     font-family:roboto;
 }
@@ -758,25 +849,20 @@ $this->registerCss('
     width: 253px;
     height: 320px;
     margin: 0 auto;
-    padding: 50px;
+    padding: 50px 0;
     top:-10px;
     left:-10px;
     transition-timing-function: linear;
     z-index:300;
 }
 .zoom img{
-    width:150px;
     height:200px;
     z-index:-500;
-    position:absolute;
 }
 .zoom:hover{
-    -ms-transform: scale(1.5,1.5); /* IE 9 */
-    -webkit-transform: scale(1.5,1.5); /* Safari 3-8 */
-    transform: scale(1.5,1.5); 
-    top:0%;
-    left:0;
-    position: absolute;
+    -ms-transform: scale(1.4); /* IE 9 */
+    -webkit-transform: scale(1.4); /* Safari 3-8 */
+    transform: scale(1.4);
     z-index: 999;
 }
 .c_content{
@@ -1022,6 +1108,77 @@ hr {
         border-width: 1px 80px 0px 0px;
     }
 }
+@media screen and (max-width: 767px) {
+    .blog-icon{
+        min-height: 0px;
+    } 
+    .blog-icon img {
+        width: 438px;
+    }
+    .set-flex {
+        min-height: 228px;
+    }
+}
+@media screen and (max-width: 750px) and (min-width: 601px) {
+    .blog-txt h1 {
+        font-size: 47px;
+    }
+    .blog-txt h2 {
+        font-size: 20px;
+    }
+    .set-flex {
+        min-height: 200px;
+    }
+    .blog-icon{
+        min-height: 0px;
+    }
+    .blog-header {
+        min-height: 355px;
+    }
+    .blog-icon img {
+        width: 410px;
+    }
+}
+@media screen and (max-width: 600px) and (min-width: 450px) {
+    .blog-txt h1 {
+        font-size: 47px;
+    }
+    .blog-txt h2 {
+        font-size: 20px;
+    }
+    .set-flex {
+        min-height: 200px;
+    }
+    .blog-icon{
+        min-height: 0px;
+    }
+    .blog-header {
+        min-height: 355px;
+    }
+    .blog-icon img {
+        width: 250px;
+    }
+}
+@media screen and (max-width: 450px) and (min-width: 320px) {
+    .blog-txt h1 {
+        font-size: 34px;
+    }
+    .blog-txt h2 {
+        font-size: 16px;
+    }
+     .set-flex {
+        min-height: 200px;
+    }
+    .blog-icon{
+        min-height: 0px;
+    }
+    .blog-header {
+        min-height: 355px;
+    }
+    .blog-icon img {
+        width: 250px;
+    }
+)
   /*blog-section-1-css*/   
 //.blog-section-1{
 //    padding:0px 0 70px 0;

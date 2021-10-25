@@ -300,7 +300,6 @@ class ShortJobs extends Model
         $employerApplication->experience = $this->exp;
         $employerApplication->published_on = date('Y-m-d H:i:s');
         $employerApplication->image = '1';
-        $employerApplication->image_location = '1';
         $employerApplication->status = 'Active';
         $category_execute = Categories::find()
             ->alias('a')
@@ -457,7 +456,7 @@ class ShortJobs extends Model
     {
         $modelData = EmployerApplications::find()
             ->alias('a')
-            ->select(['title', 'type', 'h.name country_name', 'positions', 'application_type_enc_id', 'description', 'experience', 'a.application_enc_id', 'preferred_gender', 'fixed_wage', 'min_wage', 'max_wage', 'wage_type', 'wage_duration', 'currency_enc_id'])
+            ->select(['title', 'type', 'h.name country_name', 'positions', 'application_type_enc_id', 'a.description', 'experience', 'a.application_enc_id', 'preferred_gender', 'fixed_wage', 'min_wage', 'max_wage', 'wage_type', 'wage_duration', 'currency_enc_id'])
             ->where(['a.application_enc_id' => $editid])
             ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationPlacementCities d' => function ($b) {

@@ -109,7 +109,7 @@ function initScene(scene) {
 
     // Change the hint
     $('.main_inner__title .hint').slideUp(function() {
-        $('.main_inner__title .hint').text(scenes[progress].hint);
+        $('.main_inner__title .hint').html(scenes[progress].hint);
     });
 
     // Bring the info in

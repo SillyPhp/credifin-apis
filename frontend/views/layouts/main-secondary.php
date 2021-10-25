@@ -20,12 +20,17 @@ $this->beginPage();
         <title><?= Html::encode((!empty($this->title)) ? Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name : Yii::$app->params->site_name); ?></title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
-        <?php
+        <?php if (Yii::$app->params->options->crawl) { ?>
+            <meta name="robots" content="index"/>
+        <?php } else { ?>
+            <meta name="robots" content="noindex,nofollow"/>
+            <meta name="googlebot" content="noindex,nofollow">
+        <?php }
         if (isset($this->params['seo_tags']) && !empty($this->params['seo_tags'])) {
             foreach ($this->params['seo_tags']['rel'] as $key => $value) {
                 $this->registerLinkTag([
                     'rel' => $key,
-                    'href' => $value,
+                    'href' => Url::to($value,'https'),
                 ]);
             }
             foreach ($this->params['seo_tags']['name'] as $key => $value) {
@@ -68,22 +73,22 @@ $this->beginPage();
                 </div>
             </div>
             <?php
-            if ($userType == organization) {
-            ?>
-            <div class="pos-abso-individual">
-                <div class="pai-rel">
-                    <div class="pai-abso">
-                        I Want To Get Hired
-                        <div class="pai-button">
-                            <a class="btn btn-dark btn-lg btn-block no-border hvr-float main-orange-btn"
-                               href="<?= Url::to('/signup/individual'); ?>"
-                               data-bg-color="#ff7803"><?= Yii::t('frontend', 'Signup as Individual'); ?></a>
+            if ($userType == "organization") {
+                ?>
+                <div class="pos-abso-individual">
+                    <div class="pai-rel">
+                        <div class="pai-abso">
+                            I Want To Get Hired
+                            <div class="pai-button">
+                                <a class="btn btn-dark btn-lg btn-block no-border hvr-float main-orange-btn"
+                                   href="<?= Url::to('/signup/individual'); ?>"
+                                   data-bg-color="#ff7803"><?= Yii::t('frontend', 'Signup as Individual'); ?></a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
                 <?php
-            } elseif ($userType == individual) {
+            } elseif ($userType == "individual") {
                 ?>
                 <div class="pos-abso-individual">
                     <div class="pai-rel">
@@ -99,7 +104,7 @@ $this->beginPage();
                 </div>
                 <?php
             }
-                ?>
+            ?>
             </section>
         </div>
     </div>

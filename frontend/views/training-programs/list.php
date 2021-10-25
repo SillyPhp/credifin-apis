@@ -6,7 +6,7 @@ $description = '';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -21,7 +21,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -53,16 +53,18 @@ $this->registerCss('
 ?>
 
     <section class="applications-cards-list">
-        <div class="row m-0">
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <?=
-                $this->render('/widgets/search-bar1',
-                    ['placeholder'=>'Course Title, Keywords or Institute Name']);
-                ?>
-                <div class=" col-md-12 col-sm-12">
-                    <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
-                    <?= $this->render('/widgets/preloader-application-card'); ?>
-                        <a href="#" id="loadMore" class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
+        <div class="container-fluid">
+            <div class="row m-0">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <?=
+                    $this->render('/widgets/search-bar1',
+                        ['placeholder' => 'Course Title, Keywords or Institute Name']);
+                    ?>
+                    <div class=" col-md-12 col-sm-12 p-0">
+                        <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
+                        <?= $this->render('/widgets/preloader-application-card'); ?>
+                        <a href="#" id="loadMore"
+                           class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
                             <span class="load-more-text">Load More</span>
                             <svg class="load-more-spinner" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg"
                                  stroke="currentColor">
@@ -93,6 +95,7 @@ $this->registerCss('
                                 </g>
                             </svg>
                         </a>
+                    </div>
                 </div>
             </div>
         </div>

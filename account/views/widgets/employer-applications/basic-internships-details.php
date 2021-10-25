@@ -31,7 +31,16 @@ use kartik\widgets\DatePicker;
         </div>
     </div>
     <div class="col-md-3">
-        <?= $form->field($model, 'type')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
+    <div class="row">
+            <div class="col-md-12" id="wh_type">
+                <?= $form->field($model, 'type')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
+            </div>
+        <div id="wh_vacancy">
+        <div class="col-md-5">
+         <?= $form->field($model, 'vacancy')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Positions', 'id' => 'wh_positions','maxLength'=>7])->label(false); ?>
+        </div>
+        </div>
+    </div>
     </div>
     <div class="col-md-3">
       <div class="row">
@@ -237,6 +246,7 @@ $this->registerCss("
 $script = <<< JS
 $('#min_wage, #max_wage').mask("#,#0,#00", {reverse: true}); 
 $('#internship_duration').mask("#", {reverse: true}); 
+$('#wh_positions').mask("#", {reverse: true}); 
 $('#fixed_wage, #pre_placement_package').mask("#,#0,#00", {reverse: true});
 $('input[name= "pre_placement_offer"]').on('change',function(){
         var pre = $(this).attr("data-title");

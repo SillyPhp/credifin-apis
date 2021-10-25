@@ -1,7 +1,7 @@
 <script id="course-card" type="text/template">
     {{#.}}
     <div class="col-md-4 col-sm-6">
-        <a href="/courses/detail/{{id}}">
+        <a href="/courses/detail/{{id}}" target="_blank">
             <div class="course-box">
                 <div class="course-upper">
                     <div class="course-logo">
@@ -12,7 +12,8 @@
                         <div class="course-fees">{{#price_detail}}{{currency_symbol}}{{/price_detail}}</i>
                             {{#price_detail}}
                                 {{amount}}
-                            {{/price_detail}}</div>
+                            {{/price_detail}}
+                            {{^price_detail}}free{{/price_detail}}</div>
                         <div class="course-start"><i class="far fa-user"></i>
                             <span class="c-author">
                                 {{#visible_instructors}}
@@ -32,6 +33,9 @@
 </script>
 <?php
 $this->registerCss('
+.m-0{
+    margin:0px !important;
+}
 .course-box {
     position: relative;
     box-shadow: 0 1px 3px 0px #797979;
@@ -95,6 +99,7 @@ $this->registerCss('
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    height: 28px;
 }
 .course-skills {
     border-top: 2px solid #eee;

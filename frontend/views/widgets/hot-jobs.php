@@ -1,7 +1,6 @@
 <?php
 use yii\helpers\Url;
 ?>
-<section>
     <div class="row">
         <div class="h-job-main">
             <div class="h-logo">
@@ -10,8 +9,8 @@ use yii\helpers\Url;
             <div class="h-heading">Hot Jobs On EmpowerYouth</div>
             <ul class="h-type">
                 <li><a href="/sales-jobs">sales jobs</a></li>
-                <li><a href="/marketing-job">marketing jobs</a></li>
-                <li><a href="/information-technology-job">It jobs</a></li>
+                <li><a href="/marketing-jobs">marketing jobs</a></li>
+                <li><a href="/information-technology-jobs">It jobs</a></li>
             </ul>
             <div class="h-line"></div>
             <div class="explore-btn">
@@ -19,7 +18,6 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
-</section>
 <?php
 $this->RegisterCss('
 .h-job-main {

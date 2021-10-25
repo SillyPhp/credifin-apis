@@ -11,29 +11,38 @@ use yii\helpers\Url;
             <div class="appcon-center">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="col-md-6 col-sm-6">
-                            <div class="appliedPic">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/exciting.png') ?>">
+                        <div class="using-flex">
+                            <div class="flex-base">
+                                <div class="appliedPic">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/exciting.png') ?>">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6">
-                            <div class="applied-heading">
-                                <h2>How Exciting!</h2>
-                            </div>
-                            <div class="applied-text">You just applied for a job on Empower Youth, High fives all
-                                rounds!
-                                Here's hoping you get selected.
-                            </div>
-                            <div class="applied-btns">
-                                <ul>
-                                    <li>
-                                        <a href="/<?= Yii::$app->user->identity->username . '/edit' ?>">Update
-                                            Profile</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?= "/account/jobs/applied" ?>">View Application</a>
-                                    </li>
-                                </ul>
+                            <div class="flex-base">
+                                <div class="applied-heading">
+                                    <h2>How Exciting!</h2>
+                                </div>
+                                <div class="applied-text">You just applied for a job on Empower Youth, High fives all
+                                    rounds!
+                                    Here's hoping you get selected.
+                                </div>
+                                <div class="note">Your profile seems to be incomplete it would be recomended to complete
+                                    your profile to enhance your selection
+                                </div>
+                                <div class="applied-btns">
+                                    <ul>
+                                        <li>
+                                            <a href="/<?= Yii::$app->user->identity->username . '/edit' ?>">Update
+                                                Profile</a>
+                                        </li>
+                                        <li>
+                                            <?php if ($applicationType == 'Internships') { ?>
+                                                <a href="<?= "/account/internships/applied" ?>">View Application</a>
+                                            <?php } else { ?>
+                                                <a href="<?= "/account/jobs/applied" ?>">View Application</a>
+                                            <?php } ?>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -44,6 +53,24 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
+.using-flex {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: row;
+}
+.flex-base{
+    flex-basis:50%;
+}
+@media only screen and (max-width:834px){
+    .using-flex {flex-direction:column;}    
+}
+.note {
+	max-width: 300px;
+	margin: auto;
+	font-size: 12px;
+	font-family: roboto;
+}
 .appliedPic img{
     max-width:300px;
     width: 100%;
@@ -74,7 +101,7 @@ $this->registerCss('
     }
 }
 .applied-btns{
-    margin-top:40px;
+    margin-top:18px;
 }
 .applied-btns a{
     font-family: "Open Sans", sans-serif;
@@ -121,10 +148,11 @@ $this->registerCss('
   background-color: rgb(0,0,0); 
   background-color: rgba(0,0,0,0.4);
 }
-.applied-text{
-    max-width: 350px;
-    margin: 0 auto;
-    font-size: 17px;
+.applied-text {
+	max-width: 350px;
+	margin: 0 auto;
+	font-size: 17px;
+	margin-bottom: 20px;
 }
 #myBtn{
     margin-top:150px;

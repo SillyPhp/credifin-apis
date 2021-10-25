@@ -26,9 +26,9 @@ if ($type == "internships"){
             </div>
             <div id="review-internships" style="background-color: #fff;" class="font-georgia">
                 <span class="review-list-hint">Drop here to add to review list</span>
-                <a href="#" class="review-list-toggler"><i class="fas fa-chevron-up"></i></a>
+                <a href="javascript:;" class="review-list-toggler"><i class="fas fa-chevron-up"></i></a>
                 <ul id="ilist" class="drop-options connected-sortable droppable-area">
-                    <div class="loader-inner-main shadow pt-0">
+                    <div class="loader-inner-main pt-0">
                         <div class="col-md-3 col-xs-3 pt-10 p-0">
                             <div class="sidebar-logo-main p-0">
                                 <div class="loader anim"></div>
@@ -63,15 +63,22 @@ if ($type == "internships"){
 //echo $this->render('/widgets/popup');
 $c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
+.sidebar-logo-main{
+    padding:0 !important;
+//    box-shadow:0px 0px 10px -2px rgba(0,0,0,0.2);
+    margin:auto;
+    overflow:hidden;
+}
+.product{padding:5px 0 5px 2px !important;}
 #header > div{width:100% !important;}
 .highlight{
     background-color: #CCC !important;
 }
-.set-scrollbar{
-    float:left;
-    width:95%;
-    margin-right:12px;
-}
+//.set-scrollbar{
+//    float:left;
+//    width:95%;
+//    margin-right:12px;
+//}
 .side-menu{
     position:fixed;
     top:0%;
@@ -96,6 +103,11 @@ $this->registerCss('
         width:175px; 
     }
 }
+@media screen and (max-width: 991px){
+    #review-internships{
+        width:100%; 
+    }
+}
 .paid {
     border-bottom: 2px solid #FF4500 !important;
 }
@@ -117,6 +129,7 @@ body {
 }
 .side-menu {
     position: fixed;
+    width:25%;
     height: 100%;
 //    background-color: #f8f8f8;
 //    border-right: 1px solid #e7e7e7;
@@ -125,9 +138,9 @@ body {
     margin: 0;
     list-style: none;
     width: 100%;
-    padding: 0px;
+    padding:15px 8px 15px 4px !important;
 }
-
+.text-wrap-ellipsis{margin:0px !important;}
 li.draggable-item {
   width: inherit;
   padding: 0px;
@@ -158,9 +171,6 @@ li.draggable-item.ui-sortable-placeholder {
    -webkit-box-shadow: inset 0 0 10px #000000;
    box-shadow:         inset 0 0 10px #000000;
 }
-.draggable-item{
-    height:61px;
-}
 #hidder{
     padding:0px 10px;
     padding: 0px 10px;
@@ -170,13 +180,21 @@ li.draggable-item.ui-sortable-placeholder {
     left: 12px;
     z-index: 9;
 }
+.sidebar-logo-main{margin-top:0;}
 .sidebar-logo-main > canvas{
-    margin-left: -5px;
-    margin-top: -5px;
-    border-radius: 50%;
+    margin-left: 0px;
+    margin-top: 0px;
+//    border-radius: 50%;
 }
 .secondary-top-header{display:none !important;}
 .review-list-hint, .review-list-toggler{display:none;}
+.text-wrap-ellipsis{
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    padding: 0 8px 0 0!important;
+}
 @media only screen and (max-width: 991px) and (min-width: 768px)  {
     .profile-sidebar {
         margin-top: 40px;
@@ -266,24 +284,25 @@ li.draggable-item.ui-sortable-placeholder {
     #review-internships.drop-on{
         height: 294px !important;
     }
-//    *::-webkit-scrollbar {
-//        width: 2em !important;
-//    }
-//    *::-webkit-scrollbar-track {
-//        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3) !important;
-//    }
-//    *::-webkit-scrollbar-thumb {
-//      background-color: darkgrey !important;
-//      outline: 1px solid slategrey !important;
-//    }
 }
-li.draggable-item{position:relative;}
-.close{
-    text-align: center;
-    position: absolute;
-    right: 20px;
-    top: 10px;
-    z-index: 99999;
+li.draggable-item {
+	position: relative;
+	width: 100%;
+	box-shadow: 0 0px 3px 0px rgba(0,0,0,0.2);
+	margin-bottom: 4px;
+}
+.close {
+	text-align: center;
+	position: absolute;
+	right: 2px !important;
+	top: 2px !important;
+	z-index: 99999;
+	line-height:13px;
+}
+@media only screen and (max-width: 550px) {
+  .application-card-main {
+    margin-right: 0px;
+    }
 }
 ');
 
@@ -301,6 +320,7 @@ function reviewlists(response){
     
         var review = $('#review-cards').html();
         $("#ilist").append(Mustache.render(review, response.cards));
+        check_list()
 }
 
 
@@ -348,13 +368,13 @@ function widget(selector) {
     var company = $.trim(selector.find('.org_name').text());
     var location = $.trim(selector.find('.location').text());
     var period = $.trim(selector.find('.period').text());
-    var slug = $.trim(selector.find('.application-card-description a').attr('href'));
+    var slug = $.trim(selector.find('.side-description').attr('data-slug'));
     var lastDate = $.trim(selector.find('.lastDate').text());
     var lat = $.trim(selector.find('.location').attr('data-lat'));
     var long = $.trim(selector.find('.location').attr('data-long'));
     var dataId = $.trim(selector.attr("data-id"));
     var dataKey = $.trim(selector.attr("data-key"));
-    slug = slug.split('/')[2];
+    // slug = slug.split('/')[2];
     if(!logo){
        logo = '<canvas class="user-icon image-partners" name="'+company+'" color="'+logo_color+'" width="40" height="40" font="18px"></canvas>';
     }else{
@@ -366,7 +386,7 @@ function widget(selector) {
 function droppingWidgets(type, logo, logo_main, internship, slug, company, location, period, lastDate, lat, long, dataKey, dataId) {
     if ($("#review-internships > ul > li").length == 0) {
         Ajax_call(dataId);
-        $("#ilist").append('<li class="draggable-item" data-key="' + dataKey + '" data-id="' + dataId +'" ><a class="close" href="#" data-id="' + dataId + '" aria-label="Close"><span aria-hidden="true">&times;</span></a><div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5"><span id="set-types" type="' + type + '" lat="' + lat + '" long="' + long + '" logo="' + logo_main + '" slug="' + slug + '" company="' + company + '" title="' + internship + '" location="' + location + '" period="' + period + '" lastdate="' + lastDate + '"></span><div class="' + type + '"><div class="col-md-3 col-xs-3 pt-10 p-0"><div class="sidebar-logo-main">' + logo + '</div></div><div class="col-md-9 col-xs-9 pt-5 p-0"><p class="mb-0 text-wrap-ellipsis"><strong>' + internship + '</strong></p><p class="mb-5 text-wrap-ellipsis">' + company + '</p></div></div></div></li>');
+        $("#ilist").append('<li class="draggable-item" data-key="' + dataKey + '" data-id="' + dataId +'" ><a class="close" href="#" data-id="' + dataId + '" aria-label="Close"><span aria-hidden="true">&times;</span></a><div class="opens product set-scrollbar iconbox-border iconbox-theme-colored pb-5"><span id="set-types" type="' + type + '" lat="' + lat + '" long="' + long + '" logo="' + logo_main + '" slug="' + slug + '" company="' + company + '" title="' + internship + '" location="' + location + '" period="' + period + '" lastdate="' + lastDate + '"></span><div class="' + type + '"><div class="col-md-3 col-xs-3 pt-10 p-0"><div class="sidebar-logo-main">' + logo + '</div></div><div class="col-md-9 col-xs-9 pt-5 p-0"><p class="mb-0 text-wrap-ellipsis"><strong>' + internship + '</strong></p><p class="mb-5 text-wrap-ellipsis">' + company + '</p></div></div></div></li>');
         utilities.initials();
         check_list();
     } else {
@@ -379,7 +399,7 @@ function droppingWidgets(type, logo, logo_main, internship, slug, company, locat
             return false;
         } else {
             Ajax_call(dataId);
-            $("#ilist").append('<li class="draggable-item" data-key="' + dataKey + '" data-id="' + dataId +'" ><a class="close" href="#" data-id="' + dataId + '" aria-label="Close"><span aria-hidden="true">&times;</span></a><div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5"><span id="set-types" type="' + type + '" lat="' + lat + '" long="' + long + '" logo="' + logo_main + '" slug="' + slug + '" company="' + company + '" title="' + internship + '" location="' + location + '" period="' + period + '" lastdate="' + lastDate + '"></span><div class="' + type + '"><div class="col-md-3 col-xs-3 pt-10 p-0"><div class="sidebar-logo-main">' + logo + '</div></div><div class="col-md-9 col-xs-9 pt-5 p-0"><p class="mb-0 text-wrap-ellipsis"><strong>' + internship + '</strong></p><p class="mb-5 text-wrap-ellipsis">' + company + '</p></div></div></div></li>');
+            $("#ilist").append('<li class="draggable-item" data-key="' + dataKey + '" data-id="' + dataId +'" ><a class="close" href="#" data-id="' + dataId + '" aria-label="Close"><span aria-hidden="true">&times;</span></a><div class="opens product set-scrollbar iconbox-border iconbox-theme-colored pb-5"><span id="set-types" type="' + type + '" lat="' + lat + '" long="' + long + '" logo="' + logo_main + '" slug="' + slug + '" company="' + company + '" title="' + internship + '" location="' + location + '" period="' + period + '" lastdate="' + lastDate + '"></span><div class="' + type + '"><div class="col-md-3 col-xs-3 pt-10 p-0"><div class="sidebar-logo-main">' + logo + '</div></div><div class="col-md-9 col-xs-9 pt-5 p-0"><p class="mb-0 text-wrap-ellipsis"><strong>' + internship + '</strong></p><p class="mb-5 text-wrap-ellipsis">' + company + '</p></div></div></div></li>');
             utilities.initials();
             check_list();
         }
@@ -493,10 +513,10 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         <a class="close" data-id="{{application_id}}" href="#" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </a>
-        <div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5">
+        <div class="opens product set-scrollbar iconbox-border iconbox-theme-colored pb-5">
             <span id="set-types" type="{{type}}" slug="{{slug}}" lat="{{latitude}}" long="{{longitude}}" logo="{{logo}}"
                   company="{{org_name}}" title="{{title}}" location="{{city}}" period="" lastdate=""></span>
-            <div class="col-md-3 col-xs-3 pt-10 p-0">
+            <div class="col-md-3 col-xs-3 pt-5 p-0">
                 <div class="sidebar-logo-main">
                     {{#logo}}
                     <img class="side-bar_logo" src="{{logo}}" height="40px">
@@ -507,11 +527,11 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                     {{/logo}}
                 </div>
             </div>
-            <div class="col-md-9 col-xs-9 pt-5 p-0">
+            <div class="col-md-9 col-xs-9 p-5 pt-0 pb-0">
                 <p class="mb-0 text-wrap-ellipsis">
                     <strong>{{title}}</strong>
                 </p>
-                <p class="mb-5 text-wrap-ellipsis">{{org_name}}</p>
+                <p class="mb-5 text-wrap-ellipsis">{{{org_name}}}</p>
             </div>
         </div>
     </li>

@@ -462,6 +462,7 @@ function enableUiControls() {
         $.ajax({
             url : '/api/v2/classes/change-status',
             method : 'post',
+            async:false,
             data : {class_id:class_id,uid:user_id},
             success : function(data){
 

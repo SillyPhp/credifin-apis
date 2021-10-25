@@ -1,20 +1,24 @@
 <?php
 
-use yii\helpers\Url;
+use borales\extensions\phoneInput\PhoneInput;
+use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
-$logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
+$logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
 ?>
     <div class="job-single-head style2 overlay-top">
         <div class="job-thumb">
             <?php
             if (!empty($org_logo)) {
                 ?>
-                <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt=""/>
+                <a href="javascript:;">
+                    <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt=""/>
+                </a>
                 <?php
             } else {
                 ?>
-                <canvas class="user-icon" name="<?= $org_name; ?>" width="100" height="100"
+                <canvas class="user-icon" name="<?= $org_name; ?>" width="125" height="125"
                         color="<?= $initial_color; ?>" font="48px"></canvas>
                 <?php
             }
@@ -22,12 +26,14 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
         </div>
         <div class="job-head-info">
             <h4><?= $org_name; ?></h4>
-            <div class="organization-details">
-                <!--            <h4>Company Detail</h4>-->
-                <?php if ($website): ?>
-                    <p><i class="fas fa-unlink"></i><?= $website; ?></p>
-                <?php endif; ?>
-            </div>
+<!--            <div class="organization-details">-->
+<!--                           <h4>Company Detail</h4>-->
+<!--                --><?php //if ($website): ?>
+<!--                    <a href="--><?//= $website ?><!--">-->
+<!--                        <i class="fas fa-unlink"> Visit on website</i>-->
+<!--                    </a>-->
+<!--                --><?php //endif; ?>
+<!--            </div>-->
         </div>
         <div class="actions-main">
             <?php if (Yii::$app->user->isGuest): ?>
@@ -61,7 +67,7 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
                         <?php endif; ?>
                     </div>
                 <?php elseif (!Yii::$app->user->identity->organization):
-                    if (strpos($job_url, 'http://') || strpos($job_url, 'https://') === false) {
+                    if (strpos($job_url, 'http://') === false && strpos($job_url, 'https://') === false) {
                         $job_url = 'http://' . $job_url;
                     }
                     ?>
@@ -116,31 +122,61 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
             <div class="buttons">
                 <?php
                 if ($type == 'Internship') {
-                    $link = Url::to('internship/' . $application_slug, true);
+                    $link = Url::to('internship/' . $application_slug, 'https');
                 } else if ($type == 'Job') {
-                    $link = Url::to('job/' . $application_slug, true);
+                    $link = Url::to('job/' . $application_slug, 'https');
                 }
                 ?>
-                <a href="#"
+                <a href="javascript:;"
                    onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-facebook-f"></i>
                 </a>
-                <a href="#"
-                   onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                <a href="javascript:;"
+                   onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $this->title . '&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-twitter"></i>
                 </a>
-                <a href="#"
-                   onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                <a href="javascript:;"
+                   onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link . '&title=' . $this->title . '&summary=' . $this->title . '&source=' . Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-linkedin-in"></i>
                 </a>
-                <a href="#"
-                   onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                <a href="javascript:;"
+                   onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-whatsapp"></i>
                 </a>
-                <a href="#"
+                <a href="javascript:;"
                    onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fas fa-envelope"></i>
                 </a>
+                <a href="javascript:;" class="tg-tele"
+                   onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                    <i class="fab fa-telegram-plane"></i>
+                </a>
+            </div>
+            <div class="wts-ap">
+                <h3>Share on Whatsapp via Number</h3>
+                <div class="col-md-12 form-whats">
+                    <?php
+                    $form = ActiveForm::begin([
+                        'id' => 'whatsapp-form',
+                        'fieldConfig' => [
+                            'template' => '<div class="form-group">{input}{error}</div>',
+                            'labelOptions' => ['class' => ''],
+                        ],
+                    ]);
+                    ?>
+                    <?=
+                    $form->field($whatsAppmodel, 'phone')->widget(PhoneInput::className(), [
+                        'options' => ['class' => 'wts-txt', 'placeholder' => '+91 98 XXXX XXXX'],
+                        'jsOptions' => [
+                            'allowExtensions' => false,
+                            'preferredCountries' => ['in'],
+                            'nationalMode' => false,
+                        ]
+                    ]);
+                    ?>
+                    <?php ActiveForm::end(); ?>
+                    <div class="send"><i class="fa fa-arrow-right"></i></div>
+                </div>
             </div>
             <div class="row m-0">
                 <div class="col-lg-12">
@@ -153,20 +189,87 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
                 </div>
             </div>
         </div>
+        <div class="down-img">
+            <h3>Download Sharing Image</h3>
+            <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size (1250*650)</a>
+            <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>
+            <a href="<?= $Storyimage; ?>" download target="_blank"><i class="fa fa-download"></i> Story Size (Default)</a>
+        </div>
     </div>
 <?php
 $this->registerCss('
-.job-thumb a{
-    width: 100px;
-    height: 100px;
+.job-thumb canvas {
+    border-radius: 50%;
+    width: 125px;
+    height: 125px;
+}
+.iti{width:100%;}
+.intl-tel-input{width:100%;}
+.form-whats {
+	position: relative;
+}
+.send {
+	position: absolute;
+	top: 2px;
+	right: 22px;
+	font-size: 22px;
+	cursor:pointer;
+}
+.down-img h3 {  
+	color: #fff;
+	font-size: 15px;
+	font-family: roboto;
+	margin: 10px 0 15px;
+}
+.down-img a {
+	color: #fff;
+	border: 2px solid #fff;
+	padding: 8px 25px;
+	font-size: 14px;
+	font-family: roboto;
+	font-weight: 500;
+	border-radius:6px;
+	display: inline-block;
+    margin: 5px 0px;
+    width:230px;
+}
+.form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
+    margin-bottom:0;
+}
+.wts-ap{position:relative;}
+.wts-ap h3 {
+    margin: 0;
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 8px !important;
+    font-family: roboto;
+}
+.wts-ap input {
+    font-family: roboto;
+    width: 100%;
+    margin: auto;
+    height: 40px;
+    border-radius: 6px;
+    padding: 5px 10px;
+}
+.job-thumb{
+    width: 125px !Important;
+    height: 125px !Important;
     background-color: #fff;
     display: block;
+    overflow: hidden;
+    line-height: 125px;
     margin: auto;
     border-radius: 50%;
 }
-.job-thumb a img{margin:5px;}
+#logo_img {
+    max-width: 100px !Important;
+    max-height: 100px !Important;
+    background-color: #fff;
+    object-fit: contain;
+}
 .overlay-top{
-    width: 70%;
+    width: 80%;
     margin: auto;
     margin-top: -150px;
     float: none;
@@ -177,9 +280,9 @@ $this->registerCss('
 }
 .organization-details{
     display: block;
-    text-align: left;
-    padding: 25px;
+    text-align: center;
 }
+.organization-details a{color:#fff;}
 .organization-details h4{
     font-size:14px !Important;
     margin-top:15px !important;
@@ -187,7 +290,7 @@ $this->registerCss('
 a.add-or-compare {
     display: inline-block !important;
     background-color: #fff;
-    padding: 10px 16px;
+    padding:5px;
     width: 42%;
     font-size: 12px;
     border-radius: 2px;
@@ -254,12 +357,14 @@ a.add-or-compare:hover, a.add-or-compare:focus {
   height: 40px;
   display: inline-block;
   border-radius: 50%;
-  margin-right: 15px;
+  margin-right: 8px;
+  margin-bottom: 10px;
   font-size: 17px;
   overflow: hidden;
   position: relative;
   color: #fff;
   border: 2px solid #fff;
+	line-height: 26px;
 }
 .effect a i {
   position: relative;
@@ -297,19 +402,18 @@ a.add-or-compare:hover, a.add-or-compare:focus {
         margin-top: 0;
         width: 100%;
     }
-    .job-thumb{max-width: 125px;}
     .job-head-info{
-        max-width: 275px;
-        text-align: left;
+//        max-width: 275px;
+        text-align: center;
     }
-    .job-head-info h4{
-        margin-left:25px !Important;
-    }
+//    .job-head-info h4{
+//        margin-left:25px !Important;
+//    }
     .job-head-info .organization-details h4{
         margin-left:0px !Important;
     }
     .actions-main{
-        float: left;
+        float: none;
         display: inline-block;
         width: 42%;
     }
@@ -338,9 +442,6 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     }
 }
 @media only screen and (max-width: 430px) {
-    .job-thumb {
-        max-width: inherit;
-    }
     .job-head-info {
         max-width: inherit;
         text-align: center;
@@ -368,7 +469,41 @@ $script = <<< JS
                         console.log(res);
                     }
                 })
-       });             
+       });       
+$(document).on('keypress','.wts-txt',function(e) {
+    if(e.which == 13) {
+        var val = $(this).val();
+        var location = window.location.href;
+        if(val.length < 8){
+            alert('Enter Valid Number')
+        }
+        else {
+             window.open('https://api.whatsapp.com/send?phone='+val+'&text=' + location);
+        }
+        $(this).val('');
+    } else {
+        var iKeyCode = (e.which) ? e.which : e.keyCode;
+        if (iKeyCode != 46 && iKeyCode > 31 && (iKeyCode < 48 || iKeyCode > 57) && iKeyCode != 43){
+            return false;
+        }
+        // return true;
+    }
+});
+$(document).on('submit','#whatsapp-form',function(e) {
+  e.preventDefault();
+  return false;
+});
+$('.send').click(function () {        
+    var val = $('.wts-txt').val();
+    var location = window.location.href;
+       if(val.length < 10){
+            alert('Enter Valid Number')
+        }
+        else {
+             window.open('https://api.whatsapp.com/send?phone='+val+'&text=' + location);
+        }
+        $('.wts-txt').val('');
+});
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');

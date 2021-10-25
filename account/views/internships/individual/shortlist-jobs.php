@@ -16,7 +16,7 @@ use yii\widgets\Pjax;
                     <div class="portlet-title tabbable-line">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
-                            <span class="caption-subject font-dark bold uppercase">Shortlisted Internships</span>
+                            <span class="caption-subject font-dark bold uppercase">Saved Internships</span>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -31,16 +31,43 @@ use yii\widgets\Pjax;
                                         <div class="topic-con">
                                             <div class="hr-company-box">
                                                 <div class="hr-com-icon">
-                                                    <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
+                                                    <?php
+                                                    if($shortlist['unclaimed_organization_enc_id'] != null){
+                                                        if ($shortlist['unclaim_org_logo']) {
+                                                            $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $shortlist['unclaim_org_logo_location'] . DIRECTORY_SEPARATOR . $shortlist['unclaim_org_logo'];
+                                                        } else {
+                                                            $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['unclaim_org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $shortlist['unclaim_org_initials_color']) . "&color=ffffff";
+                                                        }
+                                                    }else {
+                                                        if ($shortlist['logo']) {
+                                                            $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $shortlist['logo_location'] . DIRECTORY_SEPARATOR . $shortlist['logo'];
+                                                        } else {
+                                                            $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $shortlist['initials_color']) . "&color=ffffff";
+                                                        }
+                                                    }
+                                                    ?>
+                                                    <img src="<?= $organizationLogo ?>" class="img-responsive ">
                                                 </div>
-                                                <div class="hr-com-name">
-                                                    <?= $shortlist['org_name']; ?>
+                                                <div class="hr-com-name job-title-name">
+                                                    <?= (($shortlist['org_name']) ? $shortlist['org_name'] : $shortlist['unclaim_org_name']); ?>
                                                 </div>
-                                                <div class="hr-com-field">
-                                                    <?= $shortlist['name']; ?>
+                                                <div class="merge-name-icon">
+                                                    <div class="cat-icon">
+                                                        <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>"
+                                                             class="img-responsive ">
+                                                    </div>
+                                                    <div class="hr-com-field">
+                                                        <?= $shortlist['name']; ?>
+                                                    </div>
                                                 </div>
                                                 <div class="opening-txt">
-                                                    <?= $shortlist["positions"]; ?> Openings
+                                                    <?php
+                                                    if($shortlist['positions'] || $shortlist['unclaim_positions']){
+                                                        ?>
+                                                        <?= (($shortlist["positions"]) ? $shortlist['positions'] : $shortlist['unclaim_positions']); ?> Openings
+                                                        <?php
+                                                    }
+                                                    ?>
                                                 </div>
                                                 <div class="overlay2">
                                                     <div class="text-o">
@@ -100,6 +127,27 @@ use yii\widgets\Pjax;
     </section>
 <?php
 $this->registerCss('
+.merge-name-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:0 10px;
+}
+.cat-icon img {
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    object-fit: contain;
+    margin-right:5px;
+}
+.hr-com-icon img {
+//    border-radius: 50% !important;
+    object-fit: contain;
+    overflow: hidden;
+}
+.hr-com-name.job-title-name {
+    padding: 0;
+}
 .tab-empty{
     padding:20px;
 }
@@ -123,10 +171,6 @@ $this->registerCss('
     color:#fff;
     text-transform: uppercase;
 }
-.topic-con:hover .overlay, .topic-con:hover .overlay1,.topic-con:hover .overlay2 {
-  height: 80%;
-  border-radius:10px 10px 0px 0px !important;
-}
 button.over-bttn, .ob2{
     background:#ff7803 !important; 
     border:2px solid #ff7803; 
@@ -146,17 +190,20 @@ button.over-bttn, .ob2{
     left: 0%;
     white-space: nowrap;
 }
-.overlay2 {
+.overlay, .overlay1, .overlay2 {
   position: absolute;
   top: 0px;
   left: 0;
   right: 0;
+  background: rgb(64 63 63 / 50%);;
   overflow: hidden;
   width: 100%;
   height: 0;
   transition: .5s ease;
-  background: rgba(208, 208, 208, 0.5);
- 
+}
+.topic-con:hover .overlay, .topic-con:hover .overlay1,.topic-con:hover .overlay2 {
+  height: 80%;
+  border-radius:10px 10px 0px 0px !important;
 }
 .hr-com-jobs {
     padding: 20px 0px 0px 0px !important;
@@ -167,6 +214,7 @@ button.over-bttn, .ob2{
     padding-bottom: 10px;
     font-size: 14px;
     color: #080808;
+    height:31px;
 }
 ');
 $script = <<<JS

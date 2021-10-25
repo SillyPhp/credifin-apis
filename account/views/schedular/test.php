@@ -7,7 +7,6 @@ use yii\helpers\Url;
 //use yii\widgets\Pjax;
 
 ?>
-
     <div id="schedular-loader" class="a" style="--n: 5;">
         <div class="dot" style="--i: 0;"></div>
         <div class="dot" style="--i: 1;"></div>
@@ -18,6 +17,9 @@ use yii\helpers\Url;
 
     <input type="hidden" value="<?= $application_id?>" id="pre-selected">
     <div class="image-container set-full-height" style="">
+        <div class="pull-left">
+            <button type='button' class='btn btn-fill btn-danger' id="history-back"><i class="fa fa-angle-double-left" aria-hidden="true"></i> Back</button>
+        </div>
         <!--   Big container   -->
         <div class="container">
             <div class="row">
@@ -148,8 +150,8 @@ use yii\helpers\Url;
             <option value="select" data-url='images/icon-vietnam.png'><img src="images/icon-vietnam.png" alt=""> Select
             </option>
             {{#applications}}
-            <option value="{{application_enc_id}}" data-url='images/icon-vietnam.png'><img src="images/icon-vietnam.png"
-                                                                                           alt=""> {{application_name}}
+            <option value="{{application_enc_id}}" data-url='images/icon-vietnam.png' data-name="{{category_name}}">
+                <img src="images/icon-vietnam.png" alt="">{{application_name}}
             </option>
             {{/applications}}
         </select>
@@ -254,6 +256,20 @@ use yii\helpers\Url;
     </script>
 <?php
 $this->registerCss('
+li .new-s {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+.sec-s{
+    font-size:10px;
+    color:#939191;
+    font-family:roboto;
+}
+.selected > .new-s > .sec-s, li:not(.init):hover> .new-s > .sec-s {
+    color: #fff;
+}
 //.btn-previous{display:none !important;}
 .acc-arrow{
     float: right;
@@ -423,6 +439,13 @@ $(document).on('change', '#interview_type_flexible', function(){
     if($(this).is(':checked')){
         $('#collapseOne_1').addClass('in');
     }
+});
+$(document).on('click', '#history-back', function(){
+    if(history.length === 1){
+            window.location = "/account/dashboard";
+        } else {
+            history.back();
+        }
 });
 
 JS;

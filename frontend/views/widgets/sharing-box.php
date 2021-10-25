@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Url;
-
+$news_title = urlencode($news_title);
 ?>
 
     <div class="sharing-box">
@@ -11,27 +11,27 @@ use yii\helpers\Url;
         <!--                        <div class="share-it">Share :-</div>-->
         <div class="fb-share">
             <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" class="share-elem-main">
-                <span class="fb-btn"><i class="fab fa-facebook-f marg"></i>Facebook</span>
+                <span class="fb-btn"><i class="fab fa-facebook-f marg"></i> Facebook</span>
             </a>
         </div>
         <div class="tw-share">
-            <a href="https://twitter.com/home?status=" target="_blank" class="share-elem-main">
-                <span class="tw-btn"><i class="fab fa-twitter marg"></i>Twitter</span>
+            <a href="javascript:;" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$news_title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+                <span class="tw-btn"><i class="fab fa-twitter marg"></i> Twitter</span>
             </a>
         </div>
         <div class="li-share">
-            <a href="https://www.linkedin.com/shareArticle?mini=true&url=" target="_blank" class="share-elem-main">
-                <span class="li-btn"><i class="fab fa-linkedin-in marg"></i>LinkedIn</span>
+            <a href="javascript:;" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$news_title.'&summary='.$news_title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-elem-main">
+                <span class="li-btn"><i class="fab fa-linkedin-in marg"></i> LinkedIn</span>
             </a>
         </div>
         <div class="wa-share">
-            <a href="wa.me/?text=" target="_blank" class="share-elem-main">
-                <span class="wa-btn"><i class="fab fa-whatsapp marg"></i>Whatsapp</span>
+            <a href="javascript:;" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+                <span class="wa-btn"><i class="fab fa-whatsapp"></i> Whatsapp</span>
             </a>
         </div>
         <div class="mail-share">
             <a href="mailto:someone@example.com?Subject=Hello&body=" target="_top" class="share-elem-main">
-                <span class="mail-btn"><i class="fas fa-envelope marg"></i>Mail</span>
+                <span class="mail-btn"><i class="fas fa-envelope marg"></i> Mail</span>
             </a>
         </div>
     </div>
@@ -42,11 +42,11 @@ $this->registercss('
 .sharing-box{
     border: 1px solid #eee;
     padding: 15px;
-    margin-top: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px 0px #eee;
     width:100%;
     background-color:#1d759a;
+    margin-bottom:20px;
 }
 .fb-share, .tw-share, .li-share, .wa-share{
     display:inline-block;

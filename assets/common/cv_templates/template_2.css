@@ -70,6 +70,7 @@
 }
 .e-date, .ed-date {
     display: inline-block;
+    min-width: 80px;
 }
 .e-loc, .ed-loc{
     padding: 0px 0px 0px 30px;

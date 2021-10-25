@@ -24,6 +24,7 @@ class PostQuestion extends Model {
             [['question','topic','privacy'],'required'],
             [['tags'],'safe'],
             [['question','tags','topic','privacy'], 'trim'],
+            [['question','tags','topic','privacy'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['question'], 'string','length' => [6, 200]],
         ];
     }

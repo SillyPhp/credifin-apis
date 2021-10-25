@@ -1,12 +1,12 @@
 <script id="candidates" type="text/template">
     {{#.}}
-    <div class="col-lg-4 col-md-4 col-sm-6 p-category-main">
+    <div class="col-lg-4 col-md-6 col-sm-12 p-category-main">
         <div class="paid-candidate-container">
-            <?php if (Yii::$app->user->identity->organization) { ?>
-                <span class="shortlist-main" id="{{user_enc_id}}">
-                <i class="far fa-star"></i>
-            </span>
-            <?php } ?>
+<!--                        --><?php //if (Yii::$app->user->identity->organization) { ?>
+<!--                            <span class="shortlist-main" id="{{user_enc_id}}">-->
+<!--                            <i class="far fa-star"></i>-->
+<!--                        </span>-->
+<!--                        --><?php //} ?>
             <div class="paid-candidate-box">
                 <div class="paid-candidate-inner--box">
                     <div class="paid-candidate-box-thumb">
@@ -19,17 +19,39 @@
                 </div>
                 <div class="paid-candidate-box-extra">
                     <ul>
+                        <li class="skills-h"><i class="fas fa-pencil-ruler"></i></li>
                         {{#skills}}
                         {{{.}}}
                         {{/skills}}
                     </ul>
                 </div>
-                <div class="paid-candidate-box-exp">
-                    <div class="desination"><i class="fa fa-map-marker"></i> {{city_name}}</div>
+                <div class="paid-candidate-box-extra">
+                    <ul>
+                        <li class="skills-h"><i class="fas fa-map-marker-alt"></i></li>
+                        <li style="font-weight: 400;">{{#city_name}} {{{.}}}{{/city_name}}</li>
+                    </ul>
+<!--                    <div class="desination"><i class="fa fa-map-marker-alt"></i> {{city_name}}</div>-->
                 </div>
             </div>
-            <a href="/{{username}}" class="btn btn-paid-candidate bt-1">View Detail</a>
-
+            <div class="btns-b">
+                <?php if (Yii::$app->user->identity->organization) { ?>
+                <span class="v-detail">
+                    <a href="/{{username}}" class="btn btn-paid-candidate bt-1">View Detail</a>
+                </span>
+                <span class="short-btn">
+                    {{#is_shortlisted}}
+                    <a href="javascript:;" class="btn btn-paid-candidate bt-1 shortlist-main" id="{{user_enc_id}}" style="background: #0082b9; color: #fff">Shortlisted</a>
+                    {{/is_shortlisted}}
+                    {{^is_shortlisted}}
+                        <a href="javascript:;" class="btn btn-paid-candidate bt-1 shortlist-main" id="{{user_enc_id}}" style="background: #00a0e3; color: #fff">Shortlist</a>
+                    {{/is_shortlisted}}
+                </span>
+                <?php } else{ ?>
+                <span class="v-detail full-wi">
+                    <a href="/{{username}}" class="btn btn-paid-candidate bt-1">View Detail</a>
+                </span>
+                <?php } ?>
+            </div>
         </div>
     </div>
     {{/.}}
@@ -38,25 +60,25 @@
 
 <?php
 $this->registerCss('
-.shortlist-main{
-    position: absolute;
-    right: 0;
-    padding: 1px 6px;
-    z-index:9;
-    color: #FFF;
-    font-size: 18px;
-}
-.shortlist-main:before {
-    content: "";
-    right: -60px;
-    top: 0;
-    position: absolute;
-    border-left: 42px solid transparent;
-    border-bottom: 52px solid #00A0E3;
-    border-right: 70px solid transparent;
-    transform: rotate(50deg);
-    z-index:-1;
-}
+//.shortlist-main{
+//    position: absolute;
+//    right: 0;
+//    padding: 1px 6px;
+//    z-index:9;
+//    color: #FFF;
+//    font-size: 18px;
+//}
+//.shortlist-main:before {
+//    content: "";
+//    right: -60px;
+//    top: 0;
+//    position: absolute;
+//    border-left: 42px solid transparent;
+//    border-bottom: 52px solid #00A0E3;
+//    border-right: 70px solid transparent;
+//    transform: rotate(50deg);
+//    z-index:-1;
+//}
 ');
 $script = <<<JS
     function getUserCards(offval, url, loadType){

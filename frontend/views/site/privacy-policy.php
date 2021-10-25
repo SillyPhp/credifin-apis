@@ -3,7 +3,34 @@
 $this->params['header_dark'] = true;
 
 use yii\helpers\Url;
-
+$this->title = "Privacy Policy - World's 1st Integrated Career Platform";
+$keywords = 'privacy policy, data retention, payment information, Legal Requirements, third-party service providers, legal liability, mobile device';
+$description = "This page is about the privacy policy of EmpowerYouth. Empower Youth is World's 1st Integrated Career Platform that offers real-world experience, including quality content, and excellent services for your current and future career.";
+$image = Yii::$app->urlManager->createAbsoluteUrl('assets/themes/ey/images/pages/privacy-policy/privacy-policy.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 
 <section>

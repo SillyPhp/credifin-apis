@@ -151,13 +151,13 @@ body .main_inner__loading .joy img {
 
 body .main_inner__loading .text {
     font-family: 'Pasta';
-    position: absolute;
+    /*position: absolute;*/
     text-align: center;
     left: 0;
     right: 0;
     margin: auto;
     max-width: 900px;
-    font-size: 80px;
+    font-size: 60px;
 }
 
 body .main_inner__loading .text .s,
@@ -345,13 +345,13 @@ body .main_inner__loading .loader button {
     clear: both;
     outline: none;
     /* width: 240px; */
-    padding: 12px;
+    padding: 5px 12px;
     background: transparent;
-    margin-top: 30px;
+    /*margin-top: 15px;*/
     color: #ffcc00;
     border: 0;
     font-size: 44px;
-    top: 50px;
+    /*top: 50px;*/
     position: relative;
     left: -5px;
     display: inline-block;
@@ -831,10 +831,11 @@ body .main_inner__answers .answer:nth-of-type(3) {
         text-align: center;
     }
 }
-
-body .main_inner__answers .answer:hover {
-    text-indent: 14px;
-    color: #333;
+@media (hover: hover) {
+    body .main_inner__answers .answer:hover {
+        text-indent: 14px;
+        color: #333;
+    }
 }
 
 body .main_inner__answers .answer:hover:before {
@@ -881,9 +882,10 @@ body .main_inner__answers .answer:after {
     transition: all 0.3s ease;
     z-index: -1;
 }
-
-body .main_inner__answers .answer:hover:after {
-    width: 100%;
+@media (hover: hover) {
+    body .main_inner__answers .answer:hover:after {
+        width: 100%;
+    }
 }
 
 body .main_inner__breadcrumbs {

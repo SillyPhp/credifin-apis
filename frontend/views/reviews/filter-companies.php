@@ -6,7 +6,18 @@ use yii\bootstrap\ActiveForm;
 
 ?>
 <div id="loading_img">
-    <img src="https://thumbs.gfycat.com/HollowNaughtyAfricanhornbill-small.gif">
+    <svg style="margin:auto;background:transparent;display:block;" width="101px" height="101px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+        <circle cx="50" cy="50" r="15" fill="#00a0e3">
+            <animate attributeName="cx" values="65.55634918610404;34.44365081389595;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
+            <animate attributeName="cy" values="65.55634918610404;34.44365081389596;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
+            <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1" dur="1.3157894736842106s" repeatCount="indefinite" begin="-0.32894736842105265s"></animate>
+        </circle>
+        <circle cx="50" cy="50" r="15" fill="#ff7803">
+            <animate attributeName="cx" values="34.44365081389596;65.55634918610404;34.44365081389596" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="0s"></animate>
+            <animate attributeName="cy" values="65.55634918610404;34.44365081389595;65.55634918610404" keyTimes="0;0.5;1" dur="1.3157894736842106s" calcMode="spline" keySplines="0.3 0 0.7 1;0.3 0 0.7 1" repeatCount="indefinite" begin="0s"></animate>
+            <animate attributeName="r" values="15;3;15;3;15" keyTimes="0;0.25;0.5;0.75;1" dur="1.3157894736842106s" repeatCount="indefinite" begin="0s"></animate>
+        </circle>
+    </svg>
 </div>
 <section class="rh-header">
     <div class="container">
@@ -26,7 +37,7 @@ use yii\bootstrap\ActiveForm;
                             <span></span>
                             <span></span>
                         </div>
-                        <input type="text" name="keywords" id="search_comp" value="<?= $keywords ?>" class="s-input"
+                        <input type="text" name="keyword" id="search_comp" value="<?= $keyword ?>" class="s-input"
                                placeholder="Search Company">
                         <button type="submit" class="s-btn"><i class="fas fa-search"></i></button>
                     </div>
@@ -69,10 +80,10 @@ use yii\bootstrap\ActiveForm;
                                     <div class="filter-heading">
                                         Filter companies by
                                     </div>
-                                    <div class="show-search">
-                                        <button type="button" onclick="showSearch()"><i class="fas fa-search"></i>
-                                        </button>
-                                    </div>
+<!--                                    <div class="show-search">-->
+<!--                                        <button type="button" onclick="showSearch()"><i class="fas fa-search"></i>-->
+<!--                                        </button>-->
+<!--                                    </div>-->
                                 </div>
                             </div>
 
@@ -355,38 +366,40 @@ form input[type="text"]:focus{
   background-color:#fff;
   opacity:0.7;
 }
-#loading_img.show
-{
-    display: block;
-    position: fixed;
-    z-index: 100;
-    opacity: 1;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 100%;
-    height: 100%;
-    left: 10%;
-    right: 0;
-    top: 50%;
+#loading_img.show {
+	display: block;
+	position: absolute;
+	z-index: 100;
+	opacity: 1;
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	right: 0;
+	top: 50%;
+	z-index: 99;
 }
 .padd-0{
     margin-left:15px !important;
     margin-right:15px !important;
 }
 .cm-btns{
-    margin-top:10px;
+//    margin-top:10px;
     padding-top:5px;
     border-top:1px solid #eee;
     text-transform: capitalize;
 }
 .color-blue a{
     color:#bcbaba;
+    font-size:12px;
 }
 .color-blue a:hover{
     color:#00a0e3;
 }
 .color-orange a{
     color:#bcbaba;
+    font-size:12px;
 }
 .color-orange a:hover{
     color:#ff7803;
@@ -478,11 +491,13 @@ form input[type="text"]:focus{
 .form label{
     margin-bottom: 0px !important;
 }
-.filter-heading{
-    padding:0px 15px 0px 10px;
-    font-size:17px;
-    text-transform:uppercase;
-    font-family: roboto;
+.filter-heading {
+	padding-left: 5px;
+	font-size: 16px;
+	text-transform: uppercase;
+	font-family: roboto;
+	margin-bottom: 10px;
+	font-weight: 500;
 }
 .overall-box-heading{
     font-size:16px;
@@ -848,18 +863,23 @@ form input[type="text"]:focus{
 //          max-height:158px;
 //          overflow-y:auto;
 }
-.tt-menu .tt-dataset .suggestion_wrap:nth-child(odd) {
-    background-color: #eff1f6;
-    }
+//.tt-menu .tt-dataset .suggestion_wrap:nth-child(odd) {
+//    background-color: #eff1f6;
+//    }
+.suggestion_wrap.tt-suggestion.tt-selectable a {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+}
  .suggestion_wrap
  {
      margin-top: 3px;
  }   
-.suggestion
-{
+.suggestion{
     display: inline-block;
     vertical-align: middle;
-    max-width: 70%;
+    max-width: 100%;
+    font-family:roboto;
 }
 .f-search-loc .twitter-typeahead
 {
@@ -869,13 +889,14 @@ width:90%;
   padding: 3px 20px;
   font-size: 14px;
   line-height: 24px;
-  height:54px;
+  min-height:54px;
 }
 .tt-suggestion:hover {
   cursor: pointer;
   color: #fff;
   background-color: #0097cf;
 }
+.tt-suggestion:hover a {color:#fff;}
 .tt-suggestion.tt-cursor {
   color: #fff;
   background-color: #0097cf;
@@ -906,20 +927,27 @@ display:inline-block;
 {
 float:right;
 }
-.logo_wrap
-{
-    display: inline-block;
-    height: 25px;
-    vertical-align: middle;
-    margin-right: .6rem;
-    float:left;
-    max-width:50px;
+.logo_wrap {
+	margin-right: .6rem;
+	max-width: 50px;
+	width: 50px;
+	height: 50px;
+	text-align: center;
+	line-height: 45px;
+}
+.logo_wrap > canvas {
+	padding-top: 4px;
+}
+.logo_wrap img {
+	width: 40px;
+	height: 40px;
+	object-fit: contain;
 }
 /*Load Suggestions loader css starts*/
 .load-suggestions{
     display:none;
     position: absolute;
-    right: 20px;
+    right: 5%;
     z-index: 999;
 }
 .load-suggestions span{
@@ -1045,7 +1073,7 @@ $('#search_comp').typeahead(null, {
 suggestion: function(data) {
 return '<div class="suggestion_wrap"><a href="/'+data.profile_link+'">'
  +'<div class="logo_wrap">'
- +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
+ +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="40" height="40" color="'+data.color+'" font="22px"></canvas>')
  +'</div>'
  +'<div class="suggestion">'
  +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"

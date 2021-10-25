@@ -16,6 +16,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+<?php if ($jobs_count > 0) { ?>
     <section>
         <div class="container">
             <div class="row">
@@ -28,6 +29,8 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+<?php } ?>
+<?php if ($internships_count > 0) { ?>
     <section>
         <div class="container">
             <div class="row">
@@ -40,6 +43,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+<?php } ?>
 <?php
 echo $this->render('/widgets/mustache/careers-cards');
 $this->registerCss('

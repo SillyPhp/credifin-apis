@@ -1,17 +1,13 @@
 <?php
 
-use yii\helpers\Url;
-use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-use yii\widgets\Pjax;
+use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 if ($organization['logo']) {
-    $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
-    $image = Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
-    if (!file_exists($image_path)) {
-        $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
-    }
+    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
 } else {
     $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 }
@@ -79,7 +75,7 @@ $industries = Json::encode($industries);
                             <div class="logo-absolute">
                                 <div class="logo-box">
                                     <div class="logo">
-                                        <img id="logo-img" src="<?= Url::to($image); ?>">
+                                        <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image" data-name="<?= $organization['name'] ?>" data-width="200" data-height="200" data-color="<?= $organization['initials_color'] ?>" data-font="95px">
                                         <?php
                                         $form = ActiveForm::begin([
                                             'id' => 'upload-logo',
@@ -122,16 +118,18 @@ $industries = Json::encode($industries);
                                     </div>
                                 </div>
                                 <div class="com-details">
-                                    <div class="com-name"><?= Html::encode($organization['name']) ?></div>
+                                    <div class="com-name"><?= htmlspecialchars_decode($organization['name']) ?></div>
                                     <div class="com-establish"><span class="detail-title">Tagline:</span> <span
                                                 class="model" id="tag_line" data-type="text" data-pk="tag_line"
                                                 data-name="tag_line"
-                                                data-value="<?= Html::encode($organization['tag_line']); ?>"></span>
-                                        <span data-for="tag_line" class="edit-box"><i class="fas fa-pencil-alt"></i></span>
+                                                data-value="<?= htmlspecialchars_decode($organization['tag_line']); ?>"></span>
+                                        <span data-for="tag_line" class="edit-box"><i
+                                                    class="fas fa-pencil-alt"></i></span>
                                     </div>
                                     <div class="com-establish"><span class="detail-title">Industry:</span> <span
                                                 class="model" data-type="select" id="industry_enc_id"></span> <span
-                                                data-for="industry_enc_id" class="edit-box"><i class="fas fa-pencil-alt"></i></span>
+                                                data-for="industry_enc_id" class="edit-box"><i
+                                                    class="fas fa-pencil-alt"></i></span>
                                     </div>
                                 </div>
                             </div>
@@ -145,12 +143,12 @@ $industries = Json::encode($industries);
         <div class="container padd-top-0">
             <div class="row">
                 <div class="col-md-6 col-md-offset-2 col-sm-10 col-sm-offset-2 col-xs-12">
-                    <ul class="nav nav-tabs nav-padd-20">
-                        <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
-                        <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>
-                        <li><a data-toggle="tab" href="#tab4">Locations</a></li>
-                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>
-                    </ul>
+                    <!--                    <ul class="nav nav-tabs nav-padd-20">-->
+                    <!--                        <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>-->
+                    <!--                        <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>-->
+                    <!--                        <li><a data-toggle="tab" href="#tab4">Locations</a></li>-->
+                    <!--                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>-->
+                    <!--                    </ul>-->
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
                     <div class="follow-btn">
@@ -158,16 +156,19 @@ $industries = Json::encode($industries);
                     </div>
                     <div class="social-btns">
                         <a href="javascript:;" data-pk="facebook" data-name="facebook" data-type="url"
-                           data-value="<?= Html::encode($organization['facebook']) ?>" class="facebook model-link"><i
+                           data-value="<?= htmlspecialchars_decode($organization['facebook']) ?>"
+                           class="facebook-social model-link"><i
                                     class="fab fa-facebook-f"></i> </a>
                         <a href="javascript:;" data-pk="twitter" data-name="twitter" data-type="url"
-                           data-value="<?= Html::encode($organization['twitter']) ?>" class="twitter model-link"><i
+                           data-value="<?= htmlspecialchars_decode($organization['twitter']) ?>"
+                           class="twitter model-link"><i
                                     class="fab fa-twitter"></i> </a>
                         <a href="javascript:;" data-pk="linkedin" data-name="linkedin" data-type="url"
-                           data-value="<?= Html::encode($organization['linkedin']) ?>" class="linkedin model-link"><i
+                           data-value="<?= htmlspecialchars_decode($organization['linkedin']) ?>"
+                           class="linkedin-social model-link"><i
                                     class="fab fa-linkedin-in"></i> </a>
                         <a href="javascript:;" data-pk="website" data-name="website" data-type="url"
-                           data-value="<?= Html::encode($organization['website']) ?>" class="web model-link"><i
+                           data-value="<?= htmlspecialchars_decode($organization['website']) ?>" class="web model-link"><i
                                     class="fas fa-link"></i> </a>
                     </div>
                 </div>
@@ -177,10 +178,10 @@ $industries = Json::encode($industries);
     <section>
         <div class="container">
             <div class="tab-content">
-                <div id="home" class="tab-pane fade in active">
+                <div>
                     <div class="row">
                         <div class="heading-style">
-                            About <?= Html::encode($organization['name']) ?>
+                            About <?= htmlspecialchars_decode($organization['name']) ?>
                             <span data-for="description" class="edit-box"><i
                                         class="fas fa-pencil-alt"></i></span>
                         </div>
@@ -190,20 +191,21 @@ $industries = Json::encode($industries);
                             <div class="com-description">
                                 <span href="#" class="model" id="description" data-pk="description"
                                       data-name="description" data-type="textarea"
-                                      data-value="<?= Html::encode($organization['description']) ?>"></span>
+                                      data-value="<?= htmlspecialchars_decode($organization['description']) ?>"></span>
                             </div>
                         </div>
                         <div class="col-md-5 col-xs-12">
                             <div class="a-boxs">
                                 <div class="row margin-0">
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
-                                        <span data-for="employees" class="edit-box"><i class="fas fa-pencil-alt"></i></span>
+                                        <span data-for="employees" class="edit-box"><i
+                                                    class="fas fa-pencil-alt"></i></span>
                                         <div class="">
                                             <div class="about-det">
                                                 <div class="det">
                                                     <span class="model" id="employees" data-pk="number_of_employees"
                                                           data-name="number_of_employees" data-type="number"
-                                                          data-value="<?= Html::encode($organization['number_of_employees']) ?>"></span>
+                                                          data-value="<?= htmlspecialchars_decode($organization['number_of_employees']) ?>"></span>
                                                 </div>
                                                 <div class="det-heading">Employees</div>
                                             </div>
@@ -249,7 +251,7 @@ $industries = Json::encode($industries);
                                 <div class="mv-text">
                                     <span href="#" class="model" id="mission" data-pk="mission" data-name="mission"
                                           data-type="textarea"
-                                          data-value="<?= Html::encode($organization['mission']) ?>"></span>
+                                          data-value="<?= htmlspecialchars_decode($organization['mission']) ?>"></span>
                                 </div>
                                 <div class="vission-box">
                                     <div class="mv-heading">
@@ -259,7 +261,40 @@ $industries = Json::encode($industries);
                                     <div class="mv-text">
                                         <span href="#" class="model" id="vision" data-pk="vision" data-name="vision"
                                               data-type="textarea"
-                                              data-value="<?= Html::encode($organization['vision']) ?>"></span>
+                                              data-value="<?= htmlspecialchars_decode($organization['vision']) ?>"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="av-jobs-intern">
+                        <div class="row">
+                            <div class="heading-style">
+                                Available Jobs
+                                <div class="pull-right">
+                                    <a href="/account/jobs/create" class="write-review">Create New Job</a>
+                                </div>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="blogbox"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="internships-block">
+                                <div class="heading-style">
+                                    Available Internships
+                                    <div class="pull-right">
+                                        <a href="/account/internships/create" class="write-review">Create New
+                                            Internship</a>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="internships_main"></div>
                                     </div>
                                 </div>
                             </div>
@@ -319,7 +354,7 @@ $industries = Json::encode($industries);
                     <div class="row">
                         <div class="office-view">
                             <div class="heading-style">
-                                Inside <?= Html::encode($organization['name']) ?>
+                                Inside <?= htmlspecialchars_decode($organization['name']) ?>
                                 <div class="button_location pull-right">
                                     <button type="button" class="i-review-nx modal-load-class"
                                             value="/organizations/add-gallery-images">
@@ -386,7 +421,7 @@ $industries = Json::encode($industries);
                             <div class="divider"></div>
                             <?php
                             Pjax::begin(['id' => 'product_images']);
-                            if(!empty($org_products['organizationProductImages'])) {
+                            if (!empty($org_products['organizationProductImages'])) {
                                 ?>
                                 <div class="office-pics">
                                     <div class="col-md-10 col-md-offset-1 col-sm-6 col-xs-12 no-padd">
@@ -408,7 +443,8 @@ $industries = Json::encode($industries);
                                                 </a>
                                                 <div id="product-confirm" class="hidden-p">
                                                     <h5>Are you sure want to remove Image?</h5>
-                                                    <button id="confirm_remove_product" type="button" value="<?= $p_image['image_enc_id'] ?>"
+                                                    <button id="confirm_remove_product" type="button"
+                                                            value="<?= $p_image['image_enc_id'] ?>"
                                                             class="btn-primary btn-sm editable-submit">
                                                         <i class="glyphicon glyphicon-ok"></i>
                                                     </button>
@@ -431,9 +467,12 @@ $industries = Json::encode($industries);
                             Pjax::end()
                             ?>
                             <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
-                                <h4>Brief Desciption <span data-for="p_description" class="edit-box"><i class="fas fa-pencil-alt"></i></span></h4>
+                                <h4>Brief Desciption <span data-for="p_description" class="edit-box"><i
+                                                class="fas fa-pencil-alt"></i></span></h4>
                                 <p>
-                                    <span href="#" class="model-product" id="p_description" data-pk="description" data-name="description" data-type="textarea" data-value="<?= Html::encode($org_products['description']) ?>"></span>
+                                    <span href="#" class="model-product" id="p_description" data-pk="description"
+                                          data-name="description" data-type="textarea"
+                                          data-value="<?= htmlspecialchars_decode($org_products['description']) ?>"></span>
                                 </p>
                             </div>
                         </div>
@@ -516,83 +555,46 @@ $industries = Json::encode($industries);
                         </div>
                     </div>
                 </div>
-                <div id="menu1" class="tab-pane fade">
-                    <div class="row">
+                <div class="row">
+                    <div class="address-division">
+                        <div class="heading-style"><?= htmlspecialchars_decode($organization['name']) ?> Reviews</div>
+                        <div class="divider"></div>
+                        <div id="org-reviews"></div>
+                        <div class="viewbtn">
+                            <a href="/<?= $organization['slug'] ?>/reviews">View All Review</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="address-division">
                         <div class="heading-style">
-                            Available Jobs
-                            <div class="pull-right">
-                                <a href="/account/jobs/create" class="write-review">Create New Job</a>
+                            Address
+                            <div class="button_location pull-right">
+                                <button type="button" class="i-review-nx modal-load-class"
+                                        value="/account/locations/create">
+                                            <span class="i-review-button-tx">
+                                                Add New <span class="fas fa-long-arrow-alt-right"></span>
+                                            </span>
+                                </button>
                             </div>
                         </div>
                         <div class="divider"></div>
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="blogbox"></div>
+                            <div class="col-md-5 col-xs-12 pull-right">
+                                <div id="map"></div>
                             </div>
-                        </div>
-                    </div>
+                            <div class="col-md-7 col-xs-12">
+                                <div class="head-office">
 
-                    <div class="row">
-                        <div class="internships-block">
-                            <div class="heading-style">
-                                Available Internships
-                                <div class="pull-right">
-                                    <a href="/account/internships/create" class="write-review">Create New Internship</a>
                                 </div>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="internships_main"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="tab4" class="tab-pane fade">
-                    <div class="row">
-                        <div class="address-division">
-                            <div class="heading-style">
-                                Address
-                                <div class="button_location pull-right">
-                                    <button type="button" class="i-review-nx modal-load-class"
-                                            value="/account/locations/create">
-                                            <span class="i-review-button-tx">
-                                                Add New <span class="fas fa-long-arrow-alt-right"></span>
-                                            </span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="row">
-                                <div class="col-md-5 col-xs-12 pull-right">
-                                    <div id="map"></div>
-                                </div>
-                                <div class="col-md-7 col-xs-12">
-                                    <div class="head-office">
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="menu4" class="tab-pane fade">
-                    <div class="row">
-                        <div class="address-division">
-                            <div class="heading-style"><?= Html::encode($organization['name']) ?> Reviews</div>
-                            <div class="divider"></div>
-                            <div id="org-reviews"></div>
-                            <div class="viewbtn">
-                                <a href="/<?= $organization['slug'] ?>/reviews">View All Review</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        </div>
-        </div>
+<!--        </div>-->
+<!--        </div>-->
     </section>
     <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -653,8 +655,8 @@ echo $this->render('/widgets/mustache/organization_locations', [
 ]);
 Pjax::end();
 echo $this->render('/widgets/mustache/application-card');
-echo $this->render('/widgets/mustache/organization-reviews',[
-        'org_slug' => $organization['slug']
+echo $this->render('/widgets/mustache/organization-reviews', [
+    'org_slug' => $organization['slug']
 ]);
 $this->registerCss('
 .write-review{
@@ -769,7 +771,7 @@ $this->registerCss('
 }
 .team-icon{
     width:100%;
-    height:186px;
+    height:230px;
     overflow:hidden;
     object-fit:cover;
     position:relative;
@@ -818,17 +820,38 @@ $this->registerCss('
 }
 /*----office view ends----*/
 /*----address----*/
-.office-heading{
-    font-weight:bold;
-    font-size:18px;
-    text-transform:uppercase;
+/*----address----*/
+.head-office {
+	display: flex;
+	flex-wrap: wrap;
+}
+.org-location {
+	border: 1px solid #eee;
+	padding: 10px;
+	margin: 0 1% 1% 0;
+	box-shadow: 0 0 5px -1px rgba(0,0,0,0.1);
+	flex-basis: 49%;
+	height: 148px;
+	overflow:hidden;
+}
+.office-heading {
+	font-weight: bold;
+	font-size: 16px;
+	text-transform: uppercase;
+	font-family: lora;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	max-height: 55px;
+	cursor: pointer;
 }
 .office-heading img{
     max-width:25px;
     margin-top:-5px;
 }
 .office-loc{
-    padding:10px 20px;
+    font-family:roboto;
 }
 .o-h2 img{
     max-width:15px;
@@ -906,19 +929,19 @@ a.twitter{
     background:#1da1f2;
     color:#fff;
 }
-a.facebook{
+a.facebook-social{
     padding:8px 9px 8px 12px;
     color:#3C5A99;   
 }
-.facebook:hover{
+.facebook-social:hover{
     background:#3c5a99;
     color:#fff;
 }
-a.linkedin{
+a.linkedin-social{
     padding:8px 9px 8px 11px;
      color:#0077B5;
 }
-.linkedin:hover{
+.linkedin-social:hover{
     background:#0077b5;
     color:#fff;
 }
@@ -945,10 +968,10 @@ a.web{
     background:#00a0e3;
     color:#fff;
 }
-#enable, #enable:hover, a.facebook, .facebook:hover,
-a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
+#enable, #enable:hover, a.facebook-social, .facebook-social:hover,
+a.twitter, .twitter:hover, a.linkedin-social, .linkedin-social:hover, a.web, .web:hover{
     transition:.3s all;
-}
+}l
 /*----follow btn ends----*/
 /*----tabs----*/
 .nav-tabs > li.active a, .nav-tabs > li.active a:hover, .nav-tabs > li.active a:focus{
@@ -1244,7 +1267,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     position:relative;
 }
 .button_location{
-    padding: 14px 0px;
+//    padding: 14px 0px;
     float:right;
     font-family: "Open Sans", sans-serif;
 }
@@ -1261,15 +1284,16 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
   font-weight: 400;
   margin-bottom:0px;
 }
-.p-category img, .checkbox-text--title img{
-    width: 80px;
-    height: 50px;
+.p-category img, .checkbox-text--title img {
+	width: 60px !important;
+	height: 60px !important;
+	object-fit: contain;
 }
 .checkbox-label-v2:before {
   content: \'\';
   position: absolute;
   top: 80px;
-  right: 16px;
+  right: 10px;
   width: 40px;
   height: 40px;
   opacity: 0;
@@ -1284,7 +1308,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
   transition: all 0.4s ease;
 }
 .checkbox-input:checked + .checkbox-label-v2:before {
-  top: 0;
+  top: 30px;
   opacity: 1;
 }
 .checkbox-input:checked + .checkbox-label-v2 .checkbox-text span {
@@ -1300,11 +1324,11 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     width: 100%;
 }
 .p-category {
-    float: left;
-    width: 100%;
-    z-index: 1;
-    position: relative;
-    display:flex;
+	height: 152px;
+	border-bottom: 1px solid #e8ecec;
+	border-right: 1px solid #e8ecec;
+	text-align: center;
+	padding: 20px;
 }
 .p-category, .p-category *{
     -webkit-transition: all 0.4s ease 0s;
@@ -1313,13 +1337,14 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     -o-transition: all 0.4s ease 0s;
     transition: all 0.4s ease 0s;
 }
-.p-category .checkbox-text {
-    float: left;
-    width: 100%;
-    text-align: center;
-    padding-bottom: 30px;
-    border-bottom: 1px solid #e8ecec;
-    border-right: 1px solid #e8ecec;
+.checkbox-text--description2 {
+	display: block;
+	height: 51px;
+	margin-top: 8px;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 }
 .p-category .checkbox-text span i {
     float: left;
@@ -1330,32 +1355,23 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     line-height: initial !important;
 }
 .p-category .checkbox-text span {
-    float: left;
-    width: 100%;
-    font-family: Open Sans;
-    font-size: 15px;
-    color: #202020;
-    margin-top: 10px;
+	font-family: roboto;
+	font-size: 15px;
+	color: #202020;
 }
 .p-category:hover {
-    background: #ffffff;
-    -webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-    width: 104%;
-    margin-left: -2%;
-    height: 102%;
-    z-index: 10;
-}
-.p-category:hover .checkbox-text {
-    border-color: #ffffff;
+	background: #ffffff;
+	-webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-ms-border-radius: 8px;
+	-o-border-radius: 8px;
+	border-radius: 4px;
+	border-color: #fff;
 }
 .p-category:hover .checkbox-label-v2 i{
     color: #f07d1d;
@@ -1627,7 +1643,7 @@ var cover_vanilla = new Croppie(cr, {
 function renderCrop(img){
     vanilla.bind({
         url: img,
-        points: [20,20,20,20]
+        // points: [20,20,20,20]
         // orientation: 4
     });
 }

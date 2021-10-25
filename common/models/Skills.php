@@ -11,6 +11,7 @@ use Yii;
  * @property string $skill_enc_id Skill Encrypted ID
  * @property string $skill Skill
  * @property string $organization_enc_id Foreign Key to Organizations Table
+ * @property int $source 0 as EY, 1 as API
  * @property string $created_on On which date Skill information was added to database
  * @property string $created_by By which User Skill information was added
  * @property string $last_updated_on On which date Skill information was updated
@@ -46,7 +47,7 @@ class Skills extends \yii\db\ActiveRecord
             [['skill_enc_id', 'skill', 'created_on'], 'required'],
             [['skill', 'status'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['is_deleted'], 'integer'],
+            [['source', 'is_deleted'], 'integer'],
             [['skill_enc_id', 'organization_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['skill_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],

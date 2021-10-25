@@ -1,6 +1,8 @@
 <?php
+
 use yii\helpers\Html;
 use yii\helpers\Url;
+
 ?>
 
 <section class="rh-header">
@@ -148,10 +150,19 @@ use yii\helpers\Url;
 <section id="jobs">
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-xs-6">
                 <div class="heading-style">Jobs</div>
             </div>
-
+            <div class="col-md-6 col-xs-6">
+                <div class="type-1">
+                    <div>
+                        <a href="javascript:;" class="btn btn-3 search-jobs-link">
+                            <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row jobs-list">
 
@@ -162,8 +173,18 @@ use yii\helpers\Url;
 <section id="internships">
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-xs-6">
                 <div class="heading-style">Internships</div>
+            </div>
+            <div class="col-md-6 col-xs-6">
+                <div class="type-1">
+                    <div>
+                        <a href="javascript:;" class="btn btn-3 search-internships-link">
+                            <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row internships-list">
@@ -192,12 +213,8 @@ use yii\helpers\Url;
 <?php
 $c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
-.application-card-img{
-    margin-top: 25px;
-    margin-left:0px;
-}
-.application-card-description{
-    margin: 20px 0px 0px 20px;
+.salary a {
+    color: #2b7cb7;
 }
 .search-bar{
     width:66%;
@@ -587,13 +604,98 @@ a.wn-overlay-text {
 }
 
 .company-name-span{
+    width: 100%;
+    padding: 0 10px;
+    position: relative;
+    display: -webkit-box;
+    min-height: 82px;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: 10px;
+    text-overflow: ellipsis;
+}
+/*    <!-- view-all button css start -->*/
+.btn-3 {
+    background-color: #424242;
+}
+.btn-3 .round {
+    background-color: #737478;
+}
+.type-1{
+    float:right;
+    margin-top: 15px;
+}
+.type-1 div a {
+    text-decoration: none;
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+    padding: 12px 53px 12px 23px;
+    color: #fff;
+    text-transform: uppercase;
+    font-family: sans-serif;
+    font-weight: bold;
+    position: relative;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+    display: inline-block;
+}
+.type-1 div a span {
+    position: relative;
+    z-index: 3;
+}
+.type-1 div a .round {
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    z-index: 2;
+}
+.type-1 div a .round i {
     position: absolute;
     top: 50%;
+    margin-top: -6px;
     left: 50%;
-    transform: translate(-50%, -50%);
-    width:100%;
-    padding:0 10px;
+    margin-left: -4px;
+    color: #333332;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
 }
+
+.txt {
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.type-1 a:hover {
+    padding-left: 48px;
+    padding-right: 28px;
+}
+.type-1 a:hover .round {
+    width: calc(100% - 6px);
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+}
+.type-1 a:hover .round i {
+    left: 12%;
+    color: #FFF;
+}
+
+/*<!---- view-all button css ends --->*/
 ');
 
 $script = <<< JS
@@ -612,6 +714,9 @@ if(search_keyword == ''){
     window.location.replace('/');
     return false;
 }
+var search_link = search_keyword.replace(/\s+/g, '-');
+$('.search-internships-link').attr('href', window.location.origin + "/" + search_link + '-internships');
+$('.search-jobs-link').attr('href', window.location.origin + "/" + search_link + '-jobs');
 
 $('.s-input').val(search_keyword);
 $(document).on('click', '.s-btn', function(e){
@@ -780,6 +885,7 @@ $(document).on('click','.application-card-add', function(event){
 });
 
 JS;
+echo $this->render('/widgets/mustache/application-card');
 $this->registerJs($script);
 $this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');
 $this->registerJsFile('@root/assets/vendor/raty-master/js/jquery.raty.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -787,74 +893,6 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
-<script id="application-card" type="text/template">
-    {{#.}}
-    <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
-        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
-             class="application-card-main">
-            {{#city}}
-            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
-                  data-locations="">
-                <i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
-                </span>
-            {{/city}}
-            {{^city}}
-            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
-                  data-locations="">
-                <i class="fas fa-map-marker-alt"></i>&nbsp;All India
-                </span>
-            {{/city}}
-            <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                <div class="application-card-img">
-                    <a href="{{organization_link}}">
-                        {{#logo}}
-                        <img src="{{logo}}">
-                        {{/logo}}
-                        {{^logo}}
-                        <canvas class="user-icon" name="{{organization_name}}" width="80" height="80"
-                                color="{{color}}" font="35px"></canvas>
-                        {{/logo}}
-                    </a>
-                </div>
-                <div class="application-card-description">
-                    <a href="{{link}}"><h4 class="application-title">{{title}}</h4></a>
-                    {{#salary}}
-                    <h5><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
-                    {{/salary}}
-                    {{^salary}}
-                    <h5>Negotiable</h5>
-                    {{/salary}}
-                    {{#type}}
-                    <h5>{{type}}</h5>
-                    {{/type}}
-                    {{#experience}}
-                    <h5><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
-                    {{/experience}}
-                </div>
-            </div>
-            {{#last_date}}
-            <h6 class="col-md-5 pl-20 custom_set2 text-center">
-                Last Date to Apply
-                <br>
-                {{last_date}}
-            </h6>
-            <h4 class="col-md-7 org_name text-right pr-10">
-                {{organization_name}}
-            </h4>
-            {{/last_date}}
-            {{^last_date}}
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <h4 class="org_name text-right">{{organization_name}}</h4>
-            </div>
-            {{/last_date}}
-            <div class="application-card-wrapper">
-                <a href="{{link}}" class="application-card-open">View Detail</a>
-                <a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
-            </div>
-        </div>
-    </div>
-    {{/.}}
-</script>
 <script id="un-card" type="text/template">
     {{#.}}
     <div class="col-md-3">
@@ -864,13 +902,17 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                 <a href="/{{slug}}/reviews"> <img src="{{logo}}"> </a>
                 {{/logo}}
                 {{^logo}}
-                <a href="/{{slug}}/reviews"> <canvas class="user-icon" name="{{name}}" width="100" height="100"
-                        color="{{color}}" font="55px"></canvas></a>
+                <a href="/{{slug}}/reviews">
+                    <canvas class="user-icon" name="{{name}}" width="100" height="100"
+                            color="{{color}}" font="55px"></canvas>
+                </a>
                 {{/logo}}
             </div>
 
             {{#name}}
-            <a href="/{{slug}}/reviews"><div class="company-name"><span class="company-name-span">{{name}}</span></div></a>
+            <a href="/{{slug}}/reviews">
+                <div class="company-name"><span class="company-name-span">{{name}}</span></div>
+            </a>
             {{/name}}
 
             {{#employerApplications}}
@@ -920,12 +962,16 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                 <a href="/{{slug}}"><img src="{{logo}}"></a>
                 {{/logo}}
                 {{^logo}}
-                <a href="/{{slug}}"><canvas class="user-icon" name="{{name}}" width="100" height="100"
-                                            color="{{color}}" font="55px"></canvas></a>
+                <a href="/{{slug}}">
+                    <canvas class="user-icon" name="{{name}}" width="100" height="100"
+                            color="{{color}}" font="55px"></canvas>
+                </a>
                 {{/logo}}
             </div>
             {{#name}}
-            <a href="/{{slug}}"><div class="company-name"><span class="company-name-span">{{name}}</span></div></a>
+            <a href="/{{slug}}">
+                <div class="company-name"><span class="company-name-span">{{name}}</span></div>
+            </a>
             {{/name}}
             {{#employerApplications}}
             {{#applications_cnt}}

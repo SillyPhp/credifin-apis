@@ -88,6 +88,8 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+</div>
+<div class="row">
     <div class="col-lg-6 col-xs-12 col-sm-12">
         <div class="portlet light">
             <div class="portlet-title">
@@ -176,7 +178,8 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .p-category > a img{
-    max-height:55px !important;    
+    height:85px;
+    width:85px;  
 }
 .actions > a {
     margin-right: 15px;
@@ -187,8 +190,8 @@ $this->registerCss('
     transform: scale(1.2);
 }
 .actions > a > img {
-    height:20px;
-    margin-top:7px;
+    height:25px;
+//    margin-top:7px;
 }
 .tab-empty{
     padding:20px;

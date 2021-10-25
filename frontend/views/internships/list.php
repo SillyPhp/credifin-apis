@@ -36,7 +36,7 @@ if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -51,7 +51,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -71,6 +71,13 @@ $this->registerCss('
 }
 .main-content{
     min-height:100vh !important;
+}
+@media screen and (max-width: 1250px) and (min-width: 992px) {
+    .ji-apply{padding:5px;}
+    .application-card-bottom a {
+        font-size: 11px;
+    }
+    .sharing-links{padding:4px;}
 }
 ');
 ?>

@@ -2,7 +2,7 @@
 $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
-
+Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
@@ -10,23 +10,23 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center text-white">
-                <h2 class="text-white1"><?= Yii::t('frontend', 'The Easiest Way to Get Your New Job'); ?></h2>
-                <h4 class="text-white2"><?= Yii::t('frontend', 'Find Jobs, Employment &amp; Career Opportunities.'); ?></h4>
+                <h1 class="text-white1"><?= Yii::t('frontend', 'The Easiest Way to Get Your New Job'); ?></h1>
+                <h3 class="text-white2 mt-0"><?= Yii::t('frontend', 'Find Jobs, Employment &amp; Career Opportunities.'); ?></h3>
                 <div class="search-by-type">
-                    <form class="form-inline" action="<?= Url::to('/jobs/list?'); ?>">
+                    <form class="form-inline" action="/" method="GET" id="search_bar_form">
                         <div class="input-group mb-10 mr-10 col-md-5">
                             <span class="input-group-addon"><i class="fas fa-user"></i></span>
-                            <input type="text" name="keyword" class="form-control"
+                            <input type="text" name="keyword" class="form-control remove-b" id="keywords"
                                    placeholder="Job Title or Keywords or Company"/>
                         </div>
-                        <div class="input-group mb-10 mr-10 col-md-3">
+                        <div class="input-group mb-10 mr-10 col-md-3 sett-marg">
                                 <span class="input-group-addon set-heights"><i
                                             class="fas fa-map-marker-alt"></i></span>
                             <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
                                    placeholder="City or State"/>
                             <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                         </div>
-                        <div class="form-group mb-10 mr-10">
+                        <div class="form-group mb-10 mr-10 sett-marg">
                             <input type="submit" class="form-control submit-next" id="form_control_1"
                                    value="Search">
                         </div>
@@ -36,13 +36,12 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-
 <section>
     <div class="container">
         <div class="row">
             <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
                 <div class="container">
-                    <a href="/jobs/profiles" data-hover="Desultory">All Jobs</a>
+                    <a href="/jobs/list" data-hover="Desultory">All Jobs</a>
                     <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
                     <a href="/jobs/compare" data-hover="Sumptuous">Compare Jobs</a>
                     <a href="/jobs/near-me" data-hover="Scintilla">Jobs Near Me</a>
@@ -53,13 +52,15 @@ use yii\helpers\Url;
     </div>
 </section>
 
+
+
 <section>
     <div class="container">
         <div class="row mt-20">
-            <div class="col-md-6 col-sm-6 col-xs-6">
-                <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h1>
+            <div class="col-md-6 col-sm-8 col-xs-12">
+                <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Job Profiles'); ?></h1>
             </div>
-            <div class="col-md-6 col-sm-6 col-xs-6">
+            <div class="col-md-6 col-sm-4 col-xs-12">
                 <div class="type-1">
                     <div>
                         <a href="<?= Url::to('/jobs/profiles'); ?>" class="btn btn-3">
@@ -76,6 +77,7 @@ use yii\helpers\Url;
     </div>
 </section>
 
+<?= $this->render('/webinars/webinar-carousel')?>
 
 <?php
 echo $this->render('/widgets/info-stats');
@@ -83,15 +85,17 @@ echo $this->render('/widgets/info-stats');
 echo $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'jobs'
-])
+]);
+
+echo $this->render('/widgets/jobs-by-tag');
 ?>
 <section class="bg-lighter">
     <div class="container">
         <div class="row">
-            <div class="col-md-6 col-sm-6 col-xs-6">
+            <div class="col-md-6 col-sm-6 col-xs-12">
                 <h1 class="heading-style"><?= Yii::t('frontend', 'Featured Jobs'); ?></h1>
             </div>
-            <div class="col-md-6 col-sm-6 col-xs-6">
+            <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="type-1">
                     <div>
                         <a href="<?= Url::to('/jobs/list'); ?>" class="btn btn-3">
@@ -108,9 +112,11 @@ echo $this->render('/widgets/top-cities', [
         </div>
     </div>
 </section>
+
 <?= $this->render('/widgets/usa_and_govt_jobs'); ?>
 
 <?= $this->render('/widgets/international-jobs'); ?>
+
 
 <section class="j-tweets">
     <div class="container">
@@ -141,21 +147,21 @@ echo $this->render('/widgets/top-cities', [
         </div>
     </div>
 </section>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="heading-style">Blogs</div>
-                    </div>
-                </div>
-                <div id="whats-new" class="row">
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!--<section>-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12 col-sm-12">-->
+<!--                <div class="row">-->
+<!--                    <div class="col-md-12">-->
+<!--                        <div class="heading-style">Blogs</div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div id="whats-new" class="row">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
 <!--Subscribe Widget start-->
 <?php
 if (Yii::$app->user->isGuest) {
@@ -212,13 +218,17 @@ if (Yii::$app->user->isGuest) {
     </div>
 </section>
 <?php
-echo $this->render('/widgets/blogs/whats-new', [
-    'size' => 'col-md-3 col-sm-6',
-    'is_ajax' => true,
-]);
+//echo $this->render('/widgets/blogs/whats-new', [
+//    'size' => 'col-md-4 col-sm-4',
+//    'is_ajax' => true,
+//]);
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.twitter-typeahead input, .remove-b {
+	background-color: #fff;
+	border: 0px solid #eee;
+}
 .j-tweets{
     background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
     background-attachment: fixed;
@@ -250,6 +260,7 @@ $this->registerCss('
 .text-white1{
     color:white;
     font-family:Roboto;
+    font-size:40px
 }
 .text-white2{
     color:white;
@@ -292,9 +303,6 @@ $this->registerCss('
     color:#00a0e3;
     padding:0;
     font-size:14px;
-}
-.wn-box-details{
-    min-height:100px !important;
 }
 .input-group-addon{
     font-size:15px;
@@ -456,6 +464,7 @@ $this->registerCss('
 .type-1{
     float:right;
     margin-top: 15px;
+    margin-bottom: 15px;
 }
 .type-1 div a {
     text-decoration: none;
@@ -525,7 +534,6 @@ $this->registerCss('
     left: 12%;
     color: #FFF;
 }
-
 /*<!---- view-all button css ends --->*/
 
 .search-by-type {
@@ -835,13 +843,6 @@ $this->registerCss('
 .twitter-typeahead{
     float:left;
 }
-.wn-box-icon{
-    max-width: 100% !important;
-}
-.wn-box-icon img{
-    height: 200px !important;
-    object-fit: fill;
-}
 @media only screen and (max-width: 767px) and (min-width: 375px) {
     .form-inline .input-group{
         width:98%;
@@ -851,7 +852,11 @@ $this->registerCss('
         margin-bottom: 30px;
     }
 }
-
+@media only screen and (max-width:766px) and (min-width: 375px){
+.sett-marg{
+	margin-top: 15px;
+}
+}
 ');
 $script = <<<JS
 var city = new Bloodhound({
@@ -892,6 +897,33 @@ $(window).on('load', function() {
               '</style>';
     jQuery(head).append(css);
 });
+$(document).on('submit','#search_bar_form',function(e) {
+  e.preventDefault();
+  var cname = $('#cities').val().trim().replace(/[^a-z0-9\s]/gi, ''); 
+  var kname = $('#keywords').val().trim().replace(/[^a-z0-9\s]/gi, '');
+  if (cname&&kname) 
+      {
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type+'-in-'+cname.replace(/\s+/g, '-'));
+      }
+  else if (cname) 
+      {
+          window.location.assign('/'+_type+'-in-'+cname.replace(/\s+/g, '-'));
+      }
+  else if (kname)
+      {
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type);
+      }
+}) 
+
+
+    $(document).on('click', '.showHideBtn', function () {
+        showMoreEvent()
+    });
+
+  $(document).on('click', '.hideElem', function () {
+        showLessEvent();
+    });
+
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
@@ -924,9 +956,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         }
     }
 
-    $(document).on('click', '.showHideBtn', function () {
-        showMoreEvent();
-    });
+
 
     function showMoreEvent() {
         hideMore('searches');
@@ -959,9 +989,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         }
     }
 
-    $(document).on('click', '.hideElem', function () {
-        showLessEvent();
-    });
 
     function showLessEvent() {
         hideLess('searches');
