@@ -127,7 +127,7 @@ use yii\helpers\Url;
     </section>
 
     <?= $this->render('/widgets/Our-lending-partners') ?>
-   
+
     <section class="bg-blue pb10">
         <?= $this->render('/widgets/choose-education-loan') ?>
     </section>
