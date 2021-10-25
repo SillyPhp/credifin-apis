@@ -8,7 +8,6 @@
   <!-- Wrapper for slides -->
   <div class="carousel-inner" role="listbox">
     <div class="item active">
-      <?= $this->render('/widgets/webinar-templates/webinar-one-speaker2') ?>
     </div>
 
     <!-- more slides here -->
