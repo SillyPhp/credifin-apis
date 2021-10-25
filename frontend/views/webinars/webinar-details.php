@@ -244,7 +244,7 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                 <?php
                                 if (!empty($webinarRegistrations)) { ?>
                                     <p>
-                                        <span><?= ($webinar["slug"] == "entrepreneurship-innovation-summit-75367") ? 320 + count($webinarRegistrations) : count($webinarRegistrations); ?></span>
+                                        <span><?= ($webinar["slug"] == "new-age-investment-strategies-10407") ? 2 * count($webinarRegistrations) : count($webinarRegistrations); ?></span>
                                         People Registered</p>
                                 <?php }
                                 ?>

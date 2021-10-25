@@ -318,6 +318,7 @@ class MentorsController extends Controller
             ]);
         }
         $webinars = self::getWebianrs($id);
+        $showChat = WebinarEvents::findOne(['session_enc_id' => $id])->show_chat;
         return $this->render('webinar-view', [
             'type' => $type,
             'webinars' => $webinars,
@@ -325,6 +326,7 @@ class MentorsController extends Controller
             'dateEvents' => $dateEvents,
             'upcomingEvent' => $upcomingEvent,
             'upcomingDateTime' => $upcomingDateTime,
+            'showChat'=>$showChat
         ]);
     }
 
@@ -340,11 +342,13 @@ class MentorsController extends Controller
         if (!in_array($user_id, $speakerUserIds) && $nextEvent['session_enc_id'] != $id) {
             throw new HttpException(404, Yii::t('frontend', 'Page not found'));
         }
+
         if (in_array(Yii::$app->user->identity->user_enc_id, $speakerUserIds)) {
             return $this->render('webinar-view', [
                 'type' => $type,
                 'webinars' => $webinars,
-                'webinarDetail' => $webinarDetail
+                'webinarDetail' => $webinarDetail,
+                'showChat'=>1
             ]);
         } else {
             return $this->render('non-authorized');
@@ -418,6 +422,7 @@ class MentorsController extends Controller
                     'a1.description',
                     "ADDDATE(a1.start_datetime, INTERVAL a1.duration MINUTE) as end_datetime",
                     'a1.status',
+                    'a1.show_chat'
                 ]);
                 $a1->joinWith(['sessionEnc e'], false);
                 $a1->joinWith(['webinarSpeakers a2' => function ($d) {
@@ -560,7 +565,7 @@ class MentorsController extends Controller
                     'c.logo org_logo', 'c.logo_location org_logo_location',
                     'c.name org_name'
                 ])
-                ->where(['a.is_deleted' => 0, 'is_star' =>1])
+                ->where(['a.is_deleted' => 0, 'is_star' => 1])
                 ->joinWith(['designationEnc b'], false)
                 ->joinWith(['unclaimedOrg c'], false)
                 ->joinWith(['speakerExpertises d' => function ($d) {
