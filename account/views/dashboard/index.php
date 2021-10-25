@@ -129,6 +129,14 @@ endif;
             </div>
 
             <?php
+                if($webinar) {
+                    echo $this->render('/widgets/dashboard-webinar-widget', [
+                           'webinar' => $webinar,
+                    ]);
+                }
+            ?>
+
+            <?php
             if ($loanApplication && Yii::$app->user->identity->type->user_type == 'Individual') {
                 echo $this->render('/widgets/education-loan/loan-detail-individual-dashboard', [
                     'loanApplication' => $loanApplication,
@@ -307,6 +315,7 @@ endif;
                         echo $this->render('/widgets/applications/card', [
                             'applications' => $applications['jobs']['data'],
                             'per_row' => 3,
+                            'type' => 'Job',
                             'col_width' => 'col-lg-4 col-md-4 col-sm-6',
                         ]);
                     } else {
@@ -363,6 +372,7 @@ endif;
                         echo $this->render('/widgets/applications/card', [
                             'applications' => $applications['internships']['data'],
                             'per_row' => 3,
+                            'type' => 'Internship',
                             'col_width' => 'col-lg-4 col-md-4 col-sm-6',
                         ]);
                     } else {

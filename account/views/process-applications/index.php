@@ -315,7 +315,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
-                    <div class="job-txt pos-right">Openings By Locations</div>
+                    <div class="job-txt pos-right" data-toggle="tooltip" data-original-title="To Filter Candidates Click on City Name">Openings By Locations <i class="fa fa-info-circle"></i></div>
                     <div class="main-locations">
                         <?php if ($application_name['applicationPlacementLocations']) { ?>
                             <ul class="location-posts">
@@ -428,7 +428,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                     Profile</a>
 
                                 <?php if (!empty($arr['resume_location']) || !empty($arr['resume'])) { ?>
-                                    <a href="javascript:;" class="download-resume" target="_blank" data-key="<?= $arr['resume_location'] ?>" data-id="<?= $arr['resume'] ?>">Download
+                                    <a href="javascript:;" class="download-resume" target="_blank" data-key="<?= $arr['resume_location'] ?>" data-id="<?= $arr['resume'] ?>" data-name="<?= $arr['name']?>">Download
                                         Resume</a>
                                 <?php } ?>
                                 <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
@@ -511,8 +511,8 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                             $msg = 'The candidate has been considered for following jobs';
                                             break;
                                         case 3:
-                                            $msg = "Candidate's CV has been saved for later. Please check CV in 
-                                                    drop resume";
+                                            $msg = "Candidate has been saved for later. Please check candidate's profile in 
+                                            Saved Candidates section";
                                             break;
                                         case 4:
                                             $msg = "This candidate has been rejected";
@@ -549,6 +549,19 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                                 More</p>
                                         </div>
                                     <?php
+                                    } else if($arr['candidateRejections'][0]['candidateRejectionReasons']){
+                                        ?>
+                                        <ul class="cr-reasons">
+                                            <li class="colorRed">Reasons:</li>
+                                            <?php
+                                            foreach ($arr['candidateRejections'][0]['candidateRejectionReasons'] as $crr){
+                                                ?>
+                                                <li><?= $crr['reason']?></li>
+                                                <?php
+                                            }
+                                            ?>
+                                        </ul>
+                                        <?php
                                     }
                                     ?>
                                 </div>
@@ -685,7 +698,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                             Profile</a>
                                         <?php
                                         if (!empty($arr['resume_location']) || !empty($arr['resume'])) { ?>
-                                            <a href="javascript:;" class="download-resume" target="_blank" data-key="<?= $arr['resume_location'] ?>" data-id="<?= $arr['resume'] ?>">Download Resume</a>
+                                            <a href="javascript:;" class="download-resume" target="_blank" data-key="<?= $arr['resume_location'] ?>" data-id="<?= $arr['resume'] ?>" data-name="<?= $arr['name']?>">Download Resume</a>
                                         <?php } ?>
                                         <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                         <!--                                            <a href="#">Request to Complete Profile</a>-->
@@ -940,6 +953,24 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
 $this->registerCss('
 .has-success #phone-input {
     border-color: #c2cad8;
+}
+.cr-reasons{
+    display: inline;
+    color: #000;
+}
+.cr-reasons li{
+    padding: 0 !important;
+}
+.cr-reasons li:after{
+    content: ",";
+    padding-left: 2px;
+}
+.cr-reasons li:first-child:after,
+.cr-reasons li:last-child:after{
+   content: "";
+}
+.colorRed{
+    color: #ff4242; 
 }
 .hidden-locations{
     display:none;
@@ -2799,6 +2830,7 @@ $(document).on('click','.download-resume',function (e){
     let resume_location = $(this).attr('data-key');
     let resume = $(this).attr('data-id');
     let htmldata = $(this).html();
+    let user_name = $(this).attr('data-name');
     btnElem.addClass('disabled-elem');
     btnElem.html('<i class="fa fa-circle-o-notch fa-spin fa-fw p-0"></i>');
     $.ajax({
@@ -2813,13 +2845,16 @@ $(document).on('click','.download-resume',function (e){
                 btnElem.html(htmldata);
                 if(res['status'] == 200){
                     let cv_link = res['cv_link'];
-                    window.open(cv_link);
+                    downloadAs(cv_link,user_name+get_url_extension(cv_link));
                 }else if(res['status'] == 500){
                     alert('an error occurerd')
                 }
             }
         })    
 })
+function get_url_extension( url ) {
+    return '.' + url.split(/[#?]/)[0].split('.').pop().trim();
+}
 $(document).on('click','.customJobBox', function(e) {
     e.preventDefault();
     window.open($(this).attr('data-href'));
@@ -2871,6 +2906,24 @@ $(document).on('click', '#whatsapp-invitation', function(e){
       }
   }
 })
+function downloadAs(url, name) {
+  axios.get(url, {
+    headers: {
+      "Content-Type": "application/octet-stream"
+    },
+    responseType: "blob"
+  })
+    .then(response => {
+      const a = document.createElement("a");
+      const url = window.URL.createObjectURL(response.data);
+      a.href = url;
+      a.download = name;
+      a.click();
+    })
+    .catch(err => {
+      console.log("error", err);
+    });
+};
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
@@ -2879,6 +2932,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://unpkg.com/axios/dist/axios.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

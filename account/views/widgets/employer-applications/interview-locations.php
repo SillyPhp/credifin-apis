@@ -8,11 +8,19 @@ use yii\widgets\Pjax;
     <div class="col-md-4 m-padd">
         <h3 class="module2-heading">Select Interview Locations</h3>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <span id="interview_error"></span>
     </div>
-    <div class="col-md-4">
-        <div class="btn-padd-top pull-right">
+    <div class="col-md-5">
+        <div class="btn-padd-top pull-right display-flexbox">
+            <div class="md-checkbox">
+                <input type="checkbox" id="sameAsPlacementLocation"/>
+                <label for="sameAsPlacementLocation">
+                    <span class="inc"></span>
+                    <span class="check"></span>
+                    <span class="box"></span> Same as Placement Locations
+                </label>
+            </div>
             <?= Html::button('Add New Location', ['value' => URL::to('/account/locations/create'), 'data-key' => '1', 'class' => 'btn modal-load-class btn-primary custom-buttons2']); ?>
         </div>
     </div>
@@ -59,6 +67,16 @@ use yii\widgets\Pjax;
     <input type="text" name="interview_calc" id="interview_calc" readonly>
 </div>
 <?php
+$this->registerCss('
+.display-flexbox{
+    display: flex;
+    align-items: center;
+}
+.display-flexbox > div{
+    margin-right: 10px;
+    margin-bottom: 0;
+}
+');
 $script = <<< JS
 var interview_len = 0; 
 $(document).on('click', '.modal-load-class', function() {
@@ -95,6 +113,17 @@ function interview_location_len_validation(thisObj) {
         interview_checker(interview_len); 
    }   
 }
+$(document).on('change','#sameAsPlacementLocation',function() {
+    $('input[name="interviewcity[]"]').prop('checked',false);
+    if($(this).is(':checked')){
+        $('input[name="placement_locations[]"]:checked').each(function(){
+            $('#int'+$(this).attr('id')).prop('checked',true);
+        });
+    }
+});
+$(document).on('change','input[name="interviewcity[]"], input[name="placement_locations[]"]',function() {
+    $('#sameAsPlacementLocation').prop('checked',false);
+});
 JS;
 $this->registerJs($script);
 ?>

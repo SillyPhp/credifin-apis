@@ -10,6 +10,7 @@ use yii\web\View;
 use yii\widgets\Pjax;
 use frontend\assets\AppAssets;
 use frontend\widgets\login;
+use frontend\widgets\upcomingWebinar;
 
 AppAssets::register($this);
 ?>
@@ -34,7 +35,7 @@ AppAssets::register($this);
         foreach ($this->params['seo_tags']['rel'] as $key => $value) {
             $this->registerLinkTag([
                 'rel' => $key,
-                'href' => $value,
+                'href' => Url::to($value,'https'),
             ]);
         }
         foreach ($this->params['seo_tags']['name'] as $key => $value) {
@@ -78,29 +79,14 @@ AppAssets::register($this);
         <header id="header" class="header">
             <?= (!$this->params['header_dark']) ? '<div id="main-header" class="header-nav navbar-fixed-top header-dark navbar-white navbar-transparent navbar-sticky-animated animated-active">' : ''; ?>
             <div id="header-main" class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
-<!--                <section class="upcoming-webinar">-->
-<!--                    <div class="container">-->
-<!--                        <div class="row">-->
-<!--                            <div class="col-md-3 col-sm-2">-->
-<!--                                <div class="webinar-heading">-->
-<!--                                    Upcoming Webinar-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-6 col-sm-8">-->
-<!--                                <div class="webinar-name">-->
-<!--                                    Whither Education-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-3 col-sm-2">-->
-<!--                                <div class="view-detail">-->
-<!--                                    <a href="https://www.empoweryouth.com/webinar/whither-education-the-challenge-of-change-90286" class="view-btn">-->
-<!--                                        View Details-->
-<!--                                    </a>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </section>-->
+               
+            
+            
+                <?php
+                echo upcomingWebinar::widget();
+                ?>
+
+
                 <?php
                 //            if (Yii::$app->user->isGuest && empty($this->params['sub_header'])) {
                 if (Yii::$app->user->isGuest) {
@@ -464,15 +450,16 @@ AppAssets::register($this);
     $this->registerCss('
     .upcoming-webinar{
         width: 100%;
-        background: #301164;
+        background: #1F1F1F;
         display: flex;
         position: relative;
-        margin-top:-65px;
+        margin-top:-39px;
         // top: 0;
         z-index: 20;
       }
-      .upcoming-webinar .container{
-          padding: 0 !important;
+      .upcoming-webinar .container-fluid{
+          padding-top: 0 !important;
+          width: 100%;
       }
       .upcoming-webinar .row{
         display: flex;
@@ -481,7 +468,7 @@ AppAssets::register($this);
         text-transform: capitalize;
         font-family: lora;
         font-weight: 700;
-        font-size: 18pt;
+        font-size: 22px;
         line-height: 28px;
         color: #FFDF39;
         display: flex;
@@ -492,19 +479,19 @@ AppAssets::register($this);
         font-family: Lobster;
         font-style: normal;
         font-weight: normal;
-        font-size: 28pt;
+        font-size: 22px;
         text-align: center;
         color: #FFFFFF;
-        background: url(' .  Url::to("https://user-images.githubusercontent.com/72601463/133762664-79a23bf9-ec89-4f06-8c97-37465d1a16f5.png")  . ');
         background-repeat: no-repeat;
         background-size: 100% 100%;
         height: 100%;
+        letter-spacing: 1.3px;
       }
       .view-btn{
         background: linear-gradient(91.16deg, #FFBB54 -43.72%, #CB650C 125.14%, #DB7E2E 125.14%);
         border-radius: 27px;
         color: #fff;
-        padding: 5px 20px;
+        padding: 2px 13px;
         display: block;
         margin-left: auto;
         width: fit-content;
@@ -521,7 +508,10 @@ AppAssets::register($this);
         opacity: 0.9;
       }
       
-      @media only screen and (max-width: 768px){
+      @media only screen and (max-width: 767px){
+          .webinar-heading{
+              font-size: 19px;
+          }
         .upcoming-webinar .row{
           display: block;
         }
@@ -529,7 +519,7 @@ AppAssets::register($this);
           background: none;
         }
         .upcoming-webinar{
-          background: url(' . Url::to('https://user-images.githubusercontent.com/72601463/133765334-22ac93c4-167b-4f7a-b145-11caa4175341.png') . '), #301164;
+          //background: url(' . Url::to('https://user-images.githubusercontent.com/72601463/133765334-22ac93c4-167b-4f7a-b145-11caa4175341.png') . '), #0e1c3d;
           background-repeat: no-repeat;
           background-size: 100% 100%;
           display: block;
@@ -538,9 +528,6 @@ AppAssets::register($this);
         .view-btn{
           margin: 10px auto;
         }
-        .webinar-name{
-          font-size: 21pt;
-        }  
         .webinar-heading{
           justify-content: center;
         }
@@ -955,6 +942,15 @@ AppAssets::register($this);
         width:100%;
     }
 }
+@media (max-width: 992px) and (min-width: 768px){
+    .view-btn{
+        font-size: 13px;
+    }
+    .webinar-heading{
+        font-size: 19px;
+    }
+
+}
 ');
 
     if ($this->params['header_dark']) {
@@ -1036,7 +1032,7 @@ AppAssets::register($this);
 //$(".page-loading").fadeOut();
 var thispageurl = window.location.pathname;
 var hasAccessForSubHeader = true;
-var preventHeaderFor = ["/jobs/list","/internships/list","/jobs/compare","/internships/compare","/jobs/near-me","/internships/near-me"];
+var preventHeaderFor = ["/mentors/webinar-view","/mentors/webinar-live","/jobs/list","/internships/list","/jobs/compare","/internships/compare","/jobs/near-me","/internships/near-me"];
 for(var jj = 0;jj<preventHeaderFor.length;jj++){
     if(thispageurl == preventHeaderFor[jj]){
         hasAccessForSubHeader = false;
@@ -1056,6 +1052,9 @@ $(".ey-sub-nav-items > li > a").each(function(){
         return false;
       }
 });
+if(!hasAccessForSubHeader){
+    $(".upcoming-webinar").css("display","none");
+}
 
 
 $(document).on("click", ".partnerWith", function(e){

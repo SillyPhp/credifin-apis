@@ -79,7 +79,9 @@ function webDate($webDate)
                                 </div>
                             </div>
                             <div class="web-inr">
-                                <div class="web-title"><a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a></div>
+                                <div class="web-title"><a
+                                            href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a>
+                                </div>
                                 <div class="web-speaker">
                                     <span><?= str_replace(',', ', </span><span>', trim($web['speakers'])) ?></span>
                                 </div>
@@ -107,12 +109,19 @@ function webDate($webDate)
                                         }
                                         ?>
                                     </div>
-                                    <span class="cont"> <?= count($web['webinarRegistrations']) ?> Registered</span>
+                                    <span class="cont"> <?= ($web["slug"] == "new-age-investment-strategies-10407") ? 2 * count($web['webinarRegistrations']) : count($web['webinarRegistrations']); ?> Registered</span>
                                 </div>
-                                <div class="register-btns">
-                                    <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
-                                                class="icon-drib fa fa-arrow-right"></i> Register Now</a>
-                                </div>
+                                <?php if (array_search(Yii::$app->user->identity->user_enc_id, array_column($web['webinarRegistrations'], 'created_by'))) { ?>
+                                    <div class="register-btns">
+                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib">
+                                            Registered</a>
+                                    </div>
+                                <?php } else { ?>
+                                    <div class="register-btns">
+                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
+                                                    class="icon-drib fa fa-arrow-right"></i> Register Now</a>
+                                    </div>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
@@ -180,10 +189,10 @@ if ($optedWebinar) {
             <div class="row">
                 <div class="heading-opted">Opted Webinars</div>
             </div>
-            <?php
-            foreach ($optedWebinar as $opWeb) {
-                ?>
-                <div class="row">
+            <div class="row">
+                <?php
+                foreach ($optedWebinar as $opWeb) {
+                    ?>
                     <div class="col-md-4 col-sm-6">
                         <div class="web-card">
                             <div class="web-img">
@@ -214,37 +223,41 @@ if ($optedWebinar) {
                                 <div class="web-des"><?= $opWeb['description'] ?></div>
                             </div>
                             <div class="reg-btn-count">
-                                <div class="register-count">
-                                    <div class="reg-img">
-                                        <?php
-                                        if (count($opWeb['webinarRegistrations']) > 0) {
-                                            $reg = 1;
-                                            foreach ($opWeb['webinarRegistrations'] as $uImage) {
-                                                ?>
-                                                <span class="reg<?= $reg ?> reg">
-                                                        <img src="<?= $uImage['createdBy']['image'] ?>">
-                                                    </span>
-                                                <?php
-                                                $reg++;
-                                                if ($reg == 4) {
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        ?>
-                                    </div>
-                                    <span class="cont"><?= count($opWeb['webinarRegistrations']) ?> Registered</span>
+                                <div class="register-btns">
+                                    <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>" class="btn-drib"><i
+                                                class="icon-drib fa fa-arrow-right"></i>View Details</a>
                                 </div>
+                                <!-- <div class="register-count">
+                                        <div class="reg-img">
+                                            <?php
+                                if (count($opWeb['webinarRegistrations']) > 0) {
+                                    $reg = 1;
+                                    foreach ($opWeb['webinarRegistrations'] as $uImage) {
+                                        ?>
+                                                    <span class="reg<?= $reg ?> reg">
+                                                            <img src="<?= $uImage['createdBy']['image'] ?>">
+                                                        </span>
+                                                    <?php
+                                        $reg++;
+                                        if ($reg == 4) {
+                                            break;
+                                        }
+                                    }
+                                }
+                                ?>
+                                        </div>
+                                        <span class="cont"><?= count($opWeb['webinarRegistrations']) ?> Registered</span>
+                                    </div> -->
                                 <!--                        <div class="register-btns">-->
                                 <!--                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>-->
                                 <!--                        </div>-->
                             </div>
                         </div>
                     </div>
-                </div>
-                <?php
-            }
-            ?>
+                    <?php
+                }
+                ?>
+            </div>
         </div>
     </section>
     <?php
@@ -268,12 +281,7 @@ if ($optedWebinar) {
                 <div class="col-md-4 col-sm-6">
                     <div class="web-card">
                         <div class="web-img">
-                            <a href="<?php
-                                if ($pWeb['webinarEvents'][0]['status'] == 2) {
-                                    echo "/webinar/webinar-expired";
-                                } else {
-                                    echo Url::to("/webinar/" . $pWeb['slug']);
-                                } ?>">
+                            <a href="<?= Url::to("/webinar/" . $pWeb['slug']) ?>">
                                 <img src="<?= $pWeb['image'] ?>">
                             </a>
                             <div class="web-detail-date">
@@ -300,12 +308,7 @@ if ($optedWebinar) {
                             </div>
                         </div>
                         <div class="web-inr">
-                            <div class="web-title"><a href="<?php
-                                if ($pWeb['webinarEvents'][0]['status'] == 2) {
-                                    echo "/webinar/webinar-expired";
-                                } else {
-                                    echo Url::to("/webinar/" . $pWeb['slug']);
-                                } ?>">
+                            <div class="web-title"><a href="<?= Url::to("/webinar/" . $pWeb['slug']); ?>">
                                     <?= $pWeb['name'] ?></a></div>
                             <div class="web-speaker">
                                 <span><?= str_replace(',', ', </span><span>', trim($pWeb['speakers'])) ?></span></div>
@@ -976,6 +979,7 @@ color: #fff !important;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 	background-color:#fff;
 	margin-bottom:20px;
+    min-height: 387px;
 }
 .web-img {
 	position: relative;
@@ -1045,7 +1049,7 @@ color: #fff !important;
 	-webkit-line-clamp: 3;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
-	height: 75px;
+	height: 70px;
 }
 .opted-web {
 	background-image: url(" . Url::to('@eyAssets/images/pages/webinar/wb2.png') . "); 

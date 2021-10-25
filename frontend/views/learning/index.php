@@ -78,6 +78,9 @@ use yii\helpers\Url;
     </div>
 </div>
 
+
+<?= $this->render('/webinars/webinar-carousel')?>
+
 <!--dynamic categories start-->
 
 <div class="clearfix"></div>

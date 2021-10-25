@@ -93,6 +93,7 @@ $this->params['seo_tags'] = [
 </section>
 <?= $this->render('/widgets/loan-process-ease') ?>
 <?= $this->render('/widgets/loan-table')?>
+<?= $this->render('/widgets/testimonials-abroad')?>
 <section class="bg-blue">
     <?= $this->render('/widgets/choose-education-loan') ?>
 </section>
@@ -106,8 +107,10 @@ if($blogs['blogs']){
 };
 ?>
 <?= $this->render('/widgets/loan-form-detail',[
-    'model' => $model
+    'model' => $model,
+    'param' => 'Study Abroad'
 ]); ?>
+
 <?= $this->render('/widgets/press-releasee',[
     'data' => $data,
     'viewBtn' => true,

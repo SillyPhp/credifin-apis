@@ -10,6 +10,8 @@ use common\models\Organizations;
 use common\models\UnclaimedOrganizations;
 use common\models\Users;
 use common\models\AppliedEmailLogs;
+use common\models\Webinar;
+use common\models\WebinarRegistrations;
 use yii\helpers\Url;
 use yii\base\Component;
 use yii\base\InvalidParamException;
@@ -174,14 +176,46 @@ class NotificationEmails extends Component
         }
     }
 
-    public function webinarRegistrationEmail($param){
+    public function webinarRegistrationEmail($params){
+        $data = Webinar::find()
+            ->alias('a')
+            ->select(['a.webinar_enc_id',
+                'CASE WHEN a.email_sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", a.email_sharing_image_location, "/", a.email_sharing_image) END image',
+                'slug','a.title','other_platforms','GROUP_CONCAT(DISTINCT CONCAT(e.first_name," ",e.last_name)) speakers','GROUP_CONCAT(DISTINCT DATE_FORMAT(b.start_datetime, "%d-%M-%y")) date','GROUP_CONCAT(DISTINCT DATE_FORMAT(b.start_datetime, "%H:%i %p")) time'])
+            ->joinWith(['webinarEvents b'=>function($b){
+                $b->joinWith(['webinarSpeakers c'=>function($b){
+                    $b->joinWith(['speakerEnc d'=>function($b){
+                        $b->joinWith(['userEnc e'],false);
+                    }],false);
+                }]);
+            }],false)
+            ->where(['a.webinar_enc_id'=>$params['webinar_id']])
+            ->asArray()
+            ->one();
+        $params['title'] = $data['title'];
+        $params['speakers'] = $data['speakers'];
+        $params['date'] = $data['date'];
+        $params['time'] = $data['time'];
+        $params['image'] = $data['image'];
+        if ($params['is_my_campus']){
+            $params['from'] = 'no-reply@myecampus.in';
+            $params['site_name'] = 'My E-Campus';
+            $params['link'] = 'https://www.myecampus.in/webinar-detail?id='.$params['webinar_id'];
+        }else{
+            $params['link'] = 'https://www.empoweryouth.com/webinar/'.$data['slug'];
+        }
+        if (!empty($params['subject'])){
+            $subject = $params['subject'];
+        }else{
+            $subject = 'Thank you for Registering for This Webinar';
+        }
         Yii::$app->mailer->htmlLayout = 'layouts/email';
         $mail = Yii::$app->mailer->compose(
-            ['html' => 'webinar-registration-mail.php'],['data'=>$param]
+            ['html' => 'webinar-registration-mail.php'],['data'=>$params]
         )
-            ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
-            ->setTo([$param['email'] => $param['name']])
-            ->setSubject('Thank you for Registering for "Whither Education"');
+            ->setFrom([$params['from'] => $params['site_name']])
+            ->setTo([$params['email'] => $params['name']])
+            ->setSubject($subject);
         if ($mail->send()) {
             return true;
         }
@@ -197,6 +231,84 @@ class NotificationEmails extends Component
             ->setSubject($param['subject']);
         if ($mail->send()) {
             return true;
+        }
+    }
+
+    public function zoomRegisterAccess($params){
+        $requestBody = '{  
+                "email": "'.$params["email"].'",
+                "first_name": "'.$params["first_name"].'",
+                "last_name": "'.$params["last_name"].'"
+                }';
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api.zoom.us/v2/webinars/".$params["webinar_zoom_id"]."/registrants",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POST => 1,
+            CURLOPT_POSTFIELDS => $requestBody,
+            CURLOPT_HTTPHEADER => array(
+                "authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6ImtWdk05VXp3UWNtZFVXS3hudFZiekEiLCJleHAiOjE2MzQ5MzAxNDMsImlhdCI6MTYzNDMyNTM0NH0.zJI1ZjK5mDeAsHAlGH3WgDhxjdUxQAKBT8iip-iM0Jo",
+                "content-type: application/json"
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+        curl_close($curl);
+        if ($err) {
+            echo "cURL Error #:" . $err;
+        } else {
+         $data =  json_decode($response,true);
+         $join_url = $data['join_url'];
+         $get = WebinarRegistrations::findOne(['webinar_enc_id'=>$params['webinar_id'],'created_by'=>$params['user_id']]);
+         $get->unique_access_link = $join_url;
+         $get->save();
+        }
+    }
+
+    public function zoomRegisterBatchAccess($params){
+        $requestBody = '{
+              "auto_approve": false,
+              "registrants": '.$params['data'].'
+            }';
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://api.zoom.us/v2/webinars/".$params["webinar_zoom_id"]."/batch_registrants",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POST => 1,
+            CURLOPT_POSTFIELDS => $requestBody,
+            CURLOPT_HTTPHEADER => array(
+                "authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6ImtWdk05VXp3UWNtZFVXS3hudFZiekEiLCJleHAiOjE2MzQxNTk0MjQsImlhdCI6MTYzMzU1NDYyNX0._mnivTgCBZOo88NW_KGgqVyR8bwPr4xvrxnA1zEiZOE",
+                "content-type: application/json"
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            echo "cURL Error #:" . $err;
+        } else {
+            $data =  json_decode($response,true);
+            foreach ($data['registrants'] as $registrant){
+                $join_url = $registrant['join_url'];
+                $get = WebinarRegistrations::findOne(['webinar_enc_id'=>$params['webinar_id'],'created_by'=>$params['user_id']]);
+                $get->unique_access_link = $join_url;
+                $get->save();
+            }
         }
     }
 }
