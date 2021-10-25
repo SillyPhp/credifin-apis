@@ -68,6 +68,11 @@ function webDate($webDate)
 }
 $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory;
 ?>
+<?php if (Yii::$app->session->hasFlash('success')): ?>
+    <script type="text/javascript">
+        alert('Please Register This Webinar to play quiz');
+    </script>
+<?php endif; ?>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <section>
     <div class="full-width-light"
@@ -129,7 +134,7 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                     <div class="countdown gradient clearfix">
                         <?php if ($is_expired) { ?>
                             <div>
-                                <p class="expiredtext">This Webinar Is Expired</p>
+                                <p class="expiredtext">This Webinar Has Expired</p>
                             </div>
                         <?php } elseif ($webinar['status'] == 1 || $webinar['status'] == 0) { ?>
                             <div id="join">
@@ -239,7 +244,7 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                 <?php
                                 if (!empty($webinarRegistrations)) { ?>
                                     <p>
-                                        <span><?= ($webinar["slug"] == "entrepreneurship-innovation-summit-75367") ? 320 + count($webinarRegistrations) : count($webinarRegistrations); ?></span>
+                                        <span><?= ($webinar["slug"] == "new-age-investment-strategies-10407") ? 2 * count($webinarRegistrations) : count($webinarRegistrations); ?></span>
                                         People Registered</p>
                                 <?php }
                                 ?>
@@ -393,18 +398,6 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
     </div>
 </div>
 <!-- sharing widget end -->
-<!-- problem widget start -->
-<section class="cntct">
-    <div class="container">
-        <div class="row">
-            <div class="contact-req">
-                <h3>if you are facing any problem during registration call us on :</h3>
-                <a href="tel:+917009076638">+917009076638</a>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- problem widget end -->
 <!-- ts speaker start-->
 <section id="ts-speakers" class="ts-speakers speaker-classic">
     <div class="container">
@@ -640,6 +633,18 @@ if ($upcoming) {
 <?php
 }
 ?>
+<!-- problem widget start -->
+<section class="cntct">
+    <div class="container">
+        <div class="row">
+            <div class="contact-req">
+                <h3>if you are facing any problem during registration call us on :</h3>
+                <a href="tel:+917009076638">+917009076638</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- problem widget end -->
 <?php
 function color_mod($hex, $diff)
 {
