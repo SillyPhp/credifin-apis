@@ -104,8 +104,9 @@ $this->params['header_dark'] = true;
                     <div class="col-md-6">
                         <div class="card-main nd-shadow">
                             <div class="paid-webinar">Paid</div>
+                            <div class="expired-btn">EXPIRED</div>
                             <div class="card-img">
-                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/61041ecc7c4bb_copy_of_idiom__1_.jpg?d=340x195') ?>"/>
+                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/6176c48e680e5_whatsapp_image_2021-10-25_at_8.16.08_pm.jpeg?d=340x195') ?>"/>
                             </div>
                             <div class="card-details">
                                 <div class="about-first flex-container">
@@ -120,7 +121,6 @@ $this->params['header_dark'] = true;
                                 <div class="about-footer">
                                     <div class="detail-btn">
                                         <a href="" class="view-details">View Detail</a>
-                                        <a href="" class="expired-btn">EXPIRED</a>
                                     </div>
                                     <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
                                 </div>
@@ -178,8 +178,9 @@ $this->params['header_dark'] = true;
                     </div>
                     <div class="col-md-6">
                         <div class="card-main nd-shadow">
+                            <div class="paid-webinar">Paid</div>
                             <div class="card-img">
-                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/61041ecc7c4bb_copy_of_idiom__1_.jpg?d=340x195') ?>"/>
+                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/6176c48e680e5_whatsapp_image_2021-10-25_at_8.16.08_pm.jpeg?d=340x195') ?>"/>
                             </div>
                             <div class="card-details">
                                 <div class="about-first flex-container">
@@ -195,81 +196,6 @@ $this->params['header_dark'] = true;
                                     <div class="detail-btn">
                                         <a href="" class="view-details">View Detail</a>
                                         <a href="" class="expired-btn">EXPIRED</a>
-                                    </div>
-                                    <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-main nd-shadow">
-                            <div class="paid-webinar">Paid</div>
-                            <div class="card-img">
-                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/61041ecc7c4bb_copy_of_idiom__1_.jpg?d=340x195') ?>"/>
-                            </div>
-                            <div class="card-details">
-                                <div class="about-first flex-container">
-                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> 6 Days Left</div>
-                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
-                                    <div class="pricing-money" style="flex-grow: 8"><img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹5,000 </div>
-                                </div>
-                                <div class="about-name">
-                                    <div class="quiz-name">Health Awareness Quiz</div>
-                                    <div class="quiz-category">marketing</div>
-                                </div>
-                                <div class="about-footer">
-                                    <div class="detail-btn">
-                                        <a href="" class="view-details">View Detail</a>
-                                        <a href="" class="expired-btn">EXPIRED</a>
-                                    </div>
-                                    <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-main nd-shadow">
-                            <div class="paid-webinar">Paid</div>
-                            <div class="card-img">
-                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/6177e00f81d27_untitled_design__1___1_.png?d=340x195') ?>"/>
-                            </div>
-                            <div class="card-details">
-                                <div class="about-first flex-container">
-                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> 6 Days Left</div>
-                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
-                                    <div class="pricing-money" style="flex-grow: 8"><img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹5,000 </div>
-                                </div>
-                                <div class="about-name">
-                                    <div class="quiz-name">Health Awareness Quiz</div>
-                                    <div class="quiz-category">marketing</div>
-                                </div>
-                                <div class="about-footer">
-                                    <div class="detail-btn">
-                                        <a href="" class="view-details">View Detail</a>
-                                    </div>
-                                    <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-main nd-shadow">
-                            <div class="card-img">
-                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/6177e00f81d27_untitled_design__1___1_.png?d=340x195') ?>"/>
-                            </div>
-                            <div class="card-details">
-                                <div class="about-first flex-container">
-                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> 6 Days Left</div>
-                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
-                                    <div class="pricing-money" style="flex-grow: 8"></div>
-                                </div>
-                                <div class="about-name">
-                                    <div class="quiz-name">Health Awareness Quiz</div>
-                                    <div class="quiz-category">marketing</div>
-                                </div>
-                                <div class="about-footer">
-                                    <div class="detail-btn">
-                                        <a href="" class="view-details">View Detail</a>
                                     </div>
                                     <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
                                 </div>
@@ -506,10 +432,12 @@ h3.side-top-heading {
     letter-spacing: 2px;
     text-transform: uppercase;
 }
+
 .card-img img {
     width: 100%;
     height: 200px;
     object-fit: fill;
+    border-radius:4px 0 0 0;
 }
 .card-details {
     padding: 10px;
@@ -564,15 +492,14 @@ h3.side-top-heading {
     transform: scale(1.05);
     transition: all .3s;
 }
-.expired-btn:focus, .expired-btn:hover{
-    color:#ec0505;
-}
 .expired-btn {
-    border: 1px solid #ec0505;
-    padding: 2px 18px;
-    display: inline-block;
-    border-radius: 32px;
-    color: #ec0505;
+    padding: 0px 10px;
+    background-color: #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-family: "Roboto";
+    font-weight:500;
 }
 .views-count {
     color: #018e01;
