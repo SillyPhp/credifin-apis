@@ -13,6 +13,7 @@ use common\models\Usernames;
 use Yii;
 use yii\base\Model;
 use common\models\Utilities;
+use common\models\RandomColors;
 
 class TwitterJobsForm extends Model
 {
@@ -31,6 +32,7 @@ class TwitterJobsForm extends Model
     public $max_salary;
     public $wage_type = 1;
     public $country = 'India';
+    public $_flag = true;
 
     public function formName()
     {
@@ -40,9 +42,9 @@ class TwitterJobsForm extends Model
     public function rules()
     {
         return [
-            [['profile','title','job_type','country','wage_type','salary','city','twitter_url','contact_email','company_name','skills'],'required'],
+            [['profile','title','job_type','country','wage_type','city','twitter_url','contact_email','company_name','skills'],'required'],
             [['html','author_name','fixed_wage', 'min_salary', 'max_salary'],'safe'],
-            [['title', 'twitter_url','salary','company_name','contact_email'], 'trim'],
+            [['title', 'twitter_url','company_name','contact_email'], 'trim'],
             [['twitter_url'], 'url', 'defaultScheme' => 'http'],
             ['contact_email', 'email'],
         ];
@@ -67,97 +69,105 @@ class TwitterJobsForm extends Model
             default:
                 $wage_type = 'Unpaid';
         }
-        $twitterJobs = new TwitterJobs();
-        $utilitiesModel = new Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $twitterJobs->tweet_enc_id = $utilitiesModel->encrypt();
-        $twitterJobs->url = $this->twitter_url;
-        $twitterJobs->application_type_enc_id = ApplicationTypes::findOne(['name'=>$type])->application_type_enc_id;
-        $twitterJobs->author_name = $this->author_name;
-        $twitterJobs->job_type = $this->job_type;
-        $twitterJobs->author_url = $this->twitter_url;
-        $twitterJobs->html_code = $this->html;
-        $twitterJobs->contact_email = $this->contact_email;
-        $category_execute = Categories::find()
-            ->alias('a')
-            ->where(['name' => $this->title]);
-        $chk_cat = $category_execute->asArray()->one();
-
-        if (empty($chk_cat)) {
-            $categoriesModel = new Categories();
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $twitterJobs = new TwitterJobs();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
-            $cat_id = $categoriesModel->category_enc_id;
-            $categoriesModel->name = $this->title;
-            $utilitiesModel->variables['name'] = $this->title;
-            $utilitiesModel->variables['table_name'] = Categories::tableName();
-            $utilitiesModel->variables['field_name'] = 'slug';
-            $categoriesModel->slug = $utilitiesModel->create_slug();
-            $categoriesModel->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
-            if ($categoriesModel->save()) {
-                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $twitterJobs, 'Jobs');
-            } else {
-                return false;
-            }
-        } else {
-            $cat_id = $chk_cat['category_enc_id'];
-            $chk_assigned = $category_execute
-                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id', 'b.parent_enc_id', 'b.assigned_to'])
-                ->andWhere(['not', ['b.parent_enc_id' => null]])
-                ->andWhere(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => $this->profile])
-                ->asArray()
-                ->one();
-            if (empty($chk_assigned)) {
-                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $twitterJobs, 'Jobs');
-            } else {
-                $twitterJobs->job_title = $chk_assigned['assigned_category_enc_id'];
-            }
-        }
-        $twitterJobs->profile = $this->profile;
-        $twitterJobs->wage_type = $wage_type;
-        $twitterJobs->fixed_wage = (($this->fixed_wage) ? str_replace(',', '', $this->fixed_wage) : null);
-        $twitterJobs->min_wage = (($this->min_salary) ? str_replace(',', '', $this->min_salary) : null);
-        $twitterJobs->max_wage = (($this->max_salary) ? str_replace(',', '', $this->max_salary) : null);
-        $twitterJobs->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
-        if (Yii::$app->user->identity->organization):
-            $twitterJobs->claim_organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
-            else:
-        $chk_com = UnclaimedOrganizations::find()
-            ->select(['organization_enc_id'])
-            ->where(['name' => $this->company_name])
-            ->one();
-        if (!empty($chk_com)) :
-            $twitterJobs->unclaim_organization_enc_id = $chk_com->organization_enc_id;
-        else:
-            $model = new UnclaimedOrganizations();
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $model->organization_enc_id = $utilitiesModel->encrypt();
-            $model->organization_type_enc_id = null;
-            $utilitiesModel->variables['name'] = $this->company_name . rand(1000, 100000);
-            $utilitiesModel->variables['table_name'] = UnclaimedOrganizations::tableName();
-            $utilitiesModel->variables['field_name'] = 'slug';
-            $slug = $utilitiesModel->create_slug();
-            $slug_replace_str = str_replace("-", "", $slug);
-            $model->slug = $slug_replace_str;
-            $model->website = null;
-            $model->name = $this->company_name;
-            $model->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
-            $model->initials_color = '#73ef9c';
-            $model->status = 1;
-            if ($model->save()) {
-                $username = new Usernames();
-                $username->username = $slug_replace_str;
-                $username->assigned_to = 3;
-                if (!$username->save()) {
+            $twitterJobs->tweet_enc_id = $utilitiesModel->encrypt();
+            $twitterJobs->url = $this->twitter_url;
+            $twitterJobs->application_type_enc_id = ApplicationTypes::findOne(['name'=>$type])->application_type_enc_id;
+            $twitterJobs->author_name = $this->author_name;
+            $twitterJobs->job_type = $this->job_type;
+            $twitterJobs->author_url = $this->twitter_url;
+            $twitterJobs->html_code = $this->html;
+            $twitterJobs->contact_email = $this->contact_email;
+            $category_execute = Categories::find()
+                ->alias('a')
+                ->where(['name' => $this->title]);
+            $chk_cat = $category_execute->asArray()->one();
+            if (empty($chk_cat)) {
+                $categoriesModel = new Categories();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+                $cat_id = $categoriesModel->category_enc_id;
+                $categoriesModel->name = $this->title;
+                $utilitiesModel->variables['name'] = $this->title;
+                $utilitiesModel->variables['table_name'] = Categories::tableName();
+                $utilitiesModel->variables['field_name'] = 'slug';
+                $categoriesModel->slug = $utilitiesModel->create_slug();
+                $categoriesModel->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
+                if ($categoriesModel->save()) {
+                    $this->addNewAssignedCategory($categoriesModel->category_enc_id, $twitterJobs, 'Jobs');
+                } else {
+                    $transaction->rollBack();
+                    $this->_flag = false;
                     return false;
                 }
-                $twitterJobs->unclaim_organization_enc_id = $model->organization_enc_id;
+            } else {
+                $cat_id = $chk_cat['category_enc_id'];
+                $chk_assigned = $category_execute
+                    ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                    ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id', 'b.parent_enc_id', 'b.assigned_to'])
+                    ->andWhere(['not', ['b.parent_enc_id' => null]])
+                    ->andWhere(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => $this->profile])
+                    ->asArray()
+                    ->one();
+                if (empty($chk_assigned)) {
+                    $this->addNewAssignedCategory($chk_cat['category_enc_id'], $twitterJobs, 'Jobs');
+                } else {
+                    $twitterJobs->job_title = $chk_assigned['assigned_category_enc_id'];
+                }
             }
-        endif;
+
+            $twitterJobs->profile = $this->profile;
+            $twitterJobs->wage_type = $wage_type;
+            $twitterJobs->fixed_wage = (($this->fixed_wage) ? str_replace(',', '', $this->fixed_wage) : null);
+            $twitterJobs->min_wage = (($this->min_salary) ? str_replace(',', '', $this->min_salary) : null);
+            $twitterJobs->max_wage = (($this->max_salary) ? str_replace(',', '', $this->max_salary) : null);
+            $twitterJobs->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
+
+            if (Yii::$app->user->identity->organization):
+                $twitterJobs->claim_organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+            else:
+                $chk_com = UnclaimedOrganizations::find()
+                    ->select(['organization_enc_id'])
+                    ->where(['name' => $this->company_name])
+                    ->one();
+                if (!empty($chk_com)) :
+                    $twitterJobs->unclaim_organization_enc_id = $chk_com->organization_enc_id;
+                else:
+                    $model = new UnclaimedOrganizations();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $model->organization_enc_id = $utilitiesModel->encrypt();
+                    $model->organization_type_enc_id = null;
+                    $utilitiesModel->variables['name'] = $this->company_name . rand(1000, 100000);
+                    $utilitiesModel->variables['table_name'] = UnclaimedOrganizations::tableName();
+                    $utilitiesModel->variables['field_name'] = 'slug';
+                    $slug = $utilitiesModel->create_slug();
+                    $slug_replace_str = str_replace("-", "", $slug);
+                    $model->slug = $slug_replace_str;
+                    $model->website = null;
+                    $model->name = $this->company_name;
+                    $model->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
+                    $model->initials_color = RandomColors::one();
+                    $model->status = 1;
+                    if ($model->save()) {
+                        $username = new Usernames();
+                        $username->username = $slug_replace_str;
+                        $username->assigned_to = 3;
+                        if (!$username->save()) {
+                            $transaction->rollBack();
+                            $this->_flag = false;
+                            return false;
+                        }
+                        $twitterJobs->unclaim_organization_enc_id = $model->organization_enc_id;
+                    }
+                endif;
             endif;
+
             if ($twitterJobs->save())
             {
                 if (!empty($this->skills)) {
@@ -186,6 +196,10 @@ class TwitterJobsForm extends Model
                                 if (empty($chk_skill)):
                                     $this->assignedSkill($skills_set['skill_enc_id'], $cat_id,'Jobs');
                                 endif;
+                            }else{
+                                $transaction->rollBack();
+                                $this->_flag = false;
+                                return false;
                             }
                         } else {
                             $skillsModel = new Skills();
@@ -207,12 +221,19 @@ class TwitterJobsForm extends Model
                                 $applicationSkillsModel->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
                                 if ($applicationSkillsModel->save()) {
                                     $this->assignedSkill($skillsModel->skill_enc_id, $cat_id,'Jobs');
+                                }else{
+                                    $transaction->rollBack();
+                                    $this->_flag = false;
+                                    return false;
                                 }
+                            }else{
+                                $transaction->rollBack();
+                                $this->_flag = false;
+                                return false;
                             }
                         }
                     }
                 }
-
                 if (!empty($this->city)) {
                     foreach ($this->city as $city) {
                         $placementCity = new TwitterPlacementCities();
@@ -224,18 +245,26 @@ class TwitterJobsForm extends Model
                         $placementCity->created_on = date('Y-m-d H:i:s');
                         $placementCity->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);;
                         if (!$placementCity->save()) {
+                            $transaction->rollBack();
+                            $this->_flag = false;
                             return false;
                         }
                     }
                 }
-
-                return true;
             }
-            else
-            {
+            if ($this->_flag) { 
+                $transaction->commit();
+                return true;
+            }else{
+                $transaction->rollBack();
                 return false;
             }
 
+        }
+        catch (\Exception $exception) {
+            $transaction->rollBack();
+            return false;
+        }
     }
 
     private function addNewAssignedCategory($category_id, $twitterJobs, $typ)

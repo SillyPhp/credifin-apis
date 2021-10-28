@@ -13,7 +13,7 @@ $this->params['header_dark'] = false;
                         <?php
                         $name = $image = NULL;
                         if (!empty($user['image'])) {
-                            $image = Yii::$app->params->upload_directories->users->image . $user['image_location'] . DIRECTORY_SEPARATOR . $user['image'];
+                            $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $user['image_location'] . DIRECTORY_SEPARATOR . $user['image'];
                         }
                         $name = $user['first_name'] . ' ' . $user['last_name'];
                         if ($image):
@@ -42,7 +42,9 @@ $this->params['header_dark'] = false;
                                target="_blank">Edit Profile</a>
                             <?php
                             if (!empty($userCv)) {
-                                $cv = Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'];
+                                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                                $cv = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->resume->file . $userCv['resume_location'] . DIRECTORY_SEPARATOR . $userCv['resume'], "15 minutes");
                                 ?>
                                 <a href="<?= $cv ?>" class="edit-profile-btn" target="_blank">Download CV</a>
                             <?php }
@@ -759,7 +761,6 @@ img.img-responsive.payment-img {
 .sidebar-container:hover, .sidebar-container:focus{
     transform: translateY(-5px);
     -webkit-transform: translateY(-5px);
-	cursor:pointer;
 }
 .sidebar-box{
     text-align: center;

@@ -44,10 +44,13 @@
     margin-top: 5px;
 }
 
-.col-item .price h5
-{
+.col-item .price h5 {
     line-height: 20px;
     margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .price-text-color

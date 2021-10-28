@@ -188,6 +188,7 @@ button, input, optgroup, select, textarea {
     font-size: 28pt;
     text-align: left;
     margin: 15px 5px;
+    color: #000;
 }
 .heading-style:before{
     content: "";
@@ -200,7 +201,7 @@ button, input, optgroup, select, textarea {
 }
 @media screen and (max-width: 400px){
     .heading-style {
-        font-size: 23pt;
+        font-size: 21pt;
     }
 }
 /* Headings css ends*/
@@ -267,16 +268,17 @@ button, input, optgroup, select, textarea {
 }
 .sidebar-logo-main{
     padding: 5px 5px;
-    border-radius: 50%;
+    /*border-radius: 50%;*/
     width: 40px;
     height: 40px;
-    box-shadow: 0px 2px 20px 1px #bbbbbb8c;
+    /*box-shadow: 0px 2px 20px 1px #bbbbbb8c;*/
     margin-top: 5px;
 }
 .side-bar_logo{
     /*border-radius: 50%;*/
     width: 100%;
     height: 100%;
+    object-fit: contain;
 }
 .ui-draggable-dragging{
     z-index: 999;
@@ -303,124 +305,125 @@ button, input, optgroup, select, textarea {
 /* Old Cards css ends*/
 
 /* New Cards css Starts*/
-.application-card-main{
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 1px 3px 0px #797979;
-    background-color: #fff;
-    margin-bottom: 15px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.application-card-main *:not(i) {
-    font-family: Georgia !important;
-}
-.application-card-type{
-    position: absolute;
-    text-align: center;
-    text-transform: uppercase;
-    right: 0;
-    top: 0;
-    color: #fff;
-    padding: 4px 15px;
-    background:#FF4500;
-    font-size: 13px;
-    font-weight: 600;
-}
-.application-card-img{
-    position: relative;
-    height: 80px;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    -khtml-border-radius: 50%;
-    border-radius: 50%;
-    display: block;
-    box-shadow: 0px 2px 20px 1px #bbbbbb8c;
-    width: 80px;
-    margin-left: 18px;
-    margin-top: 15px;
-    overflow: hidden;
-    float: left;
-    line-height: 75px;
-}
-.application-card-img img{
-    width: 100%;
-    height: auto;
-}
-.application-card-description{
-    float: left;
-    /*margin: 20px 0px 0px 20px;*/
-    width: calc(100% - 100px);
-}
-.application-card-description h4{
-    text-transform: capitalize;
-}
-.application-card-description h4, .application-card-description h5{
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.application-card-description h5:last-child{
-    font-weight: normal;
-}
-.application-card-border-bottom{
-    border-bottom: 1px solid #eee;
-}
-.application-card-wrapper{
-    opacity: 0;
-    height: auto;
-    position: absolute;
-    bottom: 0px;
-    left: -60px;
-    margin: 0px 0px 5px;
-    transition: all 400ms ease 0s;
-}
-.application-card-main:hover .application-card-wrapper{
-    left: 0px;
-    opacity: 1;
-}
-.application-card-wrapper a{
-    padding: 8px 18px;
-    margin: 0px 5px 0px 0px;
-    min-width: 40px;
-    display: inline-block;
-    text-align: center;
-    min-height: 40px;
-    float: left;
-    color: #fff;
-    text-transform: uppercase;
-    font-weight: 700;
-    font-size: 13px;
-    line-height: 24px;
-}
-.application-card-wrapper a i{
-    margin-top: 4px;
-}
-.application-card-open{
-    background-color: #202c45;
-}
-.application-card-add, .featured-application-card-add{
-    background-color: #ed4303;
-}
-.org_name{
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
-@media screen and (max-width: 1290px) and (min-width: 992px){
-    .application-card-description h4.application-title{
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-    }
-}
-.text-wrap-ellipsis{
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+/*.application-card-main{*/
+/*    position: relative;*/
+/*    overflow: hidden;*/
+/*    box-shadow: 0 1px 3px 0px #797979;*/
+/*    background-color: #fff;*/
+/*    margin-bottom: 15px;*/
+/*    white-space: nowrap;*/
+/*    overflow: hidden;*/
+/*    text-overflow: ellipsis;*/
+/*}*/
+/*.application-card-main *:not(i) {*/
+/*    font-family: roboto !important;*/
+/*}*/
+/*.application-card-type{*/
+/*    position: absolute;*/
+/*    text-align: center;*/
+/*    text-transform: uppercase;*/
+/*    right: 0;*/
+/*    top: 0;*/
+/*    color: #fff;*/
+/*    padding: 4px 15px;*/
+/*    background:#FF4500;*/
+/*    font-size: 12px;*/
+/*    font-weight: 600;*/
+/*}*/
+/*.application-card-img{*/
+/*    position: relative;*/
+/*    height: 80px;*/
+/*    -webkit-border-radius: 50%;*/
+/*    -moz-border-radius: 50%;*/
+/*    -khtml-border-radius: 50%;*/
+/*    border-radius: 50%;*/
+/*    display: block;*/
+/*    box-shadow: 0px 2px 20px 1px #bbbbbb8c;*/
+/*    width: 80px;*/
+/*    margin-left: 18px;*/
+/*    margin-top: 30px;*/
+/*    overflow: hidden;*/
+/*    float: left;*/
+/*    line-height: 75px;*/
+/*}*/
+/*.application-card-img img{*/
+/*    width: 100%;*/
+/*    height: auto;*/
+/*}*/
+/*.application-card-description{*/
+/*    float: left;*/
+/*    !*margin: 20px 0px 0px 20px;*!*/
+/*    width: calc(100% - 100px);*/
+/*}*/
+/*.application-card-description h4{*/
+/*    text-transform: capitalize;*/
+/*}*/
+/*.application-card-description h4, .application-card-description h5{*/
+/*    font-weight: 600;*/
+/*    white-space: nowrap;*/
+/*    overflow: hidden;*/
+/*    text-overflow: ellipsis;*/
+/*}*/
+/*.application-card-description h5:last-child{*/
+/*    font-weight: normal;*/
+/*}*/
+/*.application-card-border-bottom{*/
+/*    border-bottom: 1px solid #eee;*/
+/*}*/
+/*.application-card-wrapper{*/
+/*    opacity: 0;*/
+/*    height: auto;*/
+/*    position: absolute;*/
+/*    bottom: 0px;*/
+/*    left: -60px;*/
+/*    margin: 0px 0px 5px;*/
+/*    transition: all 400ms ease 0s;*/
+/*    z-index:99;*/
+/*}*/
+/*.application-card-main:hover .application-card-wrapper{*/
+/*    left: 0px;*/
+/*    opacity: 1;*/
+/*}*/
+/*.application-card-wrapper > a{*/
+/*    padding: 8px 18px;*/
+/*    margin: 0px 5px 0px 0px;*/
+/*    min-width: 40px;*/
+/*    display: inline-block;*/
+/*    text-align: center;*/
+/*    min-height: 40px;*/
+/*    float: left;*/
+/*    color: #fff;*/
+/*    text-transform: uppercase;*/
+/*    font-weight: 700;*/
+/*    font-size: 13px;*/
+/*    line-height: 24px;*/
+/*}*/
+/*.application-card-wrapper > a i{*/
+/*    margin-top: 4px;*/
+/*}*/
+/*.application-card-open{*/
+/*    background-color: #202c45;*/
+/*}*/
+/*.application-card-add, .featured-application-card-add{*/
+/*    background-color: #ed4303;*/
+/*}*/
+/*.org_name,.application-title{*/
+/*    text-overflow: ellipsis;*/
+/*    white-space: nowrap;*/
+/*    overflow: hidden;*/
+/*}*/
+/*@media screen and (max-width: 1290px) and (min-width: 992px){*/
+/*    .application-card-description h4.application-title{*/
+/*        text-overflow: ellipsis;*/
+/*        white-space: nowrap;*/
+/*        overflow: hidden;*/
+/*    }*/
+/*}*/
+/*.text-wrap-ellipsis{*/
+/*    white-space: nowrap;*/
+/*    overflow: hidden;*/
+/*    text-overflow: ellipsis;*/
+/*}*/
 /* New Cards css ends*/
 
 /* Cards loader css starts*/
@@ -875,5 +878,21 @@ button, input, optgroup, select, textarea {
 .type-1 a:hover .round i {
     left: 12%;
     color: #FFF;
+}
+@media (max-width:415px){
+    .type-1 div a{
+        padding:8px 40px 8px 18px !important;
+    }
+    .type-1 div a .round{
+        width: 30px !important;
+        height:30px !important;
+    }
+    .type-1 a:hover {
+        padding-left: 25px !important;
+        padding-right: 20px !important;
+    }
+    .type-1 a:hover .round {
+        width: calc(100% - 6px) !important;
+    }
 }
 /*<!---- view-all button css ends --->*/

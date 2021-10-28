@@ -110,6 +110,7 @@ $this->registerCss('
     border-radius:12px !important;
     color:#000;
     font-family: roboto;
+    overflow:hidden;
 }
 .work-profile-box:hover > a > .work-profile  {
     color:#fff !important;
@@ -200,10 +201,26 @@ $this->registerCss('
     overflow:visible !important;
     overflow-x:visible !important;
 }
+.count-cat {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-color: #00a0e3;
+	color: #fff;
+	padding: 0 5px;
+	border-radius: 5px 0;
+	font-size: 13px;
+	font-weight: 500;
+	font-family: roboto;
+}
+.work-profile-box:hover .count-cat{
+    background-color:#fff;
+    color:#00a0e3;
+}
 .edit-cat{
     position: absolute;
-    right: 10px;
-    top: -2px;  
+    right: 5px;
+    top: 0px;  
     display:none !important;   
 }
 .edit-cat i{
@@ -468,14 +485,15 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                                 <div class="work-profile-box">
                                     <div class="edit-cat parent_category" data-id="{{category_enc_id}}">
                                         <i class="fa fa-pencil"></i>
-                                    </div>
+                                    </div> 
+                                    <div class="count-cat" title="Resume Count">{{count}}</div>
                                     <a href="/account/uploaded-resume/candidate-resumes?id={{assigned_category_enc_id}}&type=Jobs">
                                         <div class="work-profile">
                                             <div class="rb-cat-icon"><img src="{{icon}}" alt=""></div>
                                             {{name}}
                                         </div>
                                         <div class="totalResumes">
-                                            Resumes:
+                                            {{Resumes}}
                                         </div>
                                     </a>
                                 </div>

@@ -9,10 +9,10 @@ use yii\helpers\Url;
                 <div class="col-md-6">
                     <div class="wm-pos-rel">
                         <div class="whats-abso">
-                            <h1 class="whats-main-heading">Join Our Social Community</h1>
-                            <div class="whats-sub-heading">Get Latest Job Updates</div>
+                            <h2 class="whats-main-heading">Join Our Social Community</h2>
+                            <h3 class="whats-sub-heading">Get Latest Job Updates</h3>
                             <div class="whats-href">
-                                <a href="<?= Url::to('/whatsapp-community') ?>">
+                                <a href="<?= Url::to('/social-community') ?>">
                                     View Links
                                     <span><i class="fas fa-long-arrow-alt-right"></i></span>
                                 </a>
@@ -21,43 +21,54 @@ use yii\helpers\Url;
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="s-top">
-                        <div class="col-md-6 col-sm-4 col-xs-6">
-                            <div class="social-main" style="background-color:#34bd34">
-                                <div class="social-logo">
-                                    <i class="fab fa-whatsapp"></i>
+                    <div class="row mt10">
+                        <div class="mobile-flex">
+                            <div class="col-md-6 col-md-offset-0 col-sm-2 col-sm-offset-1">
+                                <div class="social-main">
+                                    <a href="/social-community#WhatsApp">
+                                        <div class="social-logo" style="background-color:#34bd34">
+                                            <i class="fab fa-whatsapp"></i>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6  col-sm-4  col-xs-6">
-                            <div class="social-main" style="background-color:#fff">
-                                <div class="social-logo">
-                                    <i class="fab fa-facebook-f"></i>
+                            <div class="col-md-6  col-sm-2">
+                                <div class="social-main">
+                                    <a href="/social-community#Facebook">
+                                        <div class="social-logo" style="background-color:#fff">
+                                            <i class="fab fa-facebook-f"></i>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="smid">
-                        <div class="col-md-12  col-sm-4  col-xs-6">
-                            <div class="social-main" style="background-color:#00a0e3">
-                                <div class="social-logo">
-                                    <i class="fab fa-telegram-plane"></i>
+
+                            <div class="col-md-12  col-sm-2">
+                                <div class="social-main">
+                                    <a href="/social-community#Telegram">
+                                        <div class="social-logo" style="background-color:#00a0e3">
+                                            <i class="fab fa-telegram-plane"></i>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="s-bottom">
-                        <div class="col-md-6  col-sm-4  col-xs-6">
-                            <div class="social-main" style="background-color:#dc004a">
-                                <div class="social-logo">
-                                    <i class="fab fa-instagram"></i>
+
+                            <div class="col-md-6  col-sm-2">
+                                <div class="social-main">
+                                    <a href="/social-community#Instagram">
+                                        <div class="social-logo" style="background-color:#dc004a">
+                                            <i class="fab fa-instagram"></i>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6  col-sm-4  col-xs-12">
-                            <div class="social-main" style="background-color:#85ceec">
-                                <div class="social-logo">
-                                    <i class="fab fa-twitter"></i>
+                            <div class="col-md-6  col-sm-2">
+                                <div class="social-main">
+                                    <a href="/social-community#twitter">
+                                        <div class="social-logo"
+                                             style="background-color:#85ceec">
+                                            <i class="fab fa-twitter"></i>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -68,15 +79,21 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
-.social-main {
+.mt10{
+    margin-top: 20px;
+}
+.social-main,  a .social-logo {
     border: 1px solid transparent;
     width: 100px;
     margin: auto;
     height: 100px;
     border-radius: 10px;
     text-align: center;
-    padding: 20px;
+//    padding: 20px;
     margin-bottom:20px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center
 }
 .social-logo .fab.fa-whatsapp, .social-logo .fab.fa-telegram-plane,
 .social-logo .fab.fa-instagram, .social-logo .fab.fa-twitter {
@@ -151,16 +168,28 @@ $this->registerCss('
 .s-top {
     padding-top: 12px;
 }
-@media(max-width:768px){
-.wm-pos-rel{
-    height:250px;
+@media screen and (max-width: 992px){
+    .wm-pos-rel{
+        position: relative;
+        height:220px;
+        text-align: center;
+    }
+    .whats-abso{
+        position: relative;
+        
+    }
 }
+@media(max-width:768px){
+    .wm-pos-rel{
+        height:250px;
+    }
+    .mobile-flex{
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
 }
 @media(max-width:500px){
-.social-main {
-    width: 80px;
-    height: 80px;
-}
 .social-logo .fab.fa-facebook-f, .social-logo .fab.fa-whatsapp,
 .social-logo .fab.fa-telegram-plane, .social-logo .fab.fa-instagram,
 .social-logo .fab.fa-twitter {

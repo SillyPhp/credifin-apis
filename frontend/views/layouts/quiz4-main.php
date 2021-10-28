@@ -15,12 +15,17 @@ $this->beginPage();
         <title><?= Html::encode((!empty($this->title)) ? Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name : Yii::$app->params->site_name); ?></title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
-        <?php
+        <?php if(Yii::$app->params->options->crawl) { ?>
+            <meta name="robots" content="index"/>
+        <?php } else { ?>
+            <meta name="robots" content="noindex,nofollow"/>
+            <meta name="googlebot" content="noindex,nofollow">
+        <?php }
         if ($this->params['seo_tags']) {
             foreach ($this->params['seo_tags']['rel'] as $key => $value) {
                 $this->registerLinkTag([
                     'rel' => $key,
-                    'href' => $value,
+                    'href' => Url::to($value,'https'),
                 ]);
             }
             foreach ($this->params['seo_tags']['name'] as $key => $value) {
@@ -58,6 +63,22 @@ $this->beginPage();
                 gtag("config", "' . Yii::$app->params->google->analytics->id . '");        
             ');
     }
+
+    if (!empty(Yii::$app->params->facebook->pixel->id)) {
+        $this->registerJs('
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,"script",
+            "https://connect.facebook.net/en_US/fbevents.js");
+            fbq("init", "' . Yii::$app->params->facebook->pixel->id . '");
+            fbq("track", "PageView");
+        ');
+    }
+
     ?>
     <?php $this->endBody(); ?>
     </body>

@@ -19,6 +19,7 @@ use common\models\TwitterJobs;
 use common\models\UnclaimedOrganizations;
 use common\models\UsaDepartments;
 use common\models\Users;
+use yii\db\Expression;
 use Yii;
 use yii\helpers\Url;
 
@@ -256,7 +257,7 @@ class HomeController extends ApiBaseController
     public function actionFeatured()
     {
         $organizations = \common\models\Organizations::find()
-            ->select(['initials_color color', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
+            ->select(['organization_enc_id', 'slug', 'initials_color color', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
             ->where(['is_sponsored' => 1])
             ->limit(6)
             ->asArray()
@@ -264,6 +265,57 @@ class HomeController extends ApiBaseController
 
         if ($organizations) {
             return $this->response(200, $organizations);
+        } else {
+            return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionFeaturedEmployers()
+    {
+        $companies = Organizations::find()
+            ->alias('z')
+            ->select(['z.organization_enc_id', 'z.slug', 'z.initials_color color', 'z.name', 'CASE WHEN z.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", z.logo_location, "/", z.logo) ELSE NULL END logo'])
+            ->joinWith(['businessActivityEnc a'], false)
+            ->joinWith(['organizationLabels ol' => function ($x) {
+                $x->onCondition(['ol.label_for' => 0, 'ol.is_deleted' => 0]);
+                $x->joinWith(['labelEnc le' => function ($l) {
+                    $l->onCondition(['le.is_deleted' => 0]);
+                }], false);
+            }], false)
+            ->andWhere(['not', ['z.logo' => null]])
+            ->andWhere(['not', ['z.logo' => ""]])
+            ->andWhere(['z.status' => 'Active', 'z.is_deleted' => 0])
+            ->andWhere(['le.name' => 'Featured'])
+            ->andWhere(['not', ['in', 'a.business_activity', ['College', 'Educational Institute', 'School']]])
+            ->orderby(new Expression('rand()'))
+            ->limit(12)
+            ->asArray()
+            ->all();
+
+        if ($companies) {
+            return $this->response(200, $companies);
+        } else {
+            return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionCountries()
+    {
+        $strJsonFileContents = file_get_contents(dirname(__DIR__, 4) . '/files/' . 'countries.json');
+        $countries = json_decode($strJsonFileContents, true);
+
+        foreach ($countries as $k => $v) {
+            if ($v['name'] == 'New Zealand') {
+                $countries[$k]['icon'] = Url::to('@eyAssets/images/pages/world-job/newzealan.png', 'https');
+            } elseif ($v['name'] == 'Hong Kong') {
+                $countries[$k]['icon'] = Url::to('@eyAssets/images/pages/world-job/hong-kong.png', 'https');
+            } else {
+                $countries[$k]['icon'] = Url::to('@eyAssets/images/pages/world-job/' . strtolower($v['name']) . '.png', 'https');
+            }
+        }
+
+        if ($countries) {
+            return $this->response(200, $countries);
         } else {
             return $this->response(404, 'not found');
         }

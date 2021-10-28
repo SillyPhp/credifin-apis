@@ -75,10 +75,18 @@ use yii\helpers\Html;
 $script = <<< JS
 $(document).on('load', function() {
     $('.posted-tweet .EmbeddedTweet').attr('style', 'min-width: 100%');
-});
+})
 JS;
 $this->registerJs($script);
 $this->registerCss('
+.twitter-tweet {
+    max-width: 345px !important;
+    justify-content:center;
+}
+.posted-tweet iframe {
+    width: 200px !important;
+    margin-bottom: 0px !important;
+}
 .mar-center{
     margin:0 auto;
     width:100%;

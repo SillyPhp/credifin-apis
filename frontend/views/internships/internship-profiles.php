@@ -21,9 +21,10 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <?php foreach ($profiles as $p) { ?>
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-sm-4">
                         <a href="list?keyword=<?= $p['name']?>">
                             <div class="box">
+                                <div class="cnt"><?= $p['total'] ?> Internships </div>
                                 <div class="icon"><img
                                             src="<?= $p['icon']?>">
                                 </div>
@@ -57,10 +58,25 @@ $this->registerCss('
     border-radius:10px;
     box-shadow: 0 0 10px rgba(0,0,0,.1);
     margin-bottom:20px;
+    position:relative;
     }
+.cnt {
+	position: absolute;
+	right: 5px;
+	top: 6px;
+	background-color:#00a0e3;
+	padding: 1px 6px;
+	border-radius: 4px;
+	font-size: 14px;
+	font-family: roboto;
+	text-transform: uppercase;
+	color: #fff;
+	font-weight: 500;
+}
 .icon{
     height:150px;
     position:relative;
+    margin-top:10px;
     }
 .icon img{
     max-width: 100px;
@@ -70,28 +86,19 @@ $this->registerCss('
     left: 50%;
     transform: translate(-50%, -50%);
     }
-.text{
-    position: absolute;
-    top: 50%;
-    width: 100%;
-    left: 50%;
-    transform: translate(-50%,-50%); 
-}
 .total{
     text-align: center;
     padding-bottom: 8px;
     font-size:16px; 
-    font-family:roboto;
-    font-weight:300;   
     }
-.pr-detail{
-    border-top: 1px solid #eee;
-    text-align: center;
-    padding-top: 5px;
-    font-size: 17px;
-    line-height: 21px;
-    min-height: 60px;
-    position: relative;
+.pr-detail {
+	border-top: 1px solid #eee;
+	font-size: 16px;
+	min-height: 50px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+    font-family:roboto;
 }
 ');
 $script = <<<JS

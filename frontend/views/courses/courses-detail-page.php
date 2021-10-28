@@ -7,7 +7,7 @@ $description = $data['headline'];
 $image = $data['image_750x422'];
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -22,7 +22,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -121,29 +121,29 @@ $this->params['seo_tags'] = [
                             </div>
                         </div>
                     </div>
-                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!--                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>-->
                     <!-- CD Detail -->
-                    <ins class="adsbygoogle"
-                         style="display:block"
-                         data-ad-client="ca-pub-2186770765824304"
-                         data-ad-slot="7361632777"
-                         data-ad-format="auto"
-                         data-full-width-responsive="true"></ins>
-                    <script>
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
-                    <br/>
+<!--                    <ins class="adsbygoogle"-->
+<!--                         style="display:block"-->
+<!--                         data-ad-client="ca-pub-2186770765824304"-->
+<!--                         data-ad-slot="7361632777"-->
+<!--                         data-ad-format="auto"-->
+<!--                         data-full-width-responsive="true"></ins>-->
+<!--                    <script>-->
+<!--                        (adsbygoogle = window.adsbygoogle || []).push({});-->
+<!--                    </script>-->
+<!--                    <br/>-->
                     <!-- CD Detail 1 -->
-                    <ins class="adsbygoogle"
-                         style="display:block"
-                         data-ad-client="ca-pub-2186770765824304"
-                         data-ad-slot="2035786927"
-                         data-ad-format="auto"
-                         data-full-width-responsive="true"></ins>
-                    <script>
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
-                    <br/>
+<!--                    <ins class="adsbygoogle"-->
+<!--                         style="display:block"-->
+<!--                         data-ad-client="ca-pub-2186770765824304"-->
+<!--                         data-ad-slot="2035786927"-->
+<!--                         data-ad-format="auto"-->
+<!--                         data-full-width-responsive="true"></ins>-->
+<!--                    <script>-->
+<!--                        (adsbygoogle = window.adsbygoogle || []).push({});-->
+<!--                    </script>-->
+<!--                    <br/>-->
                 </div>
             </div>
         </div>

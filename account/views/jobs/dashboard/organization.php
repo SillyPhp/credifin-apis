@@ -15,7 +15,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
 //    'for' => 'Jobs',
 //]);
 ?>
-    <div class="row padd-top-20">
+    <div class="row">
         <div class="col-md-2 col-sm-3">
             <div class="new-card-container">
                 <div class="card">
@@ -133,6 +133,10 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                     </a>
                 </div>
             </div>
+            <?= $this->render('/widgets/templates-jobs', [
+                'jobs' => $jobs,
+                'type' => 'Jobs',
+            ]); ?>
         </div>
         <div class="col-md-10 col-sm-9">
             <div class="row widget-row">
@@ -179,11 +183,9 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                     <a href="<?= Url::toRoute('/jobs/quick-job'); ?>" data-toggle="tooltip"
                                        title="Create Quick Job" class="quick">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png'); ?>"></a>
-                                    <?php if ($applications['total'] > 8): ?>
-                                        <a href="<?= Url::toRoute('/jobs/active-jobs'); ?>" data-toggle="tooltip"
-                                           title="View All" class="view">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                    <?php endif; ?>
+                                    <a href="<?= Url::toRoute('/jobs/active-jobs'); ?>" data-toggle="tooltip"
+                                       title="View All" class="view">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                                 </div>
                             </div>
                         </div>
@@ -192,7 +194,8 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                             if ($applications['total'] > 0) {
                                 echo $this->render('/widgets/applications/card', [
                                     'applications' => $applications['data'],
-                                    'col_width' => 'col-lg-3 col-md-4 col-sm-6',
+                                    'type' => 'Job',
+                                    'col_width' => 'col-lg-4 col-md-4 col-sm-6',
                                 ]);
                             } else {
                                 ?>
@@ -202,7 +205,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                              class="img-responsive" alt=""/>
                                     </div>
                                     <div class="tab-empty-text">
-                                        <div class="">No Active Jobs</div>
+                                        <div class="">There Are No Active Jobs In This Company</div>
                                     </div>
                                 </div>
                             <?php }
@@ -211,54 +214,161 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                     </div>
                 </div>
 
-                <div class="col-lg-12 col-xs-12 col-sm-12">
+                <?php
+                if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                    ?>
+                    <div class="col-lg-12 col-xs-12 col-sm-12">
+                        <div class="portlet light nd-shadow">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class=" icon-social-twitter font-dark hide"></i>
+                                    <span class="caption-subject font-dark bold uppercase">Campus Placement Jobs
+                            <span data-toggle="tooltip" title="Here you will find jobs that are active on Erexx"><i
+                                        class="fa fa-info-circle"></i></span></span>
+                                </div>
+                                <div class="actions">
+                                    <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
+                                       title="Create AI Job" class="ai">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png') ?>"></a>
+                                    <a href="<?= Url::toRoute('/jobs/active-erexx-jobs'); ?>" data-toggle="tooltip"
+                                       title="View All" class="ai">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <?php
+                                if ($erexx_applications['total'] > 0) {
+                                    echo $this->render('/widgets/applications/card', [
+                                        'applications' => $erexx_applications['data'],
+                                        'card_type' => 'mec_card',
+                                        'type' => 'Job',
+                                        'col_width' => 'col-lg-4 col-md-4 col-sm-6',
+                                    ]);
+                                } else {
+                                    ?>
+                                    <div class="tab-empty">
+                                        <div class="tab-empty-icon">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/activeerexx.png'); ?>"
+                                                 class="img-responsive" alt=""/>
+                                        </div>
+                                        <div class="tab-empty-text">
+                                            <div class="">You Have Not Posted Any Job</div>
+                                            <span class="create-new-j">
+                                        <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
+                                           title="Add New">CREATE</a>
+                                        </span>
+                                        </div>
+                                    </div>
+                                <?php }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php }
+                ?>
+                <?php if ($shortlistedApplicants['count'] > 0) { ?>
+                    <div class="col-lg-12 col-xs-12 col-sm-12">
+                        <div class="portlet light nd-shadow">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class=" icon-social-twitter font-dark hide"></i>
+                                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Shortlisted Candidates'); ?><span
+                                                data-toggle="tooltip" title="Shortlisted Candidates"><i
+                                                    class="fa fa-info-circle"></i></span></span>
+                                </div>
+                                <?php if ($shortlistedApplicants['count'] > 3) { ?>
+                                    <div class="actions">
+                                        <div class="set-im">
+                                            <a href="<?= Url::toRoute('shortlisted-candidates'); ?>"
+                                               data-toggle="tooltip" title="View All">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                            </div>
+
+                            <div class="portlet-body">
+                                <div class="row">
+                                    <?= $this->render('/widgets/applications/shortlisted-candidates', [
+                                        'shortlistedApplicants' => $shortlistedApplicants,
+                                        'type' => 'job'
+                                    ]); ?>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                <?php } ?>
+                <?php if($savedApplicants['count'] > 0){ ?>
+                    <div class="col-lg-12 col-xs-12 col-sm-12">
+                        <div class="portlet light nd-shadow">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class=" icon-social-twitter font-dark hide"></i>
+                                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Saved Candidates'); ?><span
+                                                data-toggle="tooltip" title="Candidates Saved For Later"><i
+                                                    class="fa fa-info-circle"></i></span></span>
+                                </div>
+                                <?php if ($savedApplicants['count'] > 3) { ?>
+                                    <div class="actions">
+                                        <div class="set-im">
+                                            <a href="<?= Url::toRoute('saved-candidates'); ?>"
+                                               data-toggle="tooltip" title="View All">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                            </div>
+
+                            <div class="portlet-body">
+                                <div class="row">
+                                    <?= $this->render('/widgets/applications/saved-candidates', [
+                                        'savedApplicants' => $savedApplicants,
+                                        'type' => 'job'
+                                    ]); ?>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                <?php }?>
+                <?php if($blacklistedApplicants['count'] > 0){ ?>
+                    <div class="col-lg-12 col-xs-12 col-sm-12">
                     <div class="portlet light nd-shadow">
                         <div class="portlet-title">
                             <div class="caption">
                                 <i class=" icon-social-twitter font-dark hide"></i>
-                                <span class="caption-subject font-dark bold uppercase">Campus Placement Jobs
-                            <span data-toggle="tooltip" title="Here you will find jobs that are active on Erexx"><i
-                                        class="fa fa-info-circle"></i></span></span>
+                                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Blacklisted Candidates'); ?><span
+                                            data-toggle="tooltip" title="Permanently Blocked Candidates"><i
+                                                class="fa fa-info-circle"></i></span></span>
                             </div>
-                            <div class="actions">
-                                <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip" title="Add New">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
-                                <?php if ($erexx_applications['total'] > 8): ?>
-                                    <a href="<?= Url::toRoute('/jobs/active-erexx-jobs'); ?>" data-toggle="tooltip"
-                                       title="View All">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                        <div class="portlet-body">
-                            <?php
-                            if ($erexx_applications['total'] > 0) {
-                                echo $this->render('/widgets/applications/card', [
-                                    'applications' => $erexx_applications['data'],
-                                    'col_width' => 'col-lg-3 col-md-4 col-sm-6',
-                                ]);
-                            } else {
-                                ?>
-                                <div class="tab-empty">
-                                    <div class="tab-empty-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/activeerexx.png'); ?>"
-                                             class="img-responsive" alt=""/>
-                                    </div>
-                                    <div class="tab-empty-text">
-                                        <div class="">No Active Erexx Jobs</div>
+                            <?php if ($blacklistedApplicants['count'] > 3) { ?>
+                                <div class="actions">
+                                    <div class="set-im">
+                                        <a href="<?= Url::toRoute('blacklisted-candidates'); ?>"
+                                           data-toggle="tooltip" title="View All">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                                     </div>
                                 </div>
-                            <?php }
-                            ?>
+                            <?php } ?>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="row">
+                                 <?= $this->render('/widgets/applications/blacklisted-candidates', [
+                                     'blacklistedApplicants' => $blacklistedApplicants,
+                                     'type' => 'job'
+                                 ]) ?>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <?php }?>
             </div>
             <div class="row">
                 <div class="col-lg-6 col-xs-12 col-sm-12">
-
-                    <?= $this->render('/widgets/drop-resume/jobs_drop_resume', [
-                        'data' => $primary_fields
+                    <?= $this->render('/widgets/drop-resume/drop_resume', [
+                        'data' => $primary_fields,
+                        'type' => 'Jobs'
                     ]); ?>
 
                     <div class="portlet light nd-shadow">
@@ -278,11 +388,9 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                 <a href="<?= Url::toRoute('/templates/hiring-process/index'); ?>" data-toggle="tooltip"
                                    title="Choose from Templates">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/templates.png'); ?>"></a>
-                                <?php if ($interview_processes['total'] > 4): ?>
-                                    <a href="<?= Url::toRoute('/hiring-processes'); ?>" data-toggle="tooltip"
-                                       title="View All">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                <?php endif; ?>
+                                <a href="<?= Url::toRoute('/hiring-processes'); ?>" data-toggle="tooltip"
+                                   title="View All">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                             </div>
                         </div>
                         <div class="portlet-body">
@@ -315,7 +423,6 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
 
                     <?php
                     Pjax::begin(['id' => 'pjax_closed_jobs']);
-                    if ($closed_application['total'] > 0) {
                         ?>
                         <div class="portlet light nd-shadow">
                             <div class="portlet-title">
@@ -326,10 +433,8 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                             class="fa fa-info-circle"></i></span></span>
                                 </div>
                                 <div class="actions">
-                                    <?php if ($applications['total'] > 8): ?>
-                                        <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                    <?php endif; ?>
+                                    <a href="<?= Url::toRoute('/jobs/all-closed-jobs'); ?>" data-toggle="tooltip" title="View All">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                                 </div>
                             </div>
                             <div class="portlet-body">
@@ -342,7 +447,6 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                             </div>
                         </div>
                         <?php
-                    }
                     Pjax::end();
                     ?>
                 </div>
@@ -350,6 +454,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                     <?php
                     echo $this->render('/widgets/applied-applications/users-card', [
                         'applied_applications' => $applied_applications,
+                        'type' => 'jobs'
                     ]);
                     ?>
 
@@ -370,11 +475,9 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                 <a href="<?= Url::toRoute('/templates/questionnaire/index'); ?>" data-toggle="tooltip"
                                    title="Choose from Templates">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/templates.png'); ?>"></a>
-                                <?php if ($questionnaire['total'] > 4): ?>
-                                    <a href="<?= Url::toRoute('/questionnaire'); ?>" data-toggle="tooltip"
-                                       title="View All">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                <?php endif; ?>
+                                <a href="<?= Url::toRoute('/questionnaire'); ?>" data-toggle="tooltip"
+                                   title="View All">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                             </div>
                         </div>
                         <div class="portlet-body">
@@ -408,11 +511,43 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
             </div>
         </div>
     </div>
-
+    <div class="pos-relative">
+        <?= $this->render('/widgets/college-list-modal') ?>
+    </div>
 <?php
 $this->registerCss('
+.total-jobs{
+    background: linear-gradient(145deg, #3cc4a4, #43f0d0);
+}
+.total-int-p{
+    background: linear-gradient(145deg, #f41ea0, #f08143);
+}
+.total-qn{
+    background: linear-gradient(145deg, #1ea4f4, #4ed0d0);
+}
+.total-appl{
+    background: linear-gradient(145deg, #1e21f4, #43c7f0);
+}
+.widget-thumb .widget-thumb-heading{
+    color:#fff;
+}
+.widget-thumb .widget-thumb-body .widget-thumb-body-stat{
+    color:#fff;
+    font-size:32px !important;
+}
+.widget-thumb .widget-thumb-wrap .widget-thumb-icon{
+    font-size:45px ;
+}
+.create-new-j a {
+	background: #00a0e3;
+	color: #fff;
+	border-radius: 6px;
+	padding: 5px 25px;
+	font-family: roboto;
+	font-size: 20px;
+}
 .padd-top-20{
-    padding-top:30px; 
+    padding-top:10px; 
 }
 /*---- new code-----*/
 .new-card-container .card {
@@ -574,7 +709,8 @@ $this->registerCss('
     margin-right:10px;
 }
 .ai img, .view img{
-    height:31px;
+    height:31px !important;
+    margin: 0 !important;
 }
 .actions > a > img {
     height:22px;
@@ -631,6 +767,167 @@ $this->registerCss('
 .mt-actions .mt-action .mt-action-body .mt-action-row .mt-action-buttons {
     width:170px;
 }
+
+/*shortlist jobs and saved candidates css start here*/
+.divRel{
+    position: relative;
+    width: 100%;
+    margin-bottom: 30px;
+}
+.shortText{
+    text-transform: capitalize;
+    font-size: 13px;
+}
+.short-main {
+    border: 2px solid #eef1f5;
+    padding: 10px 10px 0;
+    position: relative;
+    transition: all .3s;
+    border-radius: 6px;
+    z-index:0;
+}
+.short-main:hover .remove-btn{
+    opacity:1;
+}
+.short-main:hover{
+    box-shadow:0 0 10px rgb(0 0 0 / 10%);
+    border-color:transparent;
+}
+.flex-short {
+    display: flex;
+    align-items: center;
+}
+.short-logo img {
+    width: 60px;
+    height: 60px;
+    object-fit: fill;
+}
+.short-details {
+    flex-basis: 80%;
+    padding-left: 15px;
+}
+.short-job {
+    color: #00a0e3;
+    font-size: 16px;
+    font-family: Roboto;
+    text-transform: capitalize;
+    margin: 5px 0 !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.short-name {
+    color: #999;
+    font-family: Roboto;
+    display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+.short-name i{
+    margin-right: 5px;
+}
+.remove-btn {
+    position: absolute;
+    right: 0px;
+    top: 2px;
+    opacity:0;
+    transition:all .3s;
+}
+.remove-btn button {
+    border: none;
+    background: none !important;
+    color: #d75946;
+    line-height: 0;
+}
+.short-skills {
+    border-radius: 8px;
+    margin: 10px 0;
+    display: flex;
+    padding-left: 6px;
+    font-family:roboto;
+    flex-wrap: wrap;
+    height: 22px;
+    overflow: hidden;
+}
+.short-skills a {
+    color: #333;
+    font-family: roboto;
+    margin-bottom: 5px;
+    text-transform:capitalize;
+    transition:all .3s;
+}
+.short-skills span {
+    font-weight: 500;
+}
+.short-skills a:hover {
+    color: #00a0e3;
+}
+.slide-btn {
+    margin-bottom: -1px;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0px);
+}
+.slide-bttn{
+    background:#00a0e3;
+    border:none;
+    color:#fff;
+    border-radius:10px 10px 0 0 !important;
+    padding:1px 15px;
+}
+.slide-bttn:hover{
+    box-shadow:0px -2px 8px rgba(0, 0, 0, .3);
+    transition:.3s all;     
+    -webkit-transition:.3s all;     
+    -moz-transition:.3s all;     
+    -o-transition:.3s all; 
+}
+.rotate180{
+    animation: rotate180 1s 1;
+    transform: rotate(180deg);
+    transition: .5s ease;
+}
+.slide-bttn:focus{
+    outline:none;
+}
+.cd-box-border{
+    border:2px solid #eef1f4; 
+    border-top:none;
+    padding:10px; 
+    background:#fff; 
+    border-radius:0 0 4px 4px !important; 
+    color:#999999;
+    margin:0; 
+    position: absolute;
+    z-index: 9;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 40px);
+}
+.cd-box-border table{margin:0 !important;}
+.tt {
+    transition: .5s ease;
+}
+.unblockBtn{
+    position: absolute;
+    top:0px; 
+    right:0px;
+}
+.unblock-cand{
+    background: #00a0e3;
+    color: #fff;
+    padding: 2px 7px;
+    border: 1px solid #00a0e3;
+    border-radius: 0 5px 0;
+    font-size: 12px;
+}
+.short-skills > .question_list:nth-child(n + 3):before {
+    content: ",";
+}
+/*shortlist jobs and saved candidates css end here*/
 ');
 $script = <<<JS
     $(document).on('click', '.approv_btn', function (e) {

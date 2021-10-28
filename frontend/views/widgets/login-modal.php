@@ -4,8 +4,14 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use borales\extensions\phoneInput\PhoneInput;
-
+Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"', \yii\web\View::POS_HEAD);
 ?>
+<div id="g_id_onload"
+     data-client_id="758339221215-qbm8120ln6a178jbh387s5nb08f1g7ss.apps.googleusercontent.com"
+     data-callback="handleCredentialResponse"
+     data-your_own_param_1_to_login="any_value"
+     data-your_own_param_2_to_login="any_value">
+</div>
 <div id="loginModal" class="modal fade-scale loginModal" role="dialog">
     <div class="modal-dialog modal-dialog-main">
         <!-- Modal content-->
@@ -15,15 +21,15 @@ use borales\extensions\phoneInput\PhoneInput;
                 <div class="col-md-6 col-sm-6">
                     <div class=" half-bg half-bg-color">
                         <div class="top-circle">
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/top-half-circle.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/top-half-circle.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
                         <div class="log-icon">
                             <span></span>
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-img.png') ?>"
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-img.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "
                                  class="centerthis">
                         </div>
                         <div class="bottom-circle">
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/bottom-circle.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/bottom-circle.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
                         </div>
                     </div>
                 </div>
@@ -76,22 +82,48 @@ use borales\extensions\phoneInput\PhoneInput;
                                     </div>
                                 </div>
                                 <div class="login-btn">
-                                    <?= Html::submitButton('Login', ['class' => 'lg-form', 'name' => 'login-button']); ?>
+                                    <button <?= Html::submitButton('Login', ['class' => 'lg-form', 'name' => 'login-button']); ?> </button>
+                                    or
+                                    <button type="button" onclick="changeSignup()"> Sign Up</button>
                                 </div>
                                 <?php ActiveForm::end(); ?>
-                                <div class="new-user">
-                                    New User?
-                                    <button type="button" onclick="changeSignup()"> Sign Up</button>
+                                <div class="separator pb-10">
+                                    <span><?= Yii::t('frontend', 'Login With Social Accounts'); ?></span>
+                                </div>
+                                <div class="form-group mt-10">
+                                    <?=
+                                    \yii\authclient\widgets\AuthChoice::widget([ 'baseAuthUrl' => ['site/auth'], 'popupMode' => true, ])
+                                    ?>
                                 </div>
                             </div>
 
                             <div class="sign-up-form" id="signForm">
                                 <div class="sign-heading">Sign up as</div>
-                                <div class="indi-btn">
-                                    <a href="/signup/individual">Individual / Candidate</a>
-                                </div>
-                                <div class="organ-btn">
-                                    <a href="/signup/organization">Organization / Companies</a>
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="indi">
+                                            <a href="/signup/individual">
+                                                <div class="indi-img">
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/individual-signup1.gif') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                                                </div>
+                                            </a>
+                                            <div class="indi-btn">
+                                                <a href="/signup/individual">Individual / Candidate</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="organ">
+                                            <a href="/signup/organization">
+                                                <div class="organ-img">
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/isu1.png') ?>" alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                                                </div>
+                                            </a>
+                                        <div class="organ-btn">
+                                            <a href="/signup/organization">Organization / Companies</a>
+                                        </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="new-user">
                                     Existing User?
@@ -107,6 +139,10 @@ use borales\extensions\phoneInput\PhoneInput;
 </div>
 <?php
 $this->registerCss('
+.auth-clients{
+    display: flex !important;
+    justify-content: center !important;
+    } 
 .individual-form::-webkit-scrollbar { 
     width: 0 !important 
 }
@@ -149,32 +185,64 @@ $this->registerCss('
 }
 .sign-heading{
     padding: 30px 0px 10px 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #000;
+    
+}
+.indi-img, .organ-img {
+    padding: 20px;
+    border: 1px solid #f5f5f5;
+    box-shadow: 3px 3px 10px rgb(0 0 0 / 10%);
+    border-radius: 50%;
+    background-color: #f5f5f5;
+    width: 100px;
+    margin: 0 auto;
+}
+.indi-img img, .organ-img img {
+    width: 100%;
+    max-width: 85px;
+}
+.indi-btn, .organ-btn {
+    margin-top: 20px;
 }
 .indi-btn a{
+    font-family: roboto;
     background: #00a0e3;
     color: #fff;
-    padding: 7px 42px;
+    padding: 6px 4px;
     border: 1px solid #00a0e3;
     border-radius: 5px;
     text-transform: capitalize;
-    font-size: 15px;
-    width: 245px;
+    font-size: 12px;
+//    width: 155px;
     margin: auto;
     margin-top: 5px;
     display: block;
 }
-.organ-btn{
-    margin-top:20px;
+.indi-btn a:hover{
+    background: #fff;
+    color: #00a0e3;
+    transition: 0.2s ease-in;
 }
 .organ-btn a{
-    padding: 10px 37px;
+    font-family: roboto;
     background: #ff7803;
-    border:1px solid #ff7803;
-    margin-top:10px;
-    color:#fff;
+    color: #fff;
+    padding: 6px 4px;
+    border: 1px solid #ff7803;
     border-radius: 5px;
     text-transform: capitalize;
-    font-size: 14px;
+    font-size: 12px;
+//    width: 160px;
+    margin: auto;
+    margin-top: 5px;
+    display: block;
+}
+.organ-btn a:hover{
+    background: #fff;
+    color: #ff7803;
+    transition: 0.2s ease-in;
 }
 .uname-padd-10{
     padding-top:5px !important;
@@ -329,12 +397,14 @@ input{
     padding-top:10px;
 }
 .login-btn button{
+    font-family: roboto;
     background:#00a0e3;
     color:#fff;
     border:#00a0e3;
     padding:10px 20px;
     border-radius:5px;
-    font-size:13px;
+    font-size:12px;
+    margin: 0 8px;
 }
 @media screen and (max-width: 992px){
     .half-bg{
@@ -406,6 +476,27 @@ body.modal-open{
 }
 ');
 $script = <<< JS
+$(document).on('click','.auth-link',function(e) {
+    var url = returnUrl;
+    if (url!==""||url==null){
+    storeSessionUrl(url);
+    }
+})
+function storeSessionUrl(url)
+{
+    $.ajax({
+       url:'/auth-status',
+       method:'POST',
+       data:{url:url},
+       success:function(res) {
+           if (res.status==200){
+            console.log(res.message);   
+           }else{
+            console.log(res.message);   
+           }
+       }
+    })
+}
 $(document).on('submit', '#login-form', function(event) {
     var btn = $('.lg-form');
     event.preventDefault();

@@ -13,39 +13,41 @@ class ReviewCards
 
     public function getReviewCards($options = [])
     {
+        if (isset($options['limit'])) {
+            $limit = $options['limit'];
+            $offset = ($options['page'] - 1) * $options['limit'];
+        }
         $q1 = Organizations::find()->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'a.slug profile_link', 'CONCAT(a.slug, "/reviews") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
+            ->select(['a.organization_enc_id','a.is_featured','a.name','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs','COUNT(CASE WHEN h.name = "Internships" THEN 1 END) as total_internships','a.initials_color color', 'a.created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'a.slug profile_link', 'CONCAT(a.slug, "/reviews") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating','SUM(i.positions) total_vaccency'])
             ->where(['a.is_deleted' => 0])
             ->andWhere(['a.status' => 'Active'])
             ->joinWith(['businessActivityEnc b'], false)
             ->joinWith(['organizationReviews c'], false)
             ->joinWith(['employerApplications e' => function ($x) {
-                $x->select(['e.organization_enc_id', 'COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs', 'COUNT(CASE WHEN h.name = "Internships" THEN 1 END) as total_internships']);
                 $x->joinWith(['applicationTypeEnc h'], false);
+                $x->joinWith(['applicationPlacementLocations i'], false);
                 $x->onCondition(['e.is_deleted' => 0]);
                 $x->groupBy(['e.organization_enc_id']);
-            }], true)
+            }], false)
             ->joinWith(['organizationLocations d' => function ($x) {
                 $x->joinWith(['cityEnc g'], false);
             }], false)
-            ->groupBy('a.organization_enc_id');
-
+            ->groupBy('a.organization_enc_id')
+            ->orderBy(['a.created_on' => SORT_DESC]);
         if (isset($options['business_activity'])) {
             $q1->andWhere([
                 'or',
                 ['in', 'b.business_activity', $options['business_activity']]
             ]);
         }
-        if (isset($options['keywords'])) {
+        if (isset($options['keyword'])) {
+            $search = trim($options['keyword']);
+            $search_pattern = self::makeSQL_search_pattern($search);
             $q1->andWhere([
                 'or',
-                ['like', 'g.name', $options['keywords']],
-                ['like', 'replace(a.name, ".", "")', $options['keywords']]
+                ['REGEXP', 'a.name', $search_pattern],
+                ['REGEXP', 'g.name', $search_pattern],
             ]);
-        }
-        if (isset($options['limit'])) {
-            $q1->limit($options['limit']);
-
         }
         if (isset($options['city'])) {
             $q1->andWhere([
@@ -53,49 +55,52 @@ class ReviewCards
                 ['like', 'g.name', $options['city']],
             ]);
         }
-        if (isset($options['sort'])) {
-            $q1->orderBy(['c.created_on' => SORT_DESC]);
-
+        if (isset($options['sortBy'])) {
+            $q1->andWhere('a.name LIKE "'.$options['sortBy'].'%"');
         }
         if (isset($options['most_reviewed'])) {
             $q1->orderBy(['total_reviews' => SORT_DESC]);
 
         }
-        if (isset($options['offset'])) {
-            $q1->offset($options['offset']);
-        }
         if (isset($options['rating'])) {
             $q1->orFilterHaving(['ROUND(AVG(c.average_rating))' => $options['rating']]);
         }
-        $q1_count = $q1->count();
         $q2 = UnclaimedOrganizations::find()->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CONCAT(a.slug, "/reviews") profile_link', 'CONCAT(a.slug, "/reviews") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating'])
+            ->select(['a.organization_enc_id','a.is_featured','a.name','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs','COUNT(CASE WHEN h.name = "Internships" THEN 1 END) as total_internships','a.initials_color color', 'a.created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CONCAT(a.slug, "/reviews") profile_link', 'CONCAT(a.slug, "/reviews") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity', 'ROUND(average_rating) rating','SUM(i.positions) total_vaccency'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->joinWith(['newOrganizationReviews c' => function ($b) {
                 $b->joinWith(['cityEnc d'], false);
             }], false)
+            ->joinWith(['employerApplications e' => function ($x) {
+                $x->joinWith(['applicationTypeEnc h'], false);
+                $x->joinWith(['applicationUnclaimOptions i'], false);
+                $x->onCondition(['e.is_deleted' => 0]);
+                $x->groupBy('e.organization_enc_id');
+            }], false)
             ->where(['a.is_deleted' => 0])
-            ->groupBy('a.organization_enc_id');
+            ->groupBy(['a.organization_enc_id'])
+            ->orderBy(['a.created_on' => SORT_DESC]);
         if (isset($options['business_activity'])) {
             $q2->andWhere([
                 'or',
                 ['in', 'b.business_activity', $options['business_activity']]
             ]);
         }
-        if (isset($options['keywords'])) {
+        if (isset($options['keyword'])) {
+            $search = trim($options['keyword']);
+            $search_pattern = self::makeSQL_search_pattern($search);
             $q2->andWhere([
                 'or',
-                ['like', 'd.name', $options['keywords']],
-                ['like', 'replace(a.name, ".", "")', $options['keywords']]
+                ['REGEXP', 'a.name', $search_pattern],
+                ['REGEXP', 'd.name', $search_pattern],
             ]);
         }
         if (isset($options['most_reviewed'])) {
             $q2->orderBy(['total_reviews' => SORT_DESC]);
 
         }
-        if (isset($options['sort'])) {
-            $q2->orderBy(['c.created_on' => SORT_DESC]);
-
+        if (isset($options['sortBy'])) {
+            $q2->andWhere('a.name LIKE "'.$options['sortBy'].'%"');
         }
         if (isset($options['city'])) {
             $q2->andWhere([
@@ -103,20 +108,21 @@ class ReviewCards
                 ['like', 'd.name', $options['city']],
             ]);
         }
-        if (isset($options['limit'])) {
-            $q2->limit($options['limit']);
-        }
-        if (isset($options['offset'])) {
-            $q2->offset($options['offset']);
-        }
         if (isset($options['rating'])) {
             $q2->orFilterHaving(['ROUND(AVG(c.average_rating))' => $options['rating']]);
         }
-        $q2_count = $q2->count();
-        $q1_count = $q1->count();
+        $count = $q2->count()+$q1->count();
+        $q  = (new \yii\db\Query())
+            ->from([
+                $q1->union($q2),
+            ])
+            ->limit($limit)
+            ->offset($offset)
+            ->orderBy(['created_on' => SORT_DESC])
+            ->all();
         return [
-            'total' => $q2_count + $q1_count,
-            'cards' => $q1->union($q2)->asArray()->all()
+            'total' => $count,
+            'cards' => $q
         ];
     }
 
@@ -124,7 +130,7 @@ class ReviewCards
     {
         $cards = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'COUNT(distinct c.review_enc_id) total_reviews', 'max(c.created_on) created_on', 'a.slug as profile_link', 'CONCAT(a.slug, "/reviews") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
+            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'COUNT(distinct c.review_enc_id) total_reviews', 'max(c.created_on) created_on', 'a.slug as profile_link', 'CONCAT(a.slug, "/reviews") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
             ->where(['a.is_deleted' => 0])
             ->andWhere(['a.status' => 'Active'])
             ->joinWith(['businessActivityEnc b'], false)
@@ -181,7 +187,7 @@ class ReviewCards
     {
         $card_query = UnclaimedOrganizations::find()
             ->alias('a');
-        $cards = $card_query->select(['a.organization_enc_id', 'COUNT(distinct c.review_enc_id) total_reviews', 'max(c.created_on) created_on', 'a.name', 'a.initials_color color', 'CONCAT(a.slug, "/reviews") profile_link', 'CONCAT(a.slug, "/reviews") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating']);
+        $cards = $card_query->select(['a.organization_enc_id', 'COUNT(distinct c.review_enc_id) total_reviews', 'max(c.created_on) created_on', 'a.name', 'a.initials_color color', 'CONCAT(a.slug, "/reviews") profile_link', 'CONCAT(a.slug, "/reviews") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating']);
         $cards->where(['a.is_deleted' => 0])
             ->joinWith(['organizationTypeEnc b'], false)
             ->joinWith(['newOrganizationReviews c'], false)
@@ -304,5 +310,44 @@ class ReviewCards
             ->andWhere(['in', 'reviewer_type', [6, 7]])
             ->asArray()
             ->one();
+    }
+
+    public static function makeSQL_search_pattern($search)
+    {
+        if ($search==null||empty($search)){
+            return "";
+        }
+        $search_pattern = false;
+        $wordArray = preg_split('/[^-\w\']+/', $search, -1, PREG_SPLIT_NO_EMPTY);
+        $search = self::optimizeSearchString($wordArray);
+        $search = str_replace('"', "''", $search);
+        $search = str_replace('^', "\\^", $search);
+        $search = str_replace('$', "\\$", $search);
+        $search = str_replace('.', "\\.", $search);
+        $search = str_replace('[', "\\[", $search);
+        $search = str_replace(']', "\\]", $search);
+        $search = str_replace('|', "\\|", $search);
+        $search = str_replace('*', "\\*", $search);
+        $search = str_replace('+', "\\+", $search);
+        $search = str_replace('{', "\\{", $search);
+        $search = str_replace('}', "\\}", $search);
+        $search = preg_split('/ /', $search, null, PREG_SPLIT_NO_EMPTY);
+        for ($i = 0; $i < count($search); $i++) {
+            if ($i > 0 && $i < count($search)) {
+                $search_pattern .= "|";
+            }
+            $search_pattern .= $search[$i];
+        }
+        return $search_pattern;
+    }
+
+    private static function optimizeSearchString($wordArray)
+    {
+        $articles = ['in', 'is', 'jobs', 'job', 'internship', 'internships'];
+        $newArray = array_udiff($wordArray, $articles, 'strcasecmp');
+        if (!empty($newArray))
+            return implode(" ", $newArray);
+        else
+            return "";
     }
 }

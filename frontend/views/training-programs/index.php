@@ -10,8 +10,8 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <h2 class="text-white">The Easiest Way to Find Best Institutes</h2>
-                    <h4 class="text-white">“Learning never exhausts the mind”</h4>
+                    <h1 class="text-white">The Easiest Way to Find Best Institutes</h1>
+                    <h3 class="text-white1">“Learning never exhausts the mind”</h3>
                     <div class="search-by-type">
                         <form class="form-inline" action="<?= Url::to('/training-programs/list?'); ?>">
                             <div class="input-group mb-10 mr-10 col-md-5">
@@ -19,13 +19,13 @@ $this->params['header_dark'] = false;
                                 <input type="text" name="keyword" class="form-control"
                                        placeholder="Course Title or Keywords or Institute"/>
                             </div>
-                            <div class="input-group mb-10 mr-10 col-md-3">
+                            <div class="input-group mb-10 mr-10 col-md-3 sett-marg">
                                 <span class="input-group-addon set-heights"><i
                                         class="fas fa-map-marker-alt"></i></span>
                                 <input type="text" name="location" class="form-control" autocomplete="off"
                                        placeholder="City or State"/>
                             </div>
-                            <div class="form-group mb-10 mr-10">
+                            <div class="form-group mb-10 mr-10 sett-marg">
                                 <input type="submit" class="form-control submit-next" id="form_control_1"
                                        value="Search">
                             </div>
@@ -35,9 +35,7 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
-<?= $this->render('/widgets/online-classes', [
-    'model' => $model,
-]) ?>
+
     <section>
         <div class="container">
             <div class="row mt-20">
@@ -54,10 +52,10 @@ $this->params['header_dark'] = false;
     <section class="bg-lighter">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <h1 class="heading-style">Featured Courses</h1>
                 </div>
-                <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="type-1">
                         <div>
                             <a href="<?=  Url::to('/training-programs/list'); ?>" class="btn btn-3">
@@ -106,11 +104,20 @@ $this->registerCss('
     padding-top: 150px;
     background-size: cover;
     background-position: 43%;
+    padding-bottom:30px;
 }
 .text-white{
     color:white;
     font-family:roboto;
+    font-size:40px;
     }
+.text-white1{
+    color:white;
+    font-family:roboto;
+    font-size:25px;
+    margin:0;
+    }    
+    
 .search-by-type {
     width: 84%;
     background-color: #14141459;
@@ -194,6 +201,7 @@ a.company-inner {
 .type-1{
     float:right;
     margin-top: 15px;
+    margin-bottom: 15px;
 }
 .type-1 div a {
     text-decoration: none;
@@ -270,10 +278,15 @@ a.company-inner {
 .application-card-description{
     margin:20px 0 0 15px !important;
 }
+@media only screen and (max-width: 991px) and (min-width: 375px){
+.sett-marg{
+	margin-top: 15px;
+}
+}
 ');
 $script = <<< JS
 loader = false;
-getCards("Trainings");
+getCards("Trainings", ".blogbox", "/training-programs/load-cards");
 getCategories("Trainings");
 getInstitutes();
 JS;

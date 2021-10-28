@@ -1,6 +1,8 @@
 <?php
+
 namespace common\models;
 
+use Yii;
 
 /**
  * This is the model class for table "{{%application_unclaim_options}}".
@@ -12,6 +14,7 @@ namespace common\models;
  * @property string $email hr email
  * @property string $consultant_email consultant email
  * @property string $job_url job_url
+ * @property string $job_level job level
  * @property int $positions no of positions
  * @property string $wage_type wage type
  * @property string $wage_duration wage_duration
@@ -23,10 +26,10 @@ namespace common\models;
  * @property string $last_updated_on On which date Wage information was updated
  * @property string $last_updated_by By which User Wage information was updated
  *
- * @property EmployerApplications $applicationEnc
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  * @property Currencies $currencyEnc
+ * @property EmployerApplications $applicationEnc
  */
 class ApplicationUnclaimOptions extends \yii\db\ActiveRecord
 {
@@ -44,32 +47,24 @@ class ApplicationUnclaimOptions extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['unclaim_options_enc_id', 'application_enc_id', 'job_url', 'wage_type'], 'required'],
+            [['unclaim_options_enc_id', 'application_enc_id', 'job_url'], 'required'],
             [['positions'], 'integer'],
             [['wage_type', 'wage_duration'], 'string'],
             [['fixed_wage', 'min_wage', 'max_wage'], 'number'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['unclaim_options_enc_id', 'application_enc_id', 'currency_enc_id', 'email', 'consultant_email', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['job_url'], 'string', 'max' => 255],
+            [['job_url', 'job_level'], 'string', 'max' => 255],
             [['unclaim_options_enc_id'], 'unique'],
-            [['application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => EmployerApplications::className(), 'targetAttribute' => ['application_enc_id' => 'application_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
             [['currency_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Currencies::className(), 'targetAttribute' => ['currency_enc_id' => 'currency_enc_id']],
+            [['application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => EmployerApplications::className(), 'targetAttribute' => ['application_enc_id' => 'application_enc_id']],
         ];
     }
 
     /**
      * @inheritdoc
      */
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getApplicationEnc()
-    {
-        return $this->hasOne(EmployerApplications::className(), ['application_enc_id' => 'application_enc_id']);
-    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -93,5 +88,13 @@ class ApplicationUnclaimOptions extends \yii\db\ActiveRecord
     public function getCurrencyEnc()
     {
         return $this->hasOne(Currencies::className(), ['currency_enc_id' => 'currency_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationEnc()
+    {
+        return $this->hasOne(EmployerApplications::className(), ['application_enc_id' => 'application_enc_id']);
     }
 }

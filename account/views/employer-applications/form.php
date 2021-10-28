@@ -1,12 +1,28 @@
 <?php
-
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
-
+use yii\helpers\ArrayHelper;
+$exp = [
+    '0' => 'Freshers',
+    '1' => '1',
+    '2' => '2',
+    '3' => '3',
+    '4' => '4',
+    '5' => '5',
+    '6' => '6',
+    '7' => '7',
+    '8' => '8',
+    '9' => '9',
+    '10' => '10',
+    '15' => '15',
+    '20' => '20',
+    '20+' => 'More Than 20 Years'
+];
+$Categories = ArrayHelper::map($primary_cat, 'category_enc_id', 'name');
 Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var _experience = '.json_encode($exp).'', \yii\web\View::POS_HEAD);
 ?>
-
 <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -100,15 +116,16 @@ Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS
                                 echo $this->render('/widgets/employer-applications/basic-job-details', [
                                     'form' => $form,
                                     'model' => $model,
-                                    'primary_cat' => $primary_cat,
+                                    'primary_cat' => $Categories,
                                     'industry' => $industry,
                                     'type' => $type,
+                                    'exp' => $exp,
                                 ]);
                             elseif ($type == 'Internships' || $type == 'Clone_Internships' || $type == 'Edit_Internships'):
                                 echo $this->render('/widgets/employer-applications/basic-internships-details', [
                                     'form' => $form,
                                     'model' => $model,
-                                    'primary_cat' => $primary_cat,
+                                    'primary_cat' => $Categories,
                                     'type' => $type,
                                 ]);
                             endif;
@@ -131,6 +148,7 @@ Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS
                             $this->render('/widgets/employer-applications/job-description', [
                                 'form' => $form,
                                 'model' => $model,
+                                'type' => $type,
                             ]);
                             ?>
                             <div class="divider"></div>
@@ -153,6 +171,7 @@ Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS
                                 'form' => $form,
                                 'model' => $model,
                                 'benefits' => $benefits,
+                                'type' => $type,
                             ]);
                             ?>
                             <?=
@@ -241,11 +260,39 @@ Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS
 //    'type' => $type,
 //]);
 $this->registerCss("
+.btn-next{margin:0 10px 10px 0;}
 body {
     background-image: url(/assets/themes/ey/images/backgrounds/ai-header.png) !important;
     background-size: cover !important;
     background-attachment: fixed !important;
     background-repeat: no-repeat !important;
+}
+.select2{
+    background: 0 0;
+    border: 0;
+    border-bottom: 1px solid #c2cad8;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    -ms-border-radius: 0;
+    -o-border-radius: 0;
+    border-radius: 0;
+    color: #555;
+    box-shadow: none;
+    padding-left: 0;
+    padding-right: 0;
+    font-size: 14px;
+}
+.select2-container--krajee .select2-selection{
+    border: 0;
+    box-shadow: none;
+    background: transparent;
+}
+.select2-container--krajee.select2-container--open .select2-selection, 
+.select2-container--krajee .select2-selection:focus{
+    box-shadow: none;
+}
+.select2-dropdown{
+    z-index: 3;
 }
 .page-container-bg-solid .page-content{
     background: transparent !important;
@@ -257,9 +304,12 @@ ul.ks-cboxtags {
     list-style: none;
     padding:0px;
 }
-.service-list{
-  display: inline-block;
-  min-width: 120px;
+.service-list {
+    display: inline-block;
+    min-width: 120px;
+    margin: 0 5px;
+    text-align: left;
+    width: 230px;
 }
 .service-list label{
     width: 100%;
@@ -282,8 +332,11 @@ ul.ks-cboxtags {
 .service-list label {
     padding: 8px 12px;
     cursor: pointer;
+    text-align:center;
 }
-
+.service-list label > div {
+    margin: 8px 0;
+}
 .service-list label::before {
     display: inline-block;
     font-style: normal;
@@ -1138,11 +1191,12 @@ q:before, q:after, blockquote:before, blockquote:after {
 .checkbox-input:checked + .checkbox-label .checkbox-text--description .un {
   display: inline-block;
 }
-.state_city_tag
-{font-size:14px;}
-
-.address_tag
-{font-size: 13px;}
+.state_city_tag{
+    font-size:14px;
+}
+.address_tag{
+    font-size: 13px;
+}
 .materialize-tags ~ input ~ label {
   color: #999 !important;
   padding: 1rem !important;
@@ -1635,6 +1689,10 @@ height:17px !important;
 .load-suggestions span:nth-child(3){
   animation: bounce 1s ease-in-out 0.66s infinite;
 }
+.md-radio{    
+    z-index: 0;
+}
+#wh_vacancy{display:none}
 #wage_type-error .color_red
 {font-size:13px}
 @keyframes bounce{
@@ -1738,6 +1796,7 @@ if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'
         work_from_home('$model->type');
         week_selecter();
     }
+load_job_titles('$model->primaryfield');
 function load_job_titles(prime_id)
 {
 var categories = new Bloodhound({
@@ -1798,19 +1857,18 @@ function work_from_home(job_type_str) {
   if(job_type_str == "Work From Home")  
         {
         $('.placement_location_hide').hide();
+        $('#wh_vacancy').show();
+        $('#wh_type').removeClass('col-md-12');
+        $('#wh_type').addClass('col-md-7');
         }
    else
      { 
        $('.placement_location_hide').show();
+       $('#wh_vacancy').hide();
+       $('#wh_type').removeClass('col-md-7');
+        $('#wh_type').addClass('col-md-12');
          }
 }
- function ChildFunction()
-     {
-       
-       $.pjax.reload({container: '#pjax_questionnaire', async: false});
-       $.pjax.reload({container: '#pjax_process', async: false});
-     }
-window.ChildFunction = ChildFunction;
         $(document).on('click','.button-submit',function(event)
             {
             event.preventDefault();
@@ -1978,9 +2036,8 @@ function init() {
                         required: true,
                         
                     },
-                    'min_exp': {
+                    'minimum_exp': {
                         required: true,
-                        
                     },
                     'startdate':
                      {

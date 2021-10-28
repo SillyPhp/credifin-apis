@@ -1,5 +1,5 @@
-function random_fn(t){
-	document.querySelector('.i-review-next').click();
+function random_fn_review(t){
+	document.querySelector('.i-review-next-review').click();
 }
 (function(window){
 	'use strict';
@@ -634,7 +634,7 @@ function random_fn(t){
 			for (var i = 0; i < that.options.data[qno].choices.length; i++ )
 			{
 				var randomId = createUniqueId();
-				radios += '<div class="i-review-input-group" for="cb1"><input onchange="random_fn();" name="'+that.options.data[qno].formName+'" class="i-review-input-radio" type="radio" value="'+that.options.data[qno].choices[i].value+'" id="'+randomId+'"><label for="'+randomId+'">'+that.options.data[qno].choices[i].label+'</label></div>'
+				radios += '<div class="i-review-input-group" for="cb1"><input onchange="random_fn_review();" name="'+that.options.data[qno].formName+'" class="i-review-input-radio" type="radio" value="'+that.options.data[qno].choices[i].value+'" id="'+randomId+'"><label for="'+randomId+'">'+that.options.data[qno].choices[i].label+'</label></div>'
 			}
 		}
 		else
@@ -656,7 +656,7 @@ function random_fn(t){
 
 		for (var i = 0; i < starTotal; i++ )
 		{
-			stars += '<label class="i-review-star"><input onClick="starRateSetter(this);" type="radio" onchange="random_fn();" name="'+that.options.data[qno].formName+'" value="'+(starTotal-i)+'"/></label>';
+			stars += '<label class="i-review-star"><input onClick="starRateSetter(this);" type="radio" onchange="random_fn_review();" name="'+that.options.data[qno].formName+'" value="'+(starTotal-i)+'"/></label>';
 		}
 
 		var s = '<div class="i-review-answer i-review-answer-center"><div class="i-review-rate-stars" data-last-val="">'+stars+'</div></div>';
@@ -770,7 +770,7 @@ function random_fn(t){
 	// Creating cancel button on start page.
 	var createCancelButton = function(){
 		this.cancelButton = document.createElement('button');
-		this.cancelButton.className = 'i-review-next';
+		this.cancelButton.className = 'i-review-next-review';
 		var el1 = document.createElement('span');
 		el1.className = 'i-review-button-text';
 		if (this.options.startPage.hasOwnProperty('cancelBtnText'))
@@ -785,7 +785,7 @@ function random_fn(t){
 	// Creating close button on finish page
 	var createEndCloseButton = function(){
 		this.endCloseButton = document.createElement('button');
-		this.endCloseButton.className = 'i-review-next';
+		this.endCloseButton.className = 'i-review-next-review';
 		var el1 = document.createElement('span');
 		el1.className = 'i-review-button-text';
 		if (this.options.endPage.hasOwnProperty('closeBtnText'))
@@ -800,7 +800,7 @@ function random_fn(t){
 	// Creating start button only start page.
 	var createStartButton = function(){
 		this.startButton = document.createElement('button');
-		this.startButton.className = 'i-review-next';
+		this.startButton.className = 'i-review-next-review';
 
 		var el1 = document.createElement('span');
 		el1.className = 'i-review-button-text';
@@ -845,9 +845,9 @@ function random_fn(t){
 	var createNextButton = function(){
 		this.nextButton = document.createElement('button');
 		if (startPageControl(this))
-			this.nextButton.className = 'i-review-next i-review-hide';
+			this.nextButton.className = 'i-review-next-review i-review-hide';
 		else
-			this.nextButton.className = 'i-review-next';
+			this.nextButton.className = 'i-review-next-review';
 
 		var el1 = document.createElement('span');
 		el1.className = 'i-review-button-text';

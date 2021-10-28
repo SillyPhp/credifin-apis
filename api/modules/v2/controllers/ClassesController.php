@@ -6,13 +6,11 @@ namespace api\modules\v2\controllers;
 use api\modules\v2\models\ClassComments;
 use api\modules\v2\models\ClassForm;
 use api\modules\v2\models\UploadNotes;
-use api\modules\v2\models\ProfilePicture;
+use common\models\AssignedCollegeCourses;
 use common\models\AssignedVideoSessions;
 use common\models\ClassNotes;
-use common\models\CollegeCourses;
 use common\models\OnlineClassComments;
 use common\models\OnlineClasses;
-use common\models\PostComments;
 use common\models\Teachers;
 use common\models\Users;
 use Yii;
@@ -103,8 +101,10 @@ class ClassesController extends ApiBaseController
                         if ($model->SaveClass()) {
                             $data = OnlineClasses::find()
                                 ->alias('a')
-                                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_date'])
-                                ->joinWith(['courseEnc b'], false)
+                                ->select(['a.class_enc_id', 'a.status', 'bb.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_date'])
+                                ->joinWith(['assignedCollegeEnc b'=>function($d){
+                                    $d->joinWith(['courseEnc bb']);
+                                }], false)
                                 ->joinWith(['sectionEnc c'], false)
                                 ->where(['a.teacher_enc_id' => $teacher_id, 'a.status' => 'Active', 'a.is_deleted' => 0])
                                 ->asArray()
@@ -140,15 +140,17 @@ class ClassesController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $courses = CollegeCourses::find()
+            $courses = AssignedCollegeCourses::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+                ->joinWith(['courseEnc c'], false)
                 ->joinWith(['collegeSections b' => function ($b) {
-                    $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
+                    $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
-                ->where(['a.organization_enc_id' => $college_id['college_id']])
-                ->groupBy(['a.course_name'])
+                ->where(['a.organization_enc_id' => $college_id['college_id'], 'a.is_deleted' => 0])
+//                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 
@@ -171,10 +173,12 @@ class ClassesController extends ApiBaseController
             $teacher_id = $this->getTeacherId();
             $classes = OnlineClasses::find()
                 ->alias('a')
-                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_date', 'CONCAT(a.class_date," ",a.end_time) date_time'])
-                ->joinWith(['courseEnc b'], false)
+                ->select(['a.class_enc_id', 'a.status', 'bb.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_type', 'a.class_date', 'CONCAT(a.class_date," ",a.end_time) date_time'])
+                ->joinWith(['assignedCollegeEnc b'=>function($d){
+                    $d->joinWith(['courseEnc bb']);
+                }], false)
                 ->joinWith(['sectionEnc c'], false)
-                ->where(['a.teacher_enc_id' => $teacher_id, 'a.status' => 'Active', 'a.is_deleted' => 0, 'a.class_type' => 'Scheduled'])
+                ->where(['a.teacher_enc_id' => $teacher_id, 'a.status' => 'Active', 'a.is_deleted' => 0])
                 ->andWhere(['a.class_date' => $date_now])
                 ->andWhere(['>=', 'a.end_time', $time_now])
                 ->orderBy(['a.class_date' => SORT_ASC, 'a.start_time' => SORT_ASC])
@@ -211,8 +215,10 @@ class ClassesController extends ApiBaseController
             $teacher_id = $this->getTeacherId();
             $classes = OnlineClasses::find()
                 ->alias('a')
-                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_date', 'CONCAT(a.class_date," ",a.end_time) date_time'])
-                ->joinWith(['courseEnc b'], false)
+                ->select(['a.class_enc_id', 'a.status', 'bb.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_date', 'CONCAT(a.class_date," ",a.end_time) date_time'])
+                ->joinWith(['assignedCollegeEnc b'=>function($d){
+                    $d->joinWith(['courseEnc bb']);
+                }], false)
                 ->joinWith(['sectionEnc c'], false)
                 ->where(['a.teacher_enc_id' => $teacher_id, 'a.status' => 'Active', 'a.is_deleted' => 0, 'a.class_type' => 'Scheduled'])
                 ->andWhere(['>', 'a.class_date', $date_now])
@@ -252,13 +258,13 @@ class ClassesController extends ApiBaseController
             $today = $data['expiry_date'];
             $today = str_replace('/', '-', $today);
             $today = date('Y-m-d', strtotime($today));
-            $nextday = date("d/m/Y", strtotime($today . "+1 day"));
+            $nextday = date("Y-m-d", strtotime($today . "+1 day"));
 
             $model = new AssignedVideoSessions();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $model->assigned_video_enc_id = $utilitiesModel->encrypt();
-            $model->expire_date = date('Y-m-d', strtotime($nextday));
+            $model->expire_date = $nextday;
             $model->class_enc_id = $data['class_id'];
             $model->session_enc_id = $data['session_id'];
             $model->created_by = $teacher_id;
@@ -334,7 +340,7 @@ class ClassesController extends ApiBaseController
             $model->teacher_enc_id = $teacher_id;
             $model->semester = $data['semester'];
             $model->subject_name = $data['subject_name'];
-            $model->course_enc_id = $data['course_id'];
+            $model->assigned_college_enc_id = $data['course_id'];
             $model->section_enc_id = $data['section_id'];
             $model->start_time = $time_now;
             $model->end_time = $end_time;
@@ -366,6 +372,18 @@ class ClassesController extends ApiBaseController
             $model = OnlineClasses::find()
                 ->where(['class_enc_id' => $class_id])
                 ->one();
+
+            $session = AssignedVideoSessions::find()
+                ->where(['class_enc_id' => $class_id])
+                ->one();
+
+            if ($session) {
+                if ($session->status == 'Active') {
+                    $session->status = 'Ended';
+                    $session->video_session_end_time = date('y-m-d H:i:s');
+                    $session->update();
+                }
+            }
 
             if ($model) {
                 if ($model->status == 'Active') {
@@ -428,10 +446,10 @@ class ClassesController extends ApiBaseController
             $comments = OnlineClassComments::find()
                 ->alias('a')
                 ->distinct()
-                ->select(['a.comment_enc_id', 'a.comment', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image'])
+                ->select(['a.comment_enc_id', 'a.comment', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image'])
                 ->joinWith(['userEnc b'], false)
                 ->joinWith(['onlineClassComments c' => function ($c) {
-                    $c->select(['c.reply_to', 'c.comment_enc_id', 'c.comment', 'bb.username', 'CONCAT(bb.first_name, " ", bb.last_name) name', 'bb.initials_color color', 'CASE WHEN bb.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", bb.image_location, "/", bb.image) ELSE NULL END image']);
+                    $c->select(['c.reply_to', 'c.comment_enc_id', 'c.comment', 'bb.username', 'CONCAT(bb.first_name, " ", bb.last_name) name', 'bb.initials_color color', 'CASE WHEN bb.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", bb.image_location, "/", bb.image) ELSE NULL END image']);
                     $c->joinWith(['userEnc bb'], false);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
@@ -493,7 +511,7 @@ class ClassesController extends ApiBaseController
 
             $child_comment = OnlineClassComments::find()
                 ->alias('a')
-                ->select(['a.comment_enc_id', 'a.comment', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
+                ->select(['a.comment_enc_id', 'a.comment', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
                 ->joinWith(['userEnc b'], false)
                 ->where(['a.reply_to' => $parent])
                 ->andWhere(['a.is_deleted' => 0])
@@ -578,10 +596,10 @@ class ClassesController extends ApiBaseController
             $comments = OnlineClassComments::find()
                 ->alias('a')
                 ->distinct()
-                ->select(['a.comment_enc_id', 'a.comment', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image'])
+                ->select(['a.comment_enc_id', 'a.comment', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image'])
                 ->joinWith(['userEnc b'], false)
                 ->joinWith(['onlineClassComments c' => function ($c) {
-                    $c->select(['c.reply_to', 'c.comment_enc_id', 'c.comment', 'bb.username', 'CONCAT(bb.first_name, " ", bb.last_name) name', 'bb.initials_color color', 'CASE WHEN bb.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", bb.image_location, "/", bb.image) ELSE NULL END image']);
+                    $c->select(['c.reply_to', 'c.comment_enc_id', 'c.comment', 'bb.username', 'CONCAT(bb.first_name, " ", bb.last_name) name', 'bb.initials_color color', 'CASE WHEN bb.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", bb.image_location, "/", bb.image) ELSE NULL END image']);
                     $c->joinWith(['userEnc bb'], false);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
@@ -740,8 +758,10 @@ class ClassesController extends ApiBaseController
             $classes = OnlineClasses::find()
                 ->distinct()
                 ->alias('a')
-                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'a.subject_name', 'a.start_time', 'a.end_time', 'a.class_date'])
-                ->joinWith(['courseEnc b'], false)
+                ->select(['a.class_enc_id', 'a.status', 'bb.course_name', 'a.subject_name', 'a.start_time', 'a.end_time', 'a.class_date'])
+                ->joinWith(['assignedCollegeEnc b'=>function($d){
+                    $d->joinWith(['courseEnc bb']);
+                }], false)
                 ->joinWith(['sectionEnc c'], false)
                 ->innerJoinWith(['classNotes n' => function ($n) {
                     $n->select(['n.class_enc_id', 'n.note_enc_id', 'n.note', 'n.title']);
@@ -755,10 +775,10 @@ class ClassesController extends ApiBaseController
                 ->all();
 
             $i = 0;
-            foreach ($classes as $c){
-                if($c['classNotes']){
+            foreach ($classes as $c) {
+                if ($c['classNotes']) {
                     $j = 0;
-                    foreach ($c['classNotes'] as $n){
+                    foreach ($c['classNotes'] as $n) {
                         $link = $this->getFile($n['note']);
                         $classes[$i]['classNotes'][$j]['link'] = $link;
                         $j++;
@@ -772,8 +792,8 @@ class ClassesController extends ApiBaseController
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
-        }else{
-            return $this->response(401,['status'=>401,'message'=>'unauthorized']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 

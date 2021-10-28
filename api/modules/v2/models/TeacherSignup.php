@@ -55,49 +55,64 @@ class TeacherSignup extends Model
 
     public function saveTeacher()
     {
-        $user = new Candidates();
-        $username = new Usernames();
-        $username->username = $this->username;
-        $username->assigned_to = 1;
-        if (!$username->validate() || !$username->save()) {
-            return false;
-        }
-        $user->username = $this->username;
-        $user->first_name = $this->first_name;
-        $user->last_name = $this->last_name;
-        $user->phone = preg_replace("/\s+/", "", $this->phone);
-        $user->email = $this->email;
-        $user->user_enc_id = time() . mt_rand(10, 99);
-        $user->user_type_enc_id = UserTypes::findOne(['user_type' => 'Individual'])->user_type_enc_id;
-        $user->initials_color = RandomColors::one();
-        $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
-        $user->status = 'Active';
-        $user->setPassword($this->password);
-        $user->generateAuthKey();
-        if (!$user->save()) {
-            return false;
-        } else {
-            if (!$this->newToken($user->user_enc_id, $this->source)) {
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $user = new Candidates();
+            $username = new Usernames();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $username->username = $this->username;
+            $username->assigned_to = 1;
+            if (!$username->validate() || !$username->save()) {
+                $transaction->rollback();
                 return false;
             }
-        }
+            $user->username = $this->username;
+            $user->first_name = $this->first_name;
+            $user->last_name = $this->last_name;
+            $user->phone = preg_replace("/\s+/", "", $this->phone);
+            $user->email = $this->email;
+            $user->user_enc_id = $utilitiesModel->encrypt();
+            $user->user_type_enc_id = UserTypes::findOne(['user_type' => 'Individual'])->user_type_enc_id;
+            $user->initials_color = RandomColors::one();
+            $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
+            $user->status = 'Active';
+            $user->last_visit = date('Y-m-d H:i:s');
+            $user->last_visit_through = 'ECAMPUS';
+            $user->setPassword($this->password);
+            $user->generateAuthKey();
+            if (!$user->save()) {
+                $transaction->rollback();
+                return false;
+            } else {
+                if (!$this->newToken($user->user_enc_id, $this->source)) {
+                    return false;
+                }
+            }
 
-        $teachers = new Teachers();
-        $utilitiesModel = new \common\models\Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $teachers->teacher_enc_id = $utilitiesModel->encrypt();
-        $teachers->user_enc_id = $user->user_enc_id;
-        $teachers->college_enc_id = $this->college;
-        $teachers->role = UserTypes::findOne(['user_type' => 'Employee'])->user_type_enc_id;;
-        if(!$teachers->save()){
+            $teachers = new Teachers();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $teachers->teacher_enc_id = $utilitiesModel->encrypt();
+            $teachers->user_enc_id = $user->user_enc_id;
+            $teachers->college_enc_id = $this->college;
+            $teachers->role = UserTypes::findOne(['user_type' => 'Employee'])->user_type_enc_id;;
+            if (!$teachers->save()) {
+                $transaction->rollback();
+                return false;
+            }
+
+            if ($this->ref != '') {
+                $this->saveRefferal($user->user_enc_id, $this->ref);
+            }
+
+            $transaction->commit();
+            return $user->user_enc_id;
+        } catch (Exception $e) {
+            $transaction->rollback();
             return false;
         }
-
-        if ($this->ref != '') {
-            $this->saveRefferal($user->user_enc_id, $this->ref);
-        }
-
-        return true;
     }
 
 

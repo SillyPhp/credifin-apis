@@ -16,7 +16,7 @@ $image = Url::to(Yii::$app->params->upload_directories->quiz->sharing->image . $
 
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -31,7 +31,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -48,7 +48,7 @@ if ($result == Null) {
             <h3><?= $quiz['name'] ?></h3>
             <hr/>
             <div class="detail-body">
-                <h4>Before you begin</h4>
+                <h4 style="color:red;font-style: italic;">Before you begin</h4>
                 <p>Quiz must be completed in one session, make sure that you have a stable internet connection & you must
                     finish the quiz.</p>
                 <p>Your results will be displayed at the end of the quiz.</p>
@@ -69,8 +69,8 @@ if ($result == Null) {
 ?>
     <section class="container">
         <div class="col-md-3">
-            <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"
-                 data-ad-client="ca-pub-2186770765824304" data-ad-slot="first"></ins>
+<!--            <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"-->
+<!--                 data-ad-client="ca-pub-2186770765824304" data-ad-slot="first"></ins>-->
         </div>
         <div class="col-md-6">
             <div class="questionBox">
@@ -122,7 +122,7 @@ if ($result == Null) {
                                     <i class="fa fa-check-circle-o is-active"></i>
                                 </span>
                                     <h2 class="title">You have already taken this quiz!</h2>
-                                    <p class="subtitle">Total score: <?= $result; ?> / <?= $noOfQuestion['num_of_ques'];?></p>
+                                    <p class="subtitle">Your score: <?= $result; ?> / <?= $noOfQuestion['num_of_ques'];?></p>
                                 </div>
                             </div>
                         </div>
@@ -142,8 +142,8 @@ if ($result == Null) {
             </div>
         </div>
         <div class="col-md-3">
-            <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"
-                 data-ad-client="ca-pub-2186770765824304" data-ad-slot="second"></ins>
+<!--            <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"-->
+<!--                 data-ad-client="ca-pub-2186770765824304" data-ad-slot="second"></ins>-->
         </div>
     </section>
     <script id="c-quiz-options" type="text/template">

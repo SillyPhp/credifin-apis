@@ -33,13 +33,26 @@ use yii\widgets\Pjax;
                                     <div class="topic-con"> 
                                         <div class="hr-company-box">
                                             <div class="hr-com-icon">
-                                                <img src="<?= Url::to('@commonAssets/categories/' . $accept["icon"]); ?>" class="img-responsive ">
+                                                <?php
+                                                if ($accept['logo']) {
+                                                    $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $accept['logo_location'] . DIRECTORY_SEPARATOR . $accept['logo'];
+                                                } else {
+                                                    $organizationLogo = "https://ui-avatars.com/api/?name=" . $accept['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $accept['initials_color']) . "&color=ffffff";
+                                                }
+                                                ?>
+                                                <img src="<?= $organizationLogo ?>" class="img-responsive ">
                                             </div>
-                                            <div class="hr-com-name">
+                                            <div class="hr-com-name job-title-name">
                                                 <?= $accept['org_name']; ?>
                                             </div>
-                                            <div class="hr-com-field">
-                                                <?= $accept['name']; ?>
+                                            <div class="merge-name-icon">
+                                                <div class="cat-icon">
+                                                    <img src="<?= Url::to('@commonAssets/categories/' . $accept["job_icon"]); ?>"
+                                                         class="img-responsive ">
+                                                </div>
+                                                <div class="hr-com-field">
+                                                    <?= $accept['title']; ?>
+                                                </div>
                                             </div>
                                             <div class="hr-com-field"></div>
                                             <div class="opening-txt">
@@ -89,6 +102,27 @@ use yii\widgets\Pjax;
 </section>
 <?php
 $this->registerCss('
+.merge-name-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:0 10px;
+}
+.cat-icon img {
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    object-fit: contain;
+    margin-right:5px;
+}
+.hr-com-icon img {
+//    border-radius: 50% !important;
+    object-fit: contain;
+    overflow: hidden;
+}
+.hr-com-name.job-title-name {
+    padding: 0;
+}
 .j-grid > a {
     font-family: Open Sans;
     font-size: 11px;
@@ -99,7 +133,7 @@ $this->registerCss('
     -ms-border-radius: 20px !important;
     -o-border-radius: 20px !important;
     border-radius: 20px !important;
-    margin:10px 0;
+    margin:0 0 10px 0;
     padding: 6px 12px;  
 }
 .topic-con{
@@ -119,7 +153,7 @@ $this->registerCss('
     color:#999999; 
     padding-top:20px;
 }
-.hr-com-field{height:21px;}
+.hr-com-field{height:22px;}
 .overlay2 {
   position: absolute;
   top: 0px;
@@ -145,6 +179,7 @@ button.over-bttn, .ob1, button.over-bttn, .ob2{
     border-radius:5px !important;
     padding:6px 12px;
     color:#fff;
+    font-family:roboto;
 }
 button.over-bttn, .ob2{
     background:#ff7803 !important; 
@@ -177,183 +212,6 @@ button.over-bttn, .ob2{
 a:hover{
     text-decoration:none;
 }
-//.btn.btn-outline.orange {
-//    border-color: #ff7803;
-//    color: #ff7803;
-//    background: 0 0;
-//}
-//.btn.btn-outline.orange.active, .btn.btn-outline.orange:active, .btn.btn-outline.orange:active:focus, .btn.btn-outline.orange:active:hover, .btn.btn-outline.orange:focus, .btn.btn-outline.orange:hover {
-//    border-color: #ff7803;
-//    color: #fff;
-//    background-color: #ff7803;
-//}
-//.manage-jobs-sec > h3 {
-//    float: left;
-//    width: 100%;
-//    margin-top: 40px;
-//    font-size: 20px;
-//    color: #202020;
-//    font-weight: bold;
-//    margin: 0;
-//    margin-top: 0px;
-//    padding-bottom: 20px;
-//    padding-left: 30px;
-//    margin-top: 40px;
-//}
-//.manage-jobs-sec {
-//    float: left;
-//    width: 100%;
-//    padding:20px 10px;
-//}
-//.manage-jobs-sec .extra-job-info {
-//    border: 2px solid #e8ecec;
-//    padding: 20px 30px;
-//    margin-left: 30px;
-//    
-//    -webkit-border-radius: 8px;
-//    -moz-border-radius: 8px;
-//    -ms-border-radius: 8px;
-//    -o-border-radius: 8px;
-//    border-radius: 8px;
-//
-//}
-//.manage-jobs-sec .extra-job-info > span {
-//    float: left;
-//    width: 32.334%;
-//    padding: 0;
-//    border: none;
-//    margin: 0;
-//}
-//.manage-jobs-sec > table {
-//    float: left;
-//    width: calc(100% - 30px);
-//    margin-top: 50px;
-//    margin-bottom: 60px;
-//    margin-left: 30px
-//}
-//.manage-jobs-sec > table thead tr td {
-//    font-size: 15px;
-//    font-weight: bold;
-//    color: #fb236a;
-//    padding-bottom: 14px;
-//}
-//.manage-jobs-sec > table thead {
-//    border-bottom: 1px solid #e8ecec;
-//} 
-//.cat-sec {
-//    float: left;
-//    width: 100%;
-//}
-//.p-category {
-//    float: left;
-//    width: 100%;
-//    z-index: 1;
-//    position: relative;
-//}
-//.p-category > a {
-//    float: left;
-//    width: 100%;
-//    text-align: center;
-//    padding-bottom: 30px;
-//    border-bottom: 1px solid #e8ecec;
-//    border-right: 1px solid #e8ecec;
-//}
-//.p-category > a i {
-//    float: left;
-//    width: 100%;
-//    color: #00a0e3;
-//    font-size: 40px;
-//   margin:50px 0 0 0 !important;
-//}
-//.p-category > a span {
-//    float: left;
-//    width: 100%;
-//    font-family: Open Sans;
-//    font-size: 15px;
-//    color: #202020;
-//    margin-top: 18px;
-//}
-//.p-category > a p {
-//    float: left;
-//    width: 100%;
-//    font-size: 13px;
-//    margin: 0;
-//        margin-top: 0px;
-//    margin-top: 3px;
-//}
-//.cat-sec .row > div:last-child a {
-//    border-right-color: #ffffff;
-//}
-//.cat-sec:last-child a {
-//    border-bottom-color: #ffffff;
-//}
-//.p-category:hover a {
-//    border-color: #ffffff;
-//    transition: .3s all;
-//    -webkit-transition: .3s all;
-//    -moz-transition: .3s all;
-//    -o-transition: .3s all;
-//}
-//.p-category:hover {
-//    background: #ffffff;
-//      transition: .2s all;
-//    -webkit-transition: .2s all;
-//    -moz-transition: .2s all;
-//    -o-transition: .2s all;
-//    
-//    -webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-//    -moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-//    -ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-//    -o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-//    box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-//
-//    
-//    -webkit-border-radius: 8px;
-//    -moz-border-radius: 8px;
-//    -ms-border-radius: 8px;
-//    -o-border-radius: 8px;
-//    border-radius: 8px;
-//
-//   width: 104%; 
-//   margin-left: -2%;
-//   height: 102%;
-//   z-index: 10;
-//
-//}
-//.row.no-gape{
-//  margin: 0;
-//}
-//.row.no-gape > div{
-//  padding: 0;
-//}
-//.viewall-jobs {
-//    background: #00a0e3;
-//    padding:5px 15px;
-//    color: #ffffff !important;
-//    font-family: Open Sans;
-//    font-size: 13px;
-//    
-//    -webkit-border-radius: 40px !important;
-//    -moz-border-radius: 40px !important;
-//    -ms-border-radius: 40px !important;
-//    -o-border-radius: 40px !important;
-//    border-radius: 40px !important;
-//}
-//.viewall-jobs:hover {
-//    -webkit-border-radius: 8px !important;
-//    -moz-border-radius: 8px !important;
-//    -ms-border-radius: 8px !important;
-//    -o-border-radius: 8px !important;
-//    border-radius: 8px !important;
-//    color: #ffffff;
-//   
-//    transition:.3s all;
-//    -webkit-transition:.3s all;
-//    -moz-transition:.3s all;
-//    -ms-transition:.3s all;
-//    -o-transition:.3s all;
-//    
-//}
 ');
 $script = <<<JS
 

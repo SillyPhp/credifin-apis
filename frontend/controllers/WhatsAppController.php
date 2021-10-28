@@ -12,7 +12,7 @@ class WhatsAppController extends Controller
 {
    public function actionSendMessage()
    {
-       $ch = curl_init("https://rest.messengerpeople.com/api/v11/chat");
+       $ch = curl_init("https://rest.messengerpeople.com/api/v14/chat");
        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
        curl_setopt($ch, CURLOPT_POST, true);
        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
@@ -34,5 +34,9 @@ class WhatsAppController extends Controller
        print_r($response);
        exit;
        curl_close($ch);
+   }
+
+   public function actionSendSms(){
+       print_r(Yii::$app->sms->send('6284841811','EMPWRY','hey this is empoweryouth'));
    }
 }

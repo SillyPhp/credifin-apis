@@ -4,7 +4,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
-
+$experience = null;
 $this->params['header_dark'] = false;
 $this->title = 'Job Preview';
 $object->fixed_wage = (($object->fixed_wage) ? str_replace(',', '', $object->fixed_wage) : 0);
@@ -48,32 +48,35 @@ if (!empty($object->getinterviewcity)) {
         $int_t[$i]['name'] = $int[$i];
     }
 }
-switch ($object->min_exp) {
-    case '0':
-        $experience = 'No Experience';
-        break;
-    case '1':
-        $experience = 'Less Than 1 Year';
-        break;
-    case '2';
-        $experience = '1 Year';
-        break;
-    case '3':
-        $experience = '2-3 Years';
-        break;
-    case '3-5':
-        $experience = '3-5 Years';
-        break;
-    case '5-10':
-        $experience = '5-10 Years';
-        break;
-    case '10-20':
-        $experience = '10-20 Years';
-        break;
-    case '20+':
-        $experience = 'More Than 20 Years';
-        break;
+
+function experience($min,$max)
+{
+  if ($min=='0'&&$max==NULL){
+      $experience = 'No Experience';
+  }
+  elseif ($min=='20'&&$max=='20+')
+  {
+      $experience = 'More Than 20 Years Experience';
+  }
+  elseif ($min!=NULL&&$max!=NULL){
+      $experience = $min.' - '.$max.' Years Experience';
+  }
+  elseif ($min!=NULL&&$max==NULL)
+  {
+      $experience = 'Minimum '.$min.' Years Experience';
+  }
+  elseif ($min==NULL&&$max!=NULL)
+  {
+      $experience = 'Maximum '.$max.' Years Experience';
+  }
+  else
+  {
+      $experience = 'No Experience';
+  }
+
+  return $experience;
 }
+$experience = experience($object->minimum_exp,$object->maximum_exp);
 switch ($object->wage_type) {
     case '1':
         $object->wage_type = 'Fixed';
@@ -248,6 +251,7 @@ echo $this->render('/widgets/employer_applications/top-banner', [
                         'type' => $type,
                         'applied' => false,
                         'application_slug' => 'Empoweryouth',
+                        'whatsAppmodel'=>$whatsAppmodel
                     ]);
                     ?>
                 </div>

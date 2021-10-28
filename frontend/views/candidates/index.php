@@ -5,20 +5,52 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 echo $this->render('/widgets/mustache/candidates');
+$paramCount = count(Yii::$app->request->get());
 $salary = $_GET['salary'];
 $salary_exp = explode(",", $salary);
 $salary_from = $salary_exp[0];
 $salary_to = $salary_exp[1];
+$this->title = 'Check the Candidates Profiles to be Selected by Companies';
+$keywords = 'student employment, select candidates, candidates profile, registered candidates, office training jobs, student jobs near me, desired candidates';
+$description = 'Search for Desired Candidates Profiles to be Selected by Companies - New Opportunities for Candidates as well as for Recruiters.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('assets/themes/ey/images/pages/candidate-profile/candidates.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 
 <!--Modal-->
-<div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+<?php
+    if(Yii::$app->user->identity->organization->organization_enc_id){
+?>
+    <div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" id="profiles">
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
                 <button type="submit" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Choose Applications to Shortlist for</h4>
+                <h4 class="modal-title text-center" style="font-family: roboto; font-size: 20px;">Choose Applications to Shortlist for</h4>
             </div>
             <div class="modal-body">
                 <?php
@@ -33,6 +65,7 @@ $salary_to = $salary_exp[1];
                                                value="<?= $a['application_enc_id'] ?>" class="application_list">
                                         <label for="<?= $a['application_enc_id'] ?>">
                                             <?= $a['name'] ?>
+                                            <span class="<?= (($a['application_type'] == 'Jobs') ? 'colorBlue' : 'colorOrange')?>"> ( <?= substr_replace($a['application_type'] ,"",-1) ?> ) </span>
                                         </label>
                                     </div>
                                 </div>
@@ -56,15 +89,20 @@ $salary_to = $salary_exp[1];
         </div>
     </div>
 </div>
+<?php
+    }
+?>
 
 <section>
-    <div class="container">
+    <div class="container-fluid">
         <div class="col-md-3 col-sm-4 mobile-hidden" id="filters">
             <form>
                 <div class="filters">
                     <div class="f-ratings">
                         <div class="filter-head-main">Filter Candidates</div>
-                        <div class="overall-box-heading">Salary Range</div>
+                        <div class="overall-box-heading">Salary Range
+                        <a href="#" id="reset-salary">Reset</a>
+                        </div>
                         <div class="form-group form-md-checkboxes">
                             <div class="md-checkbox-list">
                                 <div>
@@ -117,13 +155,13 @@ $salary_to = $salary_exp[1];
                 </div>
             </form>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9 col-sm-8">
             <div class="row" id="user_cards"></div>
             <?php
             echo $this->render('/widgets/users/preloaders/candidates');
             ?>
         </div>
-        <div class="col-md-12 col-sm-12">
+        <div class="col-md-10 col-sm-12 col-md-offset-2">
             <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
             <a href="#" id="loadMore"
                class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
@@ -162,6 +200,40 @@ $salary_to = $salary_exp[1];
 </section>
 <?php
 $this->registerCss('
+.ps__thumb-x{
+	display: none !important;
+}
+.colorBlue{
+    color:#00a0e3;
+    font-size:12px;
+    font-family:roboto;
+}
+.colorOrange{
+    color:#ff7803;
+    font-size:12px;
+    font-family:roboto;
+}
+a#reset-salary {
+    float: right;
+    color: #e43a45;
+    font-size: 13px;
+    padding: 5px 0px 0px 10px;
+}
+a#reset-salary:hover {
+    color: #8e44ad;
+    font-size: 14px;
+}
+.btns-b {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 9px;
+}
+.v-detail, .short-btn {
+    flex-basis:47%;
+}
+.full-wi{
+    flex-basis:100%;
+}
 #filters {
 	height: 100vh;
 	position: sticky;
@@ -221,13 +293,22 @@ button.viewall-jobs {
 }
 .paid-candidate-container {
 	background: #ffffff;
-	border-radius: 6px !important;
-	overflow: hidden;
-	text-align: center;
-	margin-bottom: 30px;
-	position: relative;
-	transition: .4s;
-	border: 1px solid #eaeff5;
+    border-radius: 6px !important;
+    overflow: hidden;
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+    transition: .4s;
+    border: 1px solid #eaeff5;
+    box-shadow: 0 0px 14px rgb(0 0 0 / 10%);
+    padding: 15px;
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.paid-candidate-inner--box {
+    margin-bottom:5px;
 }
 .paid-candidate-container:hover,
 .paid-candidate-container:focus {
@@ -236,7 +317,9 @@ button.viewall-jobs {
 	cursor: pointer;
 }
 .paid-candidate-box-thumb img {
-	height: 100%;
+    width: 100%;
+    object-fit: cover;
+    height: 100%;
 }
 .com-load-more-btn {
 	max-width: 150px;
@@ -246,7 +329,6 @@ button.viewall-jobs {
 }
 .paid-candidate-box {
 	text-align: center;
-	padding: 20px 10px 15px;
 }
 .paid-candidate-status {
 	position: absolute;
@@ -259,24 +341,33 @@ button.viewall-jobs {
 	font-weight: 500;
 }
 .paid-candidate-box-thumb {
-	margin-bottom: 30px;
-	width: 120px;
-	height: 120px;
-	margin: 0 auto 25px auto;
-	border-radius: 50% !important;
-	overflow: hidden;
-	box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
-	-webkit-box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
-	-moz-box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
+//    margin-bottom: 30px;
+    width: 80px;
+    height: 80px;
+//    margin: 0 auto 25px auto;
+    border-radius: 50% !important;
+    overflow: hidden;
+    box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
+    -webkit-box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
+    -moz-box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
+//    flex-basis: 30%;
+}
+.paid-candidate-box-detail {
+    flex-basis: 70%;
+    text-align: left;
+	margin-top: 10px;
 }
 .paid-candidate-box-detail h4 {
 	margin-bottom: 4px;
-	font-size: 20px;
-	text-overflow: ellipsis;
-	-webkit-line-clamp: 1;
-	-webkit-box-orient: vertical;
-	display: -webkit-inline-box;
-	overflow: hidden;
+    margin-top: 0;
+    font-size: 18px;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-inline-box;
+    overflow: hidden;
+    text-transform: capitalize;
+    font-weight: 700;
 }
 .paid-candidate-box-exp {
 	display: flex;
@@ -286,40 +377,46 @@ button.viewall-jobs {
 .paid-candidate-box-detail .location,
 .paid-candidate-box-exp .desination {
 	font-weight: 500;
-	font-size: 15px;
-	color: #677484;
-	height: 27px;
-	padding: 5px 20px 0;
-	text-overflow: ellipsis;
-	-webkit-line-clamp: 1;
-	-webkit-box-orient: vertical;
-	display: -webkit-box;
-	overflow: hidden;
+    /* font-size: 15px; */
+    color: #677484;
+    /* height: 21px; */
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+    margin-top: -13px;
 }
+
 .paid-candidate-box-extra ul {
-	margin: 10px 0;
 	padding: 0;
-	min-height: 74px;
-	height: 112px;
-	overflow: hidden;
+    max-height: 24px;
+    overflow: hidden;
+    text-align: left;
 }
-.paid-candidate-box-extra ul li {
-	list-style: none;
-	padding: 3px 15px;
-	border: 1px solid #b9c5ce;
-	border-radius: 50px !important;
-	margin: 1px 0;
-	font-weight: 500;
-	color: #657180;
-	text-overflow: ellipsis;
-	-webkit-line-clamp: 1;
-	-webkit-box-orient: vertical;
-	display: -webkit-inline-box;
-	overflow: hidden;
+.paid-candidate-box-extra ul li:not(:first-child) {
+    display: inline;
+    padding: 0 2px 0 0;
+    padding: 1px 8px;
+    border-radius: 3px;
+}
+.paid-candidate-box-extra:nth-child(2) ul li:not(:first-child){
+	color: #00a0e3;
+    background: #00a0e325;
+}
+.skills-h {
+    font-weight: 500 !important;
+    display: inline;
 }
 .paid-candidate-box-extra ul li.more-skill {
-	color: #ffffff;
+    color: #fff !important;
+    background-color: #337ab7 !important;
+}
+.paid-candidate-box-extra ul li.more-skill {
 	border-color: #1194f7;
+}
+.paid-candidate-box-extra:nth-child(3) {
+    margin-top: 7px;
 }
 a.btn.btn-paid-candidate {
 	padding: 10px !important;
@@ -331,8 +428,6 @@ a.btn.btn-paid-candidate {
 }
 a.btn.btn-paid-candidate:hover,
 a.btn.btn-paid-candidate:focus {
-	background: #00a0e3;
-	color: #ffffff;
 	-webkit-transition: all .3s ease-in-out;
 	-moz-transition: all .3s ease-in-out;
 	-o-transition: all .3s ease-in-out;
@@ -466,7 +561,7 @@ a.btn.btn-paid-candidate:focus {
 	box-shadow: 0 0 10px rgba(0, 0, 0, .3) !important;
 }
 .inputGroup label {
-	padding: 6px 75px 10px 25px;
+	padding: 6px 75px 6px 25px !important;
 	width: 96%;
 	display: block;
 	margin: auto;
@@ -479,6 +574,8 @@ a.btn.btn-paid-candidate:focus {
 	overflow: hidden;
 	border-radius: 8px;
 	border: 1px solid #eee;
+	font-size:16px;
+    font-family: Roboto;
 }
 .inputGroup input:checked~label:before {
 	transform: translate(-50%, -50%) scale3d(56, 56, 1);
@@ -730,7 +827,7 @@ form input[type="text"]:focus {
 	border-radius: 10px;
 	width: 260px;
 	overflow-y: scroll;
-	height: 500px;
+	height: 85vh;
 	position: relative;
 }
 .overall-box-heading {
@@ -830,14 +927,14 @@ form input[type="text"]:focus {
 	border-color: #00a0e3;
 }
 .process_radio label:after {
-	width: 32px;
-	height: 32px;
+	width: 26px;
+	height: 26px;
 	content: \'\';
 	border: 2px solid #D1D7DC;
 	background-color: #fff;
 	background-repeat: no-repeat;
 	background-position: 2px 3px;
-	background-image: url("data:image/svg+xml,%3Csvg width=\'32\' height=\'32\' viewBox=\'0 0 32 32\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z\' fill=\'%23fff\' fill-rule=\'nonzero\'/%3E%3C/svg%3E ");
+	background-image: url("data:image/svg+xml,%3Csvg width=\'26\' height=\'26\' viewBox=\'0 0 32 32\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z\' fill=\'%23fff\' fill-rule=\'nonzero\'/%3E%3C/svg%3E ");
 	border-radius: 50%;
 	z-index: 2;
 	position: absolute;
@@ -846,6 +943,16 @@ form input[type="text"]:focus {
 	transform: translateY(-50%);
 	cursor: pointer;
 	transition: all 200ms ease-in;
+}
+
+@media only screen and (min-width: 1440px){
+	
+	.p-category-main{
+		width: 33.33% !important;
+	}
+	.f-ratings{
+		width: 100%;
+	}
 }
 ');
 
@@ -858,6 +965,9 @@ var user_id = null;
 var app_id = null;
 $(document).ready(function () {
 	loading = false;
+	if("$paramCount" == 0){
+	    history.pushState('data', 'title', '?salary=');
+	}
 	url = '/candidates' + window.location.search;
 	getUserCards(0, url, 'append');
 	setTimeout(function () {
@@ -919,7 +1029,7 @@ $(document).on('change', 'input[type=checkbox]', function() {
     var cls_sk = params.match(/skills=/g);
     var cls_sal = params.match(/salary=/g);
     if(!cls_loc && !cls_jt && !cls_sk){
-        params = params+'&locations=&job_titles=&skills=';
+        params +='&locations=&job_titles=&skills=';
     }
     var p = [];
     $.each(params.split("&"),function(index,value) {
@@ -1024,9 +1134,69 @@ $(document).on('mouseup', 'span.irs-handle', function () {
 	getUserCards(offset, cur_url, 'html');
 });
     
+$(document).on('click', 'a#reset-salary', function (e) {
+    e.preventDefault();
+    var instance = $('#rangess').data("ionRangeSlider");
+     instance.update({
+       from: 5000,
+       to: 5000,
+     });
+
+    // var ths = $('#rangess');
+    // var thsVal = null;
+    // var thsCls = ths.attr('class').split(' ')[0];
+	load_more_cards = true;
+	$('#user_cards').html(" ");
+	$('.loading-main').show();
+    $('input[type=checkbox]').prop('checked', false);
+	// exp_params = [];
+	// var params = unescape(window.location.search.substring(1));
+	// var cls_loc = params.match(/locations=/g);
+    // var cls_jt = params.match(/job_titles=/g);
+    // var cls_sk = params.match(/skills=/g);
+    // var cls_sal = params.match(/salary=/g);
+    // var p = [];
+    // $.each(params.split("&"),function(index,value) {
+    //     exp_params.push(value);
+    //     $.each(value.split("="),function(i,v) {
+    //         p.push(v);
+    //     });
+    // });
+    // $.each(p, function(i,v) {
+    //     if(v == thsCls){
+    //         var str = [];
+    //         if(thsVal != null){
+    //             $.each(thsVal.split(";"),function(index,value) {
+    //                 str.push(value);
+    //             });
+    //             p[i+1] = str[0]+','+str[1];
+    //         } else {
+    //             p[i+1] = "";
+    //         }
+    //     }
+    // });
+    // var cur_params = "?";
+    // $.each(p,function(i, v) {
+    //     if(i === 0){
+    //         cur_params = cur_params + v;
+    //     } else {
+    //         if(i % 2 === 0){
+    //             cur_params = cur_params + '&' + v;
+    //         } else {
+    //             cur_params = cur_params + '=' + v;
+    //         }
+    //     }
+    // });
+    // console.log(cur_params);
+	history.pushState('data', 'title', '/candidates');
+	var cur_url = '/candidates';
+	offset = 0;
+	getUserCards(offset, cur_url, 'html');
+});
+    
 var xhr;
 $(document).ready(function () {
-	$(document).on('keyup', 'input[type=text]', function () {
+	$(document).on('keyup', '.f-search-loc input[type=text]', function () {
 		var ths = $(this);
 		var id = ths.attr('id').slice(0, -7);
 		var val = ths.val();
@@ -1096,6 +1266,7 @@ function loadCheckboxList(url, val, cls) {
 $(document).on('click', '.shortlist-main', function (event) {
 	event.preventDefault();
 	user_id = $(this).attr('id');
+	$('.application_list:checked').prop('checked',false);
 	$.ajax({
 		type: "POST",
 		url: "candidates/get-data",
@@ -1121,7 +1292,8 @@ $(document).on('click', '.shortlist-main', function (event) {
 		}
 	});
 });
-document.getElementById('submitData').addEventListener('click', function () {
+if(document.getElementById('submitData')){
+    document.getElementById('submitData').addEventListener('click', function () {
 	var applications = document.getElementsByName('applications');
 	var selected_value;
 	for (var i = 0; i < applications.length; i++) {
@@ -1145,6 +1317,7 @@ document.getElementById('submitData').addEventListener('click', function () {
 		}
 	});
 });
+}
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');

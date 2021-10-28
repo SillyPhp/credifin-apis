@@ -2,6 +2,8 @@
 
 namespace account\models\businessActivities;
 
+use common\models\CollegeSettings;
+use common\models\ErexxSettings;
 use Yii;
 use yii\base\Model;
 use common\models\Utilities;
@@ -53,6 +55,21 @@ class BusinessActivitySelectionForm extends Model
                 $transaction->rollBack();
                 return false;
             } else {
+                $erexx_settings = ErexxSettings::find()
+                    ->where(['setting' => 'students_approve'])
+                    ->one();
+
+                $student_auto_approve = new CollegeSettings();
+                $utilitesModel = new Utilities();
+                $utilitesModel->variables['string'] = time() . rand(100, 100000);
+                $student_auto_approve->college_settings_enc_id = $utilitesModel->encrypt();
+                $student_auto_approve->college_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+                $student_auto_approve->setting_enc_id = $erexx_settings->setting_enc_id;
+                $student_auto_approve->value = 2;
+                $student_auto_approve->created_on = date('Y-m-d H:i:s');
+                $student_auto_approve->created_by = Yii::$app->user->identity->user_enc_id;
+                $student_auto_approve->save();
+
                 $transaction->commit();
                 return true;
             }

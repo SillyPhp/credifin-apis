@@ -83,6 +83,11 @@ $this->registerCss('
   -ms-transform: translate(-50%, -50%);
   text-align: center;
 }
+@media only screen and (max-width:992px){
+    .tp-icon img{
+        height:auto;
+    }
+}
 @media screen and (max-width: 768px){
     #trending-post .tp-box div a .no-padd{
         padding:0px 15px !important;

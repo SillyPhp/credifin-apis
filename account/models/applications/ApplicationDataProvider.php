@@ -22,16 +22,17 @@ class ApplicationDataProvider extends Model
 {
     public function setValues($model, $aidk)
     {
+
         $object = EmployerApplications::find()
             ->alias('a')
             ->where(['a.application_enc_id' => $aidk])
-            ->select(['a.application_enc_id','b.internship_duration','b.internship_duration_type','b.saturday_frequency','b.sunday_frequency','b.interview_start_date','b.pre_placement_offer','b.has_placement_offer', 'b.interview_end_date', 'a.interview_process_enc_id', 'b.pre_placement_offer', 'b.has_placement_offer', 'b.has_online_interview', 'b.has_questionnaire', 'b.has_benefits', 'b.wage_duration', 'b.wage_type', 'b.min_wage', 'b.max_wage', 'b.fixed_wage', 'b.wage_type', 'a.experience', 'a.preferred_industry', 'a.preferred_gender', 'a.description', 'a.type', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date', 'l.category_enc_id primaryfield', 'm.name titles', 'n.designation_enc_id', 'n.designation',
+            ->select(['a.application_enc_id','a.minimum_exp','a.maximum_exp','b.internship_duration','b.internship_duration_type','b.saturday_frequency','b.sunday_frequency','b.interview_start_date','b.pre_placement_offer','b.has_placement_offer', 'b.interview_end_date', 'a.interview_process_enc_id', 'b.pre_placement_offer', 'b.has_placement_offer', 'b.has_online_interview', 'b.has_questionnaire', 'b.has_benefits', 'b.wage_duration', 'b.wage_type', 'b.min_wage', 'b.max_wage', 'b.fixed_wage', 'b.wage_type', 'a.experience', 'a.preferred_industry', 'a.preferred_gender', 'a.description', 'a.type', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date', 'l.category_enc_id primaryfield', 'm.name titles', 'n.designation_enc_id', 'n.designation',
                 '(CASE
                 WHEN b.wage_type = "Unpaid" THEN 0
                 WHEN b.wage_type = "Fixed" THEN 1
                 WHEN b.wage_type = "Negotiable" THEN 2
                 WHEN b.wage_type = "Performance Based" THEN 3
-                END) as wage_type', 'b.working_days'])
+                END) as wage_type', 'b.working_days','b.positions'])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc m'], false);
@@ -39,17 +40,17 @@ class ApplicationDataProvider extends Model
             ->joinWith(['designationEnc n'], false)
             ->joinWith(['applicationOptions b'], false, 'INNER JOIN')
             ->joinWith(['applicationJobDescriptions i' => function ($b) {
-                $b->andWhere(['i.is_deleted' => 0]);
+                $b->onCondition(['i.is_deleted' => 0]);
                 $b->joinWith(['jobDescriptionEnc j'], false, 'INNER JOIN');
                 $b->select(['i.application_enc_id', 'j.job_description']);
             }])
             ->joinWith(['applicationSkills g' => function ($b) {
-                $b->andWhere(['g.is_deleted' => 0]);
+                $b->onCondition(['g.is_deleted' => 0]);
                 $b->joinWith(['skillEnc h'], false, 'INNER JOIN');
                 $b->select(['g.application_enc_id', 'h.skill']);
             }])
             ->joinWith(['applicationEducationalRequirements e' => function ($b) {
-                $b->andWhere(['e.is_deleted' => 0]);
+                $b->onCondition(['e.is_deleted' => 0]);
                 $b->joinWith(['educationalRequirementEnc f'], false);
                 $b->select(['e.application_enc_id', 'f.educational_requirement']);
             }])
@@ -97,10 +98,13 @@ class ApplicationDataProvider extends Model
         $model->earliestjoiningdate = date('d-M-Y', strtotime($object['joining_date']));
         $model->last_date = date('d-M-Y', strtotime($object['last_date']));
         $model->min_exp = $object['experience'];
+        $model->minimum_exp = $object['minimum_exp'];
+        $model->maximum_exp = $object['maximum_exp'];
         $model->othrdetail = $object['description'];
         $model->industry = $object['preferred_industry'];
         $model->pref_indus = $object['preferred_industry'];
         $model->wage_type = $object['wage_type'];
+        $model->vacancy = $object['positions'];
         $model->wage_duration = $object['wage_duration'];
         $model->min_wage = utf8_encode(money_format('%!.0n', $object['min_wage']));
         $model->max_wage = utf8_encode(money_format('%!.0n', $object['max_wage']));
@@ -146,7 +150,7 @@ class ApplicationDataProvider extends Model
         {
             $typ = 'Jobs';
         }
-        elseif ($type=='Clone_Internships')
+        elseif ($type=='Edit_Internships')
         {
             $typ = 'Internships';
         }
@@ -160,11 +164,16 @@ class ApplicationDataProvider extends Model
         $employerApplicationsModel->timings_from = date("H:i:s", strtotime($model->from));
         $employerApplicationsModel->timings_to = date("H:i:s", strtotime($model->to));
         $employerApplicationsModel->experience = $model->min_exp;
+        $employerApplicationsModel->minimum_exp = $model->minimum_exp === '0' || $model->minimum_exp ? $model->minimum_exp:null;
+        $employerApplicationsModel->maximum_exp = $model->maximum_exp === '0' || $model->maximum_exp ? $model->maximum_exp:null;
         $employerApplicationsModel->preferred_gender = $model->gender;
         $employerApplicationsModel->joining_date = date('Y-m-d', strtotime($model->earliestjoiningdate));
         $employerApplicationsModel->last_date = date('Y-m-d', strtotime($model->last_date));
         $employerApplicationsModel->last_updated_on = date('Y-m-d H:i:s');
         $employerApplicationsModel->last_updated_by = Yii::$app->user->identity->user_enc_id;
+        $employerApplicationsModel->image = '1';
+        $employerApplicationsModel->square_image = '1';
+        $employerApplicationsModel->story_image = '1';
         if ($employerApplicationsModel->save())
         {
             $flag++;
@@ -468,6 +477,9 @@ class ApplicationDataProvider extends Model
         $applicationoptionsModel->interview_end_date = $interview_end_date;
         $applicationoptionsModel->created_on = date('Y-m-d H:i:s');
         $applicationoptionsModel->created_by = Yii::$app->user->identity->user_enc_id;
+        if ($model->type == "Work From Home") {
+            $applicationoptionsModel->positions = (($model->vacancy) ? str_replace(',', '', $model->vacancy) : null);
+        }
         if (!$applicationoptionsModel->save())
         {
             return false;

@@ -11,6 +11,7 @@ use Yii;
  * @property string $placement_cities_enc_id Placement Cities Encrypted ID
  * @property string $application_enc_id Foreign Key To Employer Applications Table
  * @property string $city_enc_id Foreign Key To Employer Cities Table
+ * @property string $location_name name of the location
  * @property string $created_on On which date Wage information was added to database
  * @property string $created_by By which User Wage information was added
  * @property int $is_deleted
@@ -38,10 +39,10 @@ class ApplicationPlacementCities extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['placement_cities_enc_id', 'application_enc_id', 'city_enc_id'], 'required'],
+            [['placement_cities_enc_id', 'application_enc_id'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['placement_cities_enc_id', 'application_enc_id', 'city_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['placement_cities_enc_id', 'application_enc_id', 'city_enc_id','location_name','created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['placement_cities_enc_id'], 'unique'],
             [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
             [['application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => EmployerApplications::className(), 'targetAttribute' => ['application_enc_id' => 'application_enc_id']],

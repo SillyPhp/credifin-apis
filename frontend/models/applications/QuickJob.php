@@ -17,7 +17,7 @@ use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
-//use common\models\RandomColors;
+use common\models\RandomColors;
 use common\models\Utilities;
 
 class QuickJob extends Model
@@ -89,7 +89,6 @@ class QuickJob extends Model
         $employerApplication->experience = $this->exp;
         $employerApplication->published_on = date('Y-m-d H:i:s');
         $employerApplication->image = '1';
-        $employerApplication->image_location = '1';
         $employerApplication->status = 'Active';
         $category_execute = Categories::find()
             ->alias('a')
@@ -162,7 +161,7 @@ class QuickJob extends Model
             $model->website = null;
             $model->name = $this->company_name;
             $model->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
-            $model->initials_color = '#73ef9c';
+            $model->initials_color = RandomColors::one();
             $model->status = 1;
             if ($model->save()) {
                 $username = new Usernames();

@@ -30,6 +30,7 @@ class ApplicationCards
                 '(CASE 
                     WHEN j.name = "Jobs" THEN CONCAT("/job/", a.slug)
                     WHEN j.name = "Internships" THEN CONCAT("/internship/", a.slug) END) as link',
+                'a.slug application_slug',
                 'a.experience',
                 'h.name as title',
                 'a.last_date',
@@ -57,7 +58,7 @@ class ApplicationCards
                 'f.min_wage as min_salary',
                 'f.wage_duration as salary_duration',
                 'i.initials_color as color',
-                'CASE WHEN i.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", i.logo_location, "/", i.logo) ELSE NULL END logo',
+                'CASE WHEN i.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", i.logo_location, "/", i.logo) ELSE NULL END logo',
                 "( 6371 * acos( cos( radians('$lat') ) * cos( radians( c.latitude ) ) * cos( radians( c.longitude ) - radians('$long') ) + sin( radians('$lat') ) * sin( radians( c.latitude ) ) ) )  distance",
             ]);
         if ($walkin) {

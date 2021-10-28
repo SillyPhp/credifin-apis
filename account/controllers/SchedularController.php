@@ -34,12 +34,14 @@ class SchedularController extends Controller
         return parent::beforeAction($action);
     }
 
-    public function actionInterview($id = null)
+    public function actionInterview($app_id = null, $applied_id = null, $current_round = null)
     {
         if (Yii::$app->user->identity->organization->organization_enc_id) {
             return $this->render('test',
                 [
-                    'application_id' => $id,
+                    'application_id' => $app_id,
+                    'applied_id' => $applied_id,
+                    'current_round' => $current_round
                 ]);
         } else {
             return $this->render('candidate-detail');
@@ -65,7 +67,7 @@ class SchedularController extends Controller
     {
         $applications = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'a.title', 'b.assigned_category_enc_id', 'b.category_enc_id', 'b.parent_enc_id', 'CONCAT(c.name, " - ", d.name) application_name'])
+            ->select(['a.application_enc_id', 'a.title', 'b.assigned_category_enc_id', 'b.category_enc_id', 'b.parent_enc_id', 'c.name application_name', 'd.name category_name'])
 //            ->innerJoinWith(['applicationInterviewQuestionnaires z'])
             ->innerJoinWith(['appliedApplications t'])
             ->joinWith(['title b' => function ($x) {
@@ -76,13 +78,18 @@ class SchedularController extends Controller
             $applications->where([
                 'a.organization_enc_id' => $id,
                 'a.is_deleted' => 0,
-            ])->andWhere(['<>', 'a.interview_process_enc_id', 'null']);
+                'a.status' => 'Active'
+            ])
+                ->andWhere(['<>', 'a.interview_process_enc_id', 'null']);
+//                ->andWhere(['>=', 'a.last_date', date('Y-m-d')]);
         } else {
             $applications->where([
                 'a.organization_enc_id' => $id,
                 'a.application_enc_id' => $application_id,
                 'a.is_deleted' => 0,
+                'a.status' => 'Active'
             ]);
+//                ->andWhere(['>=', 'a.last_date', date('Y-m-d')]);
         }
         $result = $applications->groupBy(['a.application_enc_id'])
             ->asArray()
@@ -96,14 +103,14 @@ class SchedularController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $req = Yii::$app->request->post();
-            $res = $this->findApplicationFields($req['application_id']);
+            $res = $this->findApplicationFields($req['application_id'], $req['current_round']);
             return [
                 'results' => $res
             ];
         }
     }
 
-    public function findApplicationFields($id)
+    public function findApplicationFields($id, $round = null)
     {
         $interview_process = EmployerApplications::find()
             ->alias('a')
@@ -114,14 +121,19 @@ class SchedularController extends Controller
             ])
             ->asArray()
             ->one();
-        return InterviewProcessFields::find()
-            ->select(['field_enc_id', 'field_name', 'field_label'])
+        $rounds = InterviewProcessFields::find()
+            ->select(['field_enc_id', 'field_name', 'field_label', 'sequence'])
             ->where([
                 'interview_process_enc_id' => $interview_process['interview_process_enc_id']
-            ])
-            ->andWhere(['<>', 'field_name', 'Get Applications'])
-            ->asArray()
+            ]);
+        if ($round != null) {
+            $rounds->andWhere(['sequence' => $round]);
+        } else {
+            $rounds->andWhere(['<>', 'field_name', 'Get Applications']);
+        }
+        $rounds = $rounds->asArray()
             ->all();
+        return $rounds;
     }
 
     public function actionFindCandidates()
@@ -129,7 +141,11 @@ class SchedularController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $req = Yii::$app->request->post();
-            $res = $this->findAppliedCandidates($req['application_id'], $req['process_id']);
+            if (isset($req['applied_id']) && !empty($req['applied_id'])) {
+                $res = $this->findAppliedCandidates($req['application_id'], $req['process_id'], $req['applied_id']);
+            } else {
+                $res = $this->findAppliedCandidates($req['application_id'], $req['process_id']);
+            }
 
             return [
                 'results' => $res
@@ -137,24 +153,28 @@ class SchedularController extends Controller
         }
     }
 
-    public function findAppliedCandidates($app_id, $process_id)
+    public function findAppliedCandidates($app_id, $process_id, $applied_id = null)
     {
         $applied_candidates = AppliedApplications::find()
             ->alias('a')
-            ->select(['a.applied_application_enc_id', 'a.resume_enc_id', 'b.user_enc_id', 'CONCAT(c.first_name, " ", c.last_name) full_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, true) . '", c.image_location, "/", c.image) ELSE  CONCAT("https://ui-avatars.com/api/?name=", c.first_name, " ", c.last_name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END image', 'a.current_round', 'e.sequence'])
-            ->joinWith(['resumeEnc b' => function ($x) {
-                $x->joinWith(['userEnc c']);
-//                    $x->groupBy(['b.user_enc_id']);
-            }], false)
+            ->select(['a.applied_application_enc_id', 'a.resume_enc_id', 'a.created_by user_enc_id', 'CONCAT(c.first_name, " ", c.last_name) full_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, true) . '", c.image_location, "/", c.image) ELSE  CONCAT("https://ui-avatars.com/api/?name=", c.first_name, " ", c.last_name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END image', 'a.current_round', 'e.sequence'])
+//            ->joinWith(['resumeEnc b' => function ($x) {
+//                $x->joinWith(['userEnc c']);
+////                    $x->groupBy(['b.user_enc_id']);
+//            }], false)
+            ->joinWith(['createdBy c'], false)
             ->joinWith(['appliedApplicationProcesses d' => function ($d) use ($process_id) {
                 $d->joinWith(['fieldEnc e']);
                 $d->where(['d.field_enc_id' => $process_id]);
-            }], false)
-            ->where([
-                'application_enc_id' => $app_id
-            ])
+            }], false);
+        if ($applied_id != null) {
+            $applied_candidates->andWhere(['a.applied_application_enc_id' => $applied_id]);
+        }
+        $applied_candidates = $applied_candidates->andWhere([
+            'application_enc_id' => $app_id
+        ])
             ->andWhere(new \yii\db\Expression('`a`.`current_round` = `e`.`sequence`'))
-            ->groupBy(['b.user_enc_id'])
+            ->groupBy(['c.user_enc_id'])
             ->asArray()
             ->all();
 
@@ -526,6 +546,17 @@ class SchedularController extends Controller
 
                 } elseif ($data['type'] == 'flexible') {
 
+                    $interview_options = new InterviewOptions();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $interview_options->interview_options_enc_id = $utilitiesModel->encrypt();
+                    $interview_options->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
+                    $interview_options->process_field_enc_id = $data['selected_round'];
+                    array_push($required_data, $interview_options);
+                    if (!$interview_options->save()) {
+                        $transaction->rollback();
+                        return false;
+                    }
+
                     foreach ($candidate_applications as $application_enc_id) {
                         $candidate_data = [];
                         $interview_candidate = new InterviewCandidates();
@@ -643,7 +674,7 @@ class SchedularController extends Controller
         return $type->interview_type_enc_id;
     }
 
-    public function actionUpdateInterview()
+    public function actionDashboard()
     {
         if (Yii::$app->user->identity->organization->organization_enc_id) {
             return $this->render('update');
@@ -667,9 +698,7 @@ class SchedularController extends Controller
                     'o.interview_date_enc_id',
                     'o.interview_date',
                     'z.designation',
-//                    'p.from',
-//                    'p.to',
-//                    'p.interview_date_timing_enc_id',
+                    'q1.field_name round'
                 ])
                 ->innerJoinWith(['applicationEnc b' => function ($b) {
                     $b->joinWith(['designationEnc z']);
@@ -690,6 +719,13 @@ class SchedularController extends Controller
                     $o->joinWith(['interviewDateTimings p' => function ($p) {
                         $p->andWhere(['p.is_deleted' => 1]);
                     }]);
+                }])
+                ->joinWith(['interviewOptions q' => function ($q) {
+                    $q->joinWith(['processFieldEnc q1']);
+                }], false)
+                ->joinWith(['interviewers r' => function ($r) {
+                    $r->select(['r.interviewer_enc_id', 'r.scheduled_interview_enc_id', 'r1.name', 'r1.email', 'r1.phone']);
+                    $r->joinWith(['interviewerDetails r1'], false);
                 }])
                 ->where(['a.status' => 1])
                 ->asArray()
@@ -715,6 +751,8 @@ class SchedularController extends Controller
                 $fixed_data['Start'] = $interview_date;
                 $fixed_data['End'] = $interview_date;
                 $fixed_data['application_enc_id'] = $f['application_enc_id'];
+                $fixed_data['round'] = $f['round'];
+                $fixed_data['interviewers'] = $f['interviewers'];
                 $ti = $f['interviewDates'][$i]['interviewDateTimings'];
                 if ($f['interview_type'] == 'fixed') {
                     if ($f['scheduled_interview_enc_id'] == $old_id) {
@@ -786,7 +824,7 @@ class SchedularController extends Controller
 
             $application_process = $this->findApplicationFields($id);
             $all_data['application_process'] = $application_process;
-            $applied_candidates = $this->findAppliedCandidates($id);
+            $applied_candidates = $this->findAppliedCandidates($id, $data['process_field_enc_id']);
             $all_data['applied_candidates'] = $applied_candidates;
 
             $all_data['application_location'] = $application_locations;
@@ -816,7 +854,7 @@ class SchedularController extends Controller
             ->where(['a.scheduled_interview_enc_id' => $s_id])
             ->groupBy('a.scheduled_interview_enc_id')
             ->asArray()
-            ->all();
+            ->one();
 
         return $data;
     }

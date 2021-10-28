@@ -29,7 +29,7 @@ class CommentsController extends Controller
 
             $result = PostComments::find()
                 ->alias('a')
-                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
+                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
                 ->joinWith(['userEnc b'], false)
                 ->where(['a.reply_to' => NULL])
                 ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
@@ -76,7 +76,7 @@ class CommentsController extends Controller
 
             $result = PostComments::find()
                 ->alias('a')
-                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
+                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
                 ->joinWith(['userEnc b'], false)
                 ->where(['a.reply_to' => $parent])
                 ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
@@ -112,7 +112,7 @@ class CommentsController extends Controller
                 $user_info = [
                     'logo' => Yii::$app->user->identity->image,
                     'username' => Yii::$app->user->identity->username,
-                    'path' => Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image,
+                    'path' => Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image,
                     'color' => Yii::$app->user->identity->initials_color,
                     'name' => Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name,
                     'comment_enc_id' => $a
@@ -152,7 +152,7 @@ class CommentsController extends Controller
                 $user_info = [
                     'logo' => Yii::$app->user->identity->image,
                     'username' => Yii::$app->user->identity->username,
-                    'path' => Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image,
+                    'path' => Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image,
                     'color' => Yii::$app->user->identity->initials_color,
                     'name' => Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name,
                     'comment_enc_id' => $a

@@ -13,14 +13,14 @@ if (!empty($total_questionnaire)) {
                     ?>
                     <div class="box-main-col <?= $col_width; ?>">
                         <div class="p-category">
-                            <div class="click question-click <?= (($questionnaire[$next]["is_bookmared"])?'active active-2 active-3':'') ?>">
+                            <div data-toggle="tooltip" data-placement="top" title="Add to your Bookmark List" class="click question-click <?= (($questionnaire[$next]["is_bookmared"])?'active active-2 active-3':'') ?>">
                                 <span class="fa <?= (($questionnaire[$next]["is_bookmared"])?'fa-star':'fa-star-o') ?>"></span>
                                 <div class="ring"></div>
                                 <div class="ring2"></div>
                                 <input type="hidden" value="<?=$questionnaire[$next]["id"]; ?>">
                             </div>
                             <div class="rt-bttns">
-                                <a class="clone-bttn set-right-align two copy_content_questionnaire" href=""  value="<?=$questionnaire[$next]["id"]; ?>">
+                                <a class="clone-bttn set-right-align two copy_content_questionnaire" href=""  data-toggle="tooltip" data-placement="top" title="Use Questionnaire" value="<?=$questionnaire[$next]["id"]; ?>">
                                     <i class="fa fa-files-o"></i>
                                 </a>
                             </div>
@@ -51,6 +51,9 @@ if (!empty($total_questionnaire)) {
     <h3>No Questionnaire To Display</h3>
 <?php }
 $script = <<<JS
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
 //bookmark template 
 $(document).on('click','.question-click',function() {
     var que_template_id = $(this).find('input').val();
@@ -102,16 +105,15 @@ function run_ajax(id,url) {
 JS;
 $this->registerCss("
 .click {
-font-size: 33px;
+    font-size: 25px;
     color: rgba(0,0,0,.5);
     width: 38px;
-    height: 38px;
     margin: 0 auto;
     /* margin-top: 20px; */
     position: absolute;
     cursor: pointer;
-    right: 10px;
-    top: 17px;
+    right: 0px;
+    top: 10px;
 }
 .click span {
 	margin-left: 4px;
@@ -141,11 +143,11 @@ span:active {
 }
 .clone-bttn
 {
-display:block;
-left:0;
-width: fit-content;
+    display:block;
+    left:0;
+    width: 40px;
     font-size: 19px;
-    top: 7px;
+    top: 2px;
 }
 .active > span, .active-2 > span {
 	color: #F5CC27 !important;

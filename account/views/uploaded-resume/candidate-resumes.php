@@ -1,9 +1,8 @@
 <?php
-
 use yii\helpers\Html;
 use yii\helpers\Url;
-
-
+Yii::$app->view->registerJs('var type = "' . Yii::$app->getRequest()->getQueryParam('type') . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var profile = "' . Yii::$app->getRequest()->getQueryParam('id') . '"', \yii\web\View::POS_HEAD);
 ?>
 <div class="">
     <div class="row">
@@ -12,11 +11,11 @@ use yii\helpers\Url;
                 <div class="portlet-title tabbable-line">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase">Applied Profiles</span>
+                        <span class="caption-subject font-dark bold uppercase">Applied On <?= $profile_name ?> Profile</span>
                     </div>
                     <div class="actions">
                         <div id="btn-group2" class="btn-group dashboard-button btns2 ">
-                            <button class="viewall-jobs" data-toggle="modal" data-target="#shortList">Shortlist</button>
+<!--                            <button class="viewall-jobs" data-toggle="modal" data-target="#shortList">Shortlist</button>-->
                             <button class="viewall-jobs" onclick="rejection()">Reject</button>
                         </div>
                     </div>
@@ -28,157 +27,18 @@ use yii\helpers\Url;
                                 <div class="col-md-12">
                                     <!-- BEGIN: Actions -->
                                     <div id="card-data" class="row cd-box">
-                                    <?php
-                                    if(!empty($user_data)) {
-                                        foreach ($user_data as $u) {
-                                            ?>
-                                            <article>
-                                                <div class="col-lg-3 col-md-3 col-sm-6 p-category-main"
-                                                     onclick="makeChecked(this);">
-                                                    <?php if ($u["status"] == 0) { ?>
-                                                        <input type="checkbox"
-                                                               name="<?= $u['applied_application_enc_id'] ?>"
-                                                               id="<?= $u['userEnc']['user_enc_id'] ?>"
-                                                               class="checkbox-input"/>
-                                                    <?php } ?>
-                                                    <label for="can1" class="checkbox-label">
-                                                        <div class="paid-candidate-container">
-                                                            <div class="paid-candidate-box">
-                                                                <div class="dropdown">
-                                                                    <div class="btn-group fl-right">
-                                                                        <div class="dropdown-menu pull-right animated flipInX">
-                                                                            <a href="#" data-toggle="modal"
-                                                                               data-target="#shortList">Shortlist</a>
-                                                                            <button class="reject">Reject</button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="paid-candidate-inner--box">
-                                                                    <div class="paid-candidate-box-thumb">
-                                                                        <?php
-                                                                        $name = $image = NULL;
-                                                                        if (!empty($u['userEnc']['image'])) {
-                                                                            $image = Yii::$app->params->upload_directories->users->image . $u['userEnc']['image_location'] . DIRECTORY_SEPARATOR . $u['userEnc']['image'];
-                                                                        }
-                                                                        $name = $u['userEnc']['first_name'] . ' ' . $u['userEnc']['last_name'];
-                                                                        if ($image):
-                                                                            ?>
-                                                                            <img src="<?= $image; ?>"
-                                                                                 alt="<?= $name; ?>"
-                                                                                 class="img-responsive img-circle"/>
-                                                                        <?php else: ?>
-                                                                            <canvas class="user-icon img-circle img-responsive"
-                                                                                    name="<?= $name; ?>"
-                                                                                    color="<?= $u['userEnc']['initials_color']; ?>"
-                                                                                    width="140" height="140"
-                                                                                    font="70px"></canvas>
-                                                                        <?php endif; ?>
-                                                                    </div>
-                                                                    <div class="paid-candidate-box-detail">
-                                                                        <h4><?= ucfirst($u['userEnc']['first_name']) ?>
-                                                                            <?= $u['userEnc']['last_name'] ?>
-                                                                        </h4>
-                                                                        <span class="desination"><?= $u['userEnc']['name'] ?></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="paid-candidate-box-extra">
-                                                                    <ul>
-                                                                        <?php
-                                                                        $i = 0;
-                                                                        foreach ($u['userEnc']['userSkills'] as $sk) {
 
-                                                                            ?>
-                                                                            <li>
-                                                                                <?php
-                                                                                echo $sk['skill'];
-                                                                                $i++;
-                                                                                if ($i == 3) break;
-                                                                                ?>
-                                                                            </li>
-                                                                        <?php }
-                                                                        if (count($u['userEnc']['userSkills']) >= 4) {
-                                                                            ?>
-                                                                            <li class="more-skill bg-primary">
-                                                                                +<?= count($u['userEnc']['userSkills']) - 3 ?></li>
-                                                                        <?php } ?></ul>
-                                                                </div>
-                                                                <div class="paid-candidate-box-exp">
-                                                                    <?php if (!empty($u['userEnc']['city_name'])) { ?>
-                                                                        <div class="desination"><i
-                                                                                    class="fa fa-map-marker"></i> <?= $u['userEnc']['city_name'] ?>
-                                                                        </div>
-                                                                    <?php } ?>
-                                                                    <?php
-
-                                                                    $exp = $u['experience'];
-
-                                                                    switch ($exp) {
-
-                                                                        case 0:
-                                                                            $exp = '0 Years';
-                                                                            break;
-
-                                                                        case 1:
-                                                                            $exp = '0.6 Months';
-                                                                            break;
-
-                                                                        case 2:
-                                                                            $exp = '1 Year';
-                                                                            break;
-
-                                                                        case 3:
-                                                                            $exp = '2-3 Years';
-                                                                            break;
-
-                                                                        case 4:
-                                                                            $exp = '3-5 Years';
-                                                                            break;
-
-                                                                        case 5:
-                                                                            $exp = '5-10 Years';
-                                                                            break;
-
-                                                                        case 6:
-                                                                            $exp = '10-20 Years';
-                                                                            break;
-
-                                                                        case 7:
-                                                                            $exp = '20+ Years';
-                                                                            break;
-                                                                    };
-                                                                    ?>
-                                                                    <div class="desination"><i
-                                                                                class="fa fa-briefcase"></i> <?= $exp ?>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <a href="/<?= $u['userEnc']['username'] ?>"
-                                                               class="btn btn-paid-candidate bt-1">View Detail</a>
-
-                                                            <?php if ($u["status"] == 1) { ?>
-                                                                <div class="shortlist-strip">
-                                                                    <div class="s-strip"> Shortlisted</div>
-                                                                </div>
-                                                            <?php } ?>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                            </article>
-                                            <?php
-                                        }
-                                    }else {
-                                    ?>
-                                        <div class="tab-empty">
-                                            <div class="tab-empty-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/applyingjob.png'); ?>"
-                                                     class="img-responsive" alt=""/>
-                                            </div>
-                                            <div class="tab-empty-text">
-                                                <div class="">There is no Application to Display</div>
-                                            </div>
-                                        </div>
-                                    <?php } ?>
                                     </div>
+
+                                    <div class="tab-empty" id="tab_empty">
+                                        <div class="tab-empty-icon">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/applyingjob.png'); ?>" class="img-responsive" alt=""/>
+                                        </div>
+                                        <div class="tab-empty-text">
+                                            <div class="">There is no Application to Display</div>
+                                        </div>
+                                    </div>
+                                    <!-- END: Actions -->
                                 </div>
                             </div>
                         </div>
@@ -189,56 +49,117 @@ use yii\helpers\Url;
     </div>
 </div>
 
-<!--Modal-->
-<div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog" id="profiles">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="submit" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Choose Applications to Shortlist for</h4>
-            </div>
-            <div class="modal-body">
-                <?php
-                if(count($available_applications) > 0) {
-                    foreach ($available_applications as $a) {
-                        ?>
-                        <div class="row padd10">
-                            <div class="col-md-12 text-center">
-                                <div class="radio_questions">
-                                    <div class="inputGroup process_radio">
-                                        <input type="radio" name="applications" id="<?= $a['application_enc_id'] ?>"
-                                               value="<?= $a['application_enc_id'] ?>">
-                                        <label for="<?= $a['application_enc_id'] ?>">
-                                            <?= $a['name'] ?>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php
-                    }
-                }
-                ?>
-
-            </div>
-
-            <div class="modal-footer">
-                <?php if(count($available_applications) > 0) { ?>
-                    <button id="submitData" type="submit" class="btn btn-primary" data-dismiss="modal">Submit</button>
-                <?php }else{ ?>
-                    <a class="btn btn-primary" href="/account/<?=$type?>/create">Create New <?=$type?></a>
-                <?php } ?>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
+<!--Candidate Resume Mustache Template Start-->
+<script id="candidate_resume" type="text/template">
+     <article>
+            {{#.}}
+        <div class="col-lg-3 col-md-3 col-sm-6 p-category-main" onclick="makeChecked(this);">
+        <input type="checkbox" name="" id="" class="checkbox-input"/>
+        <label for="can1" class="checkbox-label">
+        <div class="paid-candidate-container">
+        <div class="paid-candidate-box">
+        <div class="dropdown">
+        <div class="btn-group fl-right">
+        <div class="dropdown-menu pull-right animated flipInX">
+        <a href="#" data-toggle="modal" data-target="#shortList">Shortlist</a>
+        <button class="reject">Reject</button>
         </div>
-
-    </div>
-</div>
+        </div>
+        </div>
+        <div class="paid-candidate-inner--box">
+        <div class="paid-candidate-box-thumb">
+            {{#logo}}
+        <img src="{{logo}}" alt="" class="img-responsive img-circle"/>
+            {{/logo}}
+            {{^logo}}
+        <canvas class="user-icon img-circle img-responsive" name="{{name}}" color="{{initials_color}}" width="140" height="140" font="70px"></canvas>
+            {{/logo}}
+        </div>
+        <div class="paid-candidate-box-detail">
+        <h4>
+        {{name}}
+        </h4>
+        </div>
+        </div>
+            <div class="paid-candidate-box-exp">
+                <div class="desination"><i class="fa fa-users"></i> Applied On <span class="blue"> {{count}} </span> Titles
+                </div>
+            </div>
+        <div class="paid-candidate-box-exp">
+        <div class="desination"><i class="fa fa-briefcase"></i> {{appliedApplicationEnc.experience}} Experience
+        </div>
+        </div>
+        </div>
+            {{#resume}}
+        <a href="{{resume}}" target="_blank" class="btn btn-paid-candidate bt-1">Download Resume</a>
+            {{/resume}}
+        <a href="/{{username}}" target="_blank" class="btn btn-paid-candidate bt-1">View Profile</a>
+        </div>
+        </label>
+        </div>
+     </article>
+    {{/.}}
+</script>
+<!--Candidate Resume Mustache Template End-->
+<!--Modal-->
+<!--<div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">-->
+<!--    <div class="modal-dialog" id="profiles">-->
+<!--        Modal content-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header">-->
+<!--                <button type="submit" class="close" data-dismiss="modal">&times;</button>-->
+<!--                <h4 class="modal-title">Choose Applications to Shortlist for</h4>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                --><?php
+//                if(count($available_applications) > 0) {
+//                    foreach ($available_applications as $a) {
+//                        ?>
+<!--                        <div class="row padd10">-->
+<!--                            <div class="col-md-12 text-center">-->
+<!--                                <div class="radio_questions">-->
+<!--                                    <div class="inputGroup process_radio">-->
+<!--                                        <input type="radio" name="applications" id="--><?//= $a['application_enc_id'] ?><!--"-->
+<!--                                               value="--><?//= $a['application_enc_id'] ?><!--">-->
+<!--                                        <label for="--><?//= $a['application_enc_id'] ?><!--">-->
+<!--                                            --><?//= $a['name'] ?>
+<!--                                        </label>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        --><?php
+//                    }
+//                }
+//                ?>
+<!---->
+<!--            </div>-->
+<!---->
+<!--            <div class="modal-footer">-->
+<!--                --><?php //if(count($available_applications) > 0) { ?>
+<!--                    <button id="submitData" type="submit" class="btn btn-primary" data-dismiss="modal">Submit</button>-->
+<!--                --><?php //}else{ ?>
+<!--                    <a class="btn btn-primary" href="/account/--><?//=$type?><!--/create">Create New --><?//=$type?><!--</a>-->
+<!--                --><?php //} ?>
+<!--                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!---->
+<!--    </div>-->
+<!--</div>-->
 
 
 <?php
 $this->registerCss('
+.blue{
+    color: #337AB7;
+    font-size: 15px;
+    font-weight: 700;
+    }
+.paid-candidate-box-detail h4{
+text-transform: capitalize;
+}
+#tab_empty{display:none}
 .tab-empty{
     padding:20px;
 }
@@ -294,6 +215,7 @@ $this->registerCss('
 }
 .paid-candidate-box-thumb img{
     height:100%;
+    width:100%;
 }
 .com-load-more-btn{
     max-width:150px;
@@ -571,13 +493,33 @@ a.btn.btn-paid-candidate:hover, a.btn.btn-paid-candidate:focus{
 }
 ');
 $script = <<<JS
-
+function getCandidateResume(page,limit,type,profile) {
+    page += 1;
+    let data = {};
+    const url = '/account/uploaded-resume/candidate-resumes';
+    data['type'] = type;
+    data['limit'] = limit;
+    data['page'] = page;
+    data['profile'] = profile;
+    $.ajax({
+        method: "POST",
+        url : url,
+        data: data,
+        success: function(response) { 
+            if(response.status === 200) {
+                $('#card-data').append(Mustache.render($('#candidate_resume').html(),response.cards));
+                utilities.initials();
+            }else{
+                $('#tab_empty').show();
+            }
+        }
+    });
+ }
+getCandidateResume(page=0,limit=null,type=type,profile=profile);
 JS;
 
 $this->registerJs($script);
-//$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-
-
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
     var listOfSelected = [];

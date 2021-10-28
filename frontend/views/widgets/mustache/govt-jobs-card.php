@@ -1,9 +1,14 @@
+<?php
+
+use yii\helpers\Url;
+?>
 <script id="govt-jobs-card" type="text/template">
     {{#.}}
     <div class="col-md-4 col-sm-12 col-xs-12">
-        <div class="application-card-main shadow">
-            <div class="app-box">
-                <div class="row">
+        <div class="application-card-main">
+            <div class="app-box  shadow">
+                <span class="job-fill city"><i class="fas fa-map-marker-alt"></i>&nbsp;{{Location}}</span>
+                <div class="app-card-main">
                     <div class="application-card-img">
                         <a href="/govt-jobs/{{company_slug}}" target="_blank" title="{{Organizations}}">
                             {{#logo}}
@@ -16,19 +21,14 @@
                         </a>
                     </div>
                     <div class="comps-name-1 application-card-description">
-                            <span class="skill">
-                                <a href="/govt-jobs/detail/{{slug}}"  target="_blank" title="{{Position}}" class="application-title capitalize org_name">
-                                    {{Position}}
-                                </a>
-                            </span>
-                        <a href="/govt-jobs/detail/{{slug}}" target="_blank" title="{{Organizations}}" style="text-decoration:none;">
-                            <h4 class="org_name comp-name org_name">{{Organizations}}</h4>
-                        </a>
-                    </div>
-                    <span class="job-fill application-card-type location city">
-                             <i class="fas fa-map-marker-alt"></i>&nbsp;{{Location}}
-                    </span>
-                    <div class="detail-loc application-card-description">
+                        <div class="us-card-t">
+                            <a href="/govt-jobs/detail/{{slug}}"  target="_blank" title="{{Position}}" class="application-title capitalize org_name">
+                                {{Position}}
+                            </a>
+                            <a href="/govt-jobs/detail/{{slug}}" target="_blank" title="{{Organizations}}" class="org_name comp-name">
+                                {{Organizations}}
+                            </a>
+                        </div>
                         <div class="job-loc">
                             {{#salary}}
                             <h5 class="salary">{{salary}}</h5>
@@ -37,20 +37,68 @@
                             <h5 class="salary"><a href="/govt-jobs/detail/{{slug}}" target="_blank"><i class="fas fa-rupee-sign"></i> View In Details</a></h5>
                             {{/salary}}
                             {{#Last_date}}
-                            <h5 class="last_date"><i class="far fa-calendar-alt"></i> Last_date: {{Last_date}}</h5>
+                            <h5 class="last_date" title="{{Last_date}}"><i class="far fa-calendar-alt"></i> Last_date: {{Last_date}}</h5>
                             {{/Last_date}}
                             {{#Eligibility}}
-                            <h5><i class="fas fa-graduation-cap"></i>: {{Eligibility}}</h5>
+                            <h5 class="stdy" title="{{Eligibility}}"><i class="fas fa-graduation-cap"></i>: {{Eligibility}}</h5>
                             {{/Eligibility}}
                             {{^Eligibility}}
-                            <h5><i class="fas fa-graduation-cap"></i>: View In Details</h5>
+                            <h5 class="stdy"><i class="fas fa-graduation-cap"></i>: View In Details</h5>
                             {{/Eligibility}}
                         </div>
-                        <div class="clear"></div>
                     </div>
                 </div>
-                <div class="application-card-wrapper">
+                <div class="application-card-wrapper application-card-bottom"">
                     <a href="/govt-jobs/detail/{{slug}}" class="application-card-open" title="View Detail">View Detail</a>
+                    <a href="javascript:;" class="share-b" title="Share">&nbsp;<i class="fas fa-share-alt"></i>&nbsp</a>
+                    <div class="sharing-links">
+                        <div class="inner">
+                            <div class="fb">
+                                <a href="javascript:;" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . Url::to('/govt-jobs/detail/{{slug}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="j-facebook j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                                   title="Share on Facebook">
+                                    <span><i class="fab fa-facebook-f"></i></span></a>
+                            </div>
+                            <div class="wts-app">
+                                <a href="javascript:;" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . Url::to('/govt-jobs/detail/{{slug}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="j-whatsapp share_btn tt" type="button" data-toggle="tooltip"
+                                   title="Share on Whatsapp">
+                                    <span><i class="fab fa-whatsapp"></i></span>
+                                </a>
+                            </div>
+                            <div class="tw">
+                                <a href="javascript:;" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . Url::to('/govt-jobs/detail/{{slug}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+
+                                   class="j-twitter share_btn tt" type="button" data-toggle="tooltip"
+                                   title="Share on Twitter">
+                                    <span><i class="fab fa-twitter"></i></span></a>
+                            </div>
+                            <div class="linkd">
+                                <a href="javascript:;" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to('/govt-jobs/detail/{{slug}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                                   title="Share on LinkedIn">
+                                    <span><i class="fab fa-linkedin"></i></span></a>
+                            </div>
+                            <div class="male">
+                                <a href="javascript:;" onclick="window.open('<?= Url::to('mailto:?&body=' . Url::to('/govt-jobs/detail/{{slug}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                                   title="Share via E-Mail">
+                                    <span><i class="far fa-envelope"></i></span></a>
+                            </div>
+                            <div class="tele">
+                                <a href="javascript:;" onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . Url::to('/govt-jobs/detail/{{slug}}', 'https')); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                                   class="j-linkedin share_btn tt" type="button" data-toggle="tooltip"
+                                   title="Share on Telegram">
+                                    <span><i class="fab fa-telegram-plane"></i></span></a>
+                            </div>
+                            <div class="copy-app-link">
+                                <a href="javascript:;" class="clipb tt detail-clipboard" type="button" data-toggle="tooltip"
+                                   title="Copy Link" data-link="/govt-jobs/detail/{{slug}}">
+                                    <i class="fas fa-clipboard"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -140,22 +188,169 @@ function fetchDeptData(template,limit,offset,dept_id,loader,loader_btn,keyword=n
       }
   }   
   })
-}
+  }
+  $(document).on('click', '.detail-clipboard',function (event) {
+            event.preventDefault();
+            var link = window.location.hostname + $(this).attr('data-link');
+            CopyClipboard(link, true, "Link copied");
+        });
+function CopyClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
+$(document).on('click', '.share-b', function(){
+    let parentElem = $(this).parentsUntil('.app-box').parent();
+    $(parentElem).find('.sharing-links').toggleClass('moveright');
+    });
+
+$(document).on('mouseleave', '.app-box', function(){
+    $(this).find('.sharing-links').removeClass('moveright');
+});
 JS;
 $this->registerCss("
+.app-box {
+    text-align: left;
+    padding: 30px 15px 5px;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+}
+.app-card-main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.job-fill {
+    padding: 4px 10px;
+    background-color: #63c6f0 !important;
+    color: #fff !important;
+    border-radius: 0px 10px 0px 10px !important;
+    position: absolute;
+    right: 0;
+    top: 0;
+    max-width: 265px;
+    font-size: 12px;
+    font-family: 'Roboto';
+}
+.application-card-img img {
+    height: 80px;
+    max-height: 80px;
+    width: 80px;
+    max-width: 80px;
+    object-fit: contain;
+    overflow: hidden;
+}
+a.application-title.capitalize.org_name {
+    display: block;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Roboto';
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.comp-name, .comp-name:hover {
+    font-weight: 500;
+    font-size: 14px;
+    margin: 0;
+    font-family: roboto;
+    color: #63c6f0;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.comps-name-1{
+    padding-left: 15px;
+}
+.application-card-description h5 {
+    font-family: 'Roboto';
+    font-weight: 500;
+    display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+    margin: 6px 0px;
+}
+.application-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #ececec;
+    margin-top: 5px;
+    padding-top: 5px;
+    width:100%;
+    position:relative;
+}
+.share-b:hover{
+    color:#00a0e3;
+    transform:scale(1.2);
+    transition:all .1s;
+    }
+.sharing-links {
+    width: calc(100% - 12%);
+    height:100%;
+    position: absolute;
+    right: -94%;
+    top: 0px;
+    text-align: center;
+    background-color: #fff;
+    padding: 3px 4px;
+    transition:all .5s;
+}
+a.application-card-open:hover {
+    color: #00a0e3;
+    transform: scale(1.05);
+}
+
+a.application-card-open {
+    font-family: 'Roboto';
+    transition: all .3s;
+    font-weight: 500;
+}
+.inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.moveright{right:13% !important;}
+.wts-app i, .fb i, .tw i, .linkd i, .male i, .tele i, .copy-app-link i{
+    width: 25px;
+    text-align: center;
+    border-radius: 50px;
+    height: 25px;
+    font-size: 14px;
+    margin: 0 5px;
+    border: 1px solid transparent;
+    padding-top: 5px;
+    transition:all .3s;
+}
+.fb i {color: #236dce;}
+.fb i:hover {background-color: #236dce;}
+.tw i{color: #1c99e9;}
+.tw i:hover{background-color: #1c99e9;}
+.linkd i{color: #0e76a8;}
+.linkd i:hover{background-color: #0e76a8;}
+.male i{color: #BB001B;}
+.male i:hover{background-color: #BB001B;}
+.tele i{color: #0088cc;}
+.tele i:hover{background-color: #0088cc;}
+.wts-app i{color:#4FCE5D;}
+.wts-app i:hover{background-color:#4FCE5D;}
+.copy-app-link i{color:#22577A;}
+.copy-app-link i:hover{background-color:#22577A;}
+.wts-app i:hover, .linkd i:hover, .tw i:hover, .fb i:hover, .male i:hover, .tele i:hover, .copy-app-link i:hover{
+	color: #fff;
+}
+.share-b:hover .sharing-links, .sharing-links:hover{display:block !Important;}
 /*cards-box css*/
-.salary a
-{
-color:#3d80d4;
-}
-.last_date
-{
-font-weight:normal !important;
-}
-.application-card-description h5{
-    margin-top:0px !important;
-    margin-bottom: 8px !important;
-}
+
 .application-card-main {
     background-color: transparent !important;
     margin-bottom: 20px !important;
@@ -166,75 +361,30 @@ font-weight:normal !important;
     margin: auto;
     display: block;
 }
-.app-box {
-    text-align: left;
-    padding: 10px;
-    border-radius: 10px;
-    position:relative;
-    background:#fff;
-}
-.img{
-    max-width: 66px;
-}
+
+
 .cover-box{
     display: inline-block;
     padding-left: 13px;
 }
-.comps-name-1{
-    padding-left: 15px;
-    padding-top: 15px;
-}
-.org_name{display:block;}
 .skill a{
     color: black;
     font-size: 18px;
     font-weight: bold;
-}
-.comp-name{
-    font-weight: 700;
-    font-size: 15px;
-    color:#0173b2;
-    margin:0;
-    font-family:roboto;
-}
-.detail-loc{
-    margin-top:5px;
-}
-.location{
-    margin-right: 4px;
 }
 .fa-inr{
     color:lightgray;
     margin-right: 10px;
 
 }
-.city, .city i{
-    color: #fff;
-}
 .show-responsive{
     display:none;
 }
 
-.job-fill{
-    padding: 5px 10px 4px !important;
-    margin: 3px !important;
-    background-color:#ff7803 !important;
-    color: #fff !important;
-    border-radius: 0px 10px 0px 10px !important;
-    float: right !important;
-    position:absolute !important;
-    right: -4px !important;
-    top: -3px !important;
-}
 .clear{
     clear:both;
 }
-.sal{
-    margin-right: 5px;
-}
-.salary{
-    font-family:roboto;
-}
+
 .tag-box{
     border-top: 1px solid lightgray;
     padding-left:15px;
@@ -273,9 +423,7 @@ font-weight:normal !important;
     right: 0;
     top: 0;
 }
-.city-box{
-    padding-bottom:5px;
-}
+
 .ADD-more{
     background-color: #eeeeee;
     padding: 4px 10px 4px 10px;
@@ -287,9 +435,6 @@ font-weight:normal !important;
     padding: 5px 15px;
     border-radius: 20px;
     display:inline-block;
-}
-.salary{ 
-    padding-left: 16px;
 }
 .lg-skill{
     white-space: nowrap;
@@ -314,4 +459,6 @@ font-weight:normal !important;
 ");
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

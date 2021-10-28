@@ -9,6 +9,7 @@
     var time = true;
     var total_hours = 0;
     var total_minutes = 0;
+    var urlParameters = new URL(window.location.href);
 
     results.mode = "online";
 
@@ -210,10 +211,17 @@
     function load_script(es) {
 
         if (es) {
+            if ($('#select-application-sch').find('.error-msg').length > 0) {
+                $('#select-application-sch').find('.error-msg').remove();
+            }
             $('#rounds').parent().append('<ul id="newrounds" class="select-list" name="rounds"></ul>');
             $('#rounds option').each(function () {
                 var background = $(this).data('url');
-                $('#newrounds').append('<li value="' + $(this).val() + '"><img src="' + background + '" alt="">' + $(this).text() + '</li>');
+                var data = $(this).attr('data-name');
+                if(!data){
+                    data = "";
+                }
+                $('#newrounds').append('<li value="' + $(this).val() + '"><div class="new-s"><span><img src="' + background + '" alt="">' + $(this).text() + '</span><span class="sec-s">'+ data +'</span></div></li>');
             });
             $('#rounds').remove();
             $('#newrounds').attr('id', 'rounds');
@@ -225,12 +233,14 @@
             var application_id = $('#rounds li').attr('value');
             results.application_id = $('#rounds li').attr('value');
             $('#selected_application_id').val(application_id);
+            console.log(application_id,235);
             $.ajax({
                 url: '/account/schedular/find-rounds',
                 type: 'POST',
                 // async: false,
                 data: {
-                    application_id
+                    application_id,
+                    current_round:urlParameters.searchParams.get('current_round'),
                 },
                 beforeSend: function () {
                     $('#schedular-loader').fadeIn(1000);
@@ -241,7 +251,11 @@
                     var html = $('#select-round').html();
                     var output = Mustache.render(html, results);
                     $('#select-app-round').html(output);
-                    load_script_again();
+                    if(urlParameters.searchParams.get('current_round')){
+                        load_script_again(true);
+                    } else {
+                        load_script_again(false);
+                    }
                 }
             });
         } else {
@@ -249,7 +263,11 @@
             $('#rounds').parent().append('<ul id="newrounds" class="select-list" name="rounds"></ul>');
             $('#rounds option').each(function () {
                 var background = $(this).data('url');
-                $('#newrounds').append('<li value="' + $(this).val() + '"><img src="' + background + '" alt="">' + $(this).text() + '</li>');
+                var data = $(this).attr('data-name');
+                if(!data){
+                    data = "";
+                }
+                $('#newrounds').append('<li value="' + $(this).val() + '"><div class="new-s"><span><img src="' + background + '" alt="">' + $(this).text() + '</span><span class="sec-s">'+ data +'</span></div></li>');
             });
             $('#rounds').remove();
             $('#newrounds').attr('id', 'rounds');
@@ -282,7 +300,7 @@
                         var html = $('#select-round').html();
                         var output = Mustache.render(html, results);
                         $('#select-app-round').html(output);
-                        load_script_again();
+                        load_script_again(false);
                     }
                 });
                 allOptions.removeClass('selected');
@@ -292,7 +310,6 @@
 
             });
         }
-
         //interview dates datepicker
         $('.date-picker').datepicker({
             format: 'dd MM',
@@ -301,64 +318,118 @@
         });
     }
 
-    function load_script_again() {
-        //location dropdown
-        $('#location').parent().append('<ul id="newlocation" class="select-list" name="location"></ul>');
-        $('#location option').each(function () {
-            var background = $(this).data('url');
-            $('#newlocation').append('<li value="' + $(this).val() + '"><img src="' + background + '" alt="">' + $(this).text() + '</li>');
-        });
-        $('#location').remove();
-        $('#newlocation').attr('id', 'location');
-        $('#location li').first().addClass('init');
-        $("#location").on("click", ".init", function () {
-            $(this).closest("#location").children('li:not(.init)').toggle();
-        });
-        var allOptions2 = $("#location").children('li:not(.init)');
-        $("#location").on("click", "li:not(.init)", function () {
-            var selected_round = $(this).attr('value');
+    function load_script_again(type) {
+        if(type) {
+            $('#location').parent().append('<ul id="newlocation" class="select-list" name="location"></ul>');
+            $('#location option').each(function () {
+                var background = $(this).data('url');
+                $('#newlocation').append('<li value="' + $(this).val() + '"><img src="' + background + '" alt="">' + $(this).text() + '</li>');
+            });
+            $('#location').remove();
+            $('#newlocation').attr('id', 'location');
+            $('#location li').first().remove();
+            $('#location, #location li').css('height', '50px');
+            $('#location li').css('display', 'block');
+            $('#location li').css('padding-top', '15px');
+            var selected_round = $('#location li').attr('value');
             results.selected_round = selected_round;
             $('#selected_round_id').val(selected_round);
-            if ($('#select-app-round').find('.error-msg').length > 0) {
-                $('#select-app-round').find('.error-msg').remove();
-            }
-            if (results.type == 'flexible') {
-                $.ajax({
-                    url: '/account/schedular/find-candidates',
-                    type: 'POST',
-                    // async: false,
-                    data: {
-                        application_id: results.application_id,
-                        process_id: results.selected_round
-                    },
-                    beforeSend: function () {
-                        $('#schedular-loader').fadeIn(1000);
-                    },
-                    success: function (data) {
-                        $('#schedular-loader').fadeOut(1000);
-                        results.appliedcandidates = data.results;
-                        var html = $('#select-candidate').html();
-                        var output = Mustache.render(html, results);
-                        $('#select-application-process').html(output);
-                        //country selections of max 3 in dropdown
-                        $('.test-multi').dropdown({
-                            // maxSelections: 3,
-                            placeholder: 'any',
-                            onChange: function (value, text, selectedItem) {
-                                results.selected_candidate = value;
-                                if ($('#select-application-process').find('.error-msg').length > 0) {
-                                    $('#select-application-process').find('.error-msg').remove();
+                if ($('#select-app-round').find('.error-msg').length > 0) {
+                    $('#select-app-round').find('.error-msg').remove();
+                }
+                if (results.type == 'flexible') {
+                    $.ajax({
+                        url: '/account/schedular/find-candidates',
+                        type: 'POST',
+                        // async: false,
+                        data: {
+                            application_id: results.application_id,
+                            process_id: results.selected_round,
+                            applied_id:urlParameters.searchParams.get('applied_id'),
+                        },
+                        beforeSend: function () {
+                            $('#schedular-loader').fadeIn(1000);
+                        },
+                        success: function (data) {
+                            $('#schedular-loader').fadeOut(1000);
+                            results.appliedcandidates = data.results;
+                            var html = $('#select-candidate').html();
+                            var output = Mustache.render(html, results);
+                            $('#select-application-process').html(output);
+                            //country selections of max 3 in dropdown
+                            $("input[name=country]").val(data.results[0].applied_application_enc_id);
+                            results.selected_candidate = data.results[0].applied_application_enc_id;
+                            $('.test-multi').dropdown({
+                                // maxSelections: 3,
+                                placeholder: 'any',
+                                onChange: function (value, text, selectedItem) {
+                                    results.selected_candidate = value;
+                                    if ($('#select-application-process').find('.error-msg').length > 0) {
+                                        $('#select-application-process').find('.error-msg').remove();
+                                    }
                                 }
-                            }
-                        });
-                    }
-                });
-            }
-            allOptions2.removeClass('selected');
-            $(this).addClass('selected');
-            $("#location").children('.init').html($(this).html());
-            allOptions2.toggle();
-        });
+                            });
+                        }
+                    });
+                }
+        } else {
+            $('#location').parent().append('<ul id="newlocation" class="select-list" name="location"></ul>');
+            $('#location option').each(function () {
+                var background = $(this).data('url');
+                $('#newlocation').append('<li value="' + $(this).val() + '"><img src="' + background + '" alt="">' + $(this).text() + '</li>');
+            });
+            $('#location').remove();
+            $('#newlocation').attr('id', 'location');
+            $('#location li').first().addClass('init');
+            $("#location").on("click", ".init", function () {
+                $(this).closest("#location").children('li:not(.init)').toggle();
+            });
+            var allOptions2 = $("#location").children('li:not(.init)');
+            $("#location").on("click", "li:not(.init)", function () {
+                var selected_round = $(this).attr('value');
+                results.selected_round = selected_round;
+                $('#selected_round_id').val(selected_round);
+                if ($('#select-app-round').find('.error-msg').length > 0) {
+                    $('#select-app-round').find('.error-msg').remove();
+                }
+                if (results.type == 'flexible') {
+                    $.ajax({
+                        url: '/account/schedular/find-candidates',
+                        type: 'POST',
+                        // async: false,
+                        data: {
+                            application_id: results.application_id,
+                            process_id: results.selected_round
+                        },
+                        beforeSend: function () {
+                            $('#schedular-loader').fadeIn(1000);
+                        },
+                        success: function (data) {
+                            $('#schedular-loader').fadeOut(1000);
+                            results.appliedcandidates = data.results;
+                            var html = $('#select-candidate').html();
+                            var output = Mustache.render(html, results);
+                            $('#select-application-process').html(output);
+                            //country selections of max 3 in dropdown
+                            $('.test-multi').dropdown({
+                                // maxSelections: 3,
+                                placeholder: 'any',
+                                onChange: function (value, text, selectedItem) {
+                                    results.selected_candidate = value;
+                                    if ($('#select-application-process').find('.error-msg').length > 0) {
+                                        $('#select-application-process').find('.error-msg').remove();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+                allOptions2.removeClass('selected');
+                $(this).addClass('selected');
+                $("#location").children('.init').html($(this).html());
+                allOptions2.toggle();
+            });
+        }
     }
 
     //timepicker call for click on timepicker
@@ -571,7 +642,6 @@
 
         results.type = $(this).attr('value');
         var interview_type = $(this).attr("value");
-
         if (interview_type == 'fixed') {
             $('.btn-next').css('display', 'none');
             $('#select-application-process').css('display', 'none');
@@ -737,10 +807,10 @@
                     if (data.status == 200) {
                         // console.log(data);
                         toastr.success('Interview schedule has been fixed. Check Dashboard for Updates', 'Interview Scheduled Successfully');
-                        window.location.href = "/account/schedular/update-interview";
+                        window.location.href = "/account/schedular/dashboard";
                     } else {
                         toastr.error('Some error occured. Please try again', 'Error');
-                        window.location.href = "/account/schedular/update-interview";
+                        window.location.href = "/account/schedular/dashboard";
                     }
                 }
             })

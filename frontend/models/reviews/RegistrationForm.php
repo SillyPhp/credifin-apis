@@ -34,6 +34,8 @@ class RegistrationForm extends Model {
     {
         return [
             [['organization_name','bussiness_activity'],'required'],
+            [['organization_name','bussiness_activity'],'trim'],
+            [['organization_name','bussiness_activity'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'],'string','max'=>50],
             [['website'], 'url', 'defaultScheme' => 'http'],
             [['website'],'safe'],
@@ -92,8 +94,6 @@ class RegistrationForm extends Model {
                     'status'=>201,
                 ];
             }
-
-
         }
         else
         {

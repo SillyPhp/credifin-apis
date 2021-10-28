@@ -36,7 +36,7 @@ Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"
                         <div class="client-side">
                             <div class="client-img">
                              <?php   if (!empty(Yii::$app->user->identity->image)) {
-                                $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                                 ?>
                                  <img src="<?= $image ?>">
                                <?php } else { ?>

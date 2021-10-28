@@ -17,24 +17,19 @@ if (!empty($total_processes)) {
                     <div class="box-main-col <?= $col_width; ?>">
                         <div class="p-category">
                             <div class="rt-bttns">
-                                <a class="clone-bttn set-right-align two" href="<?= Url::toRoute('hiring-processes' . DIRECTORY_SEPARATOR . $processes[$next]["id"] . DIRECTORY_SEPARATOR . 'clone'); ?>" target="_blank">
+                                <a class="clone-bttn set-right-align two" href="<?= Url::toRoute('hiring-processes' . DIRECTORY_SEPARATOR . $processes[$next]["id"] . DIRECTORY_SEPARATOR . 'clone'); ?>" target="_blank" data-toggle="tooltip" title="Clone">
                                     <i class="fa fa-clone"></i>
                                 </a>
                             </div>
-<!--                            <div class="rt-bttns">-->
-<!--                                <a class="edit-bttn set-right-align two" href="--><?//= Url::toRoute('hiring-processes' . DIRECTORY_SEPARATOR . $processes[$next]["id"] . DIRECTORY_SEPARATOR . 'edit'); ?><!--" target="_blank">-->
-<!--                                    <i class="fa fa-edit"></i>-->
-<!--                                </a>-->
-<!--                            </div>-->
                             <div class="lt-bttn">
                                 <button type="button" class="e-bttn set-right-align one delete_interview_process"
-                                        value="<?= $processes[$next]['id']; ?>">
+                                        value="<?= $processes[$next]['id']; ?>" title="Delete" data-toggle="tooltip">
                                     <i class="fa fa-trash-o" aria-hidden="true"></i>
                                 </button>
                             </div>
                             <a href="<?= Url::toRoute('hiring-processes' . DIRECTORY_SEPARATOR . $processes[$next]["id"] . DIRECTORY_SEPARATOR . 'view'); ?>">
                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/execution.png'); ?>">
-                                <span><?= $processes[$next]['process_name']; ?></span>
+                                <span class="proc-s"><?= ucwords(strtolower($processes[$next]['process_name'])); ?></span>
                             </a>
                         </div>
                     </div>
@@ -75,3 +70,15 @@ $(document).on('click','.delete_interview_process',function(e){
 });
 JS;
 $this->registerJs($script);
+$this->registercss('
+.p-category > a{
+    padding-bottom:20px !important;
+}
+.proc-s {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	height: 45px;
+}
+');
