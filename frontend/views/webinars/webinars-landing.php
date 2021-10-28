@@ -39,15 +39,12 @@ function webDate($webDate)
                         Created To Help You Understand And Immerse Yourself In The Latest Career Options.</h2>
                 </div>
             </div>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="header-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/webinar/web.png') ?>"/>
-                </div>
-            </div>
         </div>
     </div>
 </section>
-
+<?php
+if ($upcomingWebinar) {
+?>
 <section class="upcoming-web">
     <div class="container">
         <div class="row">
@@ -55,7 +52,7 @@ function webDate($webDate)
         </div>
         <div class="row">
             <?php
-            if ($upcomingWebinar) {
+
                 foreach ($upcomingWebinar as $web) {
                     ?>
                     <div class="col-md-4 col-sm-6">
@@ -109,7 +106,7 @@ function webDate($webDate)
                                         }
                                         ?>
                                     </div>
-                                    <span class="cont"> <?= ($web["slug"] == "new-age-investment-strategies-10407") ? 2 * count($web['webinarRegistrations']) : count($web['webinarRegistrations']); ?> Registered</span>
+                                    <span class="cont"> <?= count($web['webinarRegistrations']) ?> Registered</span>
                                 </div>
                                 <?php if (array_search(Yii::$app->user->identity->user_enc_id, array_column($web['webinarRegistrations'], 'created_by'))) { ?>
                                     <div class="register-btns">
@@ -127,12 +124,13 @@ function webDate($webDate)
                     </div>
                     <?php
                 }
-            }
             ?>
         </div>
     </div>
 </section>
-
+<?php
+}
+?>
 <section class="how-it-works">
     <div class="container">
         <div class="row">
@@ -340,17 +338,17 @@ if ($optedWebinar) {
             <div class="col-sm-4">
                 <div class="icon">
                     <div class="icon-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-smartphone.png'); ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-tablet.png'); ?>">
                     </div>
-                    On your Smartphone
+                    On your Tablet
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="icon">
                     <div class="icon-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-tablet.png'); ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-smartphone.png'); ?>">
                     </div>
-                    On your Tablet
+                    On your Smartphone
                 </div>
             </div>
         </div>
@@ -486,7 +484,6 @@ $this->registerCss("
     align-items: center;
     justify-content: center;
     margin: auto;
-    background: #204E8445;
     margin-bottom: 10px;
 }
 .icon-img img {
@@ -506,9 +503,16 @@ $this->registerCss("
     min-height: 300px;
     margin-bottom: 10px;
 }
-.icon{
-    margin-bottom: 40px;
+.webinar-on-device .icon{
+    box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.25);
+    padding: 40px 0;
+    text-align: center;
+    border-top: 5px solid #00a0e3;
+    margin-bottom: 20px;
+    width: 100%;
+    width: 100%;
 }
+
 .how-it-works{
     background:#fcfcfc;
     margin-bottom: 20px;
@@ -835,7 +839,7 @@ color: #fff !important;
     margin-top: 0px !important;
 }
 .ornge {
-    color: #00a0e3;
+    color: #000;
     font-weight:500;
 }
 .speakers{
@@ -864,8 +868,9 @@ color: #fff !important;
 	transition: all .2s;
 }
 .header-web {
-    background-color: #E8F6EF;
+    background: url(/assets/themes/ey/images/pages/webinar/webinar-landing-bg.png) right top;
     position: relative;
+    background-repeat: no-repeat;
     overflow: hidden;
     min-height: 500px;
     display: flex;
@@ -874,19 +879,20 @@ color: #fff !important;
 }
 .back-shadow {
     position: absolute;
-    top: -22%;
+    top: 0;
     right: 0;
-    width: 50%;
-    background-color: #00a0e3;
-    height: 144%;
-    border-radius: 50% 0 0 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    z-index: 0;
+    background: linear-gradient(91.87deg, #00A0E3 30.09%, rgba(67, 137, 162, 0.53) 77.58%);
 }
 .header-txt h1 {
     font-size: 44px;
     font-family: roboto;
     font-weight: 700;
     margin-top: 0px;
-    color: #00a0e3;
+    color: #fff;
     margin-bottom: 0;
     letter-spacing: 1.5px;
     text-transform: uppercase;
@@ -895,7 +901,7 @@ color: #fff !important;
     font-size: 20px;
     font-family: roboto;
     margin: 0 0 0 8px;
-    color: #707070;
+    color: #fff;
     font-weight: 500;
     text-transform: capitalize;
 }
@@ -979,7 +985,7 @@ color: #fff !important;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 	background-color:#fff;
 	margin-bottom:20px;
-    min-height: 387px;
+    min-height: 360px;
 }
 .web-img {
 	position: relative;
@@ -1051,6 +1057,16 @@ color: #fff !important;
 	overflow: hidden;
 	height: 70px;
 }
+.web-info{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-top: 10px;
+}
+.web-info img{
+    margin-right: 6px;
+}
 .opted-web {
 	background-image: url(" . Url::to('@eyAssets/images/pages/webinar/wb2.png') . "); 
 	margin: 0px 0 0;
@@ -1084,6 +1100,11 @@ color: #fff !important;
 	/* text-transform: uppercase; */
 	margin-bottom: 35px;
 	position: relative;
+}
+.web-card .price{
+    color: #FF5C58;
+    font-family: roboto;
+    font-weight: 800;
 }
 .reg-btn-count {
 	display: flex;
@@ -1216,6 +1237,17 @@ color: #fff !important;
     transform: translate3d(0, -2px, 0);
   }
 }
+@media only screen and (min-width: 992px){
+    .webinar-on-device .icon{
+        min-width: 250px;
+    }
+}
+@media (min-width: 768px) and (max-width: 991px){
+    .webinar-on-device .icon{
+        min-width: 200px;
+    }
+}
+
 @media only screen and (max-width: 991px) {
     .header-txt h1{margin-top:40px;}
     .header-txt h2{font-size:18px;}
@@ -1238,15 +1270,8 @@ color: #fff !important;
         padding-left: 0px;
         padding-bottom:30px;
     }
-    .back-shadow {
-        position: absolute;
-        top:inherit;
-        bottom: -50%;
-        left: -22%;
-        width: 140%;
-        background-color: #00a0e3;
-        height: 100%;
-        border-radius: 50% 50% 0 0;
+    .back-shadow{
+        background: linear-gradient(91.87deg, #00A0E3 30.09%, rgba(67, 137, 162, 0.53) 166.58%);
     }
 }
 ");
@@ -1394,3 +1419,4 @@ $this->registerJS($script);
 
 ?>
 <script></script>
+
