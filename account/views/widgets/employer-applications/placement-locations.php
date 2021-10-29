@@ -132,10 +132,6 @@ $this->registerCSS('
 $script = <<< JS
 var place_len = 0;
 
-$(document).on('click', '.modal-load-class', function() {
-    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
-});
-
 $(document).on("click",'input[name="placement_locations[]"]' , function() {
         placement_location_positions($(this),1);
         if($('.selectAllBtn').hasClass('active')){
