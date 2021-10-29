@@ -28,7 +28,7 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-4 col-xs-12">
                     <div class="loan-steps marg-top loan-line2">
                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/step4.png') ?>" alt="">
-                        <p>Sanctiom of Loan</p>
+                        <p>Sanction of Loan</p>
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-4 col-xs-12">
