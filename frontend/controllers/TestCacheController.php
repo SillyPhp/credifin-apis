@@ -35,9 +35,6 @@ class TestCacheController extends Controller
         }
     }
 
-//    public function actionSms(){
-//        return Yii::$app->sms->send('7814871632','EYOUTH','hello');
-//    }
 
     public function actionImages()
     {
@@ -61,29 +58,6 @@ class TestCacheController extends Controller
         ];
         $story= \frontend\models\script\StoriesImageScript::widget(['content' => $content]);
         echo $story;
-    }
-    public function actionEmail(){
-        $params = AppliedApplications::find()
-         ->alias('a')
-         ->select(['CONCAT(b.first_name," ",b.last_name) name','b.email','a.applied_application_enc_id applied_id'])
-         ->where(['application_enc_id'=>'2DeBxPEjOGdjkjgnV3beQpqANyVYw9','current_round'=>2])
-         ->innerJoin(Users::tableName().'as b','b.user_enc_id = a.created_by')
-         ->asArray()
-         ->all();
-        $k = 0;
-        foreach ($params as $param){
-            Yii::$app->mailer->htmlLayout = 'layouts/email';
-            $mail = Yii::$app->mailer->compose(
-                ['html' => 'job-process-status'],['data'=>$param]
-            )
-                ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
-                ->setTo([$param['email'] => $param['name']])
-                ->setSubject('Your Job Application Has Been Accepted');
-            if ($mail->send()) {
-               $k++;
-            }
-        }
-        echo $k;
     }
 
     public function actionSkill(){
@@ -192,5 +166,29 @@ class TestCacheController extends Controller
         }else{
             echo 1;
         }
+    }
+
+    public function actionApplicationStatusEmail(){
+        $params = AppliedApplications::find()
+            ->alias('a')
+            ->select(['CONCAT(b.first_name," ",b.last_name) name','b.email','a.applied_application_enc_id applied_id'])
+            ->where(['application_enc_id'=>'2DeBxPEjOGdjkjgnV3beQpqANyVYw9','current_round'=>2])
+            ->innerJoin(Users::tableName().'as b','b.user_enc_id = a.created_by')
+            ->asArray()
+            ->all();
+        $k = 0;
+        foreach ($params as $param){
+            Yii::$app->mailer->htmlLayout = 'layouts/email';
+            $mail = Yii::$app->mailer->compose(
+                ['html' => 'job-process-status'],['data'=>$param]
+            )
+                ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+                ->setTo([$param['email'] => $param['name']])
+                ->setSubject('Your Job Application Has Been Accepted');
+            if ($mail->send()) {
+                $k++;
+            }
+        }
+        echo $k;
     }
 }
