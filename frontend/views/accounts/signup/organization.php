@@ -106,6 +106,7 @@ $form = ActiveForm::begin([
         <p id="phone-error" style="color:red;" class="help-block help-block-error"></p>
     </div>
 </div>
+<?= $form->field($model, 'referer',['template'=>'{input}'])->hiddenInput(['value' => Yii::$app->request->referrer])->label(false) ?>
 <div class="row">
     <div class="col-md-12">
         <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary btn-lg btn-block mt-15 main-blue-btn', 'name' => 'register-button']); ?>

@@ -3,6 +3,7 @@
 namespace account\controllers;
 
 use account\models\applications\ApplicationReminderForm;
+use account\models\applications\ExtendsJob;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationReminder;
 use common\models\CandidateRejection;
@@ -23,6 +24,7 @@ use common\models\InterviewProcessFields;
 use common\models\ScheduledInterview;
 use common\models\UserPreferences;
 use common\models\UserSkills;
+use common\models\WebinarRegistrations;
 use frontend\models\script\scriptModel;
 use Yii;
 use yii\web\Controller;
@@ -90,6 +92,7 @@ class DashboardController extends Controller
         }
 
         if (Yii::$app->user->identity->organization) {
+            $extendModel = new ExtendsJob();
             $scriptModel = new scriptModel();
             $viewed = $this->hasViewed();
             $this->_condition = ['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id];
@@ -106,7 +109,8 @@ class DashboardController extends Controller
         if (empty(Yii::$app->user->identity->organization)) {
             $applied_app = EmployerApplications::find()
                 ->alias('a')
-                ->select(['a.application_enc_id application_id', 'e.rejection_type', 'rr.reason', 'i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id applied_id', 'f.status', 'd.icon', 'g.name as org_name', 'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total', 'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
+                ->select(['a.application_enc_id application_id', 'e.rejection_type', 'GROUP_CONCAT(DISTINCT(rr.reason) SEPARATOR ", ") reason',
+                    'i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id applied_id', 'f.status', 'd.icon', 'g.name as org_name', 'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total', 'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
                 ->innerJoin(ApplicationTypes::tableName() . 'as i', 'i.application_type_enc_id = a.application_type_enc_id')
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
                 ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -277,16 +281,16 @@ class DashboardController extends Controller
                         WHEN e1.course_name IS NOT NULL THEN e1.course_name
                         ELSE d.course_name
                         END) as course_name',
-                    ])
-                ->joinWith(['loanApplications b' => function($b){
+                ])
+                ->joinWith(['loanApplications b' => function ($b) {
                     $b->select(['b.loan_app_enc_id', 'b.parent_application_enc_id']);
                 }])
-                ->joinWith(['pathToClaimOrgLoanApplications c' => function($c){
+                ->joinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
                     $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
                         $cc->joinWith(['courseEnc c1']);
                     }], false);
                 }], false)
-                ->joinWith(['pathToUnclaimOrgLoanApplications e' => function($e){
+                ->joinWith(['pathToUnclaimOrgLoanApplications e' => function ($e) {
                     $e->joinWith(['assignedCourseEnc ee' => function ($ee) {
                         $ee->joinWith(['courseEnc e1']);
                     }], false);
@@ -294,8 +298,8 @@ class DashboardController extends Controller
                 ->joinWith(['pathToOpenLeads d'], false)
                 ->joinWith(['assignedLoanProviders f'], false)
                 ->where([
-                    'a.created_by'=>Yii::$app->user->identity->user_enc_id,
-                    'f.status'=>11,
+                    'a.created_by' => Yii::$app->user->identity->user_enc_id,
+                    'f.status' => 11,
                     'a.parent_application_enc_id' => null,
                     'a.is_deleted' => 0,
                 ])
@@ -307,6 +311,34 @@ class DashboardController extends Controller
                 ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'is_deleted' => 0])
                 ->asArray()
                 ->all();
+
+            $dt = new \DateTime();
+            $tz = new \DateTimeZone('Asia/Kolkata');
+            $dt->setTimezone($tz);
+            $date_now = $dt->format('Y-m-d H:i:s');
+
+            $webinar = WebinarRegistrations::find()
+                ->alias('a')
+                ->select(['a.webinar_enc_id', 'b.title', 'CONCAT(b4.first_name, " " ,b4.last_name) as speaker_name',
+                    'CASE WHEN b4.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b4.image_location, "/", b4.image) END speaker_image',
+                    'a.unique_access_link', 'b1.start_datetime', 'b1.duration', 'b.webinar_conduct_on', 'b.slug'
+                ])
+                ->joinWith(['webinarEnc b' => function ($b) use ($date_now) {
+                    $b->joinWith(['webinarEvents b1' => function($b1) use ($date_now){
+                        $b1->joinWith(['webinarSpeakers b2' => function ($b2) {
+                            $b2->joinWith(['speakerEnc b3'=>function($b3){
+                                $b3->joinWith(['userEnc b4']);
+                            }]);
+                        }]);
+                        $b1->onCondition(['>=','b1.start_datetime', $date_now]);
+                    }]);
+                    $b->andWhere(['b1.status' => [0, 1]]);
+                }], false)
+                ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                ->orderBy(['b1.start_datetime' => SORT_ASC])
+                ->asArray()
+                ->one();
+
         } else {
             $childs = OrganizationAssignedCategories::find()
                 ->select(['assigned_category_enc_id'])
@@ -353,7 +385,6 @@ class DashboardController extends Controller
                 ->asArray()
                 ->one();
         }
-
         return $this->render('index', [
             'loanApplication' => $loanApplication,
             'applied' => $applied_app,
@@ -378,6 +409,8 @@ class DashboardController extends Controller
             'userValues' => $this->_CompleteProfile(),
             'userPref' => $this->_CompletePreference(),
             'loan' => $loan,
+            'extendModel' => $extendModel,
+            'webinar' => $webinar
         ]);
     }
 

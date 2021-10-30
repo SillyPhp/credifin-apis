@@ -330,7 +330,7 @@ $this->registerCss("
 }
 .m-widget4 .m-widget4__item .m-widget4__img.m-widget4__img--pic img {
     width: 4rem;
-    border-radius: 50%;
+//    border-radius: 50%;
 }
 .m-widget4 .m-widget4__item .m-widget4__info {
     display: block;

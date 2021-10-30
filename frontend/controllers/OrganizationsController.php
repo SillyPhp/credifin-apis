@@ -167,6 +167,24 @@ class OrganizationsController extends Controller
             return $this->actionCollegeLoans($organization);
         }
 
+        if($type === "courses" && $organization["business_activity"] === "College"){
+            return $this->actionCollegeCourses($organization);
+        }
+        if($type === "infrastructure" && $organization["business_activity"] === "College"){
+            return $this->actionCollegeInfrastructure($organization);
+        }
+        if($type === "faculty" && $organization["business_activity"] === "College"){
+            return $this->actionCollegeFaculty($organization);
+        }
+        if($type === "placement" && $organization["business_activity"] === "College"){
+            return $this->actionCollegePlacement($organization);
+        }
+        if($type === "cutoff" && $organization["business_activity"] === "College"){
+            return $this->actionCollegeCutoff($organization);
+        }
+        if($type === "scholarship" && $organization["business_activity"] === "College"){
+            return $this->actionCollegeScholarship($organization);
+        }
         if ($type === "reviews" && $organization["business_activity"] !== "College") {
             return $this->actionReviews($slug, null);
         } else {
@@ -184,6 +202,84 @@ class OrganizationsController extends Controller
 
         return $this->render('college-profile', [
             "component" => "overview",
+            "isAjax" => 0
+        ]);
+    }
+
+    public function actionCollegeCourses($organization)
+    {
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('profile-components/courses',[
+                   "isAjax" => 1
+                ]);
+        }
+
+        return $this->render('college-profile', [
+            "component" => "courses",
+            "isAjax" => 0
+        ]);
+    }
+
+    public function actionCollegeInfrastructure($organization){
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('profile-components/infrastructure', [
+                "isAjax" => 1
+            ]);
+        }
+
+        return $this->render('college-profile', [
+            "component" => "infrastructure",
+            "isAjax" => 0
+        ]);
+    }
+
+    public function actionCollegeFaculty($organization){
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('profile-components/faculty', [
+                "isAjax" => 1
+            ]);
+        }
+
+        return $this->render('college-profile', [
+            "component" => "faculty",
+            "isAjax" => 0
+        ]);
+    }
+
+    public function actionCollegePlacement($organization){
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('profile-components/placement', [
+                "isAjax" => 1
+            ]);
+        }
+
+        return $this->render('college-profile', [
+            "component" => "placement",
+            "isAjax" => 0
+        ]);
+    }
+
+    public function actionCollegeCutoff($organization){
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('profile-components/cutoff', [
+                "isAjax" => 1
+            ]);
+        }
+
+        return $this->render('college-profile', [
+            "component" => "cutoff",
+            "isAjax" => 0
+        ]);
+    }
+    public function actionCollegeScholarship($organization){
+        if(Yii::$app->request->isAjax){
+            return $this->renderAjax('profile-components/scholarship', [
+                "isAjax" => 1
+            ]);
+        }
+
+        return $this->render('college-profile', [
+            "component" => "scholarship",
             "isAjax" => 0
         ]);
     }
@@ -1158,7 +1254,6 @@ class OrganizationsController extends Controller
             $model->load(Yii::$app->request->post());
             return ActiveForm::validate($model);
         }
-
         if (Yii::$app->request->isAjax) {
             return $this->renderAjax('profile-components/loans', [
                 "isAjax" => 1,

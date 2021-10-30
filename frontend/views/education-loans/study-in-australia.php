@@ -8,7 +8,7 @@ use borales\extensions\phoneInput\PhoneInput;
 $this->title = 'Study in Australia';
 $keywords = 'Study in Australia | Empower Youth';
 $description = 'Do not let financial burden stop you from fulfilling your desire to study in your dream college.';
-$image = Url::to('@eyAssets/images/pages/education-loans/study-in-australia.png', 'https');
+$image = Url::to('@eyAssets/images/pages/education-loans/study-australia.png', 'https');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
@@ -134,7 +134,8 @@ if($blogs['blogs']){
 };
 ?>
 <?= $this->render('/widgets/loan-form-detail',[
-    'model' => $model
+    'model' => $model,
+    'param' => 'Study in Australia'
 ]); ?>
 <?= $this->render('/widgets/press-releasee',[
     'data' => $data,

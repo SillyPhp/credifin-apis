@@ -4,35 +4,63 @@
 //}
 ?>
     <div class="container">
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="set-sticky">
-                        <h1 class="heading-style">Reviews </h1>
-                        <div id="org-reviews"></div>
-                        <div class="load-more-bttn">
-                            <button type="button" id="load_more_btn">Load More</button>
-                        </div>
+        <div class="row">
+            <div class="col-md-12 text-center mb15 r_type_btns">
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="set-sticky">
+                    <h1 class="heading-style">Reviews </h1>
+                    <div id="org-reviews"></div>
+                    <div class="load-more-bttn">
+                        <button type="button" id="load_more_btn">Load More</button>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="set-sticky">
-                        <div class="review-summary">
-                            <h1 class="heading-style">Overall Ratings</h1>
-                            <div id="reviewSum"></div>
-                        </div>
+            </div>
+            <div class="col-md-4">
+                <div class="set-sticky">
+                    <div class="review-summary">
+                        <h1 class="heading-style">Overall Ratings</h1>
+                        <div id="reviewSum"></div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
 <?php
 echo $this->render('/widgets/mustache/college-review-card');
+echo $this->render('/widgets/mustache/organization-unclaimed-college-reviews');
 $user_id = '';
 if(!Yii::$app->user->isGuest){
     $user_id = Yii::$app->user->identity->user_enc_id;
 }
 $this->registerCSS('
-
+.display-flex{
+    display: flex;
+    align-items: center;
+    justify-content: space-between
+}
+.mb15{
+    margin-bottom: 15px;
+}
+.mr15{
+    margin-right: 5px;
+}
+.reviewType{
+    background: transparent;
+    padding: 10px 15px;
+    border: 1px solid #00a0e3;
+    color: #00a0e3;
+    border-radius: 10px;
+    font-size: 14px;
+}
+.reviewType.reviewActive{
+    background: #00a0e3;
+    color: #fff;
+}
 .rev-image {
 	text-align: center;
 	margin: 40px;
@@ -402,38 +430,87 @@ $this->registerCSS('
 $script = <<<JS
 var user_id = '$user_id';
 var baseUrl = '';
-function getReviews(){
-    var org_enc_id = $('#orgDetail').attr('data-id');
+
+reviewObj = {
+    org_id: '',
+    fetchReviews(org_id, type='employee'){
+        getReviews(org_id, type)
+        getUserReviews(org_id, '', '', type)
+    },
+    get getOrgId(){
+        return this.org_id;
+    },    
+    set setOrgId(org_id){
+        this.org_id = org_id;
+        this.fetchReviews(org_id);
+    } 
+}
+if(collegeStats != null){
+    reviewObj.fetchReviews(collegeStats.organization_enc_id);
+}
+
+function getReviews(org_id=null, type=null){
     $.ajax({
         url: baseUrl+"/api/v3/ey-college-profile/reviews",
         method: 'POST',
-        data: {org_enc_id:org_enc_id},
+        data: {org_enc_id:org_id},
         success: function (res){
             if(res.response.status == 200){
-                let overall_rating = res.response.data.overall_rating;
-                let reviewSideStats = reviewStats(overall_rating);
+                let reviewSideStats = '';
+                if(type == 'employee'){
+                    reviewSideStats = reviewStats(res.response.data.overall_rating);
+                }else{
+                    reviewSideStats = studentReviewStats(res.response.data.student_overall_rating);
+                }
                 if(reviewSideStats){
+                    $('#reviewSum').empty();
                     $('#reviewSum').append(reviewSideStats);
+                }
+                let reviewType = document.querySelectorAll('.reviewType');
+                if(reviewType.length == 0){
+                    showBtns(res['response']['data']['org_detail']);
                 }
             }
         }
     })
 }
-getReviews();
+
+function showBtns(org_details){
+    if(org_details.org_type == 'unclaimed'){
+        var btns = `<button data-type="employee" class="reviewType mr15 reviewActive">Employee</button>
+            <button data-type="student" class="reviewType">Student</button>`;
+        $('.r_type_btns').append(btns);
+    }
+}
+
+$(document).on('click', '.reviewType', function (){
+    let reviewActive = document.querySelectorAll('.reviewActive');
+    if(reviewActive.length > 0){
+        reviewActive[0].classList.remove('reviewActive')
+    }
+    event.target.classList.add('reviewActive');
+    let type = event.target.getAttribute('data-type');
+    reviewObj.fetchReviews(collegeStats.organization_enc_id, type)
+})
+
 $('.showReviews').on('click', function (e){
-   getUserReviews(3,"",e.target.getAttribute('data-id')); 
+   getUserReviews("", 3,"",e.target.getAttribute('data-id')); 
 });
 var count = 0;
 var page = 1;
-function getUserReviews(limit=3, page=null, type){
-    var org_enc_id = $('#orgDetail').attr('data-id');
+function getUserReviews(org_id=null, limit=3, page=null, type=null){
+    var org_enc_id = org_id;
     $.ajax({
         url: baseUrl+'/api/v3/ey-college-profile/user-reviews',
         method: 'POST',
         data: {org_enc_id:org_enc_id, limit:limit, page:page, type:type, user_enc_id:user_id},
         success: function (res){
             if(res.response.status == 200){
-                var reviews_data = $('#organization-reviews').html();
+                if(type == 'employee'){
+                    var reviews_data = $('#organization-reviews').html();
+                }else{
+                    var reviews_data = $('#organization-student-reviews').html();
+                }
                 $("#org-reviews").html('')
                 let dataRev = res.response.data.reviews
                 for(var i = 0; i < dataRev.length; i++){
@@ -459,7 +536,6 @@ function getUserReviews(limit=3, page=null, type){
                     $('#load_more_btn').hide(); 
                     $("#org-reviews").html("<p class='noReview'>No Review's To Display</p>");
                 }
-                console.log($("#org-reviews").children().length)
                 count = count+limit;
             }else if(res.response.status == 404){
                    $('#load_more_btn').hide(); 
@@ -468,7 +544,6 @@ function getUserReviews(limit=3, page=null, type){
         }
     })
 }
-getUserReviews(3,"",'employee');
 
 $(document).on('click','#load_more_btn',function(e){
     e.preventDefault();
@@ -548,6 +623,84 @@ function reviewStats(overall_rating){
                 <div class="summary-box">
                     <div class="sr-rating">`+showRatingNum(Skill_Development)+`</div>
                     <div class="fourstar-box com-rating-2">`+ showStars(Skill_Development)+`</div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+    return reviewStat;
+}
+function studentReviewStats(student_overall_rating){
+    const {Academics, Accomodation_Food, Culture_Diversity ,Faculty_Teaching_Quality, Infrastructure, 
+    Placements_Internships, Social_Life_Extracurriculars, average_count} =  student_overall_rating   
+    let reviewStat = ` <div class="row">
+        <div class="col-md-12 col-sm-4">
+            <div class="rs-main">
+                <div class="rating-large">`+showRatingNum(average_count)+`/5</div>
+                <div class="com-rating-1">`+ showStars(average_count) +`</div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+         <div class="col-md-12 col-sm-4">
+            <div class="rs1">
+                <div class="re-heading">Academics</div>
+                <div class="summary-box">
+                    <div class="sr-rating">`+showRatingNum(Academics)+`</div>
+                    <div class="fourstar-box com-rating-2">`+  showStars(Academics) +`</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-4">
+            <div class="rs1">
+                <div class="re-heading">Accomodation Food</div>
+                <div class="summary-box">
+                    <div class="sr-rating">`+showRatingNum(Accomodation_Food)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Accomodation_Food)+`</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-4">
+            <div class="rs1">
+                <div class="re-heading">Culture Diversity</div>
+                <div class="summary-box">
+                    <div class="sr-rating">`+showRatingNum(Culture_Diversity)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Culture_Diversity)+`</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-4">
+            <div class="rs1">
+                <div class="re-heading">Faculty Teaching Quality</div>
+                <div class="summary-box">
+                    <div class="sr-rating">`+showRatingNum(Faculty_Teaching_Quality)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Faculty_Teaching_Quality)+`</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-4">
+            <div class="rs1">
+                <div class="re-heading">Infrastructure</div>
+                <div class="summary-box">
+                    <div class="sr-rating">`+showRatingNum(Infrastructure)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Infrastructure)+`</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-sm-4">
+            <div class="rs1">
+                <div class="re-heading">Placements Internships</div>
+                <div class="summary-box">
+                    <div class="sr-rating">`+showRatingNum(Placements_Internships)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Placements_Internships)+`</div>
+                </div>
+            </div>
+        </div>
+           <div class="col-md-12 col-sm-4">
+            <div class="rs1">
+                <div class="re-heading">Social Life Extracurriculars</div>
+                <div class="summary-box">
+                    <div class="sr-rating">`+showRatingNum(Social_Life_Extracurriculars)+`</div>
+                    <div class="fourstar-box com-rating-2">`+ showStars(Social_Life_Extracurriculars)+`</div>
                 </div>
             </div>
         </div>

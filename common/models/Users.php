@@ -4220,4 +4220,8 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(ShortlistedApplicants::className(), ['last_updated_by' => 'user_enc_id']);
     }
+    public function getSkillsUpPosts0()
+    {
+        return $this->hasMany(SkillsUpPosts::className(), ['created_by' => 'user_enc_id']);
+    }
 }

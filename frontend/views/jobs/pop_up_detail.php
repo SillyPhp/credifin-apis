@@ -105,21 +105,23 @@ if ($type == 'Internships') {
                             </div>
                             <div class="buttons-detail">
                                 <?php
-                                if ($application_details['applied']) {
-                                    ?>
-                                    <a href="javascript:;" class="b-apply">Applied</a>
-                                    <?php
-                                } else if (!$application_details['unclaimed_organization_enc_id']) {
-                                    ?>
-                                    <a href="javascript:;" data-app="<?= $application_details['application_enc_id']; ?>"
-                                       data-org="<?= $application_details['organization_enc_id']; ?>"
-                                       class="b-apply applyApplicationNow <?= $application_details['application_enc_id']; ?>-apply-now">Apply
-                                        Now</a>
-                                    <?php
-                                } else {
-                                    ?>
-                                    <a href="<?= $application_details['link'] ?>" target="_blank" class="b-apply">Apply Now</a>
-                                    <?php
+                                if(!Yii::$app->user->identity->organization->organization_enc_id){
+                                    if ($application_details['applied']) {
+                                        ?>
+                                        <a href="javascript:;" class="b-apply">Applied</a>
+                                        <?php
+                                    } else if (!$application_details['unclaimed_organization_enc_id']) {
+                                        ?>
+                                        <a href="javascript:;" data-app="<?= $application_details['application_enc_id']; ?>"
+                                           data-org="<?= $application_details['organization_enc_id']; ?>"
+                                           class="b-apply applyApplicationNow <?= $application_details['application_enc_id']; ?>-apply-now">Apply
+                                            Now</a>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <a href="<?= $application_details['link'] ?>" target="_blank" class="b-apply">Apply Now</a>
+                                        <?php
+                                    }
                                 }
                                 ?>
                                 <a href="<?= $application_details['link'] ?>" target="_blank" class="view-detail">View Detail</a>
@@ -255,6 +257,10 @@ if ($type == 'Internships') {
                                        onclick="window.open('<?= Url::to('https://t.me/share/url?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                         <i class="fab fa-telegram-plane"></i>
                                     </a>
+                                    <a href="javascript:;" class="copy jj-clipboard" type="button" data-toggle="tooltip"
+                                       title="Copy Link" data-link="<?= $application_details['link'] ?>">
+                                        <i class="fas fa-clipboard"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -264,6 +270,7 @@ if ($type == 'Internships') {
                                 ?>
                                 <h3 class="job-detail">Description</h3>
                                 <div class="j-text j-textt">
+                                    <div class="overlay"></div>
                                     <p>
                                         <?= $data['description'] ?>
                                     </p>
@@ -327,6 +334,9 @@ $this->registerCss('
 }
 .j-textt{
 	max-height: 364px;
+}
+.overlay {
+    background: linear-gradient(180deg, transparent 80%, #ffffff 94%);
 }
 .read-moree{
     height:auto;
@@ -405,17 +415,34 @@ $this->registerCss('
 	-o-border-radius: 8px;
 	border-radius: 8px;
 	padding:15px;
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: flex-start;
-	align-items: flex-start;
     background: #fff;
+    height: 359px;
+    overflow: auto;
 }
+.job-overviews::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+    border-radius: 0 8px 8px 0;
+}
+
+.job-overviews::-webkit-scrollbar
+{
+	width: 8px;
+	background-color: #F5F5F5;
+}
+
+.job-overviews::-webkit-scrollbar-thumb
+{
+	background-color: #999999;
+    border-radius: 0 8px 8px 0;
+}
+
 .job-overviews li {
 	width: 100%;
 	position: relative;
 	padding-left: 50px;
-	margin: 8px 2px;
+	margin-bottom: 15px;
 	min-height: 45px;
 }
 .job-overviews li i {
@@ -591,6 +618,10 @@ h3.job-detail {
    color:#0088cc;
     border-color:#0088cc;  
 }
+.share-bar a.copy{
+    color:#22577A;
+     border-color:#22577A;  
+ }
 .share-bar a:hover{
     color: #fff;
     transition: 0.2s all ease-in;
@@ -616,6 +647,34 @@ h3.job-detail {
 .share-bar a.tg-tele:hover{
    background-color:#0088cc;
     border-color:#0088cc;  
+}
+.share-bar a.copy:hover{
+    background-color:#22577A;
+     border-color:#22577A;  
+ }
+ #myTooltip:after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background: #222;
+    display: block;
+    position: absolute;
+    transform: translateY(-50%);
+    transform: rotate(45deg) translate(-93%);
+    left: 50%;
+    border-radius: 2px;
+    z-index: -1;
+}
+#myTooltip {
+    position: absolute;
+    font-size: 13px;
+    color: #fff;
+    background: #222;
+    width: 70px;
+    border-radius: 5px;
+    top: -30px;
+    transform: translateX(-50%);
+    display: none;
 }
 
 .com-name{ 
@@ -650,8 +709,8 @@ h3.job-detail {
     width: 100px;
     height: 100px;
     overflow: hidden;
-    box-shadow: 0 0 10px 0px rgb(0 0 0 / 30%);
-    border-radius: 70px;
+    // box-shadow: 0 0 10px 0px rgb(0 0 0 / 30%);
+    // border-radius: 70px;
     min-width: 100px;
 }
 .company-logo img {
@@ -746,6 +805,7 @@ h3.job-detail {
     background: #888888;
     content: "";
 }
+
 @media only screen and (max-width:992px){
     .job-overviews li{flex-basis:49%;}
     .j-details{
@@ -792,6 +852,19 @@ $script = <<<js
 //       status.addClass('j-textt');
 //   }
 // });
+$(document).on('click', '.jj-clipboard',function (event) {
+            event.preventDefault();
+            var link = window.location.hostname + $(this).attr('data-link');
+            CopyToClipboard(link, true, "Link copied");
+        });
+function CopyToClipboard(value, showNotification, notificationText) {
+        var temp = $("<input>");
+        $("body").append(temp);
+        temp.val(value).select();
+        document.execCommand("copy");
+        temp.remove();
+        toastr.success("", "Link Copy to Clipboard");
+    }
 if(document.getElementsByClassName('j-text')[0].scrollHeight <= 394){
     document.getElementsByClassName('read-more')[0].classList.add('hidden');
 }
@@ -801,7 +874,7 @@ utilities.initials();
 var load_template = `<div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-body"><img src="/assets/themes/dashboard/global/img/loading-spinner-grey.gif" class="loading"><span>Loading... </span></div></div></div>`;
 $(document).on("click", ".jd-close", function(){
     $("#pop_up_modal").modal("hide");
-    $("#pop_up_modal").html(load_template);
+    $("#pop_up_modal").html(load_template);    
 });
 ');
 $this->registerJs($script);

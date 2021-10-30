@@ -190,6 +190,7 @@ use yii\widgets\Pjax;
                                 echo $this->render('/widgets/applications/card', [
                                     'applications' => $applications['data'],
                                     'per_row' => 4,
+                                    'type' => 'Internship',
                                     'col_width' => 'col-lg-4 col-md-4 col-sm-4',
                                 ]);
                             } else {
@@ -238,6 +239,7 @@ use yii\widgets\Pjax;
                                     'applications' => $erexx_applications['data'],
                                     'card_type' => 'mec_card',
                                     'per_row' => 4,
+                                    'type' => 'Internship',
                                     'col_width' => 'col-lg-4 col-md-4 col-sm-4',
                                 ]);
                             } else {

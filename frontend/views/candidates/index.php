@@ -41,7 +41,10 @@ $this->params['seo_tags'] = [
 ?>
 
 <!--Modal-->
-<div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+<?php
+    if(Yii::$app->user->identity->organization->organization_enc_id){
+?>
+    <div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" id="profiles">
         <!-- Modal content-->
         <div class="modal-content">
@@ -86,9 +89,12 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </div>
+<?php
+    }
+?>
 
 <section>
-    <div class="container">
+    <div class="container-fluid">
         <div class="col-md-3 col-sm-4 mobile-hidden" id="filters">
             <form>
                 <div class="filters">
@@ -149,7 +155,7 @@ $this->params['seo_tags'] = [
                 </div>
             </form>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9 col-sm-8">
             <div class="row" id="user_cards"></div>
             <?php
             echo $this->render('/widgets/users/preloaders/candidates');
@@ -194,6 +200,9 @@ $this->params['seo_tags'] = [
 </section>
 <?php
 $this->registerCss('
+.ps__thumb-x{
+	display: none !important;
+}
 .colorBlue{
     color:#00a0e3;
     font-size:12px;
@@ -216,10 +225,11 @@ a#reset-salary:hover {
 }
 .btns-b {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    margin-top: 9px;
 }
 .v-detail, .short-btn {
-    flex-basis:50%;
+    flex-basis:47%;
 }
 .full-wi{
     flex-basis:100%;
@@ -283,19 +293,21 @@ button.viewall-jobs {
 }
 .paid-candidate-container {
 	background: #ffffff;
-	border-radius: 6px !important;
-	overflow: hidden;
-	text-align: center;
-	margin-bottom: 30px;
-	position: relative;
-	transition: .4s;
-	border: 1px solid #eaeff5;
-	box-shadow: 0 0px 14px rgba(0, 0, 0, 0.1);
+    border-radius: 6px !important;
+    overflow: hidden;
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+    transition: .4s;
+    border: 1px solid #eaeff5;
+    box-shadow: 0 0px 14px rgb(0 0 0 / 10%);
+    padding: 15px;
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 .paid-candidate-inner--box {
-    display: flex;
-    justify-content:flex-start;
-    align-items: center;
     margin-bottom:5px;
 }
 .paid-candidate-container:hover,
@@ -317,7 +329,6 @@ button.viewall-jobs {
 }
 .paid-candidate-box {
 	text-align: center;
-	padding: 20px 15px 10px;
 }
 .paid-candidate-status {
 	position: absolute;
@@ -344,18 +355,19 @@ button.viewall-jobs {
 .paid-candidate-box-detail {
     flex-basis: 70%;
     text-align: left;
-    margin: 0 0 0 10px;
+	margin-top: 10px;
 }
 .paid-candidate-box-detail h4 {
 	margin-bottom: 4px;
-	margin-top:0;
-	font-size: 18px;
-	text-overflow: ellipsis;
-	-webkit-line-clamp: 1;
-	-webkit-box-orient: vertical;
-	display: -webkit-inline-box;
-	overflow: hidden;
-	text-transform: capitalize
+    margin-top: 0;
+    font-size: 18px;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-inline-box;
+    overflow: hidden;
+    text-transform: capitalize;
+    font-weight: 700;
 }
 .paid-candidate-box-exp {
 	display: flex;
@@ -365,45 +377,46 @@ button.viewall-jobs {
 .paid-candidate-box-detail .location,
 .paid-candidate-box-exp .desination {
 	font-weight: 500;
-	font-size: 15px;
-	color: #677484;
-	height: 27px;
-//	padding: 5px 20px 0;
-	text-overflow: ellipsis;
-	-webkit-line-clamp: 1;
-	-webkit-box-orient: vertical;
-	display: -webkit-box;
-	overflow: hidden;
+    /* font-size: 15px; */
+    color: #677484;
+    /* height: 21px; */
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+    margin-top: -13px;
 }
+
 .paid-candidate-box-extra ul {
-//	margin: 10px 0;
 	padding: 0;
-	min-height: 28px;
-	height: 28px;
-	overflow: hidden;
-	text-align:left;
+    max-height: 24px;
+    overflow: hidden;
+    text-align: left;
 }
-.paid-candidate-box-extra ul li {
-	list-style: none;
-	padding: 1px 5px;
-//	border: 1px solid #b9c5ce;
-	border-radius: 50px !important;
-	margin: 1px 0;
-	font-weight: 400;
-	color: #657180;
-	text-overflow: ellipsis;
-	-webkit-line-clamp: 1;
-	-webkit-box-orient: vertical;
-	display: -webkit-inline-box;
-	overflow: hidden;
-	font-family:roboto;
+.paid-candidate-box-extra ul li:not(:first-child) {
+    display: inline;
+    padding: 0 2px 0 0;
+    padding: 1px 8px;
+    border-radius: 3px;
+}
+.paid-candidate-box-extra:nth-child(2) ul li:not(:first-child){
+	color: #00a0e3;
+    background: #00a0e325;
 }
 .skills-h {
     font-weight: 500 !important;
+    display: inline;
 }
 .paid-candidate-box-extra ul li.more-skill {
-	color: #ffffff;
+    color: #fff !important;
+    background-color: #337ab7 !important;
+}
+.paid-candidate-box-extra ul li.more-skill {
 	border-color: #1194f7;
+}
+.paid-candidate-box-extra:nth-child(3) {
+    margin-top: 7px;
 }
 a.btn.btn-paid-candidate {
 	padding: 10px !important;
@@ -415,8 +428,6 @@ a.btn.btn-paid-candidate {
 }
 a.btn.btn-paid-candidate:hover,
 a.btn.btn-paid-candidate:focus {
-	background: #00a0e3;
-	color: #ffffff;
 	-webkit-transition: all .3s ease-in-out;
 	-moz-transition: all .3s ease-in-out;
 	-o-transition: all .3s ease-in-out;
@@ -816,7 +827,7 @@ form input[type="text"]:focus {
 	border-radius: 10px;
 	width: 260px;
 	overflow-y: scroll;
-	height: 500px;
+	height: 85vh;
 	position: relative;
 }
 .overall-box-heading {
@@ -932,6 +943,16 @@ form input[type="text"]:focus {
 	transform: translateY(-50%);
 	cursor: pointer;
 	transition: all 200ms ease-in;
+}
+
+@media only screen and (min-width: 1440px){
+	
+	.p-category-main{
+		width: 33.33% !important;
+	}
+	.f-ratings{
+		width: 100%;
+	}
 }
 ');
 
@@ -1120,60 +1141,62 @@ $(document).on('click', 'a#reset-salary', function (e) {
        from: 5000,
        to: 5000,
      });
-// $(document).ready(function () {
-    var ths = $('#rangess');
-    var thsVal = null;
-    var thsCls = ths.attr('class').split(' ')[0];
+
+    // var ths = $('#rangess');
+    // var thsVal = null;
+    // var thsCls = ths.attr('class').split(' ')[0];
 	load_more_cards = true;
 	$('#user_cards').html(" ");
 	$('.loading-main').show();
-	exp_params = [];
-	var params = unescape(window.location.search.substring(1));
-	var cls_loc = params.match(/locations=/g);
-    var cls_jt = params.match(/job_titles=/g);
-    var cls_sk = params.match(/skills=/g);
-    var cls_sal = params.match(/salary=/g);
-    var p = [];
-    $.each(params.split("&"),function(index,value) {
-        exp_params.push(value);
-        $.each(value.split("="),function(i,v) {
-            p.push(v);
-        });
-    });
-    $.each(p, function(i,v) {
-        if(v == thsCls){
-            var str = [];
-            if(thsVal != null){
-                $.each(thsVal.split(";"),function(index,value) {
-                    str.push(value);
-                });
-                p[i+1] = str[0]+','+str[1];
-            } else {
-                p[i+1] = "";
-            }
-        }
-    });
-    var cur_params = "?";
-    $.each(p,function(i, v) {
-        if(i === 0){
-            cur_params = cur_params + v;
-        } else {
-            if(i % 2 === 0){
-                cur_params = cur_params + '&' + v;
-            } else {
-                cur_params = cur_params + '=' + v;
-            }
-        }
-    });
-	history.pushState('data', 'title', cur_params);
-	var cur_url = '/candidates' + window.location.search;
+    $('input[type=checkbox]').prop('checked', false);
+	// exp_params = [];
+	// var params = unescape(window.location.search.substring(1));
+	// var cls_loc = params.match(/locations=/g);
+    // var cls_jt = params.match(/job_titles=/g);
+    // var cls_sk = params.match(/skills=/g);
+    // var cls_sal = params.match(/salary=/g);
+    // var p = [];
+    // $.each(params.split("&"),function(index,value) {
+    //     exp_params.push(value);
+    //     $.each(value.split("="),function(i,v) {
+    //         p.push(v);
+    //     });
+    // });
+    // $.each(p, function(i,v) {
+    //     if(v == thsCls){
+    //         var str = [];
+    //         if(thsVal != null){
+    //             $.each(thsVal.split(";"),function(index,value) {
+    //                 str.push(value);
+    //             });
+    //             p[i+1] = str[0]+','+str[1];
+    //         } else {
+    //             p[i+1] = "";
+    //         }
+    //     }
+    // });
+    // var cur_params = "?";
+    // $.each(p,function(i, v) {
+    //     if(i === 0){
+    //         cur_params = cur_params + v;
+    //     } else {
+    //         if(i % 2 === 0){
+    //             cur_params = cur_params + '&' + v;
+    //         } else {
+    //             cur_params = cur_params + '=' + v;
+    //         }
+    //     }
+    // });
+    // console.log(cur_params);
+	history.pushState('data', 'title', '/candidates');
+	var cur_url = '/candidates';
 	offset = 0;
 	getUserCards(offset, cur_url, 'html');
 });
     
 var xhr;
 $(document).ready(function () {
-	$(document).on('keyup', 'input[type=text]', function () {
+	$(document).on('keyup', '.f-search-loc input[type=text]', function () {
 		var ths = $(this);
 		var id = ths.attr('id').slice(0, -7);
 		var val = ths.val();
@@ -1269,7 +1292,8 @@ $(document).on('click', '.shortlist-main', function (event) {
 		}
 	});
 });
-document.getElementById('submitData').addEventListener('click', function () {
+if(document.getElementById('submitData')){
+    document.getElementById('submitData').addEventListener('click', function () {
 	var applications = document.getElementsByName('applications');
 	var selected_value;
 	for (var i = 0; i < applications.length; i++) {
@@ -1293,6 +1317,7 @@ document.getElementById('submitData').addEventListener('click', function () {
 		}
 	});
 });
+}
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');

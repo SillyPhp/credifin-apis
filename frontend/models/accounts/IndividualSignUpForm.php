@@ -22,6 +22,7 @@ class IndividualSignUpForm extends Model
 
     public $username;
     public $email;
+    public $referer;
     public $new_password;
     public $confirm_password;
     public $first_name;
@@ -51,7 +52,8 @@ class IndividualSignUpForm extends Model
     {
         return [
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password'], 'required'],
-            [['loan_id_ref'],'safe'],
+            [['loan_id_ref', 'referer'],'safe'],
+            ['referer', 'string'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password'], 'trim'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['username'], 'string', 'length' => [3, 20]],

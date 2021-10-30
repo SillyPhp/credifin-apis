@@ -404,8 +404,8 @@ class CandhomeController extends ApiBaseController
                     'cc.is_college_approved',
                 ])
                 ->joinWith(['applicationEnc c' => function ($c) {
-                    $c->joinWith(['organizationEnc bb'],false);
-                    $c->innerJoinWith(['erexxEmployerApplications cc'],false);
+                    $c->joinWith(['organizationEnc bb'], false);
+                    $c->innerJoinWith(['erexxEmployerApplications cc'], false);
                     $c->joinWith(['designationEnc dd'], false)
                         ->joinWith(['title d' => function ($d) {
                             $d->joinWith(['parentEnc e']);
@@ -839,8 +839,8 @@ class CandhomeController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $webinar = new \common\models\extended\Webinar();
-            $webinar = $webinar->webinarsList($college_id['organization_enc_id']);
+            $webinar_model = new \common\models\extended\Webinar();
+            $webinar = $webinar_model->webinarsList($college_id['organization_enc_id']);
 
             $webinars = [];
             if (!empty($webinar)) {
@@ -849,9 +849,10 @@ class CandhomeController extends ApiBaseController
                     $registered_count = WebinarRegistrations::find()
                         ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $w['webinar_enc_id']])
                         ->count();
-                    $webinar[$i]['count'] = $registered_count + 320;
+                    $webinar[$i]['count'] = ($webinar['slug'] == 'new-age-investment-strategies-10407') ? ($registered_count * 2) : $registered_count;
                     $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
                     $webinar[$i]['is_registered'] = $user_registered;
+                    $webinar[$i]['webinarRegistrations'] = $webinar_model->registeredUsers($w['webinar_enc_id']);
                     $webinar[$i]['is_paid'] = $w['price'] ? true : false;
                     if ($w['webinarEvents']) {
                         array_push($webinars, $webinar[$i]);
@@ -925,6 +926,16 @@ class CandhomeController extends ApiBaseController
 
     public function actionWebinarDetail()
     {
+        $param = Yii::$app->request->post();
+
+        if (isset($param['webinar_id']) && !empty($param['webinar_id'])) {
+            $webinar_id = $param['webinar_id'];
+        } else {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        $webinar_model = new \common\models\extended\Webinar();
+
         if ($user = $this->isAuthorized()) {
 
             $user_id = $user->user_enc_id;
@@ -935,51 +946,60 @@ class CandhomeController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $param = Yii::$app->request->post();
+            $webinar = $webinar_model->webinarDetail($college_id['organization_enc_id'], $webinar_id);
+        } else {
+            $webinar = $webinar_model->webinarDetail(null, $webinar_id);
+        }
 
-            if (isset($param['webinar_id']) && !empty($param['webinar_id'])) {
-                $webinar_id = $param['webinar_id'];
-            } else {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
-            }
-
-            $webinar = new \common\models\extended\Webinar();
-            $webinar = $webinar->webinarDetail($college_id['organization_enc_id'], $webinar_id);
-
-            if (!empty($webinar)) {
-                $registered_count = WebinarRegistrations::find()
-                    ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
-                    ->count();
-                $webinar['registered_count'] = $registered_count + 320;
+        if (!empty($webinar)) {
+            if ($user = $this->isAuthorized()) {
+                $user_id = $user->user_enc_id;
                 $user_registered = $this->userRegistered($webinar['webinar_enc_id'], $user_id);
-                $webinar['is_registered'] = $user_registered;
                 $webinar['interest_status'] = $this->interested($webinar['webinar_enc_id'], $user_id);
-                $date = new \DateTime($webinar['event']['start_datetime']);
-                $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
-                $webinar['seconds'] = $seconds;
-                $webinar['is_started'] = ($seconds < 0 ? true : false);
-                foreach ($webinar['events'] as $k => $a) {
-                    $j = 0;
-                    foreach ($a as $t) {
-                        $date = new \DateTime($t['start_datetime']);
-                        $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
-                        $is_started = ($seconds < 0 ? true : false);
-                        $webinar['events'][$k][$j]['seconds'] = $seconds;
-                        $webinar['events'][$k][$j]['is_started'] = $is_started;
-                        $j++;
-                    }
+            } else {
+                $user_registered = 0;
+                $webinar['interest_status'] = null;
+            }
+            $registered_count = WebinarRegistrations::find()
+                ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
+                ->count();
+
+            $webinar['webinarRegistrations'] = $webinar_model->registeredUsers($webinar['webinar_enc_id']);
+            $interested_count = UserWebinarInterest::find()
+                ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'interest_status' => 1])->count();
+
+            $webinar['registered_count'] = ($webinar['slug'] == 'new-age-investment-strategies-10407') ? ($registered_count * 2) : $registered_count;
+            $webinar['interested_count'] = $interested_count;
+
+            $webinar['is_registered'] = $user_registered;
+
+            $date = new \DateTime($webinar['event']['start_datetime']);
+            $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+            $webinar['seconds'] = $seconds;
+            $webinar['is_started'] = ($seconds < 0 ? true : false);
+            $webinar['user_unique_link'] = null;
+            if ($webinar['webinar_conduct_on'] == 1) {
+                $webinar['user_unique_link'] = WebinarRegistrations::findOne(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id])->unique_access_link;
+            }
+            foreach ($webinar['events'] as $k => $a) {
+                $j = 0;
+                foreach ($a as $t) {
+                    $date = new \DateTime($t['start_datetime']);
+                    $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+                    $is_started = ($seconds < 0 ? true : false);
+                    $webinar['events'][$k][$j]['seconds'] = $seconds;
+                    $webinar['events'][$k][$j]['is_started'] = $is_started;
+                    $j++;
                 }
             }
-
-            if ($webinar) {
-                return $this->response(200, ['status' => 200, 'data' => $webinar]);
-            } else {
-                return $this->response(404, ['status' => 404, 'message' => 'not found']);
-            }
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+
+        if ($webinar) {
+            return $this->response(200, ['status' => 200, 'data' => $webinar]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+
     }
 
     private function userRegistered($webinar_id, $user_id)

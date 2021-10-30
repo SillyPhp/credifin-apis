@@ -8,11 +8,6 @@ use yii\helpers\Url;
 $separator = Yii::$app->params->seo_settings->title_separator;
 $slug = $org['slug'];
 $this->params['url'] = $org['website'];
-echo $this->render('/widgets/drop_resume', [
-    'username' => Yii::$app->user->identity->username,
-    'type' => 'application',
-    'slug' => $slug
-]);
 $job_heading = (($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name']));
 if ($type == 'Job') {
     if (!empty($data2['interview_process_enc_id'])) {
@@ -452,6 +447,22 @@ if ($settings["showNewPositionsWidget"]):
         <div class="blogbox"></div>
     </div>
 </div>
+<?php
+ if($similar_companies){
+?>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="heading-style">Similar Companies</div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <?=
+        $this->render('/widgets/similar-companies', ['companies' => $similar_companies]);
+        ?>
+    </div>
+</div>
+<?php } ?>
 
 <div class="container">
     <div class="row">
@@ -591,9 +602,18 @@ if (!empty($data2) && Yii::$app->params->options->showSchema) {
 
 
 
+
     </script>
     <?php
 }
+?>
+
+<?php
+echo $this->render('/widgets/drop_resume', [
+    'username' => Yii::$app->user->identity->username,
+    'type' => 'application',
+    'slug' => $slug
+]);
 ?>
 <script>
     function copyToClipboard() {
@@ -609,6 +629,7 @@ echo $this->render('/widgets/mustache/courses-card');
 $app_profile = (($data1['name']) ? $data1['name'] : $data2['name']);
 $keywords = urlencode($searchItems);
 $this->registerCss("
+.footer{margin-top:0 !important;}
 .new-row{
 	padding: 0;
 	margin-top: 20px;

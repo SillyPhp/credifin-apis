@@ -20,7 +20,8 @@ use yii\widgets\Pjax;
                             'jobsByLocation' => $jobsByLocation,
                         ]) ?>
                         <div class="col-md-12 text-center">
-                            <a href="<?= Url::to('/jobs/list?location='.$preferredLocations)?>" class="jbl-viewall viewall-jobs">View All</a>
+                            <a href="<?= Url::to('/jobs/list?location=' . $preferredLocations) ?>"
+                               class="jbl-viewall viewall-jobs">View All</a>
                         </div>
                     </div>
                 </div>
@@ -39,7 +40,8 @@ use yii\widgets\Pjax;
                             'jobsBySkills' => $jobsBySkills,
                         ]) ?>
                         <div class="col-md-12 text-center">
-                            <a href="<?= Url::to('/jobs/list?skills='.$preferredSkills)?>" class="jbl-viewall viewall-jobs">View All</a>
+                            <a href="<?= Url::to('/jobs/list?skills=' . $preferredSkills) ?>"
+                               class="jbl-viewall viewall-jobs">View All</a>
                         </div>
                     </div>
                 </div>
@@ -166,7 +168,8 @@ use yii\widgets\Pjax;
                                 </ul>
                             </div>
                             <div class="actions col-lg-1">
-                                <a href="/account/jobs/reviewed" class="ajr-jobs viewall-jobs" id="view-all">View All</a>
+                                <a href="/account/jobs/reviewed" class="ajr-jobs viewall-jobs" id="view-all">View
+                                    All</a>
                             </div>
                         </div>
                         <div class="portlet-body">
@@ -178,23 +181,51 @@ use yii\widgets\Pjax;
                                                 <?php
                                                 Pjax::begin(['id' => 'pjax_review']);
                                                 if ($reviewlist) {
-
                                                     foreach ($reviewlist as $review) {
                                                         ?>
-                                                        <div class="col-md-4 col-sm-6 hr-j-box rev_box"
-                                                             id="<?= $review['application_enc_id']; ?>">
-                                                            <div class="topic-con"
-                                                                 data-key="<?= $review['application_enc_id']; ?>">
+                                                        <div class="col-md-4 col-sm-6 hr-j-box rev_box" id="<?= $review['application_enc_id']; ?>">
+                                                            <div class="topic-con" data-key="<?= $review['application_enc_id']; ?>">
                                                                 <div class="hr-company-box">
                                                                     <div class="hr-com-icon">
-                                                                        <img src="<?= Url::to('@commonAssets/categories/' . $review["icon"]); ?>"
+                                                                        <?php
+                                                                        if ($review['unclaimed_organization_enc_id'] != null) {
+                                                                            $unclaimed_organization_enc_id = \common\models\UnclaimedOrganizations::findOne(['organization_enc_id' => $review['unclaimed_organization_enc_id']]);
+                                                                            if ($unclaimed_organization_enc_id->logo) {
+                                                                                $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $unclaimed_organization_enc_id->logo_location . DIRECTORY_SEPARATOR . $unclaimed_organization_enc_id->logo;
+                                                                            } else {
+                                                                                $organizationLogo = "https://ui-avatars.com/api/?name=" . $unclaimed_organization_enc_id->name . "&size=200&rounded=false&background=" . str_replace("#", "", $unclaimed_organization_enc_id->initials_color) . "&color=ffffff";
+                                                                            }
+                                                                        } else {
+                                                                            if ($review['logo']) {
+                                                                                $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $review['logo_location'] . DIRECTORY_SEPARATOR . $review['logo'];
+                                                                            } else {
+                                                                                $organizationLogo = "https://ui-avatars.com/api/?name=" . $review['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $review['initials_color']) . "&color=ffffff";
+                                                                            }
+                                                                        }
+                                                                        ?>
+                                                                        <img src="<?= $organizationLogo ?>"
                                                                              class="img-responsive ">
                                                                     </div>
-                                                                    <div class="hr-com-name">
-                                                                        <?= $review['title']; ?>
+                                                                    <div class="hr-com-name job-title-name">
+                                                                        <?= ((!empty($review['org_name'])) ? $review['org_name'] : $review['unclaim_org_name']); ?>
+                                                                    </div>
+                                                                    <div class="merge-name-icon">
+                                                                        <div class="cat-icon">
+                                                                            <img src="<?= Url::to('@commonAssets/categories/' . $review["icon"]); ?>"
+                                                                                 class="img-responsive ">
+                                                                        </div>
+                                                                        <div class="hr-com-field">
+                                                                            <?= $review['title']; ?>
+                                                                        </div>
                                                                     </div>
                                                                     <div class="opening-txt">
-                                                                        <?= $review['positions']; ?> Openings
+                                                                        <?php
+                                                                        if ($review['positions'] || $review['unclaim_positions']) {
+                                                                            ?>
+                                                                            <?= (($review['positions']) ? $review['positions'] : $review['unclaim_positions']); ?> Openings
+                                                                            <?php
+                                                                        }
+                                                                        ?>
                                                                     </div>
                                                                     <div class="overlay">
                                                                         <div class="text-o">
@@ -261,17 +292,45 @@ use yii\widgets\Pjax;
                                                             <div class="topic-con">
                                                                 <div class="hr-company-box">
                                                                     <div class="hr-com-icon">
-                                                                        <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>"
+                                                                        <?php
+                                                                        if ($shortlist['unclaimed_organization_enc_id'] != null) {
+                                                                            if ($shortlist['unclaim_org_logo']) {
+                                                                                $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $shortlist['unclaim_org_logo_location'] . DIRECTORY_SEPARATOR . $shortlist['unclaim_org_logo'];
+                                                                            } else {
+                                                                                $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['unclaim_org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $shortlist['unclaim_org_initials_color']) . "&color=ffffff";
+                                                                            }
+                                                                        } else {
+                                                                            if ($shortlist['logo']) {
+                                                                                $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $shortlist['logo_location'] . DIRECTORY_SEPARATOR . $shortlist['logo'];
+                                                                            } else {
+                                                                                $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $shortlist['initials_color']) . "&color=ffffff";
+                                                                            }
+                                                                        }
+                                                                        ?>
+                                                                        <img src="<?= $organizationLogo ?>"
                                                                              class="img-responsive ">
                                                                     </div>
-                                                                    <div class="hr-com-name">
-                                                                        <?= $shortlist['org_name']; ?>
+
+                                                                    <div class="hr-com-name job-title-name">
+                                                                        <?= (($shortlist['org_name']) ? $shortlist['org_name'] : $shortlist['unclaim_org_name']); ?>
                                                                     </div>
-                                                                    <div class="hr-com-field">
-                                                                        <?= $shortlist['name']; ?>
+                                                                    <div class="merge-name-icon">
+                                                                        <div class="cat-icon">
+                                                                            <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>"
+                                                                                 class="img-responsive ">
+                                                                        </div>
+                                                                        <div class="hr-com-field">
+                                                                            <?= $shortlist['name']; ?>
+                                                                        </div>
                                                                     </div>
                                                                     <div class="opening-txt">
-                                                                        <?= $shortlist["positions"]; ?> Openings
+                                                                        <?php
+                                                                        if ($shortlist['positions'] || $shortlist['unclaim_positions']) {
+                                                                            ?>
+                                                                            <?= (($shortlist["positions"]) ? $shortlist['positions'] : $shortlist['unclaim_positions']); ?> Openings
+                                                                            <?php
+                                                                        }
+                                                                        ?>
                                                                     </div>
                                                                     <div class="overlay2">
                                                                         <div class="text-o">
@@ -332,14 +391,28 @@ use yii\widgets\Pjax;
                                                             <div class="topic-con">
                                                                 <div class="hr-company-box">
                                                                     <div class="hr-com-icon">
-                                                                        <img src="<?= Url::to('@commonAssets/categories/' . $apply["icon"]); ?>"
+                                                                        <?php
+                                                                        if ($apply['logo']) {
+                                                                            $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $apply['logo_location'] . DIRECTORY_SEPARATOR . $apply['logo'];
+                                                                        } else {
+                                                                            $organizationLogo = "https://ui-avatars.com/api/?name=" . $apply['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $apply['initials_color']) . "&color=ffffff";
+                                                                        }
+                                                                        ?>
+                                                                        <img src="<?= $organizationLogo ?>"
                                                                              class="img-responsive ">
                                                                     </div>
-                                                                    <div class="hr-com-name">
+
+                                                                    <div class="hr-com-name job-title-name">
                                                                         <?= $apply['org_name']; ?>
                                                                     </div>
-                                                                    <div class="hr-com-field">
-                                                                        <?= $apply['title']; ?>
+                                                                    <div class="merge-name-icon">
+                                                                        <div class="cat-icon">
+                                                                            <img src="<?= Url::to('@commonAssets/categories/' . $apply["icon"]); ?>"
+                                                                                 class="img-responsive ">
+                                                                        </div>
+                                                                        <div class="hr-com-field">
+                                                                            <?= $apply['title']; ?>
+                                                                        </div>
                                                                     </div>
                                                                     <div class="opening-txt">
                                                                         <?= $apply['positions']; ?> Openings
@@ -387,14 +460,27 @@ use yii\widgets\Pjax;
                                                             <div class="topic-con">
                                                                 <div class="hr-company-box">
                                                                     <div class="hr-com-icon">
-                                                                        <img src="<?= Url::to('/assets/common/categories/' . $accept['job_icon']) ?>"
+                                                                        <?php
+                                                                        if ($accept['logo']) {
+                                                                            $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $accept['logo_location'] . DIRECTORY_SEPARATOR . $accept['logo'];
+                                                                        } else {
+                                                                            $organizationLogo = "https://ui-avatars.com/api/?name=" . $accept['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $accept['initials_color']) . "&color=ffffff";
+                                                                        }
+                                                                        ?>
+                                                                        <img src="<?= $organizationLogo ?>"
                                                                              class="img-responsive ">
                                                                     </div>
-                                                                    <div class="hr-com-name">
+                                                                    <div class="hr-com-name job-title-name">
                                                                         <?= $accept['org_name']; ?>
                                                                     </div>
-                                                                    <div class="hr-com-field">
-                                                                        <?= $accept['title']; ?>
+                                                                    <div class="merge-name-icon">
+                                                                        <div class="cat-icon">
+                                                                            <img src="<?= Url::to('@commonAssets/categories/' . $accept["job_icon"]); ?>"
+                                                                                 class="img-responsive ">
+                                                                        </div>
+                                                                        <div class="hr-com-field">
+                                                                            <?= $accept['title']; ?>
+                                                                        </div>
                                                                     </div>
                                                                     <div class="opening-txt">
                                                                         <?= $accept['positions']; ?> Openings
@@ -442,14 +528,31 @@ use yii\widgets\Pjax;
                                                             <div class="topic-con">
                                                                 <div class="hr-company-box">
                                                                     <div class="hr-com-icon">
-                                                                        <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>"
+                                                                        <?php
+                                                                        if ($shortlist['logo']) {
+                                                                            $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $shortlist['logo_location'] . DIRECTORY_SEPARATOR . $shortlist['logo'];
+                                                                        } else {
+                                                                            $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $shortlist['initials_color']) . "&color=ffffff";
+                                                                        }
+                                                                        ?>
+                                                                        <img src="<?= $organizationLogo ?>"
                                                                              class="img-responsive ">
                                                                     </div>
-                                                                    <div class="hr-com-name">
-                                                                        <?= $shortlist['org_name'] ?>
+
+                                                                    <div class="hr-com-name job-title-name">
+                                                                        <?= $shortlist['org_name']; ?>
                                                                     </div>
-                                                                    <div class="hr-com-field">
-                                                                        <?= $shortlist['name'] ?>
+                                                                    <div class="merge-name-icon">
+                                                                        <div class="cat-icon">
+                                                                            <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["job_icon"]); ?>"
+                                                                                 class="img-responsive ">
+                                                                        </div>
+                                                                        <div class="hr-com-field">
+                                                                            <?= $shortlist['title']; ?>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="opening-txt">
+                                                                        <?= $shortlist['positions']; ?> Openings
                                                                     </div>
                                                                     <div class="overlay2">
                                                                         <div class="text-o">
@@ -539,6 +642,26 @@ use yii\widgets\Pjax;
 
 <?php
 $this->registerCss('
+.merge-name-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.cat-icon img {
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    object-fit: contain;
+    margin-right:5px;
+}
+.hr-com-icon img {
+//    border-radius: 50% !important;
+    object-fit: contain;
+    overflow: hidden;
+}
+.hr-com-name.job-title-name {
+    padding: 0;
+}
 .set-center{
     width:100%;
     text-align: center;
@@ -606,6 +729,7 @@ button.over-bttn, .ob1, button.over-bttn, .ob2{
     border:1px solid #00a0e3; 
     border-radius:4px !important;
     padding:6px 12px;
+    font-family:roboto;
     color:#fff;
 }
 button.over-bttn, .ob2{
@@ -671,9 +795,6 @@ li.current{
 .hr-com-icon{
     padding:10px 0;
 }
-.hr-com-name{
-    padding-top:20px;
-}
 .hr-com-jobs{
     padding:15px 0px 0px 0px !important; 
     text-align:center;
@@ -685,7 +806,9 @@ li.current{
     padding-top: 2px;
     padding-bottom: 10px;
     font-size: 14px;
-    color: #080808;
+    color: #333;
+    font-family:roboto;
+    height:31px;
 }
 a:hover{
     text-decoration:none;
@@ -810,11 +933,13 @@ function Ajax_call(rmv_id,url,pjax_refresh_id)
                         if(data.status == 'true')
                           {
                             // $(".loader").css("display", "none");
+                             parent.show();
                             $.pjax.reload({container: pjax_refresh_id, async: false});
                             $.pjax.reload({container: pjax_refresh_idd, async: false});
                             toastr.success(data.message, data.title);
                            } 
                         else if(data.status == 'false') {
+                            parent.show();
                             $.pjax.reload({container: pjax_refresh_id, async: false});
                             toastr.error(data.message, data.title);
                            }

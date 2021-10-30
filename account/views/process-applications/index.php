@@ -78,10 +78,24 @@ foreach ($fields as $f) {
 
 $locations = [];
 foreach ($application_name['applicationPlacementLocations'] as $apl) {
-    if (isset($locations[$apl['name']])) {
-        $locations[$apl['name']] += $apl['positions'];
+    if ($locations[$apl['city_enc_id']]) {
+        $singleLoc = [];
+        $singleLoc['name'] = $apl['name'];
+        $singleLoc['positions'] = $locations[$apl['city_enc_id']]['positions'] + $apl['positions'];
+        $locations[$apl['city_enc_id']] = $singleLoc;
     } else {
-        $locations[$apl['name']] = $apl['positions'];
+//        $locations[$apl['name']] = $apl['positions'];
+        $singleLoc = [];
+        $singleLoc['name'] = $apl['name'];
+        $singleLoc['positions'] = $apl['positions'];
+        $singleLoc['count'] = 0;
+        $locations[$apl['city_enc_id']] = $singleLoc;
+    }
+}
+
+foreach ($fields as $f) {
+    foreach ($f['appliedApplicationLocations'] as $c) {
+        $locations[$c['city_enc_id']]['count'] += 1;
     }
 }
 
@@ -151,25 +165,25 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
 
                         <div class="j-share">
                             <span class="fbook" data-toggle="tooltip" title="Share on Facebook"><a href="javascript:;"
-                                                                                                   onclick="window.open('<?= 'https://www.facebook.com/sharer/sharer.php?u=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                                                                                   onclick="window.open('<?= 'https://www.facebook.com/sharer/sharer.php?u=' . Url::to($slug_base . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
                                             class="fa fa-facebook"></i></a></span>
                             <span class="wts" data-toggle="tooltip" title="Share on Whatsapp"><a
                                         href="javascript:;"
-                                        onclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
+                                        onclick="window.open('<?= 'https://api.whatsapp.com/send?text=' . Url::to($slug_base . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i
                                             class="fa fa-whatsapp"></i></a></span>
                             <span class="twt" data-toggle="tooltip" title="Share on Twitter"><a href="javascript:;"
-                                                                                                onclick="window.open('<?= 'https://twitter.com/intent/tweet?text=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
+                                                                                                onclick="window.open('<?= 'https://twitter.com/intent/tweet?text=' . Url::to($slug_base . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-twitter"></i></a></span>
                             <span class="mail" data-toggle="tooltip" title="Share via Email"><a href="javascript:;"
-                                                                                                onclick="window.open('<?= 'mailto:?&body=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
+                                                                                                onclick="window.open('<?= 'mailto:?&body=' . Url::to($slug_base . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-envelope"></i></a></span>
                             <span class="link" data-toggle="tooltip" title="Share on LinkedIn"><a
                                         href="javascript:;"
-                                        onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($app_type . '/' . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
+                                        onclick="window.open('<?= 'https://www.linkedin.com/shareArticle?mini=true&url=' . Url::to($slug_base . $application_name['slug'], 'https'); ?>', '_blank', 'width=800,height=400,left=200,top=100');"<i
                                         class="fa fa-linkedin"></i></a></span>
                             <span class="j-">
                             <?php
-                            $link = Url::to('/' . $app_type . '/' . $application_name['slug'], "https");
+                            $link = Url::to($slug_base . $application_name['slug'], "https");
                             ?>
                             <a href="javascript:;" class="clipb tt jj-clipboard" type="button" data-toggle="tooltip"
                                title="Copy Link" data-link="<?= $link ?>">
@@ -271,14 +285,13 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                data-original-title="Clone <?= $app_type ?>"><i class="fa fa-clone"></i></a>
                         </span>
                         <span class="j-delt">
-                            <a href="#" id="j-delete" data-toggle="tooltip"
-                               title="Delete <?= $app_type ?>" value="<?= $application_id ?>"><i
-                                        class="fa fa-trash-o"></i></a>
+                            <a href="#" id="j-delete" data-toggle="tooltip" title="Delete <?= $app_type ?>"
+                               value="<?= $application_id ?>"><i class="fa fa-trash-o"></i></a>
                         </span>
                         <span class="j-cls">
-                            <a href="#" id="j-closed" data-toggle="tooltip"
-                               title="Close <?= $app_type ?>" data-name="<?= $app_type ?>"
-                               value="<?= $application_id ?>"><i class="fa fa-times"></i></a>
+                            <a href="#" id="j-closed" data-toggle="tooltip" title="Close <?= $app_type ?>"
+                               data-name="<?= $app_type ?>" value="<?= $application_id ?>"><i
+                                        class="fa fa-times"></i></a>
                         </span>
 
                     </div>
@@ -293,8 +306,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                     <div class="job-txt pos-left">Invite Candidates via</div>
                     <div class="dis-flex">
                         <div class="job-mail">
-                            <input type="email" class="form-control" id="email" name="email"
-                                   placeholder="Email">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Email">
                             <button class="redd" id="email-invitation"><i class="fa fa-envelope"></i></button>
                         </div>
                         <div class="job-whatsapp">
@@ -317,13 +329,22 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
-                    <div class="job-txt pos-right">Openings By Locations</div>
+                    <div class="job-txt pos-right" data-toggle="tooltip"
+                         data-original-title="To Filter Candidates Click on City Name">Openings By Locations <i
+                                class="fa fa-info-circle"></i></div>
                     <div class="main-locations">
                         <?php if ($application_name['applicationPlacementLocations']) { ?>
                             <ul class="location-posts">
-                                <?php foreach ($locations as $key => $val) { ?>
-                                    <li><?= $key . '<span>' . $val . '</span>' ?></li>
-                                <?php } ?>
+                                <?php $k = 0;
+                                foreach ($locations as $key => $val) { ?>
+                                    <li class="filter-application-by-location"
+                                        data-loc="<?= $key ?>"><?= $val['name'] . '<span>' . $val['count'] . '</span>' ?></li>
+                                    <?php
+                                    if ($k >= 2) {
+                                        break;
+                                    }
+                                    $k++;
+                                } ?>
                             </ul>
                             <?php if (count($locations) > 3) { ?>
                                 <a href="javascript:;" class="and-more"> View All </a>
@@ -334,9 +355,14 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                         <div class="hidden-locations">
                             <?php if ($application_name['applicationPlacementLocations']) { ?>
                                 <ul class="location-postss">
-                                    <?php foreach ($locations as $key => $val) { ?>
-                                        <li><?= $key . '<span>' . $val . '</span>' ?></li>
-                                    <?php } ?>
+                                    <?php $kk = 0;
+                                    foreach ($locations as $key => $val) {
+                                        if ($kk > 2) { ?>
+                                            <li class="filter-application-by-location"
+                                                data-loc="<?= $key ?>"><?= $val['name'] . '<span>' . $val['count'] . '</span>' ?></li>
+                                        <?php }
+                                        $kk++;
+                                    } ?>
                                 </ul>
                             <?php } ?>
                         </div>
@@ -382,20 +408,20 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                 <a data-filter=".result" data-toggle="tooltip" data-placement="bottom" data-original-title="Hired"
                    href="#" onclick="roundClick()">
                     <i class="fa fa-check-square-o"></i><span>
-                    <?php
-                    echo $hcount;
-                    ?>
-                </span>
+                        <?php
+                        echo $hcount;
+                        ?>
+                    </span>
                 </a>
             </li>
             <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 3; ?>)">
                 <a data-filter=".rejected" data-toggle="tooltip" data-placement="bottom" data-original-title="Rejeted"
                    href="#" onclick="roundClick()">
                     <i class="fas fa-times"></i><span>
-                    <?php
-                    echo $rejected_count;
-                    ?>
-                </span>
+                        <?php
+                        echo $rejected_count;
+                        ?>
+                    </span>
                 </a>
             </li>
         </ul>
@@ -427,8 +453,10 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                 }
                 $rejectionType = $arr['candidateRejections'][0]['rejection_type'];
                 ?>
-                <li class="<?= $tempfieldMain ?>" data-key="<?= $fieldMain ?>"
-                    data-id="<?= $arr['applied_application_enc_id'] ?>">
+                <li class="single-item-field <?php echo $tempfieldMain;
+                foreach ($arr['appliedApplicationLocations'] as $cID) {
+                    echo " " . $cID['city_enc_id'] . " ";
+                } ?>" data-key="<?= $fieldMain ?>" data-id="<?= $arr['applied_application_enc_id'] ?>">
 
                     <div class="row pr-user-main">
                         <div class="reject-box" <?= (($arr['rejection_window'] == 1) ? 'style="display: flex;"' : '') ?>>
@@ -439,15 +467,15 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
 
                                 <?php if (!empty($arr['resume_location']) || !empty($arr['resume'])) { ?>
                                     <a href="javascript:;" class="download-resume" target="_blank"
-                                       data-key="<?= $arr['resume_location'] ?>" data-id="<?= $arr['resume'] ?>">Download
+                                       data-key="<?= $arr['resume_location'] ?>" data-id="<?= $arr['resume'] ?>"
+                                       data-name="<?= $arr['name'] ?>">Download
                                         Resume</a>
                                 <?php } ?>
                                 <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                 <!--                                            <a href="#">Request to Complete Profile</a>-->
                             </div>
-                            <a class="pr-user-n url-forward" href="#"
-                            <a class="pr-user-n url-forward" href="#"
-                               data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
+                            <a class="pr-user-n url-forward" href="#" <a class="pr-user-n url-forward" href="#"
+                                                                         data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
 
                             <div class="rejectReason rejectRea"
                                  id="rejectReason" <?= $rejectionType ? 'style="display: none"' : '' ?>>
@@ -540,8 +568,8 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                             $msg = 'The candidate has been considered for following jobs';
                                             break;
                                         case 3:
-                                            $msg = "Candidate's CV has been saved for later. Please check CV in 
-                                                    drop resume";
+                                            $msg = "Candidate has been saved for later. Please check candidate's profile in 
+                                            Saved Candidates section";
                                             break;
                                         case 4:
                                             $msg = "This candidate has been rejected";
@@ -580,6 +608,19 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                                 More</p>
                                         </div>
                                         <?php
+                                    } else if ($arr['candidateRejections'][0]['candidateRejectionReasons']) {
+                                        ?>
+                                        <ul class="cr-reasons">
+                                            <li class="colorRed">Reasons:</li>
+                                            <?php
+                                            foreach ($arr['candidateRejections'][0]['candidateRejectionReasons'] as $crr) {
+                                                ?>
+                                                <li><?= $crr['reason'] ?></li>
+                                                <?php
+                                            }
+                                            ?>
+                                        </ul>
+                                        <?php
                                     }
                                     ?>
                                 </div>
@@ -591,10 +632,10 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                     <a class="pr-user-icon url-forward" href="#"
                                        data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"
                                        target="_blank">
-                                        <?php if ($arr['image']): ?>
+                                        <?php if ($arr['image']) : ?>
                                             <img src="<?= $arr['image'] ?>"
                                                  onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<?= $arr['name'] ?>&size=200&rounded=false&background=<?= str_replace('#', '', $arr['initials_color']) ?>&color=ffffff'"/>
-                                        <?php else: ?>
+                                        <?php else : ?>
                                             <canvas class="user-icon" name="<?= $arr['name'] ?>" width="80"
                                                     color="<?= $arr['initials_color']; ?>" height="80"
                                                     font="35px"></canvas>
@@ -660,9 +701,9 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                 if ($arr['createdBy']['userEducations']) {
                                     ?>
                                     <div class="pr-user-past">
-                                  <span class="past-title">
-                                    Edu
-                                  </span>
+                                        <span class="past-title">
+                                            Edu
+                                        </span>
                                         <h5><?= $arr['createdBy']['userEducations'][0]['institute'] . ' - ' . $arr['createdBy']['userEducations'][0]['degree']; ?> </h5>
                                         <?php
                                         if (COUNT($arr['createdBy']['userEducations']) > 1) {
@@ -724,10 +765,9 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                             Profile</a>
                                         <?php
                                         if (!empty($arr['resume_location']) || !empty($arr['resume'])) { ?>
-                                            <a href="javascript:;" class="download-resume"
-                                               target="_blank"
-                                               data-key="<?= $arr['resume_location'] ?>"
-                                               data-id="<?= $arr['resume'] ?>">Download Resume</a>
+                                            <a href="javascript:;" class="download-resume" target="_blank"
+                                               data-key="<?= $arr['resume_location'] ?>" data-id="<?= $arr['resume'] ?>"
+                                               data-name="<?= $arr['name'] ?>">Download Resume</a>
                                         <?php } ?>
                                         <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                         <!--                                            <a href="#">Request to Complete Profile</a>-->
@@ -736,14 +776,20 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                         <!--                                            <li>-->
                                         <!--                                                <a href="#">-->
                                         <!--                                                    <img src="-->
-                                        <?//= Url::to('@eyAssets/images/pages/dashboard/email2.png') ?><!--"/>-->
+                                        <? //= Url::to('@eyAssets/images/pages/dashboard/email2.png') 
+                                        ?>
+                                        <!--"/>-->
                                         <!--                                                </a>-->
                                         <!--                                            </li>-->
                                         <!--                                            <li>-->
                                         <!--                                                <a href="#" class="tt" title="Schedule Interview -->
-                                        <?//= $arr['name'] ?><!--" data-toggle="tooltip">-->
+                                        <? //= $arr['name'] 
+                                        ?>
+                                        <!--" data-toggle="tooltip">-->
                                         <!--                                                    <img src="-->
-                                        <?//= Url::to('@eyAssets/images/pages/dashboard/calendar.png') ?><!--"/>-->
+                                        <? //= Url::to('@eyAssets/images/pages/dashboard/calendar.png') 
+                                        ?>
+                                        <!--"/>-->
                                         <!--                                                </a>-->
                                         <!--                                            </li>-->
                                         <?php
@@ -758,9 +804,8 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                             if (!empty($arr['phone']) && $arr['phone']) {
                                                 ?>
                                                 <a href="https://api.whatsapp.com/send?phone=<?= $arr['phone'] ?>"
-                                                   target="_blank"
-                                                   title="Contact Candidate" data-toggle="tooltip" class="shareBtn"><i
-                                                            class="fa fa-whatsapp"></i></a>
+                                                   target="_blank" title="Contact Candidate" data-toggle="tooltip"
+                                                   class="shareBtn"><i class="fa fa-whatsapp"></i></a>
                                                 <?php
                                             }
                                             ?>
@@ -781,8 +826,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                             <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
                                                data-key="<?= $arr['name']; ?>"
                                                data-img="<?= (($arr['image']) ? $arr['image'] : "https://ui-avatars.com/api/?name=" . $arr['name'] . "&size=200&rounded=false&background=" . str_replace('#', '', $arr['initials_color']) . "&color=ffffff") ?>"
-                                               title="Chat Now"
-                                               data-toggle="tooltip">
+                                               title="Chat Now" data-toggle="tooltip">
                                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
                                             </a>
                                         </li>
@@ -884,8 +928,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
                                     $linkQ = "/account/questionnaire/display-answers/" . $list_que["qid"] . "/" . $arr["applied_application_enc_id"];
                                     ?>
                                     <tr>
-                                        <td><a class="blue question_list"
-                                               href="<?= Url::to($linkQ, 'https') ?>"
+                                        <td><a class="blue question_list" href="<?= Url::to($linkQ, 'https') ?>"
                                                data-questionId="<?= $list_que['qid']; ?>"
                                                data-appliedId="<?= $arr['applied_application_enc_id']; ?>"
                                                target="_blank"><?= $list_que['name']; ?></a>
@@ -996,6 +1039,24 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
 $this->registerCss('
 .has-success #phone-input {
     border-color: #c2cad8;
+}
+.cr-reasons{
+    display: inline;
+    color: #000;
+}
+.cr-reasons li{
+    padding: 0 !important;
+}
+.cr-reasons li:after{
+    content: ",";
+    padding-left: 2px;
+}
+.cr-reasons li:first-child:after,
+.cr-reasons li:last-child:after{
+   content: "";
+}
+.colorRed{
+    color: #ff4242; 
 }
 .hidden-locations{
     display:none;
@@ -1348,16 +1409,17 @@ $this->registerCss('
     align-items: center;
     justify-content: center;
 }
-.sr-box{
-    color: #000;
+.sr-box {
+    color: #ff4242;
+    font-family: lora;
+    align-self: end;
 }
 .rejectReason p{
     text-align: center;
-    font-family: roboto;
     font-size: 20px;
     margin-top: 0px;
     margin-bottom: 5px;
-    color: #333;
+    color: #;
 }
 .customJobBox p{
     color: #333 !important;
@@ -2230,7 +2292,17 @@ overflow: hidden;
   z-index: 9;
   
 }
-
+.filter-application-by-location{
+    cursor: pointer;
+}
+.filter-application-by-location.active{
+    background-color:#00a0e3 !important;
+    color:#fff;
+}
+.filter-application-by-location.active span{
+    background-color: #fff;
+    color: #00a0e3;
+}
 .close:hover,
 .close:focus {
   color: #000;
@@ -2388,12 +2460,25 @@ $('.and-more').click( function(e) {
     e.stopPropagation(); // when you click the button, it stops the page from seeing it as clicking the body too
     $('.hidden-locations').toggle();
 });
-$('.hidden-locations').click( function(e) {
-    e.stopPropagation(); // when you click within the content area, it stops the page from seeing it as clicking the body too 
-});
+// $('.hidden-locations').click( function(e) {
+//     // e.stopPropagation(); // when you click within the content area, it stops the page from seeing it as clicking the body too 
+// });
 $('body').click( function() {
     $('.hidden-locations').hide();
    });
+$(document).on('click', '.filter-application-by-location', function(e){
+    e.preventDefault();
+    if(!$(this).hasClass('active')){
+        $('.filter-application-by-location').removeClass('active');
+        var cId = $(this).attr('data-loc');
+        $('li[data-loc='+cId+']').addClass('active');
+        $('.single-item-field').addClass('hidden');
+        $('.'+cId).removeClass('hidden');
+    } else {
+        $(this).removeClass('active');
+        $('.single-item-field').removeClass('hidden');
+    }
+});
 $(document).on('click', '#email-invitation', function(){
     var email_id = $(this).parent().find('input#email').val();
     if(email_id != "" && typeof email_id !== "undefined"){
@@ -2831,6 +2916,7 @@ $(document).on('click','.download-resume',function (e){
     let resume_location = $(this).attr('data-key');
     let resume = $(this).attr('data-id');
     let htmldata = $(this).html();
+    let user_name = $(this).attr('data-name');
     btnElem.addClass('disabled-elem');
     btnElem.html('<i class="fa fa-circle-o-notch fa-spin fa-fw p-0"></i>');
     $.ajax({
@@ -2845,13 +2931,16 @@ $(document).on('click','.download-resume',function (e){
                 btnElem.html(htmldata);
                 if(res['status'] == 200){
                     let cv_link = res['cv_link'];
-                    window.open(cv_link);
+                    downloadAs(cv_link,user_name+get_url_extension(cv_link));
                 }else if(res['status'] == 500){
                     alert('an error occurerd')
                 }
             }
         })    
 })
+function get_url_extension( url ) {
+    return '.' + url.split(/[#?]/)[0].split('.').pop().trim();
+}
 $(document).on('click','.customJobBox', function(e) {
     e.preventDefault();
     window.open($(this).attr('data-href'));
@@ -2903,6 +2992,24 @@ $(document).on('click', '#whatsapp-invitation', function(e){
       }
   }
 })
+function downloadAs(url, name) {
+  axios.get(url, {
+    headers: {
+      "Content-Type": "application/octet-stream"
+    },
+    responseType: "blob"
+  })
+    .then(response => {
+      const a = document.createElement("a");
+      const url = window.URL.createObjectURL(response.data);
+      a.href = url;
+      a.download = name;
+      a.click();
+    })
+    .catch(err => {
+      console.log("error", err);
+    });
+};
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
@@ -2911,6 +3018,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://unpkg.com/axios/dist/axios.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
@@ -2957,13 +3065,50 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.
                 let notesTemp = '<form><div class="noteInput"><span id="closeNotes"><i class="fa fa-times"></i></span><p>Notes</p><textarea class="noteText">' + note_val + '</textarea><button type="button" class="saveNote"><i class="fa fa-check"></i></button></div></form>';
                 div.innerHTML = notesTemp;
                 parentElem.insertAdjacentElement('afterend', div);
+                let textArea = document.querySelector(".noteText");
+
+                PosEnd(textArea);
 
                 let closeNotes = document.getElementById('closeNotes');
                 closeNotes.addEventListener('click', function () {
                     let noteInput = closeNotes.closest('.noteForm');
                     noteInput.remove();
                 });
+
+
+                textArea.addEventListener("blur", () => {
+                    var note = textArea.value
+                    var id = textArea.closest('li').getAttribute('data-id');
+
+                    $.ajax({
+                        url: '/account/process-applications/process-notes',
+                        data: {
+                            note: note,
+                            id: id
+                        },
+                        method: 'post',
+                        success: function (data) {
+                        }
+                    });
+                    this.setAttribute('data-val', note);
+                    div.remove();
+                });
             })
+        }
+    }
+
+    function PosEnd(end) {
+        var len = end.value.length;
+
+        if (end.setSelectionRange) {
+            end.focus();
+            end.setSelectionRange(len, len);
+        } else if (end.createTextRange) {
+            var t = end.createTextRange();
+            t.collapse(true);
+            t.moveEnd('character', len);
+            t.moveStart('character', len);
+            t.select();
         }
     }
 
@@ -3018,7 +3163,6 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.
             openConJob.style.display = "none";
         }
     }
-
 </script>
 <script id="modalJobCards" type="text/template">
     {{#.}}

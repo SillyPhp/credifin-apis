@@ -1,7 +1,6 @@
 <?php
 namespace common\models;
 
-
 /**
  * This is the model class for table "{{%webinar}}".
  *
@@ -15,9 +14,15 @@ namespace common\models;
  * @property string $slug
  * @property string $image
  * @property string $image_location
+ * @property string $email_sharing_image
+ * @property string $email_sharing_image_location
  * @property double $price
  * @property double $gst
  * @property string $availability
+ * @property int $for_all_colleges 1 as all colleges, 0 as selected colleges
+ * @property string $other_platforms Other platform links like zoom etc..
+ * @property string $platform_webinar_id webinar unique id by zoom or other platform
+ * @property int $webinar_conduct_on 0 as EY, 1 as Other Platform
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_on
@@ -36,7 +41,7 @@ namespace common\models;
 class Webinar extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -44,24 +49,25 @@ class Webinar extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
             [['webinar_enc_id', 'name', 'title', 'description', 'session_for', 'seats', 'slug', 'created_by'], 'required'],
-            [['description', 'availability'], 'string'],
-            [['session_for', 'seats', 'is_deleted'], 'integer'],
+            [['description', 'availability', 'other_platforms'], 'string'],
+            [['session_for', 'seats', 'for_all_colleges', 'webinar_conduct_on', 'is_deleted'], 'integer'],
             [['price', 'gst'], 'number'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['webinar_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['name', 'title', 'slug', 'image', 'image_location'], 'string', 'max' => 200],
+            [['name', 'title', 'slug', 'image', 'image_location', 'email_sharing_image', 'email_sharing_image_location'], 'string', 'max' => 200],
+            [['platform_webinar_id'], 'string', 'max' => 255],
             [['webinar_enc_id'], 'unique'],
+            [['slug'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
-
 
     /**
      * @return \yii\db\ActiveQuery

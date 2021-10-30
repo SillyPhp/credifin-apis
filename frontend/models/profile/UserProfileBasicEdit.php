@@ -53,6 +53,7 @@ class UserProfileBasicEdit extends Model
             ['exp_month', 'integer', 'max' => 11],
             ['category', 'safe'],
             ['exp_year', 'integer', 'max' => 99],
+            [['description'], 'string', 'max' => 1600],
             [
                 ['job_title'], 'required', 'when' => function ($model, $attribute) {
                 return $model->category != '';
