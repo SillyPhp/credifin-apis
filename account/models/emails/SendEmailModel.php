@@ -193,7 +193,7 @@ class SendEmailModel extends Model
                 )
                     ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
                     ->setTo([$this->email])
-                    ->setSubject( $data['org_name'] . " has invited you to apply for " . $data['name']);
+                    ->setSubject( $data['org_name'] . " has shortlisted you for " . $data['name']);
                 if (!$mail->send()) {
                     return [
                         'status' => 201,
