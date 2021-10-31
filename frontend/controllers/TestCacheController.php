@@ -1,6 +1,7 @@
 <?php
 
 namespace frontend\controllers;
+use common\models\User;
 use common\models\Usernames;
 use common\models\UserTypes;
 use frontend\models\applications\Careerjet_API;
@@ -191,4 +192,5 @@ class TestCacheController extends Controller
         }
         echo $k;
     }
+
 }
