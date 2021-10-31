@@ -1703,7 +1703,7 @@ function ajaxSubmit(){
                 getLender:getLender, 
                 is_india:$('input[name="countryRadio"]:checked').val(),
                 is_addmission_taken:$('input[name="college_taken"]:checked').val(),
-                country_enc_id:$('#country_name').val(),
+                country_enc_id:$('#country_name').val()[0],
                 refferal_id : refferal_id
                 };
     }else if (loan_application_type==1){
