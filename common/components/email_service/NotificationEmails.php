@@ -385,7 +385,8 @@ class NotificationEmails extends Component
                 if (!$usersModel->validate() || !$usersModel->save()) {
                     $flag = false;
                     $transaction->rollBack();
-                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($usersModel->errors, 0, false)));
+                    return false;
+                    //throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($usersModel->errors, 0, false)));
                 }
             }
 
@@ -396,7 +397,8 @@ class NotificationEmails extends Component
                 if (!$referralModel->create()) {
                     $flag = false;
                     $transaction->rollBack();
-                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($referralModel->errors, 0, false)));
+                    return false;
+                    //throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($referralModel->errors, 0, false)));
                 } else {
                     $flag = true;
                 }
