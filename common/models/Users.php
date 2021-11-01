@@ -13,7 +13,6 @@ namespace common\models;
  * @property string $password Password
  * @property string $auth_key User Authentication Key for verification
  * @property string $first_name First Name
- * @property string $last_name Last Name
  * @property string $user_type_enc_id Foreign Key to User Types Table
  * @property string $phone Phone
  * @property string $address Address
@@ -420,7 +419,7 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_enc_id', 'username', 'email', 'password', 'auth_key', 'first_name', 'last_name', 'user_type_enc_id', 'initials_color'], 'required'],
+            [['user_enc_id', 'username', 'email', 'password', 'auth_key', 'first_name', 'user_type_enc_id', 'initials_color'], 'required'],
             [['description', 'objective', 'user_of', 'status', 'last_visit_through', 'signed_up_through'], 'string'],
             [['dob', 'created_on', 'last_updated_on', 'last_visit'], 'safe'],
             [['gender', 'is_available', 'is_email_verified', 'is_phone_verified', 'is_credential_change', 'is_deleted'], 'integer'],

@@ -1323,7 +1323,7 @@ function substringMatcher (strs) {
     });
     function getCountries() { 
         $.ajax({     
-            url : 'https://ravinder.eygb.me/api/v3/countries-list/get-countries-list', 
+            url : 'https://www.empoweryouth.com/api/v3/countries-list/get-countries-list', 
             method : 'POST',
             success : function(res) { 
             if (res.response.status==200){
@@ -1703,7 +1703,7 @@ function ajaxSubmit(){
                 getLender:getLender, 
                 is_india:$('input[name="countryRadio"]:checked').val(),
                 is_addmission_taken:$('input[name="college_taken"]:checked').val(),
-                country_enc_id:$('#country_name').val(),
+                country_enc_id:$('#country_name').val()[0],
                 refferal_id : refferal_id
                 };
     }else if (loan_application_type==1){
