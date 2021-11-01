@@ -1323,7 +1323,7 @@ function substringMatcher (strs) {
     });
     function getCountries() { 
         $.ajax({     
-            url : 'https://ravinder.eygb.me/api/v3/countries-list/get-countries-list', 
+            url : 'https://www.empoweryouth.com/api/v3/countries-list/get-countries-list', 
             method : 'POST',
             success : function(res) { 
             if (res.response.status==200){
