@@ -504,6 +504,7 @@ class EducationLoansController extends Controller
             ->alias('a')
             ->select(['a.loan_app_enc_id','a.applicant_name name','a.phone','a.email','a.created_by'])
             ->andWhere(['a.created_by'=>null])
+            ->andWhere(['a.is_deleted'=>0])
             ->limit($limit)
             ->offset($offset)
             ->asArray()
