@@ -118,7 +118,27 @@ $link = Url::to('quizzes/' . $slug, true);
                     </div>
                 </div>
             </div>
-            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <div class="related-quiz nd-shadow">
+                    <h3 class="heading-related">Related Quiz</h3>
+                    <div class="relate-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
+                        <p>The event will solely be conducted on recent advancements in science and technology. The event will solely be conducted on recent advancements in science and technology</p>
+                    </div>
+                    <div class="relate-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
+                        <p>The event will solely be conducted on recent advancements in science and technology</p>
+                    </div>
+                    <div class="relate-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
+                        <p>The event will solely be conducted on recent advancements in science and technology</p>
+                    </div>
+                    <div class="relate-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
+                        <p>The event will solely be conducted on recent advancements in science and technology. The event will solely be conducted on recent advancements in science and technology</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -257,6 +277,39 @@ $this->registerCss('
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
+}
+.related-quiz {
+    padding: 15px 20px 20px;
+    font-family: "Roboto";
+}
+.heading-related {
+    margin: 0px 0 20px;
+    font-size: 20px;
+    font-family: "Roboto";
+    font-weight: 500;
+}
+.relate-box {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+.relate-box img {
+    width: 60px;
+    height: 60px;
+    margin-right: 10px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.relate-box p {
+    font-size: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 20px;
+    max-width: 78%;
 }
 ');
 
