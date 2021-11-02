@@ -498,7 +498,7 @@ class EducationLoansController extends Controller
         return $this->render('faq');
     }
 
-    public function actionRegisterEducationLoan($page=1,$limit=20){
+    public function actionRegisterEducationLoan($page=1,$limit=20,$debug=false){
         $offset = ($page - 1) * $limit;
         $d = LoanApplications::find()
             ->alias('a')
@@ -509,6 +509,10 @@ class EducationLoansController extends Controller
             ->offset($offset)
             ->asArray()
             ->all();
+        if ($debug){
+            print_r($d);
+            die();
+        }
         $i = 0;
         $k = 0;
         foreach ($d as $data){
