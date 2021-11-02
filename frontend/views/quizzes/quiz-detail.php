@@ -35,53 +35,6 @@ $link = Url::to('quizzes/' . $slug, true);
                 <?= $this->render('/widgets/sharing-widget-new', [
                     'link' => $link,
                 ]); ?>
-            </div>
-            <div class="col-md-4">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="register-detail-btn">
-                            <a href="">Register Now</a>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="nd-shadow timings-cover">
-                            <div class="register-dead block-span">Registration Deadline
-                                :<span>27/OCT/2021 08:20 PM IST</span></div>
-                            <div class="register-fee block-span">Registration Fee : <span>₹500</span></div>
-                            <div class="play-time block-span">Play Within : <span>29/OCT/2021 to 10/NOV/2021</span>
-                            </div>
-                            <div class="total-question block-span">Total Questions : <span>20</span></div>
-                            <div class="total-time block-span">Total Time : <span>20 minutes</span></div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="register-count">
-                            <div class="registered-c">
-                                <div class="avatars">
-                                    <ul class="ask-people">
-                                        <li>
-                                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
-                                        </li>
-                                        <li>
-                                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                                        </li>
-                                    </ul>
-                                    <p><span>12</span> People Registered</p>
-                                </div>
-                            </div>
-                            <div class="viewers"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</Section>
-
-<section class="quiz-prizes">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="reward-heading">Rewards & Prizes</div>
@@ -119,29 +72,68 @@ $link = Url::to('quizzes/' . $slug, true);
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="related-quiz nd-shadow">
-                    <h3 class="heading-related">Related Quiz</h3>
-                    <div class="relate-box">
-                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                        <p>The event will solely be conducted on recent advancements in science and technology. The event will solely be conducted on recent advancements in science and technology</p>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="register-detail-btn">
+                            <a href="">Register Now</a>
+                        </div>
                     </div>
-                    <div class="relate-box">
-                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
-                        <p>The event will solely be conducted on recent advancements in science and technology</p>
+                    <div class="col-md-12">
+                        <div class="nd-shadow timings-cover">
+                            <div class="register-dead block-span">Registration Deadline
+                                :<span>27/OCT/2021 08:20 PM IST</span></div>
+                            <div class="register-fee block-span">Registration Fee : <span>₹500</span></div>
+                            <div class="play-time block-span">Play Within : <span>29/OCT/2021 to 10/NOV/2021</span>
+                            </div>
+                            <div class="total-question block-span">Total Questions : <span>20</span></div>
+                            <div class="total-time block-span">Total Time : <span>20 minutes</span></div>
+                        </div>
                     </div>
-                    <div class="relate-box">
-                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                        <p>The event will solely be conducted on recent advancements in science and technology</p>
+                    <div class="col-md-12">
+                        <div class="register-count">
+                            <div class="registered-c">
+                                <div class="avatars">
+                                    <ul class="ask-people">
+                                        <li>
+                                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
+                                        </li>
+                                        <li>
+                                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
+                                        </li>
+                                    </ul>
+                                    <p><span>12</span> People Registered</p>
+                                </div>
+                            </div>
+                            <div class="viewers"></div>
+                        </div>
                     </div>
-                    <div class="relate-box">
-                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
-                        <p>The event will solely be conducted on recent advancements in science and technology. The event will solely be conducted on recent advancements in science and technology</p>
+                    <div class="col-md-12">
+                        <div class="related-quiz nd-shadow">
+                            <h3 class="heading-related">Related Quiz</h3>
+                            <div class="relate-box">
+                                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
+                                <p>The event will solely be conducted on recent advancements in science and technology. The event will solely be conducted on recent advancements in science and technology</p>
+                            </div>
+                            <div class="relate-box">
+                                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
+                                <p>The event will solely be conducted on recent advancements in science and technology</p>
+                            </div>
+                            <div class="relate-box">
+                                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
+                                <p>The event will solely be conducted on recent advancements in science and technology</p>
+                            </div>
+                            <div class="relate-box">
+                                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
+                                <p>The event will solely be conducted on recent advancements in science and technology. The event will solely be conducted on recent advancements in science and technology</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
+</Section>
+
 
 <?php
 $this->registerCss('
@@ -250,6 +242,7 @@ $this->registerCss('
     display: flex;
     align-items: center;
     margin-left: -20px;
+    margin-bottom: 30px;
 }
 .avatars p {
     font-size: 18px;
