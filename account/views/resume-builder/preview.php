@@ -13,7 +13,8 @@ Yii::$app->view->registerJs('var css = "' . $template . '"', \yii\web\View::POS_
     <div class="loader_screen">
         <img src="<?= Url::to('@eyAssets/images/loader/91.gif'); ?>" class="img_load">
     </div>
-<div id="template_display_widget">
+<div id="
+">
 
 </div>
 <?php

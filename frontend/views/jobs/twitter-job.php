@@ -10,6 +10,7 @@ $url2 = \yii\helpers\Url::to(['/jobs/fetch-skills']);
 Yii::$app->view->registerJs('var doc_type = "'. $doc_type.'"',  \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var typ = "'. $typ.'"',  \yii\web\View::POS_HEAD);
 $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/twitterbg.png';
+$primary_cat = \yii\helpers\ArrayHelper::map($primary_cat,'category_enc_id','name');
 ?>
     <div class="col-md-12 set-overlay">
         <div class="row">
@@ -486,9 +487,8 @@ z-index:0;
     font-family: Open Sans;
     cursor: pointer;
 }
-#min_max
-{
- display:none;
+#min_max, .skill_wrapper .Typeahead-spinner{
+    display:none;
 }
 .tweet-main{
      display: inline-block;
@@ -878,6 +878,13 @@ float:right;
         height: 430px;
         width: 300px;
     }
+}
+.skill_wrapper .Typeahead-spinner
+{
+    position: absolute;
+    z-index: 999;
+    right: 1px;
+    top: 8px;
 }
 ");
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');

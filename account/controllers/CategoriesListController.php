@@ -105,7 +105,7 @@ class CategoriesListController extends Controller
         return json_encode($categories);
     }
 
-    public function actionJobProfiles($q)
+    public function actionJobProfiles($q,$parent=null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $categories = AssignedCategories::find()
@@ -113,8 +113,9 @@ class CategoriesListController extends Controller
             ->distinct()
             ->select(['a.category_enc_id cat_id', 'b.name value'])
             ->joinWith(['categoryEnc b'], false, 'INNER JOIN')
-            ->andWhere('b.name LIKE "%' . $q . '%"')
-            ->andWhere(['not', ['a.parent_enc_id' => null]])
+            ->where('b.name LIKE "% '.$q.'%" OR b.name LIKE "'.$q.'%"')
+            ->andWhere(['a.parent_enc_id' => $parent,'a.status'=>'Approved'])
+            ->limit(6)
             ->asArray()
             ->all();
         return $categories;
@@ -124,11 +125,13 @@ class CategoriesListController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $languages = SpokenLanguages::find()
-            ->select(['language_enc_id id', 'language value'])
+            ->select(['language value'])
+            ->distinct()
             ->where('language LIKE "%' . $q . '%"')
             ->andWhere(['status'=>'Publish'])
             ->asArray()
             ->all();
+
         return $languages;
     }
 

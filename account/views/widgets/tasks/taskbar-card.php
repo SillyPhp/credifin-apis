@@ -6,65 +6,62 @@ use yii\helpers\Html;
 
 echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
 ?>
+<header class="card-header bg-primary nd-shadow">
+    <div class="widget-profile-info">
+        <div class="profile-picture">
+            <div class="edit-org-logo"><i class="fa fa-pencil"></i></div>
+            <?php
+            $name = $image = $link = NULL;
+            if (!empty(Yii::$app->user->identity->organization)) {
+                if (Yii::$app->user->identity->organization->logo) {
+                    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                }
+                $name = Yii::$app->user->identity->organization->name;
+                $color = Yii::$app->user->identity->organization->initials_color;
+                $link = Url::to('/' . Yii::$app->user->identity->organization->slug);
+            } else {
+                if (Yii::$app->user->identity->image) {
+                    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                }
+                $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+                $color = Yii::$app->user->identity->initials_color;
+                $link = Url::to('/' . Yii::$app->user->identity->username . '/edit');
+            }
+
+            if (empty($image)) :
+            ?>
+                <canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="100" height="100" font="40px"></canvas>
+            <?php else : ?>
+                <img src="<?= Url::to($image); ?>" title="<?= $name; ?>" alt="<?= $name; ?>" />
+            <?php endif; ?>
+        </div>
+        <div class="profile-info">
+            <h4 class="name font-weight-semibold"><?= $name; ?></h4>
+            <div class="profile-footer">
+                <a href="<?= $link; ?>">(<?= Yii::t('account', 'Edit Profile'); ?>)</a>
+            </div>
+        </div>
+    </div>
+</header>
 
 <section class="card card-transparent nd-shadow">
     <div class="card-body">
         <section class="card card-group">
-            <header class="card-header bg-primary">
-                <div class="widget-profile-info">
-                    <div class="profile-picture">
-                        <div class="edit-org-logo"><i class="fa fa-pencil"></i></div>
-                        <?php
-                        $name = $image = $link = NULL;
-                        if (!empty(Yii::$app->user->identity->organization)) {
-                            if (Yii::$app->user->identity->organization->logo) {
-                                $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
-                            }
-                            $name = Yii::$app->user->identity->organization->name;
-                            $color = Yii::$app->user->identity->organization->initials_color;
-                            $link = Url::to('/' . Yii::$app->user->identity->organization->slug);
-                        } else {
-                            if (Yii::$app->user->identity->image) {
-                                $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
-                            }
-                            $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
-                            $color = Yii::$app->user->identity->initials_color;
-                            $link = Url::to('/' . Yii::$app->user->identity->username . '/edit');
-                        }
-
-                        if (empty($image)) :
-                            ?>
-                            <canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="100"
-                                    height="100" font="40px"></canvas>
-                        <?php else: ?>
-                            <img src="<?= Url::to($image); ?>" title="<?= $name; ?>" alt="<?= $name; ?>"/>
-                        <?php endif; ?>
-                    </div>
-                    <div class="profile-info">
-                        <h4 class="name font-weight-semibold"><?= $name; ?></h4>
-                        <div class="profile-footer">
-                            <a href="<?= $link; ?>">(<?= Yii::t('account', 'Edit Profile'); ?>)</a>
-                        </div>
-                    </div>
-                </div>
-            </header>
             <div id="accordion" class="task_sec w-100">
                 <div class="card card-accordion card-accordion-first">
                     <div class="card-header border-bottom-0">
                         <h4 class="card-title">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion"
-                               href="#collapse1One">
-                                <i class="fa fa-check mr-1"></i> Tasks
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse1One">
+                                <i class="fa fa-tasks"></i> Tasks
                             </a>
                         </h4>
                         <div class="pendind-tasks">
-                            <div class="pt">Pending Tasks: <span id="pt-number"></span></div>
+                            <div class="pt">Pending Tasks: <span id="pt-number">0</span></div>
                         </div>
                     </div>
                     <div id="collapse1One" class="accordion-body collapse show">
                         <div class="card-body padding-0" style="text-align:center">
-                            <form id="task-form" method="post" action="<?= Url::to('/account/tasks/create'); ?>"
-                                  class="form-horizontal form-bordered">
+                            <form id="task-form" method="post" action="<?= Url::to('/account/tasks/create'); ?>" class="form-horizontal form-bordered">
                                 <div class="form-group row">
                                     <div class="col-sm-12">
                                         <div class="input-group mb-3">
@@ -90,8 +87,7 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
-                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
-                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
                     <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
                 </div>
             </div>
@@ -117,12 +113,12 @@ $this->registerCss("
     cursor:pointer;
 }
 .pt{
-    font-size: 15px;
-    padding-left: 27px;
+    font-size: 14px;
     padding-top: 10px;
+    color:#fff;
 }
 .pt span{
-    color:#00a0e3;
+    color:#fff;
 }
 .card {
     background: transparent;
@@ -160,11 +156,15 @@ html .card-transparent > .card-header {
     padding-right: 0;
 }
 .card-header {
-    border-radius: 5px 5px 0 0 !important;
+    border-radius: 5px !important;
     padding: 18px;
-    background-color: #e7eaed !important;
+//    background-color: #e7eaed !important;
     padding-left: 18px !important;
     position: relative;
+    background: linear-gradient(120deg,#08c -10%, #fff 135%);
+}
+.card-header.border-bottom-0 {
+    border-radius: 5px 5px 0 0 !important;
 }
 .card-title {
     color: #33353F;
@@ -189,6 +189,7 @@ html .card-transparent > .card-body {
     color: #FFF;
     border-bottom: 0 none;
     border-right: 0 none;
+    margin-bottom:20px;
 }
 html .bg-primary, html .background-color-primary {
     background-color: #0088CC !important;
@@ -198,15 +199,15 @@ html .bg-primary, html .background-color-primary {
     padding : 15px;
 }
 .accordion-toggle{
-    color:#00A0E3;
+    color:#fff;
 }
 ul.widget-todo-list {
     list-style: none;
     padding: 0 20px 20px 20px;
     margin: 0;
     position: relative;
-    max-height: 600px;
-    min-height:435px;
+    max-height: 500px;
+    min-height:300px;
     display: block;
     overflow-x: scroll;
 }
@@ -347,6 +348,13 @@ ul.widget-todo-list li .todo-actions .todo-remove {
 .ps__rail-x{
     display:none !important;
 }
+@media screen and (max-width: 1200px) and (min-width: 992px) {
+.widget-profile-info .profile-picture {
+    display: inline-table;
+    }
+.widget-profile-info .profile-info{display:block;}
+.edit-btn{float:none !important;}
+}
 ");
 $script = <<< JS
     $(document).on('click', '.edit-org-logo', function() {
@@ -360,6 +368,13 @@ $script = <<< JS
     
     $(document).on('submit', '#task-form', function (e) {
         e.preventDefault();
+        if ($('input[name="task"]').val()==""||$('input[name="task"]').val()==null){
+                 swal({
+                        title:"",
+                        text: "Input Should Not Be Empty.. !!!",
+                        });
+            return false;
+        }
         var form = $(this);
         var url = form.attr('action');
         var method = form.attr('method');
@@ -609,19 +624,17 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/crop
 
 <script type="text/template" id="todo-template">
     {{#.}}
-    <li>
-        <div class="checkbox-custom checkbox-default text-left">
-            <input type="checkbox" name="task" id="{{task_id}}{{id}}"
-                   class="{{#is_completed}} uncheck {{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}"
-                   {{#is_completed}} checked {{/is_completed}} />
-            <label class="todo-label {{#is_completed}} line-pass {{/is_completed}}" data-type="text">{{name}}</label>
-        </div>
-        <div class="todo-actions">
-            <a class="todo-remove" href="#">
-                <i class="fa fa-times"></i>
-            </a>
-        </div>
-    </li>
+        <li>
+            <div class="checkbox-custom checkbox-default text-left">
+                <input type="checkbox" name="task" id="{{task_id}}{{id}}" class="{{#is_completed}} uncheck {{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}" {{#is_completed}} checked {{/is_completed}} />
+                <label class="todo-label {{#is_completed}} line-pass {{/is_completed}}" data-type="text">{{name}}</label>
+            </div>
+            <div class="todo-actions">
+                <a class="todo-remove" href="#">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </li>
     {{/.}}
 </script>
 

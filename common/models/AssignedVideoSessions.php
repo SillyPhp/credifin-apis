@@ -12,6 +12,8 @@ use Yii;
  * @property string $expire_date session expiry date
  * @property string $class_enc_id class encrypted id
  * @property string $session_enc_id session id
+ * @property string $status video status
+ * @property string $video_session_end_time end time session
  * @property string $created_by created by id
  * @property string $created_on created on time
  *
@@ -36,7 +38,8 @@ class AssignedVideoSessions extends \yii\db\ActiveRecord
     {
         return [
             [['assigned_video_enc_id', 'expire_date', 'class_enc_id', 'session_enc_id', 'created_by'], 'required'],
-            [['expire_date', 'created_on'], 'safe'],
+            [['expire_date', 'video_session_end_time', 'created_on'], 'safe'],
+            [['status'], 'string'],
             [['assigned_video_enc_id', 'class_enc_id', 'session_enc_id', 'created_by'], 'string', 'max' => 100],
             [['assigned_video_enc_id'], 'unique'],
             [['class_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OnlineClasses::className(), 'targetAttribute' => ['class_enc_id' => 'class_enc_id']],
@@ -44,7 +47,6 @@ class AssignedVideoSessions extends \yii\db\ActiveRecord
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Teachers::className(), 'targetAttribute' => ['created_by' => 'teacher_enc_id']],
         ];
     }
-
 
 
     /**

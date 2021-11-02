@@ -14,7 +14,7 @@
                     <td><strong>Internship Profile:</strong></td>
                 <?php endif; ?>
                 <td><p class="final_confrm"
-                       data-display="<?= (($type=='Clone_Jobs'||$type=='Edit_Jobs'||$type=='Edit_Internships'||$type=='Clone_Internships') ? 'mainfield' : 'primaryfield');?>"
+                       data-display="<?= (($type=='Edit_Jobs'||$type=='Edit_Internships') ? 'mainfield' : 'primaryfield');?>"
                        id="fieldvalue"></p></td>
                 <?php if ($type =='Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
                 <td><strong>Job Title:</strong></td>
@@ -154,10 +154,15 @@
             </tr>
             <?php if ($type=='Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
             <tr>
-                <td><strong>Minimum Experience:</strong></td>
+                <td><strong>Minimum Experience (Years):</strong></td>
                 <td colspan="5"><p class="final_confrm"
-                                   data-display="min_exp"></p></td>
+                                   data-display="minimum_exp"></p></td>
             </tr>
+                <tr>
+                    <td><strong>Maximum Experience (Years):</strong></td>
+                    <td colspan="5"><p class="final_confrm"
+                                       data-display="maximum_exp"></p></td>
+                </tr>
             <?php endif; ?>
             </tbody>
         </table>

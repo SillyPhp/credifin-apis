@@ -12,46 +12,69 @@ $this->params['header_dark'] = false;
                 <div class="col-lg-12 no-padd">
                     <div class="main-featured-sec style2">
                         <ul class="main-slider-sec style2 text-arrows">
-<!--                            <li class="slideHome">-->
-<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?><!--"-->
-<!--                                     alt="internship, software developer, internships near me,web developer jobs,software engineer jobs"/>-->
-<!--                            </li>-->
-<!--                            <li class="slideHome">-->
-<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?><!--"-->
-<!--                                     alt="data science internship,web design jobs,online internships, digital marketing internship, free course site, software developer jobs"/>-->
-<!--                            </li>-->
                             <li class="slideHome">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
-                                     alt="marketing internships, machine learning internship, hr internships, software jobs, best online course sites, website design jobs"/>
+                                     alt="technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                             </li>
                         </ul>
-                        <div class="job-search-sec">
-                            <div class="job-search style2">
-                                <h3>Discover a New Career Specially Designed For You</h3>
-                                <span>The Easiest Way to Build Your Career</span>
-                                <div class="search-job2">
-                                    <form id="search_jobs_internships" action="<?= Url::to('/search'); ?>">
-                                        <div class="row no-gape">
-                                            <div class="col-lg-10 col-md-9 col-sm-8 col-xs-7">
-                                                <div class="job-field">
-                                                    <input id="search-input" type="text" name="keyword"
-                                                           placeholder="Keywords"/>
+                        <div class="job-search-sec headerContent">
+                            <div class="job-search style2" >
+                                <div class="hcHidden hcActive">
+                                    <h1>The World's First Integrated Career Platform</h1>
+                                    <h2>The Easiest Way to Build Your Career</h2>
+                                </div>
+                                <div class="hcHidden" id="jobHeaderContent">
+                                    <h1>Thousands Of Jobs In Just One Click.</h1>
+                                    <h2>Get into your dream job and build a strong business network</h2>
+                                </div>
+                                <div class="hcHidden" id="internshipHeaderContent">
+                                    <h1>Gain Experience with The Best Internships</h1>
+                                    <h2>Build your skills by interning with the best companies.</h2>
+                                </div>
+                                <div class="hcHidden" id="learningHeaderContent">
+                                    <h1>Creative and Innovative Learning Environment</h1>
+                                    <h2>Videos, blogs, and articles to boost your knowledge.</h2>
+                                </div>
+                                <div class="hcHidden" id="reviewsHeaderContent">
+                                    <h1>Get Invaluable source of feedback</h1>
+                                    <h2>Know everything about Schools, Colleges, Universities and Companies.</h2>
+                                </div>
+                                <div class="hcHidden" id="coursesHeaderContent">
+                                    <h1>Top Courses To Develop Your Skills</h1>
+                                    <h2>Improve your performance at your workspace by learning new things.</h2>
+                                </div>
+                                <div class="hcHidden" id="loanHeaderContent">
+                                    <h1>Education Loan To Fulfil Your Dreams</h1>
+                                    <h2>Get personalized Education loan at lower interest rates for all your educational needs.</h2>
+                                </div>
+                                <div class="header-search-bar">
+                                    <div class="search-job2">
+                                        <form id="search_jobs_internships"
+                                              action="<?= Url::to('/search'); ?>">
+                                            <div class="row no-gape">
+                                                <div class="col-lg-10 col-md-9 col-sm-8 col-xs-7">
+                                                    <div class="job-field">
+                                                        <input id="search-input" type="text" name="keyword"
+                                                               placeholder="Keywords"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-2  col-md-3 col-sm-4 col-xs-5">
+                                                    <button type="submit" id="search-submit">Search <i
+                                                                class="fas fa-search"></i></button>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-2  col-md-3 col-sm-4 col-xs-5">
-                                                <button type="submit" id="search-submit">Search <i
-                                                            class="fas fa-search"></i></button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div><!-- Job Search 2 -->
-                                <span class="feature-links">Search For: <a href="/jobs">Jobs</a>,
-                                    <a href="/internships">Internships</a>, <a href="/training-programs">Training Courses</a>,
-                                    <a href="/reviews">Reviews</a>, <a href="/learning">Learning Content</a>, <a
-                                            href="/blog">Blogs</a>
+                                        </form>
+                                    </div><!-- Job Search 2 -->
+                                    <span class="feature-links">Search For: <a href="/organizations">Companies,</a>
+                                    <a href="/jobs">Jobs,</a> <a href="/internships">Internships,</a>
+                                    <a href="/reviews">Reviews,</a> <a href="/learning">Learning Hub,</a> <a
+                                            href="/courses">Courses,</a> <a href="/career-advice">Career Advice,</a>
+                                    <a href="/education-loans">Education Loans</a>
                                 </span>
+                                </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -61,203 +84,151 @@ $this->params['header_dark'] = false;
     <div class="header-row">
         <div class="container">
             <div class="header-boxs">
-                <div class="col-md-2 col-sm-4 col-xs-6">
-                    <div class="box-border fade-in one">
-                        <a href="/employers">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/employer.png') ?>"
-                                     alt="Employers" title="Employers"></div>
-                            <div class="icon2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/employerw.png') ?>"
-                                     alt="Employers" title="Employers"></div>
-                            <div class="h-heading">Employers</div>
-<!--                            <div class="h-text">I want to recruit talent</div>-->
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-4 col-xs-6">
-                    <div class="box-border fade-in two">
-                        <a href="/candidates/features">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/candidate.png') ?>"
-                                     alt="Candidates" title="Candidates">
-                            </div>
-                            <div class="icon2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/candidatew.png') ?>"
-                                     alt="Employers" title="Employers"></div>
-                            <div class="h-heading">Candidates</div>
-<!--                            <div class="h-text">I'm the talent</div>-->
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-4 col-xs-6">
-                    <div class="box-border fade-in two">
-                        <a href="/schools">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/school.png') ?>"
-                                     alt="Candidates" title="Candidates">
-                            </div>
-                            <div class="icon2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/schoolw.png') ?>"
-                                     alt="Employers" title="Employers"></div>
-                            <div class="h-heading">Schools</div>
-<!--                            <div class="h-text">COVID-19 <br>(Online Classes)</div>-->
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-4 col-xs-6">
-                    <div class="box-border fade-in three">
-<!--                        <div class="box-overlay">-->
-                            <a href="/colleges">
-                                <div class="icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/colg.png') ?>"
-                                         alt="Universities & Colleges" title="Universities and Colleges">
-                                </div>
-                                <div class="icon2">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/colgw.png') ?>"
-                                         alt="Employers" title="Employers"></div>
-                                <div class="h-heading">Colleges</div>
-<!--                                <div class="h-text">I'm the future</div>-->
-                            </a>
-<!--                        </div>-->
-                        <!--                        <div class="overlay">-->
-                        <!--                            <div class="text">Coming Soon</div>-->
-                        <!--                        </div>-->
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-4 col-xs-6">
-                    <div class="box-border fade-in three">
-                        <div class="box-overlay">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/colleges.png') ?>"
-                                     alt="Universities & Colleges" title="Universities and Colleges">
-                            </div>
-                            <div class="icon2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/collegesw.png') ?>"
-                                     alt="Employers" title="Employers"></div>
-                            <div class="h-heading">Universities</div>
-<!--                            <div class="h-text">I want to enroll talent</div>-->
+                <div class="box-border fade-in one" data-name="jobHeaderContent"
+                     onmouseover="showHeaderContent(this)">
+                    <a href="<?= Url::to('/jobs'); ?>">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/jobs-blue.png') ?>" title="Jobs" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                         </div>
-                        <div class="overlay">
-                            <div class="text">Coming Soon</div>
-                        </div>
-                    </div>
+                        <div class="icon2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/jobs-white.png') ?>" title="Jobs" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/></div>
+                        <h3 class="h-heading">Jobs</h3>
+                    </a>
                 </div>
-                <div class="col-md-2 col-sm-4 col-xs-6">
-                    <div class="box-border fade-in four">
-                        <div class="box-overlay">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/recruiter.png') ?>"
-                                     title="Recruiters" alt="Recruiters">
-                            </div>
-                            <div class="icon2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/recruiterw.png') ?>"
-                                     alt="Employers" title="Employers"></div>
-                            <div class="h-heading">Recruiters</div>
-<!--                            <div class="h-text">I want to find the best match for talent</div>-->
+                <div class="box-border fade-in two" data-name="internshipHeaderContent"
+                     onmouseover="showHeaderContent(this)">
+                    <a href="<?= Url::to('/internships'); ?>">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/internship-blue.png') ?>" title="Internships" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                         </div>
-                        <div class="overlay">
-                            <div class="text">Coming Soon</div>
+                        <div class="icon2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/internship-white.png') ?>" title="Internships" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
                         </div>
-                    </div>
+                        <h3 class="h-heading">Internships</h3>
+                    </a>
+                </div>
+                <div class="box-border fade-in two" data-name="learningHeaderContent"
+                     onmouseover="showHeaderContent(this)">
+                    <a href="<?= Url::to('/learning'); ?>">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-blue.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                        </div>
+                        <div class="icon2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/learning-hub-white.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                        </div>
+                        <h3 class="h-heading">Learning Hub</h3>
+                    </a>
+                </div>
+                <div class="box-border fade-in three" data-name="reviewsHeaderContent"
+                     onmouseover="showHeaderContent(this)">
+                    <a href="<?= Url::to('/reviews'); ?>">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/review-blue.png') ?>" title="Reviews" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
+                        </div>
+                        <div class="icon2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/review-white.png') ?>" title="Reviews" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan "/>
+                        </div>
+                        <h3 class="h-heading">Reviews</h3>
+                    </a>
+                </div>
+                <div class="box-border fade-in three" data-name="coursesHeaderContent"
+                     onmouseover="showHeaderContent(this)">
+                    <a href="<?= Url::to('/courses'); ?>">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-blue.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                        </div>
+                        <div class="icon2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/training-courses-white.png') ?>" title="Colleges" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                        </div>
+                        <h3 class="h-heading">Courses</h3>
+                    </a>
+                </div>
+                <div class="box-border fade-in four" data-name="loanHeaderContent"
+                     onmouseover="showHeaderContent(this)">
+                    <a href="<?= Url::to('/education-loans'); ?>">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-bluee.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                        </div>
+                        <div class="icon2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/our-services/edu-loan-white.png') ?>" alt=" technical free courses, jobs, internships, technical courses, education loan, Apply for education loan, Apply for lower education loan ">
+                        </div>
+                        <h3 class="h-heading">Education Loan</h3>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
 
-<!--- virus Section --->
-<?= $this->render('/widgets/online-classes', [
-    'model' => $model,
-]) ?>
-<!--------services section starts-------->
+<?= $this->render('/webinars/webinar-carousel')?>
 
-<section class="services-section">
-    <div class="container">
-        <h1 class="heading-style ">Our Services</h1>
-        <div class="services row">
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/jobs'); ?>">
-                    <div class="service-box">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>"
-                                 alt="web developer jobs for freshers, job openings in chandigarh data science job opportunities, it software engineer"
-                                 title="Jobs"/>
-                        </div>
-                        <div class="ser-heading">Jobs</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/internships'); ?>">
-                    <div class="service-box ser-box-orange">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>"
-                                 alt="free learning sites, free internship, best online learning sites, free online courses sites,internship jobs near me"
-                                 title="Internships"/>
-                        </div>
-                        <div class="ser-heading">Internships</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/learning'); ?>">
-                    <div class="service-box ser-box-yellow">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/learning-icon-set.png') ?>"
-                                 alt="international internships, web developer career, software engineer career">
-                        </div>
-                        <div class="ser-heading">Learning Hub</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/reviews'); ?>">
-                    <div class="service-box ser-box-purple">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>"
-                                 alt="research internship, software developer career internship websites, best learning websites"
-                                 title="Reviews"/>
-                        </div>
-                        <div class="ser-heading">Reviews</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/training-programs'); ?>">
-                    <div class="service-box ser-box-maroon">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/training.png') ?>"
-                                 alt="market research internship, jobs in ludhiana city, latest jobs in chandigarh for freshers, software engineer work">
-                        </div>
-                        <div class="ser-heading">Training Courses</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/career-advice'); ?>">
-                    <div class="service-box ser-box-green">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/careerAdvice.png') ?>"
-                                 alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana">
-                        </div>
-                        <div class="ser-heading">Career Advice</div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+
 <div id="app-data"></div>
-<div id="sectionIsLoading" class="sectionIsLoading">
-    <div></div>
-    <div></div>
+<div id="sectionIsLoading" class="sectionLoad">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;background:transparent;display:block;" width="60px" height="60px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
+        <g transform="translate(50,50)">
+            <g transform="scale(0.9)">
+                <g transform="translate(-50,-50)">
+                    <g>
+                        <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" values="360 50 50;0 50 50" keyTimes="0;1" dur="0.9900990099009901s" keySplines="0.7 0 0.3 1" calcMode="spline"></animateTransform>
+                        <path fill="#00a0e3" d="M42.9,17.8c-1.4-5.4,1.9-11,7.3-12.4c0.6-0.2,1.3-0.3,1.9-0.3l0.8,0l0,0c4-0.2,8,0.1,11.9,1.1 c3.6,0.9,7.2,2.5,10.6,4.7c3.3,2.2,6.2,4.8,8.4,7.6c2.3,3,4.2,6.2,5.4,9.7c0.3,0.9,0.6,1.8,0.9,2.7c0.2,0.9,0.4,1.8,0.6,2.7l0.1,0.6 l0.4,3.4c0,0.3,0,0.6,0,0.9l0,1.8c0,0.4,0,0.8,0,1.2c-0.1,0.9-0.2,1.8-0.2,2.7c-0.3,2-0.6,3.6-1.2,5.2c-1.1,3.5-2.6,6.6-4.6,9.3 c-2,2.8-4.4,5.2-7.1,7.2c-0.2,0.2-0.5,0.3-0.7,0.5c-0.5,0.3-1,0.7-1.4,0.9l-2.3,1.3c-1.6,0.7-3.1,1.4-4.6,1.8 c-3.3,1-6.6,1.5-9.6,1.4c-3.2-0.1-6.4-0.7-9.3-1.7c-2.9-1.1-5.6-2.6-8-4.5l-1.1-0.9c-0.2-0.2-0.4-0.3-0.6-0.5l-1.6-1.6 c-1.6-1.8-3-3.8-4.1-5.9c1.4,1.9,3.1,3.5,4.9,5c0.8,0.6,1.7,1.3,2.6,1.8l1.1,0.6c2.5,1.3,5.1,2.2,7.9,2.8c2.6,0.4,5.4,0.4,8,0 c2.4-0.3,5-1.2,7.5-2.4c1.1-0.5,2-1.1,2.9-1.7l1.9-1.5c0.3-0.3,0.6-0.6,0.9-0.8c0.1-0.1,0.3-0.3,0.4-0.4l0.1-0.1 c1.7-1.8,3.1-3.8,4.2-6.1c1-2.1,1.6-4.4,1.9-6.8c0.2-1,0.2-2,0.1-2.8l0-0.6l0-0.3c-0.1-0.5-0.1-1-0.1-1.4c0-0.4-0.1-0.8-0.2-1.1 l-0.2-1c0-0.2-0.1-0.3-0.1-0.5L78,37.7l-0.4-1c-0.2-0.4-0.4-0.9-0.6-1.3L77,35.1c-0.2-0.4-0.5-0.8-0.7-1.2l-0.1-0.1 c-1.1-1.8-2.5-3.5-4.1-4.9c-1.5-1.3-3.2-2.4-5.4-3.2c-2.1-0.8-4-1.2-5.8-1.3C53.9,24.2,45.5,27.5,42.9,17.8z"></path>
+                        <path fill="#ff7803" d="M33.2,74.3c-2.1-0.9-3.9-1.9-5.4-3.2c-1.6-1.4-3-3-4.1-4.9l-0.1-0.1c-0.2-0.4-0.4-0.8-0.7-1.2l-0.1-0.3 c-0.2-0.4-0.4-0.9-0.6-1.3c-3.2-8.4-0.9-17.9,5.7-24.1c9-8.4,22.7-8,32.3-0.9c1.8,1.5,3.5,3.1,4.9,5c-1.1-2.2-2.5-4.1-4.1-5.9 C44.8,20.4,17,28.7,10.2,50.4c-0.5,1.6-0.8,3.2-1.2,5.2c-0.1,0.9-0.2,1.8-0.2,2.7c0,0.4,0,0.8,0,1.2l0,1.9c0,0.3,0,0.6,0,0.9 l0.4,3.4l0.1,0.6c0.2,0.9,0.4,1.8,0.6,2.7c0.3,0.9,0.6,1.8,0.9,2.7c1.3,3.5,3.1,6.7,5.4,9.7c2.2,2.9,5.1,5.4,8.4,7.6 c3.4,2.2,7,3.8,10.6,4.7c3.8,1,7.8,1.4,11.9,1.1l0,0l0.8,0c0.6,0,1.3-0.1,1.9-0.3c2.6-0.7,4.8-2.4,6.2-4.7c1.4-2.3,1.8-5.1,1.1-7.7 c-1.4-5.4-7-8.7-12.4-7.3c-1.9,0.5-3.7,0.7-5.6,0.6C37.3,75.5,35.3,75.1,33.2,74.3z"></path>
+                    </g></g></g></g>
+    </svg>
 </div>
 
 <?php
 $this->registerCss('
+.headerContent .job-search .feature-links{
+    float: left;
+    width: 100%;
+    font-family: Roboto;
+    font-size: 15px;
+    font-weight: 400;
+    color: #d5d8f3;
+    text-align: center;
+    margin-top: 10px;
+}
+.job-search-sec .job-search.style2 span {
+    opacity: 1;
+}
+.headerContent .job-search h1 {
+    float: left;
+    width: 100%;
+    font-family: Quicksand;
+    font-size: 46px;
+    font-weight: normal;
+    color: #ffffff;
+    letter-spacing: 0px;
+    text-align: center;
+    line-height: 50px;
+    margin-bottom: 13px;
+}
+.headerContent .job-search h2 {
+    float: left;
+    width: 100%;
+    font-family: Quicksand;
+    font-size: 30px;
+    font-weight: 400;
+    color: #ffffff;
+    text-align: center;
+    margin-top: 10px;
+}
+#app-data{
+    overflow-x: hidden;
+}
+.hcHidden{
+    display: none;
+}
+.hcActive{
+    display: block;
+}
+.loan{
+    margin-top: 0px !important;
+}
 .header-row {
-    margin-top: -150px;
+    margin-top: -159px;
     background-color:#ffffff2b;
     padding:0;
 }
@@ -267,43 +238,41 @@ $this->registerCss('
 }
 .h-heading{
     color:#fff;
+    font-weight:400;
+    padding-top:0 !important;
 }
 .h-text{
     color:#ff7803;
 }
-.sectionIsLoading {
-    display: none;
-    position: relative;
-    width: 80px;
-    height: 80px;
-    margin: auto;
+.sectionLoad {
+    margin:20px 0
 }
-.sectionIsLoading div {
-  position: absolute;
-  border: 4px solid #00a0e3;
-  opacity: 1;
-  border-radius: 50%;
-  animation: sectionIsLoading 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
-}
-.sectionIsLoading div:nth-child(2) {
-  animation-delay: -0.5s;
-}
-@keyframes sectionIsLoading {
-  0% {
-    top: 36px;
-    left: 36px;
-    width: 0;
-    height: 0;
-    opacity: 1;
-  }
-  100% {
-    top: 0px;
-    left: 0px;
-    width: 72px;
-    height: 72px;
-    opacity: 0;
-  }
-}
+//.sectionIsLoading div {
+//  position: absolute;
+//  border: 4px solid #00a0e3;
+//  opacity: 1;
+//  border-radius: 50%;
+//  animation: sectionIsLoading 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+//}
+//.sectionIsLoading div:nth-child(2) {
+//  animation-delay: -0.5s;
+//}
+//@keyframes sectionIsLoading {
+//  0% {
+//    top: 36px;
+//    left: 36px;
+//    width: 0;
+//    height: 0;
+//    opacity: 1;
+//  }
+//  100% {
+//    top: 0px;
+//    left: 0px;
+//    width: 72px;
+//    height: 72px;
+//    opacity: 0;
+//  }
+//}
 
 .j-tweets{
     background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
@@ -349,9 +318,7 @@ $this->registerCss('
 .tweet-btn button:hover{
     color:#00a0e3;
 }
-.job-search > span{
-    color:#fff !important;
-}
+
 .feature-links a{
     color: #d5d8f3;
     padding-right: 5px;    
@@ -434,7 +401,7 @@ $this->registerCss('
    padding-right:0px !important; 
 }
 .header-boxs{
-//    max-width:850px;
+    max-width:1300px;
     margin:0 auto;
 }
 .box-border:hover{
@@ -507,94 +474,8 @@ $this->registerCss('
     opacity: 0.1;
 }
 .box-border:hover .overlay {
-    height: 35%;
+    height: 100%;
 }
-/*services section starts*/
-.services{
-    padding: 0px 0 25px 0; 
-    text-align:center !important;
-}
-.service-box{ 
-    background:url(' . Url::to('@eyAssets/images/pages/index2/orange-bg.png') . ');
-    padding:20px 20px;
-    border-radius:10px;
-    border-width:5px 0px 0px 0px; 
-    border-color:transparent;
-    border-style:solid;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
-    width: 95%;
-    margin: auto;
-    margin-bottom:20px;
-    box-shadow: 0px 2px 13px 0px #ddddddb8;
-    background-size: 100% !important;
-    background-position: 0px -8px !important;
-    background-repeat:no-repeat !important;
-}
-.service-box:hover{
-    box-shadow: 0px 2px 13px 3px #ddddddb8;
-    border-top:5px solid #ff7803;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
-    color:#ff7803;
-}
-.ser-box-orange{
-    background:url(' . Url::to('@eyAssets/images/pages/index2/bgq.png') . ');
-}
-.ser-box-orange:hover{
-    border-top:5px solid #00a0e3;
-    color:#00a0e3;
-}
-.ser-box-purple{
-    background:url(' . Url::to('@eyAssets/images/pages/index2/review-box-bg.png') . ');
-}
-.ser-box-purple:hover{
-    border-top:5px solid #5E4795;
-    color:#5E4795;
-}
-.ser-box-yellow{
-    background: url(' . Url::to('@eyAssets/images/pages/index2/learningbg.png') . ');
-}
-.ser-box-yellow:hover{
-    border-top: 5px solid #f8b321;
-    color:#f8b321
-}
-.ser-box-maroon{
-    background: url(' . Url::to('@eyAssets/images/pages/index2/trainingbg.png') . ');
-}
-.ser-box-maroon:hover{
-    border-top: 5px solid #c76692;
-    color:#c76692
-}
-.ser-box-green{
-    background: url(' . Url::to('@eyAssets/images/pages/index2/careerAdviceBg.png') . ');
-}
-.ser-box-green:hover{
-    border-top: 5px solid #047c7d;
-    color:#047c7d
-}
-.ser-icons{
-    text-align:center;
-}
-.ser-icons img{
-    max-height: 75px; 
-    max-width: 75px;
-}
-.serv-center{
-    padding:0 30px;
-}
-.ser-heading{
-    padding: 10px 0 0 0;
-    text-transform: uppercase;
-    font-size: 20px;
-    text-align:center;
-    font-family:lora;
-}
-/*services section ends*/
 /*how it works section starts*/
 .how-it-works{
     padding: 20px 0 45px 0;
@@ -762,30 +643,31 @@ how-icon{
 }
 /*<!---- view-all button css ends --->*/
 
-@media screen and (min-width: 1200px){
+@media screen and (min-width: 1400px){
     .box-border{
          min-width: 191px !important;
          max-width: 191px !important;
     }
 }
-@media screen and (max-width: 1200px){
+@media screen and (max-width: 1400px){
+    .header-row{
+        margin-top: -147px;
+    }
     .box-border{
          min-width: 157px !important;
          max-width: 157px !important;
+         padding-bottom: 15px;
+    }
+    .h-heading{
+        font-size: 16px;
+        line-height: 16px;
     }
 }
-@media screen and (max-width: 992px) {
-.box-border{
-         min-width:-moz-available !important;
-         max-width:-moz-available !important;
-    }
-    .header-boxs{
-        display:inline;
-    }
-    .header-row{
-        margin-top:-100px;
-    }
+@media screen and (max-width: 1100px) {
     .box-border{
+        min-width: 191px !important;
+        max-width: 191px !important;
+        margin: 0 10px;
         min-height: 170px;
         margin-bottom:20px;
         margin-left: 0px;
@@ -793,8 +675,17 @@ how-icon{
         border: 1px solid #eee;
         padding: 30px;
     }
+    .header-boxs{
+        flex-wrap: wrap;
+    }
+    .header-row{
+        margin-top:-100px;
+    }
     .h-heading{
         color:#000;
+         font-size: 14px;
+        line-height: 16px;
+  
     }
     .box-border:hover .h-heading{
         color:#fff;
@@ -826,6 +717,19 @@ how-icon{
     .tweetLinks {
         text-align: right;
         margin-bottom: 30px;
+    }
+}
+@media screen and (max-width: 550px){
+     .box-border{
+        min-width: 145px !important;
+        max-width: 145px !important;
+        margin: 0 10px 10px;
+         padding: 20px 20px 15px;
+         min-height: 150px;
+     }
+     .h-heading{
+        line-height: 20px;
+  
     }
 }
 .job-field select{
@@ -1253,36 +1157,62 @@ how-icon{
         float: left;
         width: 100%;
     }
+    .headerContent .job-search h1{
+        font-size: 26px;
+        line-height: 30px;
+        padding: 0 15px;
+        
+    }
+    .headerContent .job-search h2{
+        font-size: 20px;
+        margin-top: 0px;
+        margin-bottom: 0px;    
+    }
 }
-
+@media only screen and (max-width: 520px) and (min-width: 360px) {
+    .job-search > h1 {
+        font-size: 24px;
+        line-height: 30px;
+        padding: 0px 11px 0px;
+    }
+    .search-job2 {
+        padding: 4px 40px;
+    }
+    .feature-links {
+        padding: 0 14px;
+    }  
+} 
 ');
 $script = <<< JS
 $("html, body").animate({ scrollTop: 0 }, "slow");
 var load_content = true;
 var loadNth = 0;
 var errorNth = 0;
-window.onscroll = function() {scrollFunction()};
 function scrollFunction() {
-     var doc_height = $(document).height() - $(window).height();
-  if (document.documentElement.scrollTop > doc_height - $('#footer').height()) {
       if(load_content && loadElems[loadNth]){
         load_content = false;
+        $('#sectionIsLoading').fadeIn(500);
         $.ajax({
             url: "/site/load-data",
             method: "POST",
+            async:false,
             data: {type:loadElems[loadNth]},
             beforeSend:function(){
-                $('#sectionIsLoading').fadeIn(500);
+                
             },
             success: function (response) {
-                $('#sectionIsLoading').fadeOut(800);
-                $(this).animate({scrollTop : -500}, 400);
+                
+                // $(this).animate({scrollTop : -500}, 400);
                 $('#app-data').append(response);
                 loadNth++;
                 errorNth = 0;
             },
             complete: function() {
                 load_content = true;
+                $('#sectionIsLoading').fadeOut(800);
+                setTimeout(function() {
+                    scrollFunction();
+                }, 700);
             },
             error: function(xhr, textStatus, errorThrown){
                scrollFunction();
@@ -1293,21 +1223,10 @@ function scrollFunction() {
             }
         });
       }
-  }
-}
-        
-  jQuery(function($) {
-  $('.main-slider-sec').slick({
-	  slidesToShow: 1,
-	  slidesToScroll: 1,
-	  arrows: false,
-	  autoplay: true,
-	  slide: 'li',
-	  fade: false,
-	  infinite: true,
-	  dots: false
-	});
-});
+      }
+  // }
+// }
+    scrollFunction();
 
 
 document.getElementById('search-submit').addEventListener('click',(evt)=> {
@@ -1317,45 +1236,70 @@ document.getElementById('search-submit').addEventListener('click',(evt)=> {
       return false; 
   }
 });
+
+$(document).on('submit', '#search_jobs_internships', function() {
+    if($(this).attr('action') === '/jobs'){
+        window.location.href = $('#search-input').val().replace(/\s+/g, '-').toLowerCase() + '-jobs';
+        return false;
+    }else if($(this).attr('action') === '/internships'){
+        window.location.href = $('#search-input').val().replace(/\s+/g, '-').toLowerCase() + '-internships';
+        return false;
+    }
+});
+$('.load-later').Lazy();
 JS;
 if (!Yii::$app->user->isGuest) {
     $this->registerJs("
     var loadElems = [
-        'getGovernmentJobs',
-        'getFeaturedJobs',
-        'getOpportunities',
-        'getWhatsappCommunity',
-        'getInternationalJobs',
-        'getLearningTopics',
+        'getOurServices',
+        'getFeaturedApplications',
         'getStats',
+        'getProductOffering',
         'getTopCities',
+        'getDropResume',
+        'getGovernmentJobs',
+        'getInternationalJobs',
         'getCompaniesWithUs',
-        'getTweets',
+        'getLearningTopics',
+        'getWhatsappCommunityj',
+//        'getTweets',
+        'getStudentLoan',
+        'getPressRelease',
         'getShortcuts'
     ];
     ");
 } else {
     $this->registerJs("
     var loadElems = [
-        'getGovernmentJobs',
-        'getFeaturedJobs',
-        'getOpportunities',
-        'getWhatsappCommunity',
-        'getInternationalJobs',
-        'getLearningTopics',
+        'getOurServices',
+        'getFeaturedApplications',
+        'getFeaturedInternships',
         'getStats',
+        'getProductOffering',
+        'getDropResume',
         'getTopCities',
-        'getHowItWorks',
+//        'getEduAndRedbull',
+        'getGovernmentJobs',
+        'getInternationalJobs',
         'getCompaniesWithUs',
-        'getTweets',
+        'getLearningTopics',
+//        'getOpportunities',
+//        'getSafetySigns',
+//        'getOnlineClasses',
+        'getWhatsappCommunity',
+        'getHowItWorks',
+//        'getNewsUpdate',
+//        'getTweets',
+        'getStudentLoan',
+        'getPressRelease',
         'getNewsletter',
         'getShortcuts'
     ];
+    
     ");
 }
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.9/jquery.lazy.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJs($script);
-$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
-//$this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet');
 $this->registerCssFile('@eyAssets/css/home-page-slider.css');
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
@@ -1364,24 +1308,58 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
 ?>
 <script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <script>
-    var modal = document.getElementById("virusModal");
-    // Get the button that opens the modal
-    var btn = document.getElementsByClassName("collegeSignupModal");
-
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-
-    for(var i=0; i< btn.length; i++){
-        btn[i].onclick = function () {
-            modal.style.display = "block";
+    function showHeaderContent(e){
+        let showDiv = e.getAttribute('data-name');
+        let headerContent = document.querySelector('.headerContent');
+        let divActive = headerContent.querySelector('#'+showDiv);
+        let hcActive = headerContent.getElementsByClassName('hcActive')
+        let searchForm = headerContent.querySelector('#search_jobs_internships');
+        let searchInput = document.getElementById('search-input')
+        if(hcActive.length > 0){
+            hcActive[0].classList.remove('hcActive');
+        }
+        console.log(searchForm.values);
+        if(divActive.classList.contains('hcActive')){
+           return false
+        }else{
+           divActive.classList.add('hcActive');
+            switch (showDiv) {
+                case 'jobHeaderContent':
+                    searchForm.setAttribute('action', '/jobs')
+                    searchInput.setAttribute('placeholder', 'Search Jobs');
+                    break;
+                case 'internshipHeaderContent':
+                    searchForm.setAttribute('action', '/internships');
+                    searchInput.setAttribute('placeholder', 'Search Internships');
+                    break;
+                case 'learningHeaderContent':
+                    searchForm.setAttribute('action', '/learning/search-video');
+                    searchInput.setAttribute('placeholder', 'Search Learning Videos');
+                    break;
+                case 'reviewsHeaderContent':
+                    searchForm.setAttribute('action', '/reviews/search');
+                    searchInput.setAttribute('placeholder', 'Search School, College, University or Company Name');
+                    break;
+                case 'coursesHeaderContent':
+                    searchForm.setAttribute('action', '/courses/courses-list');
+                    searchInput.setAttribute('placeholder', 'Search Courses');
+                    break;
+                default:
+                    searchForm.setAttribute('action', '/search');
+                    searchInput.setAttribute('placeholder', 'Keyword');
+                    console.log(showDiv);
+            }
+           if(showDiv == 'loanHeaderContent') {
+               headerContent.querySelector('.header-search-bar').style.display = 'none';
+           }else{
+               headerContent.querySelector('.header-search-bar').style.display = 'block';
+           }
         }
     }
-    span.onclick = function () {
-        modal.style.display = "none";
-    }
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
+
+    window.addEventListener("pageshow", function() {
+    var form = document.getElementsByTagName("form");
+    // let the browser natively reset defaults
+    form[0].reset();
+    });
 </script>

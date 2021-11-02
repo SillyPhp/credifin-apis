@@ -17,11 +17,11 @@ use yii\helpers\Url;
                             <?= Yii::t('account', 'Create Job'); ?>
                         </a>
                     </div>
-                    <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
-                        <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/jobs/quick-job'); ?>">
-                            <?= Yii::t('account', 'Create Quick Job'); ?>
-                        </a>
-                    </div>
+<!--                    <div class="col-md-2 col-sm-3 col-xs-6 pull-right">-->
+<!--                        <a class="btn btn-primary custom-buttons" href="--><?//= Url::to('/account/jobs/quick-job'); ?><!--">-->
+<!--                            --><?//= Yii::t('account', 'Create Quick Job'); ?>
+<!--                        </a>-->
+<!--                    </div>-->
                     <?php
                     if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
                         ?>

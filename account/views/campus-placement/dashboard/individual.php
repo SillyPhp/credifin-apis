@@ -272,7 +272,7 @@ use frontend\models\applications\UserOpinion;
                                                 </div>
                                                 <div class="tab-empty-text">
                                                     <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't Shortlisted any jobs.</div>
+                                                    <div class="">You haven't Saved any jobs.</div>
                                                 </div>
                                             </div>
                                         </div>
@@ -430,7 +430,7 @@ use frontend\models\applications\UserOpinion;
                                                 </div>
                                                 <div class="tab-empty-text">
                                                     <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't Shortlisted any jobs.</div>
+                                                    <div class="">You haven't Saved any jobs.</div>
                                                 </div>
                                             </div>
                                         </div>

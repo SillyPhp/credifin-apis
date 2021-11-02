@@ -26,6 +26,7 @@ class ResetPasswordForm extends Model
     {
         return [
             [['new_password', 'confirm_password',], 'required'],
+            [['new_password', 'confirm_password'],'trim'],
             [['new_password', 'confirm_password',], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['confirm_password'], 'compare', 'compareAttribute' => 'new_password'],
             [['new_password', 'confirm_password'], 'string', 'length' => [8, 20]],

@@ -11,11 +11,12 @@ namespace common\models;
  * @property string $application_enc_id Foreign Key to Employer Applications Table
  * @property string $resume_enc_id Foreign Key to User Resume Table
  * @property int $current_round Current Hiring Round
+ * @property int $rejection_window 0 false , 1 true
  * @property string $created_on On which date Application information was added to database
  * @property string $created_by By which User Application information was added
  * @property string $last_updated_on On which date Application information was updated
  * @property string $last_updated_by By which User Application information was updated
- * @property string $status Application Status (Accepted, Rejected, Pending, Hired, Cancelled)
+ * @property string $status Application Status (Accepted, Rejected, Pending, Hired, Cancelled, Blocked by college)
  * @property int $is_deleted Is Application Deleted (0 as False, 1 as True)
  *
  * @property AnsweredQuestionnaire[] $answeredQuestionnaires
@@ -25,6 +26,8 @@ namespace common\models;
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  * @property UserResume $resumeEnc
+ * @property HiringProcessNotes[] $hiringProcessNotes
+ * @property CandidateRejection[] $candidateRejections
  */
 class AppliedApplications extends \yii\db\ActiveRecord
 {
@@ -43,7 +46,7 @@ class AppliedApplications extends \yii\db\ActiveRecord
     {
         return [
             [['applied_application_enc_id', 'application_number', 'application_enc_id', 'created_on', 'created_by'], 'required'],
-            [['application_number', 'current_round', 'is_deleted'], 'integer'],
+            [['application_number', 'current_round','rejection_window', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['status'], 'string'],
             [['applied_application_enc_id', 'application_enc_id', 'resume_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
@@ -110,5 +113,21 @@ class AppliedApplications extends \yii\db\ActiveRecord
     public function getResumeEnc()
     {
         return $this->hasOne(UserResume::className(), ['resume_enc_id' => 'resume_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getHiringProcessNotes()
+    {
+        return $this->hasMany(HiringProcessNotes::className(), ['applied_application_enc_id' => 'applied_application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCandidateRejections()
+    {
+        return $this->hasMany(CandidateRejection::className(), ['applied_application_enc_id' => 'applied_application_enc_id']);
     }
 }

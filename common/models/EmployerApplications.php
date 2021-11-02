@@ -15,9 +15,12 @@ use Yii;
  * @property string $application_type_enc_id Foreign Key to Application Types Table
  * @property string $slug Application Slug
  * @property string $description Application Description
+ * @property string $body Application Html Content
+ * @property int $source 1 for ey 2 for git 3 for muse
+ * @property string $unique_source_id source ids for apis
  * @property string $title Foreign Key to Assigned Categories Table
  * @property string $designation_enc_id Foreign Key to Designations Table
- * @property string $type Type (Full Time, Part Time, Work From Home)
+ * @property string $type Type (Full Time, Part Time, Work From Home, Contract)
  * @property string $preferred_industry Foreign Key to Industries Table
  * @property string $interview_process_enc_id Foreign Key to Organization Interview Process
  * @property string $timings_from Timings From
@@ -25,12 +28,16 @@ use Yii;
  * @property string $joining_date Joining Date
  * @property string $last_date Last Date to Apply
  * @property string $experience Minimum Experience Required
+ * @property string $minimum_exp Minimum Experience Required
+ * @property string $maximum_exp Maximum Experience Required
  * @property string $preferred_gender Preferred Gender (1 as Male, 2 as Female, 3 as Both)
  * @property int $is_sponsored Is Application Sponsored (0 as False, 1 as True)
  * @property int $is_featured Is Application Featured (0 as False, 1 as True)
  * @property int $for_careers Is Application for Careers (0 as False, 1 as True)
  * @property string $published_on On which date application was published
  * @property string $image Application Image
+ * @property string $square_image Application Square Image
+ * @property string $story_image
  * @property string $image_location Application Image Path
  * @property int $application_for 0 for Both, 1 for Empower Youth, 2 for Erexx
  * @property int $for_all_colleges 0 for choosed colleges, 1 for all colleges
@@ -86,14 +93,16 @@ class EmployerApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['application_enc_id', 'application_number', 'application_type_enc_id', 'slug', 'title', 'type', 'timings_from', 'timings_to', 'joining_date', 'last_date', 'preferred_gender', 'published_on', 'image', 'image_location'], 'required'],
-            [['application_number', 'is_sponsored', 'is_featured', 'for_careers', 'application_for', 'for_all_colleges', 'is_deleted'], 'integer'],
-            [['description', 'type', 'experience', 'preferred_gender', 'status'], 'string'],
+            [['application_enc_id', 'application_number', 'application_type_enc_id', 'slug', 'title', 'type', 'timings_from', 'timings_to', 'joining_date', 'last_date', 'preferred_gender', 'published_on', 'image'], 'required'],
+            [['application_number','source','is_sponsored', 'is_featured', 'for_careers', 'application_for', 'for_all_colleges', 'is_deleted'], 'integer'],
+            [['description', 'body', 'type', 'experience','minimum_exp','maximum_exp','preferred_gender', 'status'], 'string'],
             [['timings_from', 'timings_to', 'joining_date', 'last_date', 'published_on', 'created_on', 'last_updated_on'], 'safe'],
-            [['application_enc_id', 'organization_enc_id', 'unclaimed_organization_enc_id', 'application_type_enc_id', 'slug', 'title', 'designation_enc_id', 'preferred_industry', 'interview_process_enc_id', 'image', 'image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['application_enc_id', 'organization_enc_id', 'unclaimed_organization_enc_id', 'application_type_enc_id', 'title', 'designation_enc_id', 'preferred_industry', 'interview_process_enc_id', 'image', 'square_image','story_image','image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['unique_source_id'], 'string', 'max' => 500],
             [['application_enc_id'], 'unique'],
             [['application_number'], 'unique'],
             [['slug'], 'unique'],
+            [['slug'], 'string', 'max' => 255],
             [['application_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => ApplicationTypes::className(), 'targetAttribute' => ['application_type_enc_id' => 'application_type_enc_id']],
             [['title'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedCategories::className(), 'targetAttribute' => ['title' => 'assigned_category_enc_id']],
             [['preferred_industry'], 'exist', 'skipOnError' => true, 'targetClass' => Industries::className(), 'targetAttribute' => ['preferred_industry' => 'industry_enc_id']],

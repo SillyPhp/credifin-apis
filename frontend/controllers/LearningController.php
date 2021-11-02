@@ -408,7 +408,7 @@ class LearningController extends Controller
         $object = QuestionsPool::find()
             ->alias('a')
             ->andWhere(['a.is_deleted'=>0])
-            ->select(['a.question_pool_enc_id','c.name','question','privacy','a.slug','CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", f.image_location, "/", f.image) ELSE NULL END image','f.username','f.initials_color','CONCAT(f.first_name," ","f.last_name") user_name'])
+            ->select(['a.question_pool_enc_id','c.name','question','privacy','a.slug','CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", f.image_location, "/", f.image) ELSE NULL END image','f.username','f.initials_color','CONCAT(f.first_name," ","f.last_name") user_name'])
             ->joinWith(['createdBy f'],false)
             ->joinWith(['topicEnc b'=>function($b)
             {
@@ -417,7 +417,7 @@ class LearningController extends Controller
             ->joinWith(['questionsPoolAnswers d'=>function($b)
             {
                 $b->joinWith(['createdBy e'],false);
-                $b->select(['d.question_pool_enc_id','CONCAT(e.first_name," ",e.last_name) name','CASE WHEN e.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", e.image_location, "/", e.image) ELSE NULL END image','e.username','e.initials_color']);
+                $b->select(['d.question_pool_enc_id','CONCAT(e.first_name," ",e.last_name) name','CASE WHEN e.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", e.image_location, "/", e.image) ELSE NULL END image','e.username','e.initials_color']);
                 $b->limit(3);
             }])
             ->limit(6)
@@ -457,7 +457,7 @@ class LearningController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             return [
                 'status' => 200,
-                'result' => $this->__getCategories(12)
+                'result' => $this->__getCategories(6)
             ];
         }
     }
@@ -516,7 +516,7 @@ class LearningController extends Controller
                 ->andWhere(['a.status' => 1])
                 ->andWhere(['a.is_deleted' => 0])
                 ->andWhere(['!=', 'a.video_enc_id', $current_video_id['video_enc_id']])
-                ->limit(10)
+                ->limit(6)
                 ->asArray()
                 ->all();
             $top_videos = LearningVideos::find()
@@ -544,6 +544,7 @@ class LearningController extends Controller
                 ])
                 ->andWhere(['a.is_deleted' => 0])
                 ->groupBy(['a.assigned_category_enc_id'])
+                ->groupBy(['c.name'])
                 ->asArray()
                 ->limit(15)
                 ->all();
@@ -693,7 +694,7 @@ class LearningController extends Controller
 
             $result = LearningVideoComments::find()
                 ->alias('a')
-                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
+                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
                 ->joinWith(['userEnc b'], false)
                 ->where(['a.reply_to' => NULL])
                 ->andWhere(['a.video_enc_id' => $learning_video['video_enc_id']])
@@ -778,7 +779,7 @@ class LearningController extends Controller
 
             $result = LearningVideoComments::find()
                 ->alias('a')
-                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
+                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
                 ->joinWith(['userEnc b'], false)
                 ->where(['a.reply_to' => $parent])
                 ->andWhere(['a.video_enc_id' => $learning_video['video_enc_id']])
@@ -814,7 +815,7 @@ class LearningController extends Controller
                 $user_info = [
                     'logo' => Yii::$app->user->identity->image,
                     'username' => Yii::$app->user->identity->username,
-                    'path' => Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image,
+                    'path' => Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image,
                     'color' => Yii::$app->user->identity->initials_color,
                     'name' => Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name,
                     'comment_enc_id' => $a
@@ -854,7 +855,7 @@ class LearningController extends Controller
                 $user_info = [
                     'logo' => Yii::$app->user->identity->image,
                     'username' => Yii::$app->user->identity->username,
-                    'path' => Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image,
+                    'path' => Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image,
                     'color' => Yii::$app->user->identity->initials_color,
                     'name' => Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name,
                     'comment_enc_id' => $a
@@ -1010,7 +1011,7 @@ class LearningController extends Controller
                 'a.linkedin',
                 'a.instagram',
                 'count(c.id) as videos',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE "/assets/themes/ey/images/pages/learning-corner/collaborator.png" END image'
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE "/assets/themes/ey/images/pages/learning-corner/collaborator.png" END image'
             ])
             ->innerJoinWith(['userTypeEnc b' => function ($b) {
                 $b->andOnCondition(['b.user_type' => 'Contributor']);
@@ -1060,6 +1061,11 @@ class LearningController extends Controller
                 return ['status' => 201];
             }
         }
+    }
+
+    public function actionOurContributors()
+    {
+        return $this->render('our-contributors');
     }
 
 }

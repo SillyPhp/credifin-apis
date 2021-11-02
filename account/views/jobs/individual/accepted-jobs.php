@@ -33,13 +33,26 @@ use yii\widgets\Pjax;
                                     <div class="topic-con"> 
                                         <div class="hr-company-box">
                                             <div class="hr-com-icon">
-                                                <img src="<?= Url::to('@commonAssets/categories/' . $accept["job_icon"]); ?>" class="img-responsive ">
+                                                <?php
+                                                if ($accept['logo']) {
+                                                    $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $accept['logo_location'] . DIRECTORY_SEPARATOR . $accept['logo'];
+                                                } else {
+                                                    $organizationLogo = "https://ui-avatars.com/api/?name=" . $accept['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $accept['initials_color']) . "&color=ffffff";
+                                                }
+                                                ?>
+                                                <img src="<?= $organizationLogo ?>" class="img-responsive ">
                                             </div>
-                                            <div class="hr-com-name">
+                                            <div class="hr-com-name job-title-name">
                                                 <?= $accept['org_name']; ?>
                                             </div>
-                                            <div class="hr-com-field">
-                                                <?= $accept['title']; ?>
+                                            <div class="merge-name-icon">
+                                                <div class="cat-icon">
+                                                    <img src="<?= Url::to('@commonAssets/categories/' . $accept["job_icon"]); ?>"
+                                                         class="img-responsive ">
+                                                </div>
+                                                <div class="hr-com-field">
+                                                    <?= $accept['title']; ?>
+                                                </div>
                                             </div>
                                             <div class="hr-com-field"></div>
                                             <div class="opening-txt">
@@ -89,6 +102,27 @@ use yii\widgets\Pjax;
 </section>
 <?php
 $this->registerCss('
+.merge-name-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:0 10px;
+}
+.cat-icon img {
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    object-fit: contain;
+    margin-right:5px;
+}
+.hr-com-icon img {
+//    border-radius: 50% !important;
+    object-fit: contain;
+    overflow: hidden;
+}
+.hr-com-name.job-title-name {
+    padding: 0;
+}
 .j-grid > a {
     font-family: Open Sans;
     font-size: 11px;
@@ -119,7 +153,7 @@ $this->registerCss('
     color:#999999; 
     padding-top:20px;
 }
-.hr-com-field{height:21px;}
+.hr-com-field{height:22px;}
 .overlay2 {
   position: absolute;
   top: 0px;
@@ -145,6 +179,7 @@ button.over-bttn, .ob1, button.over-bttn, .ob2{
     border-radius:5px !important;
     padding:6px 12px;
     color:#fff;
+    font-family:roboto;
 }
 button.over-bttn, .ob2{
     background:#ff7803 !important; 

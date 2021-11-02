@@ -54,38 +54,44 @@ class ExploreController extends ApiBaseController
                             $e->andOnCondition(['e.name' => ucfirst($options['type'])]);
                         }], false);
                 }], false)
-                ->where(['a.assigned_to' => ucfirst($options['type'])])
-                ->orderBy([
-                    'total' => SORT_DESC,
-                    'b.name' => SORT_ASC,
-                ])
-                ->asArray()
+                ->where(['a.assigned_to' => ucfirst($options['type'])]);
+            if (isset($req['sort']) && !empty($req['sort'])) {
+                $activeProfiles->orderBy(['total' => SORT_DESC]);
+            } else {
+                $activeProfiles->orderBy(['b.name' => SORT_ASC]);
+            }
+
+            if (isset($req['limit']) && !empty($req['limit'])) {
+                $activeProfiles->limit($req['limit']);
+            }
+            $activeProfiles = $activeProfiles->asArray()
                 ->all();
 
             return $this->response(200, $activeProfiles);
         } else {
-            return $this->response(422,'Missing Information');
+            return $this->response(422, 'Missing Information');
         }
     }
 
-    public function actionTopCompanies(){
+    public function actionTopCompanies()
+    {
         $req = Yii::$app->request->post();
-        if(!empty($req['type'])){
+        if (!empty($req['type'])) {
             $top_companies = EmployerApplications::find()
                 ->alias('a')
-                ->select(['c.name org_name','a.organization_enc_id','b.name type','COUNT(a.organization_enc_id) as total',
-                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
+                ->select(['c.name org_name', 'a.organization_enc_id', 'b.name type', 'COUNT(a.organization_enc_id) as total',
+                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
                     'c.initials_color color'
                 ])
-                ->innerJoinWith(['applicationTypeEnc b'=>function($b) use($req){
-                    $b->where(['b.name'=>$req['type']]);
-                }],false)
-                ->innerJoinWith(['organizationEnc c'=>function($c){
+                ->innerJoinWith(['applicationTypeEnc b' => function ($b) use ($req) {
+                    $b->where(['b.name' => $req['type']]);
+                }], false)
+                ->innerJoinWith(['organizationEnc c' => function ($c) {
                     $c->where([
                         'a.status' => 'Active',
                         'a.is_deleted' => 0,
                     ]);
-                }],false)
+                }], false)
                 ->where([
                     'a.status' => 'Active',
                     'a.is_deleted' => 0,
@@ -96,20 +102,20 @@ class ExploreController extends ApiBaseController
                 ])
                 ->asArray()
                 ->all();
-            if($top_companies == null || $top_companies == ''){
-                return $this->response(404,'Not found');
-            }else{
-                return $this->response(200,$top_companies);
+            if ($top_companies == null || $top_companies == '') {
+                return $this->response(404, 'Not found');
+            } else {
+                return $this->response(200, $top_companies);
             }
-        }else{
-            return $this->response(422,'Missing Information');
+        } else {
+            return $this->response(422, 'Missing Information');
         }
     }
 
     public function actionFeaturedEmployers()
     {
         $organizations = Organizations::find()
-            ->select(['initials_color color', 'name', 'organization_enc_id', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
+            ->select(['initials_color color', 'name', 'organization_enc_id', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
             ->where(['is_sponsored' => 1])
             ->asArray()
             ->all();
@@ -137,30 +143,31 @@ class ExploreController extends ApiBaseController
         return $this->response(200, $cities);
     }
 
-    public function actionCompanySearch(){
+    public function actionCompanySearch()
+    {
 
         $req = Yii::$app->request->post();
 
-        if(!empty($req['q'])){
+        if (!empty($req['q'])) {
             $org = Organizations::find()
-                ->select(['organization_enc_id','name'])
+                ->select(['organization_enc_id', 'name'])
                 ->where([
                     'or',
                     ['like', 'name', $req['q']],
                     ['like', 'slug', $req['q']],
                 ])
-                ->andWhere(['status'=>'Active','is_deleted'=>0])
+                ->andWhere(['status' => 'Active', 'is_deleted' => 0])
                 ->asArray()
                 ->all();
 
-            if($org == null || $org == '' || empty($org)){
-                return $this->response(404,'Not Found');
-            }else{
-                return $this->response(200,$org);
+            if ($org == null || $org == '' || empty($org)) {
+                return $this->response(404, 'Not Found');
+            } else {
+                return $this->response(200, $org);
             }
 
-        }else{
-            return $this->response(422,'Missing Information');
+        } else {
+            return $this->response(422, 'Missing Information');
         }
     }
 
@@ -168,12 +175,12 @@ class ExploreController extends ApiBaseController
     {
         $type = Yii::$app->request->post('type');
 
-        if(!$type){
-            return $this->response(422,'missing information');
+        if (!$type) {
+            return $this->response(422, 'missing information');
         }
 
         $profiles = AssignedCategories::find()
-            ->select(['b.name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/','https') . '", b.icon) icon', 'COUNT(d.id) as total'])
+            ->select(['b.name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
             ->alias('a')
             ->distinct()
             ->joinWith(['parentEnc b'], false)
@@ -188,10 +195,10 @@ class ExploreController extends ApiBaseController
             ->asArray()
             ->all();
 
-        if($profiles){
-            return $this->response(200,$profiles);
-        }else{
-            return $this->response(404,'not found');
+        if ($profiles) {
+            return $this->response(200, $profiles);
+        } else {
+            return $this->response(404, 'not found');
         }
     }
 

@@ -70,7 +70,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label class="control-label col-md-6 text-left">Get Prefered Jobs, Industries and Skills Notification</label>
+                                            <label class="control-label col-md-6 text-left">Get Preferred Jobs, Industries and Skills Notification</label>
                                                 <div class="col-md-6 text-right">
                                                     <input type="checkbox" checked class="make-switch" id="test"
                                                            data-size="small">

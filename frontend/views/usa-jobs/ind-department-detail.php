@@ -8,7 +8,7 @@ $description = '' . $data["Value"] . ' Recruitment 2020,' . $data["Value"] . ' J
 $image = Yii::$app->urlManager->createAbsoluteUrl($data['logo']);
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -23,7 +23,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -76,7 +76,7 @@ echo $this->render('/widgets/mustache/application-card-bk');
 $this->registerCss('
 .application-card-main
 {
-height:210px;
+height:175px;
 }
 .align_btn
 {
@@ -124,13 +124,6 @@ margin:auto
     font-size:15px;
     padding: 53px 10px 0px 8px;  
     }
-}
-.application-card-img {
-    margin-left: 0px;
-    margin-top: 30px;
-}
-.application-card-description {
-    margin: 20px 0 0 15px !important;
 }
 ');
 echo $this->render('/widgets/mustache/usa-jobs-card');

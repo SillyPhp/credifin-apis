@@ -1,15 +1,15 @@
 <?php
 
-use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
-$this->title = Yii::t('frontend', $organization['name']);
+$this->title = Yii::t('frontend', htmlspecialchars_decode($organization['name']));
 $keywords = $industry['industry'] . "," . $organization['tag_line'];
 $description = $organization['description'];
 $image = Yii::$app->urlManager->createAbsoluteUrl((!empty($organization['cover_image']) ? Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'] : '/assets/common/logos/empower_fb.png'));
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -24,7 +24,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
         'og:title' => Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -33,13 +33,9 @@ $this->params['seo_tags'] = [
 ];
 
 if ($organization['logo']) {
-    $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
-    $image = Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
-    if (!file_exists($image_path)) {
-        $image = $organization['name'];
-    }
+    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
 } else {
-    $image = $organization['name'];
+    $image = "https://ui-avatars.com/api/?name=" . $organization['name'] . '&size=200&rounded=false&background=' . str_replace("#", "", $organization['initials_color']) . '&color=ffffff';
 }
 if ($organization['cover_image']) {
     $cover_image_path = Yii::$app->params->upload_directories->organizations->cover_image_path . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'];
@@ -50,6 +46,8 @@ if ($organization['cover_image']) {
 } else {
     $cover_image = "/assets/themes/ey/images/backgrounds/default_cover.png";
 }
+$overall_avg = array_sum($review_stats) / count($review_stats);
+$round_avg = round($overall_avg);
 ?>
     <section>
         <div class="header-bg" style='background-image:url("<?= Url::to($cover_image); ?>");'>
@@ -62,10 +60,13 @@ if ($organization['cover_image']) {
                                 <div class="logo-box">
                                     <div class="logo">
                                         <?php
-                                        if (!empty($image_path)):
+                                        if (!empty($image)):
                                             ?>
-                                            <img id="logo-img" src="<?= Url::to($image); ?>"
-                                                 alt="<?= Html::encode($organization['name']) ?>"/>
+                                            <img id="logo-img" src="<?= Url::to($image); ?>" class="do-image"
+                                                 data-name="<?= $organization['name'] ?>" data-width="200"
+                                                 data-height="200" data-color="<?= $organization['initials_color'] ?>"
+                                                 data-font="100px"
+                                                 alt="<?= htmlspecialchars_decode($organization['name']) ?>"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $image; ?>"
                                                     color="<?= $organization['initials_color'] ?>" width="200"
@@ -74,19 +75,62 @@ if ($organization['cover_image']) {
                                     </div>
                                 </div>
                                 <div class="com-details">
-                                    <div class="com-name"><?= Html::encode($organization['name']) ?></div>
+                                    <div class="com-name">
+                                        <?= htmlspecialchars_decode($organization['name']) ?>
+
+                                    </div>
                                     <?php if (!empty($organization['tag_line'])) { ?>
                                         <div class="com-establish">
                                             <!--                                        <span class="detail-title">Tagline:</span> -->
-                                            <?= Html::encode($organization['tag_line']); ?>
+                                            <?= htmlspecialchars_decode($organization['tag_line']); ?>
                                         </div>
                                     <?php } ?>
                                     <?php if (!empty($industry['industry'])) { ?>
                                         <div class="com-establish">
                                             <!--                                        <span class="detail-title">Industry:</span> -->
-                                            <?= Html::encode($industry['industry']); ?>
+                                            <?= htmlspecialchars_decode($industry['industry']); ?>
                                         </div>
-                                    <?php } ?>
+                                    <?php }
+                                    ?>
+                                    <div class="status-icon">
+                                        <?php
+                                        if ($labels['is_new'] == 1) {
+                                            ?>
+                                            <span class="new-j" data-toggle="tooltip" title="New">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/new-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if ($labels['is_featured'] == 1) {
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Featured">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/featured-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if ($labels['is_promoted'] == 1) {
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Promoted">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/promoted-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if ($labels['is_hot'] == 1) {
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Hot">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/hot-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        if ($labels['is_trending'] == 1) {
+                                            ?>
+                                            <span class="fIcons" data-toggle="tooltip" title="Trending">
+                                        <img src="<?= Url::to('@eyAssets/images/job-profiles/trending-job.png') ?>"/>
+                                    </span>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -99,38 +143,42 @@ if ($organization['cover_image']) {
         <div class="container padd-top-0">
             <div class="row">
                 <div class="col-md-6 col-md-offset-2 col-sm-10 col-sm-offset-2 col-xs-12">
-                    <ul class="nav nav-tabs nav-padd-20">
-                        <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
-                        <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>
-                        <li><a data-toggle="tab" href="#tab4">Locations</a></li>
-                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>
-                    </ul>
+                    <!--                    <ul class="nav nav-tabs nav-padd-20">-->
+                    <!--                        <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>-->
+                    <!--                        <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>-->
+                    <!--                        <li><a data-toggle="tab" href="#tab4" class="location_tab">Locations</a></li>-->
+                    <!--                        <li><a data-toggle="tab" href="#menu4">Reviews</a></li>-->
+                    <!--                    </ul>-->
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-12">
-                    <div class="follow-btn">
-                        <?php if (!empty($follow) && $follow['followed'] == 1) {
-                            ?>
-                            <button class="follow">Following</button>
+                    <?php if (Yii::$app->user->identity->organization) { ?>
+                        <span></span>
+                    <?php } else { ?>
+                        <div class="follow-btn">
+                            <?php if (!empty($follow) && $follow['followed'] == 1) {
+                                ?>
+                                <button class="follow">Following</button>
 
-                            <?php
-                        } elseif (!Yii::$app->user->isGuest) {
-                            ?>
-                            <button class="follow">Follow</button>
-                        <?php } ?>
-                    </div>
+                                <?php
+                            } elseif (!Yii::$app->user->isGuest) {
+                                ?>
+                                <button class="follow">Follow</button>
+                            <?php } ?>
+                        </div>
+                    <?php } ?>
                     <div class="social-btns">
                         <?php if (!empty($organization['facebook'])) { ?><a
-                            href="<?= Html::encode($organization['facebook']) ?>" class="facebook" target="_blank"><i
-                                        class="fab fa-facebook-f"></i> </a><?php } ?>
+                            href="<?= htmlspecialchars_decode($organization['facebook']) ?>" class="facebook-social"
+                            target="_blank"><i class="fab fa-facebook-f"></i> </a><?php } ?>
                         <?php if (!empty($organization['twitter'])) { ?><a
-                            href="<?= Html::encode($organization['twitter']) ?>" class="twitter" target="_blank"><i
-                                        class="fab fa-twitter"></i> </a><?php } ?>
+                            href="<?= htmlspecialchars_decode($organization['twitter']) ?>" class="twitter"
+                            target="_blank"><i class="fab fa-twitter"></i> </a><?php } ?>
                         <?php if (!empty($organization['linkedin'])) { ?><a
-                            href="<?= Html::encode($organization['linkedin']) ?>" class="linkedin" target="_blank"><i
-                                        class="fab fa-linkedin-in"></i> </a><?php } ?>
+                            href="<?= htmlspecialchars_decode($organization['linkedin']) ?>" class="linkedin-social"
+                            target="_blank"><i class="fab fa-linkedin-in"></i> </a><?php } ?>
                         <?php if (!empty($organization['website'])) { ?><a
-                            href="<?= Html::encode($organization['website']) ?>" class="web" target="_blank"><i
-                                        class="fas fa-link"></i> </a><?php } ?>
+                            href="<?= htmlspecialchars_decode($organization['website']) ?>" class="web" target="_blank">
+                                <i class="fas fa-link"></i> </a><?php } ?>
                     </div>
                 </div>
             </div>
@@ -139,17 +187,58 @@ if ($organization['cover_image']) {
     <section>
         <div class="container">
             <div class="tab-content">
-                <div id="home" class="tab-pane fade in active">
+                <div>
                     <div class="row">
                         <div class="heading-style">
-                            About <?= Html::encode($organization['name']) ?>
+                            About <?= htmlspecialchars_decode($organization['name']) ?>
                         </div>
                         <div class="divider"></div>
-
                         <div class="col-md-7 col-xs-12">
-                            <div class="com-description">
-                                <?= Html::encode($organization['description']) ?>
-                            </div>
+                            <?php if (!empty($organization['mission']) || !empty($organization['vision']) || !empty($organization['description'])) { ?>
+                                <?php if (!empty($organization['description'])) { ?>
+                                    <div class="com-description more">
+                                        <?= htmlspecialchars_decode($organization['description']) ?>
+                                    </div>
+                                <?php } ?>
+                                <?php if (!empty($organization['mission']) || !empty($organization['vision'])) { ?>
+                                    <div class="row">
+                                        <div class="heading-style">Mission & Vision</div>
+                                        <div class="divider"></div>
+                                        <div class="mv-box">
+                                            <div class="col-md-12">
+                                                <?php if (!empty($organization['mission'])) { ?>
+                                                    <div class="mv-heading">
+                                                        Mission
+                                                    </div>
+                                                    <div class="mv-text">
+                                                        <?= htmlspecialchars_decode($organization['mission']) ?>
+                                                    </div>
+                                                <?php }
+                                                if (!empty($organization['vision'])) {
+                                                    ?>
+                                                    <div class="vission-box">
+                                                        <div class="mv-heading">
+                                                            Vision
+                                                        </div>
+                                                        <div class="mv-text">
+                                                            <?= htmlspecialchars_decode($organization['vision']) ?>
+                                                        </div>
+                                                    </div>
+                                                <?php } ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+                            <?php } else { ?>
+                                <div>
+                                    <div class="desc-image mt-40">
+                                        <img src="/assets/themes/ey/images/pages/dashboard/no-description.png">
+                                    </div>
+                                    <p class="heading_style_1">No Business details have been provided by the
+                                        Organization.</p>
+                                </div>
+                            <?php } ?>
+
                         </div>
                         <div class="col-md-5 col-xs-12">
                             <div class="a-boxs">
@@ -158,7 +247,7 @@ if ($organization['cover_image']) {
                                         <div class="">
                                             <div class="about-det">
                                                 <div class="det">
-                                                    <?= $organization['number_of_employees'] ? Html::encode($organization['number_of_employees']) : 'N/A' ?>
+                                                    <?= $organization['number_of_employees'] ? htmlspecialchars_decode($organization['number_of_employees']) : 'N/A' ?>
                                                 </div>
                                                 <div class="det-heading">Employees</div>
                                             </div>
@@ -184,38 +273,134 @@ if ($organization['cover_image']) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <?php if (!empty($organization['mission']) || !empty($organization['vision'])) { ?>
-                        <div class="row">
-                            <div class="mv-box">
-                                <div class="heading-style">Mission & Vision</div>
-                                <div class="divider"></div>
-                                <div class="col-md-12">
-                                    <?php if (!empty($organization['mission'])) { ?>
-                                        <div class="mv-heading">
-                                            Mission
+                            <!--                                <div class="j-profiles">-->
+                            <!--                                    <h3>Job Profiles</h3>-->
+                            <!--                                    <div class="row" style="padding: 0 15px;">-->
+                            <!--                                        <div class="pf-flex">-->
+                            <!--                                            <div class="pf-all">Infromation technology</div>-->
+                            <!--                                            <div class="pf-all">marketing</div>-->
+                            <!--                                            <div class="pf-all">sales</div>-->
+                            <!--                                            <div class="pf-all">Engineering</div>-->
+                            <!--                                            <div class="pf-all">accounting</div>-->
+                            <!--                                            <div class="pf-all">others</div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </div>-->
+                            <!--                                </div>-->
+                            <div>
+                                <!--                                <h1 class="heading-style">Overall Ratings</h1>-->
+                                <div class="sub-review-box">
+                                    <div class="rating-large"><?= $round_avg ?>/5</div>
+                                    <div class="rs-main">
+                                        <div class="com-rating-1">
+                                            <?php for ($i = 1; $i <= 5; $i++) { ?>
+                                                <i class="fas fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
+                                            <?php } ?>
                                         </div>
-                                        <div class="mv-text">
-                                            <?= Html::encode($organization['mission']) ?>
-                                        </div>
-                                    <?php }
-                                    if (!empty($organization['vision'])) {
-                                        ?>
-                                        <div class="vission-box">
-                                            <div class="mv-heading">
-                                                Vision
-                                            </div>
-                                            <div class="mv-text">
-                                                <?= Html::encode($organization['vision']) ?>
-                                            </div>
-                                        </div>
-                                    <?php } ?>
+                                        <div class="reviewers"><?= $reviews_count ?> Reviews</div>
+                                    </div>
+                                    <div class="write-rv">
+                                        <a href="/<?= $organization['slug']; ?>/reviews">Write Review</a>
+                                    </div>
+                                </div>
+                                <!--                                --><?php
+                                //                                if ($round_avg != 0) {
+                                //                                    ?>
+                                <!--                                    <div class="col-md-12 user-rating">-->
+                                <!--                                        <div class="ur-bg padd-lr-5">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['job_avg']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Job Security</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg light-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['growth_avg']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Career Growth</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['avg_cult']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Company Culture</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg light-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['avg_compensation']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Salary & Benefits</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['avg_work']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Work Satisfaction</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg light-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['avg_work_life']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Work-Life Balance</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['avg_skill']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Skill Development</div>-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                    --><?php
+                                //                                }
+                                //                                ?>
+                                <div class="review-sidebar-main text-center">
+                                    <h4 class="sub-heading-review">Help the community by giving your valuable
+                                        review</h4>
                                 </div>
                             </div>
+                            <div class="set-mar">
+                                <?=
+                                $this->render('/widgets/new-position', [
+                                    'company' => $organization['name'],]);
+                                ?>
+                            </div>
                         </div>
-                    <?php }
-                    if (!empty($benefit)) {
+                    </div>
+                    <div class="av-jobs-intern">
+                        <?php if ($jobs_count > 0) {
+                            ?>
+                            <div id="jobs-cards-main" class="row">
+                                <div class="heading-style">
+                                    Available Jobs
+                                    <div class="pull-right">
+                                        <a href="/jobs/list?slug=<?= $organization['slug'] ?>"
+                                           class="write-review">View
+                                            All</a>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="blogbox"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
+
+                        <?php if ($internships_count > 0) {
+                            ?>
+                            <div id="internships-cards-main" class="row">
+                                <div class="internships-block">
+                                    <div class="heading-style">
+                                        Available Internships
+                                        <div class="pull-right">
+                                            <a href="/internships/list?slug=<?= $organization['slug'] ?>"
+                                               class="write-review">View All</a>
+                                        </div>
+                                    </div>
+                                    <div class="divider"></div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="internships_main"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php } ?>
+                    </div>
+                    <?php if (!empty($benefit)) {
                         ?>
                         <div class="row">
                             <div class="company-benefits">
@@ -236,10 +421,10 @@ if ($organization['cover_image']) {
                                                     }
                                                     ?>
                                                     <img src="<?= Url::to($benefits['icon']); ?>"
-                                                         alt="<?= Html::encode($benefits['benefit']); ?>"/>
+                                                         alt="<?= htmlspecialchars_decode($benefits['benefit']); ?>"/>
                                                 </div>
                                                 <div class="bb-text">
-                                                    <?= Html::encode($benefits['benefit']); ?>
+                                                    <?= htmlspecialchars_decode($benefits['benefit']); ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -255,7 +440,7 @@ if ($organization['cover_image']) {
                         <div class="row">
                             <div class="office-view">
                                 <div class="heading-style">
-                                    Inside <?= Html::encode($organization['name']) ?>
+                                    Inside <?= htmlspecialchars_decode($organization['name']) ?>
                                 </div>
                                 <div class="divider"></div>
                                 <div class="office-pics">
@@ -267,7 +452,7 @@ if ($organization['cover_image']) {
                                                 <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
                                                    data-fancybox="image">
                                                     <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
-                                                         alt="Inside <?= Html::encode($organization['name']) ?>">
+                                                         alt="Inside <?= htmlspecialchars_decode($organization['name']) ?>">
                                                 </a>
                                             </div>
                                         </div>
@@ -293,7 +478,7 @@ if ($organization['cover_image']) {
                                             <div class="p-preview-img">
                                                 <a href="" data-fancybox="images">
                                                     <img src=""
-                                                         alt="<?= Html::encode($organization['name']) ?> Products">
+                                                         alt="<?= htmlspecialchars_decode($organization['name']) ?> Products">
                                                 </a>
                                             </div>
                                         </div>
@@ -342,23 +527,23 @@ if ($organization['cover_image']) {
                                                 <a href="#">
                                                     <div class="team-icon">
                                                         <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->employees->image . $team['image_location'] . DIRECTORY_SEPARATOR . $team['image']) ?>"
-                                                             alt="<?= Html::encode($team['first_name'] . " " . $team['last_name']); ?>"/>
+                                                             alt="<?= htmlspecialchars_decode($team['first_name'] . " " . $team['last_name']); ?>"/>
                                                         <?php if (!empty($team['facebook']) || !empty($team['linkedin']) || !empty($team['twitter'])) { ?>
                                                             <div class="team-overlay">
                                                                 <div class="team-text">
                                                                     <div class="know-bet">Know me better</div>
                                                                     <?php if (!empty($team['facebook'])) { ?><a
-                                                                        href="<?= Html::encode($team['facebook']); ?>"
+                                                                        href="<?= htmlspecialchars_decode($team['facebook']); ?>"
                                                                         target="_blank"><i
                                                                                     class="fab fa-facebook-f t-fb"></i>
                                                                         </a><?php } ?>
                                                                     <?php if (!empty($team['linkedin'])) { ?><a
-                                                                        href="<?= Html::encode($team['linkedin']); ?>"
+                                                                        href="<?= htmlspecialchars_decode($team['linkedin']); ?>"
                                                                         target="_blank"><i
                                                                                     class="fab fa-linkedin-in t-ln"></i>
                                                                         </a><?php } ?>
                                                                     <?php if (!empty($team['twitter'])) { ?><a
-                                                                        href="<?= Html::encode($team['twitter']); ?>"
+                                                                        href="<?= htmlspecialchars_decode($team['twitter']); ?>"
                                                                         target="_blank"><i
                                                                                     class="fab fa-twitter t-tw"></i>
                                                                         </a><?php } ?>
@@ -367,8 +552,8 @@ if ($organization['cover_image']) {
                                                         <?php } ?>
                                                     </div>
                                                     <div class="t-member">
-                                                        <div class="t-name"><?= Html::encode($team['first_name'] . " " . $team['last_name']); ?></div>
-                                                        <div class="t-post"><?= Html::encode($team['designation']) ?></div>
+                                                        <div class="t-name"><?= htmlspecialchars_decode($team['first_name'] . " " . $team['last_name']); ?></div>
+                                                        <div class="t-post"><?= htmlspecialchars_decode($team['designation']) ?></div>
                                                     </div>
                                                 </a>
                                             </div>
@@ -381,82 +566,44 @@ if ($organization['cover_image']) {
                         </div>
                     <?php } ?>
                 </div>
-                <div id="menu1" class="tab-pane fade">
-                    <div class="row">
-                        <div class="heading-style">
-                            Available Jobs
+                <div class="row">
+                    <div class="address-division">
+                        <div class="heading-style">Reviews
+                            <!--                            --><? //= htmlspecialchars_decode($organization['name']) ?>
                             <div class="pull-right">
-                                <a href="/jobs/list?company=<?= Html::encode($organization['name']) ?>"
-                                   class="write-review">View
-                                    All</a>
+                                <a href="/<?= $organization['slug'] ?>/reviews" class="write-review">Write
+                                    Review</a>
                             </div>
                         </div>
                         <div class="divider"></div>
+                        <div id="org-reviews"></div>
+                        <div class="viewbtn">
+                            <a href="/<?= $organization['slug'] ?>/reviews">View All Review</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="address-division-new">
+                        <div class="heading-style">
+                            Address
+                        </div>
+                        <div class="divider"></div>
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="blogbox"></div>
+                            <div class="col-md-6 col-sm-12 col-xs-12 pull-right mb-20">
+                                <div id="map"></div>
                             </div>
-                        </div>
-                    </div>
+                            <div class="col-md-6 col-sm-12 col-xs-12">
+                                <div class="head-office">
 
-                    <div class="row">
-                        <div class="internships-block">
-                            <div class="heading-style">
-                                Available Internships
-                                <div class="pull-right">
-                                    <a href="/internships/list?company=<?= Html::encode($organization['name']) ?>"
-                                       class="write-review">View All</a>
                                 </div>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="internships_main"></div>
+                                <div class="view-btn">
+                                    <a href="javascript:;">View All <i class="fas fa-angle-down"></i></a>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="tab4" class="tab-pane fade">
-                    <div class="row">
-                        <div class="address-division">
-                            <div class="heading-style">
-                                Address
-                            </div>
-                            <div class="divider"></div>
-                            <div class="row">
-                                <div class="col-md-5 col-xs-12 pull-right">
-                                    <div id="map"></div>
-                                </div>
-                                <div class="col-md-7 col-xs-12">
-                                    <div class="head-office">
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="menu4" class="tab-pane fade">
-                    <div class="row">
-                        <div class="address-division">
-                            <div class="heading-style">
-                                <?= Html::encode($organization['name']) ?> Reviews
-                                <div class="pull-right">
-                                    <a href="/<?= $organization['slug'] ?>/reviews" class="write-review">Write
-                                        Review</a>
-                                </div>
-                            </div>
-                            <div class="divider"></div>
-                            <div id="org-reviews"></div>
-                            <div class="viewbtn">
-                                <a href="/<?= $organization['slug'] ?>/reviews">View All Review</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     </section>
     <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
@@ -470,66 +617,9 @@ if ($organization['cover_image']) {
             </div>
         </div>
     </div>
-    <input type="hidden" id="organisation_id" value="<?= Html::encode($organization['organization_enc_id']) ?>"/>
-    <section>
-        <div class="container">
-            <div class="empty-field">
-                <input type="hidden" id="loggedIn"
-                       value="<?= (!Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->isGuest) ? 'yes' : '' ?>">
-            </div>
-            <!-- Modal -->
-            <div class="modal fade" id="myModal" role="dialog">
-                <div class="modal-dialog">
+    <input type="hidden" id="organisation_id"
+           value="<?= htmlspecialchars_decode($organization['organization_enc_id']) ?>"/>
 
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title"></h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>Please Login as Candidate to drop your resume</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-    </section>
-    <section>
-        <div class="container">
-            <div class="empty-field">
-                <input type="hidden" id="dropcv">
-            </div>
-            <!-- Modal -->
-            <div class="modal fade" id="existsModal" role="dialog">
-                <div class="modal-dialog">
-
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Company hasn't created any data for this feature</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>Wait for company to create the feature</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-    </section>
 <?php
 echo $this->render('/widgets/mustache/organization_locations', [
     'Edit' => false
@@ -537,12 +627,121 @@ echo $this->render('/widgets/mustache/organization_locations', [
 echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
-    'type' => 'company'
+    'slug' => $organization['slug'],
+    'type' => 'company',
+    'is_claim' => $is_claim,
+    'org_id' => $organization['organization_enc_id'],
 ]);
 echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
 ]);
 $this->registerCss('
+.footer{margin-top:0 !important;}
+.desc-image {
+    text-align: center;
+}
+.desc-image img{
+    width: 350px;
+    height: auto;
+    margin: 20px 0;
+}
+.new-j img{
+    max-width:50px;
+}
+.fIcons img{
+    max-width: 25px;
+}
+.status-icon{
+    padding: 0 0 0 30px;
+}
+.status-icon span{
+    font-size: 0px;
+    margin-right: 8px;
+}
+.set-mar{
+    margin:20px 0;
+}
+.new-position-box{
+    min-height:250px;
+}
+.npb-pos-abso{
+    top:55%;
+}
+.npb-main-heading{
+    font-size:20px;
+}
+.mv-text{
+    text-align:justify;
+    font-family:roboto;
+}
+.j-profiles {
+	box-shadow: 0 3px 12px rgba(0, 0, 0, .2);
+	position: relative;
+	border-radius: 15px;
+	margin: 30px 0 20px;
+}
+.j-profiles h3 {
+	font-size: 21px;
+//	background-color: #00a0e3;
+	padding: 12px 20px 0px;
+	text-transform: uppercase;
+	color: #00a0e3;
+	margin: 0 0 15px;
+	font-family: roboto;
+	font-weight: 500;
+	border-radius: 4px 4px 0 0;
+	text-align: center;
+}
+.pf-flex {
+	display: flex;
+	justify-content: center;
+	flex-wrap:wrap;
+}
+.pf-all {
+	text-align: center;
+	font-size: 16px;
+	text-transform: capitalize;
+	font-family: roboto;
+	font-weight: 500;
+	cursor: pointer;
+	flex-basis: 45%;
+	margin: 0px 8px 8px;
+	padding: 10px;
+	transition: all .3s;
+//	border: 1px solid #aaaaaa;
+}
+.pf-all:hover {
+	color: #00a0e3;
+	transform:translateY(-3px);
+}
+.write-rv {
+    position: absolute;
+    right:15px;
+    bottom: 5px;
+}
+.write-rv a {
+    color: #fff;
+    font-weight: 500;
+    font-family: roboto;
+    transition:all .3s;
+}
+.write-rv:hover a {
+    color: #00a0e3;
+    background-color: #fff;
+    padding: 5px 8px;
+    border-radius: 2px;
+}
+.warn-img {
+	width: 300px;
+	margin: auto;
+}
+.warn-p {
+	text-align: center;
+	padding: 20px 0 0;
+	font-size: 22px;
+	font-family: roboto;
+	font-weight: 500;
+}
 .write-review{
     font-family: "Open Sans", sans-serif;
     font-size: 14px;
@@ -553,12 +752,13 @@ $this->registerCss('
     -moz-transition: .3s all;
     -webkit-transition: .3s all;
     transition: .3s all;
-    color: #00a0e3;
+    background-color: #00a0e3;
+    color:#fff;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
 }
 .write-review:hover{
-    background-color: #00a0e3;
-    color: #fff;
+    color: #00a0e3;
+    background-color: #fff;
 }
 /*----jobs and internships----*/
 .internships-block{
@@ -587,19 +787,18 @@ $this->registerCss('
     padding-top:10px;
     text-transform:uppercase;
     font-size:15px;
-    font-weight:bold;
+    font-weight:500;
+    font-family:roboto;
 }
 /*----company benefits ends----*/
 /*----mission & vission----*/
-.mv-heading{
-    font-size:20px;
-    font-weight:bold;
-    text-transform:uppercase;
+.mv-heading {
+	font-size: 20px;
+	font-weight: 500;
+	text-transform: uppercase;
+	font-family: roboto;
 }
 .vission-box{
-    padding-top:20px;
-}
-.mv-box{
     padding-top:20px;
 }
 /*----mission & vission end----*/
@@ -655,7 +854,7 @@ $this->registerCss('
 }
 .team-icon{
     width:100%;
-    height:186px;
+    height:230px;
     overflow:hidden;
     object-fit:cover;
     position:relative;
@@ -701,17 +900,37 @@ $this->registerCss('
 }
 /*----office view ends----*/
 /*----address----*/
-.office-heading{
-    font-weight:bold;
-    font-size:18px;
-    text-transform:uppercase;
+.head-office {
+	display: flex;
+	flex-wrap: wrap;
+}
+.org-location {
+	border: 1px solid #eee;
+	padding: 10px;
+	margin: 0 1% 1% 0;
+	box-shadow: 0 0 5px -1px rgba(0,0,0,0.1);
+	flex-basis: 49%;
+	height: 148px;
+	overflow:hidden;
+}
+.office-heading {
+	font-weight: bold;
+	font-size: 16px;
+	text-transform: uppercase;
+	font-family: lora;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	max-height: 55px;
+	cursor: pointer;
 }
 .office-heading img{
     max-width:25px;
     margin-top:-5px;
 }
 .office-loc{
-    padding:10px 20px;
+    font-family:roboto;
 }
 .o-h2 img{
     max-width:15px;
@@ -727,6 +946,7 @@ $this->registerCss('
     font-size:15px;
     text-align:justify;
     line-height:22px;
+    font-family:roboto;
 }
 .com-des-list{
     padding:10px 25px;
@@ -759,11 +979,13 @@ $this->registerCss('
     left:50%;
     transform:translate(-50%,-50%); 
 }
-.det-heading{
-    font-size:13px;
-    font-weight:bold;
+.det-heading {
+	font-size: 15px;
+	font-weight: 500;
+	font-family: roboto;
 }
 .det{
+    font-family: roboto;
     font-size:16px;
     color:#00a0e3;
 }
@@ -782,25 +1004,25 @@ $this->registerCss('
 }
 a.twitter{
     padding:8px 6px 8px 10px;
-      color:#1DA1F2;
+    color:#1DA1F2;
 }
 .twitter:hover{
     background:#1da1f2;
     color:#fff;
 }
-a.facebook{
+a.facebook-social{
     padding:8px 9px 8px 12px;
     color:#3C5A99;   
 }
-.facebook:hover{
+.facebook-social:hover{
     background:#3c5a99;
     color:#fff;
 }
-a.linkedin{
+a.linkedin-social{
     padding:8px 9px 8px 11px;
      color:#0077B5;
 }
-.linkedin:hover{
+.linkedin-social:hover{
     background:#0077b5;
     color:#fff;
 }
@@ -821,13 +1043,14 @@ a.web{
     text-transform: capitalize;
     color: #00a0e3;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+    font-family:roboto;
 }
 .follow:hover{
     background:#00a0e3;
     color:#fff;
 }
-.follow, .follow:hover, a.facebook, .facebook:hover,
-a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
+.follow, .follow:hover, a.facebook-social, .facebook-social:hover,
+a.twitter, .twitter:hover, a.linkedin-social, .linkedin-social:hover, a.web, .web:hover{
     transition:.3s all;
 }
 /*----follow btn ends----*/
@@ -837,7 +1060,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     background-color: #00a0e3 !important;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
      transition:.2s all;
-     
+     font-family:roboto;
 }
 .nav-tabs > li > a:hover{
    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
@@ -845,6 +1068,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 }
 .nav-tabs>li>a{
     border:none;
+    font-family:roboto;
 }
 .nav-tabs>li>a:hover{
     border:none;
@@ -914,14 +1138,19 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 }
 .com-name{
     font-size:40px;
-    font-family:lobster;
+    font-family:lora;
     color:#fff;
     padding: 0 0 0 30px; 
+    display: flex;
+    flex-wrap: wrap;
+    line-height: 31px;
+    margin-bottom: 10px;
 }
 .com-establish{
     color:#fff;
     padding: 0 0 0 30px; 
     font-size:15px;
+    font-family:roboto;
 }
 .com-establish .detail-title{
     font-weight:bold;
@@ -951,6 +1180,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     }
 }
 @media screen and (max-width: 768px){
+.com-name{display:block;margin-top: 20px;}
     .img1 img{
         width:100%;
         height:100%;   
@@ -975,6 +1205,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     }
     .follow-btn, .social-btns{
         text-align:center;
+        margin-top:20px;
     }
     .logo-absolute{
         position:absolute;
@@ -1008,6 +1239,10 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     }
     
 }
+@media screen and (max-width: 600px){
+.org-location{flex-basis:99%;}
+.maxData .org-location{width:99%;}
+}
 .followed {
     background: #00a0e3;
     color: #fff;
@@ -1017,6 +1252,93 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     width: 100%;
     position: absolute;
     background-color: #00000057;
+}
+.user-rating{
+    padding: 20px 0px;
+    flex-flow: row wrap;
+}
+.ur-bg {
+    padding: 10px 6px;
+    margin-bottom:10px;
+}
+.sub-review-box{
+    display: flex;
+    flex: 1 auto;
+    align-items: center;
+    justify-content: center;
+    background: #00a0e3;
+    border-radius: 6px;
+    padding: 10px 20px;
+    color: #fff;
+    margin-top:20px;
+    position:relative;
+}
+.reviewers {
+	text-align: left;
+	padding-left: 10px;
+	font-family: roboto;
+}
+.rs-main{
+    max-width: 200px;
+    padding: 10px 13px 15px 14px;
+    text-align: center;
+    color: #fff;
+    border-radius: 6px;
+    display: inline-block;
+    float: left;
+    width: 100%;
+}
+.com-rating-1{
+    margin-top:15px;
+}
+.sub-heading-review {
+	font-size: 17px;
+	font-weight: 500;
+	margin: 10px 0px;
+	font-family: roboto;
+}
+.btn-default{
+    background-color:#fff;
+    border-radius:4px;
+    padding: 12px 20px;
+    display: inline-block;
+    -webkit-box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.12);
+    color: #00a0e3;
+}
+.btn-default:hover, .btn-default:focus{
+    background-color:#fff;
+    -webkit-box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.18);
+    box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.18);
+    color: #00a0e3;
+}
+.rating-large{
+    font-size:60px;
+}
+.com-rating-1 i{ 
+    font-size:16px;
+    background:#fff;
+    color:#ccc;
+    padding:7px 5px;
+    border-radius:5px;
+    margin-bottom:5px;
+}
+.com-rating-1 i.active{
+    background:#fff;
+    color:#00a0e3;
+}   
+.more{
+    display:none;
+}
+.morecontent span {
+    display: none;
+}
+.morelink {
+    display: inline-block;
+    color: #00a0e3;
+}
+.morelink:focus, .morelink:hover{
+    color: #00a0e3;
 }
 ');
 $script = <<<JS
@@ -1043,16 +1365,6 @@ $(document).on('click','.follow',function(e){
     });        
 });
 
-var data = {slug: window.location.pathname.split('/')[1]};
-$.ajax({
-    type: 'POST',
-    url: '/drop-resume/check-resume',
-    data : data,
-    success: function(response){
-        $('#dropcv').val(response.message);
-    }
-});
-
 var first_preview = $('.p-img-thumbnail:first-child a').attr('href');
 $('.p-preview-img a').attr('href', first_preview);
 $('.p-preview-img a img').attr('src', first_preview);
@@ -1062,8 +1374,43 @@ $(document).on('mouseover', '.p-img-thumbnail', function(){
     $('.p-preview-img a').attr('href', path);
     $('.p-preview-img a img').attr('src', path);
 });
+$(document).ready(function() {
+    // Configure/customize these variables.
+    var showChar = 1500;  // How many characters are shown by default
+    var ellipsestext = "...";
+    var moretext = "Show more";
+    var lesstext = "Show less";
+    
+
+    $('.more').each(function() {
+        var content = $(this).html();
+        if(content.length > showChar) {
+            var c = content.substr(0, showChar);
+            var h = content.substr(showChar, content.length - showChar);
+            var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+            $(this).html(html);
+        }
+        $(this).css('display','block');
+    });
+ 
+    $(".morelink").click(function(){
+        if($(this).hasClass("less")) {
+            $(this).removeClass("less");
+            $(this).html(moretext);
+        } else {
+            $(this).addClass("less");
+            $(this).html(lesstext);
+        }
+        $(this).parent().prev().toggle();
+        $(this).prev().toggle();
+        return false;
+    });
+});
 JS;
 $this->registerJs("
+//return_message = true;
+//jobs_parent = '#jobs-cards-main';
+//internships_parent = '#internships-cards-main';
 getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 ");

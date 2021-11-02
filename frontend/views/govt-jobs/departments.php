@@ -1,7 +1,38 @@
 <?php
 $this->params['header_dark'] = True;
+$current_date = date('d M Y');
+$current_year = date('Y');
+$total_govt_jobs = count($all_govt_jobs);
 
 use yii\helpers\Url;
+$this->title = 'Find '.$total_govt_jobs. ' Government Jobs Vacancies. Updated on '. $current_date;
+$keywords = ' latest notifications, latest notifications for government jobs, Gov. jobs '.$current_year.', government jobs '.$current_year.', latest government jobs, Latest Gov. Jobs '.$current_year.', Government Jobs Notifications';
+$description = 'Apply Online For latest '.$total_govt_jobs.' Government Jobs '.$current_year.'. Also Get all the latest updates, job alerts of Private jobs and USA Government jobs.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('assets/themes/ey/images/pages/jobs/indian-govt-job.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 
     <section>

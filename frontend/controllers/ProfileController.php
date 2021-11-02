@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Users;
 use Yii;
 use yii\web\Controller;
 use yii\web\HttpException;
@@ -10,7 +11,7 @@ use common\models\Usernames;
 class ProfileController extends Controller
 {
 
-    public function actionIndex($username, $type = '', $slug = '')
+    public function actionIndex($username, $type = null, $slug = null)
     {
         $user = Usernames::find()
             ->where(['username' => $username])
@@ -24,7 +25,7 @@ class ProfileController extends Controller
         if ($user->assigned_to === 1) {
             if (empty($type)) {
                 return Yii::$app->runAction('users/profile', [
-                    'username' => $user->username,
+                    'username' => $user->username
                 ]);
             }
 
@@ -36,18 +37,7 @@ class ProfileController extends Controller
         }
 
         if ($user->assigned_to === 2 || $user->assigned_to === 3) {
-            if (empty($type) && $user->assigned_to === 2) {
-                return Yii::$app->runAction('organizations/profile', [
-                    'slug' => $user->username,
-                ]);
-            }
-            if(isset($type) && !empty($type)) {
-                if ($type === 'reviews') {
-                    return Yii::$app->runAction('organizations/reviews', [
-                        'slug' => $user->username,
-                    ]);
-                }
-
+            if (isset($type) && !empty($type)) {
                 if ($type === 'careers' || $type === "jobs" || $type === "internships") {
                     return Yii::$app->runAction('organizations/careers/index', [
                         'slug' => $user->username,
@@ -61,10 +51,21 @@ class ProfileController extends Controller
                         'slug' => $slug,
                     ]);
                 }
+
+                if ($type === 'reviews' || $type === 'loans' || $type === 'courses' || $type === 'infrastructure'
+                    || $type === 'faculty' || $type === 'placement' || $type === 'cutoff' || $type === 'scholarship') {
+                    return Yii::$app->runAction('organizations/detail', [
+                        'slug' => $user->username,
+                        'type' => $type
+                    ]);
+                }
+            } else {
+                return Yii::$app->runAction('organizations/detail', [
+                    'slug' => $user->username
+                ]);
             }
 
             throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
         }
     }
-
 }

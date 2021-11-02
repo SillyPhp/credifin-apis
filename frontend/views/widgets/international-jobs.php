@@ -1,5 +1,12 @@
 <?php
+
 use yii\helpers\Url;
+
+if ($type == 'internships') {
+    $url = '/internships-in-';
+} else {
+    $url = '/jobs-in-';
+}
 ?>
 
     <section id="scroll-here">
@@ -7,12 +14,12 @@ use yii\helpers\Url;
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <div class="col-md-6 col-sm-6 col-xs-6">
+                        <div class="col-md-8 col-sm-8 col-xs-12">
                             <div class="heading-set">
-                                <h1 class="heading-style mt-50">Jobs By Countries</h1>
+                                <h2 class="heading-style"> International Employment Opportunities </h2>
                             </div>
                         </div>
-                        <div class="col-md-6 col-sm-6 col-xs-6">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
                             <div class="type-1">
                                 <div>
                                     <a href="<?= Url::to('/jobs/international'); ?>" class="btn btn-3">
@@ -27,15 +34,15 @@ use yii\helpers\Url;
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'canada') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/canada.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/canada.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>Canada</span>
                                         </a>
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
-                                        <a href="<?= Url::to($url . 'us') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/usa.png') ?>">
+                                        <a href="<?= Url::to($url . 'usa') ?>" title="">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/usa.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>USA</span>
                                         </a>
                                     </div>
@@ -43,7 +50,7 @@ use yii\helpers\Url;
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'singapore') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/singapore.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/singapore.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>Singapore</span>
                                         </a>
                                     </div>
@@ -51,7 +58,7 @@ use yii\helpers\Url;
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'india') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/india.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/india.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>India</span>
                                         </a>
                                     </div>
@@ -63,7 +70,7 @@ use yii\helpers\Url;
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'germany') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/germany.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/germany.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>Germany</span>
                                         </a>
                                     </div>
@@ -71,7 +78,7 @@ use yii\helpers\Url;
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'uk') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/uk.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/uk.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>UK</span>
                                         </a>
                                     </div>
@@ -79,7 +86,7 @@ use yii\helpers\Url;
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'thailand') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/thailand.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/thailand.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>Thailand</span>
                                         </a>
                                     </div>
@@ -87,7 +94,7 @@ use yii\helpers\Url;
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'china') ?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/china.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/china.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
                                             <span>China</span>
                                         </a>
                                     </div>
@@ -104,6 +111,7 @@ use yii\helpers\Url;
 $this->registerCss('
 .block {
     padding: 20px 0;
+    overflow: hidden;
 }
 /*    <!-- view-all button css start -->*/
 .btn-3 {
@@ -245,15 +253,12 @@ $this->registerCss('
     border-color: #ffffff;
 }
 .p-category:hover {
-    background:#ffffff;
+    background: #ffffff;
     box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
     border-radius: 8px;
-    width: 104%;
-    margin-left: -2%;
-    margin-top: -2%;
-    height: 104%;
     z-index: 10;
-    transition: all 0.4s ease 0s;
+    transition: all 0.3s ease 0s;
+    transform: scale(1.05);
 }
 .p-category > a span{
     font-family: roboto;

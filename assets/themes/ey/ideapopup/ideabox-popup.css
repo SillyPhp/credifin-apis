@@ -35,7 +35,12 @@ Primary use : Web & Mobile
 .i-next-hide{
   display: none;
 }
-
+.st-h{
+  position:relative;
+  overflow-y: hidden;
+  max-height: 40vh;
+  min-height: 20vh;
+}
 .i-review-box{
   position: fixed;
   left: 0;
@@ -272,7 +277,7 @@ Primary use : Web & Mobile
   color:#F00;
   padding-right: 20px;
 }
-.i-review-next{
+.i-review-next, .i-review-next-review{
   border:solid 2px #212529;
   background-color: transparent;
   padding: 15px 30px;
@@ -287,7 +292,7 @@ Primary use : Web & Mobile
      -o-transition: color 500ms linear;
         transition: color 500ms linear;
 }
-.i-review-next::after{
+.i-review-next::after,.i-review-next-review::after{
   content: '';
   position: absolute;
   left: 0;
@@ -301,13 +306,13 @@ Primary use : Web & Mobile
      -o-transition: width .3s cubic-bezier(1, 0, 0, 1); 
         transition: width .3s cubic-bezier(1, 0, 0, 1); 
 }
-.i-review-next:focus{
+.i-review-next:focus,.i-review-next-review:focus{
   outline: none;
 }
-.i-review-next:hover{
+.i-review-next:hover,.i-review-next-review:hover{
   color: #FFF;
 }
-.i-review-next:hover::after{
+.i-review-next:hover::after,.i-review-next-review:hover::after{
   width: 100%;  
 }
 .i-review-next:hover .i-review-next-icon::after{
@@ -568,7 +573,7 @@ Primary use : Web & Mobile
 /*-------------------------------------------------------------------
 [10. Start and finish page styles.]
 *------------------------------------------------------------------*/
-.i-review-start-end-container .i-review-next{
+.i-review-start-end-container .i-review-next,.i-review-start-end-container .i-review-next-review{
   margin: 0 20px;
 }
 .i-review-start-end-title{
@@ -666,10 +671,10 @@ Primary use : Web & Mobile
     .i-review-action{
       left: 40px;
     }
-    .i-review-next{
+    .i-review-next, .i-review-next-review{
       width: 100%;
     }
-    .i-review-start-end-container .i-review-next{
+    .i-review-start-end-container .i-review-next, .i-review-start-end-container .i-review-next-review{
       margin: 0;
     }
     .i-review-close{
@@ -704,16 +709,16 @@ Primary use : Web & Mobile
       width: 100%;
       margin:5px 0px;
     }
-    .i-review-next::after{
+    .i-review-next::after, .i-review-next-review::after{
       width: 100% !important;
     }
-    .i-review-next{
+    .i-review-next, .i-review-next-review{
       color: #FFF;
     }
-    .i-review-next .i-review-next-icon::after{
+    .i-review-next .i-review-next-icon::after,.i-review-next-review .i-review-next-icon::after{
       border-color: transparent transparent transparent #FFF;
     }
-    .i-review-next .i-review-next-icon::before{
+    .i-review-next .i-review-next-icon::before, .i-review-next-review .i-review-next-icon::before{
       background-color: #FFF;
     }
     .i-review-selectbox{

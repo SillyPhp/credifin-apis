@@ -273,7 +273,7 @@ class CitiesController extends Controller
         // getting claimed org data
         $organizations = Organizations::find()
             ->alias('a')
-            ->select(['distinct(a.organization_enc_id)', 'a.name', 'a.initials_color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image', '(CASE WHEN a.organization_enc_id IS NOT NULL THEN "claimed" END) as org_type'])
+            ->select(['distinct(a.organization_enc_id)', 'a.name', 'a.initials_color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image', '(CASE WHEN a.organization_enc_id IS NOT NULL THEN "claimed" END) as org_type'])
             ->joinWith(['organizationLocations b' => function ($b) {
                 $b->joinWith(['cityEnc c']);
             }], false)
@@ -301,7 +301,7 @@ class CitiesController extends Controller
         // getting unclaimed org data
         $un_org = UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['distinct(a.organization_enc_id)', 'a.name', 'a.initials_color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image', '(CASE WHEN a.organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type'])
+            ->select(['distinct(a.organization_enc_id)', 'a.name', 'a.initials_color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image', '(CASE WHEN a.organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type'])
             ->innerJoinWith(['cityEnc b'])
             ->joinWith(['organizationTypeEnc d'])
             ->joinWith(['newOrganizationReviews e' => function ($e) {

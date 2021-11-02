@@ -63,6 +63,9 @@ function random_fn(t) {
         }
         var that = this;
         that.reviewModal.classList.remove('i-opened');
+        if(document.getElementsByTagName('body')[0].classList.contains('modal-open')){
+            document.getElementsByTagName('body')[0].classList.remove('modal-open');
+        }
         that.reviewModal.classList.add('i-close-animation');
         setTimeout(function () {
             that.reviewModal.classList.remove('i-close-animation');
@@ -93,6 +96,7 @@ function random_fn(t) {
             setTimeout(function () {
                 that.reviewModal.classList.add('i-opened');
                 that.reviewModal.classList.remove('i-open-animation');
+                document.getElementsByTagName('body')[0].classList.add('modal-open');
                 showStartPage.call(that);
                 if (typeof that.options.onOpen === 'function') {
                     that.options.onOpen.call(that);
@@ -374,6 +378,12 @@ function random_fn(t) {
         var el = that.reviewModal.getElementsByClassName('i-review-animated-box');
         el[0].innerHTML = question + answers + desccription;
 
+        setTimeout(function () {
+            if(document.getElementsByClassName("st-h").length) {
+                var ps = new PerfectScrollbar(".st-h");
+            }
+        },1000)
+
         if (that.options.data[qno].hasOwnProperty('inAnimation'))
             addAnimation(that, that.options.data[qno].inAnimation);
         else
@@ -418,7 +428,7 @@ function random_fn(t) {
         if (that.options.data[qno].hasOwnProperty('display') && that.options.data[qno].display == 'inline')
             inlineClass = ' i-inline-answer-list'
 
-        var r = '<div class="i-review-answer' + inlineClass + '"><div class="toggle">' + radios + '</div></div>';
+        var r = '<div class="i-review-answer' + inlineClass + '"><div class="toggle st-h">' + radios + '</div></div>';
         return r;
     }
 
@@ -436,7 +446,7 @@ function random_fn(t) {
         var inlineClass = '';
         if (that.options.data[qno].hasOwnProperty('display') && that.options.data[qno].display == 'inline')
             inlineClass = ' i-inline-answer-list'
-        var c = '<div class="i-review-answer' + inlineClass + '"><div class="toggle">' + checks + '</div></div>';
+        var c = '<div class="i-review-answer' + inlineClass + '"><div class="toggle st-h">' + checks + '</div></div>';
         return c;
     }
 
@@ -953,5 +963,4 @@ function starRateSetter(that) {
         }
         that.parentElement.parentElement.setAttribute('data-last-val', val);
     }
-
 }

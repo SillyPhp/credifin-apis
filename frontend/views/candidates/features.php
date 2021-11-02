@@ -480,6 +480,11 @@ $this->registerCss('
        padding: 20px 0 20px 0; 
     }
 } 
+@media only screen and (max-width: 500px){
+    .candidate-header{
+        overflow: hidden;
+    }
+}
  ');
 $script = <<<JS
 if ($(window).width() > 992){

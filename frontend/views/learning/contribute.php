@@ -29,7 +29,7 @@ use yii\helpers\Url;
                                </div>
                         </div>
                         <div class="text-box">
-                            <h3 class="text-here">Amplify your Creative Talent</h3>
+                            <h1 class="text-here">Amplify your Creative Talent</h1>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-12">
@@ -57,8 +57,8 @@ use yii\helpers\Url;
                                     <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/expand your content reach(1).png'); ?>"/>
                                 </div>
                                 <h2 class="heading">Expand Your Content Reach</h2>
-                                <P class="paragraph"> By tapping into other relevant and powerful networks help you
-                                    drive new traffic and expand your reach! </P>
+                                <P class="paragraph"> By tapping into other relevant and powerful networks, you
+                                    can drive new traffic and expand your reach! </P>
                             </div>
                         </div>
 
@@ -68,7 +68,7 @@ use yii\helpers\Url;
                                     <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/cg.png'); ?>"/>
                                 </div>
                                 <h2 class="heading">Channel Growth</h2>
-                                <P class="paragraph">Building relationship and working with Creators is crucial to
+                                <P class="paragraph">Building relationship and working with Creators is crucial for
                                     growing of your channel.</P>
                             </div>
                         </div>
@@ -90,8 +90,8 @@ use yii\helpers\Url;
                                     <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/we promote your content.png'); ?>"/>
                                 </div>
                                 <h2 class="heading">We Promote Your Content</h2>
-                                <P class="paragraph">We Proactively Promote Your Content and use plenty of tools and
-                                    platform to give your content more reach! </P>
+                                <P class="paragraph">We Proactively Promote Your Content and use a lot of tools and
+                                    platforms to give your content more reach! </P>
                             </div>
                         </div>
 
@@ -100,7 +100,7 @@ use yii\helpers\Url;
                                 <div class="img-box-fit">
                                     <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/top into new audience.png'); ?>"/>
                                 </div>
-                                <h2 class="heading">Top into New Audience</h2>
+                                <h2 class="heading">Tap into New Audience</h2>
                                 <P class="paragraph">We use the lead scoring techniques for you to filter out the
                                     best audience!</P>
                             </div>
@@ -111,8 +111,8 @@ use yii\helpers\Url;
                                 <div class="img-box-fit">
                                     <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/meaningful backlink.png'); ?>"/>
                                 </div>
-                                <h2 class="heading">Meaningful Back Link</h2>
-                                <P class="paragraph">We build high-quality back link when Nobody knows your
+                                <h2 class="heading">Meaningful BackLink</h2>
+                                <P class="paragraph">We build high-quality backlinks when Nobody knows your
                                     name.</P>
                             </div>
                         </div>
@@ -122,9 +122,8 @@ use yii\helpers\Url;
                                 <div class="img-box-fit">
                                     <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/promote your other service.png'); ?>"/>
                                 </div>
-                                <h2 class="heading">Promote Your Other Service</h2>
-                                <P class="paragraph">When it comes to promoting your new service. we also promote
-                                    your other services. </P>
+                                <h2 class="heading">Promote Your Services</h2>
+                                <P class="paragraph">When it comes to promoting, we will promote all your new as well as old services.</P>
                             </div>
                         </div>
                         <div class="col-md-3 col-sm-6 col-xs-12">
@@ -133,7 +132,7 @@ use yii\helpers\Url;
                                     <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/free(1).png'); ?>"/>
                                 </div>
                                 <h2 class="heading">No Cost</h2>
-                                <P class="paragraph">No cost is great way to increase audience traffic and achieve
+                                <P class="paragraph">No cost is a great way to increase audience traffic and achieve
                                     your goals.</P>
                             </div>
                         </div>
@@ -159,12 +158,12 @@ use yii\helpers\Url;
                     <div class="right-text">
                         <h2 class="h2-head">Help The Society</h2>
                         <ul class="list-1">
-                            <li><span class="clr">Your content may just help someone learn new skills. </span></li>
-                            <li><span class="clr">Your Content Never Dies.</span></li>
+                            <li><span class="clr">To learn new skills with your content. </span></li>
+                            <li><span class="clr">By creating a content that never dies.</span></li>
                             <li>
-                                <span class="clr">You help us in our mission of making education free for all.</span>
+                                <span class="clr">By helping us to make education free for all.</span>
                             </li>
-                            <li><span class="clr">We aim to target the wdly segment of the society.</span></li>
+                            <li><span class="clr">By targeting a large segment of the society.</span></li>
                         </ul>
                     </div>
                 </div>
@@ -179,11 +178,10 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="right-heading">
-                        <h3>What can to be contribute?</h3>
-                        <p class="paragraph-set">One of the best parts about doing collaboration<span
-                                    class="text-bold"> is it's completely free!</span>
-                            this makes thing more easy.</p>
-
+                        <h3>What can be contributed?</h3>
+                        <p class="paragraph-set">One of the best parts about doing collaboration with EmpowerYouth is that<span
+                                    class="text-bold"> it is completely free!</span>
+                            You can make your contribution in the form of blogs, articles, videos and other learning material.</p>
                     </div>
                 </div>
 
@@ -226,8 +224,12 @@ use yii\helpers\Url;
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Our Contributers</div>
+                <div class="col-lg-12">
+                    <div class="col-md-12">
+                        <div class="heading-set">
+                            <h2 class="heading-style"> Our Contributers </h2>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row" id="contributors">
@@ -396,13 +398,14 @@ textarea:focus{
     font-weight: 500;
     font-size: 18px;
     font-family: roboto;
-	margin:0;
+    margin-bottom: 5px;
 }
 .text-bold{
   font-weight:700;
 } 
 .paragraph{
-    text-align: justify;
+    text-align: left;
+    min-height: 115px;
 }
 .paragraph-set{
     text-align:justify;
@@ -413,13 +416,11 @@ textarea:focus{
     padding-top: 20px;
 }
 .card-box {
-	border: 1px solid lightgray;
-	border-radius: 10px;
-	box-shadow: 3px 3px 10px 4px lightgray;
-	transition: 0.5s;
-	padding: 10px;
-	height: 250px;
-	margin-top: 15px;
+	 border-radius: 10px;
+    box-shadow: 0px 0px 6px 1px #eee;
+    transition: 0.5s;
+    padding: 15px;
+    margin-top: 15px;
 }
 .card-box:hover{
     background-color:#EF7F1A;
@@ -434,11 +435,7 @@ textarea:focus{
     padding: 25px 25px 0px 10px;
     font-family: Quicksand;  
 }
-@media only screen and (max-width: 1024px){
-.right-text{
-    padding:90px 0 0 0 !important;
-    }
-}
+
 .right-text{
  padding: 150px 0 5px 0;
  }
@@ -480,27 +477,29 @@ textarea:focus{
     transition: 0.5s;
 }
 .img-circle{
-    margin: 41px 35px 0px 0;
+    text-align: center;
 }
 .img-circle img{    
-    max-width:90%;
+    max-width: 100%;
+    width: 150px;
 }
 .img-circle h4{
     text-align: center;
-    font-size: 30px;
+    font-size: 20px;
     font-family: roboto;
  }
 .img-blog{
-    margin-top: 87px;
+    text-align: center;
+    margin-top: 35px;
     margin-left: 25px;
 }
 .img-blog img{ 
-    max-width:80%;
+    width: 100%;
+    max-width: 150px;
 }
 .img-blog h4{ 
     text-align: center;
-    font-size: 30px;
-    padding-right:35px;
+    font-size: 20px;
     font-family: roboto;
 }
 .section4{
@@ -559,149 +558,6 @@ textarea{
 	background-repeat: no-repeat;
 	background-size: 100% 100%;	
 	background-size: 100% 100%;	
-}
-@media only screen and (max-width: 768px){
-.footer{
-   margin-top:0 !important;
- }
-.input-box{
-   max-width: 98% !important;
-}
-.right-text{
-     padding: 12px 0 0px 0px;
-  }
-.h2-head{
-    font-size: 23px;
-    padding:0;
-}
-
-.animation-img2 {
-	left: 300px;
-	top: 15px;
-}
-
-.animation-img6 {
-	top: 76px;
-	left: 6px;
-}
-
-.animation-img4 {
-	top: 145px;
-	left: 211px;
-}
-
-.animation-img3 {
-	left: 333px;
-	top: 100px;
-}
-
-.animation-img5{
-    display:none;
- }
- 
-.heading {
-    font-size: 20px; 
-}
-.img-bg {
-	width: 80%;
-	padding:0;
-}
-.right-heading h3{
-	font-size: 30px !important;
-	font-weight: 700 !important;
-	padding-left:10px !important ;
-}
-.img-circle{
-    text-align: center;
-    margin-right:0;
- } 
-.img-blog{
-   text-align: center;
-  }
-.img-box-fit{
-    display:contents;
-    padding-bottom: 10px; 
-    padding-left: 10px;
-}
-.img-box-fit img{
-    padding: 5px;
-    max-width: 25%;
-    box-shadow: 0px 2px 7px 0px lightgray;
-    border-radius: 90px;
-    background-color: white;
-    margin:5px;
-}
-
-.img-here{ 
-	display: block;
-	margin: 0 auto;
-}
-.center{ 
-   margin:0 auto;
- }
-.paragraph{
-    margin:0;
-    font-size: 14px;
-}
-} 
-@media only screen and (max-width: 650px){
-.right-text {
-	padding: 22px 0 25px 0px !important;
-    text-align: center;
-}
-
-.h2-head {
-	font-size: 20px;
-	padding: 0;
-	margin-bottom: 2px;
-}
-.footer{
-     margin-top:0 !important;
- }
-.img-bg {
-    margin: 0 auto;
-    max-width: 55%;
-    padding: 0;
-}
-.animation-img{
-    display:none;
-}
-}
-@media only screen and (max-width: 834px){
-.text-box {
-	padding-top: 15px;
-	margin: 0 auto;
-}
-.text-here {
-	font-size: 38px;
-	font-weight: 700;
-	text-align: center;
-	font-family: roboto;
-}
-.list-1 {
-	font-size: 13px;
-	padding-left: 16px;
-	list-style: disclosure-closed !important;
-	font-family: roboto;
-	color: #ff7803;
-	padding-bottom: 15px;
-}
-.background-image {
-	background-image: none;
-	background-color:#ffeaea;
-	margin-top: 18px;
-}
-.right-heading h3 {
-	font-size: 48px;
-	font-weight: 714;
-}
-.img-bg {
-	width: 80%;
-    padding:0;
-}
-.right-text {
-	 padding: 0;
-}
 }
 /*collaborators css starts*/
 .collaborators-main {
@@ -824,6 +680,148 @@ textarea{
     transform: translateX(0%);
 }
 /*collaborators css ends*/
+@media screen and (max-width: 1200px) and (min-width: 992px) {.heading{min-height:50px;}}
+@media only screen and (max-width: 1024px){
+.right-text{
+    padding:90px 0 0 0 !important;
+    }
+}
+@media only screen and (max-width: 992px){
+.text-box {
+	padding-top: 15px;
+	margin: 0 auto;
+}
+.text-here {
+	font-size: 38px;
+	font-weight: 700;
+	text-align: center;
+	font-family: roboto;
+}
+.list-1 {
+	font-size: 13px;
+	padding-left: 16px;
+	list-style: disclosure-closed !important;
+	font-family: roboto;
+	color: #ff7803;
+	padding-bottom: 15px;
+}
+.background-image {
+	background-image: none;
+	background-color:#ffeaea;
+	margin-top: 18px;
+}
+.right-heading h3 {
+	font-size: 48px;
+	font-weight: 714;
+}
+.img-bg {
+	width: 80%;
+    padding:0;
+}
+.right-text {
+	 padding: 0;
+}
+}
+@media only screen and (max-width: 768px){
+.input-box{
+   max-width: 98% !important;
+}
+.right-text{
+     padding: 12px 0 0px 0px;
+  }
+.h2-head{
+    font-size: 23px;
+    padding:0;
+}
+
+.animation-img2 {
+	left: 300px;
+	top: 15px;
+}
+
+.animation-img6 {
+	top: 76px;
+	left: 6px;
+}
+
+.animation-img4 {
+	top: 145px;
+	left: 211px;
+}
+
+.animation-img3 {
+	left: 333px;
+	top: 100px;
+}
+
+.animation-img5{
+    display:none;
+ }
+.img-bg {
+	width: 80%;
+	padding:0;
+}
+.right-heading h3{
+	font-size: 30px !important;
+	font-weight: 700 !important;
+	padding-left:10px !important ;
+}
+.img-circle{
+    text-align: center;
+    margin-right:0;
+} 
+.img-blog{
+   text-align: center;
+  }
+.img-box-fit{
+    display:contents;
+    padding-bottom: 10px; 
+    padding-left: 10px;
+}
+.img-box-fit img{
+    padding: 5px;
+    max-width: 25%;
+    box-shadow: 0px 2px 7px 0px lightgray;
+    border-radius: 90px;
+    background-color: white;
+    margin:5px;
+}
+
+.img-here{ 
+	display: block;
+	margin: 0 auto;
+}
+.center{ 
+   margin:0 auto;
+ }
+.paragraph{
+    margin:0;
+    font-size: 14px;
+}
+} 
+@media only screen and (max-width: 650px){
+.right-text {
+	padding: 22px 0 25px 0px !important;
+    text-align: center;
+}
+
+.h2-head {
+	font-size: 20px;
+	padding: 0;
+	margin-bottom: 2px;
+}
+.footer{
+     margin-top:0 !important;
+ }
+.img-bg {
+    margin: 0 auto;
+    max-width: 55%;
+    padding: 0;
+}
+.animation-img{
+    display:none;
+}
+}
 ');
 $script = <<< JS
     
@@ -896,7 +894,7 @@ $this->registerJsFile('@eyAssets/js/multislider.js', ['depends' => [\yii\web\Jqu
 
 <script id="video-collaborators" type="text/template">
     {{#.}}
-    <div class="col-lg-4 col-md-6">
+    <div class="col-lg-4 col-md-6 col-sm-6">
         <div class="collaborators-main">
             <div class="c-detail">
                 <h4 class="title">{{name}}</h4>

@@ -35,7 +35,7 @@ class ProfileCards
 
         else :
         return AssignedCategories::find()
-            ->select(['b.name', 'CONCAT("' . Url::to('/' . strtolower($options['type']) . '/list?keyword=') . '", b.name) link', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", b.icon) icon', 'COUNT(d.id) as total'])
+            ->select(['b.name', 'CONCAT("' . Url::to('/' . strtolower($options['type']) . '/list?keyword=') . '", b.name) link', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", b.icon) icon','COUNT(CASE WHEN d.application_enc_id IS NOT NULL AND d.is_deleted = 0 Then 1 END) as total'])
             ->alias('a')
             ->distinct()
             ->joinWith(['parentEnc b'], false)

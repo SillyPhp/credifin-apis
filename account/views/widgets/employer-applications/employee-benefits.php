@@ -2,20 +2,29 @@
 use yii\widgets\Pjax;
 use yii\helpers\Html;
 use yii\helpers\URL;
+//if($type){
+//    $type =  substr_replace($type ,"",-1);
+//}
 ?>
+<?php if ($type == 'Jobs' || $type == 'Clone_Jobs' || $type == 'Edit_Jobs'):
+    $label= "Job";
+elseif ($type == 'Internships' || $type == 'Clone_Internships' || $type == 'Edit_Internships'):
+    $label= 'Internship';
+endif; ?>
+
 <div class="row">
     <div id="select_benefit_err"></div>
     <div class="col-lg-6">
         <div class="module2-heading">
             Employee Benefits
         </div>
-        (Selected Benefits Will Be Applicable To This Job Only)
+        (Selected Benefits Will Be Applicable To This <?= $label ?> Only)
     </div>
     <div class="col-lg-6">
         <div class="md-radio-inline text-right clearfix">
             <?=
             $form->field($model, 'benefit_selection')->inline()->radioList([
-                1 => 'Add Jobs Benefits',
+                1 => 'Add ' . $label . ' Benefits',
                 0 => 'Skip Benefits',
             ], [
                 'item' => function ($index, $label, $name, $checked, $value) {
@@ -51,16 +60,14 @@ use yii\helpers\URL;
                 $form->field($model, 'emp_benefit')->checkBoxList($benefits, [
                     'item' => function ($index, $label, $name, $checked, $value) {
                         $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
-                        $return .= '<div class="p-category">';
+                        $return .= '<div class="pp-cate">';
                         $return .= '<input type="checkbox" id="benefit' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
                         $return .= '<label for="benefit' . $value . '" class="checkbox-label-v2">';
                         $return .= '<div class="checkbox-text">';
-                        $return .= '<span class="checkbox-text--title">';
                         $return .= '<img src="' . $label["icon"] . '">';
-                        $return .= '</span><br/>';
-                        $return .= '<span class="checkbox-text--description2">';
+                        $return .= '<div class="checkbox-text--description2">';
                         $return .= $label['benefit'];
-                        $return .= '</span>';
+                        $return .= '</div>';
                         $return .= '</div>';
                         $return .= '</label>';
                         $return .= '</div>';
@@ -150,4 +157,54 @@ function benefit_checker(benefit_len)
         }
 JS;
 $this->registerJs($script);
+$this->registerCss('
+.pp-cate{
+    width: 98%;
+    margin: auto;
+}
+.checkbox-label-v2 {
+	width: 100%;
+	cursor: pointer;
+	/* font-weight: 400; */
+	/* margin-bottom: 0px; */
+	display: flex;
+	padding: 20px;
+	border: 1px solid #eee;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	margin-bottom: 30px !important;
+}
+.pp-cate:hover {
+	background: #ffffff;
+	-webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	-ms-border-radius: 8px;
+	-o-border-radius: 8px;
+	border-radius: 8px;
+	z-index: 10;
+}
+.p-category .checkbox-text {
+    width: 100%;
+}
+.checkbox-text img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+.checkbox-text--description2 {
+	min-height: 41px;
+	margin-top: 5px;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+');
+
 ?>

@@ -82,6 +82,14 @@ use yii\helpers\URL;
 </div>
 <?php
 $script = <<< JS
+ function ChildFunction()
+     {
+       $.pjax.reload({container: '#pjax_questionnaire', async: false});
+       $.pjax.reload({container: '#pjax_process', async: false});
+       var pId = $('[name="interview_process"]:checked').val();
+       fetch_hiring_process2(pId);
+     }
+window.ChildFunction = ChildFunction;
 var ques_len = 0;
 var stage_len = 0;
 var process_len = 0;

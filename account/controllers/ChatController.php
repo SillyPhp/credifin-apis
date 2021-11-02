@@ -38,7 +38,7 @@ class ChatController extends Controller{
                     array_push($applied_ids, $a['created_by']);
                 }
                 $applicable_users = Users::find()
-                    ->select(['user_enc_id','first_name', 'REPLACE(initials_color, "#", "") as initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+                    ->select(['user_enc_id','first_name', 'REPLACE(initials_color, "#", "") as initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
                     ->where(['in', 'user_enc_id', $applied_ids])
                     ->andWhere([
                         'or',
@@ -70,7 +70,7 @@ class ChatController extends Controller{
                     array_push($organization_ids, $a['organization_enc_id']);
                 }
                 $applicable_organizations = Organizations::find()
-                    ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+                    ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
                     ->where(['in', 'organization_enc_id', $organization_ids])
                     ->andWhere([
                         'or',
@@ -81,7 +81,7 @@ class ChatController extends Controller{
                 return json_encode($applicable_organizations);
             }
 //            $result = Users::find()
-//                ->select(['user_enc_id','first_name', 'initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+//                ->select(['user_enc_id','first_name', 'initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
 //                ->where([
 //                    'or',
 //                    ['like', 'first_name', $key],
@@ -98,13 +98,13 @@ class ChatController extends Controller{
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
             $id =  Yii::$app->request->post('id');
             $result = Users::find()
-                ->select(['user_enc_id','first_name', 'REPLACE(initials_color, "#", "") as initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+                ->select(['user_enc_id','first_name', 'REPLACE(initials_color, "#", "") as initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
                 ->where(['user_enc_id' => $id])
                 ->asArray()
                 ->all();
             if(count($result) == 0){
                 $r = Organizations::find()
-                    ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+                    ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
                     ->where(['organization_enc_id' => $id])
                     ->asArray()
                     ->all();
@@ -146,7 +146,7 @@ class ChatController extends Controller{
                     }
 
                     $result = Users::find()
-                        ->select(['user_enc_id', 'first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+                        ->select(['user_enc_id', 'first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
                         ->where(['in', 'user_enc_id', $r])
                         ->limit(10)
                         ->asArray()
@@ -191,7 +191,7 @@ class ChatController extends Controller{
                     }
 
                     $result = Organizations::find()
-                        ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+                        ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
                         ->where(['in', 'organization_enc_id', $r])
                         ->limit(10)
                         ->asArray()
@@ -232,7 +232,7 @@ class ChatController extends Controller{
                 array_push($applied_ids, $a['created_by']);
             }
             $applicable_users = Users::find()
-              ->select(['user_enc_id','first_name', 'REPLACE(initials_color, "#", "") as initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+              ->select(['user_enc_id','first_name', 'REPLACE(initials_color, "#", "") as initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
               ->where(['in', 'user_enc_id', $applied_ids])
               ->asArray()
               ->all();
@@ -260,7 +260,7 @@ class ChatController extends Controller{
               array_push($organization_ids, $a['organization_enc_id']);
           }
           $applicable_organizations = Organizations::find()
-              ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+              ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
               ->where(['in', 'organization_enc_id', $organization_ids])
               ->asArray()
               ->all();
@@ -268,27 +268,40 @@ class ChatController extends Controller{
     }
 
     public function actionGetRandomValues(){
+        $referrerUrl = trim(Yii::$app->request->referrer, '/');
+        $urlParts = parse_url($referrerUrl);;
+        $actionid = explode('/', $urlParts['path'])[2];
+        $actionSlug = explode('/', $urlParts['path'])[3];
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
             if(Yii::$app->user->identity->organization->organization_enc_id){
                 $applied_ids = [];
                 $applied_candidates = AppliedApplications::find()
                     ->alias('a')
-                    ->select(['a.created_by'])
+                    ->select(['a.created_by','a.application_enc_id'])
                     ->joinWith(['applicationEnc b' => function($x){
                         $x->onCondition(['b.is_deleted' => 0, 'b.status' => 'Active']);
                     }], false)
                     ->where(['a.is_deleted' => 0])
-                    ->andWhere(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                    ->andWhere(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]);
+                    if($actionid == 'process-applications') {
+                        $applied_candidates ->andWhere(['not',['a.status' => 'Rejected']]);
+                    }
+                    $applied_candidates = $applied_candidates->groupBy(['a.created_by'])
+                    ->orderBy([new Expression('FIELD (a.application_enc_id, "'.$actionSlug.'") DESC'),'a.application_enc_id' => SORT_ASC])
                     ->groupBy(['a.created_by'])
                     ->limit(10)
                     ->asArray()
                     ->all();
-                foreach ($applied_candidates as $a){
-                    array_push($applied_ids, $a['created_by']);
-                }
+                    if($applied_candidates) {
+                        foreach ($applied_candidates as $a) {
+                            array_push($applied_ids, $a['created_by']);
+                        }
+                    }
+                $strAppliedUsers = implode(',',$applied_ids);
                 $applicable_users = Users::find()
-                    ->select(['user_enc_id','first_name', 'REPLACE(initials_color, "#", "") as initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+                    ->select(['user_enc_id','first_name', 'REPLACE(initials_color, "#", "") as initials_color','last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
                     ->where(['in', 'user_enc_id', $applied_ids])
+                    ->orderBy([new Expression('FIELD (user_enc_id, "' . $strAppliedUsers .'") ASC')])
                     ->asArray()
                     ->all();
                 return json_encode($applicable_users);
@@ -316,14 +329,14 @@ class ChatController extends Controller{
                     array_push($organization_ids, $a['organization_enc_id']);
                 }
                 $applicable_organizations = Organizations::find()
-                    ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
+                    ->select(['organization_enc_id user_enc_id', 'name first_name', 'REPLACE(initials_color, "#", "") as initials_color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END image'])
                     ->where(['in', 'organization_enc_id', $organization_ids])
                     ->asArray()
                     ->all();
                 return json_encode($applicable_organizations);
             }
 //            $result = Users::find()
-//                ->select(['user_enc_id', 'first_name', 'initials_color', 'last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
+//                ->select(['user_enc_id', 'first_name', 'initials_color', 'last_name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", image_location, "/", image) ELSE NULL END image'])
 //                ->where(['is_deleted' => 0])
 //                ->orderBy(new Expression('rand()'))
 //                ->limit(10)
@@ -459,7 +472,7 @@ class ChatController extends Controller{
             }
         }
     }
-    
+
     private function saveMessage($uniqueid, $messagekey, $pid, $sender, $message){
         $messages = new ConversationMessages();
         $messages->message_enc_id = $messagekey;
@@ -473,4 +486,7 @@ class ChatController extends Controller{
         return false;
     }
 
+    public function actionChatPage(){
+        return $this->render('chat-page');
+    }
 }

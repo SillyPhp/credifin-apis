@@ -10,6 +10,7 @@ $url2 = \yii\helpers\Url::to(['/cities/country-list']);
 Yii::$app->view->registerJs('var doc_type = "'. $doc_type.'"',  \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var typ = "'. $typ.'"',  \yii\web\View::POS_HEAD);
 $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector-form-job.png';
+$primary_cat = \yii\helpers\ArrayHelper::map($primary_cat,'category_enc_id','name');
 Yii::$app->view->registerJs('var cid = "' . \common\models\Countries::findOne(['name' => $model->country])->country_enc_id . '"', \yii\web\View::POS_HEAD);
 $Initscript = <<< JS
 function cities_url(){
@@ -20,12 +21,14 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
 ?>
 <div class="col-md-12 set-overlay">
     <div class="row">
+        <h1 class="quick-job-heading">Post a Quick Job Vacancy!!</h1>
+        <h2 class="quick-job-sub-heading">Quick Jobs, Free Jobs Posting With your Valid Company and Job Details</h2>
         <?php
         if (Yii::$app->session->hasFlash('success')):
             echo "<div class='m-cover hidden'></div>
                 <div class='m-modal hidden'>
                     <div class='m-content'>
-                        <img src='" . Url::to('@eyAssets/images/pages/jobs/submitted.png') . "'/>
+                        <img src='" . Url::to('@eyAssets/images/pages/jobs/submitted.png') . "' alt='Request Submitted'/>
                         <p>Your Application has successfully submitted.</p>
                         <div class='m-actions'>
                             <a href='javascript:;' class='close-m-mo'>Post Another Job</a>
@@ -253,7 +256,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title"><?= Yii::t('frontend', 'Create Company'); ?></h4>
+                    <h3 class="modal-title"><?= Yii::t('frontend', 'Create Company'); ?></h3>
                 </div>
                 <div class="modal-body">
                     <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
@@ -867,6 +870,17 @@ float:right;
 }
 .reverse {
   animation-direction: reverse;
+}
+.quick-job-heading{
+    text-align:center;
+    font-size: 25px;
+    margin-top: 0;
+}
+.quick-job-sub-heading{
+    text-align:center;
+    font-size:15px;
+    color:#666;
+    margin:0px;
 }
 @media screen and (max-width: 600px) {
     .m-content img{max-width: 290px;}

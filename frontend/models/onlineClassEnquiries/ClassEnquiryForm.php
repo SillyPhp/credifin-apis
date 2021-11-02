@@ -31,13 +31,13 @@ class ClassEnquiryForm extends Model
             [['full_name', 'email', 'phone', 'organization_name', 'designation', 'enquiry_for'], 'required'],
             [['organization_name', 'designation', 'enquiry_for'], 'string', 'max' => 100],
             [['full_name'], 'string', 'max' => 30],
+            [['email', 'full_name','phone','organization_name'],'trim'],
             [['email'], 'email'],
             [['email'], 'string', 'max' => 50],
             [['phone'], 'string', 'max' => 15],
             [['phone'], PhoneInputValidator::className()],
-        ];
+       ];
     }
-
     public function save()
     {
         $transaction = Yii::$app->db->beginTransaction();

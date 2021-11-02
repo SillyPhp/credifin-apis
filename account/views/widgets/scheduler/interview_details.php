@@ -4,13 +4,13 @@
             <div class="panel-heading" id="headingOne">
                 <h3>
                     <a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" aria-expanded="true">
-                        Basic infomation <span class="acc-arrow"><i class="fa fa-arrow-circle-down"></i> </span>
+                        Basic information <span class="acc-arrow"><i class="fa fa-arrow-circle-down"></i> </span>
                     </a>
                 </h3>
             </div>
             <input type="hidden" id="selected_application_id" value="">
             <input type="hidden" id="selected_round_id" value="">
-            <div id="collapseOne" class="panel-collapse collapse in" aria-expanded="true">
+            <div id="collapseOne" class="panel-collapse collapse in" aria-expa`nded="true">
                 <div class="panel-body">
                     <form method="POST">
                         <fieldset>

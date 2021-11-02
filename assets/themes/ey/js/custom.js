@@ -1,6 +1,6 @@
 var THEMEMASCOT = {};
 
-(function($) {
+(function ($) {
     "use strict";
 
     /* ---------------------------------------------------------------------- */
@@ -13,29 +13,29 @@ var THEMEMASCOT = {};
 
 
     THEMEMASCOT.isMobile = {
-        Android: function() {
+        Android: function () {
             return navigator.userAgent.match(/Android/i);
         },
-        BlackBerry: function() {
+        BlackBerry: function () {
             return navigator.userAgent.match(/BlackBerry/i);
         },
-        iOS: function() {
+        iOS: function () {
             return navigator.userAgent.match(/iPhone|iPad|iPod/i);
         },
-        Opera: function() {
+        Opera: function () {
             return navigator.userAgent.match(/Opera Mini/i);
         },
-        Windows: function() {
+        Windows: function () {
             return navigator.userAgent.match(/IEMobile/i);
         },
-        any: function() {
+        any: function () {
             return (THEMEMASCOT.isMobile.Android() || THEMEMASCOT.isMobile.BlackBerry() || THEMEMASCOT.isMobile.iOS() || THEMEMASCOT.isMobile.Opera() || THEMEMASCOT.isMobile.Windows());
         }
     };
 
     THEMEMASCOT.isRTL = {
-        check: function() {
-            if( $( "html" ).attr("dir") == "rtl" ) {
+        check: function () {
+            if ($("html").attr("dir") == "rtl") {
                 return true;
             } else {
                 return false;
@@ -44,7 +44,7 @@ var THEMEMASCOT = {};
     };
 
     THEMEMASCOT.urlParameter = {
-        get: function(sParam) {
+        get: function (sParam) {
             var sPageURL = decodeURIComponent(window.location.search.substring(1)),
                 sURLVariables = sPageURL.split('&'),
                 sParameterName,
@@ -62,7 +62,7 @@ var THEMEMASCOT = {};
 
     THEMEMASCOT.initialize = {
 
-        init: function() {
+        init: function () {
             THEMEMASCOT.initialize.TM_platformDetect();
             THEMEMASCOT.initialize.TM_customDataAttributes();
             THEMEMASCOT.initialize.TM_parallaxBgInit();
@@ -71,15 +71,15 @@ var THEMEMASCOT = {};
         /* ---------------------------------------------------------------------- */
         /* ------------------------------ Preloader  ---------------------------- */
         /* ---------------------------------------------------------------------- */
-        TM_preLoaderClickDisable: function() {
+        TM_preLoaderClickDisable: function () {
             var $preloader = $('#preloader');
-            $preloader.children('#disable-preloader').on('click', function(e) {
+            $preloader.children('#disable-preloader').on('click', function (e) {
                 $preloader.fadeOut();
                 return false;
             });
         },
 
-        TM_preLoaderOnLoad: function() {
+        TM_preLoaderOnLoad: function () {
             var $preloader = $('#preloader');
             $preloader.delay(200).fadeOut('slow');
         },
@@ -88,7 +88,7 @@ var THEMEMASCOT = {};
         /* ---------------------------------------------------------------------- */
         /* ------------------------------- Platform detect  --------------------- */
         /* ---------------------------------------------------------------------- */
-        TM_platformDetect: function() {
+        TM_platformDetect: function () {
             if (THEMEMASCOT.isMobile.any()) {
                 $html.addClass("mobile");
             } else {
@@ -99,7 +99,7 @@ var THEMEMASCOT = {};
         /* ---------------------------------------------------------------------- */
         /* ------------------------------ Hash Forwarding  ---------------------- */
         /* ---------------------------------------------------------------------- */
-        TM_hashForwarding: function() {
+        TM_hashForwarding: function () {
             if (window.location.hash) {
                 var hash_offset = $(window.location.hash).offset().top;
                 $("html, body").animate({
@@ -111,35 +111,35 @@ var THEMEMASCOT = {};
         /* ---------------------------------------------------------------------- */
         /* ----------------------- Background image, color ---------------------- */
         /* ---------------------------------------------------------------------- */
-        TM_customDataAttributes: function() {
-            $('[data-bg-color]').each(function() {
+        TM_customDataAttributes: function () {
+            $('[data-bg-color]').each(function () {
                 $(this).css("cssText", "background: " + $(this).data("bg-color") + " !important;");
             });
-            $('[data-bg-img]').each(function() {
+            $('[data-bg-img]').each(function () {
                 $(this).css('background-image', 'url(' + $(this).data("bg-img") + ')');
             });
-            $('[data-text-color]').each(function() {
+            $('[data-text-color]').each(function () {
                 $(this).css('color', $(this).data("text-color"));
             });
-            $('[data-font-size]').each(function() {
+            $('[data-font-size]').each(function () {
                 $(this).css('font-size', $(this).data("font-size"));
             });
-            $('[data-height]').each(function() {
+            $('[data-height]').each(function () {
                 $(this).css('height', $(this).data("height"));
             });
-            $('[data-border]').each(function() {
+            $('[data-border]').each(function () {
                 $(this).css('border', $(this).data("border"));
             });
-            $('[data-margin-top]').each(function() {
+            $('[data-margin-top]').each(function () {
                 $(this).css('margin-top', $(this).data("margin-top"));
             });
-            $('[data-margin-right]').each(function() {
+            $('[data-margin-right]').each(function () {
                 $(this).css('margin-right', $(this).data("margin-right"));
             });
-            $('[data-margin-bottom]').each(function() {
+            $('[data-margin-bottom]').each(function () {
                 $(this).css('margin-bottom', $(this).data("margin-bottom"));
             });
-            $('[data-margin-left]').each(function() {
+            $('[data-margin-left]').each(function () {
                 $(this).css('margin-left', $(this).data("margin-left"));
             });
         },
@@ -147,10 +147,10 @@ var THEMEMASCOT = {};
         /* ---------------------------------------------------------------------- */
         /* -------------------------- Background Parallax ----------------------- */
         /* ---------------------------------------------------------------------- */
-        TM_parallaxBgInit: function() {
-            if (!THEMEMASCOT.isMobile.any() && $window.width() >= 800 ) {
-                $('.parallax').each(function() {
-                    var data_parallax_ratio = ( $(this).data("parallax-ratio") === undefined ) ? '0.5': $(this).data("parallax-ratio");
+        TM_parallaxBgInit: function () {
+            if (!THEMEMASCOT.isMobile.any() && $window.width() >= 800) {
+                $('.parallax').each(function () {
+                    var data_parallax_ratio = ($(this).data("parallax-ratio") === undefined) ? '0.5' : $(this).data("parallax-ratio");
                     $(this).parallax("50%", data_parallax_ratio);
                 });
             } else {
@@ -162,9 +162,9 @@ var THEMEMASCOT = {};
 
     THEMEMASCOT.header = {
 
-        init: function() {
+        init: function () {
 
-            var t = setTimeout(function() {
+            var t = setTimeout(function () {
                 THEMEMASCOT.header.TM_fullscreenMenu();
                 THEMEMASCOT.header.TM_scroolToTopOnClick();
                 THEMEMASCOT.header.TM_scrollToFixed();
@@ -176,7 +176,7 @@ var THEMEMASCOT = {};
         /* ---------------------------------------------------------------------- */
         /* ------------------------- menufullpage ---------------------------- */
         /* ---------------------------------------------------------------------- */
-        TM_fullscreenMenu: function() {
+        TM_fullscreenMenu: function () {
             var $menufullpage = $('.menu-full-page .fullpage-nav-toggle');
             $menufullpage.menufullpage();
         },
@@ -184,7 +184,7 @@ var THEMEMASCOT = {};
         /* ---------------------------------------------------------------------- */
         /* ------------------------------- scrollToTop  ------------------------- */
         /* ---------------------------------------------------------------------- */
-        TM_scroolToTop: function() {
+        TM_scroolToTop: function () {
             if ($window.scrollTop() > 600) {
                 $('.scrollToTop').fadeIn();
             } else {
@@ -192,8 +192,8 @@ var THEMEMASCOT = {};
             }
         },
 
-        TM_scroolToTopOnClick: function() {
-            $document_body.on('click', '.scrollToTop', function(e) {
+        TM_scroolToTopOnClick: function () {
+            $document_body.on('click', '.scrollToTop', function (e) {
                 $('html, body').animate({
                     scrollTop: 0
                 }, 800);
@@ -204,11 +204,11 @@ var THEMEMASCOT = {};
         /* ---------------------------------------------------------------------------- */
         /* --------------------------- collapsed menu close on click ------------------ */
         /* ---------------------------------------------------------------------------- */
-        TM_scrollToFixed: function() {
+        TM_scrollToFixed: function () {
             $('.navbar-scrolltofixed').scrollToFixed();
             $('.scrolltofixed').scrollToFixed({
                 marginTop: $('.header .header-nav').outerHeight(true) + 10,
-                limit: function() {
+                limit: function () {
                     var limit = $('#footer').offset().top - $(this).outerHeight(true);
                     return limit;
                 }
@@ -218,7 +218,7 @@ var THEMEMASCOT = {};
         /* ---------------------------------------------------------------------- */
         /* --------------------------- Waypoint Top Nav Sticky ------------------ */
         /* ---------------------------------------------------------------------- */
-        TM_topnavAnimate: function() {
+        TM_topnavAnimate: function () {
             if ($window.scrollTop() > (50)) {
                 $(".navbar-sticky-animated").removeClass("animated-active");
             } else {
@@ -235,9 +235,9 @@ var THEMEMASCOT = {};
 
     THEMEMASCOT.widget = {
 
-        init: function() {
+        init: function () {
 
-            var t = setTimeout(function() {
+            var t = setTimeout(function () {
                 THEMEMASCOT.widget.TM_accordion_toggles();
                 THEMEMASCOT.widget.TM_tooltip();
             }, 0);
@@ -247,12 +247,12 @@ var THEMEMASCOT = {};
         /* ---------------------------------------------------------------------- */
         /* ------------------------- accordion & toggles ------------------------ */
         /* ---------------------------------------------------------------------- */
-        TM_accordion_toggles: function() {
+        TM_accordion_toggles: function () {
             var $panel_group_collapse = $('.panel-group .collapse');
-            $panel_group_collapse.on("show.bs.collapse", function(e) {
+            $panel_group_collapse.on("show.bs.collapse", function (e) {
                 $(this).closest(".panel-group").find("[href='#" + $(this).attr("id") + "']").addClass("active");
             });
-            $panel_group_collapse.on("hide.bs.collapse", function(e) {
+            $panel_group_collapse.on("hide.bs.collapse", function (e) {
                 $(this).closest(".panel-group").find("[href='#" + $(this).attr("id") + "']").removeClass("active");
             });
         },
@@ -260,16 +260,16 @@ var THEMEMASCOT = {};
         /* ---------------------------------------------------------------------- */
         /* ------------------------------- tooltip  ----------------------------- */
         /* ---------------------------------------------------------------------- */
-        TM_tooltip: function() {
+        TM_tooltip: function () {
             $('[data-toggle="tooltip"]').tooltip();
         },
     };
 
     THEMEMASCOT.slider = {
 
-        init: function() {
+        init: function () {
 
-            var t = setTimeout(function() {
+            var t = setTimeout(function () {
                 THEMEMASCOT.slider.TM_owlCarousel();
             }, 0);
 
@@ -278,11 +278,11 @@ var THEMEMASCOT = {};
         /* ---------------------------------------------------------------------- */
         /* -------------------------------- Owl Carousel  ----------------------- */
         /* ---------------------------------------------------------------------- */
-        TM_owlCarousel: function() {
-            $('.owl-carousel-4col').each(function() {
-                var data_dots = ( $(this).data("dots") === undefined ) ? false: $(this).data("dots");
-                var data_nav = ( $(this).data("nav")=== undefined ) ? false: $(this).data("nav");
-                var data_duration = ( $(this).data("duration") === undefined ) ? 4000: $(this).data("duration");
+        TM_owlCarousel: function () {
+            $('.owl-carousel-4col').each(function () {
+                var data_dots = ($(this).data("dots") === undefined) ? false : $(this).data("dots");
+                var data_nav = ($(this).data("nav") === undefined) ? false : $(this).data("nav");
+                var data_duration = ($(this).data("duration") === undefined) ? 4000 : $(this).data("duration");
                 $(this).owlCarousel({
                     rtl: THEMEMASCOT.isRTL.check(),
                     autoplay: true,
@@ -326,10 +326,10 @@ var THEMEMASCOT = {};
                 });
             });
 
-            $('.owl-carousel-5col').each(function() {
-                var data_dots = ( $(this).data("dots") === undefined ) ? false: $(this).data("dots");
-                var data_nav = ( $(this).data("nav")=== undefined ) ? false: $(this).data("nav");
-                var data_duration = ( $(this).data("duration") === undefined ) ? 4000: $(this).data("duration");
+            $('.owl-carousel-5col').each(function () {
+                var data_dots = ($(this).data("dots") === undefined) ? false : $(this).data("dots");
+                var data_nav = ($(this).data("nav") === undefined) ? false : $(this).data("nav");
+                var data_duration = ($(this).data("duration") === undefined) ? 4000 : $(this).data("duration");
                 $(this).owlCarousel({
                     rtl: THEMEMASCOT.isRTL.check(),
                     autoplay: true,
@@ -382,7 +382,7 @@ var THEMEMASCOT = {};
     /* ---------------------------------------------------------------------- */
     //document ready
     THEMEMASCOT.documentOnReady = {
-        init: function() {
+        init: function () {
             THEMEMASCOT.initialize.init();
             THEMEMASCOT.header.init();
             THEMEMASCOT.slider.init();
@@ -393,8 +393,8 @@ var THEMEMASCOT = {};
 
     //window on load
     THEMEMASCOT.windowOnLoad = {
-        init: function() {
-            var t = setTimeout(function() {
+        init: function () {
+            var t = setTimeout(function () {
                 THEMEMASCOT.initialize.TM_preLoaderOnLoad();
                 THEMEMASCOT.initialize.TM_hashForwarding();
                 THEMEMASCOT.initialize.TM_parallaxBgInit();
@@ -406,8 +406,8 @@ var THEMEMASCOT = {};
 
     //window on scroll
     THEMEMASCOT.windowOnscroll = {
-        init: function() {
-            $window.on( 'scroll', function(){
+        init: function () {
+            $window.on('scroll', function () {
                 THEMEMASCOT.header.TM_scroolToTop();
                 THEMEMASCOT.header.TM_topnavAnimate();
             });
@@ -445,8 +445,47 @@ ajax().done(function (result) {
     return result;
 });
 
+function hasInitials(urlToFile) {
+    var checkInitialsLength = $('.do-image').length;
+    var defaultLength = 0;
+    $('.do-image').each(function () {
+        var elem = $(this);
+        var image = $(this).attr('src');
+        if (image && !elem.hasClass('loaded')) {
+            elem.addClass('loaded');
+            $.get(image, function (data, statusText, xhr) {
+                if (xhr.status != 200) {
+                    elem.replaceWith('<canvas class="user-icon" name="' + elem.attr('data-name') + '" width="' + elem.attr('data-width') + '" height="' + elem.attr('data-height') + '" color="' + elem.attr('data-color') + '" font="' + elem.attr('data-font') + '"></canvas>');
+                }
+            })
+                .done(function () {
+                    if (defaultLength == checkInitialsLength - 1) {
+                        setTimeout(function () {
+                            utilities.setInitials();
+                            alert(98);
+                        }, 1000)
+                    }
+                }).fail(function () {
+                elem.replaceWith('<canvas class="user-icon" name="' + elem.attr('data-name') + '" width="' + elem.attr('data-width') + '" height="' + elem.attr('data-height') + '" color="' + elem.attr('data-color') + '" font="' + elem.attr('data-font') + '"></canvas>');
+            });
+        } else if(!image && !elem.hasClass('loaded')) {
+            elem.replaceWith('<canvas class="user-icon" name="' + elem.attr('data-name') + '" width="' + elem.attr('data-width') + '" height="' + elem.attr('data-height') + '" color="' + elem.attr('data-color') + '" font="' + elem.attr('data-font') + '"></canvas>');
+        }
+        if (defaultLength == checkInitialsLength - 1) {
+            setTimeout(function () {
+                utilities.setInitials();
+            }, 2000)
+        }
+        defaultLength++;
+    });
+    utilities.setInitials();
+}
+
 var utilities = {
-    initials: function(){
+    initials: function () {
+        hasInitials();
+    },
+    setInitials: function () {
         var canvas = document.getElementsByClassName("user-icon");
         for (var i = 0; i < canvas.length; i++) {
             var context = canvas[i].getContext("2d");
@@ -470,7 +509,7 @@ var utilities = {
                 context.scale(window.devicePixelRatio, window.devicePixelRatio);
             }
 
-            if(canvas[i].getAttribute("color") != "") {
+            if (canvas[i].getAttribute("color") != "") {
                 context.fillStyle = canvas[i].getAttribute("color");
             } else {
                 context.fillStyle = colours[Math.floor(Math.random() * colours.length)];
