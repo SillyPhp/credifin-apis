@@ -304,12 +304,15 @@ $this->registerCss('
     line-height: 20px;
     max-width: 78%;
 }
+@media screen and (max-width: 1200px) and (min-width: 992px) {
+.relate-box p{max-width:70%;}
+}
 ');
 
 $script = <<<JS
 
 JS;
 $this->registerJS($script);
-$this->registerJsFile('https://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);
+//$this->registerJsFile('https://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 
