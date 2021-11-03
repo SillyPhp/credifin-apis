@@ -498,16 +498,21 @@ class EducationLoansController extends Controller
         return $this->render('faq');
     }
 
-    public function actionRegisterEducationLoan($page=1,$limit=20){
+    public function actionRegisterEducationLoan($page=1,$limit=20,$debug=false){
         $offset = ($page - 1) * $limit;
         $d = LoanApplications::find()
             ->alias('a')
             ->select(['a.loan_app_enc_id','a.applicant_name name','a.phone','a.email','a.created_by'])
             ->andWhere(['a.created_by'=>null])
+            ->andWhere(['a.is_deleted'=>0])
             ->limit($limit)
             ->offset($offset)
             ->asArray()
             ->all();
+        if ($debug){
+            print_r($d);
+            die();
+        }
         $i = 0;
         $k = 0;
         foreach ($d as $data){
@@ -534,7 +539,7 @@ class EducationLoansController extends Controller
                 $params['email'] = $data['email'];
                 $params['phone']  = str_replace('+','',$data['phone']);
                 $id = Yii::$app->notificationEmails->createuserSignUp($params);
-                if ($id['status']){
+                if ($id){
                     $get = LoanApplications::findOne(['loan_app_enc_id'=>$data['loan_app_enc_id']]);
                     $get->created_by = $id['id'];
                     if ($get->save()){
@@ -544,7 +549,7 @@ class EducationLoansController extends Controller
                         echo json_encode($get->getErrors());
                     }
                 }else{
-                    echo json_encode($id['message']);
+                    echo $k++;
                 }
             }
         }
