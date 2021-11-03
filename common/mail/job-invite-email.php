@@ -709,7 +709,7 @@ if (!empty($data['applicationPlacementLocations'])) {
                 Working Hours
             </div>
             <div class="working-time-to">
-                <?= date('H:i', strtotime($data['timings_from'])); ?>
+                <?= date('H:i', strtotime($data['timings_to'])); ?>
             </div>
         </div>
     </div>

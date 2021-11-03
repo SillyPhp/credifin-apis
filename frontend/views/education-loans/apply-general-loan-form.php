@@ -249,7 +249,8 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         <div class="radio-heading input-group-text">
                                             Select Country
                                         </div>
-                                        <select class="form-control js-example-basic-single" name="country_name" id="country_name">
+                                        <select class="form-control js-example-basic-multiple"
+                                                name="country_name" id="country_name"  multiple="multiple">
 
                                         </select>
                                     </div>
@@ -1085,6 +1086,25 @@ top:6px !important;
 {
 width:100% !important;
 }
+.select2-selection__choice__remove{
+    display: none;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice{
+    padding-left: 0px;
+    background: transparent;
+    border: none;
+}
+.select2-selection{
+    border: 1px solid #c2cad8 !important;
+    border-radius: 0 !important;
+    box-shadow: none;
+    height: 45px;
+    padding: 6px 12px;
+}
+.select2-container .select2-search--inline .select2-search__field{
+    margin-top: 0px;
+    margin-left: 0px;
+}
 @media screen and (max-width: 500px){
     .select2{
         width: 100% !important;
@@ -1297,10 +1317,13 @@ function substringMatcher (strs) {
         });
     }
     
-    $('.js-example-basic-single').select2();
+    $('.js-example-basic-multiple').select2({
+        maximumSelectionLength: 1,
+        placeholder: 'Select Country',  
+    });
     function getCountries() { 
         $.ajax({     
-            url : 'https://ravinder.eygb.me/api/v3/countries-list/get-countries-list', 
+            url : 'https://www.empoweryouth.com/api/v3/countries-list/get-countries-list', 
             method : 'POST',
             success : function(res) { 
             if (res.response.status==200){
@@ -1308,7 +1331,7 @@ function substringMatcher (strs) {
                  res = res.response.countries;
                 $.each(res,function(index,value) 
                   {
-                    html.push('<option value="">Select Country</option>')
+                    // html.push('<option value="">Select Country</option>')
                     html.push('<option value="'+value.country_enc_id+'">'+value.name+'</option>');
                   }); 
                     $('#country_name').html(html);   
@@ -1680,7 +1703,7 @@ function ajaxSubmit(){
                 getLender:getLender, 
                 is_india:$('input[name="countryRadio"]:checked').val(),
                 is_addmission_taken:$('input[name="college_taken"]:checked').val(),
-                country_enc_id:$('#country_name').val(),
+                country_enc_id:$('#country_name').val()[0],
                 refferal_id : refferal_id
                 };
     }else if (loan_application_type==1){
