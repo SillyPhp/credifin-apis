@@ -209,7 +209,7 @@ height:15px;
 <br><img class= "email_icon" src="https://www.empoweryouth.com/assets/themes/email/images/DKLb29kg0o07Bn0jBA5WRPBlampN8J.png"
                      alt="Email"> info@empoweryouth.com
 <br><img class= "email_icon" src="https://www.empoweryouth.com/assets/themes/email/images/qEeByK16PolWLxpp14p5RzZn49J0YL.png"
-                     alt="Whatsapp"> 7814871632
+                     alt="Whatsapp"> 8727985888
         </div>
 
         <div class="ey-team">
