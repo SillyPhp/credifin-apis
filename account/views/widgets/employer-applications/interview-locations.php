@@ -78,10 +78,7 @@ $this->registerCss('
 }
 ');
 $script = <<< JS
-var interview_len = 0; 
-$(document).on('click', '.modal-load-class', function() {
-    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
-});
+var interview_len = 0;
 function interview_checker(interview_len)
         {
           if(interview_len == 0)

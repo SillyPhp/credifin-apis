@@ -2494,6 +2494,11 @@ function get_preview(session_tok) {
                        }
                     }); 
             }
+            
+$(document).on('click', '.modal-load-class', function(e) {
+    e.preventDefault();
+    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
+});
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
