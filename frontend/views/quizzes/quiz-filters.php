@@ -23,34 +23,34 @@ $this->params['header_dark'] = true;
                     <div class="quiz-status-filter">
                         <h3 class="side-top-heading">Status</h3>
                         <div class="switch-field">
-                            <input type="radio" id="all" name="All" checked="">
+                            <input type="radio" id="all" name="All" checked="" onChange="filterQuiz()">
                             <label for="all">All</label>
-                            <input type="radio" id="live" name="All">
+                            <input type="radio" id="live" name="All" onChange="filterQuiz()">
                             <label for="live">Live</label>
-                            <input type="radio" id="expired" name="All">
+                            <input type="radio" id="expired" name="All" onChange="filterQuiz()">
                             <label for="expired">Expired</label>
                         </div>
                     </div>
-                    <div class="team-size-filter">
-                        <h3 class="side-top-heading">Team Size</h3>
-                        <div class="slidecontainer">
-                            <input type="range" min="1" max="4" value="50" class="slider" id="myRange">
-                            <div class="range-counter">
-                                <span>All</span>
-                                <span>1</span>
-                                <span>2</span>
-                                <span>2+</span>
-                            </div>
-                        </div>
-                    </div>
+<!--                    <div class="team-size-filter">-->
+<!--                        <h3 class="side-top-heading">Team Size</h3>-->
+<!--                        <div class="slidecontainer">-->
+<!--                            <input type="range" min="1" max="4" value="50" class="slider" id="myRange">-->
+<!--                            <div class="range-counter">-->
+<!--                                <span>All</span>-->
+<!--                                <span>1</span>-->
+<!--                                <span>2</span>-->
+<!--                                <span>2+</span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                     <div class="payment-mode-filter">
                         <h3 class="side-top-heading">Payment</h3>
                         <div class="switch-field">
-                            <input type="radio" id="all-pay" name="All2" checked="">
+                            <input type="radio" id="all-pay" name="All2" onChange="filterPaid()" checked="">
                             <label for="all-pay">All</label>
-                            <input type="radio" id="paid" name="All2">
+                            <input type="radio" id="paid" name="All2" onChange="filterPaid()">
                             <label for="paid">Paid</label>
-                            <input type="radio" id="free" name="All2">
+                            <input type="radio" id="free" name="All2" onChange="filterPaid()">
                             <label for="free">Free</label>
                         </div>
                     </div>
@@ -100,7 +100,7 @@ $this->params['header_dark'] = true;
                 </div>
             </div>
             <div class="col-md-9">
-                <div class="row">
+                <div class="row" id="quizDiv">
                     <div class="col-md-6">
                         <div class="card-main nd-shadow">
                             <div class="paid-webinar">Paid</div>
@@ -121,106 +121,6 @@ $this->params['header_dark'] = true;
                                 <div class="about-footer">
                                     <div class="detail-btn">
                                         <a href="" class="view-details">View Detail</a>
-                                    </div>
-                                    <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-main nd-shadow">
-                            <div class="paid-webinar">Paid</div>
-                            <div class="card-img">
-                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/6177e00f81d27_untitled_design__1___1_.png?d=340x195') ?>"/>
-                            </div>
-                            <div class="card-details">
-                                <div class="about-first flex-container">
-                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> 6 Days Left</div>
-                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
-                                    <div class="pricing-money" style="flex-grow: 8"><img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹5,000 </div>
-                                </div>
-                                <div class="about-name">
-                                    <div class="quiz-name">Health Awareness Quiz</div>
-                                    <div class="quiz-category">marketing</div>
-                                </div>
-                                <div class="about-footer">
-                                    <div class="detail-btn">
-                                        <a href="" class="view-details">View Detail</a>
-                                    </div>
-                                    <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-main nd-shadow">
-                            <div class="card-img">
-                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/6177e00f81d27_untitled_design__1___1_.png?d=340x195') ?>"/>
-                            </div>
-                            <div class="card-details">
-                                <div class="about-first flex-container">
-                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> 6 Days Left</div>
-                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
-                                    <div class="pricing-money" style="flex-grow: 8"></div>
-                                </div>
-                                <div class="about-name">
-                                    <div class="quiz-name">Health Awareness Quiz</div>
-                                    <div class="quiz-category">marketing</div>
-                                </div>
-                                <div class="about-footer">
-                                    <div class="detail-btn">
-                                        <a href="" class="view-details">View Detail</a>
-                                    </div>
-                                    <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-main nd-shadow">
-                            <div class="paid-webinar">Paid</div>
-                            <div class="card-img">
-                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/6176c48e680e5_whatsapp_image_2021-10-25_at_8.16.08_pm.jpeg?d=340x195') ?>"/>
-                            </div>
-                            <div class="card-details">
-                                <div class="about-first flex-container">
-                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> 6 Days Left</div>
-                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
-                                    <div class="pricing-money" style="flex-grow: 8"><img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹5,000 </div>
-                                </div>
-                                <div class="about-name">
-                                    <div class="quiz-name">Health Awareness Quiz</div>
-                                    <div class="quiz-category">marketing</div>
-                                </div>
-                                <div class="about-footer">
-                                    <div class="detail-btn">
-                                        <a href="" class="view-details">View Detail</a>
-                                        <a href="" class="expired-btn">EXPIRED</a>
-                                    </div>
-                                    <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-main nd-shadow">
-                            <div class="card-img">
-                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/61041ecc7c4bb_copy_of_idiom__1_.jpg?d=340x195') ?>"/>
-                            </div>
-                            <div class="card-details">
-                                <div class="about-first flex-container">
-                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> 6 Days Left</div>
-                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
-                                    <div class="pricing-money" style="flex-grow: 8"><img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹5,000 </div>
-                                </div>
-                                <div class="about-name">
-                                    <div class="quiz-name">Health Awareness Quiz</div>
-                                    <div class="quiz-category">marketing</div>
-                                </div>
-                                <div class="about-footer">
-                                    <div class="detail-btn">
-                                        <a href="" class="view-details">View Detail</a>
-                                        <a href="" class="expired-btn">EXPIRED</a>
                                     </div>
                                     <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
                                 </div>
@@ -418,6 +318,7 @@ h3.side-top-heading {
     overflow: hidden;
     margin-bottom:30px;
     position:relative;
+    min-height: 355px;
 }
 .paid-webinar {
     position: absolute;
@@ -494,15 +395,19 @@ h3.side-top-heading {
 }
 .expired-btn {
     padding: 0px 10px;
-    background-color: #fff;
+    background-color: #ff7803;
     position: absolute;
     top: 0;
     left: 0;
+    color: #fff;
     font-family: "Roboto";
     font-weight:500;
 }
 .views-count {
     color: #018e01;
+}
+.quiz-price{
+    color:#
 }
 /* card css ends here */
 ');
@@ -554,3 +459,89 @@ $this->registerJS($script);
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 ?>
+<script>
+    let baseUrl = 'https://ravinder.eygb.me';
+    let allquizzes = null;
+
+    async function getAllQuizzes() {
+        let response = await fetch(`${baseUrl}/api/v3/quiz/list`, {
+            method: 'POST',
+            body: '',
+        });
+        let res = await response.json();
+        if(res['response']['status'] == 200){
+            displayQuizzes(res['response']['data']);
+            allquizzes = res['response']['data'];
+        }
+    }
+    getAllQuizzes();
+
+    function filterQuiz() {
+        let filterBase = event.currentTarget.getAttribute('id');
+        let results = allquizzes
+        if(filterBase == 'live'){
+            results = allquizzes.filter(
+                quiz => quiz.is_expired != 'true'
+            )
+        }else if (filterBase == 'expired'){
+            results = allquizzes.filter(
+                quiz => quiz.is_expired == 'true'
+            )
+        }
+        displayQuizzes(results);
+    }
+    function filterPaid() {
+        let filterBase = event.currentTarget.getAttribute('id');
+        let results = allquizzes
+        if(filterBase == 'paid'){
+            results = allquizzes.filter(
+                quiz => quiz.is_paid == 1
+            )
+        }else if(filterBase == 'free'){
+            results = allquizzes.filter(
+                quiz => quiz.is_paid == 0
+            )
+        }
+        displayQuizzes(results);
+    }
+    function displayQuizzes(quizzes){
+        let quizCard = quizzes.map(quiz => {
+                return `<div class="col-md-6">
+                <a href="https://shshank.eygb.me/quizzes/${quiz.slug}" data-href="`+baseUrl+`/quizzes/${quiz.slug}" class="" id="${quiz.quiz_enc_id}">
+                        <div class="card-main nd-shadow">
+                            ${quiz.is_paid == 0 ? '' : `
+                                <div class="paid-webinar">Paid</div>
+                            `}
+                            ${quiz.is_expired == 'true' ? `
+                                <div class="expired-btn">EXPIRED</div>
+                            ` : ''}
+                            <div class="card-img">
+                                <img src="${quiz.sharing_image}"/>
+                            </div>
+                            <div class="card-details">
+                                <div class="about-first flex-container">
+                                    ${quiz.is_expired == 'true' || quiz.days_left == null ? '' : `
+                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> ${quiz.days_left ? quiz.days_left : ''} Days Left</div>
+                                    `}
+                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
+                                    <div class="pricing-money" style="flex-grow: 8"><img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹5,000 </div>
+                                </div>
+                                <div class="about-name">
+                                    <div class="quiz-name">${quiz.name}</div>
+                                    <div class="quiz-category">${quiz.category ? quiz.category : ''}</div>
+                                </div>
+                                <div class="about-footer">
+                                    <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
+                                    ${quiz.price ? `
+                                        <div class="register-date"><i class="fas fa-rupee-sign"></i>${Math.floor(quiz.price)}</div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        </a>
+                    </div>`}).join('');
+
+        document.querySelector('#quizDiv').innerHTML = quizCard;
+
+    }
+</script>

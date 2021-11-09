@@ -9,7 +9,7 @@ $link = Url::to('quizzes/' . $slug, true);
     <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/banner/6162e42ec9155__banners__1920_x_560_px_.png?d=1920x557') ?>"/>
 </section>
 
-<Section class="quiz-details">
+<section class="quiz-details">
     <div class="container">
         <div class="row">
             <div class="col-md-8">
@@ -76,7 +76,7 @@ $link = Url::to('quizzes/' . $slug, true);
             </div>
         </div>
     </div>
-</Section>
+</section>
 
 <section class="quiz-prizes">
     <div class="container">
@@ -319,4 +319,14 @@ JS;
 $this->registerJS($script);
 $this->registerJsFile('https://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
+<script>
+    async function getDetails(){
+        const slug = window.location.pathname;
+        console.log(slug);
+        let response = await fetch(`${baseUrl}/api/v3/quiz/detail`,{
+            method: 'POST',
+            body: ''
+        })
+    }
+</script>
 
