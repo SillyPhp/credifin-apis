@@ -205,7 +205,8 @@ class WebinarsController extends Controller
                 'userInterest' => $userInterest,
                 'dateEvents' => $dateEvents,
                 'nextEvent' => $nextEvent,
-                'webinar_link' => $user_link
+                'webinar_link' => $user_link,
+                'upcoming' =>  self::showWebinar($status = 'upcoming', $webinar_id = $webinar['webinar_enc_id'])
             ]);
         } else {
             return $this->redirect('/');
@@ -407,7 +408,7 @@ class WebinarsController extends Controller
                 'a.description',
                 'a.seats',
                 'a.webinar_conduct_on',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", a.image_location, "/", a.image) END image',
             ])
             ->joinWith(['webinarEvents a1' => function ($a1) use ($date_now, $recent, $status) {
                 $a1->select([
@@ -489,7 +490,7 @@ class WebinarsController extends Controller
                 'a.slug',
                 'a.title',
                 'a.availability',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", a.image_location, "/", a.image) END image',
                 'a.description',
                 'a.price',
             ])
@@ -559,7 +560,7 @@ class WebinarsController extends Controller
         ]);
     }
 
-    private function showWebinar($status, $userIdd = null, $sortAsc = true)
+    private function showWebinar($status, $userIdd = null, $sortAsc = true, $webinar_id = null)
     {
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
@@ -568,7 +569,7 @@ class WebinarsController extends Controller
         $webinars = Webinar::find()
             ->alias('a')
             ->select(['a.name', 'a.description', 'a.price', 'a.webinar_enc_id', 'a.gst', 'a.slug',
-                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banners->image, 'https') . '", a.image_location, "/", a.image) END image',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", a.image_location, "/", a.image) END image',
                 'GROUP_CONCAT(DISTINCT(CONCAT(f.first_name, " " ,f.last_name)) SEPARATOR ",") speakers'])
             ->joinWith(['webinarEvents b' => function ($b) use ($status, $currentTime) {
                 $b->distinct();
@@ -606,8 +607,11 @@ class WebinarsController extends Controller
             ->andWhere(['a.is_deleted' => 0])
             ->groupBy(['a.webinar_enc_id'])
             ->orderBy(['b.start_datetime' => $sortAsc ? SORT_ASC : SORT_DESC])
-            ->limit(6)
-            ->asArray()
+            ->limit(6);
+            if ($webinar_id != null) {
+                $webinars->andWhere(['not', ['a.webinar_enc_id' => $webinar_id]]);
+            }
+            $webinars = $webinars->asArray()
             ->all();
         return $webinars;
     }
