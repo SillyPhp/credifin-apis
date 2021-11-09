@@ -326,7 +326,8 @@ class MentorsController extends Controller
             'dateEvents' => $dateEvents,
             'upcomingEvent' => $upcomingEvent,
             'upcomingDateTime' => $upcomingDateTime,
-            'showChat'=>$showChat
+            'showChat'=>$showChat,
+            'sendUrls'=>false
         ]);
     }
 
@@ -348,7 +349,8 @@ class MentorsController extends Controller
                 'type' => $type,
                 'webinars' => $webinars,
                 'webinarDetail' => $webinarDetail,
-                'showChat'=>1
+                'showChat'=>1,
+                'sendUrls'=>true
             ]);
         } else {
             return $this->render('non-authorized');

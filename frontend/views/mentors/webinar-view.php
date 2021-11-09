@@ -444,7 +444,11 @@ div#counter {
     }
 }
 ');
+//$this->registerJs("
+//let sendLinks = ".(($sendUrls) ? true : 0).";
+//");
 $script = <<<JS
+
 const ps = new PerfectScrollbar('#scroll-chat');
 var db = firebase.database();
 db
@@ -473,6 +477,7 @@ db
             function errData(data) {
                 console.log('err');
             }
+            
             function showMessage(id,name,image,message,owner){
                 let chat = document.querySelector('.chat');
                 let chatBox = document.createElement('div');
@@ -482,6 +487,11 @@ db
                     chatBox.setAttribute('class', 'chat-box');
                 }
                 chatBox.setAttribute('id', id);
+//                if(sendLinks === 1){
+//                    if(isValidURL(message)){
+//                        message = '<a href="'+message+'" target="_blank" style="color:blue;">'+message+'</a>';
+//                    }
+//                }
                 chatBox.innerHTML = `<div class="user-icon">
                                     <img src="`+ image +`">
                                     </div>
@@ -641,6 +651,16 @@ if ($showChat == 1) {
             }
             var timeMain = currentDate.getHours() + ":" + getMins;
             var ref = db.ref(specialKey + '/conversations/' + webinarId + '/' + uniqueId())
+            let sendLinks = <?php echo (($sendUrls) ? true : 0)?>;
+            function isValidURL(string) {
+                var res = string.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+                return (res !== null)
+            }
+            if(sendLinks === 1){
+               if(isValidURL(message)){
+                   message = '<a href="'+message+'" target="_blank" style="color:blue;">'+message+'</a>';
+               }
+           }
             ref.set({
                 'name': userName,
                 'sender': userId,

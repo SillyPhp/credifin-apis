@@ -74,6 +74,19 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
     </script>
 <?php endif; ?>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
+<script type="text/javascript">
+    window.addeventasync = function(){
+        addeventatc.settings({
+            appleical  : {show:true, text:"Apple Calendar"},
+            google     : {show:true, text:"Google <em>(online)</em>"},
+            office365  : {show:true, text:"Office 365 <em>(online)</em>"},
+            outlook    : {show:true, text:"Outlook"},
+            outlookcom : {show:true, text:"Outlook.com <em>(online)</em>"},
+            yahoo      : {show:true, text:"Yahoo <em>(online)</em>"}
+        });
+    };
+</script>
 <section>
     <div class="full-width-light"
          style="">
@@ -259,6 +272,16 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
                                        value="not interested">Not Interested</a>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn">Attending</a>
+                                    <!-- Button code -->
+
+                                    <div title="Add to Calendar" class="addeventatc">
+                                        Add to Calendar
+                                        <span class="start"><?= date('m/d/Y h:i A', strtotime($nextEvent['start_datetime'])) ?></span>
+                                        <span class="end"><?= date('m/d/Y h:i A', strtotime($nextEvent['end_datetime'])) ?></span>
+                                        <span class="timezone">Asia/Kolkata</span>
+                                        <span class="title"><?= $webinar['title'] ?></span>
+                                        <span class="description"><?= $webinar['description'] ?></span>
+                                    </div>
                                 <?php } else if($registeration_status != 1 && !$is_expired) { ?>
                                     <button class="ra-btn interestBtn <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
                                             id="interested" data-key="<?= $webinar['webinar_enc_id'] ?>"
@@ -272,6 +295,15 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                             id="attending" data-key="<?= $webinar['webinar_enc_id'] ?>"
                                             value="3">Attending
                                     </button>
+                                    <!-- Button code -->
+                                    <div title="Add to Calendar" class="addeventatc">
+                                        Add to Calendar
+                                        <span class="start"><?= date('m/d/Y h:i A', strtotime($nextEvent['start_datetime'])) ?></span>
+                                        <span class="end"><?= date('m/d/Y h:i A', strtotime($nextEvent['end_datetime'])) ?></span>
+                                        <span class="timezone">Asia/Kolkata</span>
+                                        <span class="title"><?= $webinar['title'] ?></span>
+                                        <span class="description"><?= $webinar['description'] ?></span>
+                                    </div>
                                 <?php }
                                 ?>
                             </div>
@@ -689,6 +721,11 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.addeventatc{
+    max-height: 40px;
+    margin-top: 5px;
+    padding: 12px 12px 12px 43px;
+}
 .outflex {
     display: flex;
     align-items: center;

@@ -339,10 +339,11 @@ foreach ($fields as $f) {
                                 foreach ($locations as $key => $val) { ?>
                                     <li class="filter-application-by-location"
                                         data-loc="<?= $key ?>"><?= $val['name'] . '<span>' . $val['count'] . '</span>' ?></li>
-                                    <?php $k++;
-                                    if ($k > 2) {
+                                    <?php
+                                    if ($k >= 2) {
                                         break;
                                     }
+                                    $k++;
                                 } ?>
                             </ul>
                             <?php if (count($locations) > 3) { ?>
@@ -354,11 +355,13 @@ foreach ($fields as $f) {
                         <div class="hidden-locations">
                             <?php if ($application_name['applicationPlacementLocations']) { ?>
                                 <ul class="location-postss">
-                                    <?php foreach ($locations as $key => $val) {
-                                        if ($key > 2) { ?>
+                                    <?php $kk = 0;
+                                    foreach ($locations as $key => $val) {
+                                        if ($kk > 2) { ?>
                                             <li class="filter-application-by-location"
                                                 data-loc="<?= $key ?>"><?= $val['name'] . '<span>' . $val['count'] . '</span>' ?></li>
                                         <?php }
+                                        $kk++;
                                     } ?>
                                 </ul>
                             <?php } ?>
