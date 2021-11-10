@@ -1,29 +1,59 @@
 <?php
+
 use Yii\helpers\Url;
+
+$start_datetime = explode(' ', $webinar['start_datetime']);
+$date = date_create($start_datetime[0]);
+$time = date_create($start_datetime[1]);
+$startDate = date_format($date, 'd M Y');
+$startTime = date_format($time, 'h:i A');
+$endTime = date("h:i A", strtotime($startTime." + ".$webinar['duration']." minutes"));
+
+$speakers = explode(',', $webinar['speaker_name']);
+
 ?>
 
 <section class="webinar-banner">
-    <img src="https://user-images.githubusercontent.com/72601463/136373680-e55a74a7-30df-4519-97cc-d7d6fdfc4ebc.png" class="left-bottom">
-    <img src="https://user-images.githubusercontent.com/72601463/136373809-933b9591-4534-4dac-8f81-ac8aed97149e.png" class="right-top">
-    <span class="on-zoom">On Zoom</span>
-    <div class="row">
-        <div class="col-md-6">
-            <h6>
-                Webinar
-            </h6>
-            <div class="banner-text">
-                <h1>
-                    <?= $webinar['title'] ?>
-                </h1>
-                <p><img src="<?= $webinar['speaker_image'] ?>"> <span><?= $webinar['speaker_name'] ?></span></p>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="banner-btn">
-                <a href="<?= $webinar['unique_access_link'] ?>" class="join-link">Join</a>
-            </div>
-        </div>
+  <img src="https://user-images.githubusercontent.com/72601463/136373680-e55a74a7-30df-4519-97cc-d7d6fdfc4ebc.png" class="left-bottom">
+  <img src="https://user-images.githubusercontent.com/72601463/138056538-d1315d68-ce92-4d30-a68b-589838662d9d.png" class="right-top">
+    <?php
+        if($webinar['webinar_conduct_on'] == 1){
+    ?>
+        <span class="on-zoom">On Zoom</span>
+    <?php
+        }
+    ?>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="banner-img">
+        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/dashboard-webinar-img.png') ?>" alt="">
+      </div>
     </div>
+    <div class="col-md-8">
+      <div class="banner-right-side">
+        <h1>UPCOMING WEBINAR</h1>
+        <h6>
+          <?= $startDate ?> | <?= $startTime ?> - <?= $endTime ?>
+        </h6>
+        <div class="banner-text">
+          <h1>
+            <?= $webinar['title'] ?>
+          </h1>
+            <?php
+                foreach($speakers as $speaker){
+                    ?>
+                    <p><span><?= $speaker ?></span></p>
+                    <?php
+                }
+            ?>
+
+        </div>
+        <div class="banner-btn">
+          <a href="<?= '/webinar/'.$webinar['slug'] ?>" class="join-link">View Detail</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <?php
@@ -55,6 +85,11 @@ $this->registerCSS('
     font-size: 18px;
     margin: 0;
 }
+.banner-right-side > h1 {
+  font-size: 28px;
+  font-weight: 700;
+  opacity: 0.3;
+}
 .banner-text h1{
   font-size: 30px;
   font-weight: 700;
@@ -72,12 +107,15 @@ $this->registerCSS('
 .banner-text p{
   margin-top: 10px !important;
   }
-.banner-text p span{
-  color: #FFE477;
-  font-family: roboto;
-  font-weight: 700;
-  font-size: 18px;
-//  vertical-align: bottom;
+  .banner-text p span {
+    color: #FFE477;
+    font-family: roboto;
+    font-weight: 500;
+    font-size: 16px;
+    border-radius: 17px;
+    background: rgba(53, 130, 216, 0.5);
+    padding: 2px 14px;
+    margin-right: 10px;
 }
 .join-link{
   background: #fff;
@@ -88,8 +126,8 @@ $this->registerCSS('
   display: inline-block;
   font-weight: 700;
 }
-.banner-btn{
-  text-align: right;
+.banner-btn {
+  margin-top: 25px;
 }
 .webinar-banner .left-bottom, .webinar-banner .right-top{
   position: absolute;
@@ -109,6 +147,14 @@ $this->registerCSS('
   bottom: 10px;
   color: #FFE477;
   font-weight: 700;
+}
+.banner-img img {
+  width: 100%;
+}
+.banner-img {
+  width: 190px;
+  display: block;
+  margin: auto;
 }
 @media only screen and (max-width: 576px){
   .webinar-banner .row{

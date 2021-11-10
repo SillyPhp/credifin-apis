@@ -3,8 +3,12 @@
 namespace common\components\email_service;
 
 use common\models\ApplicationUnclaimOptions;
+use common\models\EmailLogs;
+use common\models\RandomColors;
 use common\models\EmployerApplications;
 use common\models\InterviewProcessFields;
+use common\models\Usernames;
+use common\models\UserTypes;
 use common\models\Utilities;
 use common\models\Organizations;
 use common\models\UnclaimedOrganizations;
@@ -12,6 +16,8 @@ use common\models\Users;
 use common\models\AppliedEmailLogs;
 use common\models\Webinar;
 use common\models\WebinarRegistrations;
+use frontend\models\referral\EducationLoan;
+use frontend\models\referral\Referral;
 use yii\helpers\Url;
 use yii\base\Component;
 use yii\base\InvalidParamException;
@@ -179,7 +185,9 @@ class NotificationEmails extends Component
     public function webinarRegistrationEmail($params){
         $data = Webinar::find()
             ->alias('a')
-            ->select(['a.webinar_enc_id','slug','a.title','other_platforms','GROUP_CONCAT(DISTINCT CONCAT(e.first_name," ",e.last_name)) speakers','GROUP_CONCAT(DISTINCT DATE_FORMAT(b.start_datetime, "%d-%M-%y")) date','GROUP_CONCAT(DISTINCT DATE_FORMAT(b.start_datetime, "%H:%i %p")) time'])
+            ->select(['a.webinar_enc_id',
+                'CASE WHEN a.email_sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", a.email_sharing_image_location, "/", a.email_sharing_image) END image',
+                'slug','a.title','other_platforms','GROUP_CONCAT(DISTINCT CONCAT(e.first_name," ",e.last_name)) speakers','GROUP_CONCAT(DISTINCT DATE_FORMAT(b.start_datetime, "%d-%M-%y")) date','GROUP_CONCAT(DISTINCT DATE_FORMAT(b.start_datetime, "%H:%i %p")) time'])
             ->joinWith(['webinarEvents b'=>function($b){
                 $b->joinWith(['webinarSpeakers c'=>function($b){
                     $b->joinWith(['speakerEnc d'=>function($b){
@@ -188,11 +196,13 @@ class NotificationEmails extends Component
                 }]);
             }],false)
             ->where(['a.webinar_enc_id'=>$params['webinar_id']])
-            ->asArray()->one();
+            ->asArray()
+            ->one();
         $params['title'] = $data['title'];
         $params['speakers'] = $data['speakers'];
         $params['date'] = $data['date'];
         $params['time'] = $data['time'];
+        $params['image'] = $data['image'];
         if ($params['is_my_campus']){
             $params['from'] = 'no-reply@myecampus.in';
             $params['site_name'] = 'My E-Campus';
@@ -305,6 +315,136 @@ class NotificationEmails extends Component
                 $get->unique_access_link = $join_url;
                 $get->save();
             }
+        }
+    }
+
+    public function accessRegisterForLoansEmails($params){
+
+
+    }
+
+    private function generate_username($string_name=null, $rand_no = 200){
+        $username_parts = array_filter(explode(" ", strtolower($string_name))); //explode and lowercase name
+        $username_parts = array_slice($username_parts, 0, 2); //return only first two arry part
+
+        $part1 = (!empty($username_parts[0]))?substr($username_parts[0], 0,8):""; //cut first name to 8 letters
+        $part2 = (!empty($username_parts[1]))?substr($username_parts[1], 0,5):""; //cut second name to 5 letters
+        $part3 = ($rand_no)?rand(0, $rand_no):"";
+
+        $username = $part1. str_shuffle($part2). $part3; //str_shuffle to randomly shuffle all characters
+        return $username;
+    }
+
+    public function createuserSignUp($params){
+        $flag = false;
+        $user_type = UserTypes::findOne([
+            'user_type' => 'Individual',
+        ]);
+
+        if (!$user_type) {
+            return false;
+        }
+
+        $username = $this->generate_username($params['name']);
+        $password = $params['phone'];
+        $arr = explode(' ',$params['name']);
+        $first_name = $arr[0];
+        $last_name = $arr[1].' '.(($arr[2])?$arr[2]:'');
+        if (empty($last_name)):
+            $last_name = null;
+            endif;
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $usernamesModel = new Usernames();
+            $usernamesModel->username = strtolower($username);
+            $usernamesModel->assigned_to = 1;
+            if (!$usernamesModel->validate() || !$usernamesModel->save()) {
+                $flag = false;
+                $transaction->rollBack();
+                return false;
+            } else {
+                $flag = true;
+            }
+
+            if ($flag) {
+                $utilitiesModel = new Utilities();
+                $usersModel = new Users();
+                $usersModel->username = strtolower($username);
+                $usersModel->first_name = ucfirst(strtolower($first_name));
+                $usersModel->last_name = ucfirst(strtolower($last_name));
+                $usersModel->email = strtolower($params['email']);
+                $usersModel->phone = $params['phone'];
+                $usersModel->initials_color = RandomColors::one();
+                $utilitiesModel->variables['password'] = $password;
+                $usersModel->password = $utilitiesModel->encrypt_pass();
+                $usersModel->user_type_enc_id = $user_type->user_type_enc_id;
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $usersModel->user_enc_id = Yii::$app->security->generateRandomString(15);
+                $usersModel->auth_key = Yii::$app->security->generateRandomString();
+                $usersModel->status = 'Active';
+                if (!$usersModel->validate() || !$usersModel->save()) {
+                    $flag = false;
+                    $transaction->rollBack();
+                    return false;
+                    //throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($usersModel->errors, 0, false)));
+                }
+            }
+
+            if ($flag) {
+                $referralModel = new \common\models\crud\Referral();
+                $referralModel->user_enc_id = $referralModel->created_by = $usersModel->user_enc_id;
+
+                if (!$referralModel->create()) {
+                    $flag = false;
+                    $transaction->rollBack();
+                    return false;
+                    //throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($referralModel->errors, 0, false)));
+                } else {
+                    $flag = true;
+                }
+            }
+
+            if ($flag) {
+                $params['username'] = $username;
+                $params['password'] = $password;
+                Yii::$app->mailer->htmlLayout = 'layouts/email';
+                $mail = Yii::$app->mailer->compose(
+                    ['html' => 'default-user-password'],['data'=>$params]
+                )
+                    ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+                    ->setTo([$params['email'] => $params['name']])
+                    ->setSubject('Your Empower Youth\'s Default Username Password Is Here');
+                if($mail->send()){
+                    $mail_logs = new EmailLogs();
+                    $mail_logs->email_log_enc_id = Yii::$app->security->generateRandomString(15);
+                    $mail_logs->email_type = 5;
+                    $mail_logs->user_enc_id = $usersModel->user_enc_id;
+                    $mail_logs->receiver_name = $usersModel->first_name ." " . $usersModel->last_name;
+                    $mail_logs->receiver_email = $usersModel->email;
+                    $mail_logs->receiver_phone = $usersModel->phone;
+                    $mail_logs->subject = "Your Empower Youth's Default Username Password Is Here";
+                    $mail_logs->template = 'dafault-user-password';
+                    $mail_logs->is_sent = 1;
+                    $mail_logs->save();
+                }
+                Referral::widget(['user_id' => $usersModel->user_enc_id]);
+                $transaction->commit();
+                return [
+                    'status'=>true,
+                    'id'=>$usersModel->user_enc_id,
+                ];
+            } else {
+                $transaction->rollBack();
+                return [
+                    'status'=>false,
+                ];
+            }
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            return [
+                'status'=>false,
+                'message'=>$e,
+            ];
         }
     }
 }

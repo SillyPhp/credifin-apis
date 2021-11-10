@@ -38,10 +38,22 @@ $time = date('Y/m/d H:i:s', strtotime($upcomingDateTime));
                 </div>
             </div>
             <div class="msg-input">
+                <?php
+                if($showChat == 1){
+                ?>
                 <form class="form-flex">
                     <textarea class="send-msg" placeholder="Message"></textarea>
                     <button type="button" class="sendMessage"><i class="fas fa-comment"></i></button>
                 </form>
+                <?php }
+                else {
+                    ?>
+                    <form class="form-flex">
+                        <textarea placeholder="Chat has been disabled by admin" style="width:100%;" disabled></textarea>
+                    </form>
+                <?php
+                }
+                ?>
             </div>
         </div>
     </div>
@@ -114,6 +126,9 @@ $time = date('Y/m/d H:i:s', strtotime($upcomingDateTime));
         </div>
     </div>
 </section>
+<div class="chat-box-toggler">
+    <i class="far fa-comments"></i>
+</div>
 <section class="similar-webinars">
     <div class="container">
         <?php
@@ -146,6 +161,9 @@ $time = date('Y/m/d H:i:s', strtotime($upcomingDateTime));
 </script>
 <?php
 $this->registerCss('
+.chat-box-toggler{
+    display: none;
+}
 .reload-strip{
     width: 100%;
     display: flex;
@@ -369,9 +387,50 @@ div#counter {
     text-transform: capitalize;
 }
 @media screen and (max-width: 550px){
+    .chat-box-toggler{
+        display: block;
+        position: fixed;
+        bottom: 15px;
+        right: 20px;
+        font-size: 35px;
+        background-color: #00a0e3;
+        color: #fff;
+        border-radius: 50%;
+        width: 70px;
+        height: 70px;
+        text-align: center;
+        line-height: 68px;
+        z-index:9;
+        box-shadow: 0px 1px 15px 2px #ababab;
+        cursor: pointer;
+    }
     .slide-section{
-        width: 100vw;  
-        height: 100vh;      
+        display: none;
+        width: 90vw;
+        height: 70vh;
+        position: fixed;
+        left: 5vw;
+        bottom: 13vh;
+        z-index: 99;
+        border-radius: 20px;
+        overflow: visible;
+        box-shadow: 0px 1px 17px 2px #ababab;
+    }
+    
+    .msg-input {
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        overflow: hidden;
+    }
+    .slide-section:before {
+        content: "";
+        right: 14px;
+        bottom: -16px;
+        z-index: 999;
+        position: absolute;
+        border-left: 15px solid transparent;
+        border-top: 20px solid #fff;
+        border-right: 15px solid transparent;
     }
     .video-section{
         width: 100vw;
@@ -385,7 +444,11 @@ div#counter {
     }
 }
 ');
+//$this->registerJs("
+//let sendLinks = ".(($sendUrls) ? true : 0).";
+//");
 $script = <<<JS
+
 const ps = new PerfectScrollbar('#scroll-chat');
 var db = firebase.database();
 db
@@ -414,6 +477,7 @@ db
             function errData(data) {
                 console.log('err');
             }
+            
             function showMessage(id,name,image,message,owner){
                 let chat = document.querySelector('.chat');
                 let chatBox = document.createElement('div');
@@ -423,6 +487,11 @@ db
                     chatBox.setAttribute('class', 'chat-box');
                 }
                 chatBox.setAttribute('id', id);
+//                if(sendLinks === 1){
+//                    if(isValidURL(message)){
+//                        message = '<a href="'+message+'" target="_blank" style="color:blue;">'+message+'</a>';
+//                    }
+//                }
                 chatBox.innerHTML = `<div class="user-icon">
                                     <img src="`+ image +`">
                                     </div>
@@ -460,6 +529,9 @@ function countdown(e){
 if("$upcomingDateTime" != ""){
     countdown('$time');
 }
+$(document).on('click','.chat-box-toggler',function(){
+   $('.slide-section').slideToggle(1000);  
+});
 JS;
 $this->registerJS($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
@@ -554,7 +626,10 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             document.getElementById('viewers').innerText = result2.length + tempData;
         });
     });
+<?php
 
+if ($showChat == 1) {
+?>
     document.querySelector('.sendMessage').addEventListener('click', sendMessage);
     let messageText = document.querySelector('.send-msg')
     messageText.addEventListener('keyup', function (event) {
@@ -576,6 +651,16 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             }
             var timeMain = currentDate.getHours() + ":" + getMins;
             var ref = db.ref(specialKey + '/conversations/' + webinarId + '/' + uniqueId())
+            let sendLinks = <?php echo (($sendUrls) ? true : 0)?>;
+            function isValidURL(string) {
+                var res = string.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+                return (res !== null)
+            }
+            if(sendLinks === 1){
+               if(isValidURL(message)){
+                   message = '<a href="'+message+'" target="_blank" style="color:blue;">'+message+'</a>';
+               }
+           }
             ref.set({
                 'name': userName,
                 'sender': userId,
@@ -601,7 +686,9 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             document.getElementById('scroll-chat').scrollTop = myElement;
         }
     }
-
+<?php
+}
+?>
     function uniqueId() {
         var result = '';
         var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

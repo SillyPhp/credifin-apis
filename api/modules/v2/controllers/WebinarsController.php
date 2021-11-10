@@ -127,7 +127,7 @@ class WebinarsController extends ApiBaseController
                     $registered_count = WebinarRegistrations::find()
                         ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $w['webinar_enc_id']])
                         ->count();
-                    $webinar[$i]['count'] = $registered_count;
+                    $webinar[$i]['count'] = ($w['slug'] == 'new-age-investment-strategies-10407') ? ($registered_count * 2) : $registered_count;
                     $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
                     $webinar[$i]['is_registered'] = $user_registered;
                     $webinar[$i]['webinarRegistrations'] = $webinar_model->registeredUsers($w['webinar_enc_id']);
@@ -269,7 +269,7 @@ class WebinarsController extends ApiBaseController
 
             $webinar = WebinarEvents::find()
                 ->alias('a')
-                ->select(['a.event_enc_id', 'a.webinar_enc_id', 'a.start_datetime', 'a.title', 'a.description'])
+                ->select(['a.event_enc_id', 'a.webinar_enc_id', 'a.start_datetime', 'a.title', 'a.description', 'a.show_chat'])
                 ->joinWith(['webinarSpeakers b' => function ($b) {
                     $b->select(['b.webinar_event_enc_id',
                         'b.speaker_enc_id',
@@ -391,7 +391,7 @@ class WebinarsController extends ApiBaseController
                 ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $webinar['webinar_enc_id']])
                 ->count();
             $webinar['webinarRegistrations'] = $webinar_model->registeredUsers($webinar['webinar_enc_id']);
-            $webinar['registered_count'] = $registered_count;
+            $webinar['registered_count'] = ($webinar['slug'] == 'new-age-investment-strategies-10407') ? ($registered_count * 2) : $registered_count;
 
             $webinar['is_registered'] = $user_registered;
 
@@ -615,7 +615,7 @@ class WebinarsController extends ApiBaseController
                 $registered_count = WebinarRegistrations::find()
                     ->where(['is_deleted' => 0, 'status' => 1, 'webinar_enc_id' => $w['webinar_enc_id']])
                     ->count();
-                $webinar[$i]['count'] = $registered_count;
+                $webinar[$i]['count'] = ($w['slug'] == 'new-age-investment-strategies-10407') ? ($registered_count * 2) : $registered_count;
                 $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
                 $webinar[$i]['is_registered'] = $user_registered;
                 $webinar[$i]['webinarRegistrations'] = $webinar_model->registeredUsers($w['webinar_enc_id']);
@@ -651,7 +651,7 @@ class WebinarsController extends ApiBaseController
             foreach ($params['speakers'] as $s) {
                 $speaker_request = new WebinarRequestSpeakers();
                 $speaker_request->request_speaker_enc_id = Yii::$app->security->generateRandomString();
-                $speaker_request->speakerEnc = $s;
+                $speaker_request->speaker_enc_id = $s['speaker_enc_id'];
                 $speaker_request->webinar_request_enc_id = $webinar_request->request_enc_id;
                 $speaker_request->created_by = $user->user_enc_id;
                 $speaker_request->created_on = date('Y-m-d H:i:s');
@@ -683,9 +683,14 @@ class WebinarsController extends ApiBaseController
 
             $students = WebinarRegistrations::find()
                 ->alias('a')
-                ->select(['a.register_enc_id', 'a.created_by', 'a.status', 'CONCAT(b.first_name, " ", b.last_name) full_name'])
+                ->select(['a.register_enc_id', 'a.created_by', 'a.status', 'CONCAT(b.first_name, " ", b.last_name) full_name', 'b1.semester', 'b3.course_name',
+                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
                 ->joinWith(['createdBy b' => function ($b) {
-                    $b->innerJoinWith(['userOtherInfo b1']);
+                    $b->innerJoinWith(['userOtherInfo b1' => function ($b1) {
+                        $b1->joinWith(['assignedCollegeEnc b2' => function ($b2) {
+                            $b2->joinWith(['courseEnc b3']);
+                        }]);
+                    }]);
                 }], false)
                 ->joinWith(['webinarEnc c' => function ($c) {
                     $c->joinWith(['assignedWebinarTos c1'], false);
