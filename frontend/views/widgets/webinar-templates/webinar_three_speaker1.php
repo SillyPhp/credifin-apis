@@ -1,4 +1,4 @@
-<section class="webinar-three-speaker">
+<section class="webinar-three-speaker1">
     <div class="container">
         <div class="row">
             <div class="col-sm-6">

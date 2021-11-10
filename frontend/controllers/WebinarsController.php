@@ -14,6 +14,7 @@ use common\models\WebinarRegistrations;
 use common\models\Webinars;
 use common\models\WebinarSessions;
 use common\models\WebinarSpeakers;
+use common\models\WebinarWidgetTemplates;
 use frontend\models\webinars\webinarFunctions;
 use frontend\models\webinars\WebinarRequestForm;
 use yii\db\Expression;
@@ -642,6 +643,14 @@ class WebinarsController extends Controller
         return $this->render('webinar-expired', [
             'webinars' => $webinars,
         ]);
+    }
+    public function actionWebinarWidgetTemplate($id){
+        $template_name = $id;
+        $this->layout = 'widget-layout';
+        return $this->render('template-preview',[
+            'template_name' => $template_name
+        ]);
+
     }
 
 }

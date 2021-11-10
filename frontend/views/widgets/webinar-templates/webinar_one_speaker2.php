@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 ?>
 
-<section class="webinar-one-speaker1">
+<section class="webinar-one-speaker2">
     <div class="green-strip"></div>
     <div class="green-strip"></div>
     <div class="date-time">
@@ -55,8 +55,8 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-
-<?php $this->registerCss('
+<?php
+$this->registerCss('
 .webinar-one-speaker1 {
     background: radial-gradient(77.06% 77.06% at 50% 50%, #999999 0%, #000000 100%);
     min-height: 550px;
@@ -104,7 +104,7 @@ a.register-btn i{
     transition: all linear .3s;
 }
 a.register-btn:hover{
-    color: #fff
+    color: #fff;
     transition: all linear .3s;
 }
 a.register-btn:hover i{
@@ -258,7 +258,7 @@ a.register-btn:hover i{
 }
 .webinar-one-speaker1 .webinar-text .speaker-name h3 {
     font-size: 17px;
-}   
+}
 .webinar-one-speaker1 .webinar-text .speaker-name h4 {
     font-size: 14px;
 }
@@ -295,7 +295,7 @@ a.register-btn:hover i{
     .webinar-text{
         max-width: 100%;
     }
-    
+
     .webinar-one-speaker1 .webinar-text .date-time img{
         width: 24px;
         height: 24px;
@@ -306,7 +306,7 @@ a.register-btn:hover i{
 @media only screen and (max-width: 576px){
     .webinar-one-speaker1{
         min-height: 650px;
-    } 
+    }
     .green-strip{
         display: none;
     }
@@ -363,4 +363,4 @@ a.register-btn:hover i{
         font-size: 16px;
     }
 }
-') ?>
+');

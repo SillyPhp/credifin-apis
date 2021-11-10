@@ -2,7 +2,7 @@
 use yii\helpers\url;
 ?>
 
-<section class="webinar-one-speaker2">
+<section class="webinar-one-speaker3">
     <div class="container">
         <div class="row">
             <div class="col-sm-6">

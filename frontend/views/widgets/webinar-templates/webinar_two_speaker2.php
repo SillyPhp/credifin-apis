@@ -4,7 +4,7 @@ use yii\helpers\Url;
 
 ?>
 
-<section class="webinar-speaker1">
+<section class="webinar-two-speaker2">
     <div class="container">
         <div class="row">
             <div class="col-md-6 col-sm-6 web-txt">
@@ -49,7 +49,6 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-
 <?php
 $this->registerCss('
 .webinar-speaker1{
@@ -71,7 +70,7 @@ $this->registerCss('
 .date-time img {
     margin-right: 10px;
 }
- .date-time span {
+.date-time span {
     display: block;
     line-height: 23px;
     font-family: farro;
@@ -87,21 +86,21 @@ $this->registerCss('
     font-family: roboto;
     margin: 22px 0 0 0;
 }
- a.register-btn {
-        background: linear-gradient(91.16deg, #FFBB54 -43.72%, #CB650C 125.14%, #DB7E2E 125.14%);
-        border-radius: 27px;
-        font-size: 16px;
-        padding: 15px 30px;
-        display: inline-block;
-        margin-top: 20px;
-        color: #fff;
-        transition: all linear .3s;
+a.register-btn {
+    background: linear-gradient(91.16deg, #FFBB54 -43.72%, #CB650C 125.14%, #DB7E2E 125.14%);
+    border-radius: 27px;
+    font-size: 16px;
+    padding: 15px 30px;
+    display: inline-block;
+    margin-top: 20px;
+    color: #fff;
+    transition: all linear .3s;
 }
 a.register-btn i{
     transition: all linear .3s;
 }
 a.register-btn:hover{
-    color: #fff
+    color: #fff;
     transition: all linear .3s;
 }
 a.register-btn:hover i{
@@ -227,7 +226,7 @@ a.register-btn:hover i{
 }
 @media screen and (max-width: 992px) and (min-width: 768px) {
     .two-speakers-text {
-    `   padding: 10px 45px;
+        padding: 10px 45px;
     }
     .two-speakers-img {
         width: 170px;
