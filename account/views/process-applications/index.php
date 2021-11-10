@@ -474,8 +474,7 @@ foreach ($fields as $f) {
                                 <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                 <!--                                            <a href="#">Request to Complete Profile</a>-->
                             </div>
-                            <a class="pr-user-n url-forward" href="#" <a class="pr-user-n url-forward" href="#"
-                                                                         data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
+                            <a class="pr-user-n url-forward" href="javascript:void(0)" data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
 
                             <div class="rejectReason rejectRea"
                                  id="rejectReason" <?= $rejectionType ? 'style="display: none"' : '' ?>>
@@ -590,14 +589,11 @@ foreach ($fields as $f) {
                                                     break;
                                                 }
                                                 ?>
-                                                <a href="/<?= $app_type . "/" . $crj['applicationEnc']['slug'] ?>"
-                                                   target="_blank">
-                                                    <div class="customJobBox">
-                                                        <div class="jc-icon">
-                                                            <img src="<?= Url::to('@commonAssets/categories/' . $crj['applicationEnc']['icon']); ?>">
-                                                        </div>
-                                                        <p><?= $crj['applicationEnc']['job_title'] ?></p>
+                                                <a href="javascript:void(0)" data-href="/<?= $app_type . "/" . $crj['applicationEnc']['slug'] ?>" class="customJobBox">
+                                                    <div class="jc-icon">
+                                                        <img src="<?= Url::to('@commonAssets/categories/' . $crj['applicationEnc']['icon']); ?>">
                                                     </div>
+                                                    <p><?= $crj['applicationEnc']['job_title'] ?></p>
                                                 </a>
                                                 <?php
                                                 $i++;
