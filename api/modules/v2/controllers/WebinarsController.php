@@ -683,9 +683,14 @@ class WebinarsController extends ApiBaseController
 
             $students = WebinarRegistrations::find()
                 ->alias('a')
-                ->select(['a.register_enc_id', 'a.created_by', 'a.status', 'CONCAT(b.first_name, " ", b.last_name) full_name'])
+                ->select(['a.register_enc_id', 'a.created_by', 'a.status', 'CONCAT(b.first_name, " ", b.last_name) full_name', 'b1.semester', 'b3.course_name',
+                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
                 ->joinWith(['createdBy b' => function ($b) {
-                    $b->innerJoinWith(['userOtherInfo b1']);
+                    $b->innerJoinWith(['userOtherInfo b1' => function ($b1) {
+                        $b1->joinWith(['assignedCollegeEnc b2' => function ($b2) {
+                            $b2->joinWith(['courseEnc b3']);
+                        }]);
+                    }]);
                 }], false)
                 ->joinWith(['webinarEnc c' => function ($c) {
                     $c->joinWith(['assignedWebinarTos c1'], false);
