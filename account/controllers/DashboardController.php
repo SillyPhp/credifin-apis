@@ -9,6 +9,7 @@ use common\models\ApplicationReminder;
 use common\models\CandidateRejection;
 use common\models\CandidateRejectionReasons;
 use common\models\DropResumeApplications;
+use common\models\EducationLoanPayments;
 use common\models\Interviewers;
 use common\models\LoanApplications;
 use common\models\OrganizationAssignedCategories;
@@ -385,7 +386,22 @@ class DashboardController extends Controller
                 ->asArray()
                 ->one();
         }
+        $loanLoginFee = LoanApplications::find()
+            ->alias('a')
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+            ->select(['a.loan_app_enc_id','applicant_name','amount',
+                '(count(CASE WHEN b.payment_status IN ("captured","created","withdrawn","refund initiated") THEN "1" ELSE NULL END)) as total_payment',
+            ])
+            ->joinWith(['educationLoanPayments b'],false,'LEFT JOIN')
+            ->andWhere(['a.is_deleted'=>0])
+            ->having(['total_payment' => 0])
+            ->groupBy(['a.loan_app_enc_id'])
+            ->asArray()
+            ->all();
+
+
         return $this->render('index', [
+            'loanLoginFee' => $loanLoginFee,
             'loanApplication' => $loanApplication,
             'applied' => $applied_app,
             'services' => $services,

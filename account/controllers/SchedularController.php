@@ -256,6 +256,9 @@ class SchedularController extends Controller
                 $res['mode'] = $req['mode'];
                 $res['selected_round'] = $req['selected_round'];
                 $res['selected_candidate'] = $req['selected_candidate'];
+                if ($req['interviewer_options']) {
+                    $res['interviewer_options'] = $req['interviewer_options'];
+                }
                 if (empty($res)) {
                     return [
                         'status' => 201,
