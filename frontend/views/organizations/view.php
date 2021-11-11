@@ -362,8 +362,7 @@ $round_avg = round($overall_avg);
                         <?php if ($jobs_count > 0) {
                             ?>
                             <div id="jobs-cards-main" class="row">
-                                <div class="heading-style">
-                                    Available Jobs
+                                <div class="heading-style">Jobs
                                     <div class="pull-right">
                                         <a href="/jobs/list?slug=<?= $organization['slug'] ?>"
                                            class="write-review">View
@@ -384,7 +383,7 @@ $round_avg = round($overall_avg);
                             <div id="internships-cards-main" class="row">
                                 <div class="internships-block">
                                     <div class="heading-style">
-                                        Available Internships
+                                        Internships
                                         <div class="pull-right">
                                             <a href="/internships/list?slug=<?= $organization['slug'] ?>"
                                                class="write-review">View All</a>
@@ -596,7 +595,7 @@ $round_avg = round($overall_avg);
                                 <div class="head-office">
 
                                 </div>
-                                <div class="view-btn">
+                                <div class="view-btn-location">
                                     <a href="javascript:;">View All <i class="fas fa-angle-down"></i></a>
                                 </div>
                             </div>
