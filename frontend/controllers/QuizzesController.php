@@ -336,4 +336,14 @@ class QuizzesController extends Controller
     {
         return $this->render('topics');
     }
+
+    public function actionQuizFilters()
+    {
+        return $this->render('quiz-filters');
+    }
+
+    public function actionQuizDetail()
+    {
+        return $this->render('quiz-detail');
+    }
 }

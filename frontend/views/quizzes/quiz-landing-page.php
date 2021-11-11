@@ -116,202 +116,91 @@ $this->params['header_dark'] = false;
                         </div>
                     </div>
                 </div>
+                <div class="col-md-12">
+                    <div class="view-all-btn"> View All Catagories</div>
+                </div>
             </div>
         </div>
     </section>
 
-    <section>
+    <section class="quiz-benefits">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Choose Your Class</div>
+                    <h1>Quiz Benifits</h1>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-2 col-sm-3">
-                    <a href="/quizzes/subject-page">
-                        <div class="class-box">
-                            <div class="class-name">1st</div>
-                        </div>
-                    </a>
+                <div class="col-md-6">
+                    <div class="quiz-benefit-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-benefit-img.png')?>">    
+                    </div>
                 </div>
-                <div class="col-md-2 col-sm-3">
-                    <a href="/quizzes/subject-page">
-                        <div class="class-box">
-                            <div class="class-name">2nd</div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <a href="/quizzes/subject-page">
-                        <div class="class-box">
-                            <div class="class-name">3rd</div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <a href="/quizzes/subject-page">
-                        <div class="class-box">
-                            <div class="class-name">4th</div>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-2 col-sm-3">
-                    <a href="/quizzes/subject-page">
-                        <div class="class-box">
-                            <div class="class-name">5th</div>
-                        </div>
-                    </a>
+                <div class="col-md-6">
+                    <div class="quiz-benefits-text">
+                        <ul class="quiz-points">
+                            <li>
+                               <span>1<img src="<?= Url::to('@eyAssets/images/pages/quiz/point-num-icon.png')?>"></span>
+                               <div class="point">
+                                   <h4>Develop An Ability To Learn</h4>
+                                   <p>lorem ipsum dolor sit amet consectetuer adipiscing elit sed do eiusmod tempor incididunt ut labore</p>
+                               </div>
+                            </li>
+                            <li>
+                               <span>1<img src="<?= Url::to('@eyAssets/images/pages/quiz/point-num-icon.png')?>"></span>
+                               <div class="point">
+                                   <h4>Develop An Ability To Learn</h4>
+                                   <p>lorem ipsum dolor sit amet consectetuer adipiscing elit sed do eiusmod tempor incididunt ut labore</p>
+                               </div>
+                            </li> 
+                            <li>
+                               <span>1<img src="<?= Url::to('@eyAssets/images/pages/quiz/point-num-icon.png')?>"></span>
+                               <div class="point">
+                                   <h4>Develop An Ability To Learn</h4>
+                                   <p>lorem ipsum dolor sit amet consectetuer adipiscing elit sed do eiusmod tempor incididunt ut labore</p>
+                               </div>
+                            </li> 
+                            <li>
+                               <span>1<img src="<?= Url::to('@eyAssets/images/pages/quiz/point-num-icon.png')?>"></span>
+                               <div class="point">
+                                   <h4>Develop An Ability To Learn</h4>
+                                   <p>lorem ipsum dolor sit amet consectetuer adipiscing elit sed do eiusmod tempor incididunt ut labore</p>
+                               </div>
+                            </li> 
+                            <li>
+                               <span>1<img src="<?= Url::to('@eyAssets/images/pages/quiz/point-num-icon.png')?>"></span>
+                               <div class="point">
+                                   <h4>Develop An Ability To Learn</h4>
+                                   <p>lorem ipsum dolor sit amet consectetuer adipiscing elit sed do eiusmod tempor incididunt ut labore</p>
+                               </div>
+                            </li>  
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!--    <section>-->
-    <!--        <div class="container">-->
-    <!--            <div class="row">-->
-    <!--                <div class="col-md-12">-->
-    <!--                    <div class="heading-style">Popular Categories</div>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </section>-->
-    <!---->
-    <!--    <section>-->
-    <!--        <div class="container">-->
-    <!--            <div class="row">-->
-    <!--                <div class="col-md-12">-->
-    <!--                    <div class="popular-cate">-->
-    <!--                        --><?php
-//                        foreach ($data as $d) {
-//                            ?>
-    <!--                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
-    <!--                                <a href="--><?//= Url::to('/quizzes?type=' . $d['slug']); ?><!--">-->
-    <!--                                    <div class="newset">-->
-    <!--                                        <div class="imag">-->
-    <!--                                            <img src="--><?//= $d['icon']; ?><!--"/>-->
-    <!--                                        </div>-->
-    <!--                                        <div class="txt-name">--><?//= $d['name']; ?><!--</div>-->
-    <!--                                    </div>-->
-    <!--                                </a>-->
-    <!--                            </div>-->
-    <!--                            --><?php
-//                        }
-//                        ?>
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </section>-->
-
-    <!--    <section>-->
-    <!--        <div class="container">-->
-    <!--            <div class="row">-->
-    <!--                <div class="col-md-6 col-sm-6">-->
-    <!--                    <div class="heading-style">Popular quiz</div>-->
-    <!--                </div>-->
-    <!--                <div class="col-md-6 col-sm-6 col-xs-12">-->
-    <!--                    <div class="type-1">-->
-    <!--                        <div>-->
-    <!--                            <a href="--><?//= Url::to('/quizzes/all'); ?><!--" class="btn btn-3">-->
-    <!--                                <span class="txt">--><?//= Yii::t('frontend', 'View all'); ?><!--</span>-->
-    <!--                                <span class="round"><i class="fas fa-chevron-right"></i></span>-->
-    <!--                            </a>-->
-    <!--                        </div>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--            <div class="row">-->
-    <!--                --><?php
-//                foreach ($quiz as $q) {
-//                    ?>
-    <!--                    <div class="col-md-3 col-sm-6">-->
-    <!--                        <a href="--><?//= Url::to($q['slug']); ?><!--" title="--><?//= $q['name']; ?><!--" class="quiz-box">-->
-    <!--                            <div class="quiz-icon">-->
-    <!--                                <img src="--><?//= Yii::$app->params->upload_directories->quiz->sharing->image . "/" . $q['sharing_image_location'] . "/" . $q['sharing_image'] ?><!--">-->
-    <!--                            </div>-->
-    <!--                            <div class="quiz-overlay">-->
-    <!--                                <div class="quiz-text">-->
-    <!--                                    <div class="quiz-creater">-->
-    <!--                                        <div class="quiz-c-image"><img-->
-    <!--                                                    src="--><?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?><!--"-->
-    <!--                                                    alt=""></div>-->
-    <!--                                        <div class="quiz-c-name">alice</div>-->
-    <!--                                    </div>-->
-    <!--                                </div>-->
-    <!--                            </div>-->
-    <!--                            <div class="quiz-inner">-->
-    <!--                                <div class="quiz-title">-->
-    <!--                                    --><?//= $q['name']; ?>
-    <!--                                </div>-->
-    <!--                                <div class="quiz-ques">-->
-    <!--                                    Total Questions : --><?//= $q['cnt']; ?>
-    <!--                                </div>-->
-    <!--                            </div>-->
-    <!--                            <div class="take-quiz">-->
-    <!--                                <span>Take Quiz</span>-->
-    <!--                            </div>-->
-    <!--                        </a>-->
-    <!--                    </div>-->
-    <!--                    --><?php
-//                }
-//                ?>
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </section>-->
-
-    <section>
+    <!-- <section class="quiz-winners">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 col-sm-6">
-                    <div class="heading-style">Popular quiz</div>
+                <div class="col-md-12">
+                    <h1>QUIZ <img src="@eyAssets/images/pages/quiz/.png">WINNERS</h1>
                 </div>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <div class="type-1">
-                        <div>
-                            <a href="<?= Url::to('/quizzes/all'); ?>" class="btn btn-3">
-                                <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
-                                <span class="round"><i class="fas fa-chevron-right"></i></span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="qz-main">
-                        <div class="qz-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt="">
-                        </div>
-                        <div class="qz-count">
-                            <span class="qz-q">16 question</span>
-                            <span class="qz-plays">200 plays</span>
-                        </div>
-                        <div class="qz-inner">
-                            <div class="qz-name">type of insurance</div>
-                            <div class="qz-creater">
-                                <div class="creator-name">
-                                    <span class="creator-img">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>"
-                                             alt="">
-                                    </span>
-                                    <span>Pooja</span>
-                                </div>
-                            </div>
-                            <div class="qz-border"></div>
-                            <div class="qz-cat"><span>Category :</span> Marketing</div>
-                            <div class="qz-duration"><span>Duration :</span> 5min</div>
-                            <div class="qz-price"><span>Price :</span> $12</div>
-                            <div class="take-quiz">
-                                <span>Take Quiz</span>
+                <div class="col-md-12">
+                    <div class="winner-cards">
+                        <div class="winner-card">
+                            <div class="header-strip">Latest Quiz Winner</div>
+                            <img  class="winner-img" src="https://preview.keenthemes.com/metronic-v4/theme/assets/pages/media/profile/profile_user.jpg">
+                            <h2>Username</h2>
+                            <h4>IT & Technology</h4>
+                            <div class="reward">
+                                <i class="fas fa-award"></i>₹2,000
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-
+    </section> -->
 <?php
 $this->registerCss('
 // .qz-border{
@@ -669,6 +558,7 @@ $this->registerCss('
     max-height: 500px;
     display: flex;
     flex-wrap: wrap;
+    box-shadow: 0 0 7px 5px #ddd;
 }
 
 .catagory-box{
@@ -697,7 +587,28 @@ $this->registerCss('
     height: 250px;
     transition: .3s transform ease-in;
     position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
 }
+
+.catagory-box img{
+    width: 60px;
+}
+.catagory-box h3 {
+    font-size: 18px;
+    font-weight: 600;
+    font-family: Roboto;
+    color: #6c6c6c;
+}
+.catagory-box:hover img{
+    filter: brightness(0) invert(1);
+}
+.catagory-box:hover h3{
+    color: #fff !important;
+}
+
 .catagory-box:nth-child(1){
     transform-origin: top left;
 }
@@ -721,5 +632,85 @@ $this->registerCss('
     font-size: 28pt;
     font-family: Roboto;
     margin: 30px 0;
+}
+
+.view-all-btn {
+    width: fit-content;
+    padding: 8px 20px;
+    margin: auto;
+    margin-top: 20px;
+    background: #30CFD0;
+    color: #fff;
+    font-weight: 700;
+    font-family: Roboto;
+}
+
+
+/* Quiz Benefits CSS*/
+.quiz-benefits h1{
+    font-size: 28pt;
+    font-family: Roboto;
+    margin: 30px 0;
+}
+
+.quiz-benefits-text {
+    width: 400px;
+    height: 400px;
+    margin: auto;
+    border-radius: 12px;
+    border: 2px solid #7C7C7C;
+}
+.quiz-points li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 17px;
+}
+.quiz-points li span {
+    color: #00a0e3;
+    font-size: 24px;
+    font-family: Roboto;
+    font-weight: 700;
+    flex-basis: 25%;
+}
+.quiz-points li span img {
+    width: 20px;
+    transform: translate(-7px, 4px);
+}
+.point h4 {
+    display: inline-block;
+    color: #00a0e3;
+    font-weight: 700;
+    margin: 0;
+}
+.point p {
+    display: inline-block;
+    margin: 0;
+    line-height: 1.1;
+    font-size: 14px;
+    font-weight: 600;
+    color: #b1b1b1;
+}
+ul.quiz-points {
+    padding: 15px 0 0 0;
+    transform: translate(-3px);
+    background: #fff;
+    border-top-right-radius: 26px;
+}
+
+/*Quiz Winner CSS*/
+.quiz-winners{
+    background: url(\'/assets/themes/ey/images/quiz/quiz-header-bg.png\');
+    min-height: 500px;
+    background-position: right;
+    background-repeat: no-repeat;
+    background-size:cover;
+    background-size: cover;
+    margin-top: 20px;
+}
+.quiz-winners h1 {
+    font-family: Roboto;
+    font-size: 28pt;
+    color: #fff;
+    text-align: center;
 }
 ');

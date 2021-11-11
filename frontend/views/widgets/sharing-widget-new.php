@@ -34,12 +34,14 @@ $news_title = urlencode($news_title);
 <?php
 $this->registercss('
 .share-social {
-	display: flex;
-	align-items: stretch;
-	margin:10px 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 10px 0;
 }
-.basis{
-    flex-basis:50%;
+.basis {
+    flex-basis: 19%;
+    margin: 0 1% 1% 0;
 }
 .fb-sharr a, .whatsapp-share a, .teleg-share a, .twi-share a, .link-share a, .download button{
 	display: block;
@@ -48,7 +50,6 @@ $this->registercss('
 	font-size: 16px;
 	font-family: roboto;
 	font-weight: 500;
-	margin-right: 10px;
 }
 .fb-sharr a{background-color:#4267B2;}
 .whatsapp-share a{background-color:#36dc54;}
