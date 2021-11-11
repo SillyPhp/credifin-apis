@@ -1,9 +1,6 @@
 <?php
 
-//$this->title = Yii::t('frontend', 'Education Loans');
-
 use yii\helpers\Url;
-
 ?>
 
 <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
