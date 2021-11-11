@@ -11,11 +11,11 @@
                     <p>{{description}}</p>
                 <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
                 <div class="share-bar">
-                    <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                    <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                    <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
-                    <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-twitter"><i class="fab fa-twitter"></i></a>
-                    <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
+                    <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/{{slug}}" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                    <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/{{slug}}" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                    <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                    <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                    <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/{{slug}}" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
         </div>
@@ -23,14 +23,12 @@
     <div class="webinar-speaker-img">
         <div class="rotate-div">
             <div class="speaker-img">
-            <img src="/assets/themes/ey/images/pages/webinar/vishal-verma-pic.png">
+            <img src="{{speaker_img}}">
 
             </div>
             <div class="speaker-detail">
-                <h2>Vishal Verma</h2>
-                <h5>Personality Development Coach</h5>
-                <h5>International IELTS Trainer</h5>
-                <h5>National Debate Champion</h5>
+                <h2>{{speaker_name}}</h2>
+                <h5>{{Designation}}</h5>
             </div>
         </div>
     </div>

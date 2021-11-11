@@ -1,10 +1,10 @@
-<section class="webinar-three-speaker1">
+<section class="webinar-three-speaker">
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
                 <div class="side-one">
                     <h1>
-                        Webinar Title
+                        {{name}}
                     </h1>
                     <div class="speakers-detail">
                         <div class="row">
@@ -16,30 +16,23 @@
                                     <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
                                 </div>
                             </div>
+                            {{#speakers}}
                             <div class="col-xs-4">
                                 <div class="speaker-img"></div>
-                                <div class="speaker-name">Speaker Name</div>
-                                <div class="designation">Designation</div>
+                                <div class="speaker-name">{{speaker_name}}</div>
+                                <div class="designation">{{designation}}</div>
                             </div>
-                            <div class="col-xs-4">
-                                <div class="speaker-img"></div>
-                                <div class="speaker-name">Speaker Name</div>
-                                <div class="designation">Designation</div>
-                            </div>
-                            <div class="col-xs-4">
-                                <div class="speaker-img"></div>
-                                <div class="speaker-name">Speaker Name</div>
-                                <div class="designation">Designation</div>
-                            </div>
+                            {{/speakers}}
                         </div>
                     </div>
                     <div class="avail-share">
-                        <a href="/webinar/how-to-get-your-dream-job-4790" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
+                        <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
                         <div class="share-bar">
-                            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                            <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                            <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-linkedin"><i class="fab fa-whatsapp"></i></a>
-                            <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/how-to-get-your-dream-job-4790" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/{{slug}}" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                            <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/{{slug}}" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                            <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                            <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/{{slug}}" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
                         </div>
                     </div>
                 </div>
@@ -63,11 +56,11 @@
                     <div class="date-time">
                         <div class="date">
                             <div class="prop">DATE</div>
-                            <div class="value">8 October 2021</div>
+                            <div class="value">{{start_date}}</div>
                         </div>
                         <div class="time">
                             <div class="prop">TIME</div>
-                            <div class="value">1:20 PM - 2:20 PM</div>
+                            <div class="value">{{start_date_time}}</div>
                         </div>
                     </div>
                 </div>
