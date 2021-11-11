@@ -84,6 +84,11 @@ color: #2b7cb7;
     }
     .sharing-links{padding:4px;}
 }
+@media (min-width: 768px) and (max-width: 1200px){
+    .wts-app i, .fb i, .tw i, .linkd i, .male i, .tele i, .copy-app-link i{
+        margin: 0 2px !important;
+    }
+}
 ');
 ?>
 
@@ -145,6 +150,7 @@ color: #2b7cb7;
 
 echo $this->render('/widgets/mustache/application-card', [
     'type' => 'Jobs',
+
 ]);
 
 $script = <<<JS
