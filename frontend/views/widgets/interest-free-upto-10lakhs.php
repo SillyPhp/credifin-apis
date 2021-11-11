@@ -2,23 +2,18 @@
 use yii\helpers\Url;
 ?>
 <section class="interest-free-banner">
-    <div class="blur-rupee-img">
-        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rupees.png') ?>" alt="">
-        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rupees.png') ?>" alt="">
-        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rupees.png') ?>" alt="">
-    </div>
     <div class="container">
+        
+    <div class="interest-free-img">
+      <div class="rotate-img"></div>
+    </div>
+
         <div class="row">
             <div class="col-md-7 col-sm-7">
                 <div class="interest-free-text">
                     <h1>INTEREST FREE EDUCATION LOAN <br class="break-text"><span class="ten-lakh-text">UPTO 10 LAKH</span></h1>
                     <p>Our education loans aim at providing financial support to aspiring students for pursuing higher professional education in India and overseas.</p>
                     <a href="/education-loans/apply" class="btn-apply" target="_blank">APPLY NOW</a>
-                </div>
-            </div>
-            <div class="col-md-5 col-sm-5">
-                <div class="rupee-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rupees.png') ?>" alt="">
                 </div>
             </div>
         </div>
@@ -28,14 +23,23 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .interest-free-banner{
+  background: url('.Url::to('@eyAssets/images/pages/education-loans/interest-free-bg.png').');
+  background-repeat: no-repeat;
+  background-size: cover;
   font-family: roboto;
   width: 100%;
   display: flex;
-  align-items: center;
   justify-content: space-between;
   position: relative;
   overflow: hidden;
   padding: 20px 0;
+  min-height: 550px;
+}
+
+.interest-free-banner .container{
+  display: flex;
+  align-items: center;
+  position: relative;  
 }
 
 .interest-free-text{
@@ -64,15 +68,36 @@ $this->registerCss('
   color: #6F6F6F;
 }
 
+.interest-free-img{
+  background-size: 300px;
+  width: 340px;
+  height: 340px;
+  position: absolute;
+  right: -15px;
+  top: 0;
+  transform: rotate(45deg);
+  border-radius: 20px;
+  background: #00a0e3;
+}
+.rotate-img{
+  width: 100%;
+  height: 100%;
+  background: url('.Url::to('@eyAssets/images/pages/education-loans/interest-free-img-hat.png').');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 250px;
+  transform: rotate(-45deg);
+}
+
 .ten-lakh-text{
-  color: #ff7803;
+  color: #00a0e3;
 }
 
 .btn-apply{
   padding: 15px 20px;
   border-radius: 3px;
   border: none;
-  background-color: #ff7803;
+  background-color: #00a0e3;
   color: #fff;
   font-weight: 700;
   letter-spacing: 1.3px;
@@ -158,9 +183,15 @@ $this->registerCss('
 }
 
 
-@media screen and (max-width: 1020px){
-  .interest-free-text{
-    flex-basis: 70%;
+@media screen and (max-width: 991px){
+  .interest-free-img{
+    width: 280px;
+    height: 280px;
+  }
+}
+@media screen and (max-width: 767px){
+  .interest-free-img{
+    display: none;
   }
 }
 @media screen and (max-width: 540px){

@@ -25,7 +25,9 @@
 </div>
 <?php
 $this->registerCss('
-  
+  #mycarousel{
+    display: none;
+  }
 .box {
   border: 1px solid grey;
   background-color: #d3d3d3;
