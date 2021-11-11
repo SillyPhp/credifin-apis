@@ -71,10 +71,10 @@ $this->registerCss("
 .off-add{
     word-break: break-word;
 }
-.view-btn {
+.view-btn-location {
 	text-align: center;
 }
-.view-btn a{
+.view-btn-location a{
 	color: #00a0e3;
 	font-size: 16px;
 }

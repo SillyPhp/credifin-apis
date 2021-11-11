@@ -1696,7 +1696,7 @@ button.lc-item-video-menu {
         position: relative;
     }
     .pf-field > input {
-        height: 56px;
+        height: 40px;
         float: left;
         width: 100%;
         border: 2px solid #e8ecec;
@@ -1707,7 +1707,7 @@ button.lc-item-video-menu {
         -ms-border-radius: 8px;
         -o-border-radius: 8px;
         border-radius: 8px;
-        padding: 14px 45px 14px 15px;
+        padding: 5px 45px 5px 15px;
         background: #ffffff !important;
         font-family: Open Sans;
         font-size: 13px;
@@ -1719,7 +1719,7 @@ button.lc-item-video-menu {
     .pf-field > i {
         position: absolute;
         right: 20px;
-        top: 10px;
+        top: 2px;
         font-size: 20px;
         color: #848484;
         line-height: 56px;
