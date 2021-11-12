@@ -159,7 +159,8 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
+<?//= $this->render('/widgets/homepage_components/edu-loan-new') ?>
+<?= $this->render('/widgets/product-offerings') ?>
 
 <?= $this->render('/webinars/webinar-carousel')?>
 
@@ -1253,17 +1254,17 @@ if (!Yii::$app->user->isGuest) {
     var loadElems = [
         'getOurServices',
         'getFeaturedApplications',
-        'getStats',
-        'getProductOffering',
-        'getTopCities',
+//        'getStats',
+//        'getProductOffering',
+//        'getTopCities',
         'getDropResume',
         'getGovernmentJobs',
         'getInternationalJobs',
         'getCompaniesWithUs',
-        'getLearningTopics',
-        'getWhatsappCommunityj',
-//        'getTweets',
-        'getStudentLoan',
+//        'getLearningTopics',
+//        'getWhatsappCommunity',
+        'getTweets',
+//        'getStudentLoan',
         'getPressRelease',
         'getShortcuts'
     ];
@@ -1273,24 +1274,23 @@ if (!Yii::$app->user->isGuest) {
     var loadElems = [
         'getOurServices',
         'getFeaturedApplications',
-        'getFeaturedInternships',
-        'getStats',
-        'getProductOffering',
+//        'getStats',
+//        'getProductOffering',
         'getDropResume',
-        'getTopCities',
+//        'getTopCities',
 //        'getEduAndRedbull',
         'getGovernmentJobs',
         'getInternationalJobs',
         'getCompaniesWithUs',
-        'getLearningTopics',
+//        'getLearningTopics',
 //        'getOpportunities',
 //        'getSafetySigns',
 //        'getOnlineClasses',
-        'getWhatsappCommunity',
+//        'getWhatsappCommunity',
         'getHowItWorks',
 //        'getNewsUpdate',
-//        'getTweets',
-        'getStudentLoan',
+        'getTweets',
+//        'getStudentLoan',
         'getPressRelease',
         'getNewsletter',
         'getShortcuts'
