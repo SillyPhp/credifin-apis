@@ -87,7 +87,7 @@ echo $this->render('/widgets/top-cities', [
     'type' => 'jobs'
 ]);
 
-//echo $this->render('/widgets/jobs-by-tag');
+echo $this->render('/widgets/jobs-by-tag');
 ?>
 <section class="bg-lighter">
     <div class="container">
@@ -113,7 +113,7 @@ echo $this->render('/widgets/top-cities', [
     </div>
 </section>
 
-<?//= $this->render('/widgets/usa_and_govt_jobs'); ?>
+<?= $this->render('/widgets/usa_and_govt_jobs'); ?>
 
 <?= $this->render('/widgets/international-jobs'); ?>
 

@@ -110,7 +110,7 @@ echo $this->render('/widgets/top-cities', [
     'type' => 'internships'
 ]);
 
-//echo $this->render('/widgets/internships-by-tag');
+echo $this->render('/widgets/internships-by-tag');
 ?>
 
 <section class="bg-lighter">
