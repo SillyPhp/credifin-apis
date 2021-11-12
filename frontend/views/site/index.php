@@ -1263,7 +1263,7 @@ if (!Yii::$app->user->isGuest) {
         'getCompaniesWithUs',
 //        'getLearningTopics',
 //        'getWhatsappCommunity',
-        'getTweets',
+//        'getTweets',
 //        'getStudentLoan',
         'getPressRelease',
         'getShortcuts'
@@ -1289,7 +1289,7 @@ if (!Yii::$app->user->isGuest) {
 //        'getWhatsappCommunity',
         'getHowItWorks',
 //        'getNewsUpdate',
-        'getTweets',
+//        'getTweets',
 //        'getStudentLoan',
         'getPressRelease',
         'getNewsletter',

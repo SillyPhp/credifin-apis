@@ -12,7 +12,7 @@ use yii\helpers\Url;
         <div class="row loan-offerings">
             <div class="col-md-7 sol-sm-7">
                 <div class="loan-vector-txt">
-                    <h2>Loans That We Offer</h2>
+                    <h2>Education Loans That We Offer</h2>
                     <p>Find customized loans for all your needs.</p>
                 </div>
                 <div class="row">
@@ -140,17 +140,17 @@ $this->registerCss('
 .loan-vector-txt h2 {
     color: #00a0e3;
     font-family: roboto;
-    font-size: 36pt;
+    font-size: 30pt;
     line-height: 46px;
     font-weight: 600;
     margin-bottom: 0px;
 }
 .loan-vector-txt p {
-    font-size: 20px;
+    font-size: 19px;
     color: #000;
     font-family: roboto;
     font-weight: 400;
-    margin-top: 10px
+    margin-top: 8px
 }
 .loan-vector img {
     width: 100%;
