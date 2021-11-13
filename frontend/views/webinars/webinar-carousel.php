@@ -8,7 +8,6 @@
   <!-- Wrapper for slides -->
   <div class="carousel-inner" role="listbox">
     <div class="item active">
-      <?= $this->render('/widgets/webinar-templates/webinar-one-speaker2') ?>
     </div>
 
     <!-- more slides here -->
@@ -26,7 +25,9 @@
 </div>
 <?php
 $this->registerCss('
-  
+  #mycarousel{
+    display: none;
+  }
 .box {
   border: 1px solid grey;
   background-color: #d3d3d3;

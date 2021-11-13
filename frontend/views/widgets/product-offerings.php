@@ -146,11 +146,11 @@ $this->registerCss('
     margin-bottom: 0px;
 }
 .loan-vector-txt p {
-    font-size: 20px;
+    font-size: 19px;
     color: #000;
     font-family: roboto;
     font-weight: 400;
-    margin-top: 10px
+    margin-top: 8px
 }
 .loan-vector img {
     width: 100%;

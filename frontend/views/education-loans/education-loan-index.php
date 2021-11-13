@@ -1,18 +1,16 @@
 <?php
 
-//$this->title = Yii::t('frontend', 'Education Loans');
-
 use yii\helpers\Url;
-
 ?>
 
 <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
     <div class="clearfix"></div>
     <?= $this->render('/widgets/loan-products') ?>
     
-    <?= $this->render('/widgets/covid-offer-banner', ['availUrl' => '/education-loans/apply']) ?>
+    
 
     <?= $this->render('/widgets/loan-why-empower-youth') ?>
+    <?= $this->render('/widgets/testimonials') ?>
     <?= $this->render('/widgets/education-loan-internship') ?>
     
 
@@ -127,7 +125,7 @@ use yii\helpers\Url;
     </section>
 
     <?= $this->render('/widgets/Our-lending-partners') ?>
-   
+
     <section class="bg-blue pb10">
         <?= $this->render('/widgets/choose-education-loan') ?>
     </section>
