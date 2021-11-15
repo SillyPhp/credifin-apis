@@ -189,17 +189,55 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                 </div>
             </div>
         </div>
-        <div class="down-img">
-            <h3>Download Sharing Image</h3>
-            <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size (1250*650)</a>
-            <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>
-            <a href="<?= $Storyimage; ?>" download target="_blank"><i class="fa fa-download"></i> Story Size (Default)</a>
+    </div>
+    <div class="down-img">
+        <div class="show-img">
+            <img src="<?= Url::to($Instaimage); ?>" alt=""/>
         </div>
+        <h3>Download Sharing Image</h3>
+        <a href="<?= $image; ?>" download target="_blank" title="Banner Image" class="img-down">
+            <img src="<?= Url::to('@eyAssets/images/pages/employers/poster.png'); ?>" alt=""/>
+        </a>
+        <a href="<?= $Storyimage; ?>" download target="_blank" title="Story Image" class="img-down">
+            <img src="<?= Url::to('@eyAssets/images/pages/employers/story.png'); ?>" alt=""/>
+        </a>
+        <a href="<?= $Instaimage; ?>" download target="_blank" title="Post Image" class="img-down">
+            <img src="<?= Url::to('@eyAssets/images/pages/employers/square.png'); ?>" alt=""/>
+        </a>
     </div>
 <?php
 $this->registerCss('
+.down-img {
+    background: #4ECDC4;
+    background: -webkit-linear-gradient(to right, #556270, #4ECDC4);
+    background: linear-gradient(to right, #556270, #333a44);
+    width: 80%;
+    margin: 15px auto;
+    text-align:center;
+    padding:20px 0;
+}
+.down-img h3 {  
+	color: #fff;
+	font-size: 16px;
+	font-family: roboto;
+	margin: 0px 0 15px;
+}
+.down-img a {
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 0px 2px;
+    width: 38px;
+    height: 36px;
+}
+.show-img img {
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+    margin-bottom: 15px;
+}
 .job-thumb canvas {
-    border-radius: 50%;
     width: 125px;
     height: 125px;
 }
@@ -214,24 +252,6 @@ $this->registerCss('
 	right: 22px;
 	font-size: 22px;
 	cursor:pointer;
-}
-.down-img h3 {  
-	color: #fff;
-	font-size: 15px;
-	font-family: roboto;
-	margin: 10px 0 15px;
-}
-.down-img a {
-	color: #fff;
-	border: 2px solid #fff;
-	padding: 8px 25px;
-	font-size: 14px;
-	font-family: roboto;
-	font-weight: 500;
-	border-radius:6px;
-	display: inline-block;
-    margin: 5px 0px;
-    width:230px;
 }
 .form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
     margin-bottom:0;
