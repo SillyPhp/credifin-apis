@@ -19,10 +19,10 @@ if(!$company){
             Don't see a position that strikes your <span>fancy</span> ?
         </div>
         <div class="npb-text">
-            <?= $company ?> is always looking for great talent. Go ahead and send an application!
+            <strong><?= $company ?></strong> is always looking for great talent. Go ahead & drop your Resume.
         </div>
         <div class="npb-btn">
-            <button type="button" class="fab-message-open">Apply</button>
+            <button type="button" class="fab-message-open">Apply Now</button>
         </div>
     </div>
 </div>
@@ -89,7 +89,7 @@ $this->registerCss('
     font-family: roboto;
     font-size:14px;
     line-height:20px;
-    padding-top:20px;
+    padding:20px 5px 0 5px;
     color:#000;
 }
 .npb-btn{
@@ -102,7 +102,7 @@ $this->registerCss('
     font-family:roboto;
     font-weight:500;
     border:none;
-    padding:10px 45px;
+    padding:10px 24px;
     border-radius:5px;
     text-transform: uppercase;
     font-size:14px;

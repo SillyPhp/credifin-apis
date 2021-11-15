@@ -17,7 +17,7 @@ switch ([$controller_id, $action_id]) {
 ?>
     <script id="application-card" type="text/template">
         {{#.}}
-        <div class="col-md-4 col-sm-12 col-xs-12">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
                  class="application-card-main">
                 <div class="app-box">
@@ -220,12 +220,14 @@ function renderCards(cards, container){
     if(cardsLength%3 !==0 && loader === true) {
         $('#loadMore').css('display','none');
     }
-    var noRows = Math.ceil(cardsLength / 3);
-    var j = 0;
-    for(var i = 1; i <= noRows; i++){
-        $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
-        j+=3;
-    }
+    // var noRows = Math.ceil(cardsLength / 3);
+    // var j = 0;
+    // for(var i = 1; i <= noRows; i++){
+        let allDataRow = $('<div class="row"></div>').append(Mustache.render(card, cards));
+        $(container).append(allDataRow);
+        // $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
+        // j+=3;
+    // }
 }
 
 function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname, location = "", limit = "", dataType = "") {
