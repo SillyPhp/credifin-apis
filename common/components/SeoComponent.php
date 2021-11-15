@@ -23,7 +23,8 @@ class SeoComponent extends Component
             if ($seoDetails) {
                 $object->view->title = $seoDetails->title;
                 if ($seoDetails->featured_image) {
-                    $image = $seoDetails->featured_image;
+                    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->seo->image . $seoDetails->featured_image_location . '/' . $seoDetails->featured_image;
+//                    $image = $seoDetails->featured_image;
                 } else {
                     $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
                 }
