@@ -159,7 +159,6 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
-<?//= $this->render('/widgets/homepage_components/edu-loan-new') ?>
 <?= $this->render('/widgets/product-offerings') ?>
 
 <?= $this->render('/webinars/webinar-carousel')?>
