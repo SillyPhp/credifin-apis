@@ -279,7 +279,6 @@ $this->registerCss('
     margin-bottom: 15px;
 }
 .job-thumb canvas {
-    border-radius: 50%;
     width: 125px;
     height: 125px;
 }
@@ -356,7 +355,6 @@ $this->registerCss('
     overflow: hidden;
     line-height: 125px;
     margin: auto;
-    border-radius: 50%;
 }
 #logo_img {
     max-width: 100px !Important;
@@ -629,9 +627,10 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     .actions-main {
         width: 100%;
     }
-    .btn-parent{
-        left:28px;
-        }
+    .apply-job-btn{
+        width:auto !important;
+        padding:10px !important;
+    }
 }
 @media only screen and (max-width: 430px) {
     .job-head-info {
@@ -643,15 +642,6 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     }
     .job-head-info h4{
         margin-left:0px !Important;
-    }
-    .btn-parent{
-        position: fixed;
-        bottom:0px;
-    }
-}
-@media only screen and (max-width: 380px) {
-.btn-parent{
-    left:0px;
     }
 }
 ');
