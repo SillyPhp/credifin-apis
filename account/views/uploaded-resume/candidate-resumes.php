@@ -102,51 +102,51 @@ Yii::$app->view->registerJs('var profile = "' . Yii::$app->getRequest()->getQuer
 </script>
 <!--Candidate Resume Mustache Template End-->
 <!--Modal-->
-<!--<div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">-->
-<!--    <div class="modal-dialog" id="profiles">-->
-<!--        Modal content-->
-<!--        <div class="modal-content">-->
-<!--            <div class="modal-header">-->
-<!--                <button type="submit" class="close" data-dismiss="modal">&times;</button>-->
-<!--                <h4 class="modal-title">Choose Applications to Shortlist for</h4>-->
-<!--            </div>-->
-<!--            <div class="modal-body">-->
-<!--                --><?php
-//                if(count($available_applications) > 0) {
-//                    foreach ($available_applications as $a) {
-//                        ?>
-<!--                        <div class="row padd10">-->
-<!--                            <div class="col-md-12 text-center">-->
-<!--                                <div class="radio_questions">-->
-<!--                                    <div class="inputGroup process_radio">-->
-<!--                                        <input type="radio" name="applications" id="--><?//= $a['application_enc_id'] ?><!--"-->
-<!--                                               value="--><?//= $a['application_enc_id'] ?><!--">-->
-<!--                                        <label for="--><?//= $a['application_enc_id'] ?><!--">-->
-<!--                                            --><?//= $a['name'] ?>
-<!--                                        </label>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        --><?php
-//                    }
-//                }
-//                ?>
-<!---->
-<!--            </div>-->
-<!---->
-<!--            <div class="modal-footer">-->
-<!--                --><?php //if(count($available_applications) > 0) { ?>
-<!--                    <button id="submitData" type="submit" class="btn btn-primary" data-dismiss="modal">Submit</button>-->
-<!--                --><?php //}else{ ?>
-<!--                    <a class="btn btn-primary" href="/account/--><?//=$type?><!--/create">Create New --><?//=$type?><!--</a>-->
-<!--                --><?php //} ?>
-<!--                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
-<!--            </div>-->
-<!--        </div>-->
-<!---->
-<!--    </div>-->
-<!--</div>-->
+<div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" id="profiles">
+        Modal content
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="submit" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Choose Applications to Shortlist for</h4>
+            </div>
+            <div class="modal-body">
+                <?php
+                if(count($available_applications) > 0) {
+                    foreach ($available_applications as $a) {
+                        ?>
+                        <div class="row padd10">
+                            <div class="col-md-12 text-center">
+                                <div class="radio_questions">
+                                    <div class="inputGroup process_radio">
+                                        <input type="radio" name="applications" id="<?= $a['application_enc_id'] ?>"
+                                               value="<?= $a['application_enc_id'] ?>">
+                                        <label for="<?= $a['application_enc_id'] ?>">
+                                            <?= $a['name'] ?>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                }
+                ?>
+
+            </div>
+
+            <div class="modal-footer">
+                <?php if(count($available_applications) > 0) { ?>
+                    <button id="submitData" type="submit" class="btn btn-primary" data-dismiss="modal">Submit</button>
+                <?php }else{ ?>
+                    <a class="btn btn-primary" href="/account/<?=$type?>/create">Create New <?=$type?></a>
+                <?php } ?>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 
 <?php
