@@ -1,5 +1,7 @@
-<?php 
-use yii\helpers\url;
+<?php
+
+use yii\helpers\Url;
+
 ?>
 
 <section class="webinar-one-speaker2">
@@ -8,15 +10,15 @@ use yii\helpers\url;
             <div class="col-sm-6">
                 <div class="webinar-text">
                     <h5>WEBINAR</h5>
-                    <h1>New Investment Strategy</h1>
-                    <p>New age investment strategies are all about long-term success, so if you want your money going towards something that will grow with time – this is for you!</p>
-                    <a href="/webinar/new-age-investment-strategies-10407" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
+                    <h1>{{name}}</h1>
+                    <p>{{description}}</p>
+                    <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
                     <div class="share-bar">
-                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/new-age-investment-strategies-10407" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/new-age-investment-strategies-10407" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/new-age-investment-strategies-10407" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
-                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/new-age-investment-strategies-10407" class="share-twitter"><i class="fab fa-twitter"></i></a>
-                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/new-age-investment-strategies-10407" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/{{slug}}" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/{{slug}}" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/{{slug}}" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                     <div class="date-time">
                         <div class="arrows-icons">
@@ -26,11 +28,11 @@ use yii\helpers\url;
                         </div>
                         <div class="date">
                             <p>Date</p>
-                            <p>Oct 23, 2021</p>
+                            <p>{{start_date}}</p>
                         </div>
                         <div class="time">
                             <p>Time</p>
-                            <p>4:00 PM - 5:00 PM</p>
+                            <p>{{start_date_time}}</p>
                         </div>
                     </div>
                 </div>
@@ -40,12 +42,12 @@ use yii\helpers\url;
                     <div class="speaker-img-frame">
                         <div class="upper-sqr"></div>
                         <div class="middle-sqr">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/sb-img.png') ?>">
+                            <img src="{{speaker_image}}">
                         </div>
                         <div class="lower-sqr"></div>
                         <div class="name-speaker">
-                            <p>CA Sushant Basra</p>
-                            <p>Chartered Accountant</p>
+                            <p>{{speaker_name}}</p>
+                            <p>{{designation}}</p>
                         </div>
                     </div>
                 </div>

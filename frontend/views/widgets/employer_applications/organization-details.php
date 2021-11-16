@@ -69,9 +69,9 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                     </div>
                 <?php elseif (!Yii::$app->user->identity->organization): ?>
                     <div class="btn-parent">
-                        <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i
-                                    class="fas fa-paper-plane hvr-icon"></i>Apply for <?= $type ?></a>
-                        <!--                        <a href="#" class="follow-btn apply-btn hvr-icon-pulse"><i class="fas fa-plus hvr-icon"></i></a>-->
+                        <a href="#" class="apply-job-btn apply-btn move-anim-btn">
+                            <i class="fas fa-paper-plane hvr-icon"></i> <span>Apply for <?= $type ?></span>
+                        </a>
                     </div>
                     <?php if ($shortlist_btn_display): ?>
                         <div class="sub-actions">
@@ -193,12 +193,21 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                 </div>
             </div>
         </div>
-        <div class="down-img">
-            <h3>Download Sharing Image</h3>
-            <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size (1250*650)</a>
-            <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square Size (800*800)</a>
-            <a href="<?= $Storyimage; ?>" download target="_blank"><i class="fa fa-download"></i> Story Size (Default)</a>
+    </div>
+    <div class="down-img">
+        <div class="show-img">
+            <img src="<?= Url::to($Instaimage); ?>" alt=""/>
         </div>
+        <h3>Download Sharing Image</h3>
+        <a href="<?= $image; ?>" download target="_blank" title="Banner Image" class="img-down">
+            <img src="<?= Url::to('@eyAssets/images/pages/employers/poster.png'); ?>" alt=""/>
+        </a>
+        <a href="<?= $Storyimage; ?>" download target="_blank" title="Story Image" class="img-down">
+            <img src="<?= Url::to('@eyAssets/images/pages/employers/story.png'); ?>" alt=""/>
+        </a>
+        <a href="<?= $Instaimage; ?>" download target="_blank" title="Post Image" class="img-down">
+            <img src="<?= Url::to('@eyAssets/images/pages/employers/square.png'); ?>" alt=""/>
+        </a>
     </div>
 <?php
 $script = <<<JS
@@ -239,8 +248,37 @@ $('.send').click(function () {
 JS;
 
 $this->registerCss('
+.down-img {
+    background: #4ECDC4;
+    background: -webkit-linear-gradient(to right, #556270, #4ECDC4);
+    background: linear-gradient(to right, #556270, #333a44);
+    width: 80%;
+    margin: 15px auto;
+    text-align:center;
+    padding:20px 0;
+}
+.down-img h3 {  
+	color: #fff;
+	font-size: 16px;
+	font-family: roboto;
+	margin: 0px 0 15px;
+}
+.down-img a {
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 0px 2px;
+    width: 38px;
+    height: 36px;
+}
+.show-img img {
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+    margin-bottom: 15px;
+}
 .job-thumb canvas {
-    border-radius: 50%;
     width: 125px;
     height: 125px;
 }
@@ -268,24 +306,6 @@ $this->registerCss('
 	right: 22px;
 	font-size: 22px;
 	cursor:pointer;
-}
-.down-img h3 {  
-	color: #fff;
-	font-size: 15px;
-	font-family: roboto;
-	margin: 10px 0 15px;
-}
-.down-img a {
-	color: #fff;
-	border: 2px solid #fff;
-	padding: 8px 25px;
-	font-size: 14px;
-	font-family: roboto;
-	font-weight: 500;
-	border-radius:6px;
-	display: inline-block;
-    margin: 5px 0px;
-    width:230px;
 }
 .form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
     margin-bottom:0;
@@ -335,7 +355,6 @@ $this->registerCss('
     overflow: hidden;
     line-height: 125px;
     margin: auto;
-    border-radius: 50%;
 }
 #logo_img {
     max-width: 100px !Important;
@@ -501,7 +520,54 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     display: block;
     color: #ddd;
 }
+.move-anim-btn {
+    font-family: roboto;
+    font-size: 16px;
+    background: #00a0e3;
+    color: white;
+    padding: 0.5em 1em;
+    padding-left: 0.9em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all 0.2s;
+    width: 150px;
+    margin: 0 auto;
+}
+.move-anim-btn span {
+     display: block;
+     margin-left: 0.3em;
+     transition: all 0.3s ease-in-out;
+}
 
+.move-anim-btn i {
+ display: block;
+ transform-origin: center center;
+ transition: transform 0.3s ease-in-out;
+}
+
+.move-anim-btn:hover i {
+ transform: translateX(3.2em) rotate(45deg) scale(1.1);
+ color:#fff;
+}
+
+.move-anim-btn:hover span {
+ transform: translateX(8em);
+ color: #fff;
+}
+
+@keyframes fly-1 {
+ from {
+  transform: translateY(0.1em);
+ }
+
+ to {
+  transform: translateY(-0.1em);
+ }
+}
 @media only screen and (max-width: 991px) {
     .job-single-head.style2.overlay-top{
         margin-top: 0;
@@ -561,9 +627,10 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     .actions-main {
         width: 100%;
     }
-    .btn-parent{
-        left:28px;
-        }
+    .apply-job-btn{
+        width:auto !important;
+        padding:10px !important;
+    }
 }
 @media only screen and (max-width: 430px) {
     .job-head-info {
@@ -575,15 +642,6 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     }
     .job-head-info h4{
         margin-left:0px !Important;
-    }
-    .btn-parent{
-        position: fixed;
-        bottom:0px;
-    }
-}
-@media only screen and (max-width: 380px) {
-.btn-parent{
-    left:0px;
     }
 }
 ');

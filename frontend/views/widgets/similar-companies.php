@@ -9,8 +9,8 @@ use yii\helpers\Url;
             <div class="sim-company-head">
                 <div class="sim-company-logo">
                     <a href="/<?= $c['slug'] ?>" target="_blank">
-                        <img src="<?= $c['logo'] ?>" class="do-image" data-name="<?= $c['name'] ?>" data-width="100"
-                             data-height="100"
+                        <img src="<?= $c['logo'] ?>" class="do-image" data-name="<?= $c['name'] ?>" data-width="80"
+                             data-height="80"
                              data-color="<?= $c['color'] ?>" data-font="45px">
                     </a>
                 </div>
@@ -31,9 +31,9 @@ use yii\helpers\Url;
                                 <?= $c['employerApplications'][0]['name'] == 'Internships' ? $c['employerApplications'][0]['total_application'] : ($c['employerApplications'][1]['name'] == 'Internships' ? $c['employerApplications'][1]['total_application'] : 0) ?>
                                 Internships</span></a>
                     </div>
-                    <div class="sim-view-detail">
-                        <a href="/<?= $c['slug'] ?>">View Detail</a>
-                    </div>
+<!--                    <div class="sim-view-detail">-->
+<!--                        <a href="/--><?//= $c['slug'] ?><!--">View Detail</a>-->
+<!--                    </div>-->
                 </div>
         </div>
     </div>
@@ -48,35 +48,37 @@ $this->registercss('
     position: relative;
     margin: 10px 0 20px;
     border-radius: 4px;
-    padding: 10px 10px;
+    padding: 20px 10px;
     transition: all .3s;
-    min-height: 185px;
+    height: 243px;
+    max-height: 243px;
 }
 .similar-company:hover{
 //    transform:scale(1.01);
     box-shadow:0px 10px 25px rgba(0,0,0,0.10);
 }
-.sim-company-head {
-    display: flex;
-    align-items: center;
-}
+//.sim-company-head {
+//    display: flex;
+//    align-items: center;
+//}
 .sim-company-details {
-    text-align: left;
+    text-align: center;
 }
-.sim-company-logo {
-	min-width: 100px;
-	height: 100px;
-	border-radius: 50%;
+.sim-company-logo img, .sim-company-logo canvas{
+	min-width: 80px;
+	height: 80px;
+	object-fit:contain;
+//	border-radius: 50%;
 	overflow: hidden;
-	border: 1px solid #eee;
-	box-shadow: 0 0 13px 4px #eee;
-	line-height: 100px;
-	margin-top:12px;
+//	border: 1px solid #eee;
+//	box-shadow: 0 0 13px 4px #eee;
+	line-height: 80px;
+//	margin-top:10px;
 }
 .sim-comp-Name {
-    font-size: 24px;
-    font-family: lora;
-    margin: 20px 15px 0;
+    font-size: 20px;
+    font-family: roboto;
+    margin: 10px 10px 0;
     line-height: 30px;
     display: -webkit-box;
     -webkit-line-clamp: 1;
@@ -85,7 +87,7 @@ $this->registercss('
 }
 .sim-comp-relate {
     margin: 2px 15px 0;
-    font-size: 18px;
+    font-size: 16px;
     font-family: roboto;
     color: #9fa0a2;
     height: 26px;
@@ -102,6 +104,13 @@ $this->registercss('
     padding: 5px 8px;
     border-radius: 6px;
     font-size: 15px;
+    font-family: roboto;
+    font-weight:500;
+    transition: ease-out .3s;
+}
+.sim-comp-jobs-intern a:hover{
+    background-color:#00a0e3;
+    color:#fff;
 }
 .sim-view-detail{
     display: flex;
@@ -125,9 +134,9 @@ $this->registercss('
 	transition: all .3s;
 }
 .btn-action {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+//    display: flex;
+//    align-items: center;
+//    justify-content: space-between;
     margin-top: 10px;
 }
 ');

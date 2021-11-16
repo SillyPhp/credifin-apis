@@ -4,57 +4,43 @@ use yii\helpers\Url;
 
 ?>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Farro:wght@400;500;700&display=swap" rel="stylesheet">
-
-
 <section class="webinar-two-speaker">
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
                 <div class="webinar-text">
-                    <h1>Webinar Title</h1>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Recusandae id sunt incidunt aperiam quisquam, quos sed fugit dolorum asperiores quod!</p>
+                    <h1>{{name}}</h1>
+                    <p>{{descrition}}</p>
                     <div class="date-time">
-                        <span class="date"><img src="<?= Url::to('@eyAssets/images/pages/webinar/calendar-icon.png')?>">30 September</span>
-                        <span class="time"><img src="<?= Url::to('@eyAssets/images/pages/webinar/time-icon.png')?>">15:00 - 16:45</span>
+                        <span class="date"><img src="<?= Url::to('@eyAssets/images/pages/webinar/calendar-icon.png')?>">{{start_date}}</span>
+                        <span class="time"><img src="<?= Url::to('@eyAssets/images/pages/webinar/time-icon.png')?>">{{start_date_time}}</span>
                     </div>
-                    <a href="#" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
+                    <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
                     <div class="share-bar">
-                        <a target="_blank" href="#" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                        <a target="_blank" href="#" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                        <a target="_blank" href="#" class="share-linkedin"><i class="fab fa-whatsapp"></i></a>
-                        <a target="_blank" href="#" class="share-twitter"><i class="far fa-envelope-open"></i></a>
+                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/{{slug}}" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/{{slug}}" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/{{slug}}" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="speakers-images">
+                    {{#speakers}}
                     <div class="speaker">
                         <div class="speaker-img">
                         </div>
                         <div class="speaker-detail">
                             <div class="speaker-name">
-                                Speaker Name
+                                {{speaker_name}}
                             </div>
                             <div class="speaker-designation">
-                                Designation
+                                {{designation}}
                             </div>
                         </div>
                     </div>
-                    <div class="speaker">
-                        <div class="speaker-img">
-                        </div>
-                        <div class="speaker-detail">
-                            <div class="speaker-name">
-                                Speaker Name
-                            </div>
-                            <div class="speaker-designation">
-                                Designation
-                            </div>
-                        </div>
-                    </div>
+                    {{/speakers}}
                 </div>
             </div>
         </div>
@@ -62,7 +48,7 @@ use yii\helpers\Url;
 
 <?php $this->registerCss('
     .webinar-two-speaker{
-        background: url(' . Url::to('@eyAssets/images/pages/webinar/webinar-two-speaker-bg.png') . ');
+        background: url(/assets/themes/ey/images/pages/webinar/webinar-two-speaker-bg.png);
         min-height: 550px;
         background-repeat: no-repeat;
         background-size: cover;

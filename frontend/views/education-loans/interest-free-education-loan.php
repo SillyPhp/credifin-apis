@@ -116,7 +116,7 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
-    <?= $this->render('/widgets/covid-offer-banner', ['availUrl' => '/education-loans/apply']) ?>
+    
 
 
 <?= $this->render('/widgets/interest-free-loan-process') ?>

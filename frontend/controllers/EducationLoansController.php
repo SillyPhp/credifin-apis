@@ -106,7 +106,7 @@ class EducationLoansController extends Controller
         }
     }
 
-    public function actionLoanForTeachers(){
+    public function actionTeachersLoanApplyForm(){
         if(!Yii::$app->user->identity->organization->organization_enc_id):
         return $this->render('teachers-loan-form');
         else:
@@ -443,7 +443,7 @@ class EducationLoansController extends Controller
         return $this->render('calc');
     }
 
-    public function actionTeachersLoan(){
+    public function actionLoanForTeachers(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {

@@ -2494,6 +2494,9 @@ function get_preview(session_tok) {
                        }
                     }); 
             }
+window.onbeforeunload = function() {
+return "Do you really want to leave ?";
+};
             
 $(document).on('click', '.modal-load-class', function(e) {
     e.preventDefault();
