@@ -16,53 +16,19 @@ $link = Url::to('quizzes/' . $slug, true);
         <div class="row">
             <div class="col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2">
                 <div class="quiz-header-heading">
-                    <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/6176c48e680e5_whatsapp_image_2021-10-25_at_8.16.08_pm.jpeg?d=340x195') ?>"/>
-                    <p>Hero Campus Challenge Season 7 Hero MotoCorp Limited</p>
-                    <p class="quiz-detail-cat">IT & MANAGEMENT </p>
-                    <div class="quiz-timings-cover">
-                        <div class="reg-deadline"><i class="fas fa-user-clock"></i> Registration Deadline : <span>27/OCT/2021 08:20 PM IST</span></div>
-                        <div class="days-left2"><i class="fas fa-clock"></i> 5 Days Left</div>
-                        <div class="both-btns">
-                            <div class="register-detail-btn-2">
-                                <a href="">Register Now</a>
-                            </div>
-                            <div class="addeventatc" title="Add to Calendar">
-                                <span class="start">11/16/2021 08:00 AM</span>
-                                <span class="end">11/16/2021 10:00 AM</span>
-                                <span class="timezone">Asia/Kolkata</span>
-                                <span class="title">Summary of the event</span>
-                                <span class="description">Description of the event</span>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<Section class="quiz-details">
+<section class="quiz-details">
     <div class="container">
         <div class="row">
             <div class="col-md-8">
                 <div class="detail-side">
-                    <h3 class="quiz-title">Hero Campus Challenge Season 7 Hero MotoCorp Limited</h3>
-                    <p class="quiz-detail-cat">it & management</p>
-                    <div class="quiz-description">
-                        This opportunity has been listed by College of Engineering (COEP), Pune. Dare2Compete is not
-                        liable for any content mentioned in this opportunity or the process followed by the organizers
-                        for this opportunity. However, please raise a complaint if you want Dare2Compete to look into
-                        the matter.This opportunity has been listed by College of Engineering (COEP), Pune. Dare2Compete
-                        is not liable for any content mentioned in this opportunity or the process followed by the
-                        organizers for this opportunity. However, please raise a complaint if you want Dare2Compete to
-                        look into the matter.This opportunity has been listed by College of Engineering (COEP), Pune.
-                        Dare2Compete is not liable for any content mentioned in this opportunity or the process followed
-                        by the organizers for this opportunity. However, please raise a complaint if you want
-                        Dare2Compete to look into the matter.This opportunity has been listed by College of Engineering
-                        (COEP), Pune. Dare2Compete is not liable for any content mentioned in this opportunity or the
-                        process followed by the organizers for this opportunity. However, please raise a complaint if
-                        you want Dare2Compete to look into the matter.
-                    </div>
+
                 </div>
                 <div class="register-count">
                     <div class="registered-c">
@@ -88,16 +54,12 @@ $link = Url::to('quizzes/' . $slug, true);
                 <div class="row">
                     <div class="col-md-12">
                         <div class="register-detail-btn">
-                            <a href="">Register Now</a>
+
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="nd-shadow timings-cover">
-                            <div class="register-dead block-span"><i class="fas fa-user-clock"></i> <span>Registration Deadline : <strong>27/OCT/2021 08:20 PM IST</strong></span></div>
-                            <div class="register-fee block-span"><i class="fas fa-rupee-sign"></i> <span>Registration Fee : <strong>₹500</strong></span></div>
-                            <div class="play-time block-span"><i class="far fa-play-circle"></i> <span>Play Within : <strong>29/OCT/2021 to 10/NOV/2021</strong></span></div>
-                            <div class="total-question block-span"><i class="fas fa-print"></i> <span>Total Questions : <strong>20</strong></span></div>
-                            <div class="total-time block-span"><i class="fas fa-clock"></i> <span>Total Time : <strong>20 minutes</strong></span></div>
+
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -107,7 +69,7 @@ $link = Url::to('quizzes/' . $slug, true);
             </div>
         </div>
     </div>
-</Section>
+</section>
 
 <section class="rewards-section">
     <div class="container">
@@ -115,35 +77,8 @@ $link = Url::to('quizzes/' . $slug, true);
             <div class="col-md-12">
                 <div class="heading-style">Rewards & Prizes</div>
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-6">
-                <div class="rewards-win nd-shadow">
-                    <div class="certificate-set">Certificate</div>
-                    <div class="reward-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/quiz/prize100.png') ?>"/>
-                    </div>
-                    <h3>First Prize</h3>
-                    <p>1,500 Rs</p>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-4 col-xs-6">
-                <div class="rewards-win nd-shadow">
-                    <div class="certificate-set">Certificate</div>
-                    <div class="reward-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/quiz/prize100.png') ?>"/>
-                    </div>
-                    <h3>Second Prize</h3>
-                    <p>1,000 Rs</p>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-4 col-xs-6">
-                <div class="rewards-win nd-shadow">
-                    <div class="certificate-set">Certificate</div>
-                    <div class="reward-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/quiz/prize100.png') ?>"/>
-                    </div>
-                    <h3>Third Prize</h3>
-                    <p>500 Rs</p>
-                </div>
+            <div class="quizRewards">
+
             </div>
         </div>
     </div>
@@ -155,83 +90,9 @@ $link = Url::to('quizzes/' . $slug, true);
             <div class="col-md-12">
                 <div class="heading-style">Related Quizzes</div>
             </div>
-            <div class="col-md-4">
-                <div class="card-main nd-shadow">
-                    <div class="paid-webinar">Paid</div>
-                    <div class="expired-btn">EXPIRED</div>
-                    <div class="card-img">
-                        <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/6176c48e680e5_whatsapp_image_2021-10-25_at_8.16.08_pm.jpeg?d=340x195') ?>"/>
-                    </div>
-                    <div class="card-details">
-                        <div class="about-first flex-container">
-                            <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> 6 Days Left</div>
-                            <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
-                            <div class="pricing-money" style="flex-grow: 8"><img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹5,000 </div>
-                        </div>
-                        <div class="about-name">
-                            <div class="quiz-name">Health Awareness Quiz</div>
-                            <div class="quiz-category">marketing</div>
-                        </div>
-                        <div class="about-footer">
-                            <div class="detail-btn">
-                                <a href="" class="view-details">View Detail</a>
-                            </div>
-                            <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card-main nd-shadow">
-                    <div class="paid-webinar">Paid</div>
-                    <div class="expired-btn">EXPIRED</div>
-                    <div class="card-img">
-                        <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/6176c48e680e5_whatsapp_image_2021-10-25_at_8.16.08_pm.jpeg?d=340x195') ?>"/>
-                    </div>
-                    <div class="card-details">
-                        <div class="about-first flex-container">
-                            <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> 6 Days Left</div>
-                            <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
-                            <div class="pricing-money" style="flex-grow: 8"><img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹5,000 </div>
-                        </div>
-                        <div class="about-name">
-                            <div class="quiz-name">Health Awareness Quiz</div>
-                            <div class="quiz-category">marketing</div>
-                        </div>
-                        <div class="about-footer">
-                            <div class="detail-btn">
-                                <a href="" class="view-details">View Detail</a>
-                            </div>
-                            <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card-main nd-shadow">
-                    <div class="paid-webinar">Paid</div>
-                    <div class="expired-btn">EXPIRED</div>
-                    <div class="card-img">
-                        <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/6176c48e680e5_whatsapp_image_2021-10-25_at_8.16.08_pm.jpeg?d=340x195') ?>"/>
-                    </div>
-                    <div class="card-details">
-                        <div class="about-first flex-container">
-                            <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> 6 Days Left</div>
-                            <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
-                            <div class="pricing-money" style="flex-grow: 8"><img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹5,000 </div>
-                        </div>
-                        <div class="about-name">
-                            <div class="quiz-name">Health Awareness Quiz</div>
-                            <div class="quiz-category">marketing</div>
-                        </div>
-                        <div class="about-footer">
-                            <div class="detail-btn">
-                                <a href="" class="view-details">View Detail</a>
-                            </div>
-                            <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
-                        </div>
-                    </div>
-                </div>
+
+            <div class="related-quizzes">
+
             </div>
         </div>
     </div>
@@ -244,6 +105,7 @@ $this->registerCss('
     width:34px;
     padding:0 !important;
     margin-left:6px;
+    z-index:0 !important;
 }
 .addeventatc .addeventatc_icon {
     left: 50% !important;
@@ -253,10 +115,15 @@ $this->registerCss('
 .nd-shadow {
     box-shadow: 0px 1px 10px 2px #eee !important;
 }
+.related-quiz-section, .rewards-section{
+    display: none;
+}
 .quiz-header {
     min-height: 500px;
     position: relative;
     background: linear-gradient(hsla(0,0%,100%,0),rgb(120 198 254 / 44%));
+    display: flex;
+    align-items: center;
 }
 .left-quiz {
     position: absolute;
@@ -273,6 +140,7 @@ $this->registerCss('
     font-family: "Roboto";
     color: #009ebe;
     margin:0;
+    text-transform: capitalize
 }
 .quiz-header-heading img {
     width: 100px;
@@ -334,6 +202,7 @@ $this->registerCss('
     margin-bottom: 0;
     color: #009ebe;
     line-height: 30px;
+    text-transform: capitalize
 }
 .quiz-detail-cat {
     font-family: "Roboto";
@@ -401,7 +270,7 @@ $this->registerCss('
     font-weight: 600;
 }
 .rewards-win {
-    padding: 20px;
+    padding: 20px 20px 15px;
     margin-bottom: 15px;
     text-align: center;
     position: relative;
@@ -426,12 +295,14 @@ $this->registerCss('
     font-family: "Roboto";
     font-weight: 500;
     margin-bottom:0;
-    color:#00a0e3;
+    color:#949494;
+    text-transform: capitalize;
+    margin-top: 10px;
 }
 .rewards-win p {
     font-family: "roboto";
     font-weight: 500;
-    color: #949494;
+    color: #00a0e3;
     font-size: 16px;
     margin-bottom:0;
 }
@@ -603,16 +474,264 @@ $('.addeventatc').attr('title','Add To Calendar');
 JS;
 $this->registerJS($script);
 $this->registerJsFile('https://addevent.com/libs/atc/1.6.1/atc.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js', ['depends' => [\yii\web\JqueryAsset::className()]])
 //$this->registerJsFile('https://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
+    let baseUrl = 'https://ravinder.eygb.me';
+    let isLoggedIn = '<?= Yii::$app->user->identity->user_enc_id ? Yii::$app->user->identity->user_enc_id : "false" ?>';
+    let quiz_id = null;
+
     async function getDetails(){
-        const slug = window.location.pathname;
-        console.log(slug);
+        const url = window.location.pathname.split('/');
+        const slug = url[2];
         let response = await fetch(`${baseUrl}/api/v3/quiz/detail`,{
             method: 'POST',
-            body: ''
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({slug: slug})
+        });
+        let res = await response.json();
+
+        if(res['response']['status'] == 200){
+            quizHeader(res['response']['detail']);
+            showRelatedQuiz(res['response']['related']);
+            showReward(res['response']['detail']['quizRewards']);
+            quiz_id = res['response']['detail']['quiz_enc_id'];
+        }
+    }
+    getDetails();
+
+    function quizHeader(detail) {
+        let registrationEndDate = setDateFormat(detail.registration_end_datetime);
+        let quizStartDatetime = setDateFormat(detail.quiz_start_datetime);
+        let quizEndDatetime = setDateFormat(detail.quiz_end_datetime);
+
+        const header = `${detail.sharing_image ? `<img src="${detail.sharing_image}"/>` : ''}
+                <p>${detail.name}</p>
+                <p class="quiz-detail-cat">${detail.category}</p>
+                <div class="quiz-timings-cover">
+                    ${registrationEndDate ? `
+                        <div class="reg-deadline"><i class="fas fa-user-clock"></i> Registration Deadline : <span> ${registrationEndDate}</span></div>
+                    `: ''}
+                    ${detail.is_expired == 'false' ? `
+                        <div class="days-left2"><i class="fas fa-clock"></i> ${detail.days_left} Days Left</div>
+                    `: ''}
+                    <div class="both-btns">
+                        <div class="register-detail-btn-2">
+                            <a href="javascript:;" class="regBtn" ${isLoggedIn == 'false' ? `data-toggle="modal" data-target="#loginModal"` : `onclick="quizRegister('${detail.quiz_enc_id}')"`}>Register Now</a>
+                        </div>
+                        <div class="addeventatc" title="Add to Calendar">
+                            <span class="start">${detail.quiz_start_datetime}</span>
+                            <span class="end">${detail.quiz_end_datetime}</span>
+                            <span class="timezone">Asia/Kolkata</span>
+                            <span class="title">${detail.name}</span>
+<!--                            <span class="description">Description of the event</span>-->
+                        </div>
+                    </div>
+                </div>`;
+
+        document.querySelector('.quiz-header-heading').innerHTML = header;
+
+        const quizBody = ` <h3 class="quiz-title">${detail.name}</h3>
+                    <p class="quiz-detail-cat">${detail.category}</p>
+                    <div class="quiz-description">${detail.description}</div>`;
+
+        document.querySelector('.detail-side').innerHTML = quizBody;
+
+        const registerDetailBtn = `<a href="javascript:;" class="regBtn"  ${isLoggedIn == 'false' ? `data-toggle="modal" data-target="#loginModal"` : `onclick="quizRegister('${detail.quiz_enc_id}')"`}>Register Now</a>`
+
+        document.querySelector('.register-detail-btn').innerHTML = registerDetailBtn;
+
+        const quizDetail = `${registrationEndDate ? `
+                                <div class="register-dead block-span">
+                                    <i class="fas fa-user-clock"></i>
+                                    <span>Registration Deadline : <strong>${registrationEndDate}</strong></span>
+                                </div>`
+                            : ''}
+                            <div class="register-fee block-span">
+                                <i class="fas fa-rupee-sign"></i>
+                                <span>Registration Fee : <strong>${detail.currency_html_code ? detail.currency_html_code : '' } ${detail.price > 0 ? Math.floor(detail.price) : 'Free' }</strong></span>
+                            </div>
+                             ${quizStartDatetime ? `
+                                <div class="play-time block-span">
+                                    <i class="far fa-play-circle"></i>
+                                    <span>Quiz Start Time : <strong>${quizStartDatetime}</strong></span>
+                                </div>`
+                            : ''}
+                             ${quizEndDatetime ? `
+                                <div class="play-time block-span">
+                                    <i class="far fa-play-circle"></i>
+                                    <span>Quiz End Time : <strong>${quizEndDatetime}</strong></span>
+                                </div>`
+                            : ''}
+                            <div class="total-question block-span">
+                                <i class="fas fa-print"></i>
+                                <span>Total Questions : <strong>${detail.num_of_ques}</strong></span>
+                            </div>
+                            ${detail.duration ? `
+                                <div class="total-time block-span">
+                                    <i class="fas fa-clock"></i>
+                                    <span>Total Time : <strong>${detail.duration} minutes</strong></span>
+                                </div>`
+                            : ''}
+                        `;
+        document.querySelector('.timings-cover').innerHTML = quizDetail;
+
+    }
+
+    function setDateFormat(dateTime){
+        if(dateTime){
+            return moment(dateTime, "YYYY-MM-DD HH:mm:ss").format("DD MMM YYYY hh:mm A");
+        }
+    }
+
+    function showRelatedQuiz(quizzes){
+        let quizSection = document.querySelector('.related-quiz-section');
+        if(quizzes.length > 0){
+            quizSection.style.display = 'block';
+        }
+
+        let quizCard =  quizzes.map(quiz => {
+            return `
+            <div class="col-md-4">
+                <a href="`+baseUrl+`/quizzes/${quiz.slug}" class="">
+                    <div class="card-main nd-shadow">
+                        ${quiz.is_paid == 0 ? '' : `
+                            <div class="paid-webinar">Paid</div>
+                        `}
+                        ${quiz.is_expired == 'true' ? `
+                            <div class="expired-btn">EXPIRED</div>
+                        ` : ''}
+                        <div class="card-img">
+                            <img src="${quiz.sharing_image}"/>
+                        </div>
+                        <div class="card-details">
+                            <div class="about-first flex-container">
+                                ${quiz.is_expired == 'true' || quiz.days_left == null ? '' : `
+                                <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> ${quiz.days_left ? quiz.days_left : ''} Days Left</div>
+                                `}
+                                <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
+                                <div class="pricing-money" style="flex-grow: 8"><img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹5,000 </div>
+                            </div>
+                            <div class="about-name">
+                                <div class="quiz-name">${quiz.name}</div>
+                                <div class="quiz-category">${quiz.category ? quiz.category : ''}</div>
+                            </div>
+                            <div class="about-footer">
+                                <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
+                                ${quiz.price ? `
+                                    <div class="register-date"><i class="fas fa-rupee-sign"></i>${Math.floor(quiz.price)}</div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>`
+        }).join('');
+
+        document.querySelector('.related-quizzes').innerHTML = quizCard
+    }
+
+    function showReward(rewards){
+        let rewardSection = document.querySelector('.rewards-section');
+        if(rewards.length > 0){
+            rewardSection.style.display = 'block';
+        }
+
+        let rewardsCard = rewards.map(reward => {
+            return `<div class="col-md-4 col-sm-4 col-xs-6">
+                <div class="rewards-win nd-shadow">
+                    ${reward.quizRewardCertificates ? `
+                        <div class="certificate-set">Certificate</div>
+                    ` : ''}
+                    <div class="reward-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/quiz/prize100.png') ?>"/>
+                    </div>
+                    <h3>${reward.position_name}</h3>
+                    <p><i class="fas fa-rupee-sign"></i> ${Math.floor(reward.price)}</p>
+                </div>
+            </div>`
+        }).join('')
+
+        document.querySelector('.quizRewards').innerHTML = rewardsCard;
+    }
+
+    async function quizRegister(id){
+        let response = await fetch(`${baseUrl}/api/v3/quiz/register`,{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({quiz_id, user_id: isLoggedIn})
+        })
+        let res = await response.json()
+        if(res['response']['status'] == 200){
+            if(res['response']['data'] != ''){
+                let payment_token = res['response']['data']['payment_token']
+                let payment_enc_id = res['response']['data']['payment_enc_id']
+            }else {
+                console.log('2')
+                document.querySelectorAll('.regBtn').forEach(t => {t.innerHTML = 'Registered'})
+            }
+        }
+    }
+
+    function _razoPay(ptoken,payment_enc_id){
+        var options = {
+            "key": access_key,
+            "name": "Empower Youth",
+            "description": "Registration Fee",
+            "image": "/assets/common/logos/logo.svg",
+            "order_id": ptoken,
+            "handler": function (response){
+                updateStatus(payment_enc_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
+            },
+            "prefill": {
+                "name": $('#applicant_name').val(),
+                "email": $('#email').val(),
+                "contact": $('#mobile').val()
+            },
+            "theme": {
+                "color": "#ff7803"
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+        rzp1.on('payment.failed', function (response){
+            updateStatus(payment_enc_id,null,"failed");
+            swal({
+                title:"Error",
+                text: response.error.description,
+            });
+        });
+    }
+    function updateStatus(payment_enc_id,payment_id=null,status,signature=null)
+    {
+        $.ajax({
+            url : '/api/v3/webinar/update-status',
+            method : 'POST',
+            data : {
+                payment_enc_id:payment_enc_id,
+                payment_id: payment_id,
+                signature:signature,
+                status:status,
+            },
+            success:function(res)
+            {
+                if(res.response.status == 200){
+                    swal({
+                        title:"Message",
+                        text: "Payment Successfully Captured & It will reflect in sometime..",
+                    });
+                }
+                location.reload();
+            }
         })
     }
+
 </script>
 
