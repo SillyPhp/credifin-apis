@@ -255,7 +255,7 @@ $this->registerCss('
     width: 80%;
     margin: 15px auto;
     text-align:center;
-    padding:20px 0;
+    padding:0 0 20px 0;
 }
 .down-img h3 {  
 	color: #fff;
@@ -274,7 +274,7 @@ $this->registerCss('
 }
 .show-img img {
     width: 100%;
-    height: 250px;
+    height: 100%;
     object-fit: contain;
     margin-bottom: 15px;
 }
@@ -606,6 +606,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
         background: rgba(0,0,0,.1);
         padding: 7px;
     }
+    .down-img{width:100%;}
 }
 @media only screen and (max-width: 720px) {
     .actions-main{

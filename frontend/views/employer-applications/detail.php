@@ -1899,6 +1899,10 @@ button.lc-item-video-menu {
         .btn-parent{
                 left: 24%;
           }
+       .job-overview ul li{
+         width: 100% !important;
+        }
+        .job-single-head2 ul{text-align:center;}
     }
     /* Profile icons css ends */
 ");
