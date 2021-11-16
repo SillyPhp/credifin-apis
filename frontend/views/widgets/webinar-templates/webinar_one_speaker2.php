@@ -8,10 +8,10 @@ use yii\helpers\Url;
     <div class="green-strip"></div>
     <div class="date-time">
         <div class="time">
-            04:00 PM - 05:00 PM
+            {{start_date_time}}
         </div>
         <div class="date">
-            16 October, 2021
+            {{start_date}}
         </div>
     </div>
     <div class="container">
@@ -20,43 +20,46 @@ use yii\helpers\Url;
                 <div class="speaker-details">
                 <div class="speaker-image">
                     <div class="inside-div">
-                    <img src="<?= Url::to('@eyAssets/images/pages/webinar/vanesh-sharma-pic.png') ?>">
+                    <img src="{{speaker_img}}">
                     </div>
                 </div>
                 <div class="speaker-name">
                     <h5>Speaker:</h5>
-                    <h3>Vanesh Sharma</h3>
-                    <h4>Proprietary Trader</h4>
+                    <h3>{{speaker_name}}</h3>
+                    <h4>{{Designation}}</h4>
                 </div>
                 </div>
             </div>
             <div class="col-sm-7">
                 <div class="webinar-text">
-                    <h1>How to build long term wealth in stock market?</h1>
+                    <h1>{{name}}</h1>
                     <div class="date-time">
                         <div class="time">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/time-icon.png')?>">4:00 PM - 5:00 PM
+                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/time-icon.png')?>">{{start_date_time}}
                         </div>
                         <div class="date">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/calendar-icon.png')?>">16 October, 2021
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/calendar-icon.png')?>">{{start_date}}
                         </div>
                     </div>
-                    <p>The stock market is riddled with uncertainty, but certain tried-and-true principles can help investors boost their chances for long term success. Some of the more important basic investment advice includes riding winners and selling losers; avoiding the urge to chase "hot tips".</p>
-                    <a href="/webinar/how-to-build-long-term-wealth-in-stock-market-22862" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
+                    <p>{{description}}</p>
+                    <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
                     <div class="share-bar">
-                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/how-to-build-long-term-wealth-in-stock-market-22862" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/how-to-build-long-term-wealth-in-stock-market-22862" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/how-to-build-long-term-wealth-in-stock-market-22862" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
-                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/how-to-build-long-term-wealth-in-stock-market-22862" class="share-twitter"><i class="fab fa-twitter"></i></a>
-                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/how-to-build-long-term-wealth-in-stock-market-22862" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/{{slug}}" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/{{slug}}" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/{{slug}}" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<?php $this->registerCss('
+<?php
+$this->registerCss('
+img{
+width : 100%;
+}
 .webinar-one-speaker1 {
     background: radial-gradient(77.06% 77.06% at 50% 50%, #999999 0%, #000000 100%);
     min-height: 550px;
@@ -104,7 +107,7 @@ a.register-btn i{
     transition: all linear .3s;
 }
 a.register-btn:hover{
-    color: #fff
+    color: #fff;
     transition: all linear .3s;
 }
 a.register-btn:hover i{
@@ -258,7 +261,7 @@ a.register-btn:hover i{
 }
 .webinar-one-speaker1 .webinar-text .speaker-name h3 {
     font-size: 17px;
-}   
+}
 .webinar-one-speaker1 .webinar-text .speaker-name h4 {
     font-size: 14px;
 }
@@ -295,7 +298,7 @@ a.register-btn:hover i{
     .webinar-text{
         max-width: 100%;
     }
-    
+
     .webinar-one-speaker1 .webinar-text .date-time img{
         width: 24px;
         height: 24px;
@@ -306,7 +309,7 @@ a.register-btn:hover i{
 @media only screen and (max-width: 576px){
     .webinar-one-speaker1{
         min-height: 650px;
-    } 
+    }
     .green-strip{
         display: none;
     }
@@ -363,4 +366,4 @@ a.register-btn:hover i{
         font-size: 16px;
     }
 }
-') ?>
+');
