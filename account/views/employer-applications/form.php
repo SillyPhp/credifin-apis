@@ -1322,9 +1322,9 @@ float:right;}
 
 .checkbox-text{
     margin-bottom:8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+//    white-space: nowrap;
+//    overflow: hidden;
+//    text-overflow: ellipsis;
 }
 
 .checkbox-text .form-group.form-md-line-input {
