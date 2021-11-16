@@ -104,7 +104,7 @@ Yii::$app->view->registerJs('var profile = "' . Yii::$app->getRequest()->getQuer
 <!--Modal-->
 <div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" id="profiles">
-        Modal content
+<!--        Modal content-->
         <div class="modal-content">
             <div class="modal-header">
                 <button type="submit" class="close" data-dismiss="modal">&times;</button>
