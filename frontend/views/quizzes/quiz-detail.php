@@ -558,7 +558,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 //$this->registerJsFile('https://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
-    let baseUrl = 'https://ravinder.eygb.me';
+    let baseUrl = '';
     let isLoggedIn = '<?= Yii::$app->user->identity->user_enc_id ? Yii::$app->user->identity->user_enc_id : "false" ?>';
     let quiz_id = null;
     let access_key = '<?= Yii::$app->params->razorPay->prod->apiKey ?>';
@@ -593,22 +593,33 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             let registrationEndDate = setDateFormat(detail.registration_end_datetime);
             let quizStartDatetime = setDateFormat(detail.quiz_start_datetime);
             let quizEndDatetime = setDateFormat(detail.quiz_end_datetime);
+            let currentDate = new Date().getTime();
+            let regEnd = new Date(detail.registration_end_datetime).getTime();
+            let quizStart = new Date(detail.quiz_start_datetime).getTime()
 
             const header = `${detail.sharing_image ? `<img src="${detail.sharing_image}"/>` : ''}
                     <p>${detail.name}</p>
-                    <p class="quiz-detail-cat">${detail.category}</p>
+                    <p class="quiz-detail-cat">${detail.category ? detail.category : ''}</p>
                     <div class="quiz-timings-cover">
                         ${registrationEndDate ? `
                             <div class="reg-deadline"><i class="fas fa-user-clock"></i> Registration Deadline : <span> ${registrationEndDate}</span></div>
                         `: ''}
                         ${detail.is_expired == 'false' ? `
-                            <div class="days-left2"><i class="fas fa-clock"></i> ${detail.days_left} Days Left</div>
+                            <div class="days-left2"><i class="fas fa-clock"></i> ${detail.days_left > 0 ? detail.days_left : '0'} Days Left</div>
                         `: ''}
                         <div class="both-btns">
                             <div class="register-detail-btn-2">
-                                ${detail.is_expired == true ? `<p class="registeredTxt2">Expired</p>` : detail.is_registered ? `<p class="registeredTxt2"> Registered </p>` : `
-                                    <a href="javascript:;" class="regBtn" ${isLoggedIn == 'false' ? `data-toggle="modal" data-target="#loginModal"` : `onclick="quizRegister('${detail.quiz_enc_id}')"`}>Register Now</a>
-                                `}
+                                ${(currentDate > regEnd && detail.is_expired == 'false') ?
+                                    `<p class="registeredTxt2">Registration Closed</p>` :
+                                    detail.is_expired == 'true' ?
+                                    `<p class="registeredTxt2">Expired</p>` :
+                                    detail.is_registered ?
+                                    `<p class="registeredTxt2"> Registered </p>` :
+                                    `<a href="javascript:;" class="regBtn" ${isLoggedIn == 'false' ? `data-toggle="modal" data-target="#loginModal"` : `onclick="quizRegister('${detail.quiz_enc_id}')"`}>Register Now</a>`
+                                }
+                                ${
+
+                                }
                             </div>
                             ${detail.is_expired == 'false' ? `
                             <div class="addeventatc" title="Add to Calendar">
@@ -629,7 +640,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 
             document.querySelector('.detail-side').innerHTML = quizBody;
 
-            const registerDetailBtn = `${detail.is_expired == true ? `<p class="registeredTxt">Expired</p>` : detail.is_registered  ? `<p class="registeredTxt">Registered</p>` :
+            const registerDetailBtn = `${(currentDate > regEnd && detail.is_expired == 'false') ? `<p class="registeredTxt">Registration Closed</p>` : detail.is_expired == 'true' ? `<p class="registeredTxt">Expired</p>` : detail.is_registered  ? `<p class="registeredTxt">Registered</p>` :
                 `<a href="javascript:;" class="regBtn" ${isLoggedIn == 'false' ? `data-toggle="modal" data-target="#loginModal"`
                     : `onclick="quizRegister('${detail.quiz_enc_id}')"`}>Register Now</a>`}`;
 

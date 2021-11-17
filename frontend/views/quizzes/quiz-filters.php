@@ -425,7 +425,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 ?>
 <script>
-    let baseUrl = 'https://ravinder.eygb.me';
+    let baseUrl = '';
     let allquizzes = null;
     let allCategories = null
     let pageNo = 1;
@@ -522,7 +522,7 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
     function displayQuizzes(quizzes){
         let quizCard = quizzes.map(quiz => {
                 return `<div class="col-md-6">
-                <a href="https://shshank.eygb.me/quizzes/${quiz.slug}" data-href="`+baseUrl+`/quizzes/${quiz.slug}" target="_blank" class="" id="${quiz.quiz_enc_id}">
+                <a href="`+baseUrl+`/quizzes/${quiz.slug}" data-href="`+baseUrl+`/quizzes/${quiz.slug}" target="_blank" class="" id="${quiz.quiz_enc_id}">
                         <div class="card-main nd-shadow">
                             ${quiz.is_paid == 0 ? '' : `
                                 <div class="paid-webinar">Paid</div>
