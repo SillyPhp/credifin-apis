@@ -15,7 +15,7 @@ Yii::$app->view->registerJs('var profile = "' . Yii::$app->getRequest()->getQuer
                     </div>
                     <div class="actions">
                         <div id="btn-group2" class="btn-group dashboard-button btns2 ">
-                            <button class="viewall-jobs" data-toggle="modal" data-target="#shortList">Shortlist</button>
+<!--                            <button class="viewall-jobs" data-toggle="modal" data-target="#shortList">Shortlist</button>-->
                             <button class="viewall-jobs" onclick="rejection()">Reject</button>
                         </div>
                     </div>
@@ -102,51 +102,51 @@ Yii::$app->view->registerJs('var profile = "' . Yii::$app->getRequest()->getQuer
 </script>
 <!--Candidate Resume Mustache Template End-->
 <!--Modal-->
-<div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog" id="profiles">
+<!--<div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">-->
+<!--    <div class="modal-dialog" id="profiles">-->
 <!--        Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="submit" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Choose Applications to Shortlist for</h4>
-            </div>
-            <div class="modal-body">
-                <?php
-                if(count($available_applications) > 0) {
-                    foreach ($available_applications as $a) {
-                        ?>
-                        <div class="row padd10">
-                            <div class="col-md-12 text-center">
-                                <div class="radio_questions">
-                                    <div class="inputGroup process_radio">
-                                        <input type="radio" name="applications" id="<?= $a['application_enc_id'] ?>"
-                                               value="<?= $a['application_enc_id'] ?>">
-                                        <label for="<?= $a['application_enc_id'] ?>">
-                                            <?= $a['name'] ?>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php
-                    }
-                }
-                ?>
-
-            </div>
-
-            <div class="modal-footer">
-                <?php if(count($available_applications) > 0) { ?>
-                    <button id="submitData" type="submit" class="btn btn-primary" data-dismiss="modal">Submit</button>
-                <?php }else{ ?>
-                    <a class="btn btn-primary" href="/account/<?=$type?>/create">Create New <?=$type?></a>
-                <?php } ?>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-
-    </div>
-</div>
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header">-->
+<!--                <button type="submit" class="close" data-dismiss="modal">&times;</button>-->
+<!--                <h4 class="modal-title">Choose Applications to Shortlist for</h4>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                --><?php
+//                if(count($available_applications) > 0) {
+//                    foreach ($available_applications as $a) {
+//                        ?>
+<!--                        <div class="row padd10">-->
+<!--                            <div class="col-md-12 text-center">-->
+<!--                                <div class="radio_questions">-->
+<!--                                    <div class="inputGroup process_radio">-->
+<!--                                        <input type="radio" name="applications" id="--><?//= $a['application_enc_id'] ?><!--"-->
+<!--                                               value="--><?//= $a['application_enc_id'] ?><!--">-->
+<!--                                        <label for="--><?//= $a['application_enc_id'] ?><!--">-->
+<!--                                            --><?//= $a['name'] ?>
+<!--                                        </label>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        --><?php
+//                    }
+//                }
+//                ?>
+<!---->
+<!--            </div>-->
+<!---->
+<!--            <div class="modal-footer">-->
+<!--                --><?php //if(count($available_applications) > 0) { ?>
+<!--                    <button id="submitData" type="submit" class="btn btn-primary" data-dismiss="modal">Submit</button>-->
+<!--                --><?php //}else{ ?>
+<!--                    <a class="btn btn-primary" href="/account/--><?//=$type?><!--/create">Create New --><?//=$type?><!--</a>-->
+<!--                --><?php //} ?>
+<!--                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!---->
+<!--    </div>-->
+<!--</div>-->
 
 
 <?php
@@ -375,7 +375,7 @@ a.btn.btn-paid-candidate:hover, a.btn.btn-paid-candidate:focus{
     top:-5px !important;
 } 
 .checkbox-label:before {
-    content: "f00c";
+    content: "/f00c";
     position: absolute;
     top: 80px;
     left: 15px;
