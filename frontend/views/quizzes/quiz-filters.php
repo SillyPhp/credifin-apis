@@ -438,6 +438,7 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
         let statusVal = document.querySelector('input[name="status"]:checked').value;
         let paymentVal = document.querySelector('input[name="payment"]:checked').value;
         data = {...data, status: statusVal, payment: paymentVal, page: 1};
+        pageNo = 1;
         getAllQuizzes();
     }
 
