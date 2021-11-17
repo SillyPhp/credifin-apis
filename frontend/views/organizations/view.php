@@ -360,13 +360,13 @@ $round_avg = round($overall_avg);
                     </div>
 
                     <div class="av-jobs-intern">
-                        <?php if ($jobs_count && $internships_count > 0) {
+                        <?php if ($jobs_count > 0 || $internships_count > 0) {
                         ?>
                             <div class="row">
                                 <div class="heading-style">Available Opportunities</div>
                                 <div class="divider"></div>
                             </div>
-                        <? } ?>
+                        <?php } ?>
                         <?php if ($jobs_count > 0) {
                             ?>
                             <div id="jobs-cards-main" class="row">
