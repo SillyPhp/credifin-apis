@@ -137,11 +137,20 @@ endif;
             ?>
 
             <?php
-            if ($loanApplication && Yii::$app->user->identity->type->user_type == 'Individual') {
-                echo $this->render('/widgets/education-loan/loan-detail-individual-dashboard', [
-                    'loanApplication' => $loanApplication,
-                ]);
-            }
+                if ($loanApplication && Yii::$app->user->identity->type->user_type == 'Individual') {
+                    echo $this->render('/widgets/education-loan/loan-detail-individual-dashboard', [
+                        'loanApplication' => $loanApplication,
+                    ]);
+                }
+            ?>
+            <?php
+                if($loanLoginFee){
+                    foreach ($loanLoginFee as $loginFee){
+                        echo $this->render('/widgets/login-fee-due', [
+                                'loginFee' => $loginFee,
+                        ]);
+                    }
+                }
             ?>
             <?=
             $this->render('/widgets/applications/dashboard-applied-applications', [

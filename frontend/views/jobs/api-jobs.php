@@ -238,15 +238,21 @@ if (!Yii::$app->user->isGuest) {
                             </div>
                         </div>
                     </div>
-                    <div class="down-img">
-                        <h3>Download Sharing Image</h3>
-                        <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size
-                            (1250*650)</a>
-                        <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square
-                            Size (800*800)</a>
-                        <a href="<?= $Storyimage; ?>" download target="_blank"><i class="fa fa-download"></i> Story
-                            Size (Default)</a>
+                </div>
+                <div class="down-img">
+                    <div class="show-img">
+                        <img src="<?= Url::to($Instaimage); ?>" alt=""/>
                     </div>
+                    <h3>Download Sharing Image</h3>
+                    <a href="<?= $image; ?>" download target="_blank" title="Banner Image" class="img-down">
+                        <img src="<?= Url::to('@eyAssets/images/pages/employers/poster.png'); ?>" alt=""/>
+                    </a>
+                    <a href="<?= $Storyimage; ?>" download target="_blank" title="Story Image" class="img-down">
+                        <img src="<?= Url::to('@eyAssets/images/pages/employers/story.png'); ?>" alt=""/>
+                    </a>
+                    <a href="<?= $Instaimage; ?>" download target="_blank" title="Post Image" class="img-down">
+                        <img src="<?= Url::to('@eyAssets/images/pages/employers/square.png'); ?>" alt=""/>
+                    </a>
                 </div>
                 <!--  org details-->
                 <?php
@@ -335,6 +341,36 @@ if (Yii::$app->params->options->showSchema) {
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.down-img {
+    background: #4ECDC4;
+    background: -webkit-linear-gradient(to right, #556270, #4ECDC4);
+    background: linear-gradient(to right, #556270, #333a44);
+    width: 80%;
+    margin: 15px auto;
+    text-align:center;
+    padding:20px 0;
+}
+.down-img h3 {  
+	color: #fff;
+	font-size: 16px;
+	font-family: roboto;
+	margin: 0px 0 15px;
+}
+.down-img a {
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 0px 2px;
+    width: 38px;
+    height: 36px;
+}
+.show-img img {
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+    margin-bottom: 15px;
+}
 .footer{margin-top:0 !important;}
 .job-location {
     width: 40%;
@@ -343,7 +379,6 @@ $this->registerCss('
     margin: 0 auto;
 }
 .job-thumb canvas {
-    border-radius: 50%;
     width: 125px;
     height: 125px;
 }
@@ -358,24 +393,6 @@ $this->registerCss('
 	right: 28px;
 	font-size: 22px;
 	cursor:pointer;
-}
-.down-img h3 {  
-	color: #fff;
-	font-size: 15px;
-	font-family: roboto;
-	margin: 10px 0 15px;
-}
-.down-img a {
-	color: #fff;
-	border: 2px solid #fff;
-	padding: 8px 25px;
-	font-size: 14px;
-	font-family: roboto;
-	font-weight: 500;
-	border-radius:6px;
-	display: inline-block;
-    margin: 5px 0px;
-    width:230px;
 }
 .form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
     margin-bottom:0;
@@ -467,7 +484,6 @@ border: 1px solid #eee;
     overflow: hidden;
     line-height: 125px;
     margin: auto;
-    border-radius: 50%;
 }
 .job-thumb img{
     max-width: 100px !Important;
@@ -1454,21 +1470,10 @@ $this->registerCss("
         padding: 7px;
     }
     }
-    @media only screen and (max-width: 649px) {
-      .btn-parent{
-            left: 28px;
-            transform: unset;
-            border-radius: 0px 10px 0 0;
-      }
-    }
     @media only screen and (max-width: 430px) {
     .btn-parent{
-        position: fixed;
-        }
-    }
-     @media only screen and (max-width: 380px) {
-    .btn-parent{
-        left:0px;
+        left:30%;
+        padding:0;
         }
     }
     @media only screen and (max-width: 575px) {

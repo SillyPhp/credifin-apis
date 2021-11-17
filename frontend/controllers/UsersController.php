@@ -215,7 +215,7 @@ class UsersController extends Controller
                     }], false);
                 }], false)
                 ->andWhere(['z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'bb.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-                ->andWhere(['not', ['z.applied_application_enc_id' => $id]])
+//                ->andWhere(['not', ['z.applied_application_enc_id' => $id]])
                 ->asArray()
                 ->all();
         } else{

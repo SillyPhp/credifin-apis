@@ -1,35 +1,7 @@
 <?php
 use yii\helpers\Url;
 $userDetail = \common\models\Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
-$this->title = 'Education Loan';
 $this->params['header_dark'] = true;
-$keywords = 'Interest Free Loans available for select colleges/Universities | Empower Youth';
-$description = 'Do Not let monetary constraints stop your from getting admission in your dream college/ university';
-$image = Url::to('@eyAssets/images/pages/education-loans/apply-for-education-loan.png', 'https');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouthin',
-        'twitter:creator' => '@EmpowerYouthin',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->prod->apiKey. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var getLender = "' .$getLender. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
@@ -1642,16 +1614,16 @@ function ajaxSubmit(){
     let co_applicants = [];
     var obj = {};
     if (applicantRadio==0){
-        obj['name'] = $('input[name="co-name[1]"]').not(':hidden').val()
+        obj['name'] = $.trim($('input[name="co-name[1]"]').not(':hidden').val());
     obj['relation'] = $('input[name="co-relation[1]"]:checked').not(':hidden').val();
     obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').not(':hidden').val();
     obj['annual_income'] = $('input[name="co-anualincome[1]"]').not(':hidden').val(); 
     co_applicants.push(obj);
     if ($('input[name="co-name[2]"]').length>0){
-        if ($('input[name="co-name[2]"]').val().length!=0)
+        if ($.trim($('input[name="co-name[2]"]').val()).length!=0)
         {
         var objCoBorrower = {};
-        objCoBorrower['name'] = $('input[name="co-name[2]"]').not(':hidden').val()
+        objCoBorrower['name'] = $.trim($('input[name="co-name[2]"]').not(':hidden').val());
         objCoBorrower['relation'] = $('input[name="co-relation[2]"]:checked').not(':hidden').val();
         objCoBorrower['employment_type'] = $('input[name="co-emptype[2]"]:checked').not(':hidden').val();
         objCoBorrower['annual_income'] = $('input[name="co-anualincome[2]"]').not(':hidden').val();
@@ -1659,16 +1631,16 @@ function ajaxSubmit(){
         }
     }
     }else if (applicantRadio==1){
-         obj['name'] = $('input[name="co-name[1]"]').val()
+         obj['name'] = $.trim($('input[name="co-name[1]"]').val());
          obj['relation'] = $('input[name="co-relation[1]"]:checked').val();
          obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').val();
          obj['annual_income'] = $('input[name="co-anualincome[1]"]').val(); 
          co_applicants.push(obj);
         if ($('input[name="co-name[2]"]').length>0){
-        if ($('input[name="co-name[2]"]').val().length!=0)
+        if ($.trim($('input[name="co-name[2]"]').val()).length!=0)
         {
         var objCoBorrower = {};
-        objCoBorrower['name'] = $('input[name="co-name[2]"]').val()
+        objCoBorrower['name'] = $.trim($('input[name="co-name[2]"]').val());
         objCoBorrower['relation'] = $('input[name="co-relation[2]"]:checked').val();
         objCoBorrower['employment_type'] = $('input[name="co-emptype[2]"]:checked').val();
         objCoBorrower['annual_income'] = $('input[name="co-anualincome[2]"]').val();
@@ -1688,7 +1660,7 @@ function ajaxSubmit(){
         college_course_info.push(object);
         url = '/api/v3/education-loan/save-application';
         data = {
-                applicant_name:$('#applicant_name').val(),
+                applicant_name:$.trim($('#applicant_name').val()),
                 applicant_dob:$('#dob').val(),
                 is_applicant:applicantRadio,                
                 applicant_current_city:$('#location').val(),

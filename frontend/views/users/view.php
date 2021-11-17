@@ -537,11 +537,11 @@ $uId = $user['user_enc_id'];
                             <div class="portlet-title tabbable-line">
                                 <div class="caption">
                                     <?php
-                                    if ($_GET['id']) {
-                                        echo '<span class="caption-subject font-dark bold uppercase">Also Applied In</span>';
-                                    } else {
+//                                    if ($_GET['id']) {
+//                                        echo '<span class="caption-subject font-dark bold uppercase">Also Applied In</span>';
+//                                    } else {
                                         echo '<span class="caption-subject font-dark bold uppercase">Applied In</span>';
-                                    }
+//                                    }
                                     ?>
                                 </div>
                             </div>
@@ -660,6 +660,7 @@ $this->registerCss('
     padding: 8px 12px;
     text-align: center;
     border-radius: 6px;
+    margin: 0px 5px;
     color: #fff;
     transition: 0.3s;
     margin-top: 5px;
