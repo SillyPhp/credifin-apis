@@ -538,7 +538,7 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
                                     ${quiz.is_expired == 'true' || quiz.days_left == null ? '' : `
                                     <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> ${quiz.days_left ? quiz.days_left : ''} Days Left</div>
                                     `}
-                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
+                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> ${quiz.registered_count} Registered</div>
                                     ${quiz.quizRewards[0] ? `
                                         <div class="pricing-money" style="flex-grow: 8">
                                             <img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹ ${Math.floor(quiz.quizRewards[0]['price'])}
@@ -550,7 +550,6 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
                                     <div class="quiz-category">${quiz.category ? quiz.category : ''}</div>
                                 </div>
                                 <div class="about-footer">
-                                    <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
                                     ${quiz.price && quiz.is_paid == 1 ? `
                                         <div class="register-date"><i class="fas fa-rupee-sign"></i>${Math.floor(quiz.price)}</div>
                                     ` : ''}
@@ -599,4 +598,6 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
         getAllQuizzes()
     }
     clearFilters()
+
+
 </script>
