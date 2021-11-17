@@ -555,7 +555,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 //$this->registerJsFile('https://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
-    let baseUrl = 'https://ravinder.eygb.me';
+    let baseUrl = '';
     let isLoggedIn = '<?= Yii::$app->user->identity->user_enc_id ? Yii::$app->user->identity->user_enc_id : "false" ?>';
     let quiz_id = null;
     let access_key = '<?= Yii::$app->params->razorPay->prod->apiKey ?>';
@@ -724,7 +724,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                                 <div class="expired-btn">EXPIRED</div>
                             ` : ''}
                             <div class="card-img">
-                                <img src="${quiz.sharing_image}"/>
+                                <img src="${quiz.sharing_image ? quiz.sharing_image : `<?= Url::to('@eyAssets/images/pages/quiz/quiz-template-default.png') ?>`}"/>
                             </div>
                             <div class="card-details">
                                 <div class="about-first flex-container">

@@ -531,12 +531,12 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
                                 <div class="expired-btn">EXPIRED</div>
                             ` : ''}
                             <div class="card-img">
-                                <img src="${quiz.sharing_image}"/>
+                                <img src="${quiz.sharing_image ? quiz.sharing_image : `<?= Url::to('@eyAssets/images/pages/quiz/quiz-template-default.png') ?>`}"/>
                             </div>
                             <div class="card-details">
                                 <div class="about-first flex-container">
                                     ${quiz.is_expired == 'true' || quiz.days_left == null ? '' : `
-                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> ${quiz.days_left ? quiz.days_left : ''} Days Left</div>
+                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> ${quiz.days_left > 0 ? quiz.days_left : '0'} Days Left</div>
                                     `}
                                     <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> ${quiz.registered_count} Registered</div>
                                     ${quiz.quizRewards[0] ? `
