@@ -237,6 +237,31 @@ $industries = Json::encode($industries);
                                     </div>
                                 </div>
                             </div>
+                            <div class="total-opportunities">
+                                <h3>Opportunities You Created</h3>
+                                <div class="sec-flex">
+                                    <div class="jobs-counts">
+                                        <div class="counts-side">
+                                            <p>Available Jobs</p>
+                                            <span><?= $available_jobs ?></span>
+                                        </div>
+                                        <div class="counts-side">
+                                            <p>Closed Jobs</p>
+                                            <span><?= $expired_jobs ?></span>
+                                        </div>
+                                    </div>
+                                    <div class="internships-counts">
+                                    <div class="counts-side">
+                                        <p>Available Internships</p>
+                                        <span><?= $available_internships ?></span>
+                                    </div>
+                                    <div class="counts-side">
+                                        <p>Closed Internships</p>
+                                        <span><?= $expired_internships ?></span>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
@@ -659,6 +684,45 @@ echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug']
 ]);
 $this->registerCss('
+.total-opportunities {
+    padding: 15px;
+    box-shadow: 0 0 6px 2px #eee;
+    margin-top: 30px;
+    background: #24C6DC;
+    background: -webkit-linear-gradient(to right, #4a839d, #24C6DC);
+    background: linear-gradient(to right, #4a839d, #24C6DC);
+    /* color: #fff; */
+}
+.total-opportunities h3 {
+    margin: 0;
+    font-family: "Roboto";
+    font-size: 20px;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 15px;
+    color: #fff;
+}
+.sec-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.jobs-counts, .internships-counts {
+    flex-basis: 50%;
+}
+.counts-side {
+    font-family: "Roboto";
+    background-color: #fff;
+    border: 1px solid #fff;
+    margin: 0px 5px 10px;
+    text-align: center;
+    padding: 5px;
+}
+.counts-side p, .counts-side span {
+    margin: 0;
+    font-weight: 500;
+}
 .write-review{
     font-family: "Open Sans", sans-serif;
     font-size: 14px;
