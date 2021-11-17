@@ -1068,32 +1068,32 @@ class QuizController extends ApiBaseController
 
     public function actionDetail()
     {
-        if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
 
-            if (!isset($params['slug']) && empty($params['slug'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "slug"']);
-            }
+        $params = Yii::$app->request->post();
 
-            $options['slug'] = $params['slug'];
-            $options['user_id'] = $user->user_enc_id;
-
-            $quizModel = new Quiz();
-            $detail = $quizModel->detail($options);
-            unset($options['slug']);
-
-            $options['category'] = $detail['category'];
-            $options['limit'] = 3;
-            $related = Quiz::getQuizData($options);
-
-            if ($detail) {
-                return $this->response(200, ['status' => 200, 'message' => 'quiz detail', 'detail' => $detail, 'related' => $related]);
-            }
-
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
-        } else {
-            return $this->response(401, ['status' => 404, 'message' => 'unauthorized']);
+        if (!isset($params['slug']) && empty($params['slug'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "slug"']);
         }
+
+        $options['slug'] = $params['slug'];
+
+        if ($user = $this->isAuthorized()) {
+            $options['user_id'] = $user->user_enc_id;
+        }
+
+        $quizModel = new Quiz();
+        $detail = $quizModel->detail($options);
+        unset($options['slug']);
+
+        $options['category'] = $detail['category'];
+        $options['limit'] = 3;
+        $related = Quiz::getQuizData($options);
+
+        if ($detail) {
+            return $this->response(200, ['status' => 200, 'message' => 'quiz detail', 'detail' => $detail, 'related' => $related]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
 
     }
 
