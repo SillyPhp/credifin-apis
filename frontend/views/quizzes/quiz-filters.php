@@ -468,7 +468,6 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
         if(res['response']['status'] == 200){
             displayQuizzes(res['response']['data']);
             allquizzes = res['response']['data'];
-            totalPages = res['response']['data'];
             if(allquizzes.length < limit){
                 loadMoreCards = false;
             }
@@ -570,6 +569,7 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 
     window.onscroll = function (){
         if(bottomVisible() && loading && loadMoreCards){
+            console.log('inside-scf');
                 pageNo = pageNo + 1;
                 data = {...data, page: pageNo};
                 getAllQuizzes(data);
@@ -594,8 +594,11 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
         document.querySelector('#all').checked = true;
         document.querySelector('#all-pay').checked = true;
         document.querySelectorAll('input[name="categoryFilter"]').forEach( t => t.checked = false);
-        console.log('clear');
-        data = {...data, status: '', payment: '', category: ''}
+        data = {...data, status: '', payment: '', category: '', page: ''}
+        pageNo = 1;
+        if(loadMoreCards == false){
+            loadMoreCards = true;
+        }
         getAllQuizzes()
     }
     clearFilters()
