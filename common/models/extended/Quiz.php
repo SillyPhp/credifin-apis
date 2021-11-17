@@ -30,10 +30,10 @@ class Quiz extends Quizzes
                 'a.title', 'a.slug', 'c1.name category', 'c2.name parent_category', 'a.quiz_start_datetime', 'a.quiz_end_datetime', 'a.duration', 'a.description', 'a.registration_start_datetime', 'a.registration_end_datetime',
                 'a.num_of_ques',
                 'CASE WHEN a.sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", a.sharing_image_location, "/", a.sharing_image) ELSE NULL END sharing_image',
-                "CASE WHEN a.registration_end_datetime IS NOT NULL THEN DATEDIFF(a.registration_end_datetime, CONVERT_TZ(Now(),'+00:00','+10:30')) ELSE NULL END days_left",
+                "CASE WHEN a.quiz_start_datetime IS NOT NULL THEN DATEDIFF(a.quiz_start_datetime, CONVERT_TZ(Now(),'+00:00','+10:30')) ELSE NULL END days_left",
                 "CASE 
-                    WHEN a.registration_end_datetime IS NULL THEN NULL
-                    WHEN DATEDIFF(a.quiz_end_datetime, CONVERT_TZ(Now(),'+00:00','+10:30')) < 0 THEN 'true'
+                    WHEN a.quiz_end_datetime IS NULL THEN NULL
+                    WHEN TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),'+00:00','+10:30'),a.quiz_end_datetime) < 0 THEN 'true'
                  ELSE 'false' END is_expired",
             ])
             ->joinWith(['currencyEnc b'], false)
@@ -69,11 +69,11 @@ class Quiz extends Quizzes
         // expired or live
         if (isset($options['status']) && !empty($options['status'])) {
             if ($options['status'] == 'expired') {
-                $q->having(['<', 'days_left', 0]);
+                $q->having(['is_expired' => 'true']);
             } elseif ($options['status'] == 'live') {
                 $q->having(['or',
-                    ['>=', 'days_left', 0],
-                    ['days_left' => null],
+                    ['is_expired' => 'false'],
+                    ['is_expired' => null],
                 ]);
             }
         }
@@ -101,10 +101,10 @@ class Quiz extends Quizzes
                 'a.title', 'a.slug', 'c1.name category', 'c2.name parent_category', 'a.quiz_start_datetime', 'a.quiz_end_datetime', 'a.duration', 'a.description', 'a.registration_start_datetime', 'a.registration_end_datetime',
                 'a.num_of_ques',
                 'CASE WHEN a.sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", a.sharing_image_location, "/", a.sharing_image) ELSE NULL END sharing_image',
-                "CASE WHEN a.registration_end_datetime IS NOT NULL THEN DATEDIFF(a.registration_end_datetime, CONVERT_TZ(Now(),'+00:00','+10:30')) ELSE NULL END days_left",
+                "CASE WHEN a.quiz_start_datetime IS NOT NULL THEN DATEDIFF(a.quiz_start_datetime, CONVERT_TZ(Now(),'+00:00','+10:30')) ELSE NULL END days_left",
                 "CASE 
-                    WHEN a.registration_end_datetime IS NULL THEN NULL
-                    WHEN DATEDIFF(a.registration_end_datetime, CONVERT_TZ(Now(),'+00:00','+10:30')) < 0 THEN 'true'
+                    WHEN a.quiz_end_datetime IS NULL THEN NULL
+                    WHEN TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),'+00:00','+10:30'),a.quiz_end_datetime) < 0 THEN 'true'
                  ELSE 'false' END is_expired",
             ])
             ->joinWith(['currencyEnc b'], false)
