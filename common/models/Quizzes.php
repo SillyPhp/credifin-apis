@@ -1,5 +1,8 @@
 <?php
+
 namespace common\models;
+
+use Yii;
 
 /**
  * This is the model class for table "{{%quizzes}}".
@@ -26,6 +29,10 @@ namespace common\models;
  * @property string $title Quiz Title for SEO Purpose
  * @property string $keywords Quiz Keywords for SEO Purpose
  * @property string $description Quiz Description for SEO Purpose
+ * @property string $quiz_start_datetime
+ * @property string $quiz_end_datetime
+ * @property string $registration_start_datetime
+ * @property string $registration_end_datetime
  * @property string $created_on
  * @property string $created_by
  * @property string $last_updated_on
@@ -38,6 +45,7 @@ namespace common\models;
  * @property int $is_deleted
  *
  * @property QuizAssignedGroup[] $quizAssignedGroups
+ * @property QuizRewards[] $quizRewards
  * @property QuizPool $quizPoolEnc
  * @property AssignedCategories $assignedCategoryEnc
  * @property Users $createdBy
@@ -47,7 +55,7 @@ namespace common\models;
 class Quizzes extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -55,7 +63,7 @@ class Quizzes extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -63,9 +71,9 @@ class Quizzes extends \yii\db\ActiveRecord
             [['quiz_enc_id', 'quiz_pool_enc_id', 'name', 'slug', 'type', 'num_of_ques', 'template', 'created_by'], 'required'],
             [['price'], 'number'],
             [['total_marks', 'time_duration', 'correct_answer_marks', 'negetive_marks', 'type', 'num_of_ques', 'template', 'display', 'is_login', 'is_paid', 'duration', 'status', 'is_deleted'], 'integer'],
-            [['created_on', 'last_updated_on'], 'safe'],
+            [['description'], 'string'],
+            [['quiz_start_datetime', 'quiz_end_datetime', 'registration_start_datetime', 'registration_end_datetime', 'created_on', 'last_updated_on'], 'safe'],
             [['quiz_enc_id', 'quiz_pool_enc_id', 'currency_enc_id', 'name', 'assigned_category_enc_id', 'slug', 'background_image', 'background_image_location', 'sharing_image', 'sharing_image_location', 'title', 'keywords', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['description'], 'string', 'max' => 300],
             [['quiz_enc_id'], 'unique'],
             [['name', 'slug', 'type', 'is_deleted'], 'unique', 'targetAttribute' => ['name', 'slug', 'type', 'is_deleted']],
             [['quiz_pool_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => QuizPool::className(), 'targetAttribute' => ['quiz_pool_enc_id' => 'quiz_pool_enc_id']],
@@ -77,15 +85,19 @@ class Quizzes extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
-     */
-
-    /**
      * @return \yii\db\ActiveQuery
      */
     public function getQuizAssignedGroups()
     {
         return $this->hasMany(QuizAssignedGroup::className(), ['quiz_pool_enc_id' => 'quiz_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuizRewards()
+    {
+        return $this->hasMany(QuizRewards::className(), ['quiz_enc_id' => 'quiz_enc_id']);
     }
 
     /**

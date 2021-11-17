@@ -1322,9 +1322,9 @@ float:right;}
 
 .checkbox-text{
     margin-bottom:8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+//    white-space: nowrap;
+//    overflow: hidden;
+//    text-overflow: ellipsis;
 }
 
 .checkbox-text .form-group.form-md-line-input {
@@ -2494,6 +2494,9 @@ function get_preview(session_tok) {
                        }
                     }); 
             }
+window.onbeforeunload = function() {
+return "Do you really want to leave ?";
+};
             
 $(document).on('click', '.modal-load-class', function(e) {
     e.preventDefault();

@@ -9,47 +9,44 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-md-6 col-sm-6 web-txt">
                 <div class="web-text">
-                    <h1>Webinar Title</h1>
+                    <h1>{{name}}</h1>
                     <div class="date-time">
-                        <span class="date"><img src="<?= Url::to('@eyAssets/images/pages/webinar/triangle1.png')?>">30 September</span>
-                        <span class="time"><img src="<?= Url::to('@eyAssets/images/pages/webinar/triangle.png')?>">15:00 - 16:45</span>
+                        <span class="date"><img src="<?= Url::to('/assets/themes/ey/images/pages/webinar/triangle1.png')?>">{{start_date}}</span>
+                        <span class="time"><img src="<?= Url::to('/assets/themes/ey/images/pages/webinar/triangle.png')?>">{{start_date_time}}</span>
                     </div>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Recusandae id sunt incidunt aperiam quisquam, quos sed fugit dolorum asperiores quod!</p>
+                    <p>{{description}}</p>
                 </div>
-                <a href="#" class="register-btn">Register Now <i class="fas fa-caret-right"></i></a>
+                <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-caret-right"></i></a>
                 <div class="share-bar">
-                    <a target="_blank" href="#" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                    <a target="_blank" href="#" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                    <a target="_blank" href="#" class="share-linkedin"><i class="fab fa-whatsapp"></i></a>
-                    <a target="_blank" href="#" class="share-twitter"><i class="far fa-envelope-open"></i></a>
+                    <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/{{slug}}" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                    <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/{{slug}}" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                    <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                    <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                    <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/{{slug}}" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
                 <div class="speaker-image">
+                    {{#speakers}}
                     <div class="two-speakers">
                         <div class="two-speakers-img"></div>
                         <div class="two-speakers-text">
-                            <h3>Speaker Name</h3>
-                            <p>Designation</p>
-                            <p>company name</p>
-                            <p>(Location)</p>
+                            <h3>{{speaker_name}}</h3>
+                            <p>{{designation}}</p>
+                            {{#company_name}}
+                            <p>{{company_name}}</p>
+                            {{/company_name}}
+                            {{#location}}
+                            <p>{{location}}</p>
+                            {{/location}}
                         </div>
                     </div>
-                    <div class="two-speakers">
-                        <div class="two-speakers-img"></div>
-                        <div class="two-speakers-text">
-                            <h3>Speaker Name</h3>
-                            <p>Designation</p>
-                            <p>company name</p>
-                            <p>(Location)</p>
-                        </div>
-                    </div>
+                    {{/speakers}}
                 </div>
             </div>
         </div>
     </div>
 </section>
-
 <?php
 $this->registerCss('
 .webinar-speaker1{
@@ -71,7 +68,7 @@ $this->registerCss('
 .date-time img {
     margin-right: 10px;
 }
- .date-time span {
+.date-time span {
     display: block;
     line-height: 23px;
     font-family: farro;
@@ -87,21 +84,21 @@ $this->registerCss('
     font-family: roboto;
     margin: 22px 0 0 0;
 }
- a.register-btn {
-        background: linear-gradient(91.16deg, #FFBB54 -43.72%, #CB650C 125.14%, #DB7E2E 125.14%);
-        border-radius: 27px;
-        font-size: 16px;
-        padding: 15px 30px;
-        display: inline-block;
-        margin-top: 20px;
-        color: #fff;
-        transition: all linear .3s;
+a.register-btn {
+    background: linear-gradient(91.16deg, #FFBB54 -43.72%, #CB650C 125.14%, #DB7E2E 125.14%);
+    border-radius: 27px;
+    font-size: 16px;
+    padding: 15px 30px;
+    display: inline-block;
+    margin-top: 20px;
+    color: #fff;
+    transition: all linear .3s;
 }
 a.register-btn i{
     transition: all linear .3s;
 }
 a.register-btn:hover{
-    color: #fff
+    color: #fff;
     transition: all linear .3s;
 }
 a.register-btn:hover i{
@@ -227,7 +224,7 @@ a.register-btn:hover i{
 }
 @media screen and (max-width: 992px) and (min-width: 768px) {
     .two-speakers-text {
-    `   padding: 10px 45px;
+        padding: 10px 45px;
     }
     .two-speakers-img {
         width: 170px;

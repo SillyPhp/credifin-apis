@@ -220,12 +220,14 @@ function renderCards(cards, container){
     if(cardsLength%3 !==0 && loader === true) {
         $('#loadMore').css('display','none');
     }
-    var noRows = Math.ceil(cardsLength / 3);
-    var j = 0;
-    for(var i = 1; i <= noRows; i++){
-        $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
-        j+=3;
-    }
+    // var noRows = Math.ceil(cardsLength / 3);
+    // var j = 0;
+    // for(var i = 1; i <= noRows; i++){
+        let allDataRow = $('<div class="row"></div>').append(Mustache.render(card, cards));
+        $(container).append(allDataRow);
+        // $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
+        // j+=3;
+    // }
 }
 
 function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname, location = "", limit = "", dataType = "") {
