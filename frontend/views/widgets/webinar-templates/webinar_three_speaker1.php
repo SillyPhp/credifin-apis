@@ -1,4 +1,5 @@
-<section class="webinar-three-speaker">
+<script id="webinar_three_speaker1" type="text/javascript">
+    <section class="webinar-three-speaker">
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
@@ -16,13 +17,19 @@
                                     <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
                                 </div>
                             </div>
-                            {{#speakers}}
+                            {{#webinarEvents}}
+                            {{#webinarSpeakers}}
                             <div class="col-xs-4">
-                                <div class="speaker-img"></div>
+                                <div class="speaker-img">
+                                    {{#speaker_image}}
+                                    <img src="{{speaker_image}}">
+                                    {{/speaker_image}}
+                                </div>
                                 <div class="speaker-name">{{speaker_name}}</div>
                                 <div class="designation">{{designation}}</div>
                             </div>
-                            {{/speakers}}
+                            {{/webinarSpeakers}}
+                            {{/webinarEvents}}
                         </div>
                     </div>
                     <div class="avail-share">
@@ -56,11 +63,11 @@
                     <div class="date-time">
                         <div class="date">
                             <div class="prop">DATE</div>
-                            <div class="value">{{start_date}}</div>
+                            <div class="value">{{date}}</div>
                         </div>
                         <div class="time">
                             <div class="prop">TIME</div>
-                            <div class="value">{{start_date_time}}</div>
+                            <div class="value">{{time}}</div>
                         </div>
                     </div>
                 </div>
@@ -68,9 +75,17 @@
         </div>
     </div>
 </section>
-
+</script>
 
 <?php $this->registerCss('
+.share-whatsapp{
+color: #25D366 !important;
+}
+.share-bar a.share-whatsapp:hover{
+    background-color: #25D366 !important;
+    color: #fff !important;
+    
+}
     .webinar-three-speaker{
         background: #150050;
         overflow: hidden;
@@ -84,6 +99,9 @@
         height: 150px;
         background: #fff;
         margin: 15px 0;
+    }
+    .speaker-img img {
+    width:100%;
     }
     .speaker-title h6 {
        color: #fff;
