@@ -270,7 +270,7 @@ use kartik\select2\Select2;
                         'name' => 'earliestjoiningdate',
                         'todayHighlight' => true,
                         'startDate' => '+0d',
-                    ]])->label(false);
+                    ]])->label('Last Date to Apply');
                 ?>
             </div>
             <div class="col-md-6">
@@ -284,7 +284,7 @@ use kartik\select2\Select2;
                         'name' => 'earliestjoiningdate',
                         'todayHighlight' => true,
                         'startDate' => '+0d',
-                    ]])->label(false);
+                    ]])->label('Joining Date');
                 ?>
             </div>
         </div>
@@ -393,6 +393,14 @@ function _setExperience(e,exp_id,experience) {
     selectbox.val('$model->maximum_exp');
     }
   }
+function getFullDate() {
+    var d = new Date();
+    d.setDate(d.getDate() + 15);
+    var months = ["January", "February", "March", "April", "May", "June", "July", "August", "Sep", "Oct", "November", "December"];
+    return d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
+}
+
+$('#last_date, #earliestjoiningdate').val(getFullDate()).datepicker('refresh');
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
