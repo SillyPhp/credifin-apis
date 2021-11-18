@@ -28,6 +28,7 @@ class QuizzesController extends Controller
 
     public function actionIndex($type = null)
     {
+        return $this->actionList();
         if ($type == null) {
             $categories = AssignedCategories::find()
                 ->alias('a')

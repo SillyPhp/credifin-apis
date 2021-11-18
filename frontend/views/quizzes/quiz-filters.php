@@ -426,6 +426,10 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 ?>
 <script>
     let baseUrl = '';
+    // let winLocation = window.location.hostname;
+    // if(winLocation == 'shshank.eygb.me'){
+    //     baseUrl = 'https://ravinder.eygb.me';
+    // }
     let allquizzes = null;
     let allCategories = null
     let pageNo = 1;

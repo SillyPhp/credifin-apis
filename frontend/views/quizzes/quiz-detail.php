@@ -556,6 +556,10 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 ?>
 <script>
     let baseUrl = '';
+    // let winLocation = window.location.hostname;
+    // if(winLocation == 'shshank.eygb.me'){
+    //     baseUrl = 'https://ravinder.eygb.me';
+    // }
     let isLoggedIn = '<?= Yii::$app->user->identity->user_enc_id ? Yii::$app->user->identity->user_enc_id : "false" ?>';
     let quiz_id = null;
     let access_key = '<?= Yii::$app->params->razorPay->prod->apiKey ?>';
