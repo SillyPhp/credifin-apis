@@ -574,13 +574,15 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
         let res = await response.json();
 
         if(res['response']['status'] == 200){
-            quizHeader(res['response']['detail']);
-            showRelatedQuiz(res['response']['related']);
-            showReward(res['response']['detail']['quizRewards']);
-            showRegisteredIcons(res['response']['detail']['registered_users']);
-            quiz_id = res['response']['detail']['quiz_enc_id'];
-            if(res['response']['detail']['quiz_start_datetime']){
-                countdown(res['response']['detail']['quiz_start_datetime']);
+            window.onload = function () {
+                quizHeader(res['response']['detail']);
+                showRelatedQuiz(res['response']['related']);
+                showReward(res['response']['detail']['quizRewards']);
+                showRegisteredIcons(res['response']['detail']['registered_users']);
+                quiz_id = res['response']['detail']['quiz_enc_id'];
+                if (res['response']['detail']['quiz_start_datetime']) {
+                    countdown(res['response']['detail']['quiz_start_datetime']);
+                }
             }
         }
     }
@@ -684,7 +686,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             }
             document.querySelector('.regCount').innerHTML = `<span>${detail.registered_count ? detail.registered_count : 0}</span> Registered`;
         }
-
     function showRegisteredIcons(regUsers){
             if(regUsers){
                 document.querySelector('.ask-people').style.display = 'block'
@@ -700,11 +701,12 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             document.querySelector('.ask-people').innerHTML = registerUser;
         }
 
+
     function setDateFormat(dateTime){
-            if(dateTime){
-                return moment(dateTime, "YYYY-MM-DD HH:mm:ss").format("DD MMM YYYY hh:mm A");
-            }
+        if(dateTime){
+            return moment(dateTime, "YYYY-MM-DD HH:mm:ss").format("DD MMM YYYY hh:mm A");
         }
+    }
 
     function showRelatedQuiz(quizzes){
             let quizSection = document.querySelector('.related-quiz-section');
