@@ -358,18 +358,25 @@ $round_avg = round($overall_avg);
                             </div>
                         </div>
                     </div>
+
                     <div class="av-jobs-intern">
+                        <?php if ($jobs_count > 0 || $internships_count > 0) {
+                        ?>
+                            <div class="row">
+                                <div class="heading-style">Available Opportunities</div>
+                                <div class="divider"></div>
+                            </div>
+                        <?php } ?>
                         <?php if ($jobs_count > 0) {
                             ?>
                             <div id="jobs-cards-main" class="row">
-                                <div class="heading-style">Jobs
+                                <div class="heading-style2">Jobs
                                     <div class="pull-right">
                                         <a href="/jobs/list?slug=<?= $organization['slug'] ?>"
                                            class="write-review">View
                                             All</a>
                                     </div>
                                 </div>
-                                <div class="divider"></div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="blogbox"></div>
@@ -382,14 +389,12 @@ $round_avg = round($overall_avg);
                             ?>
                             <div id="internships-cards-main" class="row">
                                 <div class="internships-block">
-                                    <div class="heading-style">
-                                        Internships
+                                    <div class="heading-style2">Internships
                                         <div class="pull-right">
                                             <a href="/internships/list?slug=<?= $organization['slug'] ?>"
                                                class="write-review">View All</a>
                                         </div>
                                     </div>
-                                    <div class="divider"></div>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="internships_main"></div>
@@ -635,6 +640,15 @@ echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
 ]);
 $this->registerCss('
+.heading-style2 {
+    font-size: 28px;
+    font-family: lobster;
+    margin: 0px 0px 20px 5px;
+//    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .footer{margin-top:0 !important;}
 .desc-image {
     text-align: center;
@@ -742,9 +756,10 @@ $this->registerCss('
 	font-weight: 500;
 }
 .write-review{
-    font-family: "Open Sans", sans-serif;
+    font-family: Roboto;
     font-size: 14px;
-    padding: 13px 32px;
+    font-weight:500;
+    padding: 10px 25px;
     border-radius: 4px;
     -o-transition: .3s all;
     -ms-transition: .3s all;
@@ -1410,8 +1425,10 @@ $this->registerJs("
 //return_message = true;
 //jobs_parent = '#jobs-cards-main';
 //internships_parent = '#internships-cards-main';
+loader = false;
 getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
+addToReviewList();
 ");
 $this->registerJs($script);
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);
