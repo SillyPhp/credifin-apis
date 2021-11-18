@@ -1,12 +1,13 @@
-<section class="webinar-one-speaker">
-    <div class="container">
+<script id="webinar_one_speaker1" type="text/template">
+    <section class="webinar-one-speaker">
+        <div class="container">
         <div class="row">
         <div class="col-md-12">
             <div class="webinar-text">
                 <h1>{{name}}</h1>
                 <div class="date-time">
-                    <span class="date">{{start_date}}</span>
-                    <span class="time">{{start_date_time}}</span>
+                    <span class="date">{{date}}</span>
+                    <span class="time">{{time}}</span>
                 </div>
                     <p>{{description}}</p>
                 <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
@@ -20,20 +21,25 @@
             </div>
         </div>
     </div>
+        {{#webinarEvents}}
+        {{#webinarSpeakers}}
     <div class="webinar-speaker-img">
         <div class="rotate-div">
             <div class="speaker-img">
-            <img src="{{speaker_img}}">
+            <img src="{{speaker_image}}">
 
             </div>
             <div class="speaker-detail">
                 <h2>{{speaker_name}}</h2>
-                <h5>{{Designation}}</h5>
+                <h5>{{designation}}</h5>
             </div>
         </div>
     </div>
+        {{/webinarSpeakers}}
+        {{/webinarEvents}}
     </div>
-</section>
+    </section>
+</script>
 <?php
 $this->registerCss('
 img {
