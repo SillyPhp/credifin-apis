@@ -317,7 +317,8 @@ class MentorsController extends Controller
                 'nextEvent' => $nextEvent,
             ]);
         }
-        $webinars = self::getWebianrs($id);
+        //        $webinars = self::getWebianrs($id);
+        $webinars = self::showWebinar($status = 'upcoming');
         $showChat = WebinarEvents::findOne(['session_enc_id' => $id])->show_chat;
         return $this->render('webinar-view', [
             'type' => $type,
@@ -331,12 +332,69 @@ class MentorsController extends Controller
         ]);
     }
 
+    private function showWebinar($status, $userIdd = null, $sortAsc = true, $webinar_id = null)
+    {
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $currentTime = $dt->format('Y-m-d H:i:s');
+        $webinars = Webinar::find()
+            ->alias('a')
+            ->select(['a.name', 'a.description', 'a.price', 'a.webinar_enc_id', 'a.gst', 'a.slug',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", a.image_location, "/", a.image) END image',
+                'GROUP_CONCAT(DISTINCT(CONCAT(f.first_name, " " ,f.last_name)) SEPARATOR ",") speakers'])
+            ->joinWith(['webinarEvents b' => function ($b) use ($status, $currentTime) {
+                $b->distinct();
+                $b->select(['b.start_datetime', 'b.webinar_enc_id', 'b.status', 'b.event_enc_id']);
+                if ($status == 'upcoming' || $status == 'opted') {
+                    $b->andWhere(['>', 'b.start_datetime', $currentTime]);
+                } else {
+                    $b->andWhere(['<', 'b.start_datetime', $currentTime]);
+                }
+                $b->groupBy(['b.webinar_enc_id']);
+                $b->joinWith(['webinarSpeakers d' => function ($d) {
+                    $d->select(['d.speaker_enc_id', 'd.webinar_event_enc_id']);
+                    $d->joinWith(['speakerEnc e' => function ($e) {
+                        $e->select(['e.speaker_enc_id', 'e.user_enc_id']);
+                        $e->joinWith(['userEnc f' => function ($f) {
+                            $f->select(['f.user_enc_id', 'f.first_name', 'f.last_name']);
+                        }]);
+                    }]);
+                }], false);
+            }])
+            ->joinWith(['webinarRegistrations c' => function ($c) use ($status, $userIdd) {
+                $c->select(['c.webinar_enc_id', 'c.register_enc_id', 'c.status', 'c.created_by', 'c.created_on']);
+                $c->joinWith(['createdBy cc' => function ($cc) {
+                    $cc->select(['cc.user_enc_id',
+//                        'CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", cc.image_location, "/", image)',
+                        'CASE WHEN cc.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", cc.image_location, "/", image)  ELSE NULL END image'
+                    ]);
+                }]);
+                $c->onCondition(['c.status' => 1, 'c.is_deleted' => 0]);
+                $c->orderBy(['c.created_on' => SORT_DESC]);
+                if (!empty($userIdd)) {
+                    $c->where(['c.created_by' => $userIdd]);
+                }
+            }])
+            ->andWhere(['a.is_deleted' => 0])
+            ->groupBy(['a.webinar_enc_id'])
+            ->orderBy(['b.start_datetime' => $sortAsc ? SORT_ASC : SORT_DESC])
+            ->limit(6);
+        if ($webinar_id != null) {
+            $webinars->andWhere(['not', ['a.webinar_enc_id' => $webinar_id]]);
+        }
+        $webinars = $webinars->asArray()
+            ->all();
+        return $webinars;
+    }
+
     public function actionWebinarLive($id)
     {
         $type = 'multi-stream';
         $user_id = Yii::$app->user->identity->user_enc_id;
         $webinarDetail = self::getWebianrDetails($id, true);
-        $webinars = self::getWebianrs($id);
+//        $webinars = self::getWebianrs($id);
+        $webinars = self::showWebinar($status = 'upcoming');
         $speakers = $webinarDetail['webinarEvents'][0]['webinarSpeakers'];
         $speakerUserIds = ArrayHelper::getColumn($speakers, 'user_enc_id');
         $nextEvent = $webinarDetail['webinarEvents'][0];
