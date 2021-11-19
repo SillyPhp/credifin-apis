@@ -35,6 +35,10 @@ class Quiz extends Quizzes
                     WHEN a.quiz_end_datetime IS NULL THEN NULL
                     WHEN TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),'+00:00','+10:30'),a.quiz_end_datetime) < 0 THEN 'true'
                  ELSE 'false' END is_expired",
+                "CASE 
+                    WHEN a.registration_end_datetime IS NULL THEN NULL
+                    WHEN TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),'+00:00','+10:30'),a.registration_end_datetime) > 0 THEN a.registration_end_datetime
+                 ELSE NULL END is_live",
             ])
             ->joinWith(['currencyEnc b'], false)
             ->joinWith(['assignedCategoryEnc c' => function ($c) {
@@ -78,7 +82,14 @@ class Quiz extends Quizzes
             }
         }
 
-        $q = $q->orderBy(['a.created_on' => SORT_DESC])
+        if (isset($options['quiz_id']) && !empty($options['quiz_id'])) {
+            $q->andWhere(['!=', 'a.quiz_enc_id', $options['quiz_id']]);
+        }
+
+        $q = $q
+            ->groupBy(['a.quiz_enc_id'])
+            ->orderBy([new \yii\db\Expression('-is_live DESC')])
+//            ->orderBy(['is_expired' => SORT_ASC])
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
