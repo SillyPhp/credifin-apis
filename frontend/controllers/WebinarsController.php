@@ -652,5 +652,52 @@ class WebinarsController extends Controller
         ]);
 
     }
-
+    public function actionTemplateView($id){
+        $this->layout = 'widget-layout';
+        $webinarWidget = WebinarWidgetTemplates::find()
+            ->select(['widget_enc_id','template_name','template_path'])
+            ->where(['webinar_enc_id' => $id,'is_deleted' => 0])
+            ->asArray()
+            ->one();
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model = Webinar::find()
+                ->alias('z')->distinct()
+                ->select(['z.webinar_enc_id', 'z.name', 'z.description','z.slug',
+                    'CASE WHEN z.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", z.image_location, "/", z.image) END image',
+                    'GROUP_CONCAT(DISTINCT DATE_FORMAT(a.start_datetime, "%d-%M-%y")) date', 'GROUP_CONCAT(DISTINCT DATE_FORMAT(a.start_datetime, "%H:%i %p")) time'
+                ])
+                ->joinWith(['webinarEvents a' => function ($a) {
+                    $a->addSelect(['a.webinar_enc_id', 'a.event_enc_id']);
+                    $a->joinWith(['webinarSpeakers c' => function ($b) {
+                        $b->addSelect(['c.webinar_event_enc_id', 'c.speaker_enc_id', 'CONCAT(e.first_name, " ",e.last_name) speaker_name',
+                            'CASE WHEN e.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", e.image_location, "/", e.image) END speaker_image',
+                            'd1.designation'
+                            ]);
+                        $b->joinWith(['speakerEnc d' => function ($b) {
+                                $b->joinWith(['designationEnc d1' => function($d1){
+                                    $d1->onCondition(['d1.is_deleted' => 0]);
+                                }]);
+                            $b->joinWith(['userEnc e' => function($e){
+                            }],false);
+                        }],false);
+                        $b->onCondition(['c.is_deleted' => 0]);
+                    }]);
+                    $a->onCondition(['a.is_deleted' => 0]);
+                    $a->groupBy(['a.webinar_enc_id']);
+                }])
+                ->andWhere(['z.webinar_enc_id' => $id, 'z.is_deleted' => 0])
+                ->asArray()
+                ->one();
+            return [
+                'status' => 200,
+                'cards' => $model
+            ];
+        }
+        return $this->render('template-view',[
+            'id' => $id,
+            'webinarWidget' => $webinarWidget,
+            'tempName' => $webinarWidget['template_name']
+        ]);
+    }
 }
