@@ -11,222 +11,86 @@ $this->params['header_dark'] = true;
                 <div class="filters-side filters-bar set-height-s nd-shadow">
                     <div class="flex-filter">
                         <h3 class="filters-heading"><i class="fa fa-filter"></i> Filters</h3>
-                        <div class="clear-filter">Clear Filters</div>
+                        <div class="clear-filter" onclick="clearFilters()">Clear Filters</div>
                     </div>
-                    <div class="sort-by-filter">
-                        <h3 class="side-top-heading">Sort By</h3>
-                        <Select id="sorting-by" class="form-select-filter">
-                            <option>Prizes</option>
-                            <option>Days Left</option>
-                        </Select>
-                    </div>
+<!--                    <div class="sort-by-filter">-->
+<!--                        <h3 class="side-top-heading">Sort By</h3>-->
+<!--                        <Select id="sorting-by" class="form-select-filter">-->
+<!--                            <option>Prizes</option>-->
+<!--                            <option>Days Left</option>-->
+<!--                        </Select>-->
+<!--                    </div>-->
                     <div class="quiz-status-filter">
                         <h3 class="side-top-heading">Status</h3>
                         <div class="switch-field">
-                            <input type="radio" id="all" name="All" checked="">
+                            <input type="radio" id="all" name="status" value="all" checked="true" autocomplete="off" onChange="quizFilters('status')">
                             <label for="all">All</label>
-                            <input type="radio" id="live" name="All">
+                            <input type="radio" id="live" name="status" value="live" autocomplete="off" onChange="quizFilters('status')">
                             <label for="live">Live</label>
-                            <input type="radio" id="expired" name="All">
+                            <input type="radio" id="expired" name="status" value="expired" autocomplete="off" onChange="quizFilters('status')">
                             <label for="expired">Expired</label>
                         </div>
                     </div>
-                    <div class="team-size-filter">
-                        <h3 class="side-top-heading">Team Size</h3>
-                        <div class="slidecontainer">
-                            <input type="range" min="1" max="4" value="50" class="slider" id="myRange">
-                            <div class="range-counter">
-                                <span>All</span>
-                                <span>1</span>
-                                <span>2</span>
-                                <span>2+</span>
-                            </div>
-                        </div>
-                    </div>
+<!--                    <div class="team-size-filter">-->
+<!--                        <h3 class="side-top-heading">Team Size</h3>-->
+<!--                        <div class="slidecontainer">-->
+<!--                            <input type="range" min="1" max="4" value="50" class="slider" id="myRange">-->
+<!--                            <div class="range-counter">-->
+<!--                                <span>All</span>-->
+<!--                                <span>1</span>-->
+<!--                                <span>2</span>-->
+<!--                                <span>2+</span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
                     <div class="payment-mode-filter">
                         <h3 class="side-top-heading">Payment</h3>
                         <div class="switch-field">
-                            <input type="radio" id="all-pay" name="All2" checked="">
+                            <input type="radio" id="all-pay" name="payment" value="all-pay" autocomplete="off" onChange="quizFilters('payment')" checked="">
                             <label for="all-pay">All</label>
-                            <input type="radio" id="paid" name="All2">
+                            <input type="radio" id="paid" name="payment" value="paid" autocomplete="off" onChange="quizFilters('payment')">
                             <label for="paid">Paid</label>
-                            <input type="radio" id="free" name="All2">
+                            <input type="radio" id="free" name="payment" value="free" autocomplete="off" onChange="quizFilters('payment')">
                             <label for="free">Free</label>
                         </div>
                     </div>
-                    <div class="play-eligibility">
-                        <h3 class="side-top-heading">Eligibility</h3>
-                        <ul class="eligibility-user">
-                            <li>
-                                <input id="all-eligible" type="radio" name="radio" value="1" class="radio-custom">
-                                <label for="all-eligible" class="radio-custom-label">All</label>
-                            </li>
-                            <li>
-                                <input id="startups" type="radio" name="radio" value="1" class="radio-custom">
-                                <label for="startups" class="radio-custom-label">Startups</label>
-                            </li>
-                            <li>
-                                <input id="Schools" type="radio" name="radio" value="1" class="radio-custom">
-                                <label for="Schools" class="radio-custom-label">School Students</label>
-                            </li>
-                            <li>
-                                <input id="Colleges" type="radio" name="radio" value="1" class="radio-custom">
-                                <label for="Colleges" class="radio-custom-label">College Students</label>
-                            </li>
-                            <li>
-                                <input id="Working-prof" type="radio" name="radio" value="1" class="radio-custom">
-                                <label for="Working-prof" class="radio-custom-label">Working Professional</label>
-                            </li>
-                        </ul>
-                    </div>
+<!--                    <div class="play-eligibility">-->
+<!--                        <h3 class="side-top-heading">Eligibility</h3>-->
+<!--                        <ul class="eligibility-user">-->
+<!--                            <li>-->
+<!--                                <input id="all-eligible" type="radio" name="radio" value="1" class="radio-custom">-->
+<!--                                <label for="all-eligible" class="radio-custom-label">All</label>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <input id="startups" type="radio" name="radio" value="1" class="radio-custom">-->
+<!--                                <label for="startups" class="radio-custom-label">Startups</label>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <input id="Schools" type="radio" name="radio" value="1" class="radio-custom">-->
+<!--                                <label for="Schools" class="radio-custom-label">School Students</label>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <input id="Colleges" type="radio" name="radio" value="1" class="radio-custom">-->
+<!--                                <label for="Colleges" class="radio-custom-label">College Students</label>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <input id="Working-prof" type="radio" name="radio" value="1" class="radio-custom">-->
+<!--                                <label for="Working-prof" class="radio-custom-label">Working Professional</label>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
                     <div class="top-cat-filter">
                         <h3 class="side-top-heading">Category</h3>
-                        <input type="text" class="form-control category-input" placeholder="Search Category">
+                        <input type="text" class="form-control category-input" onkeyup="searchCategory(event)" placeholder="Search Category">
                         <ul class="eligibility-category">
-                            <li>
-                                <input id="point-eligible" type="checkbox" name="checkmate" value="1" class="check-custom">
-                                <label for="point-eligible" class="check-custom-label">All</label>
-                            </li>
-                            <li>
-                                <input id="point-eligible1" type="checkbox" name="checkmate" value="1" class="check-custom">
-                                <label for="point-eligible1" class="check-custom-label">Awards</label>
-                            </li>
-                            <li>
-                                <input id="point-eligible2" type="checkbox" name="checkmate" value="1" class="check-custom">
-                                <label for="point-eligible2" class="check-custom-label">Articles</label>
-                            </li>
+
                         </ul>
                     </div>
                 </div>
             </div>
             <div class="col-md-9">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card-main nd-shadow">
-                            <div class="paid-webinar">Paid</div>
-                            <div class="expired-btn">EXPIRED</div>
-                            <div class="card-img">
-                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/6176c48e680e5_whatsapp_image_2021-10-25_at_8.16.08_pm.jpeg?d=340x195') ?>"/>
-                            </div>
-                            <div class="card-details">
-                                <div class="about-first flex-container">
-                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> 6 Days Left</div>
-                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
-                                    <div class="pricing-money" style="flex-grow: 8"><img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹5,000 </div>
-                                </div>
-                                <div class="about-name">
-                                    <div class="quiz-name">Health Awareness Quiz</div>
-                                    <div class="quiz-category">marketing</div>
-                                </div>
-                                <div class="about-footer">
-                                    <div class="detail-btn">
-                                        <a href="" class="view-details">View Detail</a>
-                                    </div>
-                                    <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-main nd-shadow">
-                            <div class="paid-webinar">Paid</div>
-                            <div class="card-img">
-                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/6177e00f81d27_untitled_design__1___1_.png?d=340x195') ?>"/>
-                            </div>
-                            <div class="card-details">
-                                <div class="about-first flex-container">
-                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> 6 Days Left</div>
-                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
-                                    <div class="pricing-money" style="flex-grow: 8"><img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹5,000 </div>
-                                </div>
-                                <div class="about-name">
-                                    <div class="quiz-name">Health Awareness Quiz</div>
-                                    <div class="quiz-category">marketing</div>
-                                </div>
-                                <div class="about-footer">
-                                    <div class="detail-btn">
-                                        <a href="" class="view-details">View Detail</a>
-                                    </div>
-                                    <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-main nd-shadow">
-                            <div class="card-img">
-                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/6177e00f81d27_untitled_design__1___1_.png?d=340x195') ?>"/>
-                            </div>
-                            <div class="card-details">
-                                <div class="about-first flex-container">
-                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> 6 Days Left</div>
-                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
-                                    <div class="pricing-money" style="flex-grow: 8"></div>
-                                </div>
-                                <div class="about-name">
-                                    <div class="quiz-name">Health Awareness Quiz</div>
-                                    <div class="quiz-category">marketing</div>
-                                </div>
-                                <div class="about-footer">
-                                    <div class="detail-btn">
-                                        <a href="" class="view-details">View Detail</a>
-                                    </div>
-                                    <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-main nd-shadow">
-                            <div class="paid-webinar">Paid</div>
-                            <div class="card-img">
-                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/6176c48e680e5_whatsapp_image_2021-10-25_at_8.16.08_pm.jpeg?d=340x195') ?>"/>
-                            </div>
-                            <div class="card-details">
-                                <div class="about-first flex-container">
-                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> 6 Days Left</div>
-                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
-                                    <div class="pricing-money" style="flex-grow: 8"><img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹5,000 </div>
-                                </div>
-                                <div class="about-name">
-                                    <div class="quiz-name">Health Awareness Quiz</div>
-                                    <div class="quiz-category">marketing</div>
-                                </div>
-                                <div class="about-footer">
-                                    <div class="detail-btn">
-                                        <a href="" class="view-details">View Detail</a>
-                                        <a href="" class="expired-btn">EXPIRED</a>
-                                    </div>
-                                    <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-main nd-shadow">
-                            <div class="card-img">
-                                <img src="<?= Url::to('https://d8it4huxumps7.cloudfront.net/uploads/images/opportunity/mobile_banner/61041ecc7c4bb_copy_of_idiom__1_.jpg?d=340x195') ?>"/>
-                            </div>
-                            <div class="card-details">
-                                <div class="about-first flex-container">
-                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> 6 Days Left</div>
-                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> 5 Registered</div>
-                                    <div class="pricing-money" style="flex-grow: 8"><img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹5,000 </div>
-                                </div>
-                                <div class="about-name">
-                                    <div class="quiz-name">Health Awareness Quiz</div>
-                                    <div class="quiz-category">marketing</div>
-                                </div>
-                                <div class="about-footer">
-                                    <div class="detail-btn">
-                                        <a href="" class="view-details">View Detail</a>
-                                        <a href="" class="expired-btn">EXPIRED</a>
-                                    </div>
-                                    <div class="views-count"><i class="fa fa-eye"></i> 6 Views</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="row" id="quizDiv">
+
                 </div>
             </div>
         </div>
@@ -385,6 +249,7 @@ h3.side-top-heading {
     cursor: pointer;
     font-family: "Roboto";
     font-size:15px;
+    text-transform: capitalize;
 }
 .radio-custom-label, .check-custom-label {
     position: relative;
@@ -418,6 +283,7 @@ h3.side-top-heading {
     overflow: hidden;
     margin-bottom:30px;
     position:relative;
+    min-height: 355px;
 }
 .paid-webinar {
     position: absolute;
@@ -494,15 +360,19 @@ h3.side-top-heading {
 }
 .expired-btn {
     padding: 0px 10px;
-    background-color: #fff;
+    background-color: #ff7803;
     position: absolute;
     top: 0;
     left: 0;
+    color: #fff;
     font-family: "Roboto";
     font-weight:500;
 }
 .views-count {
     color: #018e01;
+}
+.quiz-price{
+    color:#
 }
 /* card css ends here */
 ');
@@ -554,3 +424,188 @@ $this->registerJS($script);
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 ?>
+<script>
+    let baseUrl = '';
+    let winLocation = window.location.hostname;
+    if(winLocation == 'shshank.eygb.me'){
+        baseUrl = 'https://ravinder.eygb.me';
+    }
+    let allquizzes = null;
+    let allCategories = null
+    let pageNo = 1;
+    let limit = 10;
+    let loading = true;
+    let loadMoreCards = true;
+
+    let data = {limit: '', page: '', status: '', payment:'', category: ''}
+    function quizFilters(type){
+        let statusVal = document.querySelector('input[name="status"]:checked').value;
+        let paymentVal = document.querySelector('input[name="payment"]:checked').value;
+        data = {...data, status: statusVal, payment: paymentVal, page: 1};
+        pageNo = 1;
+        getAllQuizzes();
+    }
+
+    function filterCat() {
+        let categoryFilter = document.getElementsByName('categoryFilter');
+        let categories = [];
+        for(let i=0; i<categoryFilter.length; i++){
+            if(categoryFilter[i].checked){
+                categories.push(categoryFilter[i].getAttribute('value'));
+            }
+        }
+        data = {...data, category: categories, page: 1};
+        pageNo = 1;
+        getAllQuizzes();
+    }
+
+    async function getAllQuizzes() {
+        let response = await fetch(`${baseUrl}/api/v3/quiz/list`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+        });
+        let res = await response.json();
+        if(res['response']['status'] == 200){
+            displayQuizzes(res['response']['data']);
+            allquizzes = res['response']['data'];
+            if(allquizzes.length < limit){
+                loadMoreCards = false;
+            }
+        }else if(pageNo == 1 && res['response']['status'] == 404){
+            document.querySelector('#quizDiv').innerHTML = 'No Results Found';
+        }
+    }
+    // getAllQuizzes();
+
+    async function getCategories() {
+        let response = await fetch(`${baseUrl}/api/v3/quiz/categories`,{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: ''
+        })
+
+        let res = await response.json();
+
+        if (res['response']['status'] == 200){
+            allCategories = res['response']['categories'];
+            showCategories(res['response']['categories']);
+        }else{
+            document.querySelector('.eligibility-category').innerHTML = 'No Results Found';
+        }
+    }
+    getCategories();
+
+    function searchCategory(event) {
+        let str = event.currentTarget.value.toLowerCase();
+        let filteredCategories = allCategories.filter(
+            category => { return category.name.toLowerCase().startsWith(str); }
+        )
+        if(filteredCategories.length > 0){
+            showCategories(filteredCategories);
+        }else {
+            document.querySelector('.eligibility-category').innerHTML = 'No Category To Display';
+        }
+    }
+    function showCategories(categories){
+        let categoryCard = categories.map(category => {
+            return `<li>
+                        <input id="${category.name}" type="checkbox" name="categoryFilter" onchange="filterCat()" value="${category.name}" class="check-custom">
+                        <label for="${category.name}" class="check-custom-label">${category.name}</label>
+                    </li>`
+        }).join('');
+        document.querySelector('.eligibility-category').innerHTML = categoryCard;
+    }
+
+    function displayQuizzes(quizzes){
+        let quizCard = quizzes.map(quiz => {
+                return `<div class="col-md-6">
+                <a href="`+baseUrl+`/quiz/${quiz.slug}" target="_blank" class="" id="${quiz.quiz_enc_id}">
+                        <div class="card-main nd-shadow">
+                            ${quiz.is_paid == 0 ? '' : `
+                                <div class="paid-webinar">Paid</div>
+                            `}
+                            ${quiz.is_expired == 'true' ? `
+                                <div class="expired-btn">EXPIRED</div>
+                            ` : ''}
+                            <div class="card-img">
+                                <img src="${quiz.sharing_image ? quiz.sharing_image : `<?= Url::to('@eyAssets/images/pages/quiz/quiz-template-default.png') ?>`}"/>
+                            </div>
+                            <div class="card-details">
+                                <div class="about-first flex-container">
+                                    ${quiz.is_expired == 'true' || quiz.days_left == null ? '' : `
+                                    <div class="days-left" style="flex-grow: 1"><i class="far fa-clock"></i> ${quiz.days_left > 0 ? quiz.days_left : '0'} Days Left</div>
+                                    `}
+                                    <div class="register-date" style="flex-grow: 1"><i class="far fa-user"></i> ${quiz.registered_count} Registered</div>
+                                    ${quiz.quizRewards[0] ? `
+                                        <div class="pricing-money" style="flex-grow: 8">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/PRIZE.png') ?>"/> ₹ ${Math.floor(quiz.quizRewards[0]['price'])}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                                <div class="about-name">
+                                    <div class="quiz-name">${quiz.name}</div>
+                                    <div class="quiz-category">${quiz.category ? quiz.category : ''}</div>
+                                </div>
+                                <div class="about-footer">
+                                    ${quiz.price && quiz.is_paid == 1 ? `
+                                        <div class="register-date"><i class="fas fa-rupee-sign"></i>${Math.floor(quiz.price)}</div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        </a>
+                    </div>`}).join('');
+
+        if(pageNo == 1){
+            document.querySelector('#quizDiv').innerHTML = quizCard;
+        }else {
+            document.querySelector('#quizDiv').innerHTML += quizCard;
+        }
+
+    }
+
+    window.onscroll = function (){
+        if(bottomVisible() && loading && loadMoreCards){
+            console.log('inside-scf');
+                pageNo = pageNo + 1;
+                data = {...data, page: pageNo};
+                getAllQuizzes(data);
+                loading = false;
+                setTimeout(function(){
+                    loading = true;
+                }, 900);
+        }
+    }
+
+
+    function bottomVisible() {
+        const scrollY = window.scrollY
+        const visible = document.documentElement.clientHeight
+        const pageHeight = document.documentElement.scrollHeight;
+
+        const bottomOfPage = visible + scrollY >= pageHeight - 800;
+        return bottomOfPage;
+    }
+
+    function clearFilters(){
+        document.querySelector('#all').checked = true;
+        document.querySelector('#all-pay').checked = true;
+        document.querySelectorAll('input[name="categoryFilter"]').forEach( t => t.checked = false);
+        data = {...data, status: '', payment: '', category: '', page: ''}
+        pageNo = 1;
+        if(loadMoreCards == false){
+            loadMoreCards = true;
+        }
+        getAllQuizzes()
+    }
+    clearFilters()
+
+
+</script>

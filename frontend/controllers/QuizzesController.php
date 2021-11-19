@@ -26,7 +26,7 @@ class QuizzesController extends Controller
         return parent::beforeAction($action);
     }
 
-    public function actionIndex($type = null)
+    public function actionList()
     {
         if ($type == null) {
             $categories = AssignedCategories::find()
@@ -115,7 +115,7 @@ class QuizzesController extends Controller
         return $this->render('all');
     }
 
-    public function actionDetail($slug, $s = NULL, $t = NULL)
+    public function actionPlay($slug, $s = NULL, $t = NULL)
     {
         $temp = Quizzes::find()
             ->alias('a')
@@ -337,13 +337,11 @@ class QuizzesController extends Controller
         return $this->render('topics');
     }
 
-    public function actionQuizFilters()
-    {
+    public function actionIndex($type = null){
         return $this->render('quiz-filters');
     }
 
-    public function actionQuizDetail()
-    {
+    public function actionDetail($slug){
         return $this->render('quiz-detail');
     }
 }
