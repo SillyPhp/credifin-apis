@@ -3,8 +3,8 @@
 use yii\helpers\Url;
 
 ?>
-
-<section class="webinar-one-speaker2">
+<script id="webinar_one_speaker3" type="text/template">
+    <section class="webinar-one-speaker2">
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
@@ -28,15 +28,17 @@ use yii\helpers\Url;
                         </div>
                         <div class="date">
                             <p>Date</p>
-                            <p>{{start_date}}</p>
+                            <p>{{date}}</p>
                         </div>
                         <div class="time">
                             <p>Time</p>
-                            <p>{{start_date_time}}</p>
+                            <p>{{time}}</p>
                         </div>
                     </div>
                 </div>
             </div>
+            {{#webinarEvents}}
+            {{#webinarSpeakers}}
             <div class="col-sm-6">
                 <div class="webinar-img">
                     <div class="speaker-img-frame">
@@ -52,9 +54,12 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
+            {{/webinarSpeakers}}
+            {{/webinarEvents}}
         </div>
     </div>
 </section>
+</script>
 
 
 <?php $this->registerCss('
@@ -255,8 +260,9 @@ use yii\helpers\Url;
         top: unset;
     }
     .middle-sqr img{
+    width:100%;
         max-width: 280px;
-        transform: rotate(-45deg) translateY(-40px);
+        transform: rotate(-45deg) translateY(0px);
     }
     .name-speaker {
         background: linear-gradient(90.78deg, #6A11CB -3.87%, #2575FC 100%);

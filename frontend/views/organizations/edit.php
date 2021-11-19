@@ -778,6 +778,7 @@ $this->registerCss('
 }
 .vission-box{
     padding-top:20px;
+    margin-bottom:25px;
 }
 .mv-box{
     padding-top:20px;
@@ -931,6 +932,7 @@ $this->registerCss('
     font-size:15px;
     text-align:justify;
     line-height:22px;
+    margin-bottom:25px;
 }
 .com-des-list{
     padding:10px 25px;
@@ -950,9 +952,12 @@ $this->registerCss('
 }
 .about-box{
     height:100px;
-    border:1px solid rgba(238, 238, 238, .5);;
+    border-right:2px solid rgba(238, 238, 238, .5);;
     text-align:center;
     position:relative;
+}
+.about-box:last-child {
+    border: none;
 }
 .margin-0{
     margin-left:0px;
@@ -1619,6 +1624,7 @@ $('.edit-box').click(function(e){
     var edit_main = $(this).attr('data-for');
     $('#' + edit_main).editable('toggle');
 });
+var currentyearavail = new Date
 $('#establishment_year').editable({
     placement: 'top',
     url: '/organizations/update-profile',
@@ -1629,7 +1635,7 @@ $('#establishment_year').editable({
     // template: 'YYYY',    
     combodate: {
         minYear: 1900,
-        maxYear: 2019,
+        maxYear: currentyearavail.getFullYear(),
         // minuteStep: 1
    }
 });

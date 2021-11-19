@@ -41,6 +41,28 @@ $link = Url::to('quizzes/' . $slug, true);
                     </div>
                     <div class="viewers"></div>
                 </div>
+                <div class="share-social-links">
+                    <a href="javascript:;" class="fb"
+                       onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-facebook-f"></i></a>
+                    <a href="javascript:;" class="wts-app"
+                       onclick="window.open('https://api.whatsapp.com/send?text=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-whatsapp"></i></a>
+                    <a href="javascript:;" class="tw"
+                       onclick="window.open('https://twitter.com/intent/tweet?text=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-twitter"></i></a>
+                    <a :href="'mailto:https://myecampus.in'+this.$route.fullPath" class="male">
+                        <i class="far fa-envelope"></i></a>
+                    <a href="javascript:;" class="fb"
+                       onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&amp;url=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-linkedin"></i></a>
+                    <a href="javascript:;" class="male"
+                       onclick="window.open('http://pinterest.com/pin/create/link/?url=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-pinterest"></i></a>
+                    <a href="javascript:;" class="tw"
+                       onclick="window.open('https://telegram.me/share/url?url=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-telegram"></i></a>
+                </div>
             </div>
             <div class="col-md-4">
                 <div class="row">
@@ -118,6 +140,54 @@ $link = Url::to('quizzes/' . $slug, true);
 
 <?php
 $this->registerCss('
+.share-social-links {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.share-social-links > a {
+    min-width: 90px;
+    margin: 15px 1% 0 0;
+}
+
+.share-social-links > a:last-child {
+    margin-right: 0;
+}
+
+.wts-app {
+    background-color: #25D366;
+}
+
+.male {
+    background-color: #d3252b;
+}
+
+.tw {
+    background-color: #1c99e9;
+}
+
+.fb {
+    background-color: #236dce;
+}
+
+.wts-app i, .male i, .tw i, .fb i {
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.share-social-links:hover a {
+    opacity: 0.6;
+}
+
+.share-social-links > a:hover {
+    opacity: 1;
+}
 #quizCounter, .ask-people{
     display: none;
 }
@@ -208,11 +278,12 @@ $this->registerCss('
     bottom: 0;
 }
 .quiz-header-heading p {
-    font-size: 20px;
+    font-size: 26px;
     font-family: "Roboto";
-    color: #009ebe;
+    color: #00a0e3;
     margin:0;
-    text-transform: capitalize
+    text-transform: capitalize;
+    font-weight: 500;
 }
 .quiz-header-heading img {
     width: 100px;
@@ -230,11 +301,11 @@ $this->registerCss('
 .quiz-timings-cover {
     display: flex;
     align-items: center;
-    border: 2px solid #009ebe;
+    border: 2px solid #00a0e3;
     border-radius: 4px;
     flex-wrap: wrap;
     justify-content: center;
-    background: #009ebe;
+    background: #00a0e3;
     padding: 8px 0;
     margin:15px 0;
 }
@@ -246,7 +317,7 @@ $this->registerCss('
     color: #fff;
 }
 .reg-deadline i, .days-left2 i {
-    color: #fbba00;
+    color: #ff7803;
     margin-right:2px;
 }
 .register-detail-btn-2 a,
@@ -260,7 +331,7 @@ $this->registerCss('
     border-radius: 4px;
     margin: 0;
     background-color: #fff;
-    color: #009ebe;
+    color: #00a0e3;
     padding: 4px 0;
 }
 .both-btns {
@@ -279,9 +350,10 @@ $this->registerCss('
 }
 .quiz-detail-cat {
     font-family: "Roboto";
-    color: #fbba00 !important;
+    color: #ff7803 !important;
     text-transform: capitalize;
-    font-size: 16px !important;
+    font-size: 20px !important;
+    font-weight: 500;
 }
 .quiz-description {
     font-family: "Roboto";
@@ -556,6 +628,10 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 ?>
 <script>
     let baseUrl = '';
+    let winLocation = window.location.hostname;
+    if(winLocation == 'shshank.eygb.me'){
+        baseUrl = 'https://ravinder.eygb.me';
+    }
     let isLoggedIn = '<?= Yii::$app->user->identity->user_enc_id ? Yii::$app->user->identity->user_enc_id : "false" ?>';
     let quiz_id = null;
     let access_key = '<?= Yii::$app->params->razorPay->prod->apiKey ?>';
@@ -574,13 +650,15 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
         let res = await response.json();
 
         if(res['response']['status'] == 200){
-            quizHeader(res['response']['detail']);
-            showRelatedQuiz(res['response']['related']);
-            showReward(res['response']['detail']['quizRewards']);
-            showRegisteredIcons(res['response']['detail']['registered_users']);
-            quiz_id = res['response']['detail']['quiz_enc_id'];
-            if(res['response']['detail']['quiz_start_datetime']){
-                countdown(res['response']['detail']['quiz_start_datetime']);
+            window.onload = function () {
+                quizHeader(res['response']['detail']);
+                showRelatedQuiz(res['response']['related']);
+                showReward(res['response']['detail']['quizRewards']);
+                showRegisteredIcons(res['response']['detail']['registered_users']);
+                quiz_id = res['response']['detail']['quiz_enc_id'];
+                if (res['response']['detail']['quiz_start_datetime']) {
+                    countdown(res['response']['detail']['quiz_start_datetime']);
+                }
             }
         }
     }
@@ -631,17 +709,10 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 
             document.querySelector('.quiz-header-heading').innerHTML = header;
 
-            const quizBody = ` <h3 class="quiz-title">${detail.name}</h3>
-                        <p class="quiz-detail-cat">${detail.category}</p>
+            const quizBody = ` <h3 class="quiz-title">Description</h3>
                         <div class="quiz-description">${detail.description}</div>`;
 
             document.querySelector('.detail-side').innerHTML = quizBody;
-
-            const registerDetailBtn = `${(currentDate > regEnd && detail.is_expired == 'false') ? `<p class="registeredTxt">Registration Closed</p>` : detail.is_expired == 'true' ? `<p class="registeredTxt">Expired</p>` : detail.is_registered  ? `<p class="registeredTxt">Registered</p>` :
-                `<a href="javascript:;" class="regBtn" ${isLoggedIn == 'false' ? `data-toggle="modal" data-target="#loginModal"`
-                    : `onclick="quizRegister('${detail.quiz_enc_id}')"`}>Register Now</a>`}`;
-
-            document.querySelector('.register-detail-btn').innerHTML = registerDetailBtn;
 
             const quizDetail = `${registrationEndDate ? `
                                     <div class="register-dead block-span">
@@ -684,7 +755,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             }
             document.querySelector('.regCount').innerHTML = `<span>${detail.registered_count ? detail.registered_count : 0}</span> Registered`;
         }
-
     function showRegisteredIcons(regUsers){
             if(regUsers){
                 document.querySelector('.ask-people').style.display = 'block'
@@ -700,11 +770,12 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             document.querySelector('.ask-people').innerHTML = registerUser;
         }
 
+
     function setDateFormat(dateTime){
-            if(dateTime){
-                return moment(dateTime, "YYYY-MM-DD HH:mm:ss").format("DD MMM YYYY hh:mm A");
-            }
+        if(dateTime){
+            return moment(dateTime, "YYYY-MM-DD HH:mm:ss").format("DD MMM YYYY hh:mm A");
         }
+    }
 
     function showRelatedQuiz(quizzes){
             let quizSection = document.querySelector('.related-quiz-section');

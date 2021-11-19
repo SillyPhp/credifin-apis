@@ -26,7 +26,7 @@ class QuizzesController extends Controller
         return parent::beforeAction($action);
     }
 
-    public function actionIndex($type = null)
+    public function actionList()
     {
         if ($type == null) {
             $categories = AssignedCategories::find()
@@ -337,7 +337,7 @@ class QuizzesController extends Controller
         return $this->render('topics');
     }
 
-    public function actionList(){
+    public function actionIndex($type = null){
         return $this->render('quiz-filters');
     }
 

@@ -2,43 +2,47 @@
 
 use yii\helpers\Url;
 ?>
-
-<section class="webinar-one-speaker1">
-    <div class="green-strip"></div>
-    <div class="green-strip"></div>
-    <div class="date-time">
-        <div class="time">
-            {{start_date_time}}
+<script id="webinar_one_speaker2" type="text/javascript">
+    <section class="webinar-one-speaker1">
+        <div class="green-strip"></div>
+        <div class="green-strip"></div>
+        <div class="date-time">
+            <div class="time">
+                {{time}}
+            </div>
+            <div class="date">
+                {{date}}
+            </div>
         </div>
-        <div class="date">
-            {{start_date}}
-        </div>
-    </div>
     <div class="container">
         <div class="row">
+            {{#webinarEvents}}
+            {{#webinarSpeakers}}
             <div class="col-sm-5">
                 <div class="speaker-details">
-                <div class="speaker-image">
-                    <div class="inside-div">
-                    <img src="{{speaker_img}}">
+                    <div class="speaker-image">
+                        <div class="inside-div">
+                            <img src="{{speaker_image}}">
+                        </div>
                     </div>
-                </div>
-                <div class="speaker-name">
+                    <div class="speaker-name">
                     <h5>Speaker:</h5>
                     <h3>{{speaker_name}}</h3>
-                    <h4>{{Designation}}</h4>
+                    <h4>{{designation}}</h4>
                 </div>
                 </div>
             </div>
+            {{/webinarSpeakers}}
+            {{/webinarEvents}}
             <div class="col-sm-7">
                 <div class="webinar-text">
                     <h1>{{name}}</h1>
                     <div class="date-time">
                         <div class="time">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/time-icon.png')?>">{{start_date_time}}
+                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/time-icon.png')?>">{{time}}
                         </div>
                         <div class="date">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/calendar-icon.png')?>">{{start_date}}
+                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/calendar-icon.png')?>">{{date}}
                         </div>
                     </div>
                     <p>{{description}}</p>
@@ -55,6 +59,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+</script>
 <?php
 $this->registerCss('
 img{
