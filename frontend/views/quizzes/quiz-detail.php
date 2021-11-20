@@ -779,7 +779,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 
     function setDateFormat(dateTime){
         if(dateTime){
-            return moment(dateTime, "YYYY-MM-DD HH:mm:ss").format("DD MMM YYYY hh:mm A");
+            return moment(dateTime, "MM-DD-YYYY HH:mm:ss").format("DD MMM YYYY hh:mm A");
         }
     }
 
