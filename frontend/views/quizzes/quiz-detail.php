@@ -5,6 +5,12 @@ use yii\helpers\Url;
 $link = Url::to('quizzes/' . $slug, true);
 ?>
 
+<?php if (Yii::$app->session->hasFlash('error')): ?>
+    <script type="text/javascript">
+        alert('Please Register This Webinar to play quiz');
+    </script>
+<?php endif; ?>
+
 <section class="quiz-header">
     <div class="left-quiz">
         <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-l.png') ?>"/>
