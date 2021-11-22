@@ -549,8 +549,6 @@ $uId = $user['user_enc_id'];
                                 <div class="mt-comments">
                                     <?php
                                     foreach ($userAppliedData as $arr) {
-//                                        print_r($arr);
-//                                        exit();
                                         foreach ($arr as $pData) {
                                             ?>
                                             <a href="/account/process-applications/<?= $pData['application_enc_id'] ?>"
