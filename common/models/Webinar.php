@@ -1,5 +1,8 @@
 <?php
+
 namespace common\models;
+
+use Yii;
 
 /**
  * This is the model class for table "{{%webinar}}".
@@ -30,6 +33,7 @@ namespace common\models;
  * @property int $is_deleted 0 as False, 1 as True
  *
  * @property AssignedWebinarTo[] $assignedWebinarTos
+ * @property AssignedWebinarWidgetTemplate[] $assignedWebinarWidgetTemplates
  * @property UserWebinarInterest[] $userWebinarInterests
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
@@ -37,6 +41,7 @@ namespace common\models;
  * @property WebinarOutcomes[] $webinarOutcomes
  * @property WebinarPayments[] $webinarPayments
  * @property WebinarRegistrations[] $webinarRegistrations
+ * @property WebinarWidgetTemplates[] $webinarWidgetTemplates
  */
 class Webinar extends \yii\db\ActiveRecord
 {
@@ -75,6 +80,14 @@ class Webinar extends \yii\db\ActiveRecord
     public function getAssignedWebinarTos()
     {
         return $this->hasMany(AssignedWebinarTo::className(), ['webinar_enc_id' => 'webinar_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedWebinarWidgetTemplates()
+    {
+        return $this->hasMany(AssignedWebinarWidgetTemplate::className(), ['webinar_enc_id' => 'webinar_enc_id']);
     }
 
     /**
@@ -131,5 +144,13 @@ class Webinar extends \yii\db\ActiveRecord
     public function getWebinarRegistrations()
     {
         return $this->hasMany(WebinarRegistrations::className(), ['webinar_enc_id' => 'webinar_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWebinarWidgetTemplates()
+    {
+        return $this->hasMany(WebinarWidgetTemplates::className(), ['webinar_enc_id' => 'webinar_enc_id']);
     }
 }

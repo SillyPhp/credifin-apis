@@ -4,7 +4,9 @@
 namespace api\modules\v2\controllers;
 
 use common\models\AssignedCollegeCourses;
+use common\models\Categories;
 use common\models\CollegeSections;
+use common\models\extended\Quiz;
 use common\models\MockAssignedQuizPool;
 use common\models\MockLabelPool;
 use common\models\MockLabels;
@@ -15,6 +17,8 @@ use common\models\MockQuizQuestionsPool;
 use common\models\MockQuizzes;
 use common\models\MockTakenQuizQuestions;
 use common\models\MockTakenQuizzes;
+use common\models\QuizPayments;
+use common\models\QuizRegistration;
 use common\models\UserOtherDetails;
 use common\models\Users;
 use yii\db\Expression;
@@ -45,6 +49,9 @@ class QuizController extends ApiBaseController
                 'remove-question' => ['POST', 'OPTIONS'],
                 'get-pools' => ['POST', 'OPTIONS'],
                 'detail' => ['POST', 'OPTIONS'],
+                'list' => ['POST', 'OPTIONS'],
+                'register' => ['POST', 'OPTIONS'],
+                'update-payment-status' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -984,7 +991,7 @@ class QuizController extends ApiBaseController
         }
     }
 
-    public function actionDetail()
+    public function actionDetaill()
     {
         if ($user = $this->isAuthorized()) {
             $id = Yii::$app->request->post('id');
@@ -1036,6 +1043,134 @@ class QuizController extends ApiBaseController
             return $this->response(403, ['status' => 403, 'message' => 'param must be required']);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized ']);
+        }
+    }
+
+
+    public function actionList()
+    {
+//        if ($user = $this->isAuthorized()) {
+
+        $options = Yii::$app->request->post();
+
+        $quizzes = Quiz::getQuizData($options);
+
+        if ($quizzes) {
+            return $this->response(200, ['status' => 200, 'message' => 'success', 'data' => $quizzes]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+//        } else {
+//            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+//        }
+
+    }
+
+    public function actionDetail()
+    {
+
+        $params = Yii::$app->request->post();
+
+        if (!isset($params['slug']) && empty($params['slug'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "slug"']);
+        }
+
+        $options['slug'] = $params['slug'];
+
+        if ($user = $this->isAuthorized()) {
+            $options['user_id'] = $user->user_enc_id;
+        }
+
+        $quizModel = new Quiz();
+        $detail = $quizModel->detail($options);
+        unset($options['slug']);
+
+        $options['category'] = $detail['category'];
+        $options['limit'] = 3;
+        $options['quiz_id'] = $detail['quiz_enc_id'];
+        $related = Quiz::getQuizData($options);
+
+        if ($detail) {
+            return $this->response(200, ['status' => 200, 'message' => 'quiz detail', 'detail' => $detail, 'related' => $related]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+    }
+
+    public function actionCategories()
+    {
+        $categories = Categories::find()
+            ->alias('a')
+            ->select(['a.category_enc_id', 'a.name'])
+            ->innerJoinWith(['assignedCategories b' => function ($b) {
+                $b->innerJoinWith(['quizzes b1']);
+            }], false)
+            ->where(['b1.is_deleted' => 0])
+            ->groupBy('a.name')
+            ->asArray()
+            ->all();
+
+        if ($categories) {
+            return $this->response(200, ['status' => 200, 'categories' => $categories]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionRegister()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (!isset($params['quiz_id']) && empty($params['quiz_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "quiz_id"']);
+            }
+
+            $paid = QuizPayments::findOne(['quiz_enc_id' => $params['quiz_id'], 'payment_status' => 'captured', 'created_by' => $user->user_enc_id]);
+            $registered = QuizRegistration::findOne(['quiz_enc_id' => $params['quiz_id'], 'created_by' => $user->user_enc_id, 'is_deleted' => 0]);
+
+            if ($paid) {
+                return $this->response(422, ['status' => 422, 'message' => 'User Already Paid The Amount and Registered']);
+            }
+
+            if ($registered) {
+                return $this->response(422, ['status' => 422, 'message' => 'User Already Registered']);
+            }
+
+            $params['user_id'] = $user->user_enc_id;
+
+            $quizModel = new Quiz();
+            $register = $quizModel->registerUser($params);
+
+            if ($register) {
+                return $this->response(200, $register);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'some error occurred']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+
+    }
+
+    public function actionUpdatePaymentStatus()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            $params['user_id'] = $user->user_enc_id;
+
+            $quizModel = new Quiz();
+            $update = $quizModel->updateStatus($params);
+
+            if ($update) {
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'some error occurred']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 

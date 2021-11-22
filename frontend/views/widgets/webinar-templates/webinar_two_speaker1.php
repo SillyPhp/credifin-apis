@@ -3,8 +3,8 @@
 use yii\helpers\Url;
 
 ?>
-
-<section class="webinar-two-speaker">
+<script id="webinar_two_speaker1" type="text/javascript">
+    <section class="webinar-two-speaker">
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
@@ -12,8 +12,8 @@ use yii\helpers\Url;
                     <h1>{{name}}</h1>
                     <p>{{descrition}}</p>
                     <div class="date-time">
-                        <span class="date"><img src="<?= Url::to('@eyAssets/images/pages/webinar/calendar-icon.png')?>">{{start_date}}</span>
-                        <span class="time"><img src="<?= Url::to('@eyAssets/images/pages/webinar/time-icon.png')?>">{{start_date_time}}</span>
+                        <span class="date"><img src="<?= Url::to('@eyAssets/images/pages/webinar/calendar-icon.png')?>">{{date}}</span>
+                        <span class="time"><img src="<?= Url::to('@eyAssets/images/pages/webinar/time-icon.png')?>">{{time}}</span>
                     </div>
                     <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
                     <div class="share-bar">
@@ -27,9 +27,13 @@ use yii\helpers\Url;
             </div>
             <div class="col-sm-6">
                 <div class="speakers-images">
-                    {{#speakers}}
+                    {{#webinarEvents}}
+                    {{#webinarSpeakers}}
                     <div class="speaker">
                         <div class="speaker-img">
+                            {{#speaker_image}}
+                            <img src="{{speaker_image}}">
+                                {{/speaker_image}}
                         </div>
                         <div class="speaker-detail">
                             <div class="speaker-name">
@@ -40,13 +44,23 @@ use yii\helpers\Url;
                             </div>
                         </div>
                     </div>
-                    {{/speakers}}
+                    {{/webinarSpeakers}}
+                    {{/webinarEvents}}
                 </div>
             </div>
         </div>
 </section>
+</script>
 
 <?php $this->registerCss('
+.share-whatsapp{
+color: #25D366 !important;
+}
+.share-bar a.share-whatsapp:hover{
+    background-color: #25D366 !important;
+    color: #fff !important;
+    
+}
     .webinar-two-speaker{
         background: url(/assets/themes/ey/images/pages/webinar/webinar-two-speaker-bg.png);
         min-height: 550px;
@@ -185,6 +199,9 @@ use yii\helpers\Url;
         width: 150px;
         height: 150px;
         border-radius: 50%;
+    }
+    .speaker-img img{
+    width: 100%;
     }
     .speaker {
         width: 345px;

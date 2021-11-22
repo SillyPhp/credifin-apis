@@ -3,52 +3,57 @@
 use yii\helpers\Url;
 
 ?>
-
-<section class="webinar-speaker1">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-sm-6 web-txt">
-                <div class="web-text">
-                    <h1>{{name}}</h1>
-                    <div class="date-time">
-                        <span class="date"><img src="<?= Url::to('/assets/themes/ey/images/pages/webinar/triangle1.png')?>">{{start_date}}</span>
-                        <span class="time"><img src="<?= Url::to('/assets/themes/ey/images/pages/webinar/triangle.png')?>">{{start_date_time}}</span>
+<script id="webinar_two_speaker2" type="text/template">
+    <section class="webinar-speaker1">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 web-txt">
+                    <div class="web-text">
+                        <h1>{{name}}</h1>
+                        <div class="date-time">
+                            <span class="date"><img src="<?= Url::to('/assets/themes/ey/images/pages/webinar/triangle1.png')?>">{{date}}</span>
+                            <span class="time"><img src="<?= Url::to('/assets/themes/ey/images/pages/webinar/triangle.png')?>">{{time}}</span>
+                        </div>
+                        <p>{{description}}</p>
                     </div>
-                    <p>{{description}}</p>
+                    <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-caret-right"></i></a>
+                    <div class="share-bar">
+                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/{{slug}}" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/{{slug}}" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/{{slug}}" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
                 </div>
-                <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-caret-right"></i></a>
-                <div class="share-bar">
-                    <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/{{slug}}" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                    <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/{{slug}}" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                    <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
-                    <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-twitter"><i class="fab fa-twitter"></i></a>
-                    <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/{{slug}}" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-6">
-                <div class="speaker-image">
-                    {{#speakers}}
-                    <div class="two-speakers">
-                        <div class="two-speakers-img"></div>
-                        <div class="two-speakers-text">
-                            <h3>{{speaker_name}}</h3>
-                            <p>{{designation}}</p>
-                            {{#company_name}}
-                            <p>{{company_name}}</p>
-                            {{/company_name}}
-                            {{#location}}
-                            <p>{{location}}</p>
-                            {{/location}}
+                {{#webinarEvents}}
+                {{#webinarSpeakers}}
+                <div class="col-md-6 col-sm-6">
+                    <div class="speaker-image">
+                        <div class="two-speakers">
+                            <div class="two-speakers-img">
+                                {{#speaker_image}}
+                                <img src="{{speaker_image}}">
+                                {{/speaker_image}}
+                            </div>
+                            <div class="two-speakers-text">
+                                <h3>{{speaker_name}}</h3>
+                                <p>{{designation}}</p>
+                            </div>
                         </div>
                     </div>
-                    {{/speakers}}
                 </div>
+                {{/webinarSpeakers}}
+                {{/webinarEvents}}
             </div>
         </div>
-    </div>
-</section>
+    </section>
+</script>
 <?php
 $this->registerCss('
+.two-speakers-img img
+{
+width: 100%;
+}
 .webinar-speaker1{
     background: url(/assets/themes/ey/images/pages/webinar/circle.png) -6% -19%, url(/assets/themes/ey/images/pages/webinar/circle.png) 100% -11%, url(/assets/themes/ey/images/pages/webinar/circle.png) 38% 170%, url(/assets/themes/ey/images/pages/webinar/webinar-bg.png);
     min-height: 550px;
@@ -159,7 +164,14 @@ a.register-btn:hover i{
     font-size: 12px;
     border-radius: 20px;
 }
-
+.share-whatsapp{
+color: #25D366 !important;
+}
+.share-bar a.share-whatsapp:hover{
+    background-color: #25D366 !important;
+    color: #fff !important;
+    
+}
 .share-bar a.share-fb:hover {
     background-color: #3b5998;
 }

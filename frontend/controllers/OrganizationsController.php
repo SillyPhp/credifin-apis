@@ -330,8 +330,15 @@ class OrganizationsController extends Controller
                 ->asArray()
                 ->all();
             $count_opportunities = \common\models\EmployerApplications::find()
-                ->where(['organization_enc_id' => $organization['organization_enc_id'], 'for_careers' => 0, 'is_deleted' => 0])
-                ->count();
+                ->alias('a')
+                ->select(['a.application_enc_id','SUM(b.positions) as positions', 'c.positions as positions2'])
+                ->joinWith(['applicationPlacementLocations b'])
+                ->joinWith(['applicationOptions c'])
+                ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.for_careers' => 0, 'a.is_deleted' => 0])
+                ->groupBy(['a.application_enc_id'])
+                ->asArray()
+                ->all();
+
             $from_date_app = date("Y-m-d", strtotime("-180 day"));
             $jobs_count = EmployerApplications::find()
                 ->alias('a')
@@ -392,6 +399,10 @@ class OrganizationsController extends Controller
                     'industries' => $industries,
                     'count_opportunities' => $count_opportunities,
                     'org_products' => $org_products,
+                    'available_jobs' => $this -> __getApplicationsCount($organization['organization_enc_id'],'Jobs'),
+                    'available_internships' => $this -> __getApplicationsCount($organization['organization_enc_id'],'Internships'),
+                    'expired_jobs' => $this -> __getApplicationsCount($organization['organization_enc_id'],'Jobs',false),
+                    'expired_internships' => $this -> __getApplicationsCount($organization['organization_enc_id'],'Internships',false),
                 ]);
             } else {
                 $follow = FollowedOrganizations::find()
@@ -433,6 +444,20 @@ class OrganizationsController extends Controller
         } else {
             throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
         }
+    }
+
+    private function __getApplicationsCount($org_id, $type, $is_live = true){
+        $applications = EmployerApplications::find()
+            ->alias('a')
+            ->joinWith(['applicationTypeEnc b'])
+            ->where(['b.name' => $type, 'a.organization_enc_id' => $org_id]);
+//            ->andWhere(['a.application_for' => 1]);
+            if($is_live){
+                $applications ->andWhere(['a.status' => 'Active', 'a.is_deleted' => 0, 'a.application_for' => 1]);
+            }else{
+                $applications ->andWhere(['a.status' => 'Closed']);
+            }
+            return $applications ->count();
     }
 
     public function actionUpdateLogo()
