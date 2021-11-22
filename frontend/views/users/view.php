@@ -537,33 +537,47 @@ $uId = $user['user_enc_id'];
                             <div class="portlet-title tabbable-line">
                                 <div class="caption">
                                     <?php
-//                                    if ($_GET['id']) {
-//                                        echo '<span class="caption-subject font-dark bold uppercase">Also Applied In</span>';
-//                                    } else {
-                                        echo '<span class="caption-subject font-dark bold uppercase">Applied In</span>';
-//                                    }
+                                    //                                    if ($_GET['id']) {
+                                    //                                        echo '<span class="caption-subject font-dark bold uppercase">Also Applied In</span>';
+                                    //                                    } else {
+                                    echo '<span class="caption-subject font-dark bold uppercase">Applied In</span>';
+                                    //                                    }
                                     ?>
                                 </div>
                             </div>
                             <div class="portlet-body over-scroll">
                                 <div class="mt-comments">
                                     <?php
-                                    foreach ($userAppliedData as $data) {
-                                        ?>
-                                        <a href="/<?= (($data['type'] == 'Jobs') ? 'job/' : 'internship/') . $data['slug'] ?>"
-                                           class="mt-comment">
-                                            <div class="mt-comment-img">
-                                                <img src="/assets/common/categories/<?= (($data['icon']) ? $data['icon'] : 'others.svg') ?>">
-                                            </div>
-                                            <div class="mt-comment-body">
-                                                <div class="mt-comment-info">
-                                                    <span class="mt-comment-author"><?= $data['category'] ?></span>
-                                                    <span class="mt-comment-date"><?= (($data['type'] == 'Jobs') ? 'Job' : 'Internship') ?></span>
+                                    foreach ($userAppliedData as $arr) {
+                                        foreach ($arr as $pData) {
+                                            ?>
+                                            <a href="/account/process-applications/<?= $pData['application_enc_id'] ?>"
+                                               class="mt-comment">
+                                                <div class="mt-comment-img">
+                                                    <img src="/assets/common/categories/<?= (($pData['job_icon']) ? $pData['job_icon'] : 'others.svg') ?>">
                                                 </div>
-                                                <div class="mt-comment-text"> <?= $data['parent'] ?></div>
-                                            </div>
-                                        </a>
-                                        <?php
+                                                <div class="mt-comment-body">
+                                                    <div class="mt-comment-info">
+                                                        <span class="mt-comment-author"><?= $pData['title'] ?></span>
+                                                        <span class="mt-comment-date"><?= (($pData['type'] == 'Jobs') ? 'Job' : 'Internship') ?></span>
+                                                    </div>
+                                                    <div class="mt-comment-text">
+                                                        <?php
+                                                        if($pData['status'] == 'Hired' || $pData['status'] == 'Cancelled' || $pData['status'] == 'Rejected'){
+                                                            echo $pData['status'];
+                                                        } else {
+                                                          if($pData['process'][$pData['active']]['field_name']){
+                                                              echo (($pData['process'][$pData['active']]['field_name'] == 'Get Applications') ? 'New Application' : $pData['process'][$pData['active']]['field_name']);
+                                                          } else {
+                                                              echo $pData['status'];
+                                                          }
+                                                        }
+                                                        ?>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <?php
+                                        }
                                     }
                                     ?>
                                 </div>
