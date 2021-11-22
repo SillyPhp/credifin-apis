@@ -115,7 +115,7 @@ class QuizzesController extends Controller
         return $this->render('all');
     }
 
-    public function actionPlay($slug, $s = NULL, $t = NULL)
+    public function actionPlay($slug)
     {
         $temp = Quizzes::find()
             ->alias('a')

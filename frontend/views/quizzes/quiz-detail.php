@@ -670,7 +670,8 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             let quizEndDatetime = setDateFormat(detail.quiz_end_datetime);
             let currentDate = new Date().getTime();
             let regEnd = new Date(detail.registration_end_datetime).getTime();
-            let quizStart = new Date(detail.quiz_start_datetime).getTime()
+            let quizStart = new Date(detail.quiz_start_datetime).getTime();
+            let quizEnd = new Date(detail.quiz_end_datetime).getTime();
 
             const header = `${detail.sharing_image ? `<img src="${detail.sharing_image}"/>` : ''}
                     <p>${detail.name}</p>
@@ -684,16 +685,17 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                         `: ''}
                         <div class="both-btns">
                             <div class="register-detail-btn-2">
-                                ${(currentDate > regEnd && detail.is_expired == 'false') ?
+                                ${(currentDate > quizStart && detail.is_registered && currentDate < quizEnd) ?
+                                    `<a href="/quiz/${detail.slug}/play">Play Now</a>` :
+                                    (currentDate > regEnd && detail.is_expired == 'false' && !detail.is_registered && currentDate < quizStart) ?
                                     `<p class="registeredTxt2">Registration Closed</p>` :
                                     detail.is_expired == 'true' ?
                                     `<p class="registeredTxt2">Expired</p>` :
-                                    detail.is_registered ?
+                                    (detail.is_registered && detail.quiz_start_datetime) ?
                                     `<p class="registeredTxt2"> Registered </p>` :
+                                    (detail.is_registered) ?
+                                    `<a href="/quiz/${detail.slug}/play">Play Now</a>`:
                                     `<a href="javascript:;" class="regBtn" ${isLoggedIn == 'false' ? `data-toggle="modal" data-target="#loginModal"` : `onclick="quizRegister('${detail.quiz_enc_id}')"`}>Register Now</a>`
-                                }
-                                ${ currentDate > quizStart ? `` : ''
-
                                 }
                             </div>
                             ${detail.is_expired == 'false' ? `
@@ -720,10 +722,12 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                                         <span>Registration Deadline : <strong>${registrationEndDate}</strong></span>
                                     </div>`
                                 : ''}
-                                <div class="register-fee block-span">
-                                    <i class="fas fa-rupee-sign"></i>
-                                    <span>Registration Fee : <strong>${detail.currency_html_code ? detail.currency_html_code : '' } ${detail.price > 0 ? Math.floor(detail.price) : 'Free' }</strong></span>
-                                </div>
+                                ${detail.is_paid == 1 ? `
+                                    <div class="register-fee block-span">
+                                        <i class="fas fa-rupee-sign"></i>
+                                        <span>Registration Fee : <strong>${detail.currency_html_code ? detail.currency_html_code : '' } ${detail.price > 0 ? Math.floor(detail.price) : 'Free' }</strong></span>
+                                    </div>
+                                `: ''}
                                  ${quizStartDatetime ? `
                                     <div class="play-time block-span">
                                         <i class="far fa-play-circle"></i>
@@ -786,7 +790,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             let quizCard =  quizzes.map(quiz => {
                 return `
                 <div class="col-md-4">
-                    <a href="`+baseUrl+`/quiz/${quiz.slug}" class="">
+                    <a href="/quiz/${quiz.slug}" class="">
                         <div class="card-main nd-shadow">
                             ${quiz.is_paid == 0 ? '' : `
                                 <div class="paid-webinar">Paid</div>

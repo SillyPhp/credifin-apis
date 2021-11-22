@@ -526,7 +526,7 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
     function displayQuizzes(quizzes){
         let quizCard = quizzes.map(quiz => {
                 return `<div class="col-md-6">
-                <a href="`+baseUrl+`/quiz/${quiz.slug}" target="_blank" class="" id="${quiz.quiz_enc_id}">
+                <a href="/quiz/${quiz.slug}" target="_blank" class="" id="${quiz.quiz_enc_id}">
                         <div class="card-main nd-shadow">
                             ${quiz.is_paid == 0 ? '' : `
                                 <div class="paid-webinar">Paid</div>
