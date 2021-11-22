@@ -691,18 +691,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                         `: ''}
                         <div class="both-btns">
                             <div class="register-detail-btn-2">
-                                ${(currentDate > quizStart && detail.is_registered && currentDate < quizEnd) ?
-                                    `<a href="/quiz/${detail.slug}/play">Play Now</a>` :
-                                    (currentDate > regEnd && detail.is_expired == 'false' && !detail.is_registered && currentDate < quizStart) ?
-                                    `<p class="registeredTxt2">Registration Closed</p>` :
-                                    detail.is_expired == 'true' ?
-                                    `<p class="registeredTxt2">Expired</p>` :
-                                    (detail.is_registered && detail.quiz_start_datetime) ?
-                                    `<p class="registeredTxt2"> Registered </p>` :
-                                    (detail.is_registered) ?
-                                    `<a href="/quiz/${detail.slug}/play">Play Now</a>`:
-                                    `<a href="javascript:;" class="regBtn" ${isLoggedIn == 'false' ? `data-toggle="modal" data-target="#loginModal"` : `onclick="quizRegister('${detail.quiz_enc_id}')"`}>Register Now</a>`
-                                }
+                               ${refreshBtn(currentDate, quizStart, quizEnd, regEnd, detail)}
                             </div>
                             ${detail.is_expired == 'false' ? `
                             <div class="addeventatc" title="Add to Calendar">
@@ -764,7 +753,8 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                 document.querySelector('.regCount').style.margin = '0px';
             }
             document.querySelector('.regCount').innerHTML = `<span>${detail.registered_count ? detail.registered_count : 0}</span> Registered`;
-        }
+    }
+
     function showRegisteredIcons(regUsers){
             if(regUsers){
                 document.querySelector('.ask-people').style.display = 'block'
@@ -837,6 +827,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             document.querySelector('.related-quizzes').innerHTML = quizCard
         }
 
+
     function showReward(rewards){
             let rewardSection = document.querySelector('.rewards-section');
             if(rewards.length > 0){
@@ -860,6 +851,27 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 
             document.querySelector('.quizRewards').innerHTML = rewardsCard;
         }
+    
+    function refreshBtn(currentDate, quizStart, quizEnd, regEnd, detail) {
+        setInterval(function () {
+            let nowDate = new Date().getTime();
+            let btn = document.querySelector('.register-detail-btn-2');
+            let btnHtml = `${(nowDate > quizStart && detail.is_registered == true && nowDate < quizEnd) ?
+                    `<a href="/quiz/${detail.slug}/play">Play Now</a>` :
+                    (nowDate > regEnd && detail.is_expired == 'false' && detail.is_registered == false) ?
+                    `<p class="registeredTxt2">Registration Closed</p>` :
+                    detail.is_expired == 'true' ?
+                    `<p class="registeredTxt2">Expired</p>` :
+                    (detail.is_registered == true && quizStart > nowDate) ?
+                    `<p class="registeredTxt2"> Registered </p>` :
+                    (detail.is_registered == true && quizStart == '') ?
+                    `<a href="/quiz/${detail.slug}/play">Play Now</a>`:
+                    `<a href="javascript:;" class="regBtn" ${isLoggedIn == 'false' ? `data-toggle="modal" data-target="#loginModal"` : `onclick="quizRegister('${detail.quiz_enc_id}')"`}>Register Now</a>`
+                }`;
+            btn.innerHTML = btnHtml;
+        },1000)
+        return `<p class="registeredTxt2">Loading</p>`;
+    }
 
     function countdown(e) {
         var t = this;
@@ -909,7 +921,8 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                 let payment_enc_id = res['response']['data']['payment_enc_id']
                 _razoPay(payment_token, payment_enc_id)
             }else if(res['response']['status'] == 201) {
-                document.querySelectorAll('.regBtn').forEach(t => {t.innerHTML = 'Registered'})
+                // document.querySelectorAll('.regBtn').forEach(t => {t.innerHTML = 'Registered'})
+                location.reload();
             }
         }
 
