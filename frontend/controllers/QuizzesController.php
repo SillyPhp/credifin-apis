@@ -10,8 +10,6 @@ use common\models\QuizSubmittedAnswers;
 use common\models\Quizzes;
 use common\models\UserAccessTokens;
 use common\models\Users;
-use common\models\Webinar;
-use common\models\WebinarRegistrations;
 use common\models\UserLogin;
 use Yii;
 use yii\web\Controller;
@@ -136,18 +134,18 @@ class QuizzesController extends Controller
 
     private function __loginUserFromMec($username)
     {
-        return Yii::$app->user->login(UserLogin::findByUsername($username), 0);
+//        return Yii::$app->user->login(UserLogin::findByUsername($username), 0);
     }
 
-    private function __returnData($message, $slug, $token = null, $type = null)
+    private function __returnData($message, $slug, $token = null)
     {
         Yii::$app->session->setFlash('error', $message);
         if ($token == null) {
             return $this->redirect(['/quiz/' . $slug]);
         } else {
             return $this->render('non-authorized', [
-                'type' => $type,
-                'message' => $message
+                'message' => $message,
+                'slug' => $slug
             ]);
         }
     }
@@ -173,7 +171,6 @@ class QuizzesController extends Controller
             ->asArray()
             ->one();
 
-
         // checking user logged in or not
         if (Yii::$app->user->isGuest) {
 
@@ -184,7 +181,7 @@ class QuizzesController extends Controller
                 $username = Users::findOne(['user_enc_id' => $user->user_enc_id])->username;
 
                 if (!$this->__loginUserFromMec($username)) {
-                    return $this->__returnData("an error occurred", $temp['slug'], $token, 1);
+                    return $this->__returnData("an error occurred", $temp['slug'], $token);
                 }
             } else {
                 return $this->__returnData("Please Login to play quiz", $temp['slug']);
@@ -198,21 +195,21 @@ class QuizzesController extends Controller
         if (!$registered) {
             if ($temp['is_paid'] == 0) {
                 if (!$this->__registerQuiz($temp['quiz_enc_id'])) {
-                    return $this->__returnData("Please Register quiz to play", $temp['slug'], $token, 2);
+                    return $this->__returnData("Please Register quiz to play", $temp['slug'], $token);
                 }
             } else {
-                return $this->__returnData("Please Register quiz to play", $temp['slug'], $token, 2);
+                return $this->__returnData("Please Register quiz to play", $temp['slug'], $token);
 
             }
         }
 
         //checking quiz play datetime
         if ($temp['quiz_start_datetime'] > $currentTime) {
-            return $this->__returnData("Quiz will be held on " . $temp['quiz_start_datetime'], $temp['slug'], $token, 3);
+            return $this->__returnData("Quiz will be held on " . $temp['quiz_start_datetime'], $temp['slug'], $token);
         }
 
         if ($temp['quiz_end_datetime'] < $currentTime) {
-            return $this->__returnData("Quiz is expired", $temp['slug'], $token, 4);
+            return $this->__returnData("Quiz is expired", $temp['slug'], $token);
         }
 
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -284,6 +281,7 @@ class QuizzesController extends Controller
                 ];
             }
         }
+
         switch ($temp['template']) {
             case 1:
                 $this->layout = 'quiz-main';
