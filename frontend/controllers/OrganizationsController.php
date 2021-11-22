@@ -330,8 +330,15 @@ class OrganizationsController extends Controller
                 ->asArray()
                 ->all();
             $count_opportunities = \common\models\EmployerApplications::find()
-                ->where(['organization_enc_id' => $organization['organization_enc_id'], 'for_careers' => 0, 'is_deleted' => 0])
-                ->count();
+                ->alias('a')
+                ->select(['a.application_enc_id','SUM(b.positions) as positions', 'c.positions as positions2'])
+                ->joinWith(['applicationPlacementLocations b'])
+                ->joinWith(['applicationOptions c'])
+                ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.for_careers' => 0, 'a.is_deleted' => 0])
+                ->groupBy(['a.application_enc_id'])
+                ->asArray()
+                ->all();
+
             $from_date_app = date("Y-m-d", strtotime("-180 day"));
             $jobs_count = EmployerApplications::find()
                 ->alias('a')
