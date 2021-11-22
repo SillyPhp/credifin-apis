@@ -134,7 +134,8 @@ class QuizzesController extends Controller
         return true;
     }
 
-    private function __loginUserFromMec($username)
+    private function __loginUserFromMec($username){}
+
     public function actionPlay($slug)
     {
         return Yii::$app->user->login(UserLogin::findByUsername($username), 0);
@@ -153,205 +154,205 @@ class QuizzesController extends Controller
         }
     }
 
-    public function actionPlay($slug, $s = NULL, $t = NULL, $token = null)
-    {
-
-        $dt = new \DateTime();
-        $tz = new \DateTimeZone('Asia/Kolkata');
-        $dt->setTimezone($tz);
-        $currentTime = $dt->format('Y-m-d H:i:s');
-
-        $temp = Quizzes::find()
-            ->alias('a')
-            ->innerJoinWith(['quizPoolEnc b' => function ($b) {
-                $b->innerJoinWith(['quizQuestionsPools z']);
-            }], false)
-            ->where([
-                'a.slug' => $slug,
-                'a.status' => 1,
-                'a.is_deleted' => 0
-            ])
-            ->asArray()
-            ->one();
-
-
-        // checking user logged in or not
-        if (Yii::$app->user->isGuest) {
-
-            if ($token != null) {
-
-                //login user for one day if user from mec
-                $user = UserAccessTokens::findOne(['access_token' => $token]);
-                $username = Users::findOne(['user_enc_id' => $user->user_enc_id])->username;
-
-                if (!$this->__loginUserFromMec($username)) {
-                    return $this->__returnData("an error occurred", $temp['slug'], $token, 1);
-                }
-            } else {
-                return $this->__returnData("Please Login to play quiz", $temp['slug']);
-            }
-        }
-
-        // checking user registered for this quiz or not
-        $registered = QuizRegistration::findOne(['quiz_enc_id' => $temp['quiz_enc_id'], 'is_deleted' => 0, 'status' => 1, 'created_by' => Yii::$app->user->identity->user_enc_id]);
-
-        // if not registered and quiz is free then register the quiz before play else redirect to quiz detail page to register
-        if (!$registered) {
-            if ($temp['is_paid'] == 0) {
-                if (!$this->__registerQuiz($temp['quiz_enc_id'])) {
-                    return $this->__returnData("Please Register quiz to play", $temp['slug'], $token, 2);
-                }
-            } else {
-                return $this->__returnData("Please Register quiz to play", $temp['slug'], $token, 2);
-
-            }
-        }
-
-        //checking quiz play datetime
-        if ($temp['quiz_start_datetime'] > $currentTime) {
-            return $this->__returnData("Quiz will be held on " . $temp['quiz_start_datetime'], $temp['slug'], $token, 3);
-        }
-
-        if ($temp['quiz_end_datetime'] < $currentTime) {
-            return $this->__returnData("Quiz is expired", $temp['slug'], $token, 4);
-        }
-
-        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            if ($temp['template'] == 6) {
-                $data = Yii::$app->request->post();
-                $quizSubmittedAnsers = new QuizSubmittedAnswers();
-                $utilitiesModel = new \common\models\Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $quizSubmittedAnsers->quiz_submitted_answers_enc_id = $utilitiesModel->encrypt();
-                $quizSubmittedAnsers->quiz_question_pool_enc_id = $data['question'];
-                $quizSubmittedAnsers->answer_enc_id = $data['ans'];
-                $quizSubmittedAnsers->consumed_time = $data['ct'];
-                $quizSubmittedAnsers->user_enc_id = Yii::$app->user->identity->user_enc_id;
-                $quizSubmittedAnsers->quiz_slug = $slug;
-                $checkAns = QuizAnswersPool::find()
-                    ->select(['is_answer'])
-                    ->where(['quiz_answer_pool_enc_id' => $data['ans']])
-                    ->one();
-                $quizSubmittedAnsers->is_correct = $checkAns['is_answer'];
-                if (!$quizSubmittedAnsers->save()) {
-                    return false;
-                }
-
-                $submittedQuestions = $this->_getPreviousQuestions($slug);
-                $newQuestion = $this->_getQuestion($submittedQuestions, $slug);
-                $result = QuizSubmittedAnswers::find()
-                    ->select(['answer_enc_id'])
-                    ->where(['quiz_slug' => $slug, 'user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                    ->count();
-                if ($newQuestion && $result <= $temp['num_of_ques']) {
-                    return $response = [
-                        'status' => 200,
-                        'message' => 'Success',
-                        'question' => $newQuestion,
-                    ];
-                } else {
-                    $result = $this->_getQuizResult($slug);
-                    return $response = [
-                        'status' => 205,
-                        'message' => 'Success',
-                        'result' => $result,
-                    ];
-                }
-            } else {
-                $quiz = Quizzes::find()
-                    ->alias('a')
-                    ->joinWith(['quizPoolEnc b' => function ($x) use ($temp) {
-                        $x->andWhere([
-                            'b.status' => 1,
-                            'b.is_deleted' => 0
-                        ]);
-                        $x->joinWith(['quizQuestionsPools c' => function ($c) use ($temp) {
-                            $c->joinWith(['quizAnswersPools d']);
-                            $c->groupBy('c.quiz_question_pool_enc_id');
-                            $c->orderby(new Expression('rand()'));
-                            $c->limit($temp['num_of_ques']);
-                        }]);
-                    }])
-                    ->where([
-                        'a.slug' => $slug,
-                        'a.status' => 1,
-                        'a.is_deleted' => 0
-                    ])
-                    ->asArray()
-                    ->one();
-                return [
-                    'results' => $quiz['quizPoolEnc']['quizQuestionsPools']
-                ];
-            }
-        }
-        switch ($temp['template']) {
-            case 1:
-                $this->layout = 'quiz-main';
-                return $this->render('cricket-quiz', [
-                    'score' => $s,
-                    'total' => $t,
-                    'quiz' => $temp
-                ]);
-                break;
-            case 2:
-                $this->layout = 'quiz2-main';
-                return $this->render('cricket-quiz-2', [
-                    'score' => $s,
-                    'total' => $t,
-                    'quiz' => $temp
-                ]);
-                break;
-            case 3:
-                $this->layout = 'quiz3-main';
-                return $this->render('quiz-3', [
-                    'score' => $s,
-                    'total' => $t,
-                    'quiz' => $temp
-                ]);
-                break;
-            case 4:
-                $this->layout = 'quiz4-main';
-                return $this->render('quiz-4', [
-                    'score' => $s,
-                    'total' => $t,
-                    'quiz' => $temp
-                ]);
-                break;
-            case 5:
-                $this->layout = 'quiz5-main';
-                return $this->render('quiz-5', [
-                    'score' => $s,
-                    'total' => $t,
-                    'quiz' => $temp
-                ]);
-                break;
-            case 6:
-                $this->layout = 'quiz6-main';
-                $result = QuizSubmittedAnswers::find()
-                    ->select(['answer_enc_id'])
-                    ->where(['quiz_slug' => $slug, 'user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                    ->count();
-                if ($result == 0 && $result <= $temp['num_of_ques']) {
-                    return $this->render('college-quiz', [
-                        'quiz' => $this->_getQuestion([], $slug),
-                    ]);
-                } else {
-                    $noOfQuestion = Quizzes::find()
-                        ->select('num_of_ques')
-                        ->where(['slug' => $slug])
-                        ->asArray()
-                        ->one();
-                    return $this->render('college-quiz', [
-                        'result' => $this->_getQuizResult($slug),
-                        'noOfQuestion' => $noOfQuestion,
-                    ]);
-                }
-                break;
-            default :
-                throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
-        }
-    }
+//    public function actionPlay($slug, $s = NULL, $t = NULL, $token = null)
+//    {
+//
+//        $dt = new \DateTime();
+//        $tz = new \DateTimeZone('Asia/Kolkata');
+//        $dt->setTimezone($tz);
+//        $currentTime = $dt->format('Y-m-d H:i:s');
+//
+//        $temp = Quizzes::find()
+//            ->alias('a')
+//            ->innerJoinWith(['quizPoolEnc b' => function ($b) {
+//                $b->innerJoinWith(['quizQuestionsPools z']);
+//            }], false)
+//            ->where([
+//                'a.slug' => $slug,
+//                'a.status' => 1,
+//                'a.is_deleted' => 0
+//            ])
+//            ->asArray()
+//            ->one();
+//
+//
+//        // checking user logged in or not
+//        if (Yii::$app->user->isGuest) {
+//
+//            if ($token != null) {
+//
+//                //login user for one day if user from mec
+//                $user = UserAccessTokens::findOne(['access_token' => $token]);
+//                $username = Users::findOne(['user_enc_id' => $user->user_enc_id])->username;
+//
+//                if (!$this->__loginUserFromMec($username)) {
+//                    return $this->__returnData("an error occurred", $temp['slug'], $token, 1);
+//                }
+//            } else {
+//                return $this->__returnData("Please Login to play quiz", $temp['slug']);
+//            }
+//        }
+//
+//        // checking user registered for this quiz or not
+//        $registered = QuizRegistration::findOne(['quiz_enc_id' => $temp['quiz_enc_id'], 'is_deleted' => 0, 'status' => 1, 'created_by' => Yii::$app->user->identity->user_enc_id]);
+//
+//        // if not registered and quiz is free then register the quiz before play else redirect to quiz detail page to register
+//        if (!$registered) {
+//            if ($temp['is_paid'] == 0) {
+//                if (!$this->__registerQuiz($temp['quiz_enc_id'])) {
+//                    return $this->__returnData("Please Register quiz to play", $temp['slug'], $token, 2);
+//                }
+//            } else {
+//                return $this->__returnData("Please Register quiz to play", $temp['slug'], $token, 2);
+//
+//            }
+//        }
+//
+//        //checking quiz play datetime
+//        if ($temp['quiz_start_datetime'] > $currentTime) {
+//            return $this->__returnData("Quiz will be held on " . $temp['quiz_start_datetime'], $temp['slug'], $token, 3);
+//        }
+//
+//        if ($temp['quiz_end_datetime'] < $currentTime) {
+//            return $this->__returnData("Quiz is expired", $temp['slug'], $token, 4);
+//        }
+//
+//        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+//            Yii::$app->response->format = Response::FORMAT_JSON;
+//            if ($temp['template'] == 6) {
+//                $data = Yii::$app->request->post();
+//                $quizSubmittedAnsers = new QuizSubmittedAnswers();
+//                $utilitiesModel = new \common\models\Utilities();
+//                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//                $quizSubmittedAnsers->quiz_submitted_answers_enc_id = $utilitiesModel->encrypt();
+//                $quizSubmittedAnsers->quiz_question_pool_enc_id = $data['question'];
+//                $quizSubmittedAnsers->answer_enc_id = $data['ans'];
+//                $quizSubmittedAnsers->consumed_time = $data['ct'];
+//                $quizSubmittedAnsers->user_enc_id = Yii::$app->user->identity->user_enc_id;
+//                $quizSubmittedAnsers->quiz_slug = $slug;
+//                $checkAns = QuizAnswersPool::find()
+//                    ->select(['is_answer'])
+//                    ->where(['quiz_answer_pool_enc_id' => $data['ans']])
+//                    ->one();
+//                $quizSubmittedAnsers->is_correct = $checkAns['is_answer'];
+//                if (!$quizSubmittedAnsers->save()) {
+//                    return false;
+//                }
+//
+//                $submittedQuestions = $this->_getPreviousQuestions($slug);
+//                $newQuestion = $this->_getQuestion($submittedQuestions, $slug);
+//                $result = QuizSubmittedAnswers::find()
+//                    ->select(['answer_enc_id'])
+//                    ->where(['quiz_slug' => $slug, 'user_enc_id' => Yii::$app->user->identity->user_enc_id])
+//                    ->count();
+//                if ($newQuestion && $result <= $temp['num_of_ques']) {
+//                    return $response = [
+//                        'status' => 200,
+//                        'message' => 'Success',
+//                        'question' => $newQuestion,
+//                    ];
+//                } else {
+//                    $result = $this->_getQuizResult($slug);
+//                    return $response = [
+//                        'status' => 205,
+//                        'message' => 'Success',
+//                        'result' => $result,
+//                    ];
+//                }
+//            } else {
+//                $quiz = Quizzes::find()
+//                    ->alias('a')
+//                    ->joinWith(['quizPoolEnc b' => function ($x) use ($temp) {
+//                        $x->andWhere([
+//                            'b.status' => 1,
+//                            'b.is_deleted' => 0
+//                        ]);
+//                        $x->joinWith(['quizQuestionsPools c' => function ($c) use ($temp) {
+//                            $c->joinWith(['quizAnswersPools d']);
+//                            $c->groupBy('c.quiz_question_pool_enc_id');
+//                            $c->orderby(new Expression('rand()'));
+//                            $c->limit($temp['num_of_ques']);
+//                        }]);
+//                    }])
+//                    ->where([
+//                        'a.slug' => $slug,
+//                        'a.status' => 1,
+//                        'a.is_deleted' => 0
+//                    ])
+//                    ->asArray()
+//                    ->one();
+//                return [
+//                    'results' => $quiz['quizPoolEnc']['quizQuestionsPools']
+//                ];
+//            }
+//        }
+//        switch ($temp['template']) {
+//            case 1:
+//                $this->layout = 'quiz-main';
+//                return $this->render('cricket-quiz', [
+//                    'score' => $s,
+//                    'total' => $t,
+//                    'quiz' => $temp
+//                ]);
+//                break;
+//            case 2:
+//                $this->layout = 'quiz2-main';
+//                return $this->render('cricket-quiz-2', [
+//                    'score' => $s,
+//                    'total' => $t,
+//                    'quiz' => $temp
+//                ]);
+//                break;
+//            case 3:
+//                $this->layout = 'quiz3-main';
+//                return $this->render('quiz-3', [
+//                    'score' => $s,
+//                    'total' => $t,
+//                    'quiz' => $temp
+//                ]);
+//                break;
+//            case 4:
+//                $this->layout = 'quiz4-main';
+//                return $this->render('quiz-4', [
+//                    'score' => $s,
+//                    'total' => $t,
+//                    'quiz' => $temp
+//                ]);
+//                break;
+//            case 5:
+//                $this->layout = 'quiz5-main';
+//                return $this->render('quiz-5', [
+//                    'score' => $s,
+//                    'total' => $t,
+//                    'quiz' => $temp
+//                ]);
+//                break;
+//            case 6:
+//                $this->layout = 'quiz6-main';
+//                $result = QuizSubmittedAnswers::find()
+//                    ->select(['answer_enc_id'])
+//                    ->where(['quiz_slug' => $slug, 'user_enc_id' => Yii::$app->user->identity->user_enc_id])
+//                    ->count();
+//                if ($result == 0 && $result <= $temp['num_of_ques']) {
+//                    return $this->render('college-quiz', [
+//                        'quiz' => $this->_getQuestion([], $slug),
+//                    ]);
+//                } else {
+//                    $noOfQuestion = Quizzes::find()
+//                        ->select('num_of_ques')
+//                        ->where(['slug' => $slug])
+//                        ->asArray()
+//                        ->one();
+//                    return $this->render('college-quiz', [
+//                        'result' => $this->_getQuizResult($slug),
+//                        'noOfQuestion' => $noOfQuestion,
+//                    ]);
+//                }
+//                break;
+//            default :
+//                throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+//        }
+//    }
 
     private function _getPreviousQuestions($slug)
     {

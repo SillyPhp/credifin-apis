@@ -7,7 +7,7 @@ $link = Url::to('quizzes/' . $slug, true);
 
 <?php if (Yii::$app->session->hasFlash('error')): ?>
     <script type="text/javascript">
-        alert('Please Register This Webinar to play quiz');
+        alert('<?= Yii::$app->session->getFlash('error')?>');
     </script>
 <?php endif; ?>
 
