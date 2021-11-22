@@ -860,7 +860,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                     `<a href="/quiz/${detail.slug}/play">Play Now</a>` :
                     (nowDate > regEnd && detail.is_expired == 'false' && detail.is_registered == false) ?
                     `<p class="registeredTxt2">Registration Closed</p>` :
-                    detail.is_expired == 'true' ?
+                    detail.is_expired == 'true' || nowDate > quizEnd ?
                     `<p class="registeredTxt2">Expired</p>` :
                     (detail.is_registered == true && quizStart > nowDate) ?
                     `<p class="registeredTxt2"> Registered </p>` :
