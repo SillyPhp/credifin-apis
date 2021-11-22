@@ -152,7 +152,6 @@ class QuizzesController extends Controller
 
     public function actionPlay($slug, $s = NULL, $t = NULL, $token = NULL)
     {
-
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
         $dt->setTimezone($tz);
