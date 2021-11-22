@@ -620,7 +620,7 @@ class ApplicationForm extends Model
                     }
                 }
             }
-            Yii::$app->sitemap->generate();
+           // Yii::$app->sitemap->generate();
             $session = Yii::$app->session;
             if ($session->has('campusPlacementData')){
                 $var = $session->get('campusPlacementData');

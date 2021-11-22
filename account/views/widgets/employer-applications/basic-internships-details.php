@@ -5,14 +5,8 @@ use kartik\widgets\DatePicker;
 <div class="row">
     <div class="col-md-3">
         <div class="select">
-            <?php if ($type == 'Edit_Internships') {
-                echo $form->field($model, 'mainfield')->dropDownList($primary_cat, ['prompt' => 'Choose Internship Profile', 'disabled' => true])->label(false);
-                echo $form->field($model, 'primaryfield', ['template' => '{input}', 'options' => []])->hiddenInput()->label(false);
-            }
-            else
-            {
-                echo $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Internship Profile', 'disabled' => true])->label(false);
-            }
+            <?php
+                echo $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Internship Profile', 'disabled' => false])->label(false);
             ?>
         </div>
     </div>
@@ -23,11 +17,9 @@ use kartik\widgets\DatePicker;
                 <span></span>
                 <span></span>
             </div>
-            <?php if ($type == 'Edit_Internships') {
-                echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Internship Title', 'id' => 'title','readonly' => true])->label(false);
-            } else {
-                echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Internship Title', 'id' => 'title','disabled' => true])->label(false);
-            } ?>
+            <?php
+                echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Internship Title', 'id' => 'title','disabled' => false])->label(false);
+            ?>
         </div>
     </div>
     <div class="col-md-3">
