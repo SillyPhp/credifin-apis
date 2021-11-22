@@ -7,6 +7,7 @@ use common\models\Quizzes;
 use yii\helpers\Url;
 use Yii;
 use yii\data\Pagination;
+use yii\db\Expression;
 
 class Quiz extends Quizzes
 {
@@ -30,14 +31,14 @@ class Quiz extends Quizzes
                 'a.title', 'a.slug', 'c1.name category', 'c2.name parent_category', 'DATE_FORMAT(a.quiz_start_datetime, "%d/%m/%Y") quiz_start_datetime', 'DATE_FORMAT(a.quiz_end_datetime, "%d/%m/%Y") quiz_end_datetime', 'a.duration', 'a.description', 'a.registration_start_datetime', 'a.registration_end_datetime',
                 'a.num_of_ques',
                 'CASE WHEN a.sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", a.sharing_image_location, "/", a.sharing_image) ELSE NULL END sharing_image',
-                "CASE WHEN a.quiz_start_datetime IS NOT NULL THEN DATEDIFF(a.quiz_start_datetime, CONVERT_TZ(Now(),'+00:00','+10:30')) ELSE NULL END days_left",
+                "CASE WHEN a.quiz_start_datetime IS NOT NULL THEN DATEDIFF(a.quiz_start_datetime, CONVERT_TZ(Now(),@@session.time_zone,'+05:30')) ELSE NULL END days_left",
                 "CASE 
                     WHEN a.quiz_end_datetime IS NULL THEN NULL
-                    WHEN TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),'+00:00','+10:30'),a.quiz_end_datetime) < 0 THEN 'true'
+                    WHEN TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),@@session.time_zone,'+05:30'),a.quiz_end_datetime) < 0 THEN 'true'
                  ELSE 'false' END is_expired",
                 "CASE 
                     WHEN a.registration_end_datetime IS NULL THEN NULL
-                    WHEN TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),'+00:00','+10:30'),a.registration_end_datetime) > 0 THEN a.registration_end_datetime
+                    WHEN TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),@@session.time_zone,'+05:30'),a.registration_end_datetime) > 0 THEN a.registration_end_datetime
                  ELSE NULL END is_live",
             ])
             ->joinWith(['currencyEnc b'], false)
@@ -112,11 +113,12 @@ class Quiz extends Quizzes
                 'a.title', 'a.slug', 'c1.name category', 'c2.name parent_category','DATE_FORMAT(a.quiz_start_datetime, "%m/%d/%Y %H:%i:%s") quiz_start_datetime', 'DATE_FORMAT(a.quiz_end_datetime, "%m/%d/%Y %H:%i:%s") quiz_end_datetime', 'a.duration', 'a.description', 'DATE_FORMAT(a.registration_start_datetime, "%m/%d/%Y %H:%i:%s") registration_start_datetime', 'DATE_FORMAT(a.registration_end_datetime, "%m/%d/%Y %H:%i:%s") registration_end_datetime',
                 'a.num_of_ques',
                 'CASE WHEN a.sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", a.sharing_image_location, "/", a.sharing_image) ELSE NULL END sharing_image',
-                "CASE WHEN a.quiz_start_datetime IS NOT NULL THEN DATEDIFF(a.quiz_start_datetime, CONVERT_TZ(Now(),'+00:00','+10:30')) ELSE NULL END days_left",
+                "CASE WHEN a.quiz_start_datetime IS NOT NULL THEN DATEDIFF(a.quiz_start_datetime, CONVERT_TZ(Now(),@@session.time_zone,'+05:30')) ELSE NULL END days_left",
                 "CASE 
                     WHEN a.quiz_end_datetime IS NULL THEN NULL
-                    WHEN TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),'+00:00','+10:30'),a.quiz_end_datetime) < 0 THEN 'true'
+                    WHEN TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),@@session.time_zone,'+05:30'),a.quiz_end_datetime) < 0 THEN 'true'
                  ELSE 'false' END is_expired",
+                "TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),@@session.time_zone,'+05:30'),a.quiz_end_datetime) s",
             ])
             ->joinWith(['currencyEnc b'], false)
             ->joinWith(['assignedCategoryEnc c' => function ($c) {
@@ -169,8 +171,6 @@ class Quiz extends Quizzes
                 $quizRegister->created_on = date('Y-m-d H:i:s');
                 if (!$quizRegister->save()) {
                     $transaction->rollback();
-                    print_r($quizRegister->getErrors());
-                    die();
                     return false;
                 }
 
@@ -178,8 +178,6 @@ class Quiz extends Quizzes
                 return ['status' => 201, 'message' => 'success', 'data' => []];
 
             } catch (\Exception $e) {
-                print_r($e);
-                die();
                 return false;
             }
 
@@ -227,8 +225,6 @@ class Quiz extends Quizzes
             $quizRegister->created_on = date('Y-m-d H:i:s');
             if (!$quizRegister->save()) {
                 $transaction->rollBack();
-                print_r($quizRegister);
-                die();
                 return false;
             }
 
@@ -246,8 +242,6 @@ class Quiz extends Quizzes
                 $payment->created_on = date('Y-m-d H:i:s');
                 if (!$payment->save()) {
                     $transaction->rollBack();
-                    print_r($payment);
-                    die();
                     return false;
                 }
             } else {
@@ -265,8 +259,6 @@ class Quiz extends Quizzes
 
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            print_r($exception);
-            die();
             return false;
         }
     }
@@ -280,8 +272,6 @@ class Quiz extends Quizzes
         $payment_model->updated_on = date('Y-m-d H:i:s');
         $payment_model->updated_by = $args['user_id'];
         if (!$payment_model->update()) {
-            print_r($payment_model->getErrors());
-            die();
             return false;
         }
 
@@ -291,8 +281,6 @@ class Quiz extends Quizzes
             $registration->last_updated_on = date('Y-m-d H:i:s');
             $registration->last_updated_by = $args['user_id'];
             if (!$registration->update()) {
-                print_r($registration->getErrors());
-                die();
                 return false;
             }
         }
