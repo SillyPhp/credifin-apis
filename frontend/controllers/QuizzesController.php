@@ -5,10 +5,14 @@ namespace frontend\controllers;
 use common\models\AssignedCategories;
 use common\models\QuizAnswersPool;
 use common\models\QuizPool;
+use common\models\QuizRegistration;
 use common\models\QuizSubmittedAnswers;
 use common\models\Quizzes;
+use common\models\UserAccessTokens;
+use common\models\Users;
 use common\models\Webinar;
 use common\models\WebinarRegistrations;
+use common\models\UserLogin;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -115,8 +119,47 @@ class QuizzesController extends Controller
         return $this->render('all');
     }
 
-    public function actionPlay($slug, $s = NULL, $t = NULL)
+    private function __registerQuiz($quiz_id)
     {
+        $register = new QuizRegistration();
+        $register->register_enc_id = Yii::$app->security->generateRandomString();
+        $register->quiz_enc_id = $quiz_id;
+        $register->status = 1;
+        $register->created_by = Yii::$app->user->identity->user_enc_id;
+        $register->created_on = date('Y-m-d H:i:s');
+        if (!$register->save()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function __loginUserFromMec($username)
+    {
+        return Yii::$app->user->login(UserLogin::findByUsername($username), 0);
+    }
+
+    private function __returnData($message, $slug, $token = null, $type = null)
+    {
+        Yii::$app->session->setFlash('error', $message);
+        if ($token == null) {
+            return $this->redirect(['/quiz/' . $slug]);
+        } else {
+            return $this->render('non-authorized', [
+                'type' => $type,
+                'message' => $message
+            ]);
+        }
+    }
+
+    public function actionPlay($slug, $s = NULL, $t = NULL, $token = null)
+    {
+
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $currentTime = $dt->format('Y-m-d H:i:s');
+
         $temp = Quizzes::find()
             ->alias('a')
             ->innerJoinWith(['quizPoolEnc b' => function ($b) {
@@ -129,6 +172,49 @@ class QuizzesController extends Controller
             ])
             ->asArray()
             ->one();
+
+
+        // checking user logged in or not
+        if (Yii::$app->user->isGuest) {
+
+            if ($token != null) {
+
+                //login user for one day if user from mec
+                $user = UserAccessTokens::findOne(['access_token' => $token]);
+                $username = Users::findOne(['user_enc_id' => $user->user_enc_id])->username;
+
+                if (!$this->__loginUserFromMec($username)) {
+                    return $this->__returnData("an error occurred", $temp['slug'], $token, 1);
+                }
+            } else {
+                return $this->__returnData("Please Login to play quiz", $temp['slug']);
+            }
+        }
+
+        // checking user registered for this quiz or not
+        $registered = QuizRegistration::findOne(['quiz_enc_id' => $temp['quiz_enc_id'], 'is_deleted' => 0, 'status' => 1, 'created_by' => Yii::$app->user->identity->user_enc_id]);
+
+        // if not registered and quiz is free then register the quiz before play else redirect to quiz detail page to register
+        if (!$registered) {
+            if ($temp['is_paid'] == 0) {
+                if (!$this->__registerQuiz($temp['quiz_enc_id'])) {
+                    return $this->__returnData("Please Register quiz to play", $temp['slug'], $token, 2);
+                }
+            } else {
+                return $this->__returnData("Please Register quiz to play", $temp['slug'], $token, 2);
+
+            }
+        }
+
+        //checking quiz play datetime
+        if ($temp['quiz_start_datetime'] > $currentTime) {
+            return $this->__returnData("Quiz will be held on " . $temp['quiz_start_datetime'], $temp['slug'], $token, 3);
+        }
+
+        if ($temp['quiz_end_datetime'] < $currentTime) {
+            return $this->__returnData("Quiz is expired", $temp['slug'], $token, 4);
+        }
+
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             if ($temp['template'] == 6) {
@@ -240,14 +326,6 @@ class QuizzesController extends Controller
                 ]);
                 break;
             case 6:
-                if ($slug == 'investment-strategies-quiz') {
-                    $webinar_id = Webinar::findOne(['slug' => 'new-age-investment-strategies-10407', 'is_deleted' => 0])->webinar_enc_id;
-                    $user_reg = WebinarRegistrations::findOne(['webinar_enc_id' => $webinar_id, 'created_by' => Yii::$app->user->identity->user_enc_id, 'status' => 1, 'is_deleted' => 0]);
-                    if (!$user_reg) {
-                        Yii::$app->session->setFlash('success', "Please Register This Webinar to play quiz");
-                        return $this->redirect(['/webinar/new-age-investment-strategies-10407']);
-                    }
-                }
                 $this->layout = 'quiz6-main';
                 $result = QuizSubmittedAnswers::find()
                     ->select(['answer_enc_id'])
@@ -337,11 +415,13 @@ class QuizzesController extends Controller
         return $this->render('topics');
     }
 
-    public function actionIndex($type = null){
+    public function actionIndex($type = null)
+    {
         return $this->render('quiz-filters');
     }
 
-    public function actionDetail($slug){
+    public function actionDetail($slug)
+    {
         return $this->render('quiz-detail');
     }
 }

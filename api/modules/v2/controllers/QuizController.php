@@ -1087,6 +1087,7 @@ class QuizController extends ApiBaseController
 
         $options['category'] = $detail['category'];
         $options['limit'] = 3;
+        $options['quiz_id'] = $detail['quiz_enc_id'];
         $related = Quiz::getQuizData($options);
 
         if ($detail) {

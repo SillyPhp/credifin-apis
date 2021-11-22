@@ -5,6 +5,12 @@ use yii\helpers\Url;
 $link = Url::to('quizzes/' . $slug, true);
 ?>
 
+<?php if (Yii::$app->session->hasFlash('error')): ?>
+    <script type="text/javascript">
+        alert('Please Register This Webinar to play quiz');
+    </script>
+<?php endif; ?>
+
 <section class="quiz-header">
     <div class="left-quiz">
         <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-l.png') ?>"/>
@@ -773,7 +779,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 
     function setDateFormat(dateTime){
         if(dateTime){
-            return moment(dateTime, "YYYY-MM-DD HH:mm:ss").format("DD MMM YYYY hh:mm A");
+            return moment(dateTime, "MM-DD-YYYY HH:mm:ss").format("DD MMM YYYY hh:mm A");
         }
     }
 

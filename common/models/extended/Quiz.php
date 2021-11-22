@@ -27,7 +27,7 @@ class Quiz extends Quizzes
         $q = Quizzes::find()
             ->alias('a')
             ->select(['a.quiz_enc_id', 'a.name', 'a.price', 'a.is_paid', 'b.name currency_name', 'b.code currency_code', 'b.html_code currency_html_code',
-                'a.title', 'a.slug', 'c1.name category', 'c2.name parent_category', 'a.quiz_start_datetime', 'a.quiz_end_datetime', 'a.duration', 'a.description', 'a.registration_start_datetime', 'a.registration_end_datetime',
+                'a.title', 'a.slug', 'c1.name category', 'c2.name parent_category', 'DATE_FORMAT(a.quiz_start_datetime, "%d/%m/%Y") quiz_start_datetime', 'DATE_FORMAT(a.quiz_end_datetime, "%d/%m/%Y") quiz_end_datetime', 'a.duration', 'a.description', 'a.registration_start_datetime', 'a.registration_end_datetime',
                 'a.num_of_ques',
                 'CASE WHEN a.sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", a.sharing_image_location, "/", a.sharing_image) ELSE NULL END sharing_image',
                 "CASE WHEN a.quiz_start_datetime IS NOT NULL THEN DATEDIFF(a.quiz_start_datetime, CONVERT_TZ(Now(),'+00:00','+10:30')) ELSE NULL END days_left",
@@ -35,6 +35,10 @@ class Quiz extends Quizzes
                     WHEN a.quiz_end_datetime IS NULL THEN NULL
                     WHEN TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),'+00:00','+10:30'),a.quiz_end_datetime) < 0 THEN 'true'
                  ELSE 'false' END is_expired",
+                "CASE 
+                    WHEN a.registration_end_datetime IS NULL THEN NULL
+                    WHEN TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),'+00:00','+10:30'),a.registration_end_datetime) > 0 THEN a.registration_end_datetime
+                 ELSE NULL END is_live",
             ])
             ->joinWith(['currencyEnc b'], false)
             ->joinWith(['assignedCategoryEnc c' => function ($c) {
@@ -42,7 +46,7 @@ class Quiz extends Quizzes
                 $c->joinWith(['parentEnc c2']);
             }], false)
             ->joinWith(['quizRewards d' => function ($d) {
-                $d->select(['d.quiz_reward_enc_id', 'd.quiz_enc_id', 'd.position_enc_id', 'd1.name position_name', 'd.price']);
+                $d->select(['d.quiz_reward_enc_id', 'd.quiz_enc_id', 'd.position_enc_id', 'd1.name position_name', 'd.price', 'd.amount']);
                 $d->joinWith(['positionEnc d1'], false);
                 $d->joinWith(['quizRewardCertificates d2' => function ($d2) {
                     $d2->select(['d2.reward_certificate_enc_id', 'd2.quiz_reward_enc_id', 'd2.name']);
@@ -78,7 +82,14 @@ class Quiz extends Quizzes
             }
         }
 
-        $q = $q->orderBy(['a.created_on' => SORT_DESC])
+        if (isset($options['quiz_id']) && !empty($options['quiz_id'])) {
+            $q->andWhere(['!=', 'a.quiz_enc_id', $options['quiz_id']]);
+        }
+
+        $q = $q
+            ->groupBy(['a.quiz_enc_id'])
+            ->orderBy([new \yii\db\Expression('-is_live DESC')])
+//            ->orderBy(['is_expired' => SORT_ASC])
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
@@ -98,7 +109,7 @@ class Quiz extends Quizzes
         $q = Quizzes::find()
             ->alias('a')
             ->select(['a.quiz_enc_id', 'a.name', 'a.price', 'a.is_paid', 'b.name currency_name', 'b.code currency_code', 'b.html_code currency_html_code',
-                'a.title', 'a.slug', 'c1.name category', 'c2.name parent_category', 'a.quiz_start_datetime', 'a.quiz_end_datetime', 'a.duration', 'a.description', 'a.registration_start_datetime', 'a.registration_end_datetime',
+                'a.title', 'a.slug', 'c1.name category', 'c2.name parent_category','DATE_FORMAT(a.quiz_start_datetime, "%m/%d/%Y %H:%i:%s") quiz_start_datetime', 'DATE_FORMAT(a.quiz_end_datetime, "%m/%d/%Y %H:%i:%s") quiz_end_datetime', 'a.duration', 'a.description', 'DATE_FORMAT(a.registration_start_datetime, "%m/%d/%Y %H:%i:%s") registration_start_datetime', 'DATE_FORMAT(a.registration_end_datetime, "%m/%d/%Y %H:%i:%s") registration_end_datetime',
                 'a.num_of_ques',
                 'CASE WHEN a.sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", a.sharing_image_location, "/", a.sharing_image) ELSE NULL END sharing_image',
                 "CASE WHEN a.quiz_start_datetime IS NOT NULL THEN DATEDIFF(a.quiz_start_datetime, CONVERT_TZ(Now(),'+00:00','+10:30')) ELSE NULL END days_left",
@@ -113,7 +124,7 @@ class Quiz extends Quizzes
                 $c->joinWith(['parentEnc c2']);
             }], false)
             ->joinWith(['quizRewards d' => function ($d) {
-                $d->select(['d.quiz_reward_enc_id', 'd.quiz_enc_id', 'd.position_enc_id', 'd1.name position_name', 'd.price']);
+                $d->select(['d.quiz_reward_enc_id', 'd.quiz_enc_id', 'd.position_enc_id', 'd1.name position_name', 'd.price', 'd.amount']);
                 $d->joinWith(['positionEnc d1'], false);
                 $d->joinWith(['quizRewardCertificates d2' => function ($d2) {
                     $d2->select(['d2.reward_certificate_enc_id', 'd2.quiz_reward_enc_id', 'd2.name']);
