@@ -8,7 +8,7 @@ use yii\helpers\Html;
         <div class="Card">
             <div class="notification_div">
                 <h2><?= $message ?></h2>
-                <a href="https://myecampus.in/quiz/<?= $slug?>" target="_top">Back to detail</a>
+                <a href="<?php echo ($slug ? 'https://myecampus.in/quiz/' .$slug : 'https://myecampus.in/quizzes')?>" target="_top">Back to detail</a>
             </div>
         </div>
     </section>

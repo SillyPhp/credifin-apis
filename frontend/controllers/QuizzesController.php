@@ -352,6 +352,9 @@ class QuizzesController extends Controller
                 }
                 break;
             default :
+                if ($token != null) {
+                    return $this->__returnData("Quiz Not found", "", $token);
+                }
                 throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
     }

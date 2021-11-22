@@ -171,8 +171,6 @@ class Quiz extends Quizzes
                 $quizRegister->created_on = date('Y-m-d H:i:s');
                 if (!$quizRegister->save()) {
                     $transaction->rollback();
-                    print_r($quizRegister->getErrors());
-                    die();
                     return false;
                 }
 
@@ -180,8 +178,6 @@ class Quiz extends Quizzes
                 return ['status' => 201, 'message' => 'success', 'data' => []];
 
             } catch (\Exception $e) {
-                print_r($e);
-                die();
                 return false;
             }
 
@@ -229,8 +225,6 @@ class Quiz extends Quizzes
             $quizRegister->created_on = date('Y-m-d H:i:s');
             if (!$quizRegister->save()) {
                 $transaction->rollBack();
-                print_r($quizRegister);
-                die();
                 return false;
             }
 
@@ -248,8 +242,6 @@ class Quiz extends Quizzes
                 $payment->created_on = date('Y-m-d H:i:s');
                 if (!$payment->save()) {
                     $transaction->rollBack();
-                    print_r($payment);
-                    die();
                     return false;
                 }
             } else {
@@ -267,8 +259,6 @@ class Quiz extends Quizzes
 
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            print_r($exception);
-            die();
             return false;
         }
     }
@@ -282,8 +272,6 @@ class Quiz extends Quizzes
         $payment_model->updated_on = date('Y-m-d H:i:s');
         $payment_model->updated_by = $args['user_id'];
         if (!$payment_model->update()) {
-            print_r($payment_model->getErrors());
-            die();
             return false;
         }
 
@@ -293,8 +281,6 @@ class Quiz extends Quizzes
             $registration->last_updated_on = date('Y-m-d H:i:s');
             $registration->last_updated_by = $args['user_id'];
             if (!$registration->update()) {
-                print_r($registration->getErrors());
-                die();
                 return false;
             }
         }
