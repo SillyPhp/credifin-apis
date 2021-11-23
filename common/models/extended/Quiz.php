@@ -57,6 +57,9 @@ class Quiz extends Quizzes
                 $d->onCondition(['d.is_deleted' => 0]);
                 $d->groupBy(['d.quiz_reward_enc_id']);
             }])
+            ->innerJoinWith(['quizPoolEnc bb' => function ($b) {
+                $b->innerJoinWith(['quizQuestionsPools zz']);
+            }], false)
             ->where(['a.is_deleted' => 0]);
 
         // checking quiz categories
@@ -141,6 +144,9 @@ class Quiz extends Quizzes
                 $d->onCondition(['d.is_deleted' => 0]);
                 $d->groupBy(['d.quiz_reward_enc_id']);
             }])
+            ->innerJoinWith(['quizPoolEnc bb' => function ($b) {
+                $b->innerJoinWith(['quizQuestionsPools zz']);
+            }], false)
             ->where(['a.is_deleted' => 0])
             ->andWhere(['a.slug' => $options['slug']])
             ->asArray()
