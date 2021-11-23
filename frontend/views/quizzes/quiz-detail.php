@@ -770,7 +770,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             document.querySelector('.ask-people').innerHTML = registerUser;
         }
 
-
     function setDateFormat(dateTime){
         if(dateTime){
             return moment(dateTime, "MM-DD-YYYY HH:mm:ss").format("DD MMM YYYY hh:mm A");
@@ -826,7 +825,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 
             document.querySelector('.related-quizzes').innerHTML = quizCard
         }
-
 
     function showReward(rewards){
             let rewardSection = document.querySelector('.rewards-section');
@@ -905,7 +903,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
         }, 1000);
     }
 
-
     async function quizRegister(id){
             let response = await fetch(`${baseUrl}/api/v3/quiz/register`,{
                 method: 'POST',
@@ -925,7 +922,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                 location.reload();
             }
         }
-
 
     function _razoPay(ptoken,payment_enc_id){
             console.log('in Razor pay')
@@ -956,6 +952,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                 });
             });
         }
+
     function updateStatus(payment_enc_id,payment_id=null,status,signature=null) {
             console.log('in update function');
             $.ajax({

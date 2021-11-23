@@ -474,6 +474,8 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
             allquizzes = res['response']['data'];
             if(allquizzes.length < limit){
                 loadMoreCards = false;
+            }else{
+                loadMoreCards = true;
             }
         }else if(pageNo == 1 && res['response']['status'] == 404){
             document.querySelector('#quizDiv').innerHTML = 'No Results Found';
@@ -573,7 +575,6 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 
     window.onscroll = function (){
         if(bottomVisible() && loading && loadMoreCards){
-            console.log('inside-scf');
                 pageNo = pageNo + 1;
                 data = {...data, page: pageNo};
                 getAllQuizzes(data);
