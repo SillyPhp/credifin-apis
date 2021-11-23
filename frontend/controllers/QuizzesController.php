@@ -137,7 +137,7 @@ class QuizzesController extends Controller
     }
 
     private function __returnData($message, $slug, $token = null)
-    {
+    { 
         Yii::$app->session->setFlash('error', $message);
         if ($token == null) {
             return $this->redirect(['/quiz/' . $slug]);
@@ -379,6 +379,7 @@ class QuizzesController extends Controller
                         $d->select(['d.quiz_answer_pool_enc_id', 'd.quiz_question_pool_enc_id', 'd.answer']);
                     }]);
                     $c->andWhere(['not in', 'c.quiz_question_pool_enc_id', $isSubmitted]);
+                    $c->andWhere(['c.is_deleted'=>0]);
                     $c->orderby(new Expression('rand()'));
                     $c->limit(1);
                 }]);
@@ -428,6 +429,24 @@ class QuizzesController extends Controller
 
     public function actionDetail($slug)
     {
-        return $this->render('quiz-detail');
+        $url = Url::to('/api/v3/quiz/detail', 'https');
+        $data = ['slug' => $slug];
+        $payload = json_encode($data);
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($payload))
+        );
+
+        $result = json_decode(curl_exec($ch), true);
+        curl_close($ch);
+
+        return $this->render('quiz-detail', [
+            'result' => $result['response']['detail'],
+        ]);
     }
 }

@@ -3,6 +3,37 @@
 use yii\helpers\Url;
 
 $link = Url::to('quizzes/' . $slug, true);
+$this->title = $result['name'];
+$image = $result['sharing_image'];
+$keywords = $result['title'];
+$spaceString = str_replace( '<', ' <', $result['description'] );
+$doubleSpace = strip_tags( $spaceString );
+$singleSpace = str_replace( '  ', ' ', $doubleSpace );
+$description = trim($singleSpace);
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 
 <?php if (Yii::$app->session->hasFlash('error')): ?>
@@ -770,7 +801,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             document.querySelector('.ask-people').innerHTML = registerUser;
         }
 
-
     function setDateFormat(dateTime){
         if(dateTime){
             return moment(dateTime, "MM-DD-YYYY HH:mm:ss").format("DD MMM YYYY hh:mm A");
@@ -826,7 +856,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 
             document.querySelector('.related-quizzes').innerHTML = quizCard
         }
-
 
     function showReward(rewards){
             let rewardSection = document.querySelector('.rewards-section');
@@ -905,7 +934,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
         }, 1000);
     }
 
-
     async function quizRegister(id){
             let response = await fetch(`${baseUrl}/api/v3/quiz/register`,{
                 method: 'POST',
@@ -925,7 +953,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                 location.reload();
             }
         }
-
 
     function _razoPay(ptoken,payment_enc_id){
             console.log('in Razor pay')
@@ -956,6 +983,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                 });
             });
         }
+
     function updateStatus(payment_enc_id,payment_id=null,status,signature=null) {
             console.log('in update function');
             $.ajax({

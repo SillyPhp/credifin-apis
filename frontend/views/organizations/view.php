@@ -269,7 +269,7 @@ $round_avg = round($overall_avg);
                                                 }
                                                 ?>
                                                 <div class="det"><?= $countVacancies ?></div>
-                                                <div class="det-heading">Opportunities</Opper></div>
+                                                <div class="det-heading">Opportunities</div>
                                             </div>
                                         </div>
                                     </div>

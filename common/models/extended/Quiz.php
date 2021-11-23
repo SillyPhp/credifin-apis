@@ -3,6 +3,7 @@
 namespace common\models\extended;
 
 use common\models\QuizRegistration;
+use common\models\QuizSubmittedAnswers;
 use common\models\Quizzes;
 use yii\helpers\Url;
 use Yii;
@@ -91,7 +92,7 @@ class Quiz extends Quizzes
         $q = $q
             ->groupBy(['a.quiz_enc_id'])
             ->orderBy([new \yii\db\Expression('-is_live DESC')])
-//            ->orderBy(['is_expired' => SORT_ASC])
+            ->distinct()
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
@@ -147,17 +148,26 @@ class Quiz extends Quizzes
 
         if ($q) {
             $q['is_registered'] = false;
+            $q['is_played'] = false;
             if (isset($options['user_id']) && !empty($options['user_id'])) {
                 $registered = QuizRegistration::findOne(['quiz_enc_id' => $q['quiz_enc_id'], 'created_by' => $options['user_id'], 'status' => 1, 'is_deleted' => 0]);
                 if ($registered) {
                     $q['is_registered'] = true;
                 }
+                $q['is_played'] = $this->isPlayed($q['slug'],$options['user_id']);
             }
             $q['registered_count'] = QuizRegistration::find()->where(['quiz_enc_id' => $q['quiz_enc_id'], 'is_deleted' => 0, 'status' => 1])->count();
             $q['registered_users'] = $this->__getRegisteredUsers($q['quiz_enc_id']);
         }
 
         return $q;
+    }
+
+    private function isPlayed($slug, $user_id)
+    {
+        return QuizSubmittedAnswers::find()
+            ->where(['quiz_slug' => $slug, 'user_enc_id' => $user_id])
+            ->exists();
     }
 
     public function registerUser($options = null)
