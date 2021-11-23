@@ -574,11 +574,7 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
     }
 
     window.onscroll = function (){
-        console.log('ouside-scf');
-        console.log(loading, 'loading');
-        console.log(loadMoreCards, 'loadMoreCards');
         if(bottomVisible() && loading && loadMoreCards){
-            console.log('inside-scf');
                 pageNo = pageNo + 1;
                 data = {...data, page: pageNo};
                 getAllQuizzes(data);
