@@ -275,7 +275,7 @@ class ResumeController extends Controller
         $type = Yii::$app->request->post('type');
         $selectedfields = DropResumeOrgApplication::find()
             ->alias('a')
-            ->select(['e.category_enc_id','e.name','COUNT(e.name) count','CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", e.icon) icon'])
+            ->select(['a.application_enc_id','e.category_enc_id','e.name','COUNT(e.name) count','CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", e.icon) icon'])
             ->where(['a.organization_enc_id'=>Yii::$app->user->identity->organization_enc_id])
             ->joinWith(['appliedApplicationEnc b'=>function($x) use ($type){
                 $x->joinWith(['dropResumeAppliedTitles c'=>function($x) use ($type){
