@@ -256,7 +256,19 @@ $round_avg = round($overall_avg);
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
                                         <div class="">
                                             <div class="about-det">
-                                                <div class="det"><?= $count_opportunities ?></div>
+                                                <?php
+                                                $countVacancies = 0;
+                                                if(!empty($count_opportunities)){
+                                                    foreach($count_opportunities as $c){
+                                                        if(!empty($c['positions'])){
+                                                            $countVacancies += $c['positions'];
+                                                        } else if(!empty($c['positions2'])){
+                                                            $countVacancies += $c['positions2'];
+                                                        }
+                                                    }
+                                                }
+                                                ?>
+                                                <div class="det"><?= $countVacancies ?></div>
                                                 <div class="det-heading">Opportunities</Opper></div>
                                             </div>
                                         </div>

@@ -11,7 +11,8 @@ use Yii;
  * @property string $quiz_reward_enc_id reward table encripted id
  * @property string $quiz_enc_id Foreign Key to quizzes table
  * @property string $position_enc_id Foreign Key to rewards position pool table
- * @property double $price
+ * @property string $amount reward amount in string
+ * @property double $price reward price in number
  * @property string $created_by
  * @property string $created_on
  * @property string $last_updated_by
@@ -40,11 +41,11 @@ class QuizRewards extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['quiz_reward_enc_id', 'quiz_enc_id', 'position_enc_id', 'price', 'created_by'], 'required'],
+            [['quiz_reward_enc_id', 'quiz_enc_id', 'position_enc_id', 'created_by'], 'required'],
             [['price'], 'number'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['quiz_reward_enc_id', 'quiz_enc_id', 'position_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['quiz_reward_enc_id', 'quiz_enc_id', 'position_enc_id', 'amount', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['quiz_reward_enc_id'], 'unique'],
             [['quiz_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Quizzes::className(), 'targetAttribute' => ['quiz_enc_id' => 'quiz_enc_id']],
             [['position_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => RewardPositionPool::className(), 'targetAttribute' => ['position_enc_id' => 'position_enc_id']],
