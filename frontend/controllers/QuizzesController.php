@@ -137,7 +137,7 @@ class QuizzesController extends Controller
     }
 
     private function __returnData($message, $slug, $token = null)
-    {
+    { 
         Yii::$app->session->setFlash('error', $message);
         if ($token == null) {
             return $this->redirect(['/quiz/' . $slug]);
