@@ -8,7 +8,7 @@ use yii\helpers\Html;
         <div class="Card">
             <div class="notification_div">
                 <h2><?= $message ?></h2>
-                <a href="/">Home</a>
+                <a href="<?php echo ($slug ? 'https://myecampus.in/quiz/' .$slug : 'https://myecampus.in/quizzes')?>" target="_top">Back to detail</a>
             </div>
         </div>
     </section>
@@ -113,31 +113,6 @@ body{
 ');
 
 $script = <<<JS
-function countdown(e){
-    var countDownDate = new Date(e).getTime();
-    var x = setInterval(function() {
-        // Get today's date and time
-        var now = new Date().getTime();
-        // Find the distance between now and the count down date
-        var distance = countDownDate - now;
-        // Time calculations for days, hours, minutes and seconds
-        $('#days').text(Math.floor(distance / (1000 * 60 * 60 * 24)));
-        $('#hours').text(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
-        $('#minutes').text(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
-        $('#seconds').text(Math.floor((distance % (1000 * 60)) / 1000));
-        console.log(distance);
-        if (distance <= 0) {
-            $('a').show();
-            clearInterval(x);
-            $('#join').css('display','block');
-            $('#counter').css('display','none');
-        } else { 
-            $('a').hide();
-            $('#counter').css('display','block');
-            $('#join').css('display','none');
-        }
-    }, 1000);
-};
-countdown('$time');
+
 JS;
 $this->registerJs($script);

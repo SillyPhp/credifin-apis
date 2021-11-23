@@ -3,11 +3,42 @@
 use yii\helpers\Url;
 
 $link = Url::to('quizzes/' . $slug, true);
+$this->title = $result['name'];
+$image = $result['sharing_image'];
+$keywords = $result['title'];
+$spaceString = str_replace( '<', ' <', $result['description'] );
+$doubleSpace = strip_tags( $spaceString );
+$singleSpace = str_replace( '  ', ' ', $doubleSpace );
+$description = trim($singleSpace);
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 
 <?php if (Yii::$app->session->hasFlash('error')): ?>
     <script type="text/javascript">
-        alert('Please Register This Webinar to play quiz');
+        alert('<?= Yii::$app->session->getFlash('error')?>');
     </script>
 <?php endif; ?>
 
@@ -676,7 +707,8 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             let quizEndDatetime = setDateFormat(detail.quiz_end_datetime);
             let currentDate = new Date().getTime();
             let regEnd = new Date(detail.registration_end_datetime).getTime();
-            let quizStart = new Date(detail.quiz_start_datetime).getTime()
+            let quizStart = new Date(detail.quiz_start_datetime).getTime();
+            let quizEnd = new Date(detail.quiz_end_datetime).getTime();
 
             const header = `${detail.sharing_image ? `<img src="${detail.sharing_image}"/>` : ''}
                     <p>${detail.name}</p>
@@ -690,17 +722,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                         `: ''}
                         <div class="both-btns">
                             <div class="register-detail-btn-2">
-                                ${(currentDate > regEnd && detail.is_expired == 'false') ?
-                                    `<p class="registeredTxt2">Registration Closed</p>` :
-                                    detail.is_expired == 'true' ?
-                                    `<p class="registeredTxt2">Expired</p>` :
-                                    detail.is_registered ?
-                                    `<p class="registeredTxt2"> Registered </p>` :
-                                    `<a href="javascript:;" class="regBtn" ${isLoggedIn == 'false' ? `data-toggle="modal" data-target="#loginModal"` : `onclick="quizRegister('${detail.quiz_enc_id}')"`}>Register Now</a>`
-                                }
-                                ${ currentDate > quizStart ? `` : ''
-
-                                }
+                               ${refreshBtn(currentDate, quizStart, quizEnd, regEnd, detail)}
                             </div>
                             ${detail.is_expired == 'false' ? `
                             <div class="addeventatc" title="Add to Calendar">
@@ -726,10 +748,12 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                                         <span>Registration Deadline : <strong>${registrationEndDate}</strong></span>
                                     </div>`
                                 : ''}
-                                <div class="register-fee block-span">
-                                    <i class="fas fa-rupee-sign"></i>
-                                    <span>Registration Fee : <strong>${detail.currency_html_code ? detail.currency_html_code : '' } ${detail.price > 0 ? Math.floor(detail.price) : 'Free' }</strong></span>
-                                </div>
+                                ${detail.is_paid == 1 ? `
+                                    <div class="register-fee block-span">
+                                        <i class="fas fa-rupee-sign"></i>
+                                        <span>Registration Fee : <strong>${detail.currency_html_code ? detail.currency_html_code : '' } ${detail.price > 0 ? Math.floor(detail.price) : 'Free' }</strong></span>
+                                    </div>
+                                `: ''}
                                  ${quizStartDatetime ? `
                                     <div class="play-time block-span">
                                         <i class="far fa-play-circle"></i>
@@ -760,7 +784,8 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                 document.querySelector('.regCount').style.margin = '0px';
             }
             document.querySelector('.regCount').innerHTML = `<span>${detail.registered_count ? detail.registered_count : 0}</span> Registered`;
-        }
+    }
+
     function showRegisteredIcons(regUsers){
             if(regUsers){
                 document.querySelector('.ask-people').style.display = 'block'
@@ -775,7 +800,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 
             document.querySelector('.ask-people').innerHTML = registerUser;
         }
-
 
     function setDateFormat(dateTime){
         if(dateTime){
@@ -792,7 +816,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             let quizCard =  quizzes.map(quiz => {
                 return `
                 <div class="col-md-4">
-                    <a href="`+baseUrl+`/quiz/${quiz.slug}" class="">
+                    <a href="/quiz/${quiz.slug}" class="">
                         <div class="card-main nd-shadow">
                             ${quiz.is_paid == 0 ? '' : `
                                 <div class="paid-webinar">Paid</div>
@@ -856,6 +880,27 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 
             document.querySelector('.quizRewards').innerHTML = rewardsCard;
         }
+    
+    function refreshBtn(currentDate, quizStart, quizEnd, regEnd, detail) {
+        setInterval(function () {
+            let nowDate = new Date().getTime();
+            let btn = document.querySelector('.register-detail-btn-2');
+            let btnHtml = `${(nowDate > quizStart && detail.is_registered == true && nowDate < quizEnd) ?
+                    `<a href="/quiz/${detail.slug}/play">Play Now</a>` :
+                    (nowDate > regEnd && detail.is_expired == 'false' && detail.is_registered == false) ?
+                    `<p class="registeredTxt2">Registration Closed</p>` :
+                    detail.is_expired == 'true' || nowDate > quizEnd ?
+                    `<p class="registeredTxt2">Expired</p>` :
+                    (detail.is_registered == true && quizStart > nowDate) ?
+                    `<p class="registeredTxt2"> Registered </p>` :
+                    (detail.is_registered == true && quizStart == '') ?
+                    `<a href="/quiz/${detail.slug}/play">Play Now</a>`:
+                    `<a href="javascript:;" class="regBtn" ${isLoggedIn == 'false' ? `data-toggle="modal" data-target="#loginModal"` : `onclick="quizRegister('${detail.quiz_enc_id}')"`}>Register Now</a>`
+                }`;
+            btn.innerHTML = btnHtml;
+        },1000)
+        return `<p class="registeredTxt2">Loading</p>`;
+    }
 
     function countdown(e) {
         var t = this;
@@ -889,7 +934,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
         }, 1000);
     }
 
-
     async function quizRegister(id){
             let response = await fetch(`${baseUrl}/api/v3/quiz/register`,{
                 method: 'POST',
@@ -905,10 +949,10 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                 let payment_enc_id = res['response']['data']['payment_enc_id']
                 _razoPay(payment_token, payment_enc_id)
             }else if(res['response']['status'] == 201) {
-                document.querySelectorAll('.regBtn').forEach(t => {t.innerHTML = 'Registered'})
+                // document.querySelectorAll('.regBtn').forEach(t => {t.innerHTML = 'Registered'})
+                location.reload();
             }
         }
-
 
     function _razoPay(ptoken,payment_enc_id){
             console.log('in Razor pay')
@@ -939,6 +983,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                 });
             });
         }
+
     function updateStatus(payment_enc_id,payment_id=null,status,signature=null) {
             console.log('in update function');
             $.ajax({
