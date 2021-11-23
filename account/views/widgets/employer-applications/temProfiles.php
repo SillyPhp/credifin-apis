@@ -1,91 +1,104 @@
 <?php
+
 use yii\helpers\Url;
+
 Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEAD);
 $oppType = $type == 'internships' ? 'Internship' : 'Job';
 
 ?>
-<!--light box-->
-<div id="job_profile_light">
-    <div class="light-box-modal">
-        <div class="light-box-in">
-            <div class="light-box-content">
-                <form id="temProfilesForm">
-                <div class="tab_pane" id="tab_index_1">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="disFlex">
-                                <a href="<?= Url::to('/account/dashboard')?>" id="wizard-back-cont" type="button" class="btn btn-primary wizard-back-cont">
-                                    <i class="fa fa-arrow-left" aria-hidden="true"></i> Back To Dashboard
-                                </a>
-<!--                                <h3 class="text-center" style="font-family: roboto;">Select Profile For Your --><?//= $oppType ?><!--</h3>-->
-                            </div>
-                        </div>
-                    </div>
-                                <div class="row">
-                                    <ul class="relationList">
-                                        <?php foreach ($primary_cat as $pCat){ ?>
-                                            <li class="service-list">
-                                                <input type="radio" class="input_radio_relation" value="<?= $pCat ['category_enc_id']?>" id="<?= $pCat ['category_enc_id']?>" name="pRadio">
-                                                <label for="<?= $pCat ['category_enc_id']?>">
-                                                    <img src="/assets/common/categories/profile/<?= $pCat["icon_png"]?>" width="50" height="50">
-                                                    <div><?= $pCat ['name']?></div>
-                                                </label>
-                                            </li>
-                                        <?php } ?>
-                                    </ul>
+    <!--light box-->
+    <div id="job_profile_light">
+        <div class="light-box-modal">
+            <div class="light-box-in">
+                <div class="light-box-content">
+                    <form id="temProfilesForm">
+                        <div class="tab_pane" id="tab_index_1">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="disFlex">
+                                        <a href="<?= Url::to('/account/' . $type . '/dashboard') ?>"
+                                           id="wizard-back-cont" type="button" class="btn btn-primary wizard-back-cont">
+                                            <i class="fa fa-arrow-left" aria-hidden="true"></i> Back To Dashboard
+                                        </a>
+                                        <!--                                <h3 class="text-center" style="font-family: roboto;">Select Profile For Your -->
+                                        <?//= $oppType ?><!--</h3>-->
+                                    </div>
                                 </div>
                             </div>
-                <div class="tab_pane" id="tab_index_2">
-                        <h3 class="text-center" id="choose_temp" style="font-family: roboto;">We Have Some Awesome Templates To Make Your <?= $oppType ?> Process Faster, Check Out..</h3>
-                    <div class="load-suggestions">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                    <div id="tab2_content">
-
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="set-pos">
-<!--                            <div class="pull-right btn-next" id="btnNext">-->
-<!--                                <button class="btn btn-primary" id="tab_key_next">Next <i class="fa fa-arrow-right" aria-hidden="true"></i></button>-->
-<!--                            </div>-->
-                            <div class="pull-right margin_right" id="btnContinue">
-                                <button class="btn btn-primary tab_key_continue" id="tab_key_continue">Continue</button>
-                            </div>
-                            <div class="pull-right margin_right" id="btnSkip">
-                                <button class="btn btn-primary" id="tab_key_skip"> Skip</button>
-                            </div>
-                            <div class="pull-right margin_right" id="btnBack">
-                                <button class="btn btn-primary" id="tab_key_back"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
+                            <div class="row">
+                                <ul class="relationList">
+                                    <?php foreach ($primary_cat as $pCat) { ?>
+                                        <li class="service-list">
+                                            <input type="radio" class="input_radio_relation"
+                                                   value="<?= $pCat ['category_enc_id'] ?>"
+                                                   id="<?= $pCat ['category_enc_id'] ?>" name="pRadio">
+                                            <label for="<?= $pCat ['category_enc_id'] ?>">
+                                                <img src="/assets/common/categories/profile/<?= $pCat["icon_png"] ?>"
+                                                     width="50" height="50">
+                                                <div><?= $pCat ['name'] ?></div>
+                                            </label>
+                                        </li>
+                                    <?php } ?>
+                                </ul>
                             </div>
                         </div>
-                    </div>
+                        <div class="tab_pane" id="tab_index_2">
+                            <h3 class="text-center" id="choose_temp" style="font-family: roboto;">We Have Some Awesome
+                                Templates To Make Your <?= $oppType ?> Process Faster, Check Out..</h3>
+                            <div class="load-suggestions">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <div id="tab2_content">
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="set-pos">
+                                    <!--                            <div class="pull-right btn-next" id="btnNext">-->
+                                    <!--                                <button class="btn btn-primary" id="tab_key_next">Next <i class="fa fa-arrow-right" aria-hidden="true"></i></button>-->
+                                    <!--                            </div>-->
+                                    <div class="pull-right margin_right" id="btnContinue">
+                                        <button class="btn btn-primary tab_key_continue" id="tab_key_continue">
+                                            Continue
+                                        </button>
+                                    </div>
+                                    <div class="pull-right margin_right" id="btnSkip">
+                                        <button class="btn btn-primary" id="tab_key_skip"> Skip</button>
+                                    </div>
+                                    <div class="pull-right margin_right" id="btnBack">
+                                        <button class="btn btn-primary" id="tab_key_back"><i class="fa fa-arrow-left"
+                                                                                             aria-hidden="true"></i>
+                                            Back
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                </form>
             </div>
         </div>
     </div>
-</div>
-<input type="hidden" name="hidden_profile" id="hidden_profile">
-<script id="temp-card" type="text/template">
-    <div class="row">
-        <ul class="relationList">
-        {{#.}}
-        <li class="service-list">
-        <input type="radio" value="{{application_enc_id}}" id="{{application_enc_id}}" name="tRadio">
-        <label for="{{application_enc_id}}">
-        <img src="/assets/common/categories/profile/{{icon_png}}" width="50" height="50">
-        <div>{{title}}</div>
-        </label>
-        </li>
-      {{/.}}
-        </ul>
+    <input type="hidden" name="hidden_profile" id="hidden_profile">
+    <script id="temp-card" type="text/template">
+        <div class="row">
+            <ul class="relationList">
+                {{#.}}
+                <li class="service-list">
+                    <input type="radio" value="{{application_enc_id}}" id="{{application_enc_id}}" name="tRadio">
+                    <label for="{{application_enc_id}}">
+                        <img src="/assets/common/categories/profile/{{icon_png}}" width="50" height="50">
+                        <div>{{title}}</div>
+                    </label>
+                </li>
+                {{/.}}
+            </ul>
         </div>
-</script>
-<!--light box-->
+    </script>
+    <!--light box-->
 <?php
 $this->registerCss("
 .disFlex {
