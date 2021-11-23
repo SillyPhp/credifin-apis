@@ -450,12 +450,15 @@ float:right;
 }
 .tags_input li {
     margin: 8px;
-   
-}
-.tags_input li {
     color: #1e1e1e;
     position: relative;
     float:left !important;
+}
+.tagAdd.taglist i {
+    position: absolute;
+    right: 5px;
+    z-index: 1;
+    top: 10px;
 }
 .tags_input > .addedTag > span {
     position: absolute;
