@@ -23,9 +23,9 @@ $this->params['header_dark'] = true;
                     <div class="quiz-status-filter">
                         <h3 class="side-top-heading">Status</h3>
                         <div class="switch-field">
-                            <input type="radio" id="all" name="status" value="all" checked="true" autocomplete="off" onChange="quizFilters('status')">
+                            <input type="radio" id="all" name="status" value="all" autocomplete="off" onChange="quizFilters('status')">
                             <label for="all">All</label>
-                            <input type="radio" id="live" name="status" value="live" autocomplete="off" onChange="quizFilters('status')">
+                            <input type="radio" id="live" name="status" value="live" autocomplete="off" checked="true"  onChange="quizFilters('status')">
                             <label for="live">Live</label>
                             <input type="radio" id="expired" name="status" value="expired" autocomplete="off" onChange="quizFilters('status')">
                             <label for="expired">Expired</label>
@@ -437,7 +437,7 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
     let loading = true;
     let loadMoreCards = true;
 
-    let data = {limit: '', page: '', status: '', payment:'', category: ''}
+    let data = {limit: '', page: '', status: 'live', payment:'', category: ''}
     function quizFilters(type){
         let statusVal = document.querySelector('input[name="status"]:checked').value;
         let paymentVal = document.querySelector('input[name="payment"]:checked').value;
@@ -596,10 +596,10 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
     }
 
     function clearFilters(){
-        document.querySelector('#all').checked = true;
+        document.querySelector('#live').checked = true;
         document.querySelector('#all-pay').checked = true;
         document.querySelectorAll('input[name="categoryFilter"]').forEach( t => t.checked = false);
-        data = {...data, status: '', payment: '', category: '', page: ''}
+        data = {...data, status: 'live', payment: '', category: '', page: ''}
         pageNo = 1;
         if(loadMoreCards == false){
             loadMoreCards = true;
