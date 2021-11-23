@@ -373,6 +373,7 @@ class QuizzesController extends Controller
                         $d->select(['d.quiz_answer_pool_enc_id', 'd.quiz_question_pool_enc_id', 'd.answer']);
                     }]);
                     $c->andWhere(['not in', 'c.quiz_question_pool_enc_id', $isSubmitted]);
+                    $c->andWhere(['c.is_deleted'=>0]);
                     $c->orderby(new Expression('rand()'));
                     $c->limit(1);
                 }]);
