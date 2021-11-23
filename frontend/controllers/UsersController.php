@@ -208,35 +208,8 @@ class UsersController extends Controller
                 ->andWhere(['z.applied_application_enc_id' => $id, 'z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->asArray()
                 ->one();
-//            $userAppliedData = AppliedApplications::find()
-//                ->alias('z')
-//                ->select(['z.*','ag.name as category', 'af.name as parent', 'bb.slug', 'aa.name as type', 'af.icon'])
-//                ->joinWith(['applicationEnc bb' => function ($bb) {
-//                    $bb->joinWith(['applicationTypeEnc aa'], false);
-//                    $bb->joinWith(['title ac' => function ($ac) {
-//                        $ac->joinWith(['categoryEnc ag']);
-//                        $ac->joinWith(['parentEnc af']);
-//                    }], false);
-//                }], false)
-//                ->andWhere(['z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'bb.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-////                ->andWhere(['not', ['z.applied_application_enc_id' => $id]])
-//                ->asArray()
-//                ->all();
         }
 
-//        $userAppliedData = AppliedApplications::find()
-//            ->alias('z')
-//            ->select(['z.*','ag.name as category', 'af.name as parent', 'bb.slug', 'aa.name as type', 'af.icon'])
-//            ->joinWith(['applicationEnc bb' => function ($bb) {
-//                $bb->joinWith(['applicationTypeEnc aa']);
-//                $bb->joinWith(['title ac' => function ($ac) {
-//                    $ac->joinWith(['categoryEnc ag']);
-//                    $ac->joinWith(['parentEnc af']);
-//                }]);
-//            }], false)
-//            ->andWhere(['z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'bb.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-//            ->asArray()
-//            ->all();
         $apps = AppliedApplications::find()
             ->alias('a')
             ->select(['a.application_enc_id','j.name type', 'c.slug', 'a.status','h.icon as job_icon', 'f.name as title', 'a.applied_application_enc_id app_id', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active'])
@@ -244,13 +217,8 @@ class UsersController extends Controller
             ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as e', 'e.assigned_category_enc_id = c.title')
             ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = e.category_enc_id')
-//            ->innerJoin(Organizations::tableName() . 'as g', 'g.organization_enc_id = c.organization_enc_id')
             ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
-//            ->where(['or',
-//                ['a.status' => 'Pending'],
-//                ['a.status' => 'Accepted']
-//            ])
             ->andWhere(['a.created_by' => $user['user_enc_id']])
             ->andWhere(['c.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0])
             ->groupBy('a.applied_application_enc_id')
