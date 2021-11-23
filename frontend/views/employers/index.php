@@ -113,8 +113,13 @@ echo $this->render('/widgets/e-campus')
     <section class="great-bg">
         <div class="container">
             <div class="row">
-                <div class="head-about">
-                    <h3>What's Great About Empower Youth?</h3>
+                <div class="header">
+                    <div class="head-about">
+                        <h3>What's Great About Empower Youth?</h3>
+                    </div>
+                    <div class="great-red hide-md-scr">
+                        <a href="/employers/features">View All Features</a>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -198,7 +203,7 @@ echo $this->render('/widgets/e-campus')
                     </a>
                 </div>
             </div>
-            <div class="great-red">
+            <div class="bottom-btn show-md-scr text-center great-red">
                 <a href="/employers/features">View All Features</a>
             </div>
         </div>
@@ -1074,13 +1079,16 @@ $this->registerCss('
   transform: translateY(5px);
 }
 /*Whats Great About Us css starts */
+.bottom-btn{
+    display: none;
+}
 .great-red{
-    text-align: center;
-    position: relative;
-    max-width: 175px;
-    margin: 0 auto;
-    margin-top: 15px;
-    margin-bottom: 10px;
+    // text-align: center;
+    // position: relative;
+    // max-width: 175px;
+    // margin: 0 auto;
+    // margin-top: 15px;
+    // margin-bottom: 10px;
 }
 .great-red a{
     background:#00a0e3;
@@ -1136,6 +1144,11 @@ $this->registerCss('
 }
 .great-bg{
     padding-bottom: 20px;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .head-about{
     text-align:center;
@@ -1200,6 +1213,15 @@ $this->registerCss('
   .bg-line {width:100%;left:0;transform:translatey(0%);}
   .waves{
     height: 35px;
+  }
+  .hide-md-scr{
+    display: none !important;
+  }
+  .show-md-scr{
+    display: block !important;
+  }
+  .great-bg .header{
+      justify-content: center;
   }
 }
 @media only screen and (max-width: 550px){
