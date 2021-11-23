@@ -3,6 +3,37 @@
 use yii\helpers\Url;
 
 $link = Url::to('quizzes/' . $slug, true);
+$this->title = $result['name'];
+$image = $result['sharing_image'];
+$keywords = $result['title'];
+$spaceString = str_replace( '<', ' <', $result['description'] );
+$doubleSpace = strip_tags( $spaceString );
+$singleSpace = str_replace( '  ', ' ', $doubleSpace );
+$description = trim($singleSpace);
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 
 <?php if (Yii::$app->session->hasFlash('error')): ?>

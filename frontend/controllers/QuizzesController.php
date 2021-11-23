@@ -428,6 +428,24 @@ class QuizzesController extends Controller
 
     public function actionDetail($slug)
     {
-        return $this->render('quiz-detail');
+        $url = Url::to('/api/v3/quiz/detail', 'https');
+        $data = ['slug' => $slug];
+        $payload = json_encode($data);
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($payload))
+        );
+
+        $result = json_decode(curl_exec($ch), true);
+        curl_close($ch);
+
+        return $this->render('quiz-detail', [
+            'result' => $result['response']['detail'],
+        ]);
     }
 }
