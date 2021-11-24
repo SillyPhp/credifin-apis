@@ -2,6 +2,7 @@
 
 namespace account\models\organization;
 
+use common\models\EmployerApplications;
 use common\models\spaces\Spaces;
 use Yii;
 use yii\base\Model;
@@ -53,6 +54,16 @@ class CompanyLogoForm extends Model
                     unlink($file);
                 }
                 if ($organization->validate() && $organization->save()) {
+                    EmployerApplications::updateAll([
+                        'image' => '1',
+                        'square_image' => '1',
+                        'story_image' => '1',
+                    ],['and',
+                        ['organization_enc_id'=>Yii::$app->user->identity->organization->organization_enc_id],
+                        ['status'=>'Active'],
+                        ['is_deleted'=>0]
+
+                    ]);
                     return true;
                 } else {
                     return false;
