@@ -65,6 +65,9 @@ use yii\widgets\Pjax;
     }
     .caption{
         height: 100%;
-        line-height: 40px !important;
+        line-height: 20px !important;
+    }
+    .set-im img{
+        width: 31px;
     }
 ')?>
