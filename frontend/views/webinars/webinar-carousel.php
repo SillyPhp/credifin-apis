@@ -90,10 +90,9 @@ background-repeat: no-repeat;
 ');
 
 
-?>
 
 
-<script type="text/javascript">
+$script = <<<JS
   $('.carousel').carousel({
     interval: 6000,
     pause: "false"
@@ -120,4 +119,8 @@ background-repeat: no-repeat;
     $wHeight = $(window).height();
     $item.height($wHeight);
   });
-</script>
+JS;
+
+$this->registerJs($script);
+
+?>

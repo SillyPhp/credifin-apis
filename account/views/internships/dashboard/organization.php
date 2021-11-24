@@ -151,7 +151,7 @@ use yii\widgets\Pjax;
                         <div class="portlet-title">
                             <div class="caption">
                                 <i class=" icon-social-twitter font-dark hide"></i>
-                                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Internships'); ?><span
+                                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Open Internships'); ?><span
                                             data-toggle="tooltip"
                                             title="Here you will find all your active internships"><i
                                                 class="fa fa-info-circle"></i></span></span>
@@ -224,6 +224,10 @@ use yii\widgets\Pjax;
                                                 class="fa fa-info-circle"></i></span></span>
                             </div>
                             <div class="actions">
+                            <a href="<?= Url::toRoute('/internships/campus-placement'); ?>"
+                                           data-toggle="tooltip"
+                                           title="Campus Hiring" class="ai">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
                                 <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
                                    title="Create AI Internship" class="ai">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png') ?>"></a>

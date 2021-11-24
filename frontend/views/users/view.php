@@ -556,7 +556,9 @@ $uId = $user['user_enc_id'];
         }
         ?>
 
-        <div class="sidebar-container" style="border-bottom: 3px solid #ff7803;">
+
+        <!-- Quiz Scores -->
+        <!-- <div class="sidebar-container" style="border-bottom: 3px solid #ff7803;">
             <div class="prefer" style="background-color:#ff7803; color:#fff;">Quiz Played</div>
             <div class="prefer-detail">
                 <div class="recent-quiz">
@@ -603,7 +605,9 @@ $uId = $user['user_enc_id'];
 
                 <a href="" class="view-more-quiz">View More</a>
             </div>
-        </div>
+        </div> -->
+    
+    
     </div>
     <!--End Sidebar-->
     <!--        </div>-->

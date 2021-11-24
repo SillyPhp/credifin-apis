@@ -26,12 +26,16 @@ endif;
     <div class="col-md-3">
         <?= $this->render('/widgets/tasks/taskbar-card', ['viewed' => $viewed]); ?>
 
-        <?=
+
+        <!--=====Active Module=====-->
+        <!-- <?=
             $this->render('/widgets/services-selection/edit-services', [
                 'model' => $model,
                 'services' => $services,
             ]);
-        ?>
+        ?> -->
+
+        
         <?php if (Yii::$app->user->identity->organization->organization_enc_id) { ?>
             <?= $this->render('/widgets/safety-widgets', ['scriptModel' => $scriptModel]) ?>
         <?php } ?>
@@ -294,7 +298,7 @@ endif;
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?><span data-toggle="tooltip" title="Here you will find all your active jobs"><i class="fa fa-info-circle"></i></span></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Open Jobs'); ?><span data-toggle="tooltip" title="Here you will find all your active jobs"><i class="fa fa-info-circle"></i></span></span>
                     </div>
                     <div class="actions">
                         <div class="set-im">
@@ -347,7 +351,7 @@ endif;
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?><span data-toggle="tooltip" title="Here you will find all your active internships"><i class="fa fa-info-circle"></i></span></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Open Internships'); ?><span data-toggle="tooltip" title="Here you will find all your active internships"><i class="fa fa-info-circle"></i></span></span>
                     </div>
                     <div class="actions">
                         <div class="set-im">
