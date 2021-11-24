@@ -75,6 +75,7 @@ class QuizController extends ApiBaseController
         $options['category'] = $detail['category'];
         $options['limit'] = 3;
         $options['quiz_id'] = $detail['quiz_enc_id'];
+        $options['status'] = 'live';
         $related = Quiz::getQuizData($options);
 
         if ($detail) {
@@ -118,7 +119,7 @@ class QuizController extends ApiBaseController
         }
 
         $paid = QuizPayments::findOne(['quiz_enc_id' => $params['quiz_id'], 'payment_status' => 'captured', 'created_by' => $params['user_id']]);
-        $registered = QuizRegistration::findOne(['quiz_enc_id' => $params['quiz_id'], 'created_by' => $params['user_id'], 'is_deleted' => 0]);
+        $registered = QuizRegistration::findOne(['quiz_enc_id' => $params['quiz_id'], 'created_by' => $params['user_id'], 'is_deleted' => 0, 'status' => 1]);
 
         if ($paid) {
             return $this->response(422, ['status' => 422, 'message' => 'User Already Paid The Amount and Registered']);

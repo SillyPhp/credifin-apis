@@ -680,14 +680,15 @@ AppAssets::register($this);
 
 .secondary-top-header{
     height:32px;
-    margin-top:-34px;
+//    margin-top:-34px;
+    margin-top:-2px;
     line-height: 30px;
     display: block;
     transition: margin 500ms;
     background-color: rgba(0, 0, 0, 0.4);
 }
 .header-show .secondary-top-header{
-    margin-top: -2px;
+//    margin-top: -2px;
 }
 .header-show .upcoming-webinar{
     margin-top: -2px !important;
