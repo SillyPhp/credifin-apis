@@ -6,7 +6,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$link = Url::to( 'blog/'.$post->slug, true);
+//$link = Url::to( 'blog/'.$post->slug, true);
 
 $keywords = $post->meta_keywords;
 $description = $post->excerpt;
@@ -70,10 +70,27 @@ $this->params['seo_tags'] = [
                             <?= $post->description; ?>
                         </div>
                     </div>
-                    <div>
-                        <?= $this->render('/widgets/sharing-widget-new',[
-                            'link' => $link,
-                        ]); ?>
+                    <div class="share-social-links">
+                        <a href="javascript:;" class="fb"
+                           onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                            <i class="fab fa-facebook-f"></i></a>
+                        <a href="javascript:;" class="wts-app"
+                           onclick="window.open('https://api.whatsapp.com/send?text=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                            <i class="fab fa-whatsapp"></i></a>
+                        <a href="javascript:;" class="tw"
+                           onclick="window.open('https://twitter.com/intent/tweet?text=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                            <i class="fab fa-twitter"></i></a>
+                        <a :href="'mailto:https://myecampus.in'+this.$route.fullPath" class="male">
+                            <i class="far fa-envelope"></i></a>
+                        <a href="javascript:;" class="fb"
+                           onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&amp;url=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                            <i class="fab fa-linkedin"></i></a>
+                        <a href="javascript:;" class="male"
+                           onclick="window.open('http://pinterest.com/pin/create/link/?url=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                            <i class="fab fa-pinterest"></i></a>
+                        <a href="javascript:;" class="tw"
+                           onclick="window.open('https://telegram.me/share/url?url=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                            <i class="fab fa-telegram"></i></a>
                     </div>
                     <?=
                     $this->render('/widgets/mustache/discussion/discussion-box', [
@@ -170,6 +187,54 @@ $this->params['seo_tags'] = [
 
 <?php
 $this->registerCss('
+.share-social-links {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.share-social-links > a {
+    min-width: 90px;
+    margin: 15px 1% 0 0;
+}
+
+.share-social-links > a:last-child {
+    margin-right: 0;
+}
+
+.wts-app {
+    background-color: #25D366;
+}
+
+.male {
+    background-color: #d3252b;
+}
+
+.tw {
+    background-color: #1c99e9;
+}
+
+.fb {
+    background-color: #236dce;
+}
+
+.wts-app i, .male i, .tw i, .fb i {
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.share-social-links:hover a {
+    opacity: 0.6;
+}
+
+.share-social-links > a:hover {
+    opacity: 1;
+}
 .divider{
 border-top:1px solid #eee;
 margin-top:15px;
