@@ -718,7 +718,7 @@ foreach ($fields as $f) {
                                                         <?php
                                                 } else{
                                                     ?>
-                                                    <canvas class="user-icon" name="<?= $arr['college_name'] ?>" width="40" height="40" font="24px"></canvas>
+                                                    <canvas class="user-icon" name="<?= $arr['college_name'] ?>" width="30" height="30" font="14px" color="<?= $arr['college_initials'];?>"></canvas>
                                                         <?php
                                                 }
                                                 ?>
