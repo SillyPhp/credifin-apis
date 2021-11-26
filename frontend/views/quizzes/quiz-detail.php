@@ -3,7 +3,44 @@
 use yii\helpers\Url;
 
 $link = Url::to('quizzes/' . $slug, true);
+$this->title = $result['name'];
+$image = $result['sharing_image'];
+$keywords = $result['title'];
+$spaceString = str_replace( '<', ' <', $result['description'] );
+$doubleSpace = strip_tags( $spaceString );
+$singleSpace = str_replace( '  ', ' ', $doubleSpace );
+$description = trim($singleSpace);
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
+
+<?php if (Yii::$app->session->hasFlash('error')): ?>
+    <script type="text/javascript">
+        alert('<?= Yii::$app->session->getFlash('error')?>');
+    </script>
+<?php endif; ?>
 
 <section class="quiz-header">
     <div class="left-quiz">
@@ -40,6 +77,28 @@ $link = Url::to('quizzes/' . $slug, true);
                         </div>
                     </div>
                     <div class="viewers"></div>
+                </div>
+                <div class="share-social-links">
+                    <a href="javascript:;" class="fb"
+                       onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-facebook-f"></i></a>
+                    <a href="javascript:;" class="wts-app"
+                       onclick="window.open('https://api.whatsapp.com/send?text=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-whatsapp"></i></a>
+                    <a href="javascript:;" class="tw"
+                       onclick="window.open('https://twitter.com/intent/tweet?text=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-twitter"></i></a>
+                    <a :href="'mailto:https://myecampus.in'+this.$route.fullPath" class="male">
+                        <i class="far fa-envelope"></i></a>
+                    <a href="javascript:;" class="fb"
+                       onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&amp;url=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-linkedin"></i></a>
+                    <a href="javascript:;" class="male"
+                       onclick="window.open('http://pinterest.com/pin/create/link/?url=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-pinterest"></i></a>
+                    <a href="javascript:;" class="tw"
+                       onclick="window.open('https://telegram.me/share/url?url=' + window.location.href, '_blank', 'width=800,height=400,left=200,top=100');">
+                        <i class="fab fa-telegram"></i></a>
                 </div>
             </div>
             <div class="col-md-4">
@@ -118,6 +177,54 @@ $link = Url::to('quizzes/' . $slug, true);
 
 <?php
 $this->registerCss('
+.share-social-links {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.share-social-links > a {
+    min-width: 90px;
+    margin: 15px 1% 0 0;
+}
+
+.share-social-links > a:last-child {
+    margin-right: 0;
+}
+
+.wts-app {
+    background-color: #25D366;
+}
+
+.male {
+    background-color: #d3252b;
+}
+
+.tw {
+    background-color: #1c99e9;
+}
+
+.fb {
+    background-color: #236dce;
+}
+
+.wts-app i, .male i, .tw i, .fb i {
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.share-social-links:hover a {
+    opacity: 0.6;
+}
+
+.share-social-links > a:hover {
+    opacity: 1;
+}
 #quizCounter, .ask-people{
     display: none;
 }
@@ -208,11 +315,12 @@ $this->registerCss('
     bottom: 0;
 }
 .quiz-header-heading p {
-    font-size: 20px;
+    font-size: 26px;
     font-family: "Roboto";
-    color: #009ebe;
+    color: #00a0e3;
     margin:0;
-    text-transform: capitalize
+    text-transform: capitalize;
+    font-weight: 500;
 }
 .quiz-header-heading img {
     width: 100px;
@@ -230,11 +338,11 @@ $this->registerCss('
 .quiz-timings-cover {
     display: flex;
     align-items: center;
-    border: 2px solid #009ebe;
+    border: 2px solid #00a0e3;
     border-radius: 4px;
     flex-wrap: wrap;
     justify-content: center;
-    background: #009ebe;
+    background: #00a0e3;
     padding: 8px 0;
     margin:15px 0;
 }
@@ -246,7 +354,7 @@ $this->registerCss('
     color: #fff;
 }
 .reg-deadline i, .days-left2 i {
-    color: #fbba00;
+    color: #ff7803;
     margin-right:2px;
 }
 .register-detail-btn-2 a,
@@ -260,7 +368,7 @@ $this->registerCss('
     border-radius: 4px;
     margin: 0;
     background-color: #fff;
-    color: #009ebe;
+    color: #00a0e3;
     padding: 4px 0;
 }
 .both-btns {
@@ -279,9 +387,10 @@ $this->registerCss('
 }
 .quiz-detail-cat {
     font-family: "Roboto";
-    color: #fbba00 !important;
+    color: #ff7803 !important;
     text-transform: capitalize;
-    font-size: 16px !important;
+    font-size: 20px !important;
+    font-weight: 500;
 }
 .quiz-description {
     font-family: "Roboto";
@@ -556,6 +665,10 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 ?>
 <script>
     let baseUrl = '';
+    let winLocation = window.location.hostname;
+    if(winLocation == 'shshank.eygb.me'){
+        baseUrl = 'https://ravinder.eygb.me';
+    }
     let isLoggedIn = '<?= Yii::$app->user->identity->user_enc_id ? Yii::$app->user->identity->user_enc_id : "false" ?>';
     let quiz_id = null;
     let access_key = '<?= Yii::$app->params->razorPay->prod->apiKey ?>';
@@ -594,7 +707,8 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             let quizEndDatetime = setDateFormat(detail.quiz_end_datetime);
             let currentDate = new Date().getTime();
             let regEnd = new Date(detail.registration_end_datetime).getTime();
-            let quizStart = new Date(detail.quiz_start_datetime).getTime()
+            let quizStart = new Date(detail.quiz_start_datetime).getTime();
+            let quizEnd = new Date(detail.quiz_end_datetime).getTime();
 
             const header = `${detail.sharing_image ? `<img src="${detail.sharing_image}"/>` : ''}
                     <p>${detail.name}</p>
@@ -608,17 +722,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                         `: ''}
                         <div class="both-btns">
                             <div class="register-detail-btn-2">
-                                ${(currentDate > regEnd && detail.is_expired == 'false') ?
-                                    `<p class="registeredTxt2">Registration Closed</p>` :
-                                    detail.is_expired == 'true' ?
-                                    `<p class="registeredTxt2">Expired</p>` :
-                                    detail.is_registered ?
-                                    `<p class="registeredTxt2"> Registered </p>` :
-                                    `<a href="javascript:;" class="regBtn" ${isLoggedIn == 'false' ? `data-toggle="modal" data-target="#loginModal"` : `onclick="quizRegister('${detail.quiz_enc_id}')"`}>Register Now</a>`
-                                }
-                                ${ currentDate > quizStart ? `` : ''
-
-                                }
+                               ${refreshBtn(currentDate, quizStart, quizEnd, regEnd, detail)}
                             </div>
                             ${detail.is_expired == 'false' ? `
                             <div class="addeventatc" title="Add to Calendar">
@@ -633,17 +737,10 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 
             document.querySelector('.quiz-header-heading').innerHTML = header;
 
-            const quizBody = ` <h3 class="quiz-title">${detail.name}</h3>
-                        <p class="quiz-detail-cat">${detail.category}</p>
+            const quizBody = ` <h3 class="quiz-title">Description</h3>
                         <div class="quiz-description">${detail.description}</div>`;
 
             document.querySelector('.detail-side').innerHTML = quizBody;
-
-            const registerDetailBtn = `${(currentDate > regEnd && detail.is_expired == 'false') ? `<p class="registeredTxt">Registration Closed</p>` : detail.is_expired == 'true' ? `<p class="registeredTxt">Expired</p>` : detail.is_registered  ? `<p class="registeredTxt">Registered</p>` :
-                `<a href="javascript:;" class="regBtn" ${isLoggedIn == 'false' ? `data-toggle="modal" data-target="#loginModal"`
-                    : `onclick="quizRegister('${detail.quiz_enc_id}')"`}>Register Now</a>`}`;
-
-            document.querySelector('.register-detail-btn').innerHTML = registerDetailBtn;
 
             const quizDetail = `${registrationEndDate ? `
                                     <div class="register-dead block-span">
@@ -651,10 +748,12 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                                         <span>Registration Deadline : <strong>${registrationEndDate}</strong></span>
                                     </div>`
                                 : ''}
-                                <div class="register-fee block-span">
-                                    <i class="fas fa-rupee-sign"></i>
-                                    <span>Registration Fee : <strong>${detail.currency_html_code ? detail.currency_html_code : '' } ${detail.price > 0 ? Math.floor(detail.price) : 'Free' }</strong></span>
-                                </div>
+                                ${detail.is_paid == 1 ? `
+                                    <div class="register-fee block-span">
+                                        <i class="fas fa-rupee-sign"></i>
+                                        <span>Registration Fee : <strong>${detail.currency_html_code ? detail.currency_html_code : '' } ${detail.price > 0 ? Math.floor(detail.price) : 'Free' }</strong></span>
+                                    </div>
+                                `: ''}
                                  ${quizStartDatetime ? `
                                     <div class="play-time block-span">
                                         <i class="far fa-play-circle"></i>
@@ -685,7 +784,8 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                 document.querySelector('.regCount').style.margin = '0px';
             }
             document.querySelector('.regCount').innerHTML = `<span>${detail.registered_count ? detail.registered_count : 0}</span> Registered`;
-        }
+    }
+
     function showRegisteredIcons(regUsers){
             if(regUsers){
                 document.querySelector('.ask-people').style.display = 'block'
@@ -701,10 +801,9 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             document.querySelector('.ask-people').innerHTML = registerUser;
         }
 
-
     function setDateFormat(dateTime){
         if(dateTime){
-            return moment(dateTime, "YYYY-MM-DD HH:mm:ss").format("DD MMM YYYY hh:mm A");
+            return moment(dateTime, "MM-DD-YYYY HH:mm:ss").format("DD MMM YYYY hh:mm A");
         }
     }
 
@@ -717,7 +816,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
             let quizCard =  quizzes.map(quiz => {
                 return `
                 <div class="col-md-4">
-                    <a href="`+baseUrl+`/quiz/${quiz.slug}" class="">
+                    <a href="/quiz/${quiz.slug}" class="">
                         <div class="card-main nd-shadow">
                             ${quiz.is_paid == 0 ? '' : `
                                 <div class="paid-webinar">Paid</div>
@@ -781,6 +880,32 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 
             document.querySelector('.quizRewards').innerHTML = rewardsCard;
         }
+    
+    function refreshBtn(currentDate, quizStart, quizEnd, regEnd, detail) {
+        setInterval(function () {
+            let nowDate = new Date().getTime();
+            let btn = document.querySelector('.register-detail-btn-2');
+            let btnHtml
+            if(detail.is_played == true){
+                btnHtml = `<p class="registeredTxt2">Already Played</p>`
+            }else {
+                btnHtml = `${(nowDate > quizStart && detail.is_registered == true && nowDate < quizEnd) ?
+                        `<a href="/quiz/${detail.slug}/play">Play Now</a>` :
+                        (nowDate > regEnd && detail.is_expired == 'false' && detail.is_registered == false) ?
+                        `<p class="registeredTxt2">Registration Closed</p>` :
+                        detail.is_expired == 'true' || (nowDate > quizEnd && quizEnd != '') ?
+                        `<p class="registeredTxt2">Expired</p>` :
+                        (detail.is_registered == true && quizStart > nowDate) ?
+                        `<p class="registeredTxt2"> Registered </p>` :
+                        (detail.is_registered == true && quizStart == '') ?
+                        `<a href="/quiz/${detail.slug}/play">Play Now</a>`:
+                        `<a href="javascript:;" class="regBtn" ${isLoggedIn == 'false' ? `data-toggle="modal" data-target="#loginModal"` : `onclick="quizRegister('${detail.quiz_enc_id}')"`}>Register Now</a>`
+                    }`;
+            }
+            btn.innerHTML = btnHtml;
+        },1000)
+        return `<p class="registeredTxt2">Loading</p>`;
+    }
 
     function countdown(e) {
         var t = this;
@@ -814,7 +939,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
         }, 1000);
     }
 
-
     async function quizRegister(id){
             let response = await fetch(`${baseUrl}/api/v3/quiz/register`,{
                 method: 'POST',
@@ -830,10 +954,10 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                 let payment_enc_id = res['response']['data']['payment_enc_id']
                 _razoPay(payment_token, payment_enc_id)
             }else if(res['response']['status'] == 201) {
-                document.querySelectorAll('.regBtn').forEach(t => {t.innerHTML = 'Registered'})
+                // document.querySelectorAll('.regBtn').forEach(t => {t.innerHTML = 'Registered'})
+                location.reload();
             }
         }
-
 
     function _razoPay(ptoken,payment_enc_id){
             console.log('in Razor pay')
@@ -864,6 +988,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                 });
             });
         }
+
     function updateStatus(payment_enc_id,payment_id=null,status,signature=null) {
             console.log('in update function');
             $.ajax({

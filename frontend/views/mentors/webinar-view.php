@@ -11,6 +11,27 @@ if (Yii::$app->user->identity->image) {
     $image = 'https://ui-avatars.com/api/?name=' . Yii::$app->user->identity->first_name . '+' . Yii::$app->user->identity->last_name . '&background=' . ltrim(Yii::$app->user->identity->initials_color, '#') . '&color=fff"';
 }
 $time = date('Y/m/d H:i:s', strtotime($upcomingDateTime));
+
+function finalAmount($totalPrice, $gstAmount)
+{
+    if ($gstAmount) {
+        $gstPercent = $gstAmount;
+        if ($totalPrice > 0) {
+            $gstAmount = round($gstPercent * ($totalPrice / 100), 2);
+        }
+    }
+    $finalPrice = $totalPrice + $gstAmount;
+    return (($finalPrice == 0) ? 'Free' : '₹ ' . $finalPrice);
+}
+
+
+function webDate($webDate)
+{
+    $date = $webDate;
+    $sec = strtotime($date);
+    $newDate = date('d-M', $sec);
+    return $newDate;
+}
 ?>
 <input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id ?>" id="current-user-id">
 <input type="hidden" value="<?= Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name; ?>"
@@ -136,13 +157,84 @@ $time = date('Y/m/d H:i:s', strtotime($upcomingDateTime));
             ?>
             <div class="row">
                 <div class="col-md-12">
-                    <div class="mentor-heading">Similar Webinars</div>
+                    <div class="mentor-heading">Upcoming Webinars</div>
                 </div>
             </div>
             <div class="row">
-                <?= $this->render('/widgets/mentorships/webinar-card', [
-                    'webinars' => $webinars,
-                ]) ?>
+                <?php
+
+                foreach ($webinars as $web) {
+                    ?>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="web-card">
+                            <div class="web-img">
+                                <a href="<?= Url::to("/webinar/" . $web['slug']) ?>">
+                                    <img src="<?= $web['image'] ?>"></a>
+                                <div class="web-detail-date">
+                                    <div class="web-date">
+                                        <?php
+                                        $eventDate = webDate($web['webinarEvents'][0]['start_datetime']);
+                                        echo $eventDate;
+                                        ?>
+                                    </div>
+                                    <div class="web-paid">
+                                        <?php
+                                        $finalPrice = finalAmount($web['price'], $web['gst']);
+                                        echo $finalPrice;
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="web-inr">
+                                <div class="web-title"><a
+                                            href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a>
+                                </div>
+                                <div class="web-speaker">
+                                    <span><?= str_replace(',', ', </span><span>', trim($web['speakers'])) ?></span>
+                                </div>
+                                <div class="web-des"><?= $web['description'] ?></div>
+                            </div>
+                            <div class="reg-btn-count">
+                                <div class="register-count">
+                                    <div class="reg-img">
+                                        <?php
+                                        if (count($web['webinarRegistrations']) > 0) {
+                                            $reg = 1;
+                                            foreach ($web['webinarRegistrations'] as $uImage) {
+                                                if ($uImage['createdBy']['image']) {
+                                                    ?>
+                                                    <span class="reg<?= $reg ?> reg">
+                                        <img src="<?= $uImage['createdBy']['image'] ?>">
+                                    </span>
+                                                    <?php
+                                                    $reg++;
+                                                }
+                                                if ($reg == 4) {
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        ?>
+                                    </div>
+                                    <span class="cont"> <?= count($web['webinarRegistrations']) ?> Registered</span>
+                                </div>
+                                <?php if (array_search(Yii::$app->user->identity->user_enc_id, array_column($web['webinarRegistrations'], 'created_by'))) { ?>
+                                    <div class="register-btns">
+                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib">
+                                            Registered</a>
+                                    </div>
+                                <?php } else { ?>
+                                    <div class="register-btns">
+                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
+                                                    class="icon-drib fa fa-arrow-right"></i> Register Now</a>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
             </div>
             <?php
         }
@@ -269,6 +361,7 @@ div#counter {
 }
 .mentor-heading {
     font-size: 25px;
+    margin-bottom:20px;
     font-family: lora;
     color: #000;
     text-transform: capitalize;
@@ -443,6 +536,151 @@ div#counter {
         display: none;
     }
 }
+.web-card:hover {
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+	transform: translateY(-3px);
+	transition: all .2s;
+}
+.web-card {
+	border-radius: 6px;
+	overflow: hidden;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+	background-color:#fff;
+	margin-bottom:20px;
+    min-height: 360px;
+}
+.web-img {
+	position: relative;
+}
+.web-img img{
+	height: 200px;
+	object-fit: cover;
+	width: 100%;
+}
+.web-detail-date {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    display:flex;
+    align-items: center;
+}
+.web-date {
+    border-radius: 4px;
+    padding: 0px 8px;
+    text-align: center;
+    border: 2px solid #00a0e3;
+    font-weight: 500;
+    font-family: roboto;
+    background-color: #00a0e3;
+    color: #fff;
+    margin-right: 2px;
+}
+.web-paid{
+    background-color: #ff7803;
+    border: 2px solid #ff7803;
+    border-radius: 4px;
+    padding: 0px 8px;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: roboto;
+    font-weight: 500;
+    color: #fff;
+}
+.web-inr {
+	padding: 5px 10px 10px;
+}
+.web-title{
+	font-size: 22px;
+	font-family: lora;
+	font-weight: 600;
+	display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.web-title a{
+    color: #333
+}
+
+.web-title a:hover{
+    color: #00a0e3;
+}
+.web-speaker {
+	font-size: 12px;
+	font-family: roboto;
+	color: #a49f9f;
+	font-weight: 500;
+}
+.web-des {
+	font-family: roboto;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	height: 70px;
+}
+.web-info{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-top: 10px;
+}
+.web-info img{
+    margin-right: 6px;
+}
+.reg-btn-count {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: 0 10px 10px;
+}
+.register-count {
+	font-family: roboto;
+	color: #f97364;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+}
+.reg img {
+    width: 35px;
+    border-radius: 81px;
+    height: 30px;
+    object-fit: cover;
+    border: 2px solid #fff;
+}
+.reg2.reg, .reg3.reg {
+    margin-left: -25px;
+}
+.cont {
+    margin-left: 5px;
+}
+.register-btns:hover .btn-drib{
+    color:#fff;
+}
+.btn-drib:hover .icon-drib{
+  animation: bounce 1s infinite;
+  color:#fff;
+}
+.btn-drib {
+	border: 1px solid transparent;
+	color: #fff;
+	text-align: center;
+	font-size: 14px;
+	border-radius: 5px;
+	cursor: pointer;
+	padding: 6px 10px;
+	background-color: #00a0e3;
+	font-family:roboto;
+	font-weight:500;
+}
+.icon-drib {
+  margin-right: 5px;
+}
+.field-speakers span{
+    display: block !important;
+}
+
 ');
 //$this->registerJs("
 //let sendLinks = ".(($sendUrls) ? true : 0).";

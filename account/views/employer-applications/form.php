@@ -1756,13 +1756,13 @@ function genrate_session_token() {
     }
 }
 genrate_session_token();
-if(doc_type=='Jobs'||doc_type=="Internships"||doc_type=='Clone_Jobs'||doc_type=='Clone_Internships')
-    {
-$("#primaryfield").prop("disabled", false);          
-$("#title").prop("disabled", false);   
-$("#designations").prop("disabled", false);   
-$("#industry").prop("disabled", false);   
-    }
+// if(doc_type=='Jobs'||doc_type=="Internships"||doc_type=='Clone_Jobs'||doc_type=='Clone_Internships')
+//     {
+// $("#primaryfield").prop("disabled", false);          
+// $("#title").prop("disabled", false);   
+// $("#designations").prop("disabled", false);   
+// $("#industry").prop("disabled", false);   
+//     }
 var data_before = null;
 var checked = null;
 var array = [];
@@ -1989,8 +1989,7 @@ function init() {
                        required:true
                     },
                     'industry': {
-                      
-                       required:true
+                        required:true
                     },
                     'gender': {
                        required:true
