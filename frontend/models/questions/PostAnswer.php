@@ -56,6 +56,7 @@ class PostAnswer extends Model {
             ->joinWith(['tagEncs d'=>function($b)
             {
                 $b->select(['d.tag_enc_id','e.name']);
+                $b->distinct();
                 $b->joinWith(['tagEnc e'],false);
             }])
             ->asArray()
