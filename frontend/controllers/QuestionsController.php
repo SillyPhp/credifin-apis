@@ -35,7 +35,21 @@ class QuestionsController extends Controller
         Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
-
+    public function actionQuestionData($q=null)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $result = QuestionsPool::find()
+            ->select(['question','slug'])
+            ->where(['is_deleted'=>0])
+            ->andWhere([
+                'or',
+                ['like', 'question', $q],
+                ['like', 'slug', $q],
+            ])
+            ->asArray()
+            ->all();
+        return $result;
+    }
     public function actionDetail($slug)
     {
         $model = new PostAnswer();
@@ -74,6 +88,7 @@ class QuestionsController extends Controller
         $model = new PostQuestion();
         $object = QuestionsPool::find()
             ->alias('a')
+            ->distinct('a.question_pool_enc_id')
             ->andWhere(['a.is_deleted' => 0])
             ->select(['a.question_pool_enc_id', 'c.name', 'question', 'privacy', 'a.slug', 'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", f.image_location, "/", f.image) ELSE NULL END image', 'f.username', 'f.initials_color', 'CONCAT(f.first_name," ","f.last_name") user_name'])
             ->joinWith(['createdBy f'], false)
@@ -86,6 +101,7 @@ class QuestionsController extends Controller
                 $b->limit(3);
             }])
             ->limit(6)
+            ->orderBy(new \yii\db\Expression('rand()'))
             ->asArray()
             ->all();
         if ($model->load(Yii::$app->request->post())) {
