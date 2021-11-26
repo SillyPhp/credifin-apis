@@ -123,7 +123,7 @@ class ProcessApplicationsController extends Controller
                     ->distinct()
                     ->alias('a')
                     ->where(['a.application_enc_id' => $application_id])
-                    ->select(['a.current_round', 'a.id', 'e.resume', 'b.phone', 'b4.name college_name', 'b4.slug college_slug',
+                    ->select(['a.current_round', 'a.id', 'e.resume', 'b.phone', 'b4.name college_name', 'b4.slug college_slug', 'b4.initials_color college_initials',
                         'CASE WHEN b4.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", b4.logo_location, "/", b4.logo) ELSE NULL END college_logo',
                         'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, b.initials_color, CASE WHEN b.last_name IS NOT NULL THEN CONCAT(b.first_name, " ", b.last_name) ELSE b.first_name END name , CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(DISTINCT(c.is_completed)) total', 'a.created_by', 'a.created_on', 'a.rejection_window'])
                     ->joinWith(['resumeEnc e'], false)
