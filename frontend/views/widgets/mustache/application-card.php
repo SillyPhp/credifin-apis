@@ -67,7 +67,7 @@ switch ([$controller_id, $action_id]) {
                                                 class="far fa-money-bill-alt"></i> View In Details</a></h5>
                                 {{/sal}}
                                 {{^sal}}
-                                <h5 class="salary">Negotiable</h5>
+                                <h5 class="salary">Undisclosed</h5>
                                 {{/sal}}
                                 {{/salary}}
                                 {{#type}}
