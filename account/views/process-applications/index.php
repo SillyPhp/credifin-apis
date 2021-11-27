@@ -706,7 +706,7 @@ foreach ($fields as $f) {
                                             </h5>
                                             <?php
                                         }
-                                    } else{
+                                    } else if($application_name['application_for'] == 2 && $arr['college_name']){
                                         ?>
                                         <span class="past-title" style="margin-top: 6px;">College</span>
                                         <div class="user-college-logo-outer">
