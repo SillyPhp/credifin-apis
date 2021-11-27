@@ -206,8 +206,6 @@ class ApplicationCards
             $limit = $options['limit'];
             $offset = ($options['page'] - 1) * $options['limit'];
         }
-
-        $from_date_app = date("Y-m-d", strtotime("-180 day"));
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
@@ -582,7 +580,6 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->having(['>=', 'created', $from_date_app])
                 ->orderBy(new \yii\db\Expression('rand()'))
                 ->all();
         } else {
@@ -592,7 +589,6 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->having(['>=', 'created', $from_date_app])
                 ->orderBy(['created' => SORT_DESC])
                 ->all();
         }
@@ -665,7 +661,6 @@ class ApplicationCards
             $limit = $options['limit'];
             $offset = ($options['page'] - 1) * $options['limit'];
         }
-        $from_date_app = date("Y-m-d", strtotime("-180 day"));
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
@@ -873,7 +868,6 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->having(['>=', 'created', $from_date_app])
                 ->orderBy(new \yii\db\Expression('rand()'))
                 ->all();
         } else {
@@ -883,7 +877,6 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->having(['>=', 'created', $from_date_app])
                 ->orderBy(['created' => SORT_DESC])
                 ->all();
         }

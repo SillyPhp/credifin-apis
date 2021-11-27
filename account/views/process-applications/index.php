@@ -55,14 +55,17 @@ if ($application_name['wage_type'] == 'Fixed') {
 }
 $user_pCount = [];
 $rejected_count = 0;
+$cancelled_count = 0;
 foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
     $user_pCount[$p['field_name']] = 0;
     foreach ($fields as $u) {
         if ($p['sequence'] == $u['current_round']) {
-            if ($u['status'] != 'Rejected') {
-                $user_pCount[$p['field_name']] += 1;
-            } else {
+            if ($u['status'] == 'Rejected') {
                 $rejected_count += 1;
+            } else if($u['status'] == 'Cancelled') {
+                $cancelled_count += 1;
+            } else{
+                $user_pCount[$p['field_name']] += 1;
             }
         }
     }
@@ -150,6 +153,16 @@ foreach ($fields as $f) {
 <div class="container">
     <div class="row">
         <div class="job-det col-md-12 row">
+            <?php
+            if ($application_name['application_for'] == 2) {
+                ?>
+                <div class="campus-hiring-label" data-toggle="tooltip" title="This <?= $application_name['application_type'] == 'Jobs' ? 'Job' : 'Internship';?> is for Campus Hiring" >
+                    <img src="/assets/themes/ey/images/pages/dashboard/placement.png"/>
+                    Campus Hiring
+                </div>
+                <?php
+            }
+            ?>
             <div class="col-md-4 col-sm-12">
                 <div class="j-main">
                     <div class="j-logo">
@@ -160,7 +173,8 @@ foreach ($fields as $f) {
                     <div class="j-data">
                         <div class="j-title">
                             <a href="<?= $slug_base . $application_name['slug'] ?>" target="_blank">
-                                <?= $application_name['job_title'] ?></a>
+                                <?= $application_name['job_title'] ?>
+                            </a>
                         </div>
 
                         <div class="j-share">
@@ -384,7 +398,7 @@ foreach ($fields as $f) {
                         foreach ($user_pCount as $v) {
                             $pcnt += $v;
                         }
-                        echo $pcnt + $hcount + $rejected_count;
+                        echo $pcnt + $hcount + $rejected_count + $cancelled_count;
                         ?></span></a>
             </li>
             <?php
@@ -438,12 +452,15 @@ foreach ($fields as $f) {
                 } else if ($arr['status'] == 'Rejected') {
                     $tempfieldMain = "rejected";
                     $fieldName = "Rejected";
+                } else if ($arr['status'] == 'Cancelled') {
+                    $tempfieldMain = "cancelled";
+                    $fieldName = "Cancelled";
                 } else {
                     $fieldName = "Applied";
                     $tempfieldMain = "";
                 }
                 foreach ($arr['appliedApplicationProcesses'] as $p) {
-                    if ($j == $arr['active'] && $arr['status'] != 'Rejected') {
+                    if ($j == $arr['active'] && $arr['status'] != 'Rejected' && $arr['status'] != 'Cancelled') {
                         $fieldMain = $p['field_enc_id'];
                         $fieldName = $p['field_name'];
                         $tempfieldMain = $p['field_enc_id'] . $j;
@@ -674,7 +691,7 @@ foreach ($fields as $f) {
                                 <div class="pr-user-past">
                                     <?php
                                     $experience = [];
-                                    if ($arr['createdBy']['userWorkExperiences']) {
+                                    if ($arr['createdBy']['userWorkExperiences'] && $application_name['application_for'] == 1) {
                                         foreach ($arr['createdBy']['userWorkExperiences'] as $exp) {
                                             if ($exp['is_current'] == 0) {
                                                 array_push($experience, $exp["company"]);
@@ -689,6 +706,26 @@ foreach ($fields as $f) {
                                             </h5>
                                             <?php
                                         }
+                                    } else{
+                                        ?>
+                                        <span class="past-title" style="margin-top: 6px;">College</span>
+                                        <div class="user-college-logo-outer">
+                                            <div class="user-college-logo">
+                                                <?php
+                                                if($arr['college_logo']){
+                                                    ?>
+                                                    <img src="<?= $arr['college_logo'];?>"/>
+                                                        <?php
+                                                } else{
+                                                    ?>
+                                                    <canvas class="user-icon" name="<?= $arr['college_name'] ?>" width="30" height="30" font="14px" color="<?= $arr['college_initials'];?>"></canvas>
+                                                        <?php
+                                                }
+                                                ?>
+                                            </div>
+                                            <h5><?= $arr['college_name'];?></h5>
+                                        </div>
+                                            <?php
                                     }
                                     ?>
                                     <!--                                    <span>+2 more</span>-->
@@ -903,15 +940,17 @@ foreach ($fields as $f) {
                                 </div>
                             <?php } ?>
                         </div>
-                        <div class="slide-btn">
-                            <button class="slide-bttn" type="button">
-                                <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
-                                   title="View Questionnaire"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="cd-box-border-hide">
                         <?php if (!empty($que)) { ?>
+                            <div class="slide-btn">
+                                <button class="slide-bttn" type="button">
+                                    <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
+                                       title="View Questionnaire"></i>
+                                </button>
+                            </div>
+                        <?php } ?>
+                    </div>
+                    <?php if (!empty($que)) { ?>
+                        <div class="cd-box-border-hide">
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
@@ -935,13 +974,13 @@ foreach ($fields as $f) {
                                 <?php } ?>
                                 </tbody>
                             </table>
-                        <?php } else { ?>
-                            <div class="without-q">
-                                <h3>No Questionnaire To Display</h3>
+<!--                        --><?php //} else { ?>
+<!--                            <div class="without-q">-->
+<!--                                <h3>No Questionnaire To Display</h3>-->
                                 <!--                                    <a href="#">Set Questionnaire</a>-->
-                            </div>
-                        <?php } ?>
-                    </div>
+<!--                            </div>-->
+                        </div>
+                    <?php } ?>
                 </li>
                 <?php
             }
@@ -1408,7 +1447,6 @@ $this->registerCss('
 .sr-box {
     color: #ff4242;
     font-family: lora;
-    align-self: end;
 }
 .rejectReason p{
     text-align: center;
@@ -1751,7 +1789,7 @@ $this->registerCss('
 .job-det.col-md-12 {
 	box-shadow: 0px 3px 10px 2px #ddd;
 	margin: 30px 0;
-	padding: 25px 15px 10px;
+	padding: 35px 15px 10px;
 	background: #fdfdfd;
 }
 .j-main {
@@ -2324,6 +2362,24 @@ overflow: hidden;
     background-color: #5cb85c;
     color: white;
 }
+.campus-hiring-label{
+    position: absolute;
+    top: 0px;
+    display: flex;
+    align-items: center;
+    left: 0px;
+    background-color: #00a0e3;
+    padding: 0px 10px;
+    padding-left: 0;
+    color: #fff;
+    box-shadow: 0px 2px 2px 0px #eee;
+}
+.campus-hiring-label img{
+    background-color: #fff;
+    padding: 5px;
+    max-width: 30px;
+    margin-right: 8px;
+}
 @media (min-width:1400px){
     .sticky{
         max-width: 1140px;
@@ -2441,6 +2497,31 @@ overflow: hidden;
 .disabled-elem{
     opacity: 0.5;
     cursor: not-allowed;
+}
+.user-college-logo-outer{
+    margin-top: 6px;
+    margin-left: 6px;
+    display: flex;
+    align-items: center;
+}
+.user-college-logo{
+    width:30px;
+    height:30px;
+    display:inline-block;
+    border-radius:50%;
+    box-shadow:0px 1px 8px 1px #ddd;
+    overflow:hidden;
+    margin-right: 5px;
+}
+.user-college-logo-outer h5{
+    margin: 0;
+    font-weight: 400;
+    font-size: 14px;
+}
+.user-college-logo img{
+    width:100%;
+    height:100%;
+    object-fit: cover;
 }
 ');
 $script = <<<JS
@@ -3006,6 +3087,7 @@ function downloadAs(url, name) {
       console.log("error", err);
     });
 };
+$('#myHeader li:nth-child(2) > a').trigger('click');
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
