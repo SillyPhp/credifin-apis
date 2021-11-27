@@ -59,7 +59,7 @@ if ($type == 'Job') {
             } elseif (!empty($data2['max_wage'])) {
                 $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . ' p.a.';
             } elseif (empty($data2['min_wage']) && empty($data2['max_wage'])) {
-                $amount = 'Negotiable';
+                $amount = 'Undisclosed';
             }
         }
     } else {
@@ -92,7 +92,7 @@ if ($type == 'Job') {
             } elseif (!empty($data1['max_wage'])) {
                 $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $data1['max_wage'])) . ' p.a.';
             } elseif (empty($data1['min_wage']) && empty($data1['max_wage'])) {
-                $amount = 'Negotiable';
+                $amount = 'Undisclosed';
             }
         }
     }

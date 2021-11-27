@@ -626,23 +626,23 @@ class ApplicationCards
                     }
                 } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = $currency . (string)$val['min_salary'] * 12 . ' p.a.';
+                        $result[$i]['salary'] = 'From ' .$currency . (string)$val['min_salary'] * 12 . ' p.a.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = $currency . (string)($val['min_salary']) . ' Per Hour';
+                        $result[$i]['salary'] = 'From ' .$currency . (string)($val['min_salary']) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = $currency . (string)($val['min_salary']) . ' Per Week';
+                        $result[$i]['salary'] = 'From ' .$currency . (string)($val['min_salary']) . ' Per Week';
                     } else {
-                        $result[$i]['salary'] = $currency . (string)($val['min_salary']) . ' p.a.';
+                        $result[$i]['salary'] = 'From ' .$currency . (string)($val['min_salary']) . ' p.a.';
                     }
                 } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = $currency . (string)$val['max_salary'] * 12 . ' p.a.';
+                        $result[$i]['salary'] = 'Upto ' .$currency . (string)$val['max_salary'] * 12 . ' p.a.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = $currency . (string)($val['max_salary']) . ' Per Hour';
+                        $result[$i]['salary'] = 'Upto ' .$currency . (string)($val['max_salary']) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = $currency . (string)($val['max_salary']) . ' Per Week';
+                        $result[$i]['salary'] = 'Upto ' .$currency . (string)($val['max_salary']) . ' Per Week';
                     } else {
-                        $result[$i]['salary'] = $currency . (string)($val['max_salary']) . ' p.a.';
+                        $result[$i]['salary'] = 'Upto ' .$currency . (string)($val['max_salary']) . ' p.a.';
                     }
                 }
             } else {
