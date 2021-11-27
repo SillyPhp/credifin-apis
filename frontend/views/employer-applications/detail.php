@@ -1580,7 +1580,7 @@ button.lc-item-video-menu {
     -o-border-radius: 2px;
     border-radius: 2px;
     font-family: roboto;
-    font-size: 16px;
+    font-size: 14px;
     color: #fff;
     width: 175px;
     height: auto;
