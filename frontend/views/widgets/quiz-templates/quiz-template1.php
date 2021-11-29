@@ -13,6 +13,13 @@ use yii\helpers\Url;
                     <h1 class="date">8 DEC 2021</h1>
                     <p>Fee ₹100/-</p>
                     <a href="">Register Now</a>
+                    <div class="sponser">
+                        <h5>Sponsered By</h5>
+                        <div class="spons-img">
+                            <img src="/assets/themes/ey/images/pages/home/agile.jpg">
+                            <img src="/assets/themes/ey/images/pages/home/agile.jpg">
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-sm-6">
@@ -80,6 +87,16 @@ $this->registerCss('
     }
     .quiz-template1 img{
         width: 100%;
+    }
+    .sponser h5 {
+        font-size: 14px;
+        color: #fff;
+        font-weight: 800;
+    }
+    .spons-img img {
+        width: 35px;
+        border-radius: 50%;
+        margin-right: 5px;
     }
     @media only screen and (max-width: 1199px){
         .temp-text h1 {
