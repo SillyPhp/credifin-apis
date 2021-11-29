@@ -144,6 +144,20 @@ class Quiz extends Quizzes
                 $d->onCondition(['d.is_deleted' => 0]);
                 $d->groupBy(['d.quiz_reward_enc_id']);
             }])
+            ->joinWith(['quizSponsors e' => function ($e) {
+                $e->select(['e.sponsor_enc_id', 'e.quiz_enc_id', 'e.unclaimed_org_enc_id', 'e.organization_enc_id']);
+                $e->joinWith(['organizationEnc e1' => function ($e1) {
+                    $e1->select(['e1.organization_enc_id', 'e1.name', 'e1.slug', 'e1.initials_color',
+                        'CASE WHEN e1.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", e1.logo_location, "/", e1.logo) ELSE NULL END logo'
+                    ]);
+                }]);
+                $e->joinWith(['unclaimedOrgEnc e2' => function ($e2) {
+                    $e2->select(['e2.organization_enc_id', 'e2.name', 'e2.slug', 'e2.initials_color',
+                        'CASE WHEN e2.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", e2.logo_location, "/", e2.logo) ELSE NULL END logo'
+                    ]);
+                }]);
+                $e->onCondition(['e.is_deleted' => 0]);
+            }])
             ->innerJoinWith(['quizPoolEnc bb' => function ($b) {
                 $b->innerJoinWith(['quizQuestionsPools zz']);
             }], false)
@@ -160,7 +174,7 @@ class Quiz extends Quizzes
                 if ($registered) {
                     $q['is_registered'] = true;
                 }
-                $q['is_played'] = $this->isPlayed($q['slug'],$options['user_id']);
+                $q['is_played'] = $this->isPlayed($q['slug'], $options['user_id']);
             }
             $q['registered_count'] = QuizRegistration::find()->where(['quiz_enc_id' => $q['quiz_enc_id'], 'is_deleted' => 0, 'status' => 1])->count();
             $q['registered_users'] = $this->__getRegisteredUsers($q['quiz_enc_id']);
