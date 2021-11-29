@@ -706,7 +706,7 @@ foreach ($fields as $f) {
                                             </h5>
                                             <?php
                                         }
-                                    } else{
+                                    } else if($application_name['application_for'] == 2 && $arr['college_name']){
                                         ?>
                                         <span class="past-title" style="margin-top: 6px;">College</span>
                                         <div class="user-college-logo-outer">
@@ -878,13 +878,13 @@ foreach ($fields as $f) {
                             <?php if ($arr['status'] == 'Hired') { ?>
                                 <div class="pr-full-height">
                                     <a href="javascript:;">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/hiredc.png'); ?>"/>
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/hired.png'); ?>"/>
                                     </a>
                                 </div>
                             <?php } elseif ($arr['status'] == 'Rejected') { ?>
                                 <div class="pr-full-height">
                                     <a href="javascript:;">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejectedc.png'); ?>"/>
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>"/>
                                     </a>
                                 </div>
                             <?php } elseif ($arr['status'] == 'Cancelled') { ?>
@@ -935,7 +935,7 @@ foreach ($fields as $f) {
                                 <div class="pr-half-height">
                                     <a href="javascript:;" class="reject"
                                        value="<?= $arr['applied_application_enc_id']; ?>">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/reject5.png'); ?>"/>
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/REJECT.png'); ?>"/>
                                     </a>
                                 </div>
                             <?php } ?>
@@ -2118,8 +2118,8 @@ overflow: hidden;
 .pr-half-height:first-child{
   border-bottom:1px solid #ddd;
 }
-.pr-half-height a img{max-width:34px;}
-.pr-half-height:first-child a img{max-width:40px;}
+.pr-half-height a img{max-width:40px;}
+.pr-half-height:first-child a img{max-width:45px;}
 
 /* Tabs css starts*/
 .pr-process-tab{
