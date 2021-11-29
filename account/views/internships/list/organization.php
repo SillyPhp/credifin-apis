@@ -62,6 +62,24 @@ use yii\widgets\Pjax;
 }
 .caption{
     height: 100%;
-    line-height: 40px !important;
+    line-height: 20px !important;
 }
-')?>
+.set-im img{
+    width: 31px;
+}
+');
+
+$script = <<< JS
+
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();   
+});
+$(document).on('click','.datepicker_opn',function(e) {
+    e.preventDefault();
+    $('#application_enc_id').val($(this).attr('data-id'));
+    $('#form_modal2').modal('show');
+});
+JS;
+
+$this->registerJs($script);
+?>

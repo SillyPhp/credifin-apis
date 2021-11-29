@@ -156,6 +156,7 @@ $this->registerCss('
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
+    margin-bottom: 50px;
 }
 .safety-links-share h4{
     font-size: 18px;
@@ -163,11 +164,12 @@ $this->registerCss('
     font-family: roboto;
     font-weight: 500;
     color:#000;
+    flex-basis: 100%;
 }
 .safety-links-share a{
     color:#000;
     font-size: 22px;
-    margin: 5px 10px 65px;
+    margin: 5px 10px 0px;
 }
 .safety-links-share a:hover{
     color: #fff;
