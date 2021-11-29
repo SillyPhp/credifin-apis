@@ -325,13 +325,13 @@ class DashboardController extends Controller
                     'a.unique_access_link', 'b1.start_datetime', 'b1.duration', 'b.webinar_conduct_on', 'b.slug'
                 ])
                 ->joinWith(['webinarEnc b' => function ($b) use ($date_now) {
-                    $b->joinWith(['webinarEvents b1' => function($b1) use ($date_now){
+                    $b->joinWith(['webinarEvents b1' => function ($b1) use ($date_now) {
                         $b1->joinWith(['webinarSpeakers b2' => function ($b2) {
-                            $b2->joinWith(['speakerEnc b3'=>function($b3){
+                            $b2->joinWith(['speakerEnc b3' => function ($b3) {
                                 $b3->joinWith(['userEnc b4']);
                             }]);
                         }]);
-                        $b1->onCondition(['>=','b1.start_datetime', $date_now]);
+                        $b1->onCondition(['>=', 'b1.start_datetime', $date_now]);
                     }]);
                     $b->andWhere(['b1.status' => [0, 1]]);
                 }], false)
@@ -389,11 +389,11 @@ class DashboardController extends Controller
         $loanLoginFee = LoanApplications::find()
             ->alias('a')
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
-            ->select(['a.loan_app_enc_id','applicant_name','amount',
+            ->select(['a.loan_app_enc_id', 'applicant_name', 'amount',
                 '(count(CASE WHEN b.payment_status IN ("captured","created","withdrawn","refund initiated") THEN "1" ELSE NULL END)) as total_payment',
             ])
-            ->joinWith(['educationLoanPayments b'],false,'LEFT JOIN')
-            ->andWhere(['a.is_deleted'=>0])
+            ->joinWith(['educationLoanPayments b'], false, 'LEFT JOIN')
+            ->andWhere(['a.is_deleted' => 0])
             ->having(['total_payment' => 0])
             ->groupBy(['a.loan_app_enc_id'])
             ->asArray()
@@ -815,7 +815,7 @@ class DashboardController extends Controller
         if (!Yii::$app->user->identity->organization->organization_enc_id) {
             return $this->render('scheduled-interviews');
         } else {
-            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+            return $this->render('calendar');
         }
 
     }
@@ -1372,5 +1372,33 @@ class DashboardController extends Controller
 //            'error' => $error
 //        ]);
 //    }
+
+    public function actionGetApplicationEvents()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $applications = EmployerApplications::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'b.name application_type', 'a.application_for',
+                    'c1.name category', 'c2.name parent_category', 'a.last_date'])
+                ->joinWith(['applicationTypeEnc b'], false)
+                ->joinWith(['title c' => function ($b) {
+                    $b->joinWith(['categoryEnc c1']);
+                    $b->joinWith(['parentEnc c2']);
+                }], false)
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0, 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->asArray()
+                ->all();
+
+            if ($applications) {
+                return ['status' => 200, 'message' => 'success', 'data' => $applications];
+            } else {
+                return ['status' => 404, 'message' => 'not found'];
+            }
+
+        }
+    }
+
 
 }

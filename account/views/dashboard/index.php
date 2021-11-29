@@ -26,12 +26,26 @@ endif;
     <div class="col-md-3">
         <?= $this->render('/widgets/tasks/taskbar-card', ['viewed' => $viewed]); ?>
 
-        <?=
+
+        <!--=====Active Module=====-->
+        <!-- <?=
             $this->render('/widgets/services-selection/edit-services', [
                 'model' => $model,
                 'services' => $services,
             ]);
-        ?>
+        ?> -->
+
+        <!-- <section class="company-ques">
+            <div class="upper-half">
+                <h4 style="transform: translate(0, 31%);margin: 0 30px;">Are you offering Tech Roles in your company?</h4>
+                <h4>Are you offering Tech Roles in your company?</h4>
+            </div>
+            <div class="ans">
+                <span>YES</span>
+                <span>NO</span>
+            </div>
+        </section> -->
+        
         <?php if (Yii::$app->user->identity->organization->organization_enc_id) { ?>
             <?= $this->render('/widgets/safety-widgets', ['scriptModel' => $scriptModel]) ?>
         <?php } ?>
@@ -294,7 +308,7 @@ endif;
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?><span data-toggle="tooltip" title="Here you will find all your active jobs"><i class="fa fa-info-circle"></i></span></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Open Jobs'); ?><span data-toggle="tooltip" title="Here you will find all your active jobs"><i class="fa fa-info-circle"></i></span></span>
                     </div>
                     <div class="actions">
                         <div class="set-im">
@@ -347,7 +361,7 @@ endif;
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?><span data-toggle="tooltip" title="Here you will find all your active internships"><i class="fa fa-info-circle"></i></span></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Open Internships'); ?><span data-toggle="tooltip" title="Here you will find all your active internships"><i class="fa fa-info-circle"></i></span></span>
                     </div>
                     <div class="actions">
                         <div class="set-im">
@@ -401,6 +415,7 @@ endif;
             </div>
 
             <?= $this->render('@common/widgets/career-page-section') ?>
+            <?= $this->render('/dashboard/calendar') ?>
             <div id="form_modal2" class="modal fade in" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">
@@ -835,6 +850,68 @@ p{
 }
 .datepicker > div {
     display: block;
+}
+
+
+/* =====Dashboard Questions CSS======*/
+.company-ques {
+    padding: 20px 10px;
+    margin-top: 20px;
+    box-shadow: 0 0 5px 2px rgb(0 0 0 / 18%);
+    position: relative;
+    min-height: 225px;
+}
+.upper-half {
+    background-image: linear-gradient(to top, #30cfd0 0%, #330867 165%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 50%;
+    width: 100%;
+} 
+.company-ques h4 {
+    font-size: 16px;
+    text-align: center;
+    margin: 15px 0;
+    font-weight: 500;
+    font-family: 'Roboto';
+    line-height: 1.3;
+    background: #fff;
+    margin: 0 18px;
+    display: block;
+    position: absolute;
+    bottom: 0;
+    transform: translate(0, 25%);
+    padding: 18px;
+    box-shadow: 0px 5px 9px 1px rgb(0 0 0 / 25%);
+    border-radius: 5px;
+}
+.company-ques > span {
+    font-size: 14px;
+    font-family: 'Roboto';
+    display: block;
+    text-align: center;
+    font-weight: 500;
+    color: #505050;
+}
+.ans {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    position: absolute;
+    bottom: 25px;
+    width: 100%;
+}
+.ans span {
+    padding: 5px 0;
+    margin: 0 10px;
+    font-weight: 700;
+    width: 73px;
+    border: 2px solid #ff7803;
+    text-align: center;
+}
+.ans span:first-child{
+    border-color: #00a0e3;
 }
 ");
 $script = <<< JS

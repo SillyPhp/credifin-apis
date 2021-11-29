@@ -156,7 +156,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                         <div class="portlet-title">
                             <div class="caption">
                                 <i class=" icon-social-twitter font-dark hide"></i>
-                                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Jobs'); ?>
+                                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Open Jobs'); ?>
                             <span href="#" data-toggle="tooltip" title="Here you will find all your active jobs"><i
                                         class="fa fa-info-circle"></i></span>
                         </span>
@@ -227,9 +227,12 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                         class="fa fa-info-circle"></i></span></span>
                                 </div>
                                 <div class="actions">
+                                <a href="<?= Url::toRoute('/jobs/campus-placement'); ?>" data-toggle="tooltip"
+                                           title="Campus Hiring" class="ai">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
                                     <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
                                        title="Create AI Job" class="ai">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png') ?>"></a>
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png') ?>"></a>
                                     <a href="<?= Url::toRoute('/jobs/active-erexx-jobs'); ?>" data-toggle="tooltip"
                                        title="View All" class="ai">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
