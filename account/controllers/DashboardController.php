@@ -815,7 +815,7 @@ class DashboardController extends Controller
         if (!Yii::$app->user->identity->organization->organization_enc_id) {
             return $this->render('scheduled-interviews');
         } else {
-            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+            return $this->render('calendar');
         }
 
     }
@@ -1375,7 +1375,7 @@ class DashboardController extends Controller
 
     public function actionGetApplicationEvents()
     {
-        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+        if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
 
             $applications = EmployerApplications::find()
@@ -1399,5 +1399,6 @@ class DashboardController extends Controller
 
         }
     }
+
 
 }

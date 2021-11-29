@@ -21,40 +21,41 @@ function FetchEventAndRenderCalendar(){
             $.each(data, function(i,v) {
                 let final_interviewers = [];
                 let final_timing = [];
-                console.log(v.time);
                 $.each(v.interviewers , function (index) {
-                    // let tempInterviewers = [];
                     final_interviewers.push(v.interviewers[index].name);
                 });
                 $.each(v.time , function (index) {
-                    // if(v.time[index].date == moment(v.Start)._i){
-                    //     let tempData = [];
-                        // $.each(v.time[index].time , function (underindex) {
-                        final_timing.push(' '+v.time[index].from + ' to: ' + v.time[index].to);
-                        // });
-                        // console.log(tempData.toString());
-                        // console.log('got daata');
-                        // final_timing = tempData.toString();
-                    // }
+                    final_timing.push(' '+v.time[index].from + ' to: ' + v.time[index].to);
                 });
                 c_events.push({
                     id: v.EventId,
                     name: v.Subject,
                     description: final_interviewers.toString() + ' is/are going to take interview of '+v.Subject + ' '+(v.round ? v.round+ '  round'+ ' on':' on')+final_timing.toString(),
                     date: moment(v.Start),
-                    // end: moment(v.End),
-                    // color: v.ThemeColor,
                     type:v.interview_type,
-                    // date_time_enc_id:v.date_time,
-                    // applied_application_enc_id:v.applied_application_enc_id,
-                    // interview_candidate_enc_id:v.interview_c_enc_id,
-                    // process_field_id:v.process_field_enc_id,
-                    // status:v.status,
-                    // time:v.time,
-                    // designation:v.designation,
                 })
             });
-            console.log(c_events);
+            $("#demoEvoCalendar").evoCalendar("addCalendarEvent", c_events);
+        }
+    })
+}
+
+function GetApplicationEvents(){
+    let c_events = [];
+    $.ajax({
+        type: 'GET',
+        url: '/account/dashboard/get-application-events',
+        async: false,
+        success: function(data) {
+            $.each(data.data, function(i,v) {
+                c_events.push({
+                    id: v.application_enc_id,
+                    name: v.category,
+                    description: 'This is the last date to apply for this '+v.application_type.slice(0,-1),
+                    date: moment(v.last_date),
+                    type:'event',
+                })
+            });
             $("#demoEvoCalendar").evoCalendar("addCalendarEvent", c_events);
         }
     })
@@ -123,7 +124,6 @@ $(document).ready(function() {
         var c = b.data().event;
         showEventSample(c);
     });
-    FetchEventAndRenderCalendar();
 });
 
 function showSettingsSample(a) {
