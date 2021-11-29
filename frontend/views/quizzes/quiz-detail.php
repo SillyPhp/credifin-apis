@@ -148,6 +148,35 @@ $this->params['seo_tags'] = [
     </div>
 </section>
 
+<!--<section class="sponsorBg">-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12">-->
+<!--                <div class="sponsorsFlex">-->
+<!--                    <h2>Quiz <br> Sponsor</h2>-->
+<!--                    <div class="sponsor-box-flex">-->
+<!--                        <div class="sponsorBox">-->
+<!--                            <a href="">-->
+<!--                                <img src="--><?//= Url::to('@eyAssets/images/logos/dsblaw.jpg') ?><!--">-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                        <div class="sponsorBox">-->
+<!--                            <a href="">-->
+<!--                                <img src="--><?//= Url::to('@eyAssets/images/logos/dsbedutech.jpg') ?><!--">-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                        <div class="sponsorBox">-->
+<!--                            <a href="">-->
+<!--                                <img src="--><?//= Url::to('@eyAssets/images/logos/agile.jpg') ?><!--">-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
+
 <section class="rewards-section">
     <div class="container">
         <div class="row">
@@ -177,6 +206,60 @@ $this->params['seo_tags'] = [
 
 <?php
 $this->registerCss('
+.sponsorBg{
+    margin-top: 30px;
+    background: #5ac1ec;
+    padding: 30px 0px;
+}
+.sponsorBg .container{
+    padding: 20px !important;
+}
+.sponsorsFlex{
+    display: flex;
+    align-items: center;   
+}
+.sponsor-box-flex{
+    flex-basis: 80%;
+    display: flex;
+}
+.sponsorsFlex h2{
+    color: #fff;
+    flex-basis: 20%;  
+    line-height: 45px;
+    font-size: 2.5rem;
+    font-family: lora;
+    padding: 0 0 0 10px;
+    border-left: 5px solid #ff7803;
+}
+.sponsorBox{
+    max-width: 33%;
+    height: 150px;
+    width: 100%;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 5px 5px 12px 0 rgb(0 0 0 / 20%);
+    margin: 10px 15px;
+}
+.sponsorBox img{
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 20px;
+	transform: translatey(0px);
+	animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+	0% {
+		transform: translatey(0px);
+	}
+	50% {
+		transform: translatey(-3px);
+	}
+	100% {
+		transform: translatey(0px);
+	}
+}
 .share-social-links {
     display: flex;
     justify-content: space-evenly;
