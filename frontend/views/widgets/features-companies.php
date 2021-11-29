@@ -371,7 +371,7 @@ $this->registercss('
 		font-family: Roboto;
 	}
 	.company-features{
-		margin: 50px 0;
+		margin: 50px 0 0 0;
 	}
 	.navigation-bottom {
 		padding-bottom: 70px;

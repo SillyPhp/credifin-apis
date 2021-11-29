@@ -137,7 +137,7 @@ class QuizzesController extends Controller
     }
 
     private function __returnData($message, $slug, $token = null)
-    { 
+    {
         Yii::$app->session->setFlash('error', $message);
         if ($token == null) {
             return $this->redirect(['/quiz/' . $slug]);
@@ -207,11 +207,11 @@ class QuizzesController extends Controller
         }
 
         //checking quiz play datetime
-        if ($temp['quiz_start_datetime'] > $currentTime) {
+        if ($temp['quiz_start_datetime'] != null && $temp['quiz_start_datetime'] > $currentTime) {
             return $this->__returnData("Quiz will be held on " . $temp['quiz_start_datetime'], $temp['slug'], $token);
         }
 
-        if ($temp['quiz_end_datetime'] < $currentTime) {
+        if ($temp['quiz_end_datetime'] != null && $temp['quiz_end_datetime'] < $currentTime) {
             return $this->__returnData("Quiz is expired", $temp['slug'], $token);
         }
 
@@ -379,7 +379,7 @@ class QuizzesController extends Controller
                         $d->select(['d.quiz_answer_pool_enc_id', 'd.quiz_question_pool_enc_id', 'd.answer']);
                     }]);
                     $c->andWhere(['not in', 'c.quiz_question_pool_enc_id', $isSubmitted]);
-                    $c->andWhere(['c.is_deleted'=>0]);
+                    $c->andWhere(['c.is_deleted' => 0]);
                     $c->orderby(new Expression('rand()'));
                     $c->limit(1);
                 }]);
