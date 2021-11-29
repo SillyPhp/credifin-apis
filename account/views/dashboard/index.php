@@ -415,6 +415,7 @@ endif;
             </div>
 
             <?= $this->render('@common/widgets/career-page-section') ?>
+            <?= $this->render('/dashboard/calendar') ?>
             <div id="form_modal2" class="modal fade in" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">

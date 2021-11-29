@@ -18,10 +18,10 @@ button.icon-button>span.bars{
     background-color: #ff9665;
 }
 .calendar-inner{
-    max-width: calc(100% - 560px);
+    max-width: calc(100% - 525px);
 }
 .calendar-events{
-    width: 360px;
+    width: 335px;
     padding: 70px 10px 60px 20px;
 }
 .sidebar-hide .calendar-inner {
@@ -75,6 +75,9 @@ button.icon-button>span.bars{
         padding: 70px 20px 105px 20px;
     }
 }
+');
+$this->registerJs('
+FetchEventAndRenderCalendar();
 ');
 $this->registerCssFile('@eyAssets/evo-calendar/css/evo-calendar.min.css');
 $this->registerCssFile('@eyAssets/evo-calendar/css/evo-calendar.orange-coral.min.css');

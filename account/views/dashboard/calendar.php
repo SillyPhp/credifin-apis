@@ -1,24 +1,30 @@
-<?php
-echo $this->render('/widgets/header/secondary-header', [
-    'for' => 'ScheduleInterview',
-]);
-?>
-
-
-<!--    <h2>Scheduled Interview Selection</h2>-->
-    <h2>Scheduled Interviews</h2>
-<!--    <div id="calendar"></div>-->
-    <div class="actions">
-        <div class="btn-group dashboard-button">
-            <a href="/account/schedular/interview" class="viewall-jobs">Schedule Interview</a>
+ <div class="portlet light nd-shadow">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class=" icon-social-twitter font-dark hide"></i>
+                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Events Scheduled'); ?><span
+                            data-toggle="tooltip"
+                            title="Here you will find your Scheduled Interviews and see the last date of apply for any job or internships"><i
+                                class="fa fa-info-circle"></i></span></span>
+            </div>
         </div>
-    </div>
-    <br/>
-<br/>
-<br/>
-    <div class="console-log">
-        <div class="log-content">
-            <div class="--noshadow" id="demoEvoCalendar"></div>
+        <!--    <h2>Scheduled Interview Selection</h2>-->
+        <!--    <h2>Events Scheduled</h2>-->
+        <!--    <div id="calendar"></div>-->
+        <!--    <div class="actions">-->
+        <!--        <div class="btn-group dashboard-button">-->
+        <!--            <a href="/account/schedular/interview" class="viewall-jobs">Schedule Interview</a>-->
+        <!--        </div>-->
+        <!--    </div>-->
+        <!--    <br/>-->
+        <!--<br/>-->
+        <!--<br/>-->
+        <div class="portlet-body">
+            <div class="console-log">
+                <div class="log-content">
+                    <div class="--noshadow" id="demoEvoCalendar"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -33,9 +39,9 @@ echo $this->render('/widgets/header/secondary-header', [
                     <!--                <button id="btnDelete" class="btn btn-default btn-sm pull-right">-->
                     <!--                    <span class="glyphicon glyphicon-remove"></span> Remove-->
                     <!--                </button>-->
-<!--                    <button id="btnUpdate" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">-->
-<!--                        <span class="glyphicon glyphicon-pencil"></span> Update-->
-<!--                    </button>-->
+                    <!--                    <button id="btnUpdate" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">-->
+                    <!--                        <span class="glyphicon glyphicon-pencil"></span> Update-->
+                    <!--                    </button>-->
                     <p id="profile"></p>
                     <p id="interview_type"></p>
                     <p id="interview_at"></p>
@@ -70,12 +76,14 @@ echo $this->render('/widgets/header/secondary-header', [
                         <div class="form-group">
                             <div class="col-sm-6 secondary-time-from">
                                 <label>Time From</label>
-                                <input type="text" class="timepicker timepicker-24" id="time_from" placeholder="from" name="time_from">
+                                <input type="text" class="timepicker timepicker-24" id="time_from" placeholder="from"
+                                       name="time_from">
                                 <input type="hidden" name="date_time_enc_id" value="" id="time_enc_id">
                             </div>
                             <div class="col-sm-6 secondary-time-to">
                                 <label>Time To</label>
-                                <input type="text" class="timepicker timepicker-24" id="time_to" placeholder="to" name="time_to">
+                                <input type="text" class="timepicker timepicker-24" id="time_to" placeholder="to"
+                                       name="time_to">
                             </div>
                         </div>
                         <div class="form-group">
@@ -98,7 +106,8 @@ echo $this->render('/widgets/header/secondary-header', [
                         </div>
                         <div class="form-group fixed">
                             <label>Number of Candidates</label>
-                            <input type="number" id="candidate_number" class="form-control" name="candidate_numbers"></input>
+                            <input type="number" id="candidate_number" class="form-control"
+                                   name="candidate_numbers"></input>
                         </div>
                         <div class="form-group fixed">
                             <label>Application Process</label>
@@ -446,7 +455,7 @@ function SaveEvent(data){
 }
 
 FetchEventAndRenderCalendar();
-// GetApplicationEvents();
+GetApplicationEvents();
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
