@@ -7,6 +7,7 @@ use common\models\ApplicationInterviewQuestionnaire;
 use common\models\ApplicationJobDescription;
 use common\models\ApplicationOptions;
 use common\models\ApplicationSkills;
+use common\models\ApplicationTypes;
 use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Designations;
@@ -151,11 +152,11 @@ class ApplicationDataProvider extends Model
         $flag = 0;
         if ($type=='Edit_Jobs')
         {
-            $typ = 'Jobs';
+            $type = 'Jobs';
         }
         elseif ($type=='Edit_Internships')
         {
-            $typ = 'Internships';
+            $type = 'Internships';
         }
         $employerApplicationsModel = EmployerApplications::find()
                                ->where(['application_enc_id'=>$aidk])
