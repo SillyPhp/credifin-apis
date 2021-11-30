@@ -381,7 +381,10 @@ function getFullDate() {
     return d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
 }
 
-$('#last_date, #earliestjoiningdate').val(getFullDate()).datepicker('refresh');
+if (doc_type!='Clone_Internships'||doc_type!='Edit_Internships') 
+    {
+     $('#last_date, #earliestjoiningdate').val(getFullDate()).datepicker('refresh');   
+    }
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
