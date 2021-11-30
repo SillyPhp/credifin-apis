@@ -405,7 +405,7 @@ class DashboardController extends Controller
             ->distinct()
             ->alias('a')
             ->select(['b.name', 'b.quiz_enc_id', 'b.slug', 'b.num_of_ques', 'b.quiz_start_datetime', 'b.duration',
-                'CASE WHEN b.sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", b.sharing_image_location, "/", b.sharing_image) ELSE NULL END sharing_image',
+                'CASE WHEN b.banner_sharing_img IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", b.banner_sharing_img_location, "/", b.banner_sharing_img) ELSE NULL END banner_sharing_image',
                 "CASE 
                     WHEN b.quiz_end_datetime IS NULL THEN NULL
                     WHEN TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),@@session.time_zone,'+05:30'),b.quiz_end_datetime) < 0 THEN 'true'

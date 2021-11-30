@@ -589,7 +589,7 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
                                 <div class="expired-btn">EXPIRED</div>
                             ` : ''}
                             <div class="card-img">
-                                <img src="${quiz.sharing_image ? quiz.sharing_image : `<?= Url::to('@eyAssets/images/pages/quiz/quiz-template-default.png') ?>`}"/>
+                                <img src="${quiz.banner_sharing_image ? quiz.banner_sharing_image : `<?= Url::to('@eyAssets/images/pages/quiz/quiz-template-default.png') ?>`}"/>
                             </div>
                             <div class="card-details">
                                 <div class="about-first flex-container">
