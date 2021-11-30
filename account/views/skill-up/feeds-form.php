@@ -35,7 +35,7 @@ $source_list = ArrayHelper::map($sources, 'source_enc_id', 'name');
                     <div class="feed-title">Feed Form</div>
                     <?php $form = ActiveForm::begin([
                         'id' => 'feeds_form',
-                        'enableClientValidation' => true,
+//                        'enableClientValidation' => true,
                         'validationUrl' => ['/' . Yii::$app->controller->id . '/' . 'validate-source'],
                         'options' => ['enctype' => 'multipart/form-data']
                     ]); ?>
@@ -728,7 +728,7 @@ $(document).on('change','input[name=content_type]', function(e) {
         $('.embed_code_field').addClass('hidden');
     }
 })
-$(document).on('keypress','#search-skill',function(e){
+$(document).on('keypress','#search-skill, input',function(e){
     if(e.which==13) {
         e.preventDefault();
     }
