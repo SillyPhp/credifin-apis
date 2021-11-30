@@ -166,6 +166,13 @@ endif;
                     }
                 }
             ?>
+            <?php
+                if($registeredQuizzes){
+                    echo $this->render('/widgets/user-registered-quiz', [
+                            'registeredQuizzes' => $registeredQuizzes,
+                    ]);
+                }
+            ?>
             <?=
             $this->render('/widgets/applications/dashboard-applied-applications', [
                 'applied' => $applied,
@@ -192,6 +199,8 @@ endif;
                 ]);
             }
             ?>
+
+
         <?php elseif (Yii::$app->user->identity->organization) : ?>
             <div class="row marg">
                 <div class="col-md-4 col-sm-6">

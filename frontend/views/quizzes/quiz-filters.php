@@ -117,6 +117,41 @@ $this->registerCss('
 html {
   scroll-behavior: smooth;
 }
+.no-result-main {
+  max-width: 400px;
+  margin: auto;
+  background-color: #FFE7D2;
+  padding: 10px 50px;
+  box-shadow: 1px 1px 7px #C4C4C4;
+  border-radius: 8px;
+}
+.nresult-img {
+  text-align: center;
+  padding: 20px;
+}
+.nresult-img img {
+  width: 100%;
+  max-width: 400px;
+}
+.nresult-text {
+  text-align: center;
+  padding: 10px;
+}
+.nresult-text h1 {
+  font-size: 25px;
+  font-family: roboto;
+  font-weight: 600;
+  color: #000;
+  letter-spacing: 0.3px;
+}
+.nresult-text p {
+  font-family: Roboto;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
+}
 .pos-stick {
     position: sticky;
     top: 80px;
@@ -478,10 +513,27 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
                 loadMoreCards = true;
             }
         }else if(pageNo == 1 && res['response']['status'] == 404){
-            document.querySelector('#quizDiv').innerHTML = 'No Results Found';
+            noResult();
         }
     }
     // getAllQuizzes();
+    function noResult(){
+        let noResultHtml =  `<div class="row">
+                    <div class="col-md-12">
+                        <div class="no-result-main">
+                            <div class="nresult-img">
+                              <img src="https://www.empoweryouth.com/assets/themes/email/images/VA1npK2MJdJj6yakqY8VdrlbjPkBXZ.png">
+                            </div>
+                            <div class="nresult-text">
+                              <h1>Oops! No results Found</h1>
+                              <p>We could not find any result for your search.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+
+        document.querySelector('#quizDiv').innerHTML = noResultHtml;
+    }
 
     async function getCategories() {
         let response = await fetch(`${baseUrl}/api/v3/quiz/categories`,{
