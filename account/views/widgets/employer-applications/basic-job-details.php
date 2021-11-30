@@ -380,10 +380,11 @@ function getFullDate() {
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "Sep", "Oct", "November", "December"];
     return d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
 }
-
-if (doc_type!='Clone_Internships'||doc_type!='Edit_Internships') 
+if (doc_type=='Clone_Jobs'||doc_type=='Edit_Jobs') 
     {
-     $('#last_date, #earliestjoiningdate').val(getFullDate()).datepicker('refresh');   
+     $('#last_date, #earliestjoiningdate').val();  
+    }else{
+         $('#last_date, #earliestjoiningdate').val(getFullDate()).datepicker('refresh');  
     }
 JS;
 $this->registerJs($script);
