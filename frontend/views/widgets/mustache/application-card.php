@@ -212,6 +212,7 @@ let draggable = false;
 let review_list_draggable = false;
 let return_message = false;
 let jobs_parent;
+let grand_parent;
 let internships_parent;
 let page = 0;
 function renderCards(cards, container){
@@ -285,6 +286,9 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
                             $(internships_parent).addClass('hidden');
                         }
                         if($(jobs_parent).hasClass('hidden') && $(internships_parent).hasClass('hidden')){
+                            if(grand_parent){
+                                $(grand_parent).addClass('hidden');
+                            }
                             $(jobs_parent).html('<h2 class="text-center">There are no Jobs or Internships in this Company</h2>');
                             $(jobs_parent).removeClass('hidden');
                         }
