@@ -62,9 +62,9 @@ foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $
         if ($p['sequence'] == $u['current_round']) {
             if ($u['status'] == 'Rejected') {
                 $rejected_count += 1;
-            } else if($u['status'] == 'Cancelled') {
+            } else if ($u['status'] == 'Cancelled') {
                 $cancelled_count += 1;
-            } else{
+            } else {
                 $user_pCount[$p['field_name']] += 1;
             }
         }
@@ -156,7 +156,8 @@ foreach ($fields as $f) {
             <?php
             if ($application_name['application_for'] == 2) {
                 ?>
-                <div class="campus-hiring-label" data-toggle="tooltip" title="This <?= $application_name['application_type'] == 'Jobs' ? 'Job' : 'Internship';?> is for Campus Hiring" >
+                <div class="campus-hiring-label" data-toggle="tooltip"
+                     title="This <?= $application_name['application_type'] == 'Jobs' ? 'Job' : 'Internship'; ?> is for Campus Hiring">
                     <img src="/assets/themes/ey/images/pages/dashboard/placement.png"/>
                     Campus Hiring
                 </div>
@@ -199,7 +200,7 @@ foreach ($fields as $f) {
                             <?php
                             $link = Url::to($slug_base . $application_name['slug'], "https");
                             ?>
-                            <a href="javascript:;" class="clipb tt jj-clipboard" type="button" data-toggle="tooltip"
+                            <a href="javascript:;" class="clipb jj-clipboard" type="button" data-toggle="tooltip"
                                title="Copy Link" data-link="<?= $link ?>">
                                 <i class="fa fa-clipboard"></i>
                             </a>
@@ -383,6 +384,18 @@ foreach ($fields as $f) {
                     </div>
                 </div>
             </div>
+            <?php $dt = new \DateTime();
+            $tz = new \DateTimeZone('Asia/Kolkata');
+            $dt->setTimezone($tz);
+            $currentDate = $dt->format('Y-m-d');
+            if ($application_name['last_date'] < $currentDate) {
+                ?>
+                <div class="expired-ji">
+                    <p data-toggle="tooltip" data-placement="bottom" title=""
+                       data-original-title="<?= ucfirst("$app_type") ?> has been closed & No new Applications can be received on this <?= ucfirst("$app_type") ?>"><?= $app_type ?>
+                        Expired</p>
+                </div>
+            <?php } ?>
         </div>
     </div>
 </div>
@@ -491,7 +504,8 @@ foreach ($fields as $f) {
                                 <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                 <!--                                            <a href="#">Request to Complete Profile</a>-->
                             </div>
-                            <a class="pr-user-n url-forward" href="javascript:void(0)" data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
+                            <a class="pr-user-n url-forward" href="javascript:void(0)"
+                               data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
 
                             <div class="rejectReason rejectRea"
                                  id="rejectReason" <?= $rejectionType ? 'style="display: none"' : '' ?>>
@@ -606,7 +620,9 @@ foreach ($fields as $f) {
                                                     break;
                                                 }
                                                 ?>
-                                                <a href="javascript:void(0)" data-href="/<?= $app_type . "/" . $crj['applicationEnc']['slug'] ?>" class="customJobBox">
+                                                <a href="javascript:void(0)"
+                                                   data-href="/<?= $app_type . "/" . $crj['applicationEnc']['slug'] ?>"
+                                                   class="customJobBox">
                                                     <div class="jc-icon">
                                                         <img src="<?= Url::to('@commonAssets/categories/' . $crj['applicationEnc']['icon']); ?>">
                                                     </div>
@@ -706,26 +722,28 @@ foreach ($fields as $f) {
                                             </h5>
                                             <?php
                                         }
-                                    } else if($application_name['application_for'] == 2 && $arr['college_name']){
+                                    } else if ($application_name['application_for'] == 2 && $arr['college_name']) {
                                         ?>
                                         <span class="past-title" style="margin-top: 6px;">College</span>
                                         <div class="user-college-logo-outer">
                                             <div class="user-college-logo">
                                                 <?php
-                                                if($arr['college_logo']){
+                                                if ($arr['college_logo']) {
                                                     ?>
-                                                    <img src="<?= $arr['college_logo'];?>"/>
-                                                        <?php
-                                                } else{
+                                                    <img src="<?= $arr['college_logo']; ?>"/>
+                                                    <?php
+                                                } else {
                                                     ?>
-                                                    <canvas class="user-icon" name="<?= $arr['college_name'] ?>" width="30" height="30" font="14px" color="<?= $arr['college_initials'];?>"></canvas>
-                                                        <?php
+                                                    <canvas class="user-icon" name="<?= $arr['college_name'] ?>"
+                                                            width="30" height="30" font="14px"
+                                                            color="<?= $arr['college_initials']; ?>"></canvas>
+                                                    <?php
                                                 }
                                                 ?>
                                             </div>
-                                            <h5><?= $arr['college_name'];?></h5>
+                                            <h5><?= $arr['college_name']; ?></h5>
                                         </div>
-                                            <?php
+                                        <?php
                                     }
                                     ?>
                                     <!--                                    <span>+2 more</span>-->
@@ -856,7 +874,7 @@ foreach ($fields as $f) {
                                                  class="noteImg" data-val="<?= $notes; ?>">
                                         </li>
                                         <li>
-                                            <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
+                                            <a href="#" class="open_chat" data-id="<?= $arr['created_by']; ?>"
                                                data-key="<?= $arr['name']; ?>"
                                                data-img="<?= (($arr['image']) ? $arr['image'] : "https://ui-avatars.com/api/?name=" . $arr['name'] . "&size=200&rounded=false&background=" . str_replace('#', '', $arr['initials_color']) . "&color=ffffff") ?>"
                                                title="Chat Now" data-toggle="tooltip">
@@ -943,7 +961,7 @@ foreach ($fields as $f) {
                         <?php if (!empty($que)) { ?>
                             <div class="slide-btn">
                                 <button class="slide-bttn" type="button">
-                                    <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
+                                    <i class="fa fa-angle-double-down" aria-hidden="true" data-toggle="tooltip"
                                        title="View Questionnaire"></i>
                                 </button>
                             </div>
@@ -974,11 +992,11 @@ foreach ($fields as $f) {
                                 <?php } ?>
                                 </tbody>
                             </table>
-<!--                        --><?php //} else { ?>
-<!--                            <div class="without-q">-->
-<!--                                <h3>No Questionnaire To Display</h3>-->
-                                <!--                                    <a href="#">Set Questionnaire</a>-->
-<!--                            </div>-->
+                            <!--                        --><?php //} else { ?>
+                            <!--                            <div class="without-q">-->
+                            <!--                                <h3>No Questionnaire To Display</h3>-->
+                            <!--                                    <a href="#">Set Questionnaire</a>-->
+                            <!--                            </div>-->
                         </div>
                     <?php } ?>
                 </li>
@@ -1072,6 +1090,20 @@ foreach ($fields as $f) {
 </div>
 <?php
 $this->registerCss('
+.expired-ji p{
+    position: absolute;
+    right: 0;
+    top: 0px;
+    background-color: #ff2424bf;
+    color: #fff;
+    font-family: "Roboto";
+    font-weight: 600;
+    margin: 0;
+    padding: 4px 15px;
+    letter-spacing:1px;
+    font-size:12px;
+    text-transform:uppercase;
+}
 .has-success #phone-input {
     border-color: #c2cad8;
 }
@@ -2104,6 +2136,10 @@ overflow: hidden;
   text-align:center;
   position:relative;
 }
+.pr-half-height:hover img {
+    transform: scale(1.1);
+    transition: all .5s;
+}
 .pr-full-height{
     position:relative;
     height:100%;
@@ -2207,22 +2243,16 @@ overflow: hidden;
   border-left-color: #00a0e3;
 }
 .tooltip-inner {
-    background-color: #00a0e3 !important;
-    color: #fff;
-    padding:5px 10px;
-    border-radius:20px !important;
-}
-.tooltip-inner {
-    background-color: #00a0e3 !important;
+    background-color: #333 !important;
     color: #fff;
     padding:5px 10px;
     border-radius:20px !important;
 }
 .tooltip.top .tooltip-arrow {
-    border-top-color: #00acd6;
+    border-top-color: #333;
 }
 .tooltip.bottom .tooltip-arrow{
-    border-bottom-color:#00a0e3;
+    border-bottom-color:#333;
 }
 .hiring_process_list{
     padding-left:0px;
