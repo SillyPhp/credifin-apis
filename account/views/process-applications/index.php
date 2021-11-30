@@ -384,11 +384,7 @@ foreach ($fields as $f) {
                     </div>
                 </div>
             </div>
-            <?php $dt = new \DateTime();
-            $tz = new \DateTimeZone('Asia/Kolkata');
-            $dt->setTimezone($tz);
-            $currentDate = $dt->format('Y-m-d');
-            if ($application_name['last_date'] < $currentDate) {
+            <?php if ($application_name['status'] == 'Closed') {
                 ?>
                 <div class="expired-ji">
                     <p data-toggle="tooltip" data-placement="bottom" title=""
