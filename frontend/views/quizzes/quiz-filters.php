@@ -526,7 +526,7 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
                             </div>
                             <div class="nresult-text">
                               <h1>Oops! No results Found</h1>
-                              <p>We could not find any result for your research.</p>
+                              <p>We could not find any result for your search.</p>
                             </div>
                         </div>
                     </div>
