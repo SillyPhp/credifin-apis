@@ -75,9 +75,9 @@ class WebinarsController extends ApiBaseController
                 'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", c.logo_location, "/", c.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", c.name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END logo',
                 'f.description',
                 'f.facebook', 'f.twitter', 'f.instagram', 'f.linkedin',
-                'REPLACE(c.name, "&amp;", "&") as org_name',
+                'REPLACE(c.name, "&amp;", "&") as org_name'
             ])
-            ->where(['a.is_deleted' => 0])
+            ->where(['a.is_deleted' => 0, 'a.is_star' => 1])
             ->joinWith(['designationEnc b'], false)
             ->joinWith(['unclaimedOrg c'], false)
             ->joinWith(['speakerExpertises d' => function ($d) {

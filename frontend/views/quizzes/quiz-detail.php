@@ -148,6 +148,21 @@ $this->params['seo_tags'] = [
     </div>
 </section>
 
+<section class="sponsorBg">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="sponsorsFlex">
+                    <h2>Quiz <br> Sponsors</h2>
+                    <div class="sponsor-box-flex">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="rewards-section">
     <div class="container">
         <div class="row">
@@ -177,6 +192,59 @@ $this->params['seo_tags'] = [
 
 <?php
 $this->registerCss('
+.sponsorBg{
+    margin-top: 30px;
+    background: #5ac1ec;
+    padding: 30px 0px;
+}
+.sponsorBg .container{
+    padding: 20px !important;
+}
+.sponsorsFlex{
+    display: flex;
+    align-items: center;   
+}
+.sponsor-box-flex{
+    flex-basis: 80%;
+    display: flex;
+    flex-wrap: wrap;
+}
+.sponsorsFlex h2{
+    color: #fff;
+    flex-basis: 20%;  
+    line-height: 45px;
+    font-size: 2.5rem;
+    font-family: lora;
+    padding: 0 0 0 10px;
+    border-left: 5px solid #ff7803;
+}
+.sponsorBox{
+    max-width: 30%;
+    height: 150px;
+    width: 100%;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 5px 5px 12px 0 rgb(0 0 0 / 20%);
+    margin: 10px 15px;
+    position: relative;
+}
+.sponsorBox img,
+.sponsorBox canvas{
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 20px;
+	transform: translatey(0px);
+}
+
+.sponsorBox a canvas{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 4px;
+}
 .share-social-links {
     display: flex;
     justify-content: space-evenly;
@@ -225,7 +293,7 @@ $this->registerCss('
 .share-social-links > a:hover {
     opacity: 1;
 }
-#quizCounter, .ask-people{
+#quizCounter, .ask-people, .sponsorBg{
     display: none;
 }
 .counterDisFlex{
@@ -696,6 +764,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
                 if (res['response']['detail']['quiz_start_datetime']) {
                     countdown(res['response']['detail']['quiz_start_datetime']);
                 }
+                quizSponsors(res['response']['detail']['quizSponsors'])
             }
         }
     }
@@ -880,7 +949,37 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
 
             document.querySelector('.quizRewards').innerHTML = rewardsCard;
         }
-    
+
+    function quizSponsors(sponsors) {
+        let sponsorBg = document.querySelector('.sponsorBg');
+        if(sponsors.length > 0){
+            sponsorBg.style.display = 'block'
+        }
+        let sponsorDiv = sponsors.map(sponsor => {
+           let data = null
+           if(sponsor.organization_enc_id != null){
+               data = sponsor.organizationEnc;
+           }else {
+               data = sponsor.unclaimedOrgEnc;
+           }
+            console.log(data);
+           return `<div class="sponsorBox">
+                        <a href="/${data.slug}">
+                            ${data.logo == null
+                               ? `<canvas class="user-icon" name="${data.name}" width="150" height="100" color="${data.initials_color}" font="45px"></canvas>`
+                               : `<img src="${data.logo}">` }
+                        </a>
+                    </div>`;
+
+       }).join('');
+        setTimeout(function(){
+            utilities.initials();
+        },1000)
+
+       document.querySelector('.sponsor-box-flex').innerHTML = sponsorDiv;
+
+    }
+
     function refreshBtn(currentDate, quizStart, quizEnd, regEnd, detail) {
         setInterval(function () {
             let nowDate = new Date().getTime();

@@ -371,16 +371,11 @@ $round_avg = round($overall_avg);
                         </div>
                     </div>
 
-                    <div class="av-jobs-intern">
-                        <?php if ($jobs_count > 0 || $internships_count > 0) {
-                        ?>
+                    <div class="av-jobs-intern" id="grand-parent-opportunities">
                             <div class="row">
                                 <div class="heading-style">Available Opportunities</div>
                                 <div class="divider"></div>
                             </div>
-                        <?php } ?>
-                        <?php if ($jobs_count > 0) {
-                            ?>
                             <div id="jobs-cards-main" class="row">
                                 <div class="heading-style2">Jobs
                                     <div class="pull-right">
@@ -395,10 +390,6 @@ $round_avg = round($overall_avg);
                                     </div>
                                 </div>
                             </div>
-                        <?php } ?>
-
-                        <?php if ($internships_count > 0) {
-                            ?>
                             <div id="internships-cards-main" class="row">
                                 <div class="internships-block">
                                     <div class="heading-style2">Internships
@@ -414,7 +405,6 @@ $round_avg = round($overall_avg);
                                     </div>
                                 </div>
                             </div>
-                        <?php } ?>
                     </div>
                     <?php if (!empty($benefit)) {
                         ?>
@@ -1434,9 +1424,10 @@ $(document).ready(function() {
 });
 JS;
 $this->registerJs("
-//return_message = true;
-//jobs_parent = '#jobs-cards-main';
-//internships_parent = '#internships-cards-main';
+return_message = true;
+jobs_parent = '#jobs-cards-main';
+internships_parent = '#internships-cards-main';
+grand_parent = '#grand-parent-opportunities';
 loader = false;
 getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
