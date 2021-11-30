@@ -16,7 +16,7 @@ class UserAppliedApplication
     {
         $u = AppliedApplications::find()
             ->alias('a')
-            ->select(['a.status', 'a.created_on', 'g.name type', 'a.applied_application_enc_id', 'a.application_enc_id', 'a.rejection_window', 'f.username', 'd.name job_title', 'e.icon', 'CONCAT(f.first_name," ",f.last_name) fullname', 'f.image', 'f.image_location', 'f.initials_color'])
+            ->select(['a.status', 'a.created_on', 'g.name type', 'a.applied_application_enc_id', 'a.application_enc_id', 'a.rejection_window', 'f.username', 'd.name job_title', 'e.icon', 'CONCAT_WS(" ",f.first_name,f.last_name) fullname', 'f.image', 'f.image_location', 'f.initials_color'])
             ->where(['or',
                 ['a.status' => 'Pending'],
                 ['a.status' => 'Incomplete']

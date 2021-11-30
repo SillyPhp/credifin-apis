@@ -28,7 +28,7 @@ if (!empty($total_applications)) {
                                     <div class="mt-action-row">
                                         <div class="mt-action-info ">
                                             <div class="mt-action-details text-capitalize">
-                                                <a href="javascript:;" onclick="window.open('<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $application['application_enc_id'], true); ?>', '_blank');" class="mt-action-author" target="_blank"><?= $application['name']; ?></a>
+                                                <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $application['application_enc_id'], 'https'); ?>" class="mt-action-author" target="_blank"><?= $application['name']; ?></a>
                                                 <p class="mt-action-desc">Expired On <?= date("d-m-Y", strtotime($application['last_date'])); ?></p>
                                             </div>
                                         </div>
