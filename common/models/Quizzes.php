@@ -26,6 +26,8 @@ use Yii;
  * @property string $background_image_location
  * @property string $sharing_image
  * @property string $sharing_image_location
+ * @property string $banner_sharing_img
+ * @property string $banner_sharing_img_location
  * @property string $title Quiz Title for SEO Purpose
  * @property string $keywords Quiz Keywords for SEO Purpose
  * @property string $description Quiz Description for SEO Purpose
@@ -78,7 +80,7 @@ class Quizzes extends \yii\db\ActiveRecord
             [['total_marks', 'time_duration', 'correct_answer_marks', 'negetive_marks', 'type', 'num_of_ques', 'template', 'display', 'is_login', 'is_paid', 'duration', 'status', 'quiz_type', 'is_deleted'], 'integer'],
             [['description'], 'string'],
             [['quiz_start_datetime', 'quiz_end_datetime', 'registration_start_datetime', 'registration_end_datetime', 'created_on', 'last_updated_on'], 'safe'],
-            [['quiz_enc_id', 'quiz_pool_enc_id', 'currency_enc_id', 'name', 'assigned_category_enc_id', 'slug', 'background_image', 'background_image_location', 'sharing_image', 'sharing_image_location', 'title', 'keywords', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['quiz_enc_id', 'quiz_pool_enc_id', 'currency_enc_id', 'name', 'assigned_category_enc_id', 'slug', 'background_image', 'background_image_location', 'sharing_image', 'sharing_image_location', 'banner_sharing_img', 'banner_sharing_img_location', 'title', 'keywords', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['quiz_enc_id'], 'unique'],
             [['name', 'slug', 'type', 'is_deleted'], 'unique', 'targetAttribute' => ['name', 'slug', 'type', 'is_deleted']],
             [['quiz_pool_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => QuizPool::className(), 'targetAttribute' => ['quiz_pool_enc_id' => 'quiz_pool_enc_id']],
