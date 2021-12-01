@@ -2244,7 +2244,7 @@ class JobsController extends Controller
             ->distinct()
             ->alias('a')
             ->select([
-                'a.applied_application_enc_id',
+                'a.applied_application_enc_id', 'cr.candidate_rejection_enc_id',
                 'a.status', 'b.username', 'b.initials_color', 'CONCAT(b.first_name, " ", b.last_name) name',
                 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',
                 'a.created_by', 'b3.name as city'])
