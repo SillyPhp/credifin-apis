@@ -62,9 +62,9 @@ foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $
         if ($p['sequence'] == $u['current_round']) {
             if ($u['status'] == 'Rejected') {
                 $rejected_count += 1;
-            } else if($u['status'] == 'Cancelled') {
+            } else if ($u['status'] == 'Cancelled') {
                 $cancelled_count += 1;
-            } else{
+            } else {
                 $user_pCount[$p['field_name']] += 1;
             }
         }
@@ -156,7 +156,8 @@ foreach ($fields as $f) {
             <?php
             if ($application_name['application_for'] == 2) {
                 ?>
-                <div class="campus-hiring-label" data-toggle="tooltip" title="This <?= $application_name['application_type'] == 'Jobs' ? 'Job' : 'Internship';?> is for Campus Hiring" >
+                <div class="campus-hiring-label" data-toggle="tooltip"
+                     title="This <?= $application_name['application_type'] == 'Jobs' ? 'Job' : 'Internship'; ?> is for Campus Hiring">
                     <img src="/assets/themes/ey/images/pages/dashboard/placement.png"/>
                     Campus Hiring
                 </div>
@@ -491,7 +492,8 @@ foreach ($fields as $f) {
                                 <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                 <!--                                            <a href="#">Request to Complete Profile</a>-->
                             </div>
-                            <a class="pr-user-n url-forward" href="javascript:void(0)" data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
+                            <a class="pr-user-n url-forward" href="javascript:void(0)"
+                               data-id="<?= '/' . $arr['username'] . '?id=' . $arr['applied_application_enc_id'] ?>"><?= $arr['name'] ?></a>
 
                             <div class="rejectReason rejectRea"
                                  id="rejectReason" <?= $rejectionType ? 'style="display: none"' : '' ?>>
@@ -606,7 +608,9 @@ foreach ($fields as $f) {
                                                     break;
                                                 }
                                                 ?>
-                                                <a href="javascript:void(0)" data-href="/<?= $app_type . "/" . $crj['applicationEnc']['slug'] ?>" class="customJobBox">
+                                                <a href="javascript:void(0)"
+                                                   data-href="/<?= $app_type . "/" . $crj['applicationEnc']['slug'] ?>"
+                                                   class="customJobBox">
                                                     <div class="jc-icon">
                                                         <img src="<?= Url::to('@commonAssets/categories/' . $crj['applicationEnc']['icon']); ?>">
                                                     </div>
@@ -706,26 +710,28 @@ foreach ($fields as $f) {
                                             </h5>
                                             <?php
                                         }
-                                    } else if($application_name['application_for'] == 2 && $arr['college_name']){
+                                    } else if ($application_name['application_for'] == 2 && $arr['college_name']) {
                                         ?>
                                         <span class="past-title" style="margin-top: 6px;">College</span>
                                         <div class="user-college-logo-outer">
                                             <div class="user-college-logo">
                                                 <?php
-                                                if($arr['college_logo']){
+                                                if ($arr['college_logo']) {
                                                     ?>
-                                                    <img src="<?= $arr['college_logo'];?>"/>
-                                                        <?php
-                                                } else{
+                                                    <img src="<?= $arr['college_logo']; ?>"/>
+                                                    <?php
+                                                } else {
                                                     ?>
-                                                    <canvas class="user-icon" name="<?= $arr['college_name'] ?>" width="30" height="30" font="14px" color="<?= $arr['college_initials'];?>"></canvas>
-                                                        <?php
+                                                    <canvas class="user-icon" name="<?= $arr['college_name'] ?>"
+                                                            width="30" height="30" font="14px"
+                                                            color="<?= $arr['college_initials']; ?>"></canvas>
+                                                    <?php
                                                 }
                                                 ?>
                                             </div>
-                                            <h5><?= $arr['college_name'];?></h5>
+                                            <h5><?= $arr['college_name']; ?></h5>
                                         </div>
-                                            <?php
+                                        <?php
                                     }
                                     ?>
                                     <!--                                    <span>+2 more</span>-->
@@ -773,16 +779,19 @@ foreach ($fields as $f) {
                                 <div class="pref-indus">
                                     <?php
                                     $industry = [];
-                                    if ($arr['createdBy']['userPreferredIndustries']) {
-                                        foreach ($arr['createdBy']['userPreferredIndustries'] as $ind) {
-                                            array_push($industry, $ind["industry"]);
+                                    if ($arr['appliedApplicationLocations']) {
+                                        foreach ($arr['appliedApplicationLocations'] as $ind) {
+                                            array_push($industry, $ind["name"]);
                                         }
                                         $str2 = implode(", ", array_unique($industry));
                                         if ($str2) {
                                             ?>
-                                            <h4>
-                                                <span>Industry: </span>
-                                                <?= rtrim($str2, ','); ?>
+                                            <h4 class="clamp-c" style="display: flex;align-items: center;">
+                                                <span><i class="fa fa-map-marker"></i> </span>
+                                                <p style="margin: 5px;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;"><?= rtrim($str2, ','); ?></p>
+                                                <div class="all-data">
+                                                    <h5><?= rtrim($str2, ','); ?></h5>
+                                                </div>
                                             </h4>
                                             <?php
                                         }
@@ -974,11 +983,11 @@ foreach ($fields as $f) {
                                 <?php } ?>
                                 </tbody>
                             </table>
-<!--                        --><?php //} else { ?>
-<!--                            <div class="without-q">-->
-<!--                                <h3>No Questionnaire To Display</h3>-->
-                                <!--                                    <a href="#">Set Questionnaire</a>-->
-<!--                            </div>-->
+                            <!--                        --><?php //} else { ?>
+                            <!--                            <div class="without-q">-->
+                            <!--                                <h3>No Questionnaire To Display</h3>-->
+                            <!--                                    <a href="#">Set Questionnaire</a>-->
+                            <!--                            </div>-->
                         </div>
                     <?php } ?>
                 </li>
@@ -1159,6 +1168,7 @@ $this->registerCss('
     padding:8px 15px;
     top: 30px;
     box-shadow:0px 1px 6px 2px #ddd;
+    z-index:9;
 }
 .all-data:before {
     content: "";
