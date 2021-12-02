@@ -32,6 +32,7 @@ class Quiz extends Quizzes
                 'a.title', 'a.slug', 'c1.name category', 'c2.name parent_category', 'DATE_FORMAT(a.quiz_start_datetime, "%d/%m/%Y") quiz_start_datetime', 'DATE_FORMAT(a.quiz_end_datetime, "%d/%m/%Y") quiz_end_datetime', 'a.duration', 'a.description', 'a.registration_start_datetime', 'a.registration_end_datetime',
                 'a.num_of_ques',
                 'CASE WHEN a.sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", a.sharing_image_location, "/", a.sharing_image) ELSE NULL END sharing_image',
+                'CASE WHEN a.banner_sharing_img IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", a.banner_sharing_img_location, "/", a.banner_sharing_img) ELSE NULL END banner_sharing_image',
                 "CASE WHEN a.quiz_start_datetime IS NOT NULL THEN DATEDIFF(a.quiz_start_datetime, CONVERT_TZ(Now(),@@session.time_zone,'+05:30')) ELSE NULL END days_left",
                 "CASE 
                     WHEN a.quiz_end_datetime IS NULL THEN NULL
@@ -55,6 +56,7 @@ class Quiz extends Quizzes
                     $d2->onCondition(['d2.is_deleted' => 0]);
                 }]);
                 $d->onCondition(['d.is_deleted' => 0]);
+                $d->orderBy('d.sequence');
                 $d->groupBy(['d.quiz_reward_enc_id']);
             }])
             ->innerJoinWith(['quizPoolEnc bb' => function ($b) {
@@ -118,6 +120,7 @@ class Quiz extends Quizzes
                 'a.title', 'a.slug', 'c1.name category', 'c2.name parent_category', 'DATE_FORMAT(a.quiz_start_datetime, "%m/%d/%Y %H:%i:%s") quiz_start_datetime', 'DATE_FORMAT(a.quiz_end_datetime, "%m/%d/%Y %H:%i:%s") quiz_end_datetime', 'a.duration', 'a.description', 'DATE_FORMAT(a.registration_start_datetime, "%m/%d/%Y %H:%i:%s") registration_start_datetime', 'DATE_FORMAT(a.registration_end_datetime, "%m/%d/%Y %H:%i:%s") registration_end_datetime',
                 'a.num_of_ques',
                 'CASE WHEN a.sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", a.sharing_image_location, "/", a.sharing_image) ELSE NULL END sharing_image',
+                'CASE WHEN a.banner_sharing_img IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", a.banner_sharing_img_location, "/", a.banner_sharing_img) ELSE NULL END banner_sharing_image',
                 "CASE WHEN a.quiz_start_datetime IS NOT NULL THEN DATEDIFF(a.quiz_start_datetime, CONVERT_TZ(Now(),@@session.time_zone,'+05:30')) ELSE NULL END days_left",
                 "CASE 
                     WHEN a.quiz_end_datetime IS NULL THEN NULL
@@ -142,7 +145,22 @@ class Quiz extends Quizzes
                     $d2->onCondition(['d2.is_deleted' => 0]);
                 }]);
                 $d->onCondition(['d.is_deleted' => 0]);
+                $d->orderBy('d.sequence');
                 $d->groupBy(['d.quiz_reward_enc_id']);
+            }])
+            ->joinWith(['quizSponsors e' => function ($e) {
+                $e->select(['e.sponsor_enc_id', 'e.quiz_enc_id', 'e.unclaimed_org_enc_id', 'e.organization_enc_id']);
+                $e->joinWith(['organizationEnc e1' => function ($e1) {
+                    $e1->select(['e1.organization_enc_id', 'e1.name', 'e1.slug', 'e1.initials_color',
+                        'CASE WHEN e1.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", e1.logo_location, "/", e1.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", e1.name, "&size=200&rounded=false&background=", REPLACE(e1.initials_color, "#", ""), "&color=ffffff") END logo'
+                    ]);
+                }]);
+                $e->joinWith(['unclaimedOrgEnc e2' => function ($e2) {
+                    $e2->select(['e2.organization_enc_id', 'e2.name', 'e2.slug', 'e2.initials_color',
+                        'CASE WHEN e2.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", e2.logo_location, "/", e2.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", e2.name, "&size=200&rounded=false&background=", REPLACE(e2.initials_color, "#", ""), "&color=ffffff") END logo'
+                    ]);
+                }]);
+                $e->onCondition(['e.is_deleted' => 0]);
             }])
             ->innerJoinWith(['quizPoolEnc bb' => function ($b) {
                 $b->innerJoinWith(['quizQuestionsPools zz']);
@@ -160,7 +178,7 @@ class Quiz extends Quizzes
                 if ($registered) {
                     $q['is_registered'] = true;
                 }
-                $q['is_played'] = $this->isPlayed($q['slug'],$options['user_id']);
+                $q['is_played'] = $this->isPlayed($q['slug'], $options['user_id']);
             }
             $q['registered_count'] = QuizRegistration::find()->where(['quiz_enc_id' => $q['quiz_enc_id'], 'is_deleted' => 0, 'status' => 1])->count();
             $q['registered_users'] = $this->__getRegisteredUsers($q['quiz_enc_id']);
