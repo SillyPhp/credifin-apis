@@ -4,7 +4,7 @@ use yii\helpers\Url;
 ?>
 
 <div class="career-for-company">
-    <div class="career-banner">
+    <div class="resume-banner">
         <div class="blue-strip-img">
             <img src="<?= Url::to('@eyAssets/images/pages/drop-resume/resume-bank-top-left-bg.png'); ?>">
         </div>
@@ -43,34 +43,7 @@ $this->registerCss('
     position: absolute;
     opacity: 0
 }
-.linkDiv{
-    background: #fff;
-    display: none;
-    width: fit-content;
-    padding: 10px 40px 10px 15px;
-    border: 1px solid #00a0e3;
-    border-radius: 25px;
-    position: relative;
-}
-.linkDiv a{
-    color: #333;
-    font-size: 13px;   
-}
-.linkDiv a:hover,
-.linkDiv button:hover{
-    color: #00a0e3;
-    transition: .3s ease;
-}
-.linkDiv button{
-    position:absolute;
-    right: 13px;
-    padding: 0px;
-    background: none;
-    color: #333;
-    border: none;
-}
-
-.career-banner{
+.resume-banner{
     box-shadow: 0px 1px 10px 2px #eee !important;
     display: flex;
     position: relative;
@@ -78,32 +51,37 @@ $this->registerCss('
     margin-bottom:30px;
     justify-content: center;
 }
+.resume-banner .row{
+  display: flex;
+  align-items: center;
+}
 .heading-text h1 {
   margin: 0;
   font-family: Roboto;
   font-weight: 700;
-  font-size: 35px;
+  font-size: 30px;
 }
 .heading-text p {
   font-family: roboto;
   color: #333;
-  font-size: 16px;
+  font-size: 14px;
   margin: 0;
   line-height: 1.3;
 }
-ul.car-point {
+.resume-banner ul.car-point {
   list-style: none;
   margin-bottom: 20px;
 }
-ul.car-point li i {
+.resume-banner ul.car-point li i {
   margin-right: 8px;
   color: #00a0e3;
 }
-ul.car-point li {
+.resume-banner ul.car-point li {
+  list-style: none;
   margin-bottom: 3px;
   font-family: roboto;
   color: #333;
-  font-size: 16px;
+  font-size: 14px;
 }
 .blue-strip-img{
   position: absolute;
@@ -114,20 +92,20 @@ ul.car-point li {
 .blue-strip-img.right-bg{
   right: 0;
   left: unset;
-  width: 380px;
+  width: 340px;
 }
 
 .blue-strip-img img{
   width: 100%;
 }
 .career-heading{
-  padding: 70px 0 50px 60px !important;
+  padding: 70px 0 45px 60px !important;
 }
 .heading-text{
   margin-bottom: 15px;
 }
 .career-image{
-  padding: 70px 50px 60px 0 !important;
+  padding: 70px 45px 60px 0 !important;
 }
 .career-image img{
   width: 100%;
@@ -140,7 +118,7 @@ ul.car-point li {
   position: relative;
   z-index: 1;
 }
-.btn-generate-link{
+.resume-banner .btn-generate-link{
     padding: 10px 20px;
     border-radius: 8px;
     display: inline-block;
@@ -149,8 +127,9 @@ ul.car-point li {
     color: #fff;
     font-size: 100%;
     transition: all .3s linear;
+    box-shadow: none;
 }
-.btn-generate-link:hover {
+.resume-banner .btn-generate-link:hover {
     padding: 10px 35px;
     transition: all .3 linear;
     color: #fff;
@@ -200,20 +179,11 @@ ul.car-point li {
   .career-heading{
     padding: 70px 30px !important;
   }
+  .career-heading h1{
+    font-size: 28px;
+  }
 }
 ');
-$script = <<<JS
-$('.btn-generate-link').on('click', function (){
-    $('.btn-generate-link').hide()
-    $('.linkDiv').show()
-})
-// $('.copyLinkBtn').on('click', function (){
-//     let careerLink = $(this).attr('data-link');
-//     careerLink.select();
-//     careerLink.setSelectionRange(0, 9999);
-//     document.execCommand("copy");
-// })
-JS;
 $this->registerJS($script);
 ?>
 <script>
