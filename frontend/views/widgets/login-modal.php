@@ -58,7 +58,7 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
                                         'autofocus' => true,
                                         'autocomplete' => 'off',
                                         'class' => 'uname-in',
-                                        'placeholder' => $loginFormModel->getAttributeLabel('username'),
+                                        'placeholder' => $loginFormModel->getAttributeLabel('username or email'),
                                     ]);
                                     ?>
                                 </div>
