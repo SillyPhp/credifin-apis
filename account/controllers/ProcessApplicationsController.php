@@ -88,7 +88,7 @@ class ProcessApplicationsController extends Controller
                 WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NUll THEN CONCAT("Minimum ",a.minimum_exp," Years Experience") 
                 WHEN a.minimum_exp IS NUll AND a.maximum_exp IS NOT NUll THEN CONCAT("Maximum ",a.maximum_exp," Years Experience") 
                 ELSE "No Experience" 
-                END) as experience', 'ao.wage_type', 'ao.fixed_wage', 'ao.min_wage', 'ao.max_wage', 'ao.wage_duration', 'a.application_for'])
+                END) as experience', 'ao.wage_type', 'ao.fixed_wage', 'ao.min_wage', 'ao.max_wage', 'ao.wage_duration', 'a.application_for','a.status'])
                 ->where(['a.application_enc_id' => $aidk])
                 ->andWhere(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->joinWith(['title b' => function ($b) {

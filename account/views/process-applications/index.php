@@ -200,7 +200,7 @@ foreach ($fields as $f) {
                             <?php
                             $link = Url::to($slug_base . $application_name['slug'], "https");
                             ?>
-                            <a href="javascript:;" class="clipb tt jj-clipboard" type="button" data-toggle="tooltip"
+                            <a href="javascript:;" class="clipb jj-clipboard" type="button" data-toggle="tooltip"
                                title="Copy Link" data-link="<?= $link ?>">
                                 <i class="fa fa-clipboard"></i>
                             </a>
@@ -384,6 +384,14 @@ foreach ($fields as $f) {
                     </div>
                 </div>
             </div>
+            <?php if ($application_name['status'] == 'Closed') {
+                ?>
+                <div class="expired-ji">
+                    <p data-toggle="tooltip" data-placement="bottom" title=""
+                       data-original-title="<?= ucfirst("$app_type") ?> has been closed & No new Applications can be received on this <?= ucfirst("$app_type") ?>"><?= $app_type ?>
+                        Expired</p>
+                </div>
+            <?php } ?>
         </div>
     </div>
 </div>
@@ -865,7 +873,7 @@ foreach ($fields as $f) {
                                                  class="noteImg" data-val="<?= $notes; ?>">
                                         </li>
                                         <li>
-                                            <a href="#" class="open_chat tt" data-id="<?= $arr['created_by']; ?>"
+                                            <a href="#" class="open_chat" data-id="<?= $arr['created_by']; ?>"
                                                data-key="<?= $arr['name']; ?>"
                                                data-img="<?= (($arr['image']) ? $arr['image'] : "https://ui-avatars.com/api/?name=" . $arr['name'] . "&size=200&rounded=false&background=" . str_replace('#', '', $arr['initials_color']) . "&color=ffffff") ?>"
                                                title="Chat Now" data-toggle="tooltip">
@@ -887,13 +895,13 @@ foreach ($fields as $f) {
                             <?php if ($arr['status'] == 'Hired') { ?>
                                 <div class="pr-full-height">
                                     <a href="javascript:;">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/hiredc.png'); ?>"/>
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/hired.png'); ?>"/>
                                     </a>
                                 </div>
                             <?php } elseif ($arr['status'] == 'Rejected') { ?>
                                 <div class="pr-full-height">
                                     <a href="javascript:;">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejectedc.png'); ?>"/>
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>"/>
                                     </a>
                                 </div>
                             <?php } elseif ($arr['status'] == 'Cancelled') { ?>
@@ -944,7 +952,7 @@ foreach ($fields as $f) {
                                 <div class="pr-half-height">
                                     <a href="javascript:;" class="reject"
                                        value="<?= $arr['applied_application_enc_id']; ?>">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/reject5.png'); ?>"/>
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/REJECT.png'); ?>"/>
                                     </a>
                                 </div>
                             <?php } ?>
@@ -952,7 +960,7 @@ foreach ($fields as $f) {
                         <?php if (!empty($que)) { ?>
                             <div class="slide-btn">
                                 <button class="slide-bttn" type="button">
-                                    <i class="fa fa-angle-double-down tt" aria-hidden="true" data-toggle="tooltip"
+                                    <i class="fa fa-angle-double-down" aria-hidden="true" data-toggle="tooltip"
                                        title="View Questionnaire"></i>
                                 </button>
                             </div>
@@ -1081,6 +1089,20 @@ foreach ($fields as $f) {
 </div>
 <?php
 $this->registerCss('
+.expired-ji p{
+    position: absolute;
+    right: 0;
+    top: 0px;
+    background-color: #ff2424bf;
+    color: #fff;
+    font-family: "Roboto";
+    font-weight: 600;
+    margin: 0;
+    padding: 4px 15px;
+    letter-spacing:1px;
+    font-size:12px;
+    text-transform:uppercase;
+}
 .has-success #phone-input {
     border-color: #c2cad8;
 }
@@ -2114,6 +2136,10 @@ overflow: hidden;
   text-align:center;
   position:relative;
 }
+.pr-half-height:hover img {
+    transform: scale(1.1);
+    transition: all .5s;
+}
 .pr-full-height{
     position:relative;
     height:100%;
@@ -2128,8 +2154,8 @@ overflow: hidden;
 .pr-half-height:first-child{
   border-bottom:1px solid #ddd;
 }
-.pr-half-height a img{max-width:34px;}
-.pr-half-height:first-child a img{max-width:40px;}
+.pr-half-height a img{max-width:40px;}
+.pr-half-height:first-child a img{max-width:45px;}
 
 /* Tabs css starts*/
 .pr-process-tab{
@@ -2217,22 +2243,16 @@ overflow: hidden;
   border-left-color: #00a0e3;
 }
 .tooltip-inner {
-    background-color: #00a0e3 !important;
-    color: #fff;
-    padding:5px 10px;
-    border-radius:20px !important;
-}
-.tooltip-inner {
-    background-color: #00a0e3 !important;
+    background-color: #333 !important;
     color: #fff;
     padding:5px 10px;
     border-radius:20px !important;
 }
 .tooltip.top .tooltip-arrow {
-    border-top-color: #00acd6;
+    border-top-color: #333;
 }
 .tooltip.bottom .tooltip-arrow{
-    border-bottom-color:#00a0e3;
+    border-bottom-color:#333;
 }
 .hiring_process_list{
     padding-left:0px;

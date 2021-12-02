@@ -13,7 +13,7 @@ foreach ($savedApplicants['data'] as $s) { ?>
                 <div class="remove-btn">
                     <button type="button" class="remove-saved-candidate" data-toggle="tooltip"
                             data-original-title="Remove Candidate"
-                            data-id="<?= $application['candidate_rejection_enc_id'] ?>">
+                            data-id="<?= $s['candidate_rejection_enc_id'] ?>">
                         <i class="fa fa-times" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -81,7 +81,6 @@ $(document).on('click','.slide-bttn',function(){
 $(document).on('click','.remove-saved-candidate',function (e){
     e.preventDefault()
     let id = $(this).attr('data-id');
-    console.log(id);
     $.ajax({
             url: "remove-saved-candidate",
             method: "POST",

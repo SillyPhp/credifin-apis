@@ -13,6 +13,7 @@ use Yii;
  * @property string $position_enc_id Foreign Key to rewards position pool table
  * @property string $amount reward amount in string
  * @property double $price reward price in number
+ * @property int $sequence
  * @property string $created_by
  * @property string $created_on
  * @property string $last_updated_by
@@ -41,10 +42,10 @@ class QuizRewards extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['quiz_reward_enc_id', 'quiz_enc_id', 'position_enc_id', 'created_by'], 'required'],
+            [['quiz_reward_enc_id', 'quiz_enc_id', 'position_enc_id', 'sequence', 'created_by'], 'required'],
             [['price'], 'number'],
+            [['sequence', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['is_deleted'], 'integer'],
             [['quiz_reward_enc_id', 'quiz_enc_id', 'position_enc_id', 'amount', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['quiz_reward_enc_id'], 'unique'],
             [['quiz_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Quizzes::className(), 'targetAttribute' => ['quiz_enc_id' => 'quiz_enc_id']],

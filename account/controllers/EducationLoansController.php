@@ -247,9 +247,13 @@ class EducationLoansController extends Controller
                 'a.created_on as apply_date',
                 '(CASE
                     WHEN i.status = "0" THEN "New Lead"
+                    WHEN i.status = "1" THEN "Accepted"
+                    WHEN i.status = "2" THEN "Pre Verification"
                     WHEN i.status = "3" THEN "Under Process"
                     WHEN i.status = "4" THEN "Sanctioned"
+                    WHEN i.status = "5" THEN "Disbursed"
                     WHEN i.status = "10" THEN "Reject"
+                    WHEN i.status = "11" THEN "Disbursed"
                     ELSE "N/A"
                 END) as loan_status',
                 'a.applicant_name',
@@ -290,7 +294,6 @@ class EducationLoansController extends Controller
             }])
             ->joinWith(['assignedLoanProviders i' => function ($i) {
                 $i->joinWith(['providerEnc j']);
-                $i->onCondition(['in', 'i.status', [0, 3, 4, 10]]);
             }])
             ->andWhere(['a.lead_by' => Yii::$app->user->identity->user_enc_id]);
         if ($filter != null) {
