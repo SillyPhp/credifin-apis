@@ -787,16 +787,19 @@ foreach ($fields as $f) {
                                 <div class="pref-indus">
                                     <?php
                                     $industry = [];
-                                    if ($arr['createdBy']['userPreferredIndustries']) {
-                                        foreach ($arr['createdBy']['userPreferredIndustries'] as $ind) {
-                                            array_push($industry, $ind["industry"]);
+                                    if ($arr['appliedApplicationLocations']) {
+                                        foreach ($arr['appliedApplicationLocations'] as $ind) {
+                                            array_push($industry, $ind["name"]);
                                         }
                                         $str2 = implode(", ", array_unique($industry));
                                         if ($str2) {
                                             ?>
-                                            <h4>
-                                                <span>Industry: </span>
-                                                <?= rtrim($str2, ','); ?>
+                                            <h4 class="clamp-c" style="display: flex;align-items: center;">
+                                                <span><i class="fa fa-map-marker"></i> </span>
+                                                <p style="margin: 5px;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;"><?= rtrim($str2, ','); ?></p>
+                                                <div class="all-data">
+                                                    <h5><?= rtrim($str2, ','); ?></h5>
+                                                </div>
                                             </h4>
                                             <?php
                                         }
@@ -1187,6 +1190,7 @@ $this->registerCss('
     padding:8px 15px;
     top: 30px;
     box-shadow:0px 1px 6px 2px #ddd;
+    z-index:9;
 }
 .all-data:before {
     content: "";
