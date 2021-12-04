@@ -203,4 +203,9 @@ class QuizController extends Controller
             ];
         }
     }
+
+    public function actionPlayQuiz(){
+        $this->layout = 'empty-layout';
+        return $this->render('play-quiz');
+    }
 }

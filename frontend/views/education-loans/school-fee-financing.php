@@ -1,34 +1,5 @@
 <?php
 use yii\helpers\Url;
-
-$this->title = 'School Fee Finance';
-$keywords = 'School Fee Finance | Empower Youth';
-$description = 'A Good Education Is Foundation For A Better Future Lay Your Child Career Path Right From School.';
-$image = Url::to('@eyAssets/images/pages/education-loans/School-Fee-Finance.png', 'https');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouthin',
-        'twitter:creator' => '@EmpowerYouthin',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
 <section class="school-fee-finance">
     <section class="school-fee-header">
@@ -88,7 +59,8 @@ if($blogs['blogs']){
 };
 ?>
 <?= $this->render('/widgets/loan-form-detail',[
-    'model' => $model
+    'model' => $model,
+    'param' => 'School Fee Finance'
 ]); ?>
 <?= $this->render('/widgets/press-releasee',[
     'data'=>$data,

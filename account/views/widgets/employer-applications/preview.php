@@ -14,7 +14,7 @@
                     <td><strong>Internship Profile:</strong></td>
                 <?php endif; ?>
                 <td><p class="final_confrm"
-                       data-display="<?= (($type=='Edit_Jobs'||$type=='Edit_Internships') ? 'mainfield' : 'primaryfield');?>"
+                       data-display="primaryfield"
                        id="fieldvalue"></p></td>
                 <?php if ($type =='Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
                 <td><strong>Job Title:</strong></td>

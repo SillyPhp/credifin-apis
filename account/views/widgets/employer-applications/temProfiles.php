@@ -1,103 +1,113 @@
 <?php
+
 use yii\helpers\Url;
+
 Yii::$app->view->registerJs('var type = "' . $type . '"', \yii\web\View::POS_HEAD);
 $oppType = $type == 'internships' ? 'Internship' : 'Job';
 
 ?>
-<!--light box-->
-<div id="job_profile_light">
-    <div class="light-box-modal">
-        <div class="light-box-in">
-            <div class="light-box-content">
-                <form id="temProfilesForm">
-                <div class="tab_pane" id="tab_index_1">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="disFlex">
-                                <a href="<?= Url::to('/account/dashboard')?>" id="wizard-back-cont" type="button" class="btn btn-primary wizard-back-cont">
-                                    <i class="fa fa-arrow-left" aria-hidden="true"></i> Back To Dashboard
-                                </a>
-                                <h3 class="text-center" style="font-family: roboto;">Select Profile For Your <?= $oppType ?></h3>
-                            </div>
-                        </div>
-                    </div>
-                                <div class="row">
-                                    <ul class="relationList">
-                                        <?php foreach ($primary_cat as $pCat){ ?>
-                                            <li class="service-list">
-                                                <input type="radio" class="input_radio_relation" value="<?= $pCat ['category_enc_id']?>" id="<?= $pCat ['category_enc_id']?>" name="pRadio">
-                                                <label for="<?= $pCat ['category_enc_id']?>">
-                                                    <img src="/assets/common/categories/profile/<?= $pCat["icon_png"]?>" width="50" height="50">
-                                                    <div><?= $pCat ['name']?></div>
-                                                </label>
-                                            </li>
-                                        <?php } ?>
-                                    </ul>
+    <!--light box-->
+    <div id="job_profile_light">
+        <div class="light-box-modal">
+            <div class="light-box-in">
+                <div class="light-box-content">
+                    <form id="temProfilesForm">
+                        <div class="tab_pane" id="tab_index_1">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="disFlex">
+                                        <a href="<?= Url::to('/account/' . $type . '/dashboard') ?>"
+                                           id="wizard-back-cont" type="button" class="btn btn-primary wizard-back-cont">
+                                            <i class="fa fa-arrow-left" aria-hidden="true"></i> Back To Dashboard
+                                        </a>
+                                        <!--                                <h3 class="text-center" style="font-family: roboto;">Select Profile For Your -->
+                                        <?//= $oppType ?><!--</h3>-->
+                                    </div>
                                 </div>
                             </div>
-                <div class="tab_pane" id="tab_index_2">
-                        <h3 class="text-center" id="choose_temp" style="font-family: roboto;">We Have Some Awesome Templates To Make Your <?= $oppType ?> Process Faster, Check Out..</h3>
-                    <div class="load-suggestions">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                    <div id="tab2_content">
-
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="set-pos">
-<!--                            <div class="pull-right btn-next" id="btnNext">-->
-<!--                                <button class="btn btn-primary" id="tab_key_next">Next <i class="fa fa-arrow-right" aria-hidden="true"></i></button>-->
-<!--                            </div>-->
-                            <div class="pull-right margin_right" id="btnContinue">
-                                <button class="btn btn-primary tab_key_continue" id="tab_key_continue">Continue</button>
-                            </div>
-                            <div class="pull-right margin_right" id="btnSkip">
-                                <button class="btn btn-primary" id="tab_key_skip"> Skip</button>
-                            </div>
-                            <div class="pull-right margin_right" id="btnBack">
-                                <button class="btn btn-primary" id="tab_key_back"><i class="fa fa-arrow-left" aria-hidden="true"></i> Back</button>
+                            <div class="row">
+                                <ul class="relationList">
+                                    <?php foreach ($primary_cat as $pCat) { ?>
+                                        <li class="service-list">
+                                            <input type="radio" class="input_radio_relation"
+                                                   value="<?= $pCat ['category_enc_id'] ?>"
+                                                   id="<?= $pCat ['category_enc_id'] ?>" name="pRadio">
+                                            <label for="<?= $pCat ['category_enc_id'] ?>">
+                                                <img src="/assets/common/categories/profile/<?= $pCat["icon_png"] ?>"
+                                                     width="50" height="50">
+                                                <div><?= $pCat ['name'] ?></div>
+                                            </label>
+                                        </li>
+                                    <?php } ?>
+                                </ul>
                             </div>
                         </div>
-                    </div>
+                        <div class="tab_pane" id="tab_index_2">
+                            <h3 class="text-center" id="choose_temp" style="font-family: roboto;">We Have Some Awesome
+                                Templates To Make Your <?= $oppType ?> Process Faster, Check Out..</h3>
+                            <div class="load-suggestions">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <div id="tab2_content">
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="set-pos">
+                                    <!--                            <div class="pull-right btn-next" id="btnNext">-->
+                                    <!--                                <button class="btn btn-primary" id="tab_key_next">Next <i class="fa fa-arrow-right" aria-hidden="true"></i></button>-->
+                                    <!--                            </div>-->
+                                    <div class="pull-right margin_right" id="btnContinue">
+                                        <button class="btn btn-primary tab_key_continue" id="tab_key_continue">
+                                            Continue
+                                        </button>
+                                    </div>
+                                    <div class="pull-right margin_right" id="btnSkip">
+                                        <button class="btn btn-primary" id="tab_key_skip"> Skip</button>
+                                    </div>
+                                    <div class="pull-right margin_right" id="btnBack">
+                                        <button class="btn btn-primary" id="tab_key_back"><i class="fa fa-arrow-left"
+                                                                                             aria-hidden="true"></i>
+                                            Back
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                </form>
             </div>
         </div>
     </div>
-</div>
-<input type="hidden" name="hidden_profile" id="hidden_profile">
-<script id="temp-card" type="text/template">
-    <div class="row">
-        <ul class="relationList">
-        {{#.}}
-        <li class="service-list">
-        <input type="radio" value="{{application_enc_id}}" id="{{application_enc_id}}" name="tRadio">
-        <label for="{{application_enc_id}}">
-        <img src="/assets/common/categories/profile/{{icon_png}}" width="50" height="50">
-        <div>{{title}}</div>
-        </label>
-        </li>
-      {{/.}}
-        </ul>
+    <input type="hidden" name="hidden_profile" id="hidden_profile">
+    <script id="temp-card" type="text/template">
+        <div class="row">
+            <ul class="relationList">
+                {{#.}}
+                <li class="service-list">
+                    <input type="radio" value="{{application_enc_id}}" id="{{application_enc_id}}" name="tRadio">
+                    <label for="{{application_enc_id}}">
+                        <img src="/assets/common/categories/profile/{{icon_png}}" width="50" height="50">
+                        <div>{{title}}</div>
+                    </label>
+                </li>
+                {{/.}}
+            </ul>
         </div>
-</script>
-<!--light box-->
+    </script>
+    <!--light box-->
 <?php
 $this->registerCss("
-.disFlex{
+.disFlex {
     position: relative;
-    text-align: center;
-}
-.disFlex a{
-    position: absolute !important;
-    left:10px;
+    margin: 20px 0 0 20px;
+    text-align: left;
 }
 .margin_right{
-margin: 0 6px;
+    margin: 0 6px;
 }
 #no_temp{
     position: absolute;
@@ -110,58 +120,52 @@ margin: 0 6px;
     height: 100%;
     height: 100%;
 }
-.service-list {
-        display: inline-block;
-        min-width: 90px;
-        text-align: center;
-        margin: 2px 5px;
-    }
+.service-list > label {
+    width: 100%;
+    display: inline-block;
+    background-color: rgba(255, 255, 255, .9);
+    border: 2px solid rgba(139, 139, 139, .3);
+    color: #333;
+    font-weight:normal;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin: 3px 0px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all .2s;
+}
 
-    .service-list > label {
-        width: 100%;
-        display: inline-block;
-        background-color: rgba(255, 255, 255, .9);
-        border: 2px solid rgba(139, 139, 139, .3);
-        color: #333;
-        font-weight:normal;
-        border-radius: 4px;
-        white-space: nowrap;
-        margin: 3px 0px;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        -webkit-tap-highlight-color: transparent;
-        transition: all .2s;
-    }
-
-    .service-list > label {
-        padding: 8px 5px;
-        cursor: pointer;
-    }
-    .relationList {
+.service-list > label {
+    padding: 8px 5px;
+    cursor: pointer;
+}
+.relationList {
     padding: 20px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
 }
 
-    .service-list > input[type='radio']:checked + label, .service-list > label:hover {
-        border: 2px solid #00a0e3;
-        background-color: #00a0e3;
-        color: #fff;
-        transition: all .2s;
-    }
+.service-list > input[type='radio']:checked + label, .service-list > label:hover {
+    border: 2px solid #00a0e3;
+    background-color: #00a0e3;
+    color: #fff;
+    transition: all .2s;
+    transform: scale(1.03);
+}
 
-    .service-list > input {
-        position: absolute;
-        opacity: 0;
-    }
+.service-list > input {
+    position: absolute;
+    opacity: 0;
+}
 
-    .service-list > input[type='radio']:focus + label {
-        border: 2px solid #00a0e3;
-    }
+.service-list > input[type='radio']:focus + label {
+    border: 2px solid #00a0e3;
+}
 
 .light-box-modal{
     position: fixed;
@@ -230,15 +234,16 @@ margin: 0 6px;
 .service-list {
     display: inline-block;
     min-width: 120px;
-    margin: 0 5px;
+    margin: 0 5px 5px;
     text-align: left;
-    width: 230px;
+    width: 280px;
 }
 .service-list label{
     width: 100%;
     display: inline-block;
-    background-color: rgba(255, 255, 255, .9);
-    border: 2px solid rgba(139, 139, 139, .3);
+    background-color: rgb(253 251 251 / 90%);
+    border: 2px solid rgb(249 246 246 / 30%);
+    box-shadow: 0 2px 4px 0 #e5e1e1;
     color: #333;
     border-radius: 4px;
     white-space: nowrap;
@@ -251,14 +256,23 @@ margin: 0 6px;
     -webkit-tap-highlight-color: transparent;
     transition: all .2s;
 }
+.service-list img {
+    margin-right: 15px;
+}
 
 .service-list label {
-    padding: 8px 12px;
+    display: flex;
+    padding: 10px 12px;
     cursor: pointer;
-    text-align:center;
+    text-align: center;
+    align-items: center;
+    color: #706c6c;
 }
 .service-list label > div {
+    font-weight: 500;
     margin: 8px 0;
+    font-family: 'Roboto';
+    letter-spacing: 0.3px;
 }
 .service-list label::before {
     display: inline-block;

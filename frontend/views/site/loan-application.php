@@ -100,7 +100,7 @@ $this->params['seo_tags'] = [
                                 <?= $form->field($model, 'contact', ['template' => '<div class="input_contact"><span>+91</span>{input}</div>{error}'])->textInput(['placeholder' => 'Mobile Number', 'id' => 'contact'])->label(false); ?>
                             </div>
                             <div class="form-group ml5">
-                                <?= $form->field($model, 'email', ['template' => '{input}{error}'])->textInput(['placeholder' => 'Email For Communication'])->label(false); ?>
+                                <?= $form->field($model, 'email', ['template' => '{input}{error}'])->textInput(['placeholder' => 'Email For Communication (Optional)'])->label(false); ?>
                             </div>
                         </div>
                         <div class="form-group text-center">
@@ -593,17 +593,31 @@ $('#contact').mask("#", {reverse: true});
               $('#prevBtn').show();
             if (res.status=='200')
                 {
-                    let ptoken = res.data.payment_id; 
-                    let payment_enc_id = res.data.payment_enc_id;
-                    let loan_app_enc_id = res.data.loan_app_enc_id;
-                    if (ptoken!=null || ptoken !=""){
-                        _razoPay(ptoken,payment_enc_id,loan_app_enc_id);
-                    } else{
-                        swal({
-                            title:"Error",
-                            text: "Payment Gatway Is Unable to Process Your Payment At The Moment, Please Try After Some Time",
-                            });
-                    }
+                    swal({
+                        title: "",
+                        text: "Your Application Is Submitted Successfully",
+                        type:'success',
+                        showCancelButton: false,  
+                        confirmButtonClass: "btn-primary",
+                        confirmButtonText: "Close",
+                        closeOnConfirm: true, 
+                        closeOnCancel: true
+                         },
+                            function (isConfirm) { 
+                             location.reload(true);
+                         }
+                        );
+                    //let ptoken = res.data.payment_id; 
+                    //let payment_enc_id = res.data.payment_enc_id;
+                    //let loan_app_enc_id = res.data.loan_app_enc_id;
+                    // if (ptoken!=null || ptoken !=""){
+                    //     _razoPay(ptoken,payment_enc_id,loan_app_enc_id);
+                    // } else{
+                    //     swal({
+                    //         title:"Error",
+                    //         text: "Payment Gatway Is Unable to Process Your Payment At The Moment, Please Try After Some Time",
+                    //         });
+                    // }
                 }else{
                       swal({
                             title:"Error",
@@ -618,7 +632,7 @@ $('#contact').mask("#", {reverse: true});
     var options = {
     "key": access_key, 
     "name": "Empower Youth",
-    "description": "Application Processing Fee",
+    "description": "Application Login Fee",
     "image": "/assets/common/logos/logo.svg",
     "order_id": ptoken, 
     "handler": function (response){

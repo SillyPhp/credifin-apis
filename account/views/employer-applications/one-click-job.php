@@ -127,16 +127,19 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                     <strong>Salary Description</strong>
                     <div class="row">
                         <div class="col-md-4">
-                            <?= $form->field($model, 'wage_type')->inline()->radioList([
-                                1 => 'Fixed',
-                                2 => 'Negotiable',
+                            <?= $form->field($model, 'wage_type' , ['template' => '{input}{error}'])->inline()->radioList([1 => 'Fixed', 2 => 'Negotiable'],[
+                                'item' => function ($index, $label, $name, $checked, $value) {
+                                    $return = '<input type="radio" class="radio-custom" id="career' . $index . '" name="' . $name . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '>';
+                                    $return .= '<label for="career' . $index . '" class="radio-custom-label" title="' . $label . '">' . $label . '</label>';
+                                    return $return;
+                                }
                             ])->label(false); ?>
                         </div>
                         <div class="col-md-4">
                             <div id="fixed_stip">
                                 <?= $form->field($model, 'fixed_wage')->textInput(['autocomplete' => 'off', 'maxlength' => '15', 'placeholder' => 'Fixed Salary'])->label(false); ?>
                             </div>
-                            <div id="min_max">job-det
+                            <div id="min_max">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <?= $form->field($model, 'min_salary')->textInput(['placeholder' => 'Min'])->label(false) ?>
@@ -447,12 +450,15 @@ float:right;
 }
 .tags_input li {
     margin: 8px;
-   
-}
-.tags_input li {
     color: #1e1e1e;
     position: relative;
     float:left !important;
+}
+.tagAdd.taglist i {
+    position: absolute;
+    right: 5px;
+    z-index: 1;
+    top: 10px;
 }
 .tags_input > .addedTag > span {
     position: absolute;
@@ -470,6 +476,55 @@ float:right;
     font-family: Open Sans;
     cursor: pointer;
 }
+.radio-custom, .check-custom {
+    opacity: 0;
+    position: absolute;   
+}
+.radio-custom, .radio-custom-label, .check-custom, .check-custom-label {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 5px;
+    cursor: pointer;
+    font-family: 'Roboto';
+    font-weight:400;
+    font-size:15px;
+}
+.radio-custom-label, .check-custom-label {
+    position: relative;
+}
+.radio-custom + .radio-custom-label:before, .check-custom + .check-custom-label:before {
+    content: '';
+    background: #fff;
+    border: 2px solid #ddd;
+    display: inline-block;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+    margin-right: 10px;
+    text-align: center;
+    font-weight:500;
+}
+.radio-custom + .radio-custom-label:before {
+    border-radius: 50%;
+}
+.radio-custom:checked + .radio-custom-label:before, .check-custom:checked + .check-custom-label:before {
+    background: #00a0e3;
+    box-shadow: inset 0px 0px 0px 2px #fff;
+    border-color:#00a0e3
+}
+.radio-custom:checked + .radio-custom-label, .check-custom:checked + .check-custom-label{
+    color:#00a0e3;
+    font-weight:500;
+}
+strong{
+    font-weight:500;
+    font-size:16px;
+    font-family:roboto;
+    margin-bottom:10px;
+    margin-top:5px;
+    display:block;
+    }
 ");
 $script = <<< JS
 $(document).on('keypress','input',function(e)
@@ -661,6 +716,9 @@ let appEditor;
     appEditor.updateSourceElement();
     return true; 
 });
+window.onbeforeunload = function() {
+   return "Do you really want to leave ?";
+};
 JS;
 $this->registerJs($script);
 $this->registerCssFile("/assets/themes/jobhunt/css/icons.css");

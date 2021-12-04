@@ -444,6 +444,9 @@ function SaveEvent(data){
         },
     })
 }
+
+FetchEventAndRenderCalendar();
+// GetApplicationEvents();
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');

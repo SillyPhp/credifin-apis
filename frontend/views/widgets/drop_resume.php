@@ -5,7 +5,7 @@ Yii::$app->view->registerJs('var is_claim = "' . $is_claim . '"', \yii\web\View:
 Yii::$app->view->registerJs('var org_id = "' . $org_id . '"', \yii\web\View::POS_HEAD);
 ?>
     <div id="fab-message-open" class="fab-message fab-btn-hide" style="">
-        <img src="<?= Url::to('@eyAssets/images/pages/company-profile/CVbox2.png') ?>">
+        <img src="<?= Url::to('@eyAssets/images/pages/company-profile/CVbox2.png') ?>" title="Drop Resume to Get your Dream Job">
         <div class="fab-hover-message" style="">
             <div class="fab-hover-image">
                 <img src="<?= Url::to('@eyAssets/images/pages/company-profile/cv.png') ?>">
@@ -112,24 +112,24 @@ $this->registerCss('
     animation-iteration-count: 2;
 }
 @-webkit-keyframes example1 {
-  0%   { right:6px; bottom:120px;}
-  100%  { right:6px; bottom:55px;}
+  0%   { right:20px; bottom:120px;}
+  100%  { right:20px; bottom:55px;}
 }
 @keyframes example1{
-  0%   {right:6px; bottom:120px;}
-  100%  {right:6px; bottom:55px;}
+  0%   {right:20px; bottom:120px;}
+  100%  {right:20px; bottom:55px;}
 }
 .fab-hover-message{
-    bottom: 120px;
-    right: 7px;
+    bottom: 10px;
+    right: 20px;
     opacity: 0; 
     position: absolute;
-    padding: 14px;
+//    padding: 14px;
     border-radius: 3px;
-    z-index:9;
+    z-index:-1;
 }
 .fab-hover-image img{
-    width:85px;
+    width:70px;
     height:auto;
 }
 .i-review-question-title{
@@ -174,6 +174,19 @@ $this->registerCss('
 }
 .up-btn:hover:focus{
     width:100%;
+}
+@media only screen and (max-width:647px){
+    .fab-message{
+        width:70px;
+        height:70px;
+        bottom:20px;
+    }
+    .fab-hover-message{
+        right:15px;
+    }
+    .fab-hover-image img{
+        width:40px;
+    }
 }
 ');
 

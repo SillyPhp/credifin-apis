@@ -148,7 +148,7 @@ $(document).ready(function() {
         var c = b.data().event;
         showEventSample(c);
     });
-    FetchEventAndRenderCalendar();
+
 });
 
 function showSettingsSample(a) {

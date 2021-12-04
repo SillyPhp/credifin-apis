@@ -111,6 +111,7 @@ if ($type == 'internships') {
 $this->registerCss('
 .block {
     padding: 20px 0;
+    overflow: hidden;
 }
 /*    <!-- view-all button css start -->*/
 .btn-3 {

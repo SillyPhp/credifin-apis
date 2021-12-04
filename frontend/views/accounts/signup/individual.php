@@ -91,6 +91,7 @@ $form = ActiveForm::begin([
             <?= $form->field($model, 'confirm_password')->passwordInput(['autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Confirm_Password')]); ?>
         </div>
     </div>
+    <?= $form->field($model, 'referer',['template'=>'{input}'])->hiddenInput(['value' => Yii::$app->request->referrer])->label(false) ?>
     <div class="row">
         <div class="col-md-12">
             <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary btn-lg btn-block mt-15 main-blue-btn', 'name' => 'register-button']); ?>

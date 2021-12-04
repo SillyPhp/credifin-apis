@@ -59,7 +59,7 @@ if ($type == 'Job') {
             } elseif (!empty($data2['max_wage'])) {
                 $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . ' p.a.';
             } elseif (empty($data2['min_wage']) && empty($data2['max_wage'])) {
-                $amount = 'Negotiable';
+                $amount = 'Undisclosed';
             }
         }
     } else {
@@ -92,7 +92,7 @@ if ($type == 'Job') {
             } elseif (!empty($data1['max_wage'])) {
                 $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $data1['max_wage'])) . ' p.a.';
             } elseif (empty($data1['min_wage']) && empty($data1['max_wage'])) {
-                $amount = 'Negotiable';
+                $amount = 'Undisclosed';
             }
         }
     }
@@ -286,33 +286,22 @@ $this->render('/widgets/employer_applications/top-banner', [
                     </div>
                     <div class="job-details">
                         <?php if (!empty($data2['interview_process_enc_id'])) { ?>
-                            <?=
-                            $this->render('/widgets/employer_applications/working-days', [
-                                'working_days' => $data2['working_days']
-                            ]);
-                            ?>
-                            <?=
-                            $this->render('/widgets/employer_applications/working-time', [
-                                'working_time_from' => $data2['timings_from'],
-                                'working_time_to' => $data2['timings_to']
-                            ]);
-                            ?>
-                            <?=
-                            $this->render('/widgets/employer_applications/employee-benefits', [
-                                'benefits' => $data2['applicationEmployeeBenefits']
-                            ]);
-                            ?>
-
-                            <?=
-                            $this->render('/widgets/employer_applications/job-description', [
+                            <?= $this->render('/widgets/employer_applications/job-description', [
                                 'job_description' => $data2['applicationJobDescriptions'],
                                 'type' => $type,
-                            ]);
-                            ?>
-
-                            <?=
-                            $this->render('/widgets/employer_applications/educational-requirements', [
+                            ]); ?>
+                            <?= $this->render('/widgets/employer_applications/educational-requirements', [
                                 'educational_requirements' => $data2['applicationEducationalRequirements'],
+                            ]); ?>
+                            <?= $this->render('/widgets/employer_applications/working-days', [
+                                'working_days' => $data2['working_days']
+                            ]); ?>
+                            <?= $this->render('/widgets/employer_applications/working-time', [
+                                'working_time_from' => $data2['timings_from'],
+                                'working_time_to' => $data2['timings_to']
+                            ]); ?>
+                            <?= $this->render('/widgets/employer_applications/employee-benefits', [
+                                'benefits' => $data2['applicationEmployeeBenefits']
                             ]);
                         }
                         ?>
@@ -447,6 +436,20 @@ if ($settings["showNewPositionsWidget"]):
         <div class="blogbox"></div>
     </div>
 </div>
+<?php
+ if($similar_companies){
+?>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="heading-style">Similar Companies</div>
+        </div>
+    </div>
+        <?=
+        $this->render('/widgets/similar-companies', ['companies' => $similar_companies]);
+        ?>
+</div>
+<?php } ?>
 
 <div class="container">
     <div class="row">
@@ -497,52 +500,56 @@ if ($settings["showNewPositionsWidget"]):
     <div class="container">
         <div id="mixedSlider">
             <div class="MS-content lc-items-grids">
-                <?php foreach ($popular_videos as $p) { ?>
-                    <div class="item lc-single-item-main">
-                        <div class="lc-item-img">
-                            <a href="<?= Url::to('/learning/video/' . $p['slug']); ?>" class="lc-item-video-link"
-                               target="_blank">
-                            </a>
-                            <div class="lc-item-video-img"
-                                 style="background-image: url(<?= Url::to($p['cover_image']); ?>);"></div>
-                        </div>
-                        <div class="lc-item-desciption">
-                            <div class="lc-item-user-detail">
-                                <h3 class="lc-item-video-title">
-                                    <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" target="_blank"
-                                       class="ml-20">
-                                        <?= Yii::t('frontend', $p['title']); ?>
-                                    </a>
-                                </h3>
+                <div class="carousel-wrap">
+                    <div class="owl-carousel">
+                        <?php foreach ($popular_videos as $p) { ?>
+                            <div class="item lc-single-item-main">
+                            <div class="lc-item-img">
+                                <a href="<?= Url::to('/learning/video/' . $p['slug']); ?>" class="lc-item-video-link"
+                                   target="_blank">
+                                </a>
+                                <div class="lc-item-video-img"
+                                     style="background-image: url(<?= Url::to($p['cover_image']); ?>);"></div>
                             </div>
-                        </div>
-                        <div class="lc-item-video-stats">
-                                <span class="lc-item-video-stat marg">
-                                    <?php
-                                    $link = Url::to('learning/video/' . $p['slug'], 'https');
-                                    ?>
-                                    <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>"
-                                       target="_blank">
-                                            <span>
-                                                <i class="fab fa-facebook-f"></i>
-                                            </span>
+                            <div class="lc-item-desciption">
+                                <div class="lc-item-user-detail">
+                                    <h3 class="lc-item-video-title">
+                                        <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" target="_blank"
+                                           class="ml-20">
+                                            <?= Yii::t('frontend', $p['title']); ?>
                                         </a>
-                                        <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>"
+                                    </h3>
+                                </div>
+                            </div>
+                            <div class="lc-item-video-stats">
+                                    <span class="lc-item-video-stat marg">
+                                        <?php
+                                        $link = Url::to('learning/video/' . $p['slug'], 'https');
+                                        ?>
+                                        <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>"
                                            target="_blank">
-                                            <span>
-                                                <i class="fab fa-twitter"></i>
-                                            </span>
-                                        </a>
-                                        <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>"
-                                           target="_blank">
-                                            <span>
-                                                <i class="fab fa-linkedin"></i>
-                                            </span>
-                                        </a>
-                                </span>
-                        </div>
+                                                <span>
+                                                    <i class="fab fa-facebook-f"></i>
+                                                </span>
+                                            </a>
+                                            <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>"
+                                               target="_blank">
+                                                <span>
+                                                    <i class="fab fa-twitter"></i>
+                                                </span>
+                                            </a>
+                                            <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>"
+                                               target="_blank">
+                                                <span>
+                                                    <i class="fab fa-linkedin"></i>
+                                                </span>
+                                            </a>
+                                    </span>
+                            </div>
                     </div>
-                <?php } ?>
+                        <?php } ?>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -586,6 +593,7 @@ if (!empty($data2) && Yii::$app->params->options->showSchema) {
 
 
 
+
     </script>
     <?php
 }
@@ -612,6 +620,30 @@ echo $this->render('/widgets/mustache/courses-card');
 $app_profile = (($data1['name']) ? $data1['name'] : $data2['name']);
 $keywords = urlencode($searchItems);
 $this->registerCss("
+.owl-carousel .owl-item img{width:auto !important;}
+.owl-theme .owl-dots{display:none !important;}
+.owl-prev, .owl-next{background:none !important;}
+.owl-nav .owl-prev i, .owl-nav .owl-next i{
+    font-size:35px !important;
+}
+.owl-nav > button {
+    background: none repeat scroll 0 0 rgba(240, 240, 240, 0.8);
+    border-radius: 0;
+    display: block;
+    margin: 0;
+    padding: 10px;
+    position: absolute;
+    top: 45%;
+    -webkit-transition: all .4s ease 0s;
+    -moz-transition: all .4s ease 0s;
+    -ms-transition: all .4s ease 0s;
+    -o-transition: all .4s ease 0s;
+    transition: all 0.4s ease 0s;
+    z-index: 6;
+}
+.owl-next {
+    right: 0px;
+}
 .footer{margin-top:0 !important;}
 .new-row{
 	padding: 0;
@@ -665,32 +697,19 @@ $this->registerCss("
 .rec-main{
     padding: 15px 0 0;
 }
+.owl-carousel .owl-stage-outer{
+    width:95%;
+    margin:0 auto;
+}
 #mixedSlider .MS-content .item {
     display: inline-block;
-    width: 31.7%;
+    width: 82%;
     position: relative;
     vertical-align: top;
     height: 100%;
     white-space: normal;
     padding: 5px 10px;
-    margin: 15px 8px;
-}
-@media (max-width: 991px) {
-  #mixedSlider .MS-content .item {
-    width: 47%;
-  }
-}
-@media (max-width: 768px) {
-  #mixedSlider .MS-content .item {
-    width: 49%;
-    margin:0px;
-  }
-}
-@media (max-width: 550px) {
-  #mixedSlider .MS-content .item {
-    width: 100%;
-    margin:0px;
-  }
+    margin: 10px 5px;
 }
 #mixedSlider .MS-content .item .imgTitle a {
   position: relative;
@@ -1248,15 +1267,15 @@ button.lc-item-video-menu {
         float: left;
         width: 100%;
     }
-    .job-details h3 {
+    .job-details h3, .job-overview h3 {
         float: left;
         width: 100%;
-        font-family: Open Sans;
-        font-size: 15px;
-        color: #202020;
+        font-family: roboto;
+        font-size: 18px;
+        color: #3d3d3d;
         margin-bottom: 15px;
         margin-top: 10px;
-        font-weight: 600;
+        font-weight: 500;
     }
     .job-details p,
     .job-details li {
@@ -1298,14 +1317,14 @@ button.lc-item-video-menu {
         float: left;
         width: 100%;
     }
-    .job-overview > h3 {
-        float: left;
-        width: 100%;
-        font-family: Open Sans;
-        font-size: 15px;
-        color: #202020;
-        font-weight: 600;
-    }
+//    .job-overview > h3 {
+//        float: left;
+//        width: 100%;
+//        font-family: Open Sans;
+//        font-size: 15px;
+//        color: #202020;
+//        font-weight: 600;
+//    }
     .job-overview ul {
         float: left;
         width: 100%;
@@ -1561,7 +1580,7 @@ button.lc-item-video-menu {
     -o-border-radius: 2px;
     border-radius: 2px;
     font-family: roboto;
-    font-size: 16px;
+    font-size: 14px;
     color: #fff;
     width: 175px;
     height: auto;
@@ -1679,7 +1698,7 @@ button.lc-item-video-menu {
         position: relative;
     }
     .pf-field > input {
-        height: 56px;
+        height: 40px;
         float: left;
         width: 100%;
         border: 2px solid #e8ecec;
@@ -1690,7 +1709,7 @@ button.lc-item-video-menu {
         -ms-border-radius: 8px;
         -o-border-radius: 8px;
         border-radius: 8px;
-        padding: 14px 45px 14px 15px;
+        padding: 5px 45px 5px 15px;
         background: #ffffff !important;
         font-family: Open Sans;
         font-size: 13px;
@@ -1702,7 +1721,7 @@ button.lc-item-video-menu {
     .pf-field > i {
         position: absolute;
         right: 20px;
-        top: 10px;
+        top: 2px;
         font-size: 20px;
         color: #848484;
         line-height: 56px;
@@ -1873,11 +1892,17 @@ button.lc-item-video-menu {
                display:none;
           }
           .btn-parent{
-                left: 0px;
                 bottom: 28px;
-                transform: unset;
-                border-radius: 0px 10px 0 0;
           }
+    }
+    @media screen and (max-width: 430px) {
+        .btn-parent{
+                left: 24%;
+          }
+       .job-overview ul li{
+         width: 100% !important;
+        }
+        .job-single-head2 ul{text-align:center;}
     }
     /* Profile icons css ends */
 ");
@@ -1936,6 +1961,36 @@ function getCourseList(keyword=null,cat=null){
 }
 getCourseList(keyword ? keyword : cat);
 
+function initOwl() {
+    $('.owl-carousel').owlCarousel({
+      loop: true,
+      margin: 10,
+      nav: true,
+      navText: [
+        "<i class='fa fa-caret-left'></i>",
+        "<i class='fa fa-caret-right'></i>"
+      ],
+      autoplay: true,
+      autoplayHoverPause: true,
+      responsive: {
+        0: {
+          items: 1
+        },
+        600: {
+          items: 2
+        },
+        1000: {
+          items: 3
+        }
+      }
+    })
+}
+// initOwl();
+setTimeout(function() {
+    initOwl();
+    console.log("done");
+},1000)
+
  $(document).on('click','#close_btn',function(){
     $('.fader').css('display','none');
     $(this).parent().removeClass('show');
@@ -1946,4 +2001,6 @@ getCards(type + 's','.blogbox','/organizations/organization-opportunities/?org='
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssfile('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css');
+$this->registerjsfile('https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js');
 ?>

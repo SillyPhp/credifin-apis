@@ -7,12 +7,14 @@ use common\models\AssignedCollegeCourses;
 use common\models\BusinessActivities;
 use common\models\CollegeCoursesPool;
 use common\models\Countries;
+use common\models\LoanApplications;
 use common\models\Organizations;
 use common\models\Posts;
 use common\models\PostTags;
 use common\models\PressReleasePubliser;
 use common\models\Tags;
 use common\models\UnclaimedOrganizations;
+use common\models\Users;
 use frontend\models\AdmissionForm;
 use frontend\models\applications\LeadsForm;
 use frontend\models\EducationalLoans;
@@ -104,7 +106,7 @@ class EducationLoansController extends Controller
         }
     }
 
-    public function actionLoanForTeachers(){
+    public function actionTeachersLoanApplyForm(){
         if(!Yii::$app->user->identity->organization->organization_enc_id):
         return $this->render('teachers-loan-form');
         else:
@@ -441,7 +443,7 @@ class EducationLoansController extends Controller
         return $this->render('calc');
     }
 
-    public function actionTeachersLoan(){
+    public function actionLoanForTeachers(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
         if (Yii::$app->request->post() && Yii::$app->request->isAjax) {
@@ -494,5 +496,63 @@ class EducationLoansController extends Controller
     public function actionFaq()
     {
         return $this->render('faq');
+    }
+
+    public function actionRegisterEducationLoan($page=1,$limit=20,$debug=false){
+        $offset = ($page - 1) * $limit;
+        $d = LoanApplications::find()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id','a.applicant_name name','a.phone','a.email','a.created_by'])
+            ->andWhere(['a.created_by'=>null])
+            ->andWhere(['a.is_deleted'=>0])
+            ->limit($limit)
+            ->offset($offset)
+            ->asArray()
+            ->all();
+        if ($debug){
+            print_r($d);
+            die();
+        }
+        $i = 0;
+        $k = 0;
+        foreach ($d as $data){
+            $id = Users::find()
+                ->where([
+                    'or',
+                    ['phone'=>$data['phone']],
+                    ['email'=>$data['email']],
+                ])->one();
+            if ($id){
+                $get = LoanApplications::findOne(['loan_app_enc_id'=>$data['loan_app_enc_id']]);
+                $get->created_by = $id->user_enc_id;
+                if ($get->save()){
+                    $i++;
+                }
+                else{
+                    $k++;
+                    echo json_encode($get->getErrors());
+                }
+            }else{
+                $params = [];
+                $params['id'] = $data['loan_app_enc_id'];
+                $params['name'] = $data['name'];
+                $params['email'] = $data['email'];
+                $params['phone']  = str_replace('+','',$data['phone']);
+                $id = Yii::$app->notificationEmails->createuserSignUp($params);
+                if ($id){
+                    $get = LoanApplications::findOne(['loan_app_enc_id'=>$data['loan_app_enc_id']]);
+                    $get->created_by = $id['id'];
+                    if ($get->save()){
+                        $i++;
+                    }else{
+                        $k++;
+                        echo json_encode($get->getErrors());
+                    }
+                }else{
+                    echo $k++;
+                }
+            }
+        }
+        echo 'completed: '.$i.' unfinished: '.$k;
     }
 }

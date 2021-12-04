@@ -71,10 +71,10 @@ $this->registerCss("
 .off-add{
     word-break: break-word;
 }
-.view-btn {
+.view-btn-location {
 	text-align: center;
 }
-.view-btn a{
+.view-btn-location a{
 	color: #00a0e3;
 	font-size: 16px;
 }
@@ -125,7 +125,7 @@ function getLocations() {
                 },1000);
                 // renderLocations(response.locations);
             } else{
-                $('.view-btn').hide();
+                $('.view-btn-location').hide();
                 $('.address-division-new').hide();
                 $('.location_tab').css('display','none');
             }
@@ -138,7 +138,7 @@ JS;
 $script2 = <<<JS
         function initCourse(){
             if($(".org-location").length <= 6){
-              $('.view-btn').hide();  
+              $('.view-btn-location').hide();  
             }
             var htmlData = $("<div class='maxData'></div>");
             $( ".org-location" ).each(function(index) {
@@ -149,11 +149,11 @@ $script2 = <<<JS
             });
             $('.head-office').append(htmlData);
         }
-        $(document).on('click','.view-btn',function(e) {
+        $(document).on('click','.view-btn-location',function(e) {
             e.preventDefault();
             $('.tab-content').css('height','auto');
-          $('.view-btn').toggleClass('show');
-          if ($('.view-btn').hasClass('show')) {
+          $('.view-btn-location').toggleClass('show');
+          if ($('.view-btn-location').hasClass('show')) {
             $(this).children('a').html("View Less <i class='fas fa-angle-up'></i>");
             $('.maxData').slideDown('fast');
           } else {

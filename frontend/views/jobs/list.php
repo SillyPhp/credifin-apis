@@ -84,6 +84,11 @@ color: #2b7cb7;
     }
     .sharing-links{padding:4px;}
 }
+@media (min-width: 768px) and (max-width: 1200px){
+    .wts-app i, .fb i, .tw i, .linkd i, .male i, .tele i, .copy-app-link i{
+        margin: 0 2px !important;
+    }
+}
 ');
 ?>
 
@@ -97,11 +102,10 @@ color: #2b7cb7;
                 ?>
             </div>
             <div class="col-md-10 col-sm-9 col-xs-12">
-                <?=
-                $this->render('/widgets/search-bar1',['type'=>'jobs']);
-                ?>
-
                 <div class=" col-md-12 col-sm-12">
+                    <?=
+                    $this->render('/widgets/search-bar1',['type'=>'jobs']);
+                    ?>
                     <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
                     <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>
                     <a href="#" id="loadMore"
@@ -146,6 +150,7 @@ color: #2b7cb7;
 
 echo $this->render('/widgets/mustache/application-card', [
     'type' => 'Jobs',
+
 ]);
 
 $script = <<<JS

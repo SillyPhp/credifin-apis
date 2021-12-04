@@ -1,16 +1,21 @@
 <?php
 
-//$this->title = Yii::t('frontend', 'Education Loans');
-
 use yii\helpers\Url;
-
 ?>
 
 <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
     <div class="clearfix"></div>
-<?= $this->render('/widgets/loan-products') ?>
-<?= $this->render('/widgets/loan-why-empower-youth') ?>
-<?= $this->render('/widgets/education-loan-internship') ?>
+    <?= $this->render('/widgets/loan-products') ?>
+    
+    
+
+    <?= $this->render('/widgets/loan-why-empower-youth') ?>
+    <?= $this->render('/widgets/testimonials') ?>
+    <?= $this->render('/widgets/education-loan-internship') ?>
+    
+
+
+
     <section class="edu-with-sec">
         <div class="container">
             <div class="row mt-20">
@@ -119,11 +124,12 @@ use yii\helpers\Url;
         </div>
     </section>
 
-<?= $this->render('/widgets/Our-lending-partners') ?>
+    <?= $this->render('/widgets/Our-lending-partners') ?>
 
     <section class="bg-blue pb10">
         <?= $this->render('/widgets/choose-education-loan') ?>
     </section>
+
     <section class="faq-s">
         <div class="faq-s-bg"></div>
         <div class="container">
@@ -136,7 +142,9 @@ use yii\helpers\Url;
                                 <a class="faqs" data-toggle="collapse" data-target="#documents">1. What all documents
                                     are required for the approval of loan via EmpowerYouth?
                                     <div class="collaspe-trigger">
-                                        <span class="collaspe-icon"></span>
+                                        <span class="collaspe-icon">
+                                            <i class="fa fa-chevron-down"></i>
+                                        </span>
                                     </div>
                                 </a>
                                 <div id="documents" class="collapse using-pd">
@@ -158,7 +166,9 @@ use yii\helpers\Url;
                                 <a class="faqs" data-toggle="collapse" data-target="#abroad">2. Is the loan available
                                     for abroad studies too?
                                     <div class="collaspe-trigger">
-                                        <span class="collaspe-icon"></span>
+                                        <span class="collaspe-icon">
+                                            <i class="fa fa-chevron-down"></i>
+                                        </span>
                                     </div>
                                 </a>
                                 <div id="abroad" class="collapse using-pd">
@@ -169,7 +179,9 @@ use yii\helpers\Url;
                                 <a class="faqs" data-toggle="collapse" data-target="#repay">3. When do we have to start
                                     to repay the loan?
                                     <div class="collaspe-trigger">
-                                        <span class="collaspe-icon"></span>
+                                        <span class="collaspe-icon">
+                                            <i class="fa fa-chevron-down"></i>
+                                        </span>
                                     </div>
                                 </a>
                                 <div id="repay" class="collapse using-pd">
@@ -181,7 +193,9 @@ use yii\helpers\Url;
                                 <a class="faqs" data-toggle="collapse" data-target="#expenses">4. What all expenses will
                                     be covered in the loan?
                                     <div class="collaspe-trigger">
-                                        <span class="collaspe-icon"></span>
+                                        <span class="collaspe-icon">
+                                            <i class="fa fa-chevron-down"></i>
+                                        </span>
                                     </div>
                                 </a>
                                 <div id="expenses" class="collapse using-pd">
@@ -202,7 +216,9 @@ use yii\helpers\Url;
                                 <a class="faqs" data-toggle="collapse" data-target="#collateral">5. Is there any
                                     collateral required to secure the loan?
                                     <div class="collaspe-trigger">
-                                        <span class="collaspe-icon"></span>
+                                        <span class="collaspe-icon">
+                                            <i class="fa fa-chevron-down"></i>
+                                        </span>
                                     </div>
                                 </a>
                                 <div id="collateral" class="collapse using-pd">
@@ -499,55 +515,52 @@ $this->registerCss('
 }
 .collaspe-trigger {
     position: absolute;
-    top: 18px;
-    right: -2px;
+    top: 0px;
+    right: 10px;
     cursor: pointer;
+    transition: 0.3s ease-in all;
 }
 .collaspe-icon {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    bottom: auto;
-    right: auto;
-    -webkit-transform: translateX(-50%) translateY(-50%);
-    transform: translateX(-50%) translateY(-50%);
-    display: inline-block;
-    width: 14px;
+    font-size: 16px;
+    width: 9px;
     height: 2px;
 }
-.collaspe-icon::before, .collaspe-icon:after {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #bfbdbd;
-    -webkit-transition: -webkit-transform .3s;
-    transition: transform .3s;
-    content: "";
+.collaspe-trigger.close{
+    transform: rotate(180deg);
 }
-.collaspe-icon::before {
-    -webkit-transform: translateY(-5px) rotate(-130deg);
-    transform: translateY(-5px) rotate(-130deg);
-    content: "";
-}
-.collaspe-icon::after {
-    -webkit-transform: translateY(-5px) translateX(8px) rotate(-50deg);
-    transform: translateY(-5px) translateX(8px) rotate(-50deg);
-    content: "";
-}
-
-/* when drawer close */
-.collaspe-trigger.close .collaspe-icon::before {
-    -webkit-transform: translateY(-5px) translateX(0px) rotate(-50deg);
-    transform: translateY(-5px) translateX(0px) rotate(-50deg);
-    content: "";
-}
-.collaspe-trigger.close .collaspe-icon::after {
-    -webkit-transform: translateY(-5px) translateX(8px) rotate(-130deg);
-    transform: translateY(-5px) translateX(8px) rotate(-130deg);
-    content: "";
-}
+//.collaspe-icon::before, .collaspe-icon:after {
+//    position: absolute;
+//    top: 0;
+//    right: 0;
+//    width: 100%;
+//    height: 100%;
+//    background-color: #bfbdbd;
+//    -webkit-transition: -webkit-transform .3s;
+//    transition: transform .3s;
+//    content: "";
+//}
+//.collaspe-icon::before {
+//    -webkit-transform: translateY(-5px) rotate(-130deg);
+//    transform: translateY(-5px) rotate(-130deg);
+//    content: "";
+//}
+//.collaspe-icon::after {
+//    -webkit-transform: translateY(-5px) translateX(8px) rotate(-50deg);
+//    transform: translateY(-5px) translateX(5px) rotate(-50deg);
+//    content: "";
+//}
+//
+///* when drawer close */
+//.collaspe-trigger.close .collaspe-icon::before {
+//    -webkit-transform: translateY(-5px) translateX(0px) rotate(-50deg);
+//    transform: translateY(-5px) translateX(0px) rotate(-50deg);
+//    content: "";
+//}
+//.collaspe-trigger.close .collaspe-icon::after {
+//    -webkit-transform: translateY(-5px) translateX(8px) rotate(-130deg);
+//    transform: translateY(-5px) translateX(8px) rotate(-130deg);
+//    content: "";
+//}
 .blue1{
     color: #EF9819;
 }

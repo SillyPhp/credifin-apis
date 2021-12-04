@@ -30,18 +30,15 @@ use yii\helpers\Url;
             <!-- popup start-->
             <div id="{{speaker_enc_id}}" class="container ts-speaker-popup mfp-hide">
                 <div class="row">
-                    <div class="col-lg-6">
-                        <div class="ts-speaker-popup-img">
-                            {{#speaker_image}}
-                            <img src="{{speaker_image}}">
-                            {{/speaker_image}}
-                            {{^speaker_image}}
-                            <img src="{{speaker_image_fake}}">
-                            {{/speaker_image}}
-                        </div>
-                    </div><!-- col end-->
-                    <div class="col-lg-6">
-                        <div class="ts-speaker-popup-content">
+                    <div class="speaker-flex">
+                        {{#speaker_image}}
+                            <div class="speak-img" style="background-image: url('{{speaker_image}}');"></div>
+                        {{/speaker_image}}
+                        {{^speaker_image}}
+                            <div class="speak-img" style="background-image: url('{{speaker_image_fake}}');"></div>
+                        {{/speaker_image}}
+                        <div class="speak-cntnt">
+                            <div class="ts-speaker-popup-content">
                             <h3 class="ts-title">{{fullname}}</h3>
                             {{#designation}}
                             <span class="speakder-designation mb2">{{designation}}</span>
@@ -78,7 +75,8 @@ use yii\helpers\Url;
                                 <a href="https://www.linkedin.com/in/{{linkedin}}" target="_blank"><i class="fab fa-linkedin-in"></i></a>
                                 {{/linkedin}}
                             </div>
-                        </div><!-- ts-speaker-popup-content end-->
+                        </div>
+                        </div>
                     </div><!-- col end-->
                 </div><!-- row end-->
             </div><!-- popup end-->
@@ -87,6 +85,20 @@ use yii\helpers\Url;
     </script>
 <?php
 $this->registerCss('
+.speaker-flex {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    min-height:80vh;
+}
+.speak-img, .speak-cntnt {
+    flex: 0 0 50%;
+    max-width: 50%;
+}
+.speak-img {
+    background-position: top;
+    background-size: cover;
+}
 .ts-speakers {
     padding-top: 120px;
     padding-bottom: 40px;
@@ -296,6 +308,9 @@ $this->registerCss('
 
 .ts-speaker-popup .ts-speaker-popup-img img {
     width: 100%;
+    height: 80vh;
+    object-fit: cover;
+    object-position: top;
 }
 
 .ts-speaker-popup .ts-speaker-popup-content {
@@ -399,6 +414,14 @@ transform: rotate(100deg);
     color: #fff;
     font-family: lora;
     font-size: 60px;
+}
+@media screen and (max-width: 550px){
+.speak-img, .speak-cntnt {
+    flex: inherit;
+    max-width: 100%;
+    width: 90% !important;
+    min-height: 50vh;
+}
 }
 ');
 $script = <<< JS

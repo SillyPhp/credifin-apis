@@ -6,16 +6,44 @@ $this->params['header_dark'] = true;
 $basePath = Url::base("https");
 
 if (Yii::$app->user->identity->image) {
-    $image = $basePath . '/' . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
 } else {
     $image = 'https://ui-avatars.com/api/?name=' . Yii::$app->user->identity->first_name . '+' . Yii::$app->user->identity->last_name . '&background=' . ltrim(Yii::$app->user->identity->initials_color, '#') . '&color=fff"';
 }
 $time = date('Y/m/d H:i:s', strtotime($upcomingDateTime));
+
+function finalAmount($totalPrice, $gstAmount)
+{
+    if ($gstAmount) {
+        $gstPercent = $gstAmount;
+        if ($totalPrice > 0) {
+            $gstAmount = round($gstPercent * ($totalPrice / 100), 2);
+        }
+    }
+    $finalPrice = $totalPrice + $gstAmount;
+    return (($finalPrice == 0) ? 'Free' : '₹ ' . $finalPrice);
+}
+
+
+function webDate($webDate)
+{
+    $date = $webDate;
+    $sec = strtotime($date);
+    $newDate = date('d-M', $sec);
+    return $newDate;
+}
 ?>
 <input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id ?>" id="current-user-id">
 <input type="hidden" value="<?= Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name; ?>"
        id="current-user-name">
 <input type="hidden" value="<?= $image; ?>" id="current-user-image">
+
+<section class="reload-strip">
+    <div class="reload-text">If you are having trouble while watching webinar, please Reload the page.</div>
+    <div class="reload">
+        <a onClick="window.location.reload()" class="reload-btn">Relaod</a>
+    </div>
+</section>
 
 <section>
     <div class="videoFlex">
@@ -31,10 +59,22 @@ $time = date('Y/m/d H:i:s', strtotime($upcomingDateTime));
                 </div>
             </div>
             <div class="msg-input">
+                <?php
+                if($showChat == 1){
+                ?>
                 <form class="form-flex">
                     <textarea class="send-msg" placeholder="Message"></textarea>
                     <button type="button" class="sendMessage"><i class="fas fa-comment"></i></button>
                 </form>
+                <?php }
+                else {
+                    ?>
+                    <form class="form-flex">
+                        <textarea placeholder="Chat has been disabled by admin" style="width:100%;" disabled></textarea>
+                    </form>
+                <?php
+                }
+                ?>
             </div>
         </div>
     </div>
@@ -107,6 +147,9 @@ $time = date('Y/m/d H:i:s', strtotime($upcomingDateTime));
         </div>
     </div>
 </section>
+<div class="chat-box-toggler">
+    <i class="far fa-comments"></i>
+</div>
 <section class="similar-webinars">
     <div class="container">
         <?php
@@ -114,13 +157,84 @@ $time = date('Y/m/d H:i:s', strtotime($upcomingDateTime));
             ?>
             <div class="row">
                 <div class="col-md-12">
-                    <div class="mentor-heading">Similar Webinars</div>
+                    <div class="mentor-heading">Upcoming Webinars</div>
                 </div>
             </div>
             <div class="row">
-                <?= $this->render('/widgets/mentorships/webinar-card', [
-                    'webinars' => $webinars,
-                ]) ?>
+                <?php
+
+                foreach ($webinars as $web) {
+                    ?>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="web-card">
+                            <div class="web-img">
+                                <a href="<?= Url::to("/webinar/" . $web['slug']) ?>">
+                                    <img src="<?= $web['image'] ?>"></a>
+                                <div class="web-detail-date">
+                                    <div class="web-date">
+                                        <?php
+                                        $eventDate = webDate($web['webinarEvents'][0]['start_datetime']);
+                                        echo $eventDate;
+                                        ?>
+                                    </div>
+                                    <div class="web-paid">
+                                        <?php
+                                        $finalPrice = finalAmount($web['price'], $web['gst']);
+                                        echo $finalPrice;
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="web-inr">
+                                <div class="web-title"><a
+                                            href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a>
+                                </div>
+                                <div class="web-speaker">
+                                    <span><?= str_replace(',', ', </span><span>', trim($web['speakers'])) ?></span>
+                                </div>
+                                <div class="web-des"><?= $web['description'] ?></div>
+                            </div>
+                            <div class="reg-btn-count">
+                                <div class="register-count">
+                                    <div class="reg-img">
+                                        <?php
+                                        if (count($web['webinarRegistrations']) > 0) {
+                                            $reg = 1;
+                                            foreach ($web['webinarRegistrations'] as $uImage) {
+                                                if ($uImage['createdBy']['image']) {
+                                                    ?>
+                                                    <span class="reg<?= $reg ?> reg">
+                                        <img src="<?= $uImage['createdBy']['image'] ?>">
+                                    </span>
+                                                    <?php
+                                                    $reg++;
+                                                }
+                                                if ($reg == 4) {
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        ?>
+                                    </div>
+                                    <span class="cont"> <?= count($web['webinarRegistrations']) ?> Registered</span>
+                                </div>
+                                <?php if (array_search(Yii::$app->user->identity->user_enc_id, array_column($web['webinarRegistrations'], 'created_by'))) { ?>
+                                    <div class="register-btns">
+                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib">
+                                            Registered</a>
+                                    </div>
+                                <?php } else { ?>
+                                    <div class="register-btns">
+                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
+                                                    class="icon-drib fa fa-arrow-right"></i> Register Now</a>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
             </div>
             <?php
         }
@@ -139,6 +253,40 @@ $time = date('Y/m/d H:i:s', strtotime($upcomingDateTime));
 </script>
 <?php
 $this->registerCss('
+.chat-box-toggler{
+    display: none;
+}
+.reload-strip{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background: #2980b9;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #2c3e50, #2980b9);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #2c3e50, #2980b9); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    padding: 15px 25px;
+    align-items: center;
+}
+.reload-text{
+    color: #fff;
+    font-family: roboto;
+}
+.reload-btn {
+    padding: 6px 20px;
+    text-decoration: none;
+    background: #2c4054;
+    color: #fff;
+    font-family: roboto;
+    font-weight: 500;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+    border:none;
+    cursor: pointer;
+    transition:all .3s;
+}
+.reload-btn:hover {
+    color: #2c4054 !important;
+    background: #fff;
+}
 .time-part {
     display: flex !important;
 }
@@ -213,6 +361,7 @@ div#counter {
 }
 .mentor-heading {
     font-size: 25px;
+    margin-bottom:20px;
     font-family: lora;
     color: #000;
     text-transform: capitalize;
@@ -328,11 +477,53 @@ div#counter {
 .chat-box.right-aligned .username-msg .us-name {
     padding-left: 0px;
     padding-right: 20px;
+    text-transform: capitalize;
 }
 @media screen and (max-width: 550px){
+    .chat-box-toggler{
+        display: block;
+        position: fixed;
+        bottom: 15px;
+        right: 20px;
+        font-size: 35px;
+        background-color: #00a0e3;
+        color: #fff;
+        border-radius: 50%;
+        width: 70px;
+        height: 70px;
+        text-align: center;
+        line-height: 68px;
+        z-index:9;
+        box-shadow: 0px 1px 15px 2px #ababab;
+        cursor: pointer;
+    }
     .slide-section{
-        width: 100vw;  
-        height: 100vh;      
+        display: none;
+        width: 90vw;
+        height: 70vh;
+        position: fixed;
+        left: 5vw;
+        bottom: 13vh;
+        z-index: 99;
+        border-radius: 20px;
+        overflow: visible;
+        box-shadow: 0px 1px 17px 2px #ababab;
+    }
+    
+    .msg-input {
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        overflow: hidden;
+    }
+    .slide-section:before {
+        content: "";
+        right: 14px;
+        bottom: -16px;
+        z-index: 999;
+        position: absolute;
+        border-left: 15px solid transparent;
+        border-top: 20px solid #fff;
+        border-right: 15px solid transparent;
     }
     .video-section{
         width: 100vw;
@@ -345,8 +536,157 @@ div#counter {
         display: none;
     }
 }
+.web-card:hover {
+	box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+	transform: translateY(-3px);
+	transition: all .2s;
+}
+.web-card {
+	border-radius: 6px;
+	overflow: hidden;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+	background-color:#fff;
+	margin-bottom:20px;
+    min-height: 360px;
+}
+.web-img {
+	position: relative;
+}
+.web-img img{
+	height: 200px;
+	object-fit: cover;
+	width: 100%;
+}
+.web-detail-date {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    display:flex;
+    align-items: center;
+}
+.web-date {
+    border-radius: 4px;
+    padding: 0px 8px;
+    text-align: center;
+    border: 2px solid #00a0e3;
+    font-weight: 500;
+    font-family: roboto;
+    background-color: #00a0e3;
+    color: #fff;
+    margin-right: 2px;
+}
+.web-paid{
+    background-color: #ff7803;
+    border: 2px solid #ff7803;
+    border-radius: 4px;
+    padding: 0px 8px;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: roboto;
+    font-weight: 500;
+    color: #fff;
+}
+.web-inr {
+	padding: 5px 10px 10px;
+}
+.web-title{
+	font-size: 22px;
+	font-family: lora;
+	font-weight: 600;
+	display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.web-title a{
+    color: #333
+}
+
+.web-title a:hover{
+    color: #00a0e3;
+}
+.web-speaker {
+	font-size: 12px;
+	font-family: roboto;
+	color: #a49f9f;
+	font-weight: 500;
+}
+.web-des {
+	font-family: roboto;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	height: 70px;
+}
+.web-info{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-top: 10px;
+}
+.web-info img{
+    margin-right: 6px;
+}
+.reg-btn-count {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: 0 10px 10px;
+}
+.register-count {
+	font-family: roboto;
+	color: #f97364;
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+}
+.reg img {
+    width: 35px;
+    border-radius: 81px;
+    height: 30px;
+    object-fit: cover;
+    border: 2px solid #fff;
+}
+.reg2.reg, .reg3.reg {
+    margin-left: -25px;
+}
+.cont {
+    margin-left: 5px;
+}
+.register-btns:hover .btn-drib{
+    color:#fff;
+}
+.btn-drib:hover .icon-drib{
+  animation: bounce 1s infinite;
+  color:#fff;
+}
+.btn-drib {
+	border: 1px solid transparent;
+	color: #fff;
+	text-align: center;
+	font-size: 14px;
+	border-radius: 5px;
+	cursor: pointer;
+	padding: 6px 10px;
+	background-color: #00a0e3;
+	font-family:roboto;
+	font-weight:500;
+}
+.icon-drib {
+  margin-right: 5px;
+}
+.field-speakers span{
+    display: block !important;
+}
+
 ');
+//$this->registerJs("
+//let sendLinks = ".(($sendUrls) ? true : 0).";
+//");
 $script = <<<JS
+
 const ps = new PerfectScrollbar('#scroll-chat');
 var db = firebase.database();
 db
@@ -375,6 +715,7 @@ db
             function errData(data) {
                 console.log('err');
             }
+            
             function showMessage(id,name,image,message,owner){
                 let chat = document.querySelector('.chat');
                 let chatBox = document.createElement('div');
@@ -384,6 +725,11 @@ db
                     chatBox.setAttribute('class', 'chat-box');
                 }
                 chatBox.setAttribute('id', id);
+//                if(sendLinks === 1){
+//                    if(isValidURL(message)){
+//                        message = '<a href="'+message+'" target="_blank" style="color:blue;">'+message+'</a>';
+//                    }
+//                }
                 chatBox.innerHTML = `<div class="user-icon">
                                     <img src="`+ image +`">
                                     </div>
@@ -421,6 +767,9 @@ function countdown(e){
 if("$upcomingDateTime" != ""){
     countdown('$time');
 }
+$(document).on('click','.chat-box-toggler',function(){
+   $('.slide-section').slideToggle(1000);  
+});
 JS;
 $this->registerJS($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
@@ -515,7 +864,10 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             document.getElementById('viewers').innerText = result2.length + tempData;
         });
     });
+<?php
 
+if ($showChat == 1) {
+?>
     document.querySelector('.sendMessage').addEventListener('click', sendMessage);
     let messageText = document.querySelector('.send-msg')
     messageText.addEventListener('keyup', function (event) {
@@ -537,6 +889,16 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             }
             var timeMain = currentDate.getHours() + ":" + getMins;
             var ref = db.ref(specialKey + '/conversations/' + webinarId + '/' + uniqueId())
+            let sendLinks = <?php echo (($sendUrls) ? true : 0)?>;
+            function isValidURL(string) {
+                var res = string.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+                return (res !== null)
+            }
+            if(sendLinks === 1){
+               if(isValidURL(message)){
+                   message = '<a href="'+message+'" target="_blank" style="color:blue;">'+message+'</a>';
+               }
+           }
             ref.set({
                 'name': userName,
                 'sender': userId,
@@ -562,7 +924,9 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             document.getElementById('scroll-chat').scrollTop = myElement;
         }
     }
-
+<?php
+}
+?>
     function uniqueId() {
         var result = '';
         var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

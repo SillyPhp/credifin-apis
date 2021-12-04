@@ -1,35 +1,7 @@
 <?php
 use yii\helpers\Url;
 $userDetail = \common\models\Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
-$this->title = 'Education Loan';
 $this->params['header_dark'] = true;
-$keywords = 'Interest Free Loans available for select colleges/Universities | Empower Youth';
-$description = 'Do Not let monetary constraints stop your from getting admission in your dream college/ university';
-$image = Url::to('@eyAssets/images/pages/education-loans/apply-for-education-loan.png', 'https');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouthin',
-        'twitter:creator' => '@EmpowerYouthin',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->prod->apiKey. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var getLender = "' .$getLender. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
@@ -58,21 +30,19 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label class="input-group-text" for="inputGroupSelect01">
-                                            Which Type Of Loan Is This ?
+                                           Looking For Education Loan ?
                                         </label>
                                         <ul class="displayInline">
                                             <li>
                                                 <label class="container-radio">
-                                                    School Fee Loan
                                                     <input type="radio" id="TypeSchool" value="1" onclick="showChildren(this)" name="applicantTypeRadio">
-                                                    <span class="checkmark"></span>
+                                                    <span class="checkmark">School Fee Loan</span>
                                                 </label>
                                             </li>
                                             <li>
                                                 <label class="container-radio">
-                                                    College/University Fee Loan
                                                     <input type="radio" id="TypeCollege" value="0" onclick="hideChildren(this)" name="applicantTypeRadio">
-                                                    <span class="checkmark"></span>
+                                                    <span class="checkmark">College/University Fee Loan</span>
                                                 </label>
                                             </li>
                                         </ul>
@@ -80,7 +50,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                     <span id="applicantTypeRadio"></span>
                                 </div>
                                 <!--Loan Type end-->
-<!--                                parent co borower details start-->
+                                <!--parent co borower details start-->
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label class="input-group-text" for="inputGroupSelect01">
@@ -88,10 +58,14 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         </label>
                                         <ul class="displayInline">
                                             <li>
-                                                <label class="container-radio"><input type="radio" id="parent" value="1" onclick="showRelation(this)" name="applicantRadio"> Parent / Guardian<span class="checkmark"></span></label>
+                                                <label class="container-radio">
+                                                    <input type="radio" id="parent" value="1" onclick="showRelation(this)" name="applicantRadio"> <span class="checkmark">Parent / Guardian</span>
+                                                </label>
                                             </li>
                                             <li>
-                                                <label class="container-radio"><input type="radio" id="applicant" value="0" onclick="hideRelation(this)" name="applicantRadio"> Student<span class="checkmark"></span></label>
+                                                <label class="container-radio">
+                                                    <input type="radio" id="applicant" value="0" onclick="hideRelation(this)" name="applicantRadio"> <span class="checkmark">Student</span>
+                                                </label>
                                             </li>
                                         </ul>
                                     </div>
@@ -106,38 +80,58 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                                     </div>
                                                     <ul id="co-relation-ul-1" class="displayInline">
                                                         <li>
-                                                            <label for="co-father-1" class="container-radio">
-                                                                Father
+                                                            <label for="co-father-1" class="container-radio-second">
                                                                 <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-1" class="checkbox-input services" checked>
-                                                                <span class="checkmark"></span>
+                                                                <svg width="1.3em" height="1.3em" viewBox="0 0 20 20">
+                                                                    <circle cx="10" cy="10" r="9"></circle>
+                                                                    <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
+                                                                    <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
+                                                                </svg>
+                                                                <span class="checkmarked">Father</span>
                                                             </label>
                                                         </li>
                                                         <li>
-                                                            <label for="co-mother-1" class="container-radio">
-                                                                Mother
+                                                            <label for="co-mother-1" class="container-radio-second">
                                                                 <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-1" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
+                                                                <svg width="1.3em" height="1.3em" viewBox="0 0 20 20">
+                                                                    <circle cx="10" cy="10" r="9"></circle>
+                                                                    <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
+                                                                    <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
+                                                                </svg>
+                                                                <span class="checkmarked">Mother</span>
                                                             </label>
                                                         </li>
                                                         <li>
-                                                            <label for="co-brother-1" class="container-radio">
-                                                                Brother
+                                                            <label for="co-brother-1" class="container-radio-second">
                                                                 <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-1" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
+                                                                <svg width="1.3em" height="1.3em" viewBox="0 0 20 20">
+                                                                    <circle cx="10" cy="10" r="9"></circle>
+                                                                    <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
+                                                                    <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
+                                                                </svg>
+                                                                <span class="checkmarked">Brother</span>
                                                             </label>
                                                         </li>
                                                         <li>
-                                                            <label for="co-sister-1" class="container-radio">
-                                                                Sister
+                                                            <label for="co-sister-1" class="container-radio-second">
                                                                 <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-1" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
+                                                                <svg width="1.3em" height="1.3em" viewBox="0 0 20 20">
+                                                                    <circle cx="10" cy="10" r="9"></circle>
+                                                                    <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
+                                                                    <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
+                                                                </svg>
+                                                                <span class="checkmarked">Sister</span>
                                                             </label>
                                                         </li>
                                                         <li>
-                                                            <label for="co-guardian-1" class="container-radio">
-                                                                Guardian
+                                                            <label for="co-guardian-1" class="container-radio-second">
                                                                 <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-1" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
+                                                                <svg width="1.3em" height="1.3em" viewBox="0 0 20 20">
+                                                                    <circle cx="10" cy="10" r="9"></circle>
+                                                                    <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
+                                                                    <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
+                                                                </svg>
+                                                                <span class="checkmarked">Guardian</span>
                                                             </label>
                                                         </li>
                                                     </ul>
@@ -159,23 +153,20 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                                     <ul class="displayInline">
                                                         <li>
                                                             <label for="sal-1" class="container-radio">
-                                                                Salaried
                                                                 <input type="radio" value="1" checked="checked" id="sal-1" name="co-emptype[1]" class="checkbox-input services" checked>
-                                                                <span class="checkmark"></span>
+                                                                <span class="checkmark">Salaried</span>
                                                             </label>
                                                         </li>
                                                         <li>
                                                             <label for="self-1" class="container-radio">
-                                                                Self-Employed
                                                                 <input type="radio" value="2" id="self-1" name="co-emptype[1]" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
+                                                                <span class="checkmark">Self-Employed</span>
                                                             </label>
                                                         </li>
                                                         <li>
                                                             <label for="non-1" class="container-radio">
-                                                                Non-Working
                                                                 <input type="radio" value="3" id="non-1" name="co-emptype[1]" class="checkbox-input services">
-                                                                <span class="checkmark"></span>
+                                                                <span class="checkmark">Non-Working</span>
                                                             </label>
                                                         </li>
                                                     </ul>
@@ -196,7 +187,7 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                     <div class="col-md-12 padd-20">
                                         <div class="form-group">
                                             <label for="number" class="input-group-text">
-                                                Name of The Student
+                                                Student Name
                                             </label>
                                             <input value="<?= ($userDetail->first_name)?$userDetail->first_name . " " . $userDetail->last_name : "" ?>" type="text" class="form-control text-capitalize" id="applicant_name" name="applicant_name" placeholder="Enter Full Name">
                                         </div>
@@ -211,15 +202,15 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         </label>
                                         <ul class="displayInline">
                                             <li>
-                                                <label class="container-radio">India
+                                                <label class="container-radio">
                                                     <input type="radio" checked="checked" id="india" value="1" onclick="showCountry(this)" name="countryRadio">
-                                                    <span class="checkmark"></span>
+                                                    <span class="checkmark">India</span>
                                                 </label>
                                             </li>
                                             <li>
-                                                <label class="container-radio">Outside India
+                                                <label class="container-radio">
                                                     <input type="radio" id="othercountry" value="0" onclick="showCountry(this)" name="countryRadio">
-                                                    <span class="checkmark"></span>
+                                                    <span class="checkmark">Outside India</span>
                                                 </label>
                                             </li>
                                         </ul>
@@ -230,7 +221,8 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         <div class="radio-heading input-group-text">
                                             Select Country
                                         </div>
-                                        <select class="form-control" name="country_name" id="country_name">
+                                        <select class="form-control js-example-basic-multiple"
+                                                name="country_name" id="country_name"  multiple="multiple">
 
                                         </select>
                                     </div>
@@ -253,16 +245,14 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                         <ul class="displayInline">
                                             <li>
                                                 <label for="yc" class="container-radio">
-                                                    Yes
                                                     <input type="radio" value="1"  id="yc" name="college_taken" class="checkbox-input services">
-                                                    <span class="checkmark"></span>
+                                                    <span class="checkmark">Yes</span>
                                                 </label>
                                             </li>
                                             <li>
                                                 <label for="nc" class="container-radio">
-                                                    No
                                                     <input type="radio" value="0" id="nc" name="college_taken" class="checkbox-input services">
-                                                    <span class="checkmark"></span>
+                                                    <span class="checkmark">No</span>
                                                 </label>
                                             </li>
                                         </ul>
@@ -419,37 +409,32 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                                         <ul id="co-relation-ul-1" class="displayInline">
                                                             <li>
                                                                 <label for="co-father-z" class="container-radio">
-                                                                    Father
                                                                     <input type="radio" value="Father" checked="checked" name="co-relation[1]" id="co-father-z" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Father</span>
                                                                 </label>
                                                             </li>
                                                             <li>
                                                                 <label for="co-mother-z" class="container-radio">
-                                                                    Mother
                                                                     <input type="radio" value="Mother" name="co-relation[1]" id="co-mother-z" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Mother</span>
                                                                 </label>
                                                             </li>
                                                             <li>
                                                                 <label for="co-brother-z" class="container-radio">
-                                                                    Brother
                                                                     <input type="radio" value="Brother" name="co-relation[1]" id="co-brother-z" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Brother</span>
                                                                 </label>
                                                             </li>
                                                             <li>
                                                                 <label for="co-sister-z" class="container-radio">
-                                                                    Sister
                                                                     <input type="radio" value="Sister" name="co-relation[1]" id="co-sister-z" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Sister</span>
                                                                 </label>
                                                             </li>
                                                             <li>
                                                                 <label for="co-guardian-z" class="container-radio">
-                                                                    Guardian
                                                                     <input type="radio" value="Guardian" name="co-relation[1]" id="co-guardian-z" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Guardian</span>
                                                                 </label>
                                                             </li>
                                                         </ul>
@@ -463,23 +448,20 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
                                                         <ul class="displayInline">
                                                             <li>
                                                                 <label for="sal-z" class="container-radio">
-                                                                    Salaried
                                                                     <input type="radio" value="1" checked="checked" id="sal-z" name="co-emptype[1]" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Salaried</span>
                                                                 </label>
                                                             </li>
                                                             <li>
                                                                 <label for="self-z" class="container-radio">
-                                                                    Self-Employed
                                                                     <input type="radio" value="2" id="self-z" name="co-emptype[1]" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Self-Employed</span>
                                                                 </label>
                                                             </li>
                                                             <li>
                                                                 <label for="non-z" class="container-radio">
-                                                                    Non-Working
                                                                     <input type="radio" value="3" id="non-z" name="co-emptype[1]" class="checkbox-input services">
-                                                                    <span class="checkmark"></span>
+                                                                    <span class="checkmark">Non-Working</span>
                                                                 </label>
                                                             </li>
                                                         </ul>
@@ -542,6 +524,55 @@ Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View
 <input type="hidden" name="pulled_from" id="pulled_from">
 <?php
 $this->registerCss('
+.container-radio-second {
+  cursor: pointer;
+  display: inline-block;
+  float: left;
+  -webkit-user-select: none;
+  user-select: none;
+  font-family:roboto;
+  font-size:16px;
+  margin-bottom:5px;
+  padding-left:0.375em;
+}
+.container-radio-second svg {
+  fill: none;
+  vertical-align: middle;
+}
+.container-radio-second svg circle {
+  stroke-width: 2;
+  stroke: #C8CCD4;
+}
+.container-radio-second svg path {
+  stroke: #008FFF;
+}
+.container-radio-second svg path.inner {
+  stroke-width: 6;
+  stroke-dasharray: 19;
+  stroke-dashoffset: 19;
+}
+.container-radio-second svg path.outer {
+  stroke-width: 2;
+  stroke-dasharray: 57;
+  stroke-dashoffset: 57;
+}
+.container-radio-second input {
+  display: none;
+}
+.container-radio-second input:checked + svg path {
+  transition: all 0.4s ease;
+}
+.container-radio-second input:checked + svg path.inner {
+  stroke-dashoffset: 38;
+  transition-delay: 0.3s;
+}
+.container-radio-second input:checked + svg path.outer {
+  stroke-dashoffset: 0;
+}
+.container-radio-second span {
+  display: inline-block;
+  vertical-align: middle;
+}
 .child-info-div{
     padding: 0px 15px;
 }
@@ -765,7 +796,8 @@ border: 1px solid #ddd !important;
     font-weight: bold;
     font-family: lora;
     color: #000;
-    font-size: 15px;
+    font-size: 16px;
+    margin-bottom:10px;
 }
 .head-padding{
     padding-top:50px;
@@ -793,9 +825,8 @@ form label {
     color:#999;
 }
 .container-radio {
-  display: block;
+  display: flex;
   position: relative;
-  padding-left: 29px;
   margin-bottom: 5px;
   cursor: pointer;
   font-size: 16px;
@@ -804,43 +835,43 @@ form label {
   -ms-user-select: none;
   user-select: none;
 }
+
 .container-radio input {
   position: absolute;
   opacity: 0;
   cursor: pointer;
+  left:-9999px;
 }
 .checkmark {
-    position: absolute;
-    top: 3px;
-    left: 0;
-    height: 22px;
-    width: 22px;
-    background-color: #eee;
+    display: flex;
+    align-items: center;
+    padding: 3px 8px 3px 5px;
+    border-radius: 99em;
+    transition: 0.25s ease;
+}
+.checkmark:before {
+    display: flex;
+    flex-shrink: 0;
+    content: "";
+    background-color: #fff;
+    width: 1.3em;
+    height: 1.3em;
     border-radius: 50%;
+    margin-right: 0.375em;
+    transition: 0.25s ease;
+    box-shadow: inset 0 0 0 0.125em #00a0e3;   
+    font-family:roboto;
 }
 .container-radio:hover input ~ .checkmark {
-  background-color: #ccc;
+  background-color:#f7f7ff;
 }
+
 .container-radio input:checked ~ .checkmark {
-  background-color: #2196F3;
+  background-color:#f7f7ff;
+  font-weight:500;
 }
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;    
-}
-/* Show the indicator (dot/circle) when checked */
-.container-radio input:checked ~ .checkmark:after {
-  display: block;
-}
-/* Style the indicator (dot/circle) */
-.container-radio .checkmark:after {
- 	top: 6px;
-    left: 6px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: white;
+.container-radio input:checked ~ .checkmark:before {
+    box-shadow: inset 0 0 1px 5px #00a0e3;
 }
 .service-list{
      display: inline-block;
@@ -1026,6 +1057,25 @@ top:6px !important;
 .select2-container--default
 {
 width:100% !important;
+}
+.select2-selection__choice__remove{
+    display: none;
+}
+.select2-container--default .select2-selection--multiple .select2-selection__choice{
+    padding-left: 0px;
+    background: transparent;
+    border: none;
+}
+.select2-selection{
+    border: 1px solid #c2cad8 !important;
+    border-radius: 0 !important;
+    box-shadow: none;
+    height: 45px;
+    padding: 6px 12px;
+}
+.select2-container .select2-search--inline .select2-search__field{
+    margin-top: 0px;
+    margin-left: 0px;
 }
 @media screen and (max-width: 500px){
     .select2{
@@ -1238,20 +1288,25 @@ function substringMatcher (strs) {
             }
         });
     }
+    
+    $('.js-example-basic-multiple').select2({
+        maximumSelectionLength: 1,
+        placeholder: 'Select Country',  
+    });
     function getCountries() { 
         $.ajax({     
-            url : '/api/v3/countries-list/get-countries-list', 
+            url : 'https://www.empoweryouth.com/api/v3/countries-list/get-countries-list', 
             method : 'POST',
             success : function(res) { 
             if (res.response.status==200){
                 var html = [];
                  res = res.response.countries;
                 $.each(res,function(index,value) 
-                  {   
-                   html.push('<option value="'+value.country_enc_id+'">'+value.name+'</option>');
+                  {
+                    // html.push('<option value="">Select Country</option>')
+                    html.push('<option value="'+value.country_enc_id+'">'+value.name+'</option>');
                   }); 
                     $('#country_name').html(html);   
-                    $('#country_name').val(default_country);
                } else
                 {
                     toastr.error(res.response.message, 'Error');
@@ -1275,8 +1330,7 @@ function substringMatcher (strs) {
             }
         });
     } 
-    function getCourses()
-    {
+    function getCourses(){
         var _courses = [];
          $.ajax({     
             url : '/api/v3/education-loan/course-pool-list', 
@@ -1554,23 +1608,22 @@ jQuery.validator.addClassRules('child_loan', {
      todayHighlight: true
 });
     
-function ajaxSubmit()
-{
+function ajaxSubmit(){
     var applicantRadio = $('input[name="applicantRadio"]:checked').val();
     var loan_application_type = $('input[name="applicantTypeRadio"]:checked').val();
     let co_applicants = [];
     var obj = {};
     if (applicantRadio==0){
-        obj['name'] = $('input[name="co-name[1]"]').not(':hidden').val()
+        obj['name'] = $.trim($('input[name="co-name[1]"]').not(':hidden').val());
     obj['relation'] = $('input[name="co-relation[1]"]:checked').not(':hidden').val();
     obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').not(':hidden').val();
     obj['annual_income'] = $('input[name="co-anualincome[1]"]').not(':hidden').val(); 
     co_applicants.push(obj);
     if ($('input[name="co-name[2]"]').length>0){
-        if ($('input[name="co-name[2]"]').val().length!=0)
+        if ($.trim($('input[name="co-name[2]"]').val()).length!=0)
         {
         var objCoBorrower = {};
-        objCoBorrower['name'] = $('input[name="co-name[2]"]').not(':hidden').val()
+        objCoBorrower['name'] = $.trim($('input[name="co-name[2]"]').not(':hidden').val());
         objCoBorrower['relation'] = $('input[name="co-relation[2]"]:checked').not(':hidden').val();
         objCoBorrower['employment_type'] = $('input[name="co-emptype[2]"]:checked').not(':hidden').val();
         objCoBorrower['annual_income'] = $('input[name="co-anualincome[2]"]').not(':hidden').val();
@@ -1578,16 +1631,16 @@ function ajaxSubmit()
         }
     }
     }else if (applicantRadio==1){
-         obj['name'] = $('input[name="co-name[1]"]').val()
+         obj['name'] = $.trim($('input[name="co-name[1]"]').val());
          obj['relation'] = $('input[name="co-relation[1]"]:checked').val();
          obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').val();
          obj['annual_income'] = $('input[name="co-anualincome[1]"]').val(); 
          co_applicants.push(obj);
         if ($('input[name="co-name[2]"]').length>0){
-        if ($('input[name="co-name[2]"]').val().length!=0)
+        if ($.trim($('input[name="co-name[2]"]').val()).length!=0)
         {
         var objCoBorrower = {};
-        objCoBorrower['name'] = $('input[name="co-name[2]"]').val()
+        objCoBorrower['name'] = $.trim($('input[name="co-name[2]"]').val());
         objCoBorrower['relation'] = $('input[name="co-relation[2]"]:checked').val();
         objCoBorrower['employment_type'] = $('input[name="co-emptype[2]"]:checked').val();
         objCoBorrower['annual_income'] = $('input[name="co-anualincome[2]"]').val();
@@ -1607,7 +1660,7 @@ function ajaxSubmit()
         college_course_info.push(object);
         url = '/api/v3/education-loan/save-application';
         data = {
-                applicant_name:$('#applicant_name').val(),
+                applicant_name:$.trim($('#applicant_name').val()),
                 applicant_dob:$('#dob').val(),
                 is_applicant:applicantRadio,                
                 applicant_current_city:$('#location').val(),
@@ -1622,7 +1675,7 @@ function ajaxSubmit()
                 getLender:getLender, 
                 is_india:$('input[name="countryRadio"]:checked').val(),
                 is_addmission_taken:$('input[name="college_taken"]:checked').val(),
-                country_enc_id:$('#country_name').val(),
+                country_enc_id:$('#country_name').val()[0],
                 refferal_id : refferal_id
                 };
     }else if (loan_application_type==1){
@@ -1724,7 +1777,7 @@ function _razoPay(ptoken,loan_id,education_loan_id){
     var options = {
     "key": access_key, 
     "name": "Empower Youth",
-    "description": "Application Processing Fee",
+    "description": "Application Login Fee",
     "image": "/assets/common/logos/logo.svg",
     "order_id": ptoken, 
     "handler": function (response){
@@ -1749,8 +1802,7 @@ function _razoPay(ptoken,loan_id,education_loan_id){
       });
 });
 }        
-function processPayment(ptoken,loan_id,education_loan_id)
-{
+function processPayment(ptoken,loan_id,education_loan_id){
     Layer.checkout({ 
         token: ptoken,
         accesskey: access_key
@@ -1792,8 +1844,7 @@ function processPayment(ptoken,loan_id,education_loan_id)
     }
 );
 }
-function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,signature=null)
-{
+function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,signature=null){
     $.ajax({
             url : '/api/v3/education-loan/update-widget-loan-application',
             method : 'POST', 
@@ -1924,8 +1975,7 @@ $this->registerJs($script);
             }
             showTab(currentTab);
         }
-        function createChild()
-        {
+        function createChild(){
             let child = '<div class="col-md-12 padd-20 schoolNameField">\n' +
                 '                                        <div class="form-group">\n' +
                 '                                            <label for="school_name_1" class="input-group-text">\n' +
@@ -2343,3 +2393,5 @@ $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery
 $this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/additional-methods.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css');

@@ -283,7 +283,6 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 
     }
     function searchCourse(event){
-        console.log(courses);
         let str = event.currentTarget.value.toLowerCase();
         let filteredCourses = courses.filter(
             course => { return course.course_name.toLowerCase().startsWith(str); }

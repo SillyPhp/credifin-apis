@@ -489,17 +489,17 @@ $this->registerCss("
 
 ");
 $script = <<< JS
-$(window).on('load',function() {
-  var can_else_length = $('.can-else').length;
-  var can_hide_length = $('.can-hide').length;
-  if(can_hide_length <= 0){
-      $('.show-btn-more').css('display','none');
-  }
-  if(can_else_length <= 0){
-      $('.cand_status').removeClass('can-hide');
-      $('.show-btn-more').css('display','none');
-  }
-})
+
+var can_else_length = $('.can-else').length;
+var can_hide_length = $('.can-hide').length;
+if(can_hide_length <= 0){
+  $('.show-btn-more').css('display','none');
+}
+if(can_else_length <= 0){
+  $('.cand_status').removeClass('can-hide');
+  $('.show-btn-more').css('display','none');
+}
+
 $(document).on('click','.cancel-app',function(e)
        {
           e.preventDefault();

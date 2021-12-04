@@ -17,10 +17,12 @@ use yii\helpers\ArrayHelper;
 $this->registerCss('
 .p-location-heading{
     width: 100%;
-    font-family: Open Sans;
-    font-size: 15px;
-    color: #202020;
-    font-weight: 600;
+    font-family: roboto;
+    font-size: 18px;
+    color: #3d3d3d;
+    margin-bottom: 15px;
+    margin-top: 10px;
+    font-weight: 500;
 }
 .p-locations li{
     max-width: 125px;

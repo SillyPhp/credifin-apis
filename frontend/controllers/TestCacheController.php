@@ -1,9 +1,14 @@
 <?php
 
 namespace frontend\controllers;
-
+use common\models\User;
+use common\models\Usernames;
+use common\models\UserTypes;
+use frontend\models\applications\Careerjet_API;
 use common\models\AppliedApplications;
 use common\models\Auth;
+use common\models\EducationLoanPayments;
+use common\models\LoanApplications;
 use common\models\Posts;
 use common\models\SkillsUpPostAssignedBlogs;
 use common\models\Users;
@@ -31,9 +36,6 @@ class TestCacheController extends Controller
         }
     }
 
-//    public function actionSms(){
-//        return Yii::$app->sms->send('7814871632','EYOUTH','hello');
-//    }
 
     public function actionImages()
     {
@@ -58,29 +60,6 @@ class TestCacheController extends Controller
         $story= \frontend\models\script\StoriesImageScript::widget(['content' => $content]);
         echo $story;
     }
-    public function actionEmail(){
-        $params = AppliedApplications::find()
-         ->alias('a')
-         ->select(['CONCAT(b.first_name," ",b.last_name) name','b.email','a.applied_application_enc_id applied_id'])
-         ->where(['application_enc_id'=>'2DeBxPEjOGdjkjgnV3beQpqANyVYw9','current_round'=>2])
-         ->innerJoin(Users::tableName().'as b','b.user_enc_id = a.created_by')
-         ->asArray()
-         ->all();
-        $k = 0;
-        foreach ($params as $param){
-            Yii::$app->mailer->htmlLayout = 'layouts/email';
-            $mail = Yii::$app->mailer->compose(
-                ['html' => 'job-process-status'],['data'=>$param]
-            )
-                ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
-                ->setTo([$param['email'] => $param['name']])
-                ->setSubject('Your Job Application Has Been Accepted');
-            if ($mail->send()) {
-               $k++;
-            }
-        }
-        echo $k;
-    }
 
     public function actionSkill(){
         $data = SkillsUpPostAssignedBlogs::find()
@@ -97,50 +76,121 @@ class TestCacheController extends Controller
         }
         return $k;
     }
-
-
-    public function actionEmailTest($get=null,$start=null,$end=null){
-            $csv = [];
-            $i = 0;
-            if (($handle = fopen(Url::to('@rootDirectory/files/temp/dav.csv'), "r")) !== false) {
-                $columns = fgetcsv($handle, 1000, ",");
-                while (($row = fgetcsv($handle, 1000, ",")) !== false) {
-                    $csv[$i] = array_combine($columns, $row);
-                    $i++;
-                }
-                fclose($handle);
-            }
-            $start = $start;
-            $end = $end;
-            $data = [];
-        $data['slug'] = 'marketing-executive-marketing-executive-52101628924998';
-        $data['cat_name'] = 'Marketing Executive';
-        $data['organization_logo'] = 'https://eycdn.ams3.digitaloceanspaces.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/Knsww6dU-GqWw97vqQGrox62CaBfwYze/XGpD9mA68oPv0g01X6rOQBVl4kwJne.png';
-        $data['organization_name'] = 'Empower Youth';
-        $data['org_name'] = 'Empower Youth';
-        $data['application_type'] = 'Job';
-        $data['name'] = 'Marketing';
-        $data['industry'] = 'Same Industry';
-        $data['designation'] = 'Marketing Executive';
-        $data['amount'] = '180000 p.a';
-        $data['profile_icon'] = 'marketing.png';
-        $data['preferred_gender'] = 0;
-        $data['experience'] = null;
-        $data['applicationEmployeeBenefits']=null;
-        $data['working_days'] = [1,2,3,4,5,6];
-            for ($i=$start;$i<=$end;$i++){
-                if (!empty($csv[$i]['Email'])){
-                    Yii::$app->mailer->htmlLayout = 'layouts/email';
-                    $mail = Yii::$app->mailer->compose(
-                        ['html' => 'job-detail-email-myecampus-demo.php'],['data'=>$data]
-                    )
-                        ->setFrom(['no-reply@myecampus.in'=>'MyECampus'])
-                        ->setTo([$csv[$i]['Email'] => $csv[$i]['Name']])
-                        ->setSubject('Empower Youth has shortlisted you for Marketing Executive');
-                    if ($mail->send()) {
-                        echo $i.'<br>';
+        public function actionBulkEmail($start=0,$end=0){
+            $user_type = UserTypes::findOne([
+                'user_type' => 'Individual',
+            ]);
+            $query = LoanApplications::find()
+                ->alias('a')
+                ->select(['a.loan_app_enc_id','a.applicant_name','a.email','a.phone'])
+                ->joinWith(['educationLoanPayments b'],false)
+                ->where(['a.created_by'=>null])
+//                ->andWhere(['b.payment_status'=>'captured'])
+                ->asArray()
+                ->all();
+            for ($i=$start;$i<$end;$i++){
+                    $username = $this->generate_username($query[$i]['applicant_name'], 10000);
+                    $array_name = explode(' ',$query[$i]['applicant_name']);
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['password'] = $query[$i]['phone'];
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $transaction = Yii::$app->db->beginTransaction();
+                    try {
+                        $user = new Users([
+                            'username' => $username,
+                            'user_enc_id' => Yii::$app->security->generateRandomString(32),
+                            'first_name' =>$array_name[0],
+                            'last_name' => $array_name[1].(($array_name[2])?$array_name[2]:null),
+                            'email' => $query['email'],
+                            'phone' => $query['phone'],
+                            'password' => $utilitiesModel->encrypt_pass(),
+                            'auth_key' => Yii::$app->security->generateRandomString(8),
+                            'user_type_enc_id' => $user_type->user_type_enc_id,
+                            'status' => 'Active',
+                            'initials_color' => RandomColors::one(),
+                            'is_credential_change' => 1,
+                        ]);
+                        if ($user->save()) {
+                            $usernamesModel = new Usernames();
+                            $usernamesModel->username = $username;
+                            $usernamesModel->assigned_to = 1;
+                            if (!$usernamesModel->validate() || !$usernamesModel->save()) {
+                                $transaction->rollBack();
+                                //throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($usernamesModel->errors, 0, false)));
+                            }
+                            $loan = LoanApplications::findOne(['loan_app_enc_id'=>$query['loan_app_enc_id']]);
+                            $loan->created_by = $user->user_enc_id;
+                            if (!$loan->save){
+                                $transaction->rollBack();
+                                //throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($loan->errors, 0, false)));
+                            }else{
+                                $params = [];
+                                $params['username'] = $username;
+                                $params['password'] = $query['phone'];
+                                $params['email'] = $query['email'];
+                                $params['name'] = $query['applicant_name'];
+                                echo $this->educationLoanRegister($params);
+                            }
+                        }else{
+                            $transaction->rollBack();
+                            //throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($user->errors, 0, false)));
+                        }
+                    } catch (Exception $e) {
+                        $transaction->rollBack();
+                        //return $e;
                     }
-                }
             }
         }
+
+    private function generate_username($string_name=null, $rand_no = 200){
+        $username_parts = array_filter(explode(" ", strtolower($string_name))); //explode and lowercase name
+        $username_parts = array_slice($username_parts, 0, 2); //return only first two arry part
+
+        $part1 = (!empty($username_parts[0]))?substr($username_parts[0], 0,8):""; //cut first name to 8 letters
+        $part2 = (!empty($username_parts[1]))?substr($username_parts[1], 0,5):""; //cut second name to 5 letters
+        $part3 = ($rand_no)?rand(0, $rand_no):"";
+
+        $username = $part1. str_shuffle($part2). $part3; //str_shuffle to randomly shuffle all characters
+        return $username;
+    }
+
+    private function educationLoanRegister($params){
+        Yii::$app->mailer->htmlLayout = 'layouts/email';
+        $mail = Yii::$app->mailer->compose(
+            ['html' => 'education-loan-register'],['data'=>$params]
+        )
+            ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+            ->setTo([$params['email'] => $params['name']])
+            ->setSubject('Your Loan Application Status');
+        if (!$mail->send()) {
+            return false;
+        }else{
+            echo 1;
+        }
+    }
+
+    public function actionApplicationStatusEmail(){
+        $params = AppliedApplications::find()
+            ->alias('a')
+            ->select(['CONCAT(b.first_name," ",b.last_name) name','b.email','a.applied_application_enc_id applied_id'])
+            ->where(['application_enc_id'=>'2DeBxPEjOGdjkjgnV3beQpqANyVYw9','current_round'=>2])
+            ->innerJoin(Users::tableName().'as b','b.user_enc_id = a.created_by')
+            ->asArray()
+            ->all();
+        $k = 0;
+        foreach ($params as $param){
+            Yii::$app->mailer->htmlLayout = 'layouts/email';
+            $mail = Yii::$app->mailer->compose(
+                ['html' => 'job-process-status'],['data'=>$param]
+            )
+                ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+                ->setTo([$param['email'] => $param['name']])
+                ->setSubject('Your Job Application Has Been Accepted');
+            if ($mail->send()) {
+                $k++;
+            }
+        }
+        echo $k;
+    }
+
 }

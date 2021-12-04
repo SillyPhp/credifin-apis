@@ -5,7 +5,42 @@ use yii\bootstrap\ActiveForm;
 $this->params['header_dark'] = true;
 Yii::$app->view->registerJs('var is_answer = "'. $is_answer.'"',  \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"',  \yii\web\View::POS_HEAD);
+$keywords = '';
+if (!empty($object['tagEncs'])):
+    foreach ($object['tagEncs'] as $tags) {
+        $keywords .= $tags['name'].'|';
+    }
+endif;
+$keywords = substr_replace($keywords, "", -1);
+$image = 'https://eycdn.ams3.digitaloceanspaces.com/images/common/facebook-sharing/question-ans.png';
+$description = $object['question'];
+$this->title = $object['question'];
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
+
 <Section>
     <div class="container">
         <div class="row">

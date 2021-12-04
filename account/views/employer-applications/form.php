@@ -1322,9 +1322,9 @@ float:right;}
 
 .checkbox-text{
     margin-bottom:8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+//    white-space: nowrap;
+//    overflow: hidden;
+//    text-overflow: ellipsis;
 }
 
 .checkbox-text .form-group.form-md-line-input {
@@ -1756,13 +1756,13 @@ function genrate_session_token() {
     }
 }
 genrate_session_token();
-if(doc_type=='Jobs'||doc_type=="Internships"||doc_type=='Clone_Jobs'||doc_type=='Clone_Internships')
-    {
-$("#primaryfield").prop("disabled", false);          
-$("#title").prop("disabled", false);   
-$("#designations").prop("disabled", false);   
-$("#industry").prop("disabled", false);   
-    }
+// if(doc_type=='Jobs'||doc_type=="Internships"||doc_type=='Clone_Jobs'||doc_type=='Clone_Internships')
+//     {
+// $("#primaryfield").prop("disabled", false);          
+// $("#title").prop("disabled", false);   
+// $("#designations").prop("disabled", false);   
+// $("#industry").prop("disabled", false);   
+//     }
 var data_before = null;
 var checked = null;
 var array = [];
@@ -1989,8 +1989,7 @@ function init() {
                        required:true
                     },
                     'industry': {
-                      
-                       required:true
+                        required:true
                     },
                     'gender': {
                        required:true
@@ -2494,6 +2493,14 @@ function get_preview(session_tok) {
                        }
                     }); 
             }
+window.onbeforeunload = function() {
+return "Do you really want to leave ?";
+};
+            
+$(document).on('click', '.modal-load-class', function(e) {
+    e.preventDefault();
+    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
+});
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');

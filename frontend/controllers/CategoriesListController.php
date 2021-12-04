@@ -43,21 +43,7 @@ class CategoriesListController extends Controller
             ->all();
         return $categories;
     }
-    public function actionQuestionData($q=null)
-    {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $result = QuestionsPool::find()
-            ->select(['question','slug'])
-            ->where(['is_deleted'=>0])
-            ->andWhere([
-                'or',
-                ['like', 'question', $q],
-                ['like', 'slug', $q],
-            ])
-            ->asArray()
-            ->all();
-        return $result;
-    }
+
     public function actionLoadTopics($type = 'Videos')
     {
         Yii::$app->response->format = Response::FORMAT_JSON;

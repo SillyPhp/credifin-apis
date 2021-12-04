@@ -11,6 +11,7 @@ use yii\helpers\Url;
             <div class="col-md-6 col-sm-6">
                 <div class="fee-due-text">
                     <h3>Login Fee Due</h3>
+                    <p class="mb3">Login Fee of <?= $loginFee['applicant_name'] ?>'s loan of Rs <?= $loginFee['amount'] ?> is pending.</p>
                     <p>Please pay your login fees to move your loan application one step ahead.</p>
                     <a href="" class="pay-btn">Pay Now</a>
                 </div>
@@ -18,8 +19,7 @@ use yii\helpers\Url;
             <div class="col-md-6 col-sm-6">
                 <div class="img-bg"></div>
                 <div class="fee-due-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/fees.png') ?>"
-                         alt="">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/fees.png') ?>" alt="">
                 </div>
             </div>
         </div>
@@ -35,6 +35,10 @@ $this->registerCss('
 	min-height: 350px;
     display: flex;
     align-items: center;
+    margin-bottom: 30px;
+}
+.mb3{
+    margin-bottom: 20px !important;
 }
 .dueflex {
     display: flex;

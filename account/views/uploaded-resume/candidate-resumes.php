@@ -375,22 +375,26 @@ a.btn.btn-paid-candidate:hover, a.btn.btn-paid-candidate:focus{
     top:-5px !important;
 } 
 .checkbox-label:before {
-  content: "";
-  position: absolute;
-  top: 80px;
-  left: 15px;
-  width: 35px;
-  height: 35px;
-  opacity: 0;
-  background-color: #2196F3;
-  background-repeat: no-repeat; 
-  background-size: 30px;
-  border-radius: 8px 0;
-//  -webkit-transform: translate(0%, -50%);
-//  transform: translate(0%, -50%);
-  transition: all 0.4s ease;
-  z-index:999;
-  
+    content: "/f00c";
+    position: absolute;
+    top: 80px;
+    left: 15px;
+    width: 35px;
+    height: 35px;
+    opacity: 0;
+    background-color: #2196F3;
+    background-repeat: no-repeat; 
+    background-size: 30px;
+    border-radius: 8px 0;
+    //  -webkit-transform: translate(0%, -50%);
+    //  transform: translate(0%, -50%);
+    transition: all 0.4s ease;
+    z-index:999;
+    font-family: "FontAwesome";
+    text-align: center;
+    color: #fff;
+    font-size: 18px;
+    padding-top: 5px;
 }
 .checkbox-input:checked + .checkbox-label:before {
   top: 0;
