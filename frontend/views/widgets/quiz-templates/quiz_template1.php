@@ -8,16 +8,19 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-sm-6">
                 <div class="temp-text">
-                    <h1>ANSWER THE QUESTIONS & <br> WIN ₹1000</h1>
+                    <h1>ANSWER THE QUESTIONS  <br>& WIN {{price}}</h1>
                     <p><span class="topic-title">Topic: </span>Guess the Country with their Wierd Law</p>
-                    <h1 class="date">8 DEC 2021</h1>
+                    <h1 class="date">{{start_date}}</h1>
+                    {{quiz_price}}
                     <p>Fee ₹100/-</p>
+                    {{/quiz_price}}
                     <a href="">Register Now</a>
                     <div class="sponser">
                         <h5>Sponsered By</h5>
                         <div class="spons-img">
-                            <img src="/assets/themes/ey/images/pages/home/agile.jpg">
-                            <img src="/assets/themes/ey/images/pages/home/agile.jpg">
+                        {{#quiz_sponsers}}
+                            <img src="{{sponser_img}}">
+                        {{/quiz_sponsers}}
                         </div>
                     </div>
                 </div>
