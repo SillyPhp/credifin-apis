@@ -362,12 +362,6 @@ $round_avg = round($overall_avg);
                                         review</h4>
                                 </div>
                             </div>
-                            <div class="set-mar">
-                                <?=
-                                $this->render('/widgets/new-position', [
-                                    'company' => $organization['name'],]);
-                                ?>
-                            </div>
                         </div>
                     </div>
 
@@ -406,6 +400,14 @@ $round_avg = round($overall_avg);
                                 </div>
                             </div>
                     </div>
+
+                    <div class="set-mar">
+                        <div class="row">
+                            <?= $this->render('/widgets/new-position', [
+                                'company' => $organization['name'],]); ?>
+                        </div>
+                    </div>
+
                     <?php if (!empty($benefit)) {
                         ?>
                         <div class="row">
@@ -642,6 +644,12 @@ echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
 ]);
 $this->registerCss('
+.imm1 img, .imm2 img {
+    width: 55%;
+}
+.set-mar {
+    margin: 35px 0 0;
+}
 .heading-style2 {
     font-size: 28px;
     font-family: lobster;
@@ -673,17 +681,8 @@ $this->registerCss('
     font-size: 0px;
     margin-right: 8px;
 }
-.set-mar{
-    margin:20px 0;
-}
-.new-position-box{
-    min-height:250px;
-}
 .npb-pos-abso{
     top:55%;
-}
-.npb-main-heading{
-    font-size:20px;
 }
 .mv-text{
     text-align:justify;
