@@ -3,13 +3,6 @@
 ?>
 <section>
     <div class="container">
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <div class="sc-heading">
-                    <h3>Scholarships</h3>
-                </div>
-            </div>
-        </div>
         <div class="row showScholarship">
         </div>
     </div>
@@ -60,7 +53,7 @@ async function getScholarships(){
     if(res['response']['status'] == 200){
         createScholarshipBox(res['response']['scholarships']);
     }else {
-        document.querySelector('.showScholarship').innerHTML = '<p class="noResults">No Details Added</p>';
+        document.querySelector('.showScholarship').innerHTML = noDetailsFound();
     }
 }
 getScholarships();

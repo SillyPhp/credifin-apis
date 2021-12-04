@@ -2,7 +2,7 @@
 use yii\helpers\Url;
 ?>
 <div class="container">
-    <div class="row">
+    <div class="row noDataFound">
         <div class="col-md-4 set-height" id="side-bar-main">
             <div class="search-main set-sticky">
                 <h3 class="ou-head">Find Course</h3>
@@ -264,7 +264,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
         }).join('');
         document.querySelector('#integration-main').innerHTML = courseCard;
         }else {
-            document.querySelector('#integration-main').innerHTML = '<p class="noResults">No Courses To Display</p>';
+            document.querySelector('.noDataFound').innerHTML = noDetailsFound();
         }
         initializePosSticky()
     }
