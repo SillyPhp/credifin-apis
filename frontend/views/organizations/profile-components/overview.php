@@ -23,7 +23,7 @@ $slug = $currentUrl[1];
                 <h3 class="heading-style">All Courses</h3>
                 <div class="course-main">
                 </div>
-                <div class="view-btn">
+                <div class="view-btnn">
                     <a href="<?= Url::to($slug.'/courses')?>">View All Courses</a>
                 </div>
             </div>
@@ -183,10 +183,10 @@ $this->registercss('
 	font-size: 13px;
 	color:#000;
 }
-.view-btn {
+.view-btnn {
 	text-align: center;
 }
-.view-btn a{
+.view-btnn a{
 	color: #00a0e3;
 	font-size: 16px;
 }
@@ -379,7 +379,7 @@ function getCourses() {
         }else{
             var collegeCard = `<p class="noResults">No Courses To Display</p>`
             $('.course-main').append(collegeCard); 
-            $('.view-btn').hide();
+            $('.view-btnn').hide();
         }
     }
   })
