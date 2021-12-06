@@ -417,7 +417,6 @@ class EducationLoansController extends Controller
             'loan_colleges' => $loan_colleges,
         ]);
     }
-
     public function actionInterestFree(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
