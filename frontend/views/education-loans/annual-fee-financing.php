@@ -147,7 +147,7 @@ use yii\helpers\Url;
         </div>
         <div class="row">
           <?php
-          foreach ($loan_org as $l) {
+          foreach ($loan_colleges as $l) {
             ?>
               <div class="col-md-3 col-sm-4 col-xs-12">
                   <a href="<?= Url::to('/education-loans/apply-loan/' . $l['organization_enc_id'], true) ?>"
