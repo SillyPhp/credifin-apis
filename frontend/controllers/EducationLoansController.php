@@ -130,7 +130,6 @@ class EducationLoansController extends Controller
         return $this->render('loan-college-index');
     }
 
-
     public function actionEducationLoanUniversity()
     {
         $this->layout = 'widget-layout';
@@ -392,6 +391,7 @@ class EducationLoansController extends Controller
 
         return $loan_colleges;
     }
+
     public function actionSchoolFeeFinance(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -435,6 +435,7 @@ class EducationLoansController extends Controller
         }
 
         $loan_colleges = $this->_loanColleges('Interest free');
+
         return $this->render('interest-free-education-loan',[
             'model' => $model,
             'data' => $data,

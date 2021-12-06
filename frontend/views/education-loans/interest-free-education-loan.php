@@ -219,7 +219,9 @@ use yii\helpers\Url;
     </section>
 
 <?= $this->render('/widgets/testimonials-interestfree') ?>
-
+<?php
+    if($loan_colleges){
+?>
     <section class="bgeEd pdbtm">
         <div class="container">
             <div class="row">
@@ -248,7 +250,9 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-
+        <?php
+    }
+        ?>
 <?php
 if ($blogs['blogs']) {
     echo $this->render('/widgets/education-loan/blogs', [
