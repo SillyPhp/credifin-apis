@@ -1594,6 +1594,9 @@ class OrganizationsController extends Controller
             ->joinWith(['organizationReviewLikeDislikes f' => function ($b) {
                 $b->onCondition(['f.created_by' => Yii::$app->user->identity->user_enc_id]);
             }], false);
+        if ($ridk && $ridk != '') {
+            $reviews->andWhere(['a.review_enc_id' => $ridk]);
+        }
         return [
             'total' => $reviews->count(),
             'reviews' => $reviews->orderBy([new \yii\db\Expression('FIELD (a.review_enc_id,"' . $ridk . '") DESC,FIELD (a.created_by,"' . Yii::$app->user->identity->user_enc_id . '") DESC, a.created_on DESC')])
