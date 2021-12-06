@@ -79,9 +79,6 @@ use yii\helpers\Url;
     </div>
 </section>
 
-
-
-
 <section class="benefit-bg">
     <div class="container">
         <div class="row">
@@ -229,7 +226,9 @@ html{
     font-weight: 400;
     word-spacing: 2px;
 }
-
+.bgeEd{
+    background-color: #edf4fc
+}
 .header-img{
     position: relative;
     z-index: 2;
