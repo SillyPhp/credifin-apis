@@ -1473,6 +1473,10 @@ class CollegeProfileController extends ApiBaseController
                     }]);
                     $j->onCondition(['j.is_deleted' => 0]);
                 }])
+                ->joinWith(['appliedApplicationLocations k' => function ($k) {
+                    $k->select(['k.application_location_enc_id', 'k.applied_application_enc_id', 'k.city_enc_id', 'k1.name city_name']);
+                    $k->joinWith(['cityEnc k1'], false);
+                }])
                 ->groupBy(['a.applied_application_enc_id'])
                 ->where(['b.slug' => $slug, 'a.is_deleted' => 0, 'd.college_enc_id' => $college_id, 'g.organization_enc_id' => $college_id])
                 ->asArray()

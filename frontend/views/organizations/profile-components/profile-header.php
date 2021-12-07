@@ -487,6 +487,42 @@ label {
     text-align: center !important;
     width: 100%;
 }
+.no-infra-details-box {
+  background-color: #f1f8f9;
+  padding: 10px 20px;
+  box-shadow: 1px 1px 4px rgb(224 225 221);
+  border-radius: 8px;
+}
+.in-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.infra-img {
+  padding:10px;
+  text-align: center;
+}
+.infra-img img {
+  width: 200px;
+}
+.infra-text {
+  padding: 10px;
+}
+.infra-text h2 {
+  font-size: 25px;
+  font-family: Lora;
+  font-weight: 600;
+  color: #000;
+  letter-spacing: 0.3px;
+}
+.infra-text p {
+  font-family: Roboto;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
+}
 @media only screen and (max-width: 767px) {
     .h-point1 {
         width: 50%;
@@ -639,7 +675,13 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 <script>
     var url = window.location.pathname.split('/');
     var slug = url[1];
-    var baseUrl = '';
+    let winLocation = window.location.hostname;
+    var baseUrl = null
+    if(winLocation == 'shshank.eygb.me'){
+        baseUrl = 'https://ravinder.eygb.me';
+    }else {
+        baseUrl = ''
+    }
     let data = new FormData();
     data.append("slug", slug);
     let obj = null
@@ -689,5 +731,24 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             clickedBtn.innerHTML = "<i class='fa fa-bars'></i>";
             clickedBtn.classList.remove('aj-show');
         }
+    }
+    function noDetailsFound() {
+        return `<div class="col-md-12 col-sm-12">
+                  <div class="no-infra-details-box">
+                        <div class="row in-flex">
+                              <div class="col-md-4 col-sm-4">
+                                    <div class="infra-img">
+                                        <img src="https://www.empoweryouth.com/assets/themes/email/images/rNap3jW8EobDLAqk0xPEQB0yYn7GXq.png">
+                                    </div>
+                              </div>
+                              <div class="col-md-8 col-sm-8">
+                                    <div class="infra-text">
+                                        <h2>No Details Found</h2>
+                                        <p>The college has not provided any information yet.</p>
+                                    </div>
+                              </div>
+                        </div>
+                  </div>
+            </div>`
     }
 </script>

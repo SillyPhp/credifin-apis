@@ -219,7 +219,9 @@ use yii\helpers\Url;
     </section>
 
 <?= $this->render('/widgets/testimonials-interestfree') ?>
-
+<?php
+    if($loan_colleges){
+?>
     <section class="bgeEd pdbtm">
         <div class="container">
             <div class="row">
@@ -228,66 +230,29 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="row">
+                <?php
+                    foreach ($loan_colleges as $l) {
+                ?>
                 <div class="col-md-3 col-sm-4">
-                    <a href="/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv" target="_blank">
+                    <a href="<?= Url::to('/education-loans/apply-loan/' . $l['organization_enc_id'], true) ?>" target="_blank">
                         <div class="college-card-partner">
                             <div class="college-img-partner">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/gna.png') ?>" alt="">
+                                <img src="<?= $l['org_logo'] ?>" alt="">
                             </div>
                             <div class="img-back-partner"></div>
-                            <p>GNA University</p>
+                            <p><?= $l['name'] ?></p>
                         </div>
                     </a>
                 </div>
-                <div class="col-md-3 col-sm-4">
-                    <a href="/education-loans/apply-loan/jKbDalL5YRxwPJmXgPnkQGqgwrkA06" target="_blank">
-                        <div class="college-card-partner">
-                            <div class="college-img-partner">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rayat.png') ?>" alt="">
-                            </div>
-                            <div class="img-back-partner"></div>
-                            <p>Rayat Bahra University</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-3 col-sm-4">
-                    <a href="/education-loans/apply-loan/jE3DW981MQMkWEeja3wvol5zrZyBag" target="_blank">
-                        <div class="college-card-partner">
-                            <div class="college-img-partner">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/bahra.png') ?>" alt="">
-                            </div>
-                            <div class="img-back-partner"></div>
-                            <p>Bahra University, Shimla</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-3 col-sm-4">
-                    <a href="/education-loans/apply-loan/7B0P3kNEldvGVa3MyZgNQm14wrJXbj" target="_blank">
-                        <div class="college-card-partner">
-                            <div class="college-img-partner">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rayat2.png') ?>" alt="">
-                            </div>
-                            <div class="img-back-partner"></div>
-                            <p>Rayat Bahra Hoshiarpur Campus</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-3 col-sm-4">
-                    <a href="#" target="_blank">
-                        <div class="college-card-partner">
-                            <div class="college-img-partner">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/st-soldire.png') ?>"
-                                     alt="">
-                            </div>
-                            <div class="img-back-partner"></div>
-                            <p>St Soldier Group Of Institutions</p>
-                        </div>
-                    </a>
-                </div>
+                <?php
+                    }
+                ?>
             </div>
         </div>
     </section>
-
+        <?php
+    }
+        ?>
 <?php
 if ($blogs['blogs']) {
     echo $this->render('/widgets/education-loan/blogs', [

@@ -449,4 +449,12 @@ class QuizzesController extends Controller
             'result' => $result['response']['detail'],
         ]);
     }
+    public function actionQuizWidgetTemplate($id){
+        $template_name = $id;
+        $this->layout = 'widget-layout';
+        return $this->render('template-preview',[
+            'template_name' => $template_name
+        ]);
+
+    }
 }

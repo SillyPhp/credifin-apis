@@ -479,6 +479,7 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
         data = {...data, status: statusVal, payment: paymentVal, page: 1};
         pageNo = 1;
         getAllQuizzes();
+        getCategories();
     }
 
     function filterCat() {
@@ -542,7 +543,7 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: ''
+            body: JSON.stringify(data)
         })
 
         let res = await response.json();

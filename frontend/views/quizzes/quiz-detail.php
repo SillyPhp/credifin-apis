@@ -964,7 +964,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweeta
            }
             console.log(data);
            return `<div class="sponsorBox">
-                        <a href="/${data.slug}">
+                        <a href="/${data.slug}" target="_blank">
                             ${data.logo == null
                                ? `<canvas class="user-icon" name="${data.name}" width="150" height="100" color="${data.initials_color}" font="45px"></canvas>`
                                : `<img src="${data.logo}">` }
