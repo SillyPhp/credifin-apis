@@ -212,15 +212,15 @@ class UsersController extends Controller
 
         $apps = AppliedApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id','j.name type', 'c.slug', 'a.status','h.icon as job_icon', 'f.name as title', 'a.applied_application_enc_id app_id', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active'])
+            ->select(['a.applied_application_enc_id', 'a.current_round','a.application_enc_id','j.name type', 'c.slug', 'a.status','h.icon as job_icon', 'f.name as title', 'a.applied_application_enc_id app_id', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active'])
             ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as e', 'e.assigned_category_enc_id = c.title')
             ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = e.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
-            ->andWhere(['a.created_by' => $user['user_enc_id']])
-            ->andWhere(['c.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0])
+            ->andWhere(['a.created_by' => $user['user_enc_id'], 'a.is_deleted' => 0])
+            ->andWhere(['c.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'c.is_deleted' =>0, 'c.status' => 'Active'])
             ->groupBy('a.applied_application_enc_id')
             ->asArray()
             ->all();
