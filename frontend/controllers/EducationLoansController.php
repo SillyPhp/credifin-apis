@@ -8,6 +8,7 @@ use common\models\BusinessActivities;
 use common\models\CollegeCoursesPool;
 use common\models\Countries;
 use common\models\LoanApplications;
+use common\models\OrganizationLoanSchemes;
 use common\models\Organizations;
 use common\models\Posts;
 use common\models\PostTags;
@@ -128,7 +129,6 @@ class EducationLoansController extends Controller
     {
         return $this->render('loan-college-index');
     }
-
 
     public function actionEducationLoanUniversity()
     {
@@ -355,19 +355,41 @@ class EducationLoansController extends Controller
             $model->load(Yii::$app->request->post());
             return ActiveForm::validate($model);
         }
-      $loan_org = Organizations::find()
-        ->select(['organization_enc_id', 'name', 'logo', 'logo_location',
-          'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
-        ->where(['is_deleted' => 0, 'has_loan_featured' => 1, 'status' => 'Active'])
-        ->asArray()
-        ->all();
+        $loan_org = Organizations::find()
+            ->select(['organization_enc_id', 'name', 'logo', 'logo_location',
+              'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'])
+            ->where(['is_deleted' => 0, 'has_loan_featured' => 1, 'status' => 'Active'])
+            ->asArray()
+            ->all();
+
+        $loan_colleges = $this->_loanColleges('Annual');
 
       return $this->render('annual-fee-financing',[
             'model' => $model,
             'data' => $data,
             'loan_org' => $loan_org,
+            'loan_colleges' => $loan_colleges,
             'blogs' => $this->getBlogsByTags(['annual fee financing', 'annual fee finance'])
         ]);
+    }
+
+    private function _loanColleges($loan_name){
+        $loan_colleges = OrganizationLoanSchemes::find()
+            ->alias('a')
+            ->select(['a.loan_type_enc_id','b.name', 'b.logo', 'b.logo_location','b.organization_enc_id',
+                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END org_logo', 'initials_color'
+            ])
+            ->joinWith(['organizationEnc b'],false)
+            ->joinWith(['loanTypeEnc c' => function($c) use ($loan_name){
+                $c->select(['c.loan_type_enc_id','c.loan_name']);
+                $c->andWhere(['c.loan_name' => $loan_name]);
+            }])
+            ->where(['b.is_deleted' => 0, 'b.has_loan_featured' => 1, 'b.status' => 'Active'])
+            ->groupBy(['b.organization_enc_id'])
+            ->asArray()
+            ->all();
+
+        return $loan_colleges;
     }
 
     public function actionSchoolFeeFinance(){
@@ -385,13 +407,16 @@ class EducationLoansController extends Controller
             $model->load(Yii::$app->request->post());
             return ActiveForm::validate($model);
         }
+
+        $loan_colleges = $this->_loanColleges('School Fee Finance');
+
         return $this->render('school-fee-financing',[
             'model' => $model,
             'data' => $data,
-            'blogs' => $this->getBlogsByTags(['school fee financing', 'school fee finance'])
+            'blogs' => $this->getBlogsByTags(['school fee financing', 'school fee finance']),
+            'loan_colleges' => $loan_colleges,
         ]);
     }
-
     public function actionInterestFree(){
         $model = new AdmissionForm();
         $data = self::getPressReleasData(['limit' => 6]);
@@ -408,10 +433,13 @@ class EducationLoansController extends Controller
             return ActiveForm::validate($model);
         }
 
+        $loan_colleges = $this->_loanColleges('Interest free');
+
         return $this->render('interest-free-education-loan',[
             'model' => $model,
             'data' => $data,
-            'blogs' => $this->getBlogsByTags(['interest free'])
+            'blogs' => $this->getBlogsByTags(['interest free']),
+            'loan_colleges' => $loan_colleges
         ]);
     }
 

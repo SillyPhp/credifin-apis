@@ -40,7 +40,7 @@ use yii\helpers\Url;
                                         if(Yii::$app->user->identity->organization || Yii::$app->request->url == '/employers'){
                                     ?>
                                         <i class="fas fa-briefcase"></i>
-                                        <p>Go to manage jobs/internships</p>
+                                        <p>Add categories</p>
                                         <?php
                                     }else{
                                         ?>
@@ -57,7 +57,7 @@ use yii\helpers\Url;
                                 if(Yii::$app->user->identity->organization || Yii::$app->request->url == '/employers'){
                                     ?>
                                     <i class="fas fa-copy"></i>
-                                    <p>Go to Resume<br> Bank</p>
+                                    <p>Candidates check your profile</p>
                                     <?php
                                 }else{
                                     ?>
@@ -74,7 +74,7 @@ use yii\helpers\Url;
                                 if(Yii::$app->user->identity->organization || Yii::$app->request->url == '/employers'){
                                     ?>
                                     <i class="fas fa-user"></i>
-                                    <p>Check profile for resumes</p>
+                                    <p>Drop the candidate's resume accordingly</p>
                                     <?php
                                 }else{
                                     ?>
@@ -91,7 +91,7 @@ use yii\helpers\Url;
                                 if(Yii::$app->user->identity->organization || Yii::$app->request->url == '/employers'){
                                     ?>
                                     <i class="fas fa-check"></i>
-                                    <p>Review the<br> resumes</p>
+                                    <p>When position opens, select ready applicant</p>
                                     <?php
                                 }else{
                                     ?>
@@ -196,6 +196,7 @@ $this->registerCss('
 .dr-box {
     text-align: center;
     margin-bottom: 30px;
+    min-width: 100px;
 }
 .dr-box i {
     background: linear-gradient(180deg, #93C7FF 0%, #298EF9 100%);

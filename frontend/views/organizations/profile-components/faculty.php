@@ -4,7 +4,7 @@ use yii\helpers\Url;
 ?>
 
     <div class="container">
-        <div class="row">
+        <div class="row noDataFound">
             <div class="faculty-main grid-container">
             </div>
         </div>
@@ -65,7 +65,7 @@ $this->registerCss('
             let facultyList = res['response']['faculty_list'];
             createFacultyBox(facultyList);
         }else{
-            document.querySelector('.faculty-main').innerHTML = '<p class="noResults">No Details Added</p>';
+            document.querySelector('.noDataFound').innerHTML = noDetailsFound();
         }
     }
     getFaculty();
