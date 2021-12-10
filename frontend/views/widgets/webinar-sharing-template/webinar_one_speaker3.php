@@ -1,28 +1,34 @@
-<section class="webinar-one-speaker2">
+<script id="webinar_one_speaker3" type="text/template">
+    <section class="webinar-one-speaker2">
     <div class="container">
         <div class="row">
             <div class="col-sm-7">
                 <div class="webinar-text">
-                    <h1>Webinar Name - Title</h1>
-                    <h3>September 21, 2021</h3>
-                    <h3>4PM - 8PM</h3>
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laborum ratione, aspernatur harum tempora optio accusamus cumque, quo voluptate, maiores sit eligendi quasi omnis.</p>
-                    <a href="">Register Now</a>
+                    <h1>{{name}}</h1>
+                    <h3>{{date}}</h3>
+                    <h3>{{time}}</h3>
+                    <p>{{description}}</p>
+                    <a href="/webinar/{{slug}}">Register Now</a>
                 </div>
             </div>
             <div class="col-sm-5">
-                <div class="webinar-img">
+                {{#webinarEvents}}
+                {{#webinarSpeakers}}
+                    <div class="webinar-img">
                     <div class="speaker-img">
-                        <img src="">
+                        <img src="{{speaker_image}}">
                     </div>
                     <div class="speaker-name">
-                        <p>Speaker Name</p>
+                        <p>{{speaker_name}}</p>
                     </div>
                 </div>
+                {{/webinarSpeakers}}
+                {{/webinarEvents}}
             </div>
         </div>
     </div>
 </section>
+</script>
 
 <?php
 
@@ -73,6 +79,9 @@ $this->registerCss('
         border-radius: 50%;
         background: #fff;
     }
+    .webinar-one-speaker2 .speaker-img img {
+    width: 100%;
+    } 
     .webinar-one-speaker2 .speaker-name {
         font-size: 22px;
         margin-top: 10px;

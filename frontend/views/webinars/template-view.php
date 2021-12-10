@@ -17,7 +17,7 @@ use yii\helpers\Html;
         </div>
 </section>
 <?php
-echo $this->render($webinarWidget['template_path'] .'/'. $webinarWidget['template_name']);
+echo $this->render('/widgets/webinar-sharing-template' .'/'. $webinarWidget['template_name']);
 $this->registerCss('
 .loader_screen{
 position:absolute;

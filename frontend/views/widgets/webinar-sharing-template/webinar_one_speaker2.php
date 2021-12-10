@@ -1,28 +1,34 @@
-<section class="webinar-one-speaker2">
+<script id="webinar_one_speaker2" type="text/javascript">
+    <section class="webinar-one-speaker2">
     <div class="container">
         <div class="row">
             <div class="col-sm-5">
-                <div class="webinar-img">
+                {{#webinarEvents}}
+                {{#webinarSpeakers}}
+                    <div class="webinar-img">
                     <div class="speaker-img">
-                        <img src="">
+                        <img src="{{speaker_image}}">
                     </div>
                     <div class="speaker-name">
-                        <p>Speaker Name</p>
+                        <p>{{speaker_name}}</p>
                     </div>
                 </div>
+                {{/webinarSpeakers}}
+                {{/webinarEvents}}
             </div>
             <div class="col-sm-7">
                 <div class="webinar-text">
-                    <h1>Webinar Name - Title</h1>
-                    <h3>September 21, 2021</h3>
-                    <h3>4PM - 8PM</h3>
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laborum ratione, aspernatur harum tempora optio accusamus cumque, quo voluptate, maiores sit eligendi quasi omnis.</p>
-                    <a href="">Register Now</a>
+                    <h1>{{name}}</h1>
+                    <h3>{{date}}</h3>
+                    <h3>{{time}}</h3>
+                    <p>{{description}}</p>
+                    <a href="/webinar/{{slug}}">Register Now</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
+</script>
 
 <?php
 
@@ -34,6 +40,10 @@ $this->registerCss('
         background-repeat: no-repeat;
         background-size: cover;
         padding: 80px 0;
+        min-height: 630px;
+    }
+    .webinar-one-speaker2 .container{
+        margin-top: 120px;
     }
     .webinar-one-speaker2 .row{
         display: flex;
@@ -73,6 +83,9 @@ $this->registerCss('
         border-radius: 50%;
         background: #fff;
     }
+     .webinar-one-speaker2 .speaker-img img {
+     width : 100%;
+      }
     .webinar-one-speaker2 .speaker-name {
         font-size: 22px;
         margin-top: 10px;
@@ -81,10 +94,11 @@ $this->registerCss('
         display: inline-block;
     }
     .webinar-one-speaker2 .webinar-img{
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        align-items: center;
         height: 100%;
+        display: block;
+        margin: 0 135px;
+    }
+    .webinar-one-speaker2 .webinar-text h1, .webinar-one-speaker2 .webinar-text h3 {
+        margin-top: 12px;
     }
 ')?>

@@ -1,40 +1,39 @@
-<section class="webinar-two-speaker1">
+<script id="webinar_two_speaker1" type="text/javascript">
+    <section class="webinar-two-speaker1">
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
                 <div class="webinar-text">
-                    <h1>Webinar Name - Title</h1>
-                    <h3>September 21, 2021</h3>
-                    <h3>4PM - 8PM</h3>
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laborum ratione, aspernatur harum tempora optio accusamus cumque, quo voluptate, maiores sit eligendi quasi omnis.</p>
-                    <a href="">Register Now</a>
+                    <h1>{{name}}</h1>
+                    <h3>{{date}}</h3>
+                    <h3>{{time}}</h3>
+                    <p>{{description}}</p>
+                    <a href="/webinar/{{slug}}">Register Now</a>
                 </div>
             </div>
             <div class="col-sm-6">
+                    {{#webinarEvents}}
+                    {{#webinarSpeakers}}
                 <div class="webinar-img">
-                    <div class="speaker">
-                        <div class="speaker-img">
-                            <img src="">
+                        <div class="speaker">
+                            <div class="speaker-img">
+                                {{#speaker_image}}
+                                    <img src="{{speaker_image}}">
+                                {{/speaker_image}}
+                            </div>
+                            <div class="speaker-name">
+                                <p>Speaker Name</p>
+                                <p class="desg">{{speaker_name}}</p>
+                            </div>
                         </div>
-                        <div class="speaker-name">
-                            <p>Speaker Name</p>
-                            <p class="desg">Speaker Name</p>
-                        </div>
-                    </div>
-                    <div class="speaker">
-                        <div class="speaker-name">
-                            <p>Speaker Name</p>
-                            <p class="desg">Speaker Name</p>
-                        </div>
-                        <div class="speaker-img">
-                            <img src="">
-                        </div>
-                    </div>
                 </div>
+                    {{/webinarSpeakers}}
+                    {{/webinarEvents}}
             </div>
         </div>
     </div>
 </section>
+</script>
 
 <?php
 
@@ -81,6 +80,9 @@ $this->registerCss('
         height: 150px;
         border-radius: 50%;
         background: #fff;
+    }
+    .webinar-two-speaker1 .speaker-img  img {
+    width:100%;
     }
     .webinar-two-speaker1 .speaker-name {
         font-size: 18px;
