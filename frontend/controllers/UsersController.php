@@ -8,6 +8,7 @@ use common\models\AppliedApplications;
 use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Cities;
+use common\models\EmailLogs;
 use common\models\EmployerApplications;
 use common\models\InterviewProcessFields;
 use common\models\Organizations;
@@ -197,8 +198,14 @@ class UsersController extends Controller
         if (isset($id) && !empty($id)) {
             $userApplied = AppliedApplications::find()
                 ->alias('z')
-                ->select(['z.*', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 're.resume', 're.resume_location'])
-                ->joinWith(['applicationEnc ae'], false)
+                ->select(['z.*', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 're.resume', 're.resume_location', 'aee.name as app_name', 'aec.name as app_type'])
+                ->joinWith(['applicationEnc ae' => function($ae){
+                    $ae->joinWith(['applicationTypeEnc aec']);
+                    $ae->joinWith(['title aed' => function ($aec) {
+                        $aec->joinWith(['categoryEnc aee']);
+//                        $aec->joinWith(['parentEnc aef']);
+                    }]);
+                }], false)
                 ->joinWith(['appliedApplicationProcesses c' => function ($c) {
                     $c->joinWith(['fieldEnc d'], false);
                     $c->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
@@ -212,15 +219,15 @@ class UsersController extends Controller
 
         $apps = AppliedApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id','j.name type', 'c.slug', 'a.status','h.icon as job_icon', 'f.name as title', 'a.applied_application_enc_id app_id', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active'])
+            ->select(['a.applied_application_enc_id', 'a.current_round','a.application_enc_id','j.name type', 'c.slug', 'a.status','h.icon as job_icon', 'f.name as title', 'a.applied_application_enc_id app_id', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active'])
             ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as e', 'e.assigned_category_enc_id = c.title')
             ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = e.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
-            ->andWhere(['a.created_by' => $user['user_enc_id']])
-            ->andWhere(['c.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0])
+            ->andWhere(['a.created_by' => $user['user_enc_id'], 'a.is_deleted' => 0])
+            ->andWhere(['c.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'c.is_deleted' =>0, 'c.status' => 'Active'])
             ->groupBy('a.applied_application_enc_id')
             ->asArray()
             ->all();
@@ -294,6 +301,7 @@ class UsersController extends Controller
         } else {
             $orgId = Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id])['organization_enc_id'];
             if ($orgId != null || $orgId != "") {
+                $this->sendOpenedProfileEmail($user['email'], $user['username'], $userApplied ? $userApplied['app_name']: '', $userApplied ? $userApplied['app_type'] : '');
                 $page = 'view';
             } else {
                 if (Yii::$app->user->identity->user_enc_id == $user['user_enc_id']) {
@@ -304,6 +312,90 @@ class UsersController extends Controller
             }
         }
         return $this->render($page, $dataProvider);
+    }
+
+    private function sendOpenedProfileEmail($receiver_email,$receiver_username,$title,$type){
+        $is_sent = EmailLogs::find()
+            ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+            ->andWhere(['receiver_email' => $receiver_email])
+            ->andWhere(['email_type' => 1])
+            ->andWhere(['>=','created_on',date("Y-m-d")])
+            ->exists();
+        if(!$is_sent){
+            $data['org_name'] = Yii::$app->user->identity->organization->name;
+            $data['name'] = $title;
+            $data['username'] = $receiver_username;
+            $data['type'] = $type;
+
+            $subject = "Your Profile Viewed by ".$data['org_name'];
+            if(!empty($title)) {
+                $template = 'profile-viewed-with-job-by-company';
+            } else {
+                $template = 'profile-viewed-by-company';
+            }
+
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $email = filter_var($receiver_email, FILTER_SANITIZE_EMAIL);
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    Yii::$app->mailer->htmlLayout = 'layouts/email';
+                    $mail = Yii::$app->mailer->compose(
+                        ['html' => $template],['data'=>$data]
+                    )
+                        ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+                        ->setTo([$email])
+                        ->setSubject($subject);
+                    if (!$mail->send()) {
+                        return [
+                            'status' => 201,
+                            'title' => 'Saving Error',
+                            'message' => "Model not saved in database",
+                        ];
+                    }
+                    $mail_logs = new EmailLogs();
+                    $utilitesModel = new \common\models\Utilities();
+                    $utilitesModel->variables['string'] = time() . rand(100, 100000);
+                    $mail_logs->email_log_enc_id = $utilitesModel->encrypt();
+                    $mail_logs->email_type = 1;
+                    $mail_logs->user_enc_id = Yii::$app->user->identity->user_enc_id;
+                    $mail_logs->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+                    $mail_logs->receiver_email = $email;
+                    $mail_logs->subject = $subject;
+                    $mail_logs->template = $template;
+                    $mail_logs->is_sent = 1;
+                    if (!$mail_logs->save()) {
+                        $transaction->rollBack();
+                        return [
+                            'status' => 201,
+                            'title' => 'Saving Error',
+                            'message' => "Model not saved in database",
+                        ];
+                    }
+                } else {
+                    return [
+                        'status' => 201,
+                        'title' => 'Email',
+                        'message' => "Email not validated",
+                    ];
+                }
+
+                $transaction->commit();
+                return [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Email Sent Successfully..'
+                ];
+            } catch (yii\db\Exception $exception) {
+                $transaction->rollBack();
+                return [
+                    'status' => 201,
+                    'title' => 'DB Exceptions',
+                    'message' => $exception
+                ];
+            }
+
+        }
+        return true;
     }
 
     public function actionEdit()
