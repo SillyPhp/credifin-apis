@@ -34,13 +34,20 @@ $this->registerCss('
         background-repeat: no-repeat;
         background-size: cover;
         padding: 80px 0;
+        width: 1200px;
+        height: 630px;
+        margin: auto;
+        padding: 90px 0;
+    }
+    .webinar-one-speaker2 .container{
+        padding: 50px !important;
     }
     .webinar-one-speaker2 .row{
         display: flex;
     }
     .webinar-one-speaker2 .webinar-text h1 {
         color: #fff;
-        font-size: 38px;
+        font-size: 50px;
         font-family: Roboto;
         margin: 0;
     }
@@ -50,10 +57,10 @@ $this->registerCss('
         text-transform: uppercase;
         font-weight: 700;
         font-family: Roboto;
-        font-size: 20px;
+        font-size: 23px;
     }
     .webinar-one-speaker2 .webinar-text p {
-        font-size: 14px;
+        font-size: 18px;
         margin: 15px 0;
         line-height: 1.3;
         color: #eee;
@@ -64,12 +71,12 @@ $this->registerCss('
         padding: 7px 17px;
         display: inline-block;
         font-weight: 600;
-        font-size: 16px;
+        font-size: 18px;
         margin-top: 13px;
     }
     .webinar-one-speaker2 .speaker-img {
-        width: 150px;
-        height: 150px;
+        width: 220px;
+        height: 220px;
         border-radius: 50%;
         background: #fff;
     }
