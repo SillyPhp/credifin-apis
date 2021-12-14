@@ -85,7 +85,14 @@ $this->registerCss('
         background: url(/assets/themes/ey/images/pages/webinar-widgets/three-speaker-sharing-bg1.png), #150050;
         background-repeat: no-repeat;
         background-size: 100%;
-        padding: 90px 0;
+        padding: 90px 50px;
+        height: 630px;
+        width: 1200px;
+        margin: auto;   
+        display: flex;
+    }
+    .webinar-three-speaker1 .container{
+        padding: 50px 0 !important;
     }
     .webinar-three-speaker1 .row{
         display: flex;
@@ -93,7 +100,7 @@ $this->registerCss('
     }
     .webinar-three-speaker1 .webinar-text h1 {
         color: #fff;
-        font-size: 35px;
+        font-size: 50px;
         font-family: Roboto;
         margin: 0;
     }
@@ -103,10 +110,10 @@ $this->registerCss('
         text-transform: uppercase;
         font-weight: 700;
         font-family: Roboto;
-        font-size: 20px;
+        font-size: 23px;
     }
     .webinar-three-speaker1 .webinar-text p {
-        font-size: 14px;
+        font-size: 18px;
         margin: 15px 0;
         line-height: 1.3;
         color: #eee;
@@ -117,7 +124,7 @@ $this->registerCss('
         padding: 7px 17px;
         display: inline-block;
         font-weight: 600;
-        font-size: 16px;
+        font-size: 18px;
         margin-top: 13px;
     }
     .webinar-three-speaker1 .speaker-img {
@@ -168,7 +175,7 @@ $this->registerCss('
     }
     .webinar-three-speaker1 .date, .webinar-three-speaker1 .time {
         display: flex;
-        font-size: 18px;
+        font-size: 30px;
         color: #fff;
         font-weight: 600;
         align-items: center;

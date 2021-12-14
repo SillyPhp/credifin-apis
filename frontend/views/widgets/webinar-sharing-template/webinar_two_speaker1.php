@@ -1,7 +1,7 @@
 <section class="webinar-two-speaker1">
     <div class="container">
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-6" style="padding: 50px 0;">
                 <div class="webinar-text">
                     <h1>Webinar Name - Title</h1>
                     <h3>September 21, 2021</h3>
@@ -46,10 +46,17 @@ $this->registerCss('
         background-repeat: no-repeat;
         background-size: cover;
         padding: 50px 0;
+        width: 1200px;
+        height: 630px;
+        margin: auto;
+        padding: 90px 0;
+    }
+    .webinar-two-speaker1 .container{
+        padding: 50px;
     }
     .webinar-two-speaker1 .webinar-text h1 {
         color: #fff;
-        font-size: 38px;
+        font-size: 50px;
         font-family: Roboto;
         margin: 0;
     }
@@ -59,10 +66,10 @@ $this->registerCss('
         text-transform: uppercase;
         font-weight: 700;
         font-family: Roboto;
-        font-size: 20px;
+        font-size: 23px;
     }
     .webinar-two-speaker1 .webinar-text p {
-        font-size: 14px;
+        font-size: 18px;
         margin: 15px 0;
         line-height: 1.3;
         color: #eee;
@@ -73,12 +80,12 @@ $this->registerCss('
         padding: 7px 17px;
         display: inline-block;
         font-weight: 600;
-        font-size: 16px;
+        font-size: 18px;
         margin-top: 13px;
     }
     .webinar-two-speaker1 .speaker-img {
-        width: 150px;
-        height: 150px;
+        width: 200px;
+        height: 200px;
         border-radius: 50%;
         background: #fff;
     }
