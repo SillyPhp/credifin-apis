@@ -328,8 +328,39 @@ class JobsController extends Controller
             'cities' => $cities,
             'tweets' => $tweets,
             'cities_jobs' => $cities_jobs,
-            'type' => $type
+            'type' => $type,
+            'organizations' => $organizations
         ]);
+    }
+
+    public function actionTopCityCompanies(){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $options = Yii::$app->request->post();
+            $organizations = Organizations::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.organization_enc_id', 'a.name', 'a.slug',
+                    'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo',
+                ])
+                ->joinWith(['organizationLocations b' => function ($b) {
+                    $b->joinWith(['cityEnc c']);
+                }], false)
+                ->where(['a.is_deleted' => 0, 'a.status' => 'Active']);
+            if(isset($options['city_name']) && !empty($options['city_name'])){
+                $organizations->andWhere(['like', 'c.name', $options['city_name']]);
+            }else{
+                $organizations->andWhere(['like', 'c.name', 'Ludhiana']);
+            }
+                $organizations = $organizations
+                ->limit(11)
+                ->asArray()
+                ->all();
+            if($organizations){
+                return ['status' => 200, 'organizations' => $organizations];
+            }
+            return ['status' => 404, 'Message' => 'No organizations found'];
+        }
     }
 
     public function actionPreferredList()
