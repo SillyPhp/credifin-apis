@@ -35,6 +35,9 @@
 use yii\helpers\Url;
 
 $this->registerCss('
+    .speaker-img img{
+    width: 100%;
+    }
     .webinar-one-speaker2{
         background: url('.Url::to('@eyAssets/images/pages/webinar-widgets/one-speaker-sharing-bg2.png').');
         background-repeat: no-repeat;
