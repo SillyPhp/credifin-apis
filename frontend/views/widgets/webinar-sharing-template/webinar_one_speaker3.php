@@ -1,5 +1,5 @@
 <script id="webinar_one_speaker3" type="text/template">
-    <section class="webinar-one-speaker2">
+    <section class="webinar-one-speaker3">
     <div class="container">
         <div class="row">
             <div class="col-sm-7">
@@ -35,61 +35,65 @@
 use yii\helpers\Url;
 
 $this->registerCss('
-    .webinar-one-speaker2{
+    .webinar-one-speaker3{
         background: url('.Url::to('@eyAssets/images/pages/webinar-widgets/one-speaker-sharing-bg3.png').');
         background-repeat: no-repeat;
         background-size: cover;
         padding: 80px 0;
+        width: 1200px;
+        height: 630px;
+        padding: 90px 0;
+        margin: auto;
     }
-    .webinar-one-speaker2 .row{
+    .webinar-one-speaker3 .container{
+        padding: 50px !important;
+    }
+    .webinar-one-speaker3 .row{
         display: flex;
     }
-    .webinar-one-speaker2 .webinar-text h1 {
+    .webinar-one-speaker3 .webinar-text h1 {
         color: #fff;
-        font-size: 38px;
+        font-size: 50px;
         font-family: Roboto;
         margin: 0;
     }
-    .webinar-one-speaker2 .webinar-text h3 {
+    .webinar-one-speaker3 .webinar-text h3 {
         margin: 0;
         color: #fff;
         text-transform: uppercase;
         font-weight: 700;
         font-family: Roboto;
-        font-size: 20px;
+        font-size: 23px;
     }
-    .webinar-one-speaker2 .webinar-text p {
-        font-size: 14px;
+    .webinar-one-speaker3 .webinar-text p {
+        font-size: 18px;
         margin: 15px 0;
         line-height: 1.3;
         color: #eee;
     }
-    .webinar-one-speaker2 .webinar-text a {
+    .webinar-one-speaker3 .webinar-text a {
         background: #e3a024;
         color: #fff;
         padding: 7px 17px;
         display: inline-block;
         font-weight: 600;
-        font-size: 16px;
+        font-size: 18px;
         margin-top: 13px;
     }
-    .webinar-one-speaker2 .speaker-img {
-        width: 150px;
-        height: 150px;
+    .webinar-one-speaker3 .speaker-img {
+        width: 220px;
+        height: 220px;
         border-radius: 50%;
         background: #fff;
     }
-    .webinar-one-speaker2 .speaker-img img {
-    width: 100%;
-    } 
-    .webinar-one-speaker2 .speaker-name {
+    .webinar-one-speaker3 .speaker-name {
         font-size: 22px;
         margin-top: 10px;
         color: #fff;
         font-weight: 600;
         display: inline-block;
     }
-    .webinar-one-speaker2 .webinar-img{
+    .webinar-one-speaker3 .webinar-img{
         display: flex;
         justify-content: center;
         flex-direction: column;

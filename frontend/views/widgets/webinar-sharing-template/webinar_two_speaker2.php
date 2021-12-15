@@ -44,11 +44,15 @@ $this->registerCss('
         background: url('.Url::to('@eyAssets/images/pages/webinar-widgets/two-speaker-sharing-bg2.png').');
         background-repeat: no-repeat;
         background-size: cover;
-        padding: 50px 0;
+        padding: 90px 0;
+        height: 630px;
+        width: 1200px;
+        margin: auto;
     }
+    
     .webinar-two-speaker2 .webinar-text h1 {
         color: #fff;
-        font-size: 38px;
+        font-size: 50px;
         font-family: Roboto;
         margin: 0;
     }
@@ -58,10 +62,10 @@ $this->registerCss('
         text-transform: uppercase;
         font-weight: 700;
         font-family: Roboto;
-        font-size: 20px;
+        font-size: 23px;
     }
     .webinar-two-speaker2 .webinar-text p {
-        font-size: 14px;
+        font-size: 18px;
         margin: 15px 0;
         line-height: 1.3;
         color: #eee;
@@ -72,12 +76,12 @@ $this->registerCss('
         padding: 7px 17px;
         display: inline-block;
         font-weight: 600;
-        font-size: 16px;
+        font-size: 18px;
         margin-top: 13px;
     }
     .webinar-two-speaker2 .speaker-img {
-        width: 150px;
-        height: 150px;
+        width: 200px;
+        height: 200px;
         border-radius: 50%;
         background: #fff;
     }
