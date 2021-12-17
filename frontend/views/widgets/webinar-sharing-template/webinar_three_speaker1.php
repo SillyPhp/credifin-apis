@@ -1,65 +1,35 @@
-<section class="webinar-three-speaker1">
+<script id="webinar_three_speaker1" type="text/javascript">
+    <section class="webinar-three-speaker1">
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
                 <div class="webinar-text">
-                    <h1>Webinar Name - Title</h1>
-                    <!-- <h3>September 21, 2021</h3> -->
-                    <!-- <h3>4PM - 8PM</h3> -->
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laborum ratione, aspernatur harum tempora optio accusamus cumque, quo voluptate, maiores sit eligendi quasi omnis.</p>
-                    <!-- <a href="">Register Now</a> -->
+                    <h1>{{name}}</h1>
+                    <p>{{description}}</p>
                 </div>
                 <div class="webinar-speaker-images">
                     <div class="row">
-                        <div class="col-xs-4">
-                            <div class="speaker">
-                                <img src="">
-                                <p>Speaker Name</p>
+                        {{#webinarEvents}}
+                        {{#webinarSpeakers}}
+                            <div class="col-xs-4">
+                                <div class="speaker">
+                                    <img src="{{speaker_image}}">
+                                    <p>{{speaker_name}}</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-xs-4">
-                            <div class="speaker">
-                                <img src="">
-                                <p>Speaker Name</p>
-                            </div>
-                        </div>
-                        <div class="col-xs-4">
-                            <div class="speaker">
-                                <img src="">
-                                <p>Speaker Name</p>
-                            </div>
-                        </div>
+                        {{/webinarSpeakers}}
+                        {{/webinarEvents}}
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
-                <!--<div class="webinar-img">
-                    <div class="speaker">
-                        <div class="speaker-img">
-                            <img src="">
-                        </div>
-                        <div class="speaker-name">
-                            <p>Speaker Name</p>
-                            <p class="desg">Speaker Name</p>
-                        </div>
-                    </div>
-                    <div class="speaker">
-                        <div class="speaker-name">
-                            <p>Speaker Name</p>
-                            <p class="desg">Speaker Name</p>
-                        </div>
-                        <div class="speaker-img">
-                            <img src="">
-                        </div>
-                    </div>
-                </div>-->
                 <div class="webinar-time">
                     <div class="date">
                         <div class="title">
                             DATE
                         </div>
                         <div class="value">
-                            30/09<br>Thursday
+                            {{date}}
                         </div>
                     </div>
                     <div class="time">
@@ -67,7 +37,7 @@
                             TIME
                         </div>
                         <div class="value">
-                            4PM - 8PM
+                            {{time}}
                         </div>
                     </div>
                 </div>
@@ -75,12 +45,16 @@
         </div>
     </div>
 </section>
+</script>
 
 <?php
 
 use yii\helpers\Url;
 
 $this->registerCss('
+.speaker img {
+width: 100%;
+}
     .webinar-three-speaker1 {
         background: url(/assets/themes/ey/images/pages/webinar-widgets/three-speaker-sharing-bg1.png), #150050;
         background-repeat: no-repeat;
@@ -159,6 +133,7 @@ $this->registerCss('
     }
     .webinar-three-speaker1 .speaker p{
         margin: 0;
+        color:white;
     }
     .webinar-three-speaker1 .desg{
         font-size: 14px;
