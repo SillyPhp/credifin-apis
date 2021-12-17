@@ -18,6 +18,7 @@ if ($organization['logo']) {
             <div class="light-box-description">
                 <div class="light-box-heading">
                     <h3>Update your Logo</h3>
+                    <button type="button" class="close-light-box"><span aria-hidden="true">&times;</span></button>
                 </div>
                 <div class="logo">
                     <img id="logo-img" src="<?= Url::to($image); ?>">
@@ -42,7 +43,7 @@ if ($organization['logo']) {
                     <?php ActiveForm::end(); ?>
                 </div>
                 <div class="light-box-footer">
-                    <a href="/account/dashboard" class="services-submit">
+                    <a href="javascript:;" class="services-submit">
                         <span>Skip</span>
                         <span>
                           <svg width="50px" height="14px" viewBox="0 0 66 43" version="1.1"
@@ -107,6 +108,13 @@ $this->registerCss('
     padding: 10px;
     border-bottom: 1px solid #ddd;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+.light-box-heading > button{
+    background: none;
+    border: 0;
+    font-size: 20px;
 }
 .light-box-heading h3{
     margin: 4px;
@@ -216,6 +224,11 @@ path.two {
 $this->registerJs('
 $("#logoUpload").change(function() {
     readURL(this);
+});
+$(document).on("click",".close-light-box, .services-submit",function() {
+    $("body").removeClass("modal-open");
+    $(".modal-backdrop").remove();
+    $(".light-box-modal").css("display","none");
 });
 
 function readURL(input) {
