@@ -54,7 +54,8 @@ $this->registerCss('
 }
 .top-cities-img img, .top-cities-img canvas {
     width: 100%;
-    height: auto;
+    height: 100%;
+    object-fit: contain;
     border-radius: 50%;
 }
 ');
