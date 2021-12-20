@@ -2,6 +2,7 @@
 $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
+
 Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
@@ -53,7 +54,6 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
 </section>
 
 
-
 <section>
     <div class="container">
         <div class="row mt-20">
@@ -77,12 +77,26 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
     </div>
 </section>
 
-<?= $this->render('/webinars/webinar-carousel')?>
 
-<?php
-echo $this->render('/widgets/info-stats');
+<?= $this->render('/widgets/info-stats'); ?>
 
-echo $this->render('/widgets/top-cities', [
+<section id="trendingCompaniesSectionMain">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="heading-style" id="trending-companies-by-location">Trending Companies in <span
+                            id="trendingCityName"></span></h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" id="trendingOrgCardsMain">
+            </div>
+            <?= $this->render('/widgets/trending-companies-in-cities') ?>
+        </div>
+    </div>
+</section>
+
+<?= $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'jobs'
 ]);
@@ -147,22 +161,7 @@ echo $this->render('/widgets/jobs-by-tag');
         </div>
     </div>
 </section>
-<!--<section>-->
-<!--    <div class="container">-->
-<!--        <div class="row">-->
-<!--            <div class="col-md-12 col-sm-12">-->
-<!--                <div class="row">-->
-<!--                    <div class="col-md-12">-->
-<!--                        <div class="heading-style">Blogs</div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div id="whats-new" class="row">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</section>-->
-<!--Subscribe Widget start-->
+
 <?php
 if (Yii::$app->user->isGuest) {
     echo $this->render('/widgets/subscribe-section');
@@ -955,7 +954,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             k += 1;
         }
     }
-
 
 
     function showMoreEvent() {
