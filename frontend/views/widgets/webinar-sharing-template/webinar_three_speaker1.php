@@ -22,7 +22,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-6" style="margin-top: 170px">
                 <div class="webinar-time">
                     <div class="date">
                         <div class="title">
@@ -59,11 +59,10 @@ width: 100%;
         background: url(/assets/themes/ey/images/pages/webinar-widgets/three-speaker-sharing-bg1.png), #150050;
         background-repeat: no-repeat;
         background-size: 100%;
-        padding: 90px 50px;
+        padding: 90px 0;
         height: 630px;
         width: 1200px;
-        margin: auto;   
-        display: flex;
+        margin: auto;
     }
     .webinar-three-speaker1 .container{
         padding: 50px 0 !important;
@@ -108,11 +107,15 @@ width: 100%;
         background: #fff;
     }
     .webinar-three-speaker1 .webinar-speaker-images {
-        margin-top: 30px;
+        margin-top: 80px;
+    }
+    .speaker p {
+        margin-top: 20px !important;
+        font-size: 16px;
+        font-weight: 700;
     }
     .webinar-three-speaker1 .speaker img {
         min-width: 100px;
-        height: 100px;
         background: #fff;
     }
     .webinar-three-speaker1 .speaker-name {
@@ -142,18 +145,18 @@ width: 100%;
         transform: translateX(18px);
     }
     .webinar-three-speaker1 .date {
-        justify-content: flex-end;
+        margin-left: 130px;
     }
     .webinar-three-speaker1 .speaker {
         display: flex;
         flex-direction: column;
     }
     .webinar-three-speaker1 .date, .webinar-three-speaker1 .time {
-        display: flex;
         font-size: 30px;
         color: #fff;
         font-weight: 600;
-        align-items: center;
+        display: block;
+        width: fit-content;
     }
     .webinar-three-speaker1 .date > div:nth-child(1), .webinar-three-speaker1 .time > div:nth-child(1) {
         border-right: 2px solid #eee;
@@ -161,6 +164,7 @@ width: 100%;
     .webinar-three-speaker1 .date > div, .webinar-three-speaker1 .time > div {
         padding: 17px 14px;
         margin: 15px 0;
+        display: inline-block;
     }
     .webinar-three-speaker1 .title {
         align-self: normal;

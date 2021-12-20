@@ -49,7 +49,12 @@ $this->registerCss('
         width: 1200px;
         margin: auto;
     }
-    
+    .webinar-two-speaker2 .container{
+        height: 100%;
+    }
+    .webinar-two-speaker2 .row{
+        padding: 60px 20px;
+    }
     .webinar-two-speaker2 .webinar-text h1 {
         color: #fff;
         font-size: 50px;
@@ -84,6 +89,8 @@ $this->registerCss('
         height: 200px;
         border-radius: 50%;
         background: #fff;
+        margin: auto;
+        overflow: hidden;
     }
     .webinar-two-speaker2 .speaker-img img{
     width: 100%;
@@ -93,23 +100,20 @@ $this->registerCss('
         margin-top: 10px;
         color: #000;
         font-weight: 600;
-        display: inline-block;
         background: #fff;
         padding: 10px 24px;
-        transform: translateX(-18px);
+        margin: auto;
+        width: 222px;
+        margin-top: 10px;
     }
     .webinar-two-speaker2 .webinar-img{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
+        width: 48%;
+        display: inline-block;
     }
     .webinar-two-speaker2 .speaker p{
         margin: 0;
     }
     .webinar-two-speaker2 .speaker {
-        display: flex;
-        align-items: center;
     }
     .webinar-two-speaker2 .desg{
         font-size: 14px;

@@ -2,7 +2,7 @@
     <section class="webinar-two-speaker1">
     <div class="container">
         <div class="row">
-            <div class="col-sm-6" style="padding: 50px 0;">
+            <div class="col-sm-6">
                 <div class="webinar-text">
                     <h1>{{name}}</h1>
                     <h3>{{date}}</h3>
@@ -12,9 +12,10 @@
                 </div>
             </div>
             <div class="col-sm-6">
+                <div class="row">
                     {{#webinarEvents}}
                     {{#webinarSpeakers}}
-                <div class="webinar-img">
+                <div class="webinar-img col-md-6">
                         <div class="speaker">
                             <div class="speaker-img">
                                 {{#speaker_image}}
@@ -26,9 +27,10 @@
                                 <p class="desg">{{speaker_name}}</p>
                             </div>
                         </div>
-                </div>
+                                    </div>
                     {{/webinarSpeakers}}
                     {{/webinarEvents}}
+                                    </div>
             </div>
         </div>
     </div>
@@ -52,6 +54,9 @@ $this->registerCss('
     }
     .webinar-two-speaker1 .container{
         padding: 50px;
+    }
+    .webinar-two-speaker1 .col-sm-6{
+        padding: 100px 0;
     }
     .webinar-two-speaker1 .webinar-text h1 {
         color: #fff;
@@ -87,6 +92,7 @@ $this->registerCss('
         height: 200px;
         border-radius: 50%;
         background: #fff;
+        overflow: hidden;
     }
     .webinar-two-speaker1 .speaker-img  img {
     width:100%;
