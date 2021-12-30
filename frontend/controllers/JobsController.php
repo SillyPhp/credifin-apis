@@ -357,20 +357,27 @@ class JobsController extends Controller
             $organizations = Organizations::find()
                 ->distinct()
                 ->alias('a')
-                ->select(['a.organization_enc_id', 'a.name', 'a.slug',
+                ->select(['COUNT(distinct d.application_enc_id) as app_count, a.organization_enc_id', 'a.name', 'a.slug',
                     'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo',
                 ])
                 ->joinWith(['organizationLocations b' => function ($b) {
                     $b->joinWith(['cityEnc c']);
                 }], false)
-                ->where(['a.is_deleted' => 0, 'a.status' => 'Active']);
+                ->joinWith(['employerApplications d' => function ($d) {
+//                    $b->joinWith(['cityEnc c']);
+                }])
+                ->where(['a.is_deleted' => 0, 'a.status' => 'Active'])
+                ->andWhere(['not', ['a.logo' => null]])
+                ->andWhere(['not', ['a.logo' => '']]);
             if(isset($options['city_name']) && !empty($options['city_name'])){
                 $organizations->andWhere(['like', 'c.name', $options['city_name']]);
             }else{
                 $organizations->andWhere(['like', 'c.name', 'Ludhiana']);
             }
                 $organizations = $organizations
+                ->groupBy(['a.organization_enc_id'])
                 ->limit(11)
+                ->orderBy(['app_count' => SORT_DESC])
                 ->asArray()
                 ->all();
             if($organizations){
