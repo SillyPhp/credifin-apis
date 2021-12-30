@@ -27,14 +27,14 @@ class JobApplied extends Model
     public function rules()
     {
         return [
-            [['id', 'resume_file', 'org_id', 'status', 'check', 'resume_list', 'questionnaire_id', 'fill_question'], 'required'],
+            [['id', 'org_id', 'status', 'questionnaire_id', 'fill_question'], 'required'],
             [
                 ['location_pref'], 'required', 'when' => function ($model, $attribute) {
             }, 'whenClient' => "function (attribute, value) {
                        return $('#jobapplied-location_pref label input').length != 0;
                 }"
             ],
-            [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx,pdf,png,jpg,jpeg', 'maxSize' => 1024 * 1024 * 2],
+//            [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx,pdf,png,jpg,jpeg', 'maxSize' => 1024 * 1024 * 2],
         ];
     }
 
