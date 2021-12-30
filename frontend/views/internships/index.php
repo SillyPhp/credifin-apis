@@ -102,9 +102,25 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
 
 <?= $this->render('/webinars/webinar-carousel')?>
 
-<?php
-echo $this->render('/widgets/info-stats');
+<?php echo $this->render('/widgets/info-stats'); ?>
 
+<section id="trendingCompaniesSectionMain">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="heading-style" id="trending-companies-by-location">Trending Companies in <span
+                            id="trendingCityName"></span></h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" id="trendingOrgCardsMain">
+            </div>
+            <?= $this->render('/widgets/trending-companies-in-cities') ?>
+        </div>
+    </div>
+</section>
+
+<?php
 echo $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'internships'

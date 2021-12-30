@@ -1,65 +1,35 @@
-<section class="webinar-three-speaker1">
+<script id="webinar_three_speaker1" type="text/javascript">
+    <section class="webinar-three-speaker1">
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
                 <div class="webinar-text">
-                    <h1>Webinar Name - Title</h1>
-                    <!-- <h3>September 21, 2021</h3> -->
-                    <!-- <h3>4PM - 8PM</h3> -->
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laborum ratione, aspernatur harum tempora optio accusamus cumque, quo voluptate, maiores sit eligendi quasi omnis.</p>
-                    <!-- <a href="">Register Now</a> -->
+                    <h1>{{name}}</h1>
+                    <p>{{description}}</p>
                 </div>
                 <div class="webinar-speaker-images">
                     <div class="row">
-                        <div class="col-xs-4">
-                            <div class="speaker">
-                                <img src="">
-                                <p>Speaker Name</p>
+                        {{#webinarEvents}}
+                        {{#webinarSpeakers}}
+                            <div class="col-xs-4">
+                                <div class="speaker">
+                                    <img src="{{speaker_image}}">
+                                    <p>{{speaker_name}}</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-xs-4">
-                            <div class="speaker">
-                                <img src="">
-                                <p>Speaker Name</p>
-                            </div>
-                        </div>
-                        <div class="col-xs-4">
-                            <div class="speaker">
-                                <img src="">
-                                <p>Speaker Name</p>
-                            </div>
-                        </div>
+                        {{/webinarSpeakers}}
+                        {{/webinarEvents}}
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
-                <!--<div class="webinar-img">
-                    <div class="speaker">
-                        <div class="speaker-img">
-                            <img src="">
-                        </div>
-                        <div class="speaker-name">
-                            <p>Speaker Name</p>
-                            <p class="desg">Speaker Name</p>
-                        </div>
-                    </div>
-                    <div class="speaker">
-                        <div class="speaker-name">
-                            <p>Speaker Name</p>
-                            <p class="desg">Speaker Name</p>
-                        </div>
-                        <div class="speaker-img">
-                            <img src="">
-                        </div>
-                    </div>
-                </div>-->
+            <div class="col-sm-6" style="margin-top: 170px">
                 <div class="webinar-time">
                     <div class="date">
                         <div class="title">
                             DATE
                         </div>
                         <div class="value">
-                            30/09<br>Thursday
+                            {{date}}
                         </div>
                     </div>
                     <div class="time">
@@ -67,7 +37,7 @@
                             TIME
                         </div>
                         <div class="value">
-                            4PM - 8PM
+                            {{time}}
                         </div>
                     </div>
                 </div>
@@ -75,21 +45,24 @@
         </div>
     </div>
 </section>
+</script>
 
 <?php
 
 use yii\helpers\Url;
 
 $this->registerCss('
+.speaker img {
+width: 100%;
+}
     .webinar-three-speaker1 {
         background: url(/assets/themes/ey/images/pages/webinar-widgets/three-speaker-sharing-bg1.png), #150050;
         background-repeat: no-repeat;
         background-size: 100%;
-        padding: 90px 50px;
+        padding: 90px 0;
         height: 630px;
         width: 1200px;
-        margin: auto;   
-        display: flex;
+        margin: auto;
     }
     .webinar-three-speaker1 .container{
         padding: 50px 0 !important;
@@ -134,11 +107,15 @@ $this->registerCss('
         background: #fff;
     }
     .webinar-three-speaker1 .webinar-speaker-images {
-        margin-top: 30px;
+        margin-top: 80px;
+    }
+    .speaker p {
+        margin-top: 20px !important;
+        font-size: 16px;
+        font-weight: 700;
     }
     .webinar-three-speaker1 .speaker img {
         min-width: 100px;
-        height: 100px;
         background: #fff;
     }
     .webinar-three-speaker1 .speaker-name {
@@ -159,6 +136,7 @@ $this->registerCss('
     }
     .webinar-three-speaker1 .speaker p{
         margin: 0;
+        color:white;
     }
     .webinar-three-speaker1 .desg{
         font-size: 14px;
@@ -167,18 +145,18 @@ $this->registerCss('
         transform: translateX(18px);
     }
     .webinar-three-speaker1 .date {
-        justify-content: flex-end;
+        margin-left: 130px;
     }
     .webinar-three-speaker1 .speaker {
         display: flex;
         flex-direction: column;
     }
     .webinar-three-speaker1 .date, .webinar-three-speaker1 .time {
-        display: flex;
         font-size: 30px;
         color: #fff;
         font-weight: 600;
-        align-items: center;
+        display: block;
+        width: fit-content;
     }
     .webinar-three-speaker1 .date > div:nth-child(1), .webinar-three-speaker1 .time > div:nth-child(1) {
         border-right: 2px solid #eee;
@@ -186,6 +164,7 @@ $this->registerCss('
     .webinar-three-speaker1 .date > div, .webinar-three-speaker1 .time > div {
         padding: 17px 14px;
         margin: 15px 0;
+        display: inline-block;
     }
     .webinar-three-speaker1 .title {
         align-self: normal;

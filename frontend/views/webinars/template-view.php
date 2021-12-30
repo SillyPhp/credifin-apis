@@ -5,19 +5,19 @@ use yii\helpers\Html;
 
 ?>
 <section>
-        <div class="row">
+        <div>
             <div class="loader_screen">
                 <img src="<?= Url::to('@eyAssets/images/loader/91.gif'); ?>" class="img_load">
             </div>
-            <div class="col-md-12">
-                <div id="template_display_widget" class="row">
+            <div>
+                <div id="template_display_widget">
 
                 </div>
             </div>
         </div>
 </section>
 <?php
-echo $this->render($webinarWidget['template_path'] .'/'. $webinarWidget['template_name']);
+echo $this->render('/widgets/webinar-sharing-template' .'/'. $webinarWidget['template_name']);
 $this->registerCss('
 .loader_screen{
 position:absolute;
