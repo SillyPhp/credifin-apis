@@ -122,6 +122,9 @@ $this->registerCss('
     max-width: 60px;
     margin-bottom: 10px;
 }
+.cl-heading{
+    text-align:center;
+}
 .widget-benfit p{
     color: #fff;
     font-size: 16px !important;
