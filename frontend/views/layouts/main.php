@@ -94,12 +94,19 @@ AppAssets::register($this);
                     <div class="secondary-top-header">
                         <div class="secondary-top-header-left">
                             <span>
-                                <i class="far fa-check-circle"></i><a href="/jobs/quick-job">Post quick <strong>Job</strong></a>or<a href="/internships/quick-internship"><strong>Internship</strong></a>
+                                <i class="far fa-check-circle"></i><a type="button" data-toggle="modal" data-link="/jobs/quick-jobs" data-target="#sign-up-benefit">Post quick <strong>Job</strong></a>or<a type="button" data-toggle="modal" data-link="/internships/quick-internship" data-target="#sign-up-benefit"><strong>Internship</strong></a>
                             </span>
                             <span>
-                                <i class="fab fa-twitter"></i><a href="/tweets/job/create">Post <strong>Job</strong></a>or<a href="/tweets/internship/create"><strong>Internship Tweet</strong></a>
+                                <i class="fab fa-twitter"></i><a type="button" data-toggle="modal" data-link="/tweets/job/create" data-target="#sign-up-benefit">Post <strong>Job</strong></a>or<a type="button" data-toggle="modal" data-link="/tweets/internship/create" data-target="#sign-up-benefit"><strong>Internship Tweet</strong></a>
                             </span>
                         </div>
+                        
+                        <div class="modal fade sign-up-modal" id="sign-up-benefit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                    <?= $this->render('/site/sign-up-modal') ?>
+                            </div>
+                        </div>
+
                         <div class="secondary-top-header-right">
                             <a href="/employers">Employer Zone</a>
                             <a href="/signup/organization" class="org-signup">Signup as Company</a>
