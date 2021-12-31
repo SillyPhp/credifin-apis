@@ -136,32 +136,50 @@ class JobsController extends Controller
         if (Yii::$app->request->isPost) {
             if (!Yii::$app->user->isGuest) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
+                $arr_loc = Yii::$app->request->post("json_loc");
+                $model->id = Yii::$app->request->post("application_enc_id");
+                $model->resume_list = NULL;
+                $model->location_pref = $arr_loc;
+                $model->status = Yii::$app->request->post("status");
+                $application_typ = Yii::$app->request->post("application_type");
+                $cid = Yii::$app->request->post("org_id");
+                $res = $model->saveValues();
+                if ($res['status']) {
+                    Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id, $model->id, $company_id = $cid, $unclaim_company_id = null, $type = $application_typ, $res['aid']);
+                    return $res;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+
+    public function actionJobsApplyResume()
+    {
+        $model = new \frontend\models\applications\JobAppliedResume();
+        if (Yii::$app->request->isPost) {
+            if (!Yii::$app->user->isGuest) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 if (Yii::$app->request->post("check") == 1) {
-                    $arr_loc = Yii::$app->request->post("json_loc");
-                    $model->id = Yii::$app->request->post("application_enc_id");
-                    $model->resume_list = Yii::$app->request->post("resume_enc_id");
-                    $model->location_pref = $arr_loc;
-                    $model->status = Yii::$app->request->post("status");
-                    $application_typ = Yii::$app->request->post("application_type");
-                    $cid = Yii::$app->request->post("org_id");
-                    $res = $model->saveValues();
-                    if ($res['status']) {
-                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id, $model->id, $company_id = $cid, $unclaim_company_id = null, $type = $application_typ, $res['aid']);
-                        return $res;
-                    } else {
-                        return false;
-                    }
+                $model->id = Yii::$app->request->post("application_enc_id");
+                $model->resume_list = Yii::$app->request->post("resume_enc_id");
+                $application_typ = Yii::$app->request->post("application_type");
+                $cid = Yii::$app->request->post("org_id");
+                $res = $model->saveValues();
+                if ($res['status']) {
+//                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id, $model->id, $company_id = $cid, $unclaim_company_id = null, $type = $application_typ, $res['aid']);
+                    return $res;
+                } else {
+                    return false;
+                }
                 } else if (Yii::$app->request->post("check") == 0) {
-                    $arr_loc = Yii::$app->request->post("json_loc");
                     $model->resume_file = UploadedFile::getInstance($model, 'resume_file');
                     $model->id = Yii::$app->request->post("id");
-                    $model->location_pref = $arr_loc;
-                    $model->status = Yii::$app->request->post("status");
                     $application_typ = Yii::$app->request->post("application_type");
                     $cid = Yii::$app->request->post("org_id");
                     $res = $model->upload();
                     if ($res['status']) {
-                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id, $model->id, $company_id = $cid, $unclaim_company_id = null, $type = $application_typ, $res['aid']);
+//                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id, $model->id, $company_id = $cid, $unclaim_company_id = null, $type = $application_typ, $res['aid']);
                         return $res;
                     } else {
                         return false;
@@ -170,7 +188,6 @@ class JobsController extends Controller
             }
         }
     }
-
     public function actionIndex()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -340,20 +357,27 @@ class JobsController extends Controller
             $organizations = Organizations::find()
                 ->distinct()
                 ->alias('a')
-                ->select(['a.organization_enc_id', 'a.name', 'a.slug',
+                ->select(['COUNT(distinct d.application_enc_id) as app_count, a.organization_enc_id', 'a.name', 'a.slug',
                     'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo',
                 ])
                 ->joinWith(['organizationLocations b' => function ($b) {
                     $b->joinWith(['cityEnc c']);
                 }], false)
-                ->where(['a.is_deleted' => 0, 'a.status' => 'Active']);
+                ->joinWith(['employerApplications d' => function ($d) {
+//                    $b->joinWith(['cityEnc c']);
+                }])
+                ->where(['a.is_deleted' => 0, 'a.status' => 'Active'])
+                ->andWhere(['not', ['a.logo' => null]])
+                ->andWhere(['not', ['a.logo' => '']]);
             if(isset($options['city_name']) && !empty($options['city_name'])){
                 $organizations->andWhere(['like', 'c.name', $options['city_name']]);
             }else{
                 $organizations->andWhere(['like', 'c.name', 'Ludhiana']);
             }
                 $organizations = $organizations
+                ->groupBy(['a.organization_enc_id'])
                 ->limit(11)
+                ->orderBy(['app_count' => SORT_DESC])
                 ->asArray()
                 ->all();
             if($organizations){
