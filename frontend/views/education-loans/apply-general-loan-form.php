@@ -2012,6 +2012,9 @@ $(document).on('keyup','.child_loan',function(e) {
     sum += !isNaN(parseFloat(this.value)) ? parseFloat(this.value) : 0;
     $('#loanamount').val(sum);
 });
+});
+$("input[name=applicantTypeRadio]").click(function(){
+    matchHeight();
 })
 JS;
 $this->registerJs($script);
