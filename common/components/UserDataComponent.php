@@ -2,6 +2,7 @@
 
 namespace common\components;
 
+use common\models\Cities;
 use common\models\LoanApplications;
 use common\models\SelectedServices;
 use common\models\Services;
@@ -336,5 +337,13 @@ class UserDataComponent extends Component
             ->innerJoinWith(['educationLoanPayments elp' => function ($g) {
                 $g->andWhere(['in', 'elp.payment_status', ['captured', 'created']]);
             }]);
+    }
+
+    public function getCurrentCity(){
+        $cityId = Yii::$app->user->identity->city_enc_id;
+        if($cityId){
+            return Cities::findOne(['city_enc_id' => $cityId]);
+        }
+        return false;
     }
 }
