@@ -27,6 +27,7 @@ use Yii;
  * @property string $job_year
  * @property int $college_actions NULL as pending, 0 as approved, 1 as blocked, 2 as rejected
  * @property int $is_deleted
+ * @property string $created_on
  * @property string $updated_on
  *
  * @property CollegeCourses $courseEnc
@@ -39,7 +40,7 @@ use Yii;
 class UserOtherDetails extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -47,7 +48,7 @@ class UserOtherDetails extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -55,7 +56,7 @@ class UserOtherDetails extends \yii\db\ActiveRecord
             [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id'], 'required'],
             [['semester', 'internship_duration', 'college_actions', 'is_deleted'], 'integer'],
             [['cgpa'], 'number'],
-            [['starting_year', 'ending_year', 'internship_start_date', 'job_year', 'updated_on'], 'safe'],
+            [['starting_year', 'ending_year', 'internship_start_date', 'job_year', 'created_on', 'updated_on'], 'safe'],
             [['job_start_month'], 'string'],
             [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'department_enc_id', 'educational_requirement_enc_id', 'course_enc_id', 'assigned_college_enc_id', 'section_enc_id'], 'string', 'max' => 100],
             [['university_roll_number'], 'string', 'max' => 30],
