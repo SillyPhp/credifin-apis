@@ -35,7 +35,7 @@ $this->registerCss('
     overflow: hidden;
     box-shadow: 0 0 13px 4px #eee;
     line-height: 85px;
-    padding: 2px;
+    padding: 10px;
 }
 .company-name {
     opacity:0;
@@ -56,7 +56,6 @@ $this->registerCss('
     width: 100%;
     height: 100%;
     object-fit: contain;
-    border-radius: 50%;
 }
 ');
 $script = <<< JS
@@ -66,6 +65,7 @@ $script = <<< JS
                 $('#trending-companies-by-location').html('Trending Companies');
             }
             getLocationData(data.city);
+            $('#location-btn').attr('href','/organizations?keyword='+data.city);
         });
     function getLocationData(city) {
         $.ajax({

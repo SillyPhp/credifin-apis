@@ -114,7 +114,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
             <div class="col-md-6 col-sm-4 col-xs-12">
                 <div class="type-1">
                     <div>
-                        <a href="<?= Url::to('/jobs/profiles'); ?>" class="btn btn-3">
+                        <a href="/organizations" id="location-btn" class="btn btn-3">
                             <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
                             <span class="round"><i class="fas fa-chevron-right"></i></span>
                         </a>
