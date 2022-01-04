@@ -447,4 +447,17 @@ class NotificationEmails extends Component
             ];
         }
     }
+
+    public function newJobEmail($param){
+        Yii::$app->mailer->htmlLayout = 'layouts/email';
+        $mail = Yii::$app->mailer->compose(
+            ['html' => 'job-create-email'],['data'=>$param]
+        )
+            ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+            ->setTo([$param['email'] => $param['name']])
+            ->setSubject($param['subject']);
+        if ($mail->send()) {
+            return true;
+        }
+    }
 }

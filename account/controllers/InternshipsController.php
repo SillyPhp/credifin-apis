@@ -149,7 +149,8 @@ class InternshipsController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $session_token = Yii::$app->request->post('n');
-            if ($application_id = $model->saveValues($type)) {
+            $data = $model->saveValues($type);
+            if ($data['status']) {
                 $session = Yii::$app->session;
                 if (!empty($session->get($session_token))) {
                     $session->remove($session_token);
@@ -157,10 +158,14 @@ class InternshipsController extends Controller
                 return $response = [
                     'status' => 200,
                     'title' => 'Success',
-                    'app_id' => $application_id,
+                    'app_id' => $data['id'],
                 ];
             } else {
-                return false;
+                return $response = [
+                    'status' => 500,
+                    'title' => 'Error',
+                    'message' => $data['message'],
+                ];
             }
         } else {
             return $this->render('/employer-applications/form', ['model' => $model,
@@ -231,7 +236,8 @@ class InternshipsController extends Controller
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $session_token = Yii::$app->request->post('n');
-                if ($application_id = $model->saveValues($type)) {
+                $data = $model->saveValues($type);
+                if ($data['status']) {
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
                         $session->remove($session_token);
@@ -242,10 +248,14 @@ class InternshipsController extends Controller
                     return $response = [
                         'status' => 200,
                         'title' => 'Success',
-                        'app_id' => $application_id,
+                        'app_id' => $data['id'],
                     ];
                 } else {
-                    return false;
+                    return $response = [
+                        'status' => 500,
+                        'title' => 'Error',
+                        'message' => $data['message'],
+                    ];
                 }
             } else {
                 $obj = new ApplicationDataProvider();

@@ -29,6 +29,7 @@ class CandidateApply extends Widget
     public function run()
     {
         $model = new JobApplied();
+        $resumeModel = new JobAppliedResume();
         $locations = ApplicationPlacementLocations::find()
             ->alias('a')
             ->distinct()
@@ -79,6 +80,7 @@ class CandidateApply extends Widget
 
         return $this->render('@frontend/views/widgets/employer_applications/job-applied', ['model' => $model,
             'btn_class' => $this->btn_class,
+            'resumeModel' => $resumeModel,
             'application_enc_id' => $this->application_enc_id,
             'organization_enc_id' => $this->organization_enc_id,
             'applicationType' => $applicationType,
