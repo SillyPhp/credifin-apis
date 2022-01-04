@@ -13,6 +13,7 @@ use common\models\Organizations;
 use common\models\Referral;
 use common\models\Speakers;
 use common\models\States;
+use common\models\UserOtherDetails;
 use common\models\WebinarSpeakers;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -298,6 +299,44 @@ class UtilitiesController extends ApiBaseController
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
+    }
+
+    public function actionUnapprovedMail()
+    {
+        $colleges = Organizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id', 'a.name', 'COUNT(CASE WHEN b.college_actions IS NULL Then 1 END) as unapproved_count'])
+            ->joinWith(['userOtherDetails b'], false)
+            ->groupBy(['b.organization_enc_id'])
+            ->where(['b.is_deleted' => 0])
+            ->having(['>', 'unapproved_count', 10])
+            ->asArray()
+            ->all();
+
+        return $colleges;
+    }
+
+    public function actionAppliedStudents()
+    {
+
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $currentDate = $dt->format('Y-m');
+
+        $params = Yii::$app->request->post();
+
+        if (!isset($params['college_id']) && empty($params['college_id'])) {
+            return $this->response(400, ['status' => 400, 'message' => 'missing information "college_id"']);
+        }
+
+        $signed_up_students = UserOtherDetails::find()
+            ->where(['organization_enc_id' => $params['college_id'], 'is_deleted' => 0, 'college_actions' => 0])
+            ->andWhere(['like', 'updated_on', $currentDate])
+            ->count();
+
+        return (int)$signed_up_students;
+
     }
 
 }
