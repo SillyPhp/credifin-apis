@@ -94,10 +94,10 @@ AppAssets::register($this);
                     <div class="secondary-top-header">
                         <div class="secondary-top-header-left">
                             <span>
-                                <i class="far fa-check-circle"></i><a type="button" data-toggle="modal" data-link="/jobs/quick-jobs" data-target="#sign-up-benefit">Post quick <strong>Job</strong></a>or<a type="button" data-toggle="modal" data-link="/internships/quick-internship" data-target="#sign-up-benefit"><strong>Internship</strong></a>
+                                <i class="far fa-check-circle"></i><a href="" type="button" data-toggle="modal" data-link="/jobs/quick-jobs" data-target="#sign-up-benefit">Post quick <strong>Job</strong></a>or<a href="" type="button" data-toggle="modal" data-link="/internships/quick-internship" data-target="#sign-up-benefit"><strong>Internship</strong></a>
                             </span>
                             <span>
-                                <i class="fab fa-twitter"></i><a type="button" data-toggle="modal" data-link="/tweets/job/create" data-target="#sign-up-benefit">Post <strong>Job</strong></a>or<a type="button" data-toggle="modal" data-link="/tweets/internship/create" data-target="#sign-up-benefit"><strong>Internship Tweet</strong></a>
+                                <i class="fab fa-twitter"></i><a href="" type="button" data-toggle="modal" data-link="/tweets/job/create" data-target="#sign-up-benefit">Post <strong>Job</strong></a>or<a href="" type="button" data-toggle="modal" data-link="/tweets/internship/create" data-target="#sign-up-benefit"><strong>Internship Tweet</strong></a>
                             </span>
                         </div>
                         
@@ -407,6 +407,9 @@ AppAssets::register($this);
         ?>
     </div>
     <script type="text/javascript">
+
+
+
         function handleCredentialResponse(response) {
             if (response.credential) {
                 var token = parseJwt(response.credential);

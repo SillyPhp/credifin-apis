@@ -58,15 +58,48 @@ use yii\helpers\Url;
 </div>
 
 <script type="text/javascript">
-    let jobBtn = document.querySelectorAll('[data-target="#sign-up-benefit"]');
-    let contBtn = document.querySelector('.cta-link a');
-    
-    jobBtn.forEach((btn)=>{
-        btn.addEventListener("click", ()=>{
-            continueLink = btn.getAttribute("data-link");
-            contBtn.setAttribute("href", continueLink);
+    window.onload = function() {
+        let jobBtn = document.querySelectorAll('[data-target="#sign-up-benefit"]');
+        let contBtnWrap = document.querySelector('.cta-link');
+        
+        jobBtn.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                continueLink = btn.getAttribute("data-link");
+                contBtn = document.querySelectorAll('.continue-btn');
+                
+                contBtn.forEach((con)=>{
+                    con.remove();
+                });
+
+                if(continueLink === ""){
+                    return;
+                }else{
+                    let conbtn = document.createElement('a');
+                    let t = document.createTextNode("Continue, without login");
+                    conbtn.classList.add('continue-btn');
+                    contBtnWrap.appendChild(conbtn);
+                    conbtn.appendChild(t);
+                    conbtn.setAttribute("href", continueLink);
+                }
+
+
+
+                // let contBtn = document.querySelectorAll('.continue-btn');
+                // contBtn.forEach((conbtn)=>{
+                //     conbtn.remove();
+                // }); 
+            //     contBtn = document.createElement("a");
+            //     contBtn.classList.add("continue-btn");
+            //     contBtn.textContent = "Continue, without login";
+            //     contBtnWrap.appendChild(contBtn);
+                
+            //     if (continueLink === "") {
+            //         contBtn.remove();
+            //     }
+            //     contBtn.setAttribute("href", continueLink);
+            });
         });
-    });
+    }
 </script>
 
 <?php $this->registerCss('
@@ -198,7 +231,7 @@ use yii\helpers\Url;
         font-weight: 500;
     }
 /*MODAL CSS ENDS HERE*/
-'); 
+');
 
 
-?>  
+?>

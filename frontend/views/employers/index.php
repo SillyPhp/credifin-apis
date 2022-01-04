@@ -222,9 +222,21 @@ echo $this->render('/widgets/drop-resume-section')
                         its free to hire from empower youth
                     </div>
                     <div class="post-job-bttn">
-                        <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">
-                            Post Now
-                        </a>
+                        <?php 
+                            if(Yii::$app->user->isGuest){
+                                ?>
+                                <a href="" id="myBttn" class="hvr-float-shadow" type="button" data-toggle="modal" data-link="" data-target="#sign-up-benefit">
+                                    Post Now
+                                </a>
+                            <?php
+                            } else{
+                                ?>
+                                <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">
+                                    Post Now
+                                </a>  
+                            <?php
+                            }
+                        ?>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -395,6 +407,7 @@ echo $this->render('/widgets/drop-resume-section')
 
 <?= $this->render('/widgets/safety-signs') ?>
     <!--    <div class="bluebg"></div>-->
+
 <?php
 $this->registerCss('
 .txt-bold{
