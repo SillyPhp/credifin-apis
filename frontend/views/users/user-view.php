@@ -2403,7 +2403,6 @@ $(document).on('click', '.updatedata', function(e){
         }
     }else if(fieldName == 'add_new_experience'){
         add_new_exp(data);
-        // console.log(data);
     }else if(fieldName == 'add_new_education'){
         if(data['school'] == ''  || data['degree'] == '' || data['field'] == '' || data['from'] == '' || data['to'] == ''){
             document.querySelector('.education_error').innerText = 'All fields are required';
@@ -2528,18 +2527,15 @@ function add_new_edu(data){
   
         data : {AddQualificationForm: {school:institute, degree:degree, field:field, qualification_to:to_date, qualification_from:from_date}},
         success : function(res){
-            console.log(res);
              if(res == true){
                 $.pjax.reload({container: '#education_display', async: false});
                 $('#exampleModalCenter').modal('hide');
             }else{
-                 console.log('hello')
             }
         } 
     });
 }
 function updateExperience(data){
-    console.log(data);
     let{city_enc_id, company, ctc, description, experience_enc_id, from_date, is_current, name, salary, title, to_date}=data
     
     ctc = ctc ? parseInt(ctc) : '';
@@ -2913,7 +2909,6 @@ sendData = (data, fieldName) => {
         data: data,
         success: function(response){
             if(response['status'] == 'success'){
-                console.log(fieldName);
                 let sectionReload = '#'+fieldName+'_display';
                 if (fieldName == 'basic-details'){
                     $.pjax.reload({container: '#userbasicDetails', async: false});
