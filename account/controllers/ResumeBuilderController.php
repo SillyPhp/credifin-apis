@@ -337,12 +337,10 @@ class ResumeBuilderController extends Controller
 
     }
 
-    public function actionEducation()
-    {
+    public function actionEducation(){
+        Yii::$app->response->format = Response::FORMAT_JSON;
         $model = new AddQualificationForm();
-
         if ($model->load(Yii::$app->request->post())) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
             return $model->save();
             if (!$model->save()) {
                 return false;
