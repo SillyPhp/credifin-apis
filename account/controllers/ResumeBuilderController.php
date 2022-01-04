@@ -565,6 +565,7 @@ class ResumeBuilderController extends Controller
                 $user_obj->created_by = Yii::$app->user->identity->user_enc_id;
 
                 if (!$user_obj->save()) {
+                    
                     return json_encode($response = [
                         'status' => 201,
                         'title' => 'error',
