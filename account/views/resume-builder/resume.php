@@ -903,24 +903,24 @@ $(document).on('submit','#update-education-form',function(e){
         }else if(compareDates(from,to)){
             toastr.error('please enter correct dates', 'error');
         }else{
-        $.ajax({
-            url: '/account/resume-builder/update-education',
-            method : 'POST',
-            data : {school:school,degree:degree,field:field,from:from,to:to,id:id},
-            beforeSend:function(){     
-                      $('.loader-aj-main').fadeIn(1000);
-            },
-            success : function(res)
-            {
-                $('.loader-aj-main').fadeOut(1000);
-                 if(res == true){
-                    $('#update-education-modal').modal('toggle');
-                    $.pjax.reload({container: '#pjax_qualification', async: false});
-                 }else{
-                    $('#update-education-modal').modal('toggle');
-                    $.pjax.reload({container: '#pjax_qualification', async: false}); 
-                 }
-            } 
+            $.ajax({
+                url: '/account/resume-builder/update-education',
+                method : 'POST',
+                data : {school:school,degree:degree,field:field,from:from,to:to,id:id},
+                beforeSend:function(){     
+                          $('.loader-aj-main').fadeIn(1000);
+                },
+                success : function(res)
+                {
+                    $('.loader-aj-main').fadeOut(1000);
+                     if(res == true){
+                        $('#update-education-modal').modal('toggle');
+                        $.pjax.reload({container: '#pjax_qualification', async: false});
+                     }else{
+                        $('#update-education-modal').modal('toggle');
+                        $.pjax.reload({container: '#pjax_qualification', async: false}); 
+                     }
+                } 
             });
             
         }
