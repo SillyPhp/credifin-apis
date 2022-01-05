@@ -325,8 +325,17 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         }
                         ?>
                     </div>
-                    <div class="apply-job-detail">
+                    <div class="apply-job-detail awesome-size ">
+                        <h5>About Me <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="edit-description"></i></h5>
+                        <?php
+                            pjax::begin([
+                                'id'=>'user_description'
+                            ])
+                        ?>
                         <p><?= Html::encode($user['description']); ?></p>
+                        <?php
+                        pjax::end();
+                        ?>
                     </div>
                     <?php if ($skills) { ?>
                         <div class="apply-job-detail awesome-size">
@@ -703,6 +712,16 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                 </div>
                             </div>
                             <button type="button" data-name="basic-details" class="btn btn-primary updatedata">Submit</button>
+                        </form>
+                    </div>
+                    <div class="edit-description col-md-12">
+                        <form>
+                            <div class="form-group">
+                                <label for="job_title" class="label-edit">Description</label>
+                                <textarea class="form-control form-control-edit" data-name="description" id="description"
+                                      placeholder="Enter Position" value="<?= $user['description'] ?>"><?= $user['description'] ?></textarea>
+                            </div>
+                            <button type="button" data-name="description" class="btn btn-primary updatedata">Submit</button>
                         </form>
                     </div>
                     <div class="edit-skills col-md-12">
@@ -2434,7 +2453,7 @@ $(document).on('click', '.updatedata', function(e){
         }else{
             add_new_edu(data);
         }
-    }else if(fieldName == 'basic-details'){
+    }else if(fieldName == 'basic-details' || fieldName == 'description'){
         sendData(data, fieldName);
     }
 })
@@ -2941,7 +2960,8 @@ sendData = (data, fieldName) => {
                 let sectionReload = '#'+fieldName+'_display';
                 if (fieldName == 'basic-details'){
                     $.pjax.reload({container: '#userbasicDetails', async: false});
-                    $('#exampleModalCenter').modal('hide');
+                }else if(fieldName == 'description'){
+                    $.pjax.reload({container:'#user_description', async: false})
                 }else{
                     $.pjax.reload({container: sectionReload, async: false});
                 }
