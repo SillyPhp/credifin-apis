@@ -84,6 +84,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
     if ($locations[$apl['city_enc_id']]) {
         $singleLoc = [];
         $singleLoc['name'] = $apl['name'];
+        $singleLoc['city_enc_id'] = $apl['city_enc_id'];
         $singleLoc['positions'] = $locations[$apl['city_enc_id']]['positions'] + $apl['positions'];
         $locations[$apl['city_enc_id']] = $singleLoc;
     } else {
@@ -91,6 +92,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
         $singleLoc = [];
         $singleLoc['name'] = $apl['name'];
         $singleLoc['positions'] = $apl['positions'];
+        $singleLoc['city_enc_id'] = $apl['city_enc_id'];
         $singleLoc['count'] = 0;
         $locations[$apl['city_enc_id']] = $singleLoc;
     }
@@ -102,6 +104,11 @@ foreach ($fields as $f) {
     }
 }
 
+function cmp($a, $b) {
+    return $a['count'] < $b['count'];
+}
+
+usort($locations, "cmp");
 ?>
 <div class="bg-img"></div>
 <div class="hamburger-jobs">
@@ -133,6 +140,7 @@ foreach ($fields as $f) {
                                 }
                                 echo implode(', ', array_unique($arry));
                                 echo $more ? ' and more' : ' ';
+
                             } else {
                                 echo 'Work From Home';
                             }
@@ -353,7 +361,7 @@ foreach ($fields as $f) {
                                 <?php $k = 0;
                                 foreach ($locations as $key => $val) { ?>
                                     <li class="filter-application-by-location"
-                                        data-loc="<?= $key ?>"><?= $val['name'] . '<span>' . $val['count'] . '</span>' ?></li>
+                                        data-loc="<?= $val['city_enc_id'] ?>"><?= $val['name'] . '<span>' . $val['count'] . '</span>' ?></li>
                                     <?php
                                     if ($k >= 2) {
                                         break;
@@ -370,13 +378,12 @@ foreach ($fields as $f) {
                         <div class="hidden-locations">
                             <?php if ($application_name['applicationPlacementLocations']) { ?>
                                 <ul class="location-postss">
-                                    <?php $kk = 0;
+                                    <?php
                                     foreach ($locations as $key => $val) {
-                                        if ($kk > 2) { ?>
+                                        ?>
                                             <li class="filter-application-by-location"
-                                                data-loc="<?= $key ?>"><?= $val['name'] . '<span>' . $val['count'] . '</span>' ?></li>
-                                        <?php }
-                                        $kk++;
+                                                data-loc="<?= $val['city_enc_id'] ?>"><?= $val['name'] . '<span>' . $val['count'] . '</span>' ?></li>
+                                        <?php
                                     } ?>
                                 </ul>
                             <?php } ?>
@@ -787,16 +794,19 @@ foreach ($fields as $f) {
                                 <div class="pref-indus">
                                     <?php
                                     $industry = [];
-                                    if ($arr['createdBy']['userPreferredIndustries']) {
-                                        foreach ($arr['createdBy']['userPreferredIndustries'] as $ind) {
-                                            array_push($industry, $ind["industry"]);
+                                    if ($arr['appliedApplicationLocations']) {
+                                        foreach ($arr['appliedApplicationLocations'] as $ind) {
+                                            array_push($industry, $ind["name"]);
                                         }
                                         $str2 = implode(", ", array_unique($industry));
                                         if ($str2) {
                                             ?>
-                                            <h4>
-                                                <span>Industry: </span>
-                                                <?= rtrim($str2, ','); ?>
+                                            <h4 class="clamp-c" style="display: flex;align-items: center;">
+                                                <span><i class="fa fa-map-marker"></i> </span>
+                                                <p style="margin: 5px;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;"><?= rtrim($str2, ','); ?></p>
+                                                <div class="all-data">
+                                                    <h5><?= rtrim($str2, ','); ?></h5>
+                                                </div>
                                             </h4>
                                             <?php
                                         }
@@ -1187,6 +1197,7 @@ $this->registerCss('
     padding:8px 15px;
     top: 30px;
     box-shadow:0px 1px 6px 2px #ddd;
+    z-index:9;
 }
 .all-data:before {
     content: "";

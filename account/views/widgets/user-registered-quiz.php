@@ -25,7 +25,7 @@ use yii\helpers\Url;
                 <div class="col-md-12">
                     <div class="quiz-card">
                         <div class="quiz-img">
-                            <img src="<?= $quiz['sharing_banner_image'] ? $quiz['sharing_image'] : 'https://www.empoweryouth.com/assets/themes/ey/images/pages/quiz/quiz-template-default.png' ?>">
+                            <img src="<?= $quiz['sharing_banner_image'] ? $quiz['sharing_banner_image'] : 'https://www.empoweryouth.com/assets/themes/ey/images/pages/quiz/quiz-template-default.png' ?>">
                         </div>
                         <div class="quiz-title">
                             <h2><?= $quiz['name'] ?></h2>

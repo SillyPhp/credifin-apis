@@ -79,9 +79,6 @@ use yii\helpers\Url;
     </div>
 </section>
 
-
-
-
 <section class="benefit-bg">
     <div class="container">
         <div class="row">
@@ -147,7 +144,7 @@ use yii\helpers\Url;
         </div>
         <div class="row">
           <?php
-          foreach ($loan_org as $l) {
+          foreach ($loan_colleges as $l) {
             ?>
               <div class="col-md-3 col-sm-4 col-xs-12">
                   <a href="<?= Url::to('/education-loans/apply-loan/' . $l['organization_enc_id'], true) ?>"
@@ -229,7 +226,9 @@ html{
     font-weight: 400;
     word-spacing: 2px;
 }
-
+.bgeEd{
+    background-color: #edf4fc
+}
 .header-img{
     position: relative;
     z-index: 2;

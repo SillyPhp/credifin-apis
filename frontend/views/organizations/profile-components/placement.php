@@ -241,7 +241,7 @@ async function getCoursePlacements(){
     if(res['response']['status'] == 200){
         createPlacementBox(res['response']['recruitments'])
     }else{
-        document.querySelector('.course-outer').innerHTML = '<p class="noResults"> No Details Added </p>'
+        document.querySelector('.course-outer').innerHTML = noDetailsFound();
     }
 }
 getCoursePlacements()
