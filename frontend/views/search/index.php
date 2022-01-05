@@ -20,6 +20,53 @@ use yii\helpers\Url;
     </div>
 </section>
 
+
+<section id="jobs">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                <div class="heading-style">Jobs</div>
+            </div>
+            <div class="col-md-6 col-xs-6">
+                <div class="type-1">
+                    <div>
+                        <a href="javascript:;" class="btn btn-3 search-jobs-link">
+                            <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row jobs-list">
+
+        </div>
+    </div>
+</section>
+
+<section id="internships">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-xs-6">
+                <div class="heading-style">Internships</div>
+            </div>
+            <div class="col-md-6 col-xs-6">
+                <div class="type-1">
+                    <div>
+                        <a href="javascript:;" class="btn btn-3 search-internships-link">
+                            <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row internships-list">
+
+        </div>
+    </div>
+</section>
+
 <section id="companies">
     <div class="container">
         <div class="row">
@@ -147,52 +194,6 @@ use yii\helpers\Url;
     </div>
 </section>
 
-<section id="jobs">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-xs-6">
-                <div class="heading-style">Jobs</div>
-            </div>
-            <div class="col-md-6 col-xs-6">
-                <div class="type-1">
-                    <div>
-                        <a href="javascript:;" class="btn btn-3 search-jobs-link">
-                            <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
-                            <span class="round"><i class="fas fa-chevron-right"></i></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row jobs-list">
-
-        </div>
-    </div>
-</section>
-
-<section id="internships">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-xs-6">
-                <div class="heading-style">Internships</div>
-            </div>
-            <div class="col-md-6 col-xs-6">
-                <div class="type-1">
-                    <div>
-                        <a href="javascript:;" class="btn btn-3 search-internships-link">
-                            <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
-                            <span class="round"><i class="fas fa-chevron-right"></i></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row internships-list">
-
-        </div>
-    </div>
-</section>
-
 <section id="posts">
     <div class="container">
         <div class="row">
@@ -309,7 +310,7 @@ $this->registerCss('
     display:flex;
     justify-content:center;
     font-size:14px;
-    min-height:25px;
+    min-height:27px;
 }
 .stars{
     margin-right:5px;
