@@ -468,16 +468,14 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         </div>
                         <?php
                     }
+                    Pjax::begin([
+                        'id' => 'pjax_achievements',
+                    ]);
                     if ($achievement) {
                         ?>
                         <div class="achievements-detail set-li awesome-size">
                             <h5 class="achievements-head all-head">Achievements
                                 <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="add-achievements"></i></h5>
-                            <?php
-                            Pjax::begin([
-                                'id' => 'pjax_achievements',
-                            ]);
-                            ?>
                             <ul>
                                 <?php
                                 foreach ($achievement as $achive) {
@@ -487,17 +485,21 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                 }
                                 ?>
                             </ul>
-                            <?php
-                            Pjax::end();
-                            ?>
                         </div>
                         <?php
                     }
+                    Pjax::end();
+
+                    Pjax::begin([
+                        'id' => 'pjax_hobby',
+                    ]);
                     if ($hobbies) {
                         ?>
                         <div class="hobbies-detail set-li awesome-size">
+
                             <h5 class="hobbies-head all-head">Hobbies
                                 <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="add-hobbies"></i></h5>
+
                             <ul>
                                 <?php
                                 foreach ($hobbies as $hobby) {
@@ -507,18 +509,19 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                 }
                                 ?>
                             </ul>
+
                         </div>
                         <?php
                     }
+                    pjax::end();
+
+                    Pjax::begin([
+                        'id' => 'pjax_interest',
+                    ]);
                     if ($interests) {
                         ?>
                         <div class="Interests-detail set-li awesome-size">
                             <h5 class="interest-head all-head">Interests <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="add-interest"></i></h5>
-                            <?php
-                            Pjax::begin([
-                                'id' => 'pjax_interest',
-                            ]);
-                            ?>
                             <ul>
                                 <?php
                                 foreach ($interests as $intrst) {
@@ -528,12 +531,10 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                 }
                                 ?>
                             </ul>
-                            <?php
-                            Pjax::end();
-                            ?>
                         </div>
                         <?php
                     }
+                    Pjax::end();
                     ?>
                 </div>
             <?php } ?>
@@ -936,15 +937,36 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         <form>
                             <div class="form-group">
                                 <label for="hobbies-name" class="label-edit">Hobbies</label>
-                                <ul class="old-interest">
-                                    <li class="addedskills">games
-                                        <span class="tagRemove">x</span>
-                                        <input type="hidden" name="hobbies[]" value="">
+                                <?php
+                                Pjax::begin([
+                                    'id' => 'pjax_hobby',
+                                ]);
+                                ?>
+                                <ul class="tags skill_tag_list">
+                                    <?php
+
+                                    if (!empty($hobbies)) {
+                                        foreach ($hobbies as $hobby) { ?>
+                                            <li class="addedTag"><?= $hobby['hobby'] ?>
+                                                <span id="<?= $hobby['user_hobby_enc_id'] ?>"
+                                                      class="hobby_remove">x</span>
+                                            </li>
+                                        <?php }
+                                    }
+                                    ?>
+                                    <li class="tagAdd taglist">
+                                        <div class="skill_wrapper">
+                                            <input type="text" id="hobby_input" class="hobby_search input_search text-capitalize
+                                                   form-control form-control-edit"
+                                                   placeholder="Hobbies">
+                                        </div>
                                     </li>
-                                    <input type="text" class="form-control form-control-edit" id="hobbies-name" placeholder="Enter hobbies">
                                 </ul>
+                                <?php
+                                Pjax::end();
+                                ?>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+<!--                            <button type="submit" class="btn btn-primary">Submit</button>-->
                         </form>
                     </div>
                 </div>
@@ -1030,7 +1052,8 @@ ul.old-skills input, ul.old-languages input, ul.old-interest input, ul.old-achie
     width: 180px;
     height: 34px;
 }
-li.addedskills {
+li.addedskills,
+li.addedTag{
     background: #f4f5fa;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
@@ -1046,7 +1069,8 @@ li.addedskills {
 }
 span.tagRemove,
 span.interest_remove,
-span.achievement_remove{
+span.achievement_remove,
+span.hobby_remove{
     position: absolute;
     right: -6px;
     top: -5px;
@@ -2788,6 +2812,7 @@ $(document).on('click','.achievement_remove', function(e) {
             var data = JSON.parse(response);
             if(data.status == 200){
                 $.pjax.reload({container: '#pjax_achievements', async: false});
+                 $('#exampleModalCenter').modal('hide');
             }else{
                 tag_main.show();
                 toastr.error(data.message, data.title);
@@ -2815,6 +2840,7 @@ $(document).on('keyup','#hobby_input',function(e){
             {
                  var res = JSON.parse(response);
                  $.pjax.reload({container: '#pjax_hobby', async: false});
+                  $('#exampleModalCenter').modal('hide');
                  if(res.status == 201){
                      toastr.error(res.message, res.title);
                  }
@@ -2841,6 +2867,7 @@ $(document).on('click','.hobby_remove', function(e) {
             var data = JSON.parse(response);
             if(data.status == 200){
                 $.pjax.reload({container: '#pjax_hobby', async: false});
+                 $('#exampleModalCenter').modal('hide');
             }else{
                 tag_main.show();
                 toastr.error(data.message, data.title);
@@ -2868,6 +2895,7 @@ $(document).on('keyup','#interest_input',function(e){
                 {
                      var res = JSON.parse(response);
                      $.pjax.reload({container: '#pjax_interest', async: false});
+                      $('#exampleModalCenter').modal('hide');
                      if(res.status == 201){
                          toastr.error(res.message, res.title);
                      }
@@ -2894,6 +2922,7 @@ $(document).on('click','.interest_remove', function(e) {
             var data = JSON.parse(response);
             if(data.status == 200){
                 $.pjax.reload({container: '#pjax_interest', async: false});
+                 $('#exampleModalCenter').modal('hide');
             }else{
                 tag_main.show();
                 toastr.error(data.message, data.title);
