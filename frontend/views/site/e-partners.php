@@ -43,7 +43,7 @@ use yii\helpers\Url;
                         <img src="<?= Url::to('@eyAssets/images/pages/dsa/Personalized-Dashboard.png') ?>">
                     </div>
                     <h3>Personalized Dashboard</h3>
-                    <p>With a personalized dashboard, you will be be able to customized it as per your needs and requirements.</p>
+                    <p>With a personalized dashboard, you will be able to customize it as per your needs and requirements.</p>
                 </div>
             </div>
             <div class="col-md-4">
