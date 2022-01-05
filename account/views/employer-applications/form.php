@@ -1883,24 +1883,28 @@ function work_from_home(job_type_str) {
                          $('.button-submit').prop('disabled','disabled');
                        },
                    success: function(res) {
-                   if(res['status'] == 200) {
-                        $('.fader').css('display','block');    
-                        $('#loading_img').addClass('show');
-                        $('#app_id_main').val(res['app_id']);
-                        // setTimeout(function() {
-                        //     $('.m-modal, .m-cover').removeClass("hidden");
-                        //     $('.m-modal').addClass("zoom");
-                        // }, 500);
-                    function explode(){
-                     window.location.replace(redirect_url); 
-                     }
-                       setTimeout(explode, 2000);
-                     } else {
-                         $('#loading_img').removeClass('show');
+                    if(res['status'] == 200) {
+                        swal({
+                        title: "",
+                        text: "Your Job Has Been Created Successfully",
+                        type:'success',
+                        showCancelButton: false,  
+                        confirmButtonClass: "btn-primary",
+                        confirmButtonText: "Dashboard",
+                        closeOnConfirm: false, 
+                        closeOnCancel: false
+                         },
+                            function (isConfirm) { 
+                             window.location.replace(redirect_url);
+                         }
+                        );
+                      }else{
+                        swal({
+                            title:"Error",
+                            text: res['message'],
+                            });
                          $('.button-submit').prop('disabled','');
-                         $('.fader').css('display','none');
-                         toastr.error('Opps Something went wrong', 'Server Error');
-                     }
+                      }
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
                        toastr.error('Some Internal Server Error re-submit the application by clicking submit', 'Connection Error');
@@ -2503,6 +2507,8 @@ $(document).on('click', '.modal-load-class', function(e) {
 });
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('//maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);

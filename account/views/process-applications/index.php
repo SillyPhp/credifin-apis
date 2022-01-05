@@ -84,6 +84,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
     if ($locations[$apl['city_enc_id']]) {
         $singleLoc = [];
         $singleLoc['name'] = $apl['name'];
+        $singleLoc['city_enc_id'] = $apl['city_enc_id'];
         $singleLoc['positions'] = $locations[$apl['city_enc_id']]['positions'] + $apl['positions'];
         $locations[$apl['city_enc_id']] = $singleLoc;
     } else {
@@ -91,6 +92,7 @@ foreach ($application_name['applicationPlacementLocations'] as $apl) {
         $singleLoc = [];
         $singleLoc['name'] = $apl['name'];
         $singleLoc['positions'] = $apl['positions'];
+        $singleLoc['city_enc_id'] = $apl['city_enc_id'];
         $singleLoc['count'] = 0;
         $locations[$apl['city_enc_id']] = $singleLoc;
     }
@@ -102,6 +104,11 @@ foreach ($fields as $f) {
     }
 }
 
+function cmp($a, $b) {
+    return $a['count'] < $b['count'];
+}
+
+usort($locations, "cmp");
 ?>
 <div class="bg-img"></div>
 <div class="hamburger-jobs">
@@ -133,6 +140,7 @@ foreach ($fields as $f) {
                                 }
                                 echo implode(', ', array_unique($arry));
                                 echo $more ? ' and more' : ' ';
+
                             } else {
                                 echo 'Work From Home';
                             }
@@ -353,7 +361,7 @@ foreach ($fields as $f) {
                                 <?php $k = 0;
                                 foreach ($locations as $key => $val) { ?>
                                     <li class="filter-application-by-location"
-                                        data-loc="<?= $key ?>"><?= $val['name'] . '<span>' . $val['count'] . '</span>' ?></li>
+                                        data-loc="<?= $val['city_enc_id'] ?>"><?= $val['name'] . '<span>' . $val['count'] . '</span>' ?></li>
                                     <?php
                                     if ($k >= 2) {
                                         break;
@@ -370,13 +378,12 @@ foreach ($fields as $f) {
                         <div class="hidden-locations">
                             <?php if ($application_name['applicationPlacementLocations']) { ?>
                                 <ul class="location-postss">
-                                    <?php $kk = 0;
+                                    <?php
                                     foreach ($locations as $key => $val) {
-                                        if ($kk > 2) { ?>
+                                        ?>
                                             <li class="filter-application-by-location"
-                                                data-loc="<?= $key ?>"><?= $val['name'] . '<span>' . $val['count'] . '</span>' ?></li>
-                                        <?php }
-                                        $kk++;
+                                                data-loc="<?= $val['city_enc_id'] ?>"><?= $val['name'] . '<span>' . $val['count'] . '</span>' ?></li>
+                                        <?php
                                     } ?>
                                 </ul>
                             <?php } ?>
