@@ -674,19 +674,19 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                 <div class="parent row">
                     <div class="edit-name-detail col-md-12">
                         <!--                                <h3 class="edit-detail">Personal Details</h3>-->
-                        <form>
-                            <div class="form-group">
+                        <form class="text-center">
+                            <div class="form-group text-left">
                                 <label for="full_name" class="label-edit">Name</label>
                                 <input type="text" class="form-control form-control-edit" data-name="full_name" id="full_name"
                                        placeholder="Enter Name" value="<?= $user['first_name'] .''. $user['last_name']  ?>">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group text-left">
                                 <label for="job_title" class="label-edit">Position</label>
                                 <input type="text" class="form-control form-control-edit" data-name="job_title" id="job_title"
                                        placeholder="Enter Position" value="<?= $user['job_profile'] ?>">
                             </div>
                             <div class="form-group">
-                                <div class="form-group lp-form posRel">
+                                <div class="form-group lp-form posRel text-left">
                                     <label class="label-edit">State</label>
                                     <select id='states_drp' data-name="state" value="<?= $user['state_enc_id'] ?>"
                                             class="form-control form-control-edit text-capitalize chosen">
@@ -702,7 +702,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     </select>
                                     <p class="errorMsg"></p>
                                 </div>
-                                <div class="form-group lp-form posRel">
+                                <div class="form-group lp-form posRel text-left">
                                     <label class="label-edit">City</label>
                                     <select id="cities_drp" data-name="city" value="<?= $user['city_enc_id'] ?>"
                                             class="form-control form-control-edit text-capitalize chosen">
@@ -711,22 +711,22 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     <p class="errorMsg selectError"></p>
                                 </div>
                             </div>
-                            <button type="button" data-name="basic-details" class="btn btn-primary updatedata">Submit</button>
+                            <button type="button" data-name="basic-details" class="btn btn-primary mt10 updatedata">Submit</button>
                         </form>
                     </div>
                     <div class="edit-description col-md-12">
-                        <form>
-                            <div class="form-group">
+                        <form class="text-center">
+                            <div class="form-group text-left">
                                 <label for="job_title" class="label-edit">Description</label>
                                 <textarea class="form-control form-control-edit" data-name="description" id="description"
                                       placeholder="Enter Position" value="<?= $user['description'] ?>"><?= $user['description'] ?></textarea>
                             </div>
-                            <button type="button" data-name="description" class="btn btn-primary updatedata">Submit</button>
+                            <button type="button" data-name="description" class="btn btn-primary mt10 updatedata">Submit</button>
                         </form>
                     </div>
                     <div class="edit-skills col-md-12">
-                        <form>
-                            <div class="form-group">
+                        <form class="text-center">
+                            <div class="form-group text-left">
                                 <label for="skills-name" class="label-edit">Skills</label>
                                 <ul class="old-skills tags skill_tag_list">
                                     <?php
@@ -746,12 +746,12 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     </li>
                                 </ul>
                             </div>
-                            <button type="button" data-name="skills" class="btn btn-primary updateSkills" >Submit</button>
+                            <button type="button" data-name="skills" class="btn btn-primary mt10 updateSkills" >Submit</button>
                         </form>
                     </div>
                     <div class="edit-languages col-md-12">
-                        <form>
-                            <div class="form-group">
+                        <form class="text-center">
+                            <div class="form-group text-left">
                                 <label for="language-name" class="label-edit">Spoken Languages</label>
                                 <ul class="old-languages tags languages_tag_list">
                                     <?php
@@ -772,29 +772,29 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     </li>
                                 </ul>
                             </div>
-                            <button type="button" data-name="languages" class="btn btn-primary updateSkills">Submit</button>
+                            <button type="button" data-name="languages" class="btn btn-primary mt10 updateSkills">Submit</button>
                         </form>
                     </div>
                     <div class="add-education col-md-12">
-                        <form id="new-edu-form">
-                            <div class="form-group">
+                        <form id="new-edu-form" class="text-center">
+                            <div class="form-group text-left">
                                 <label for="institute" class="label-edit">Education</label>
                                 <input type="text" class="form-control form-control-edit" id="institute"
                                     data-name="institute" placeholder="School/College Name">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group text-left">
                                 <label for="degree" class="label-edit">Class/Degree</label>
                                 <input type="text" class="form-control form-control-edit" id="degree"
                                        data-name="degree" placeholder="Degree">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group text-left">
                                 <label for="field" class="label-edit">Stream</label>
                                 <input type="text" class="form-control form-control-edit" id="field"
                                        data-name="field" placeholder="Stream Name">
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="form-group">
+                                    <div class="form-group text-left">
                                         <div class="input-group date">
                                             <span class="input-group-addon kv-date-picker" title="Select date"><i
                                                         class="glyphicon glyphicon-calendar kv-dp-icon"></i></span>
@@ -805,39 +805,36 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                <div class="form-group">
-                                    <div class="input-group  date">
-                                        <span class="input-group-addon kv-date-picker" title="Select date"><i
-                                                    class="glyphicon glyphicon-calendar kv-dp-icon"></i></span>
-                                        <input type="text" class="form-control"
-                                           placeholder="To Year" aria-invalid="true" id="to_date"
-                                           data-name="to_date">
+                                    <div class="form-group text-left">
+                                        <div class="input-group  date">
+                                            <span class="input-group-addon kv-date-picker" title="Select date"><i
+                                                        class="glyphicon glyphicon-calendar kv-dp-icon"></i></span>
+                                            <input type="text" class="form-control"
+                                               placeholder="To Year" aria-invalid="true" id="to_date"
+                                               data-name="to_date">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            </div>
                             <p class="education_error"></p>
-                            <div class="row">
-                                <div class="col-md-12 text-center">
-                                    <button type="button" data-name="add_new_education" data-id="education_enc_id"
-                                            class="btn btn-primary eduUpdate updatedata">Submit</button>
-                                </div>
-                            </div>
+                            <button type="button" data-name="add_new_education" data-id="education_enc_id"
+                                    class="btn btn-primary mt10 eduUpdate updatedata">Submit</button>
+
                         </form>
                     </div>
                     <div class="add-experience col-md-12">
-                        <form>
-                            <div class="form-group">
+                        <form class="text-center">
+                            <div class="form-group text-left">
                                 <label for="job-name" class="label-edit">Title *</label>
                                 <input type="text" class="form-control form-control-edit" data-name="title"
                                        id="update_exp_title" placeholder="Job Title">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group text-left">
                                 <label for="comp-name" class="label-edit">Company *</label>
                                 <input type="text" class="form-control form-control-edit" data-name="company"
                                        id="update_exp_company" placeholder="Company Name">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group text-left">
                                 <label for="locations-name" class="label-edit">Location *</label>
                                 <input type="text" class="form-control form-control-edit" id="update_cities"
                                       data-name="city" placeholder="Location">
@@ -845,7 +842,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="form-group">
+                                    <div class="form-group text-left">
                                         <label class="label-edit">Start Date *</label>
                                         <div class="input-group  date">
                                             <span class="input-group-addon kv-date-picker" title="Select date"><i
@@ -858,7 +855,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     </div>
                                 </div>
                                 <div class="col-md-6 update_experience">
-                                <div class="form-group">
+                                <div class="form-group text-left">
                                     <label class="label-edit">End Date</label>
                                     <div class="input-group  date">
                                         <span class="input-group-addon kv-date-picker" title="Select date"><i
@@ -878,26 +875,27 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                 </label>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
+                                <div class="form-group text-left">
                                     <label for="comp-salary" class="label-edit">Salary</label>
                                     <input type="text" class="form-control form-control-edit" data-name="salary"
                                            id="update_salary">
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
+                                <div class="form-group text-left">
                                     <label for="comp-ctc" class="label-edit">CTC</label>
                                     <input type="text" class="form-control form-control-edit" data-name="ctc"
                                            id="update_ctc">
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group text-left">
                                 <label for="comp-description" class="label-edit">Description *</label>
                                 <textarea class="form-control form-textarea" data-name="description" id="update_description"></textarea>
                             </div>
                             <p class="experience_error"></p>
                             <button type="button" data-name="add_new_experience" data-id="experience_enc_id"
-                                    class="btn btn-primary expUpdate updatedata">Submit</button>
+                                class="btn btn-primary expUpdate mt10 updatedata">Submit</button>
+
                         </form>
                     </div>
                     <div class="add-achievements col-md-12">
@@ -917,12 +915,16 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     <li class="tagAdd taglist">
                                         <div class="skill_wrapper">
                                             <input type="text" id="achievement_input" class="achievement_search input_search text-capitalize
-                                                   form-control form-control-edit" placeholder="Achievements">
+                                                   form-control  form-control-edit" placeholder="Achievements">
                                         </div>
                                     </li>
                                 </ul>
                             </div>
-<!--                            <button type="button" data-name="achievements" class="btn btn-primary updateSkills">Submit</button>-->
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button type="button" class="btn mt10 btn-primary closeModal">Done</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div class="add-interest col-md-12">
@@ -949,11 +951,15 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     </li>
                                 </ul>
                             </div>
-<!--                            <button type="submit" data-name="interests" class="btn btn-primary">Submit</button>-->
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button type="button" class="btn mt10 btn-primary closeModal">Done</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div class="add-hobbies col-md-12">
-                        <form>
+                        <form onsubmit="return false">
                             <div class="form-group">
                                 <label for="hobbies-name" class="label-edit">Hobbies</label>
                                 <?php
@@ -985,7 +991,11 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                 Pjax::end();
                                 ?>
                             </div>
-<!--                            <button type="submit" class="btn btn-primary">Submit</button>-->
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button type="button" class="btn mt10 btn-primary closeModal">Done</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -1008,6 +1018,9 @@ $this->registerCss('
 .edication_error{
     color: #df4759;
     text-align: center;
+}
+.text-left{
+    text-align: left;
 }
 .tags {
     float: left;
@@ -2170,6 +2183,9 @@ ul.status-detail li>strong {
     font-weight: 500;
     font-style: italic;
 }
+.mt10{
+    margin-top: 10px;
+}
 @media screen and (max-width: 525px){
     .header-details {
         margin-top: 0px;
@@ -2805,7 +2821,6 @@ $(document).on('keyup','#achievement_input',function(e){
                 {
                      var res = JSON.parse(response);
                      $.pjax.reload({container: '#pjax_achievements', async: false});
-                     $('#exampleModalCenter').modal('hide');
                      if(res.status == 201){
                          toastr.error(res.message, res.title);
                      }
@@ -2831,7 +2846,6 @@ $(document).on('click','.achievement_remove', function(e) {
             var data = JSON.parse(response);
             if(data.status == 200){
                 $.pjax.reload({container: '#pjax_achievements', async: false});
-                 $('#exampleModalCenter').modal('hide');
             }else{
                 tag_main.show();
                 toastr.error(data.message, data.title);
@@ -2859,7 +2873,6 @@ $(document).on('keyup','#hobby_input',function(e){
             {
                  var res = JSON.parse(response);
                  $.pjax.reload({container: '#pjax_hobby', async: false});
-                  $('#exampleModalCenter').modal('hide');
                  if(res.status == 201){
                      toastr.error(res.message, res.title);
                  }
@@ -2885,8 +2898,7 @@ $(document).on('click','.hobby_remove', function(e) {
         success: function (response) {
             var data = JSON.parse(response);
             if(data.status == 200){
-                $.pjax.reload({container: '#pjax_hobby', async: false});
-                 $('#exampleModalCenter').modal('hide');
+                $.pjax.reload({container: '#pjax_hobby', async: false});              
             }else{
                 tag_main.show();
                 toastr.error(data.message, data.title);
@@ -2914,7 +2926,6 @@ $(document).on('keyup','#interest_input',function(e){
                 {
                      var res = JSON.parse(response);
                      $.pjax.reload({container: '#pjax_interest', async: false});
-                      $('#exampleModalCenter').modal('hide');
                      if(res.status == 201){
                          toastr.error(res.message, res.title);
                      }
@@ -2941,7 +2952,6 @@ $(document).on('click','.interest_remove', function(e) {
             var data = JSON.parse(response);
             if(data.status == 200){
                 $.pjax.reload({container: '#pjax_interest', async: false});
-                 $('#exampleModalCenter').modal('hide');
             }else{
                 tag_main.show();
                 toastr.error(data.message, data.title);
@@ -2970,6 +2980,10 @@ sendData = (data, fieldName) => {
         }
     })
 }
+
+$(document).on('click', '.closeModal', function (){
+  $('#exampleModalCenter').modal('hide');
+})
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
