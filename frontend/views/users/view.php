@@ -716,7 +716,9 @@ $uId = $user['user_enc_id'];
     </section>
 
 
-    
+    <?php 
+    if(count($pastWebinar) !== 0){
+    ?>
     <section class="webinar-attended">
         <div class="container">
             <div class="row">
@@ -775,6 +777,9 @@ $uId = $user['user_enc_id'];
             </div>
         </div>               
     </section>
+
+    <?php } ?>
+
 <?php
 if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
     if (!empty($userApplied['applied_application_enc_id'])) {
