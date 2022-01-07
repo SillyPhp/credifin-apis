@@ -695,6 +695,7 @@ $this->registerCss('
  .skill_wrapper,
  .language_wrapper{
     position:relative;
+        
 }
 .skill_wrapper .Typeahead-spinner,
 .language_wrapper .Typeahead-spinner{
@@ -1164,7 +1165,6 @@ showNextQues = () =>{
             let errorMsg = inputParent.querySelector('.errorMsg');
             let field_Name =  inputVal[i].getAttribute('data-name');
             if(inputVal[i].value == '' && !inputVal[i].classList.contains('tt-hint')){
-                console.log(inputVal[i].value, 'value')
                 errorMsg.classList.add('showError');
                 errorMsg.innerHTML = "This field can not Be empty";
                 return false;

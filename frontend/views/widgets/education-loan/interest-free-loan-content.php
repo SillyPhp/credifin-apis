@@ -116,10 +116,10 @@ $this->registerCss('
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 .widget-benfit img{
-    max-width: 60px;
+    max-width: 50px;
     margin-bottom: 10px;
 }
 .cl-heading{
@@ -127,7 +127,7 @@ $this->registerCss('
 }
 .widget-benfit p{
     color: #fff;
-    font-size: 16px !important;
+    font-size: 15px !important;
     line-height: 20px;
     font-weight: 400 !important;
 } 
@@ -138,9 +138,6 @@ $this->registerCss('
 }
 .lenders span{
     font-weight: 600;
-}
-.college-logo {
-    position:relative !important;
 }
 .interest-text{
     color: #fff;

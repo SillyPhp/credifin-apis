@@ -748,7 +748,7 @@ border: 1px solid #ddd !important;
     padding-right:15px;
 }
 .cl-icon{
-    margin-top: 20px;
+    margin-top: 15px;
 }
 .cl-icon p{
     color:#fff;
@@ -2013,9 +2013,6 @@ $(document).on('keyup','.child_loan',function(e) {
     $('#loanamount').val(sum);
 });
 });
-$("input[name=applicantTypeRadio]").click(function(){
-    matchHeight();
-})
 JS;
 $this->registerJs($script);
 ?>

@@ -2,6 +2,9 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
+use yii\widgets\Pjax;
+use kartik\widgets\DatePicker;
 
 if (!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id) {
     if (!empty($userApplied['applied_application_enc_id'])) {
@@ -26,6 +29,10 @@ if (!empty($userApplied) && Yii::$app->user->identity->organization->organizatio
 }
 $this->params['header_dark'] = false;
 $uId = $user['user_enc_id'];
+
+$statesModel = new \common\models\States();
+$states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_enc_id', 'z.name'])->joinWith(['countryEnc a'], false)->where(['a.name' => 'India'])->orderBy(['z.name' => SORT_ASC])->asArray()->all(), 'state_enc_id', 'name');
+
 ?>
 
 <!--Modal-->
@@ -81,7 +88,7 @@ $uId = $user['user_enc_id'];
         <div class="col-md-7 col-sm-10 col-md-offset-1 col-sm-offset-1">
             <div class="left-side-container">
                 <div class="edit-profile-pen">
-                    <i class="fas fa-pencil-alt edit-btnn" id="edit-name-detail"></i>
+                    <i class="fas fa-pencil-alt edit-btnn" data-id="edit-name-detail"></i>
                 </div>
                 <div class="freelance-image">
                     <?php
@@ -100,6 +107,11 @@ $uId = $user['user_enc_id'];
                     <?php endif; ?>
                 </div>
                 <div class="header-details">
+                    <?php
+                        Pjax::begin([
+                            'id' => 'userbasicDetails'
+                        ])
+                    ?>
                     <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
                     <p><?= $user['job_profile'] ?></p>
                     <?php
@@ -110,6 +122,7 @@ $uId = $user['user_enc_id'];
                         </ul>
                         <?php
                     }
+                    Pjax::end();
                     if (!Yii::$app->user->identity->organization) {
                         ?>
                         <div class="pro-bar">
@@ -312,12 +325,26 @@ $uId = $user['user_enc_id'];
                         }
                         ?>
                     </div>
-                    <div class="apply-job-detail">
+                    <div class="apply-job-detail awesome-size ">
+                        <h5>About Me <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="edit-description"></i></h5>
+                        <?php
+                            pjax::begin([
+                                'id'=>'user_description'
+                            ])
+                        ?>
                         <p><?= Html::encode($user['description']); ?></p>
+                        <?php
+                        pjax::end();
+                        ?>
                     </div>
                     <?php if ($skills) { ?>
                         <div class="apply-job-detail awesome-size">
-                            <h5>Skills <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" id="edit-skills"></i></h5>
+                            <h5>Skills <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="edit-skills"></i></h5>
+                            <?php
+                                Pjax::begin([
+                                    'id'=>'skills_display',
+                                ])
+                            ?>
                             <ul class="skills">
                                 <?php
                                 foreach ($skills as $sk) { ?>
@@ -326,13 +353,21 @@ $uId = $user['user_enc_id'];
                                 }
                                 ?>
                             </ul>
+                            <?php
+                                Pjax::end();
+                            ?>
                         </div>
                     <?php }
                     if ($language) {
                         ?>
                         <div class="apply-job-detail awesome-size">
                             <h5>Spoken Languages <i class="fas fa-pencil-alt edit-profile-pen edit-btnn"
-                                                    id="edit-languages"></i></h5>
+                                                    data-id="edit-languages"></i></h5>
+                            <?php
+                                pjax::begin([
+                                        'id' => 'languages_display'
+                                ])
+                            ?>
                             <ul class="skills">
                                 <?php
                                 foreach ($language as $lg) { ?>
@@ -341,6 +376,9 @@ $uId = $user['user_enc_id'];
                                 }
                                 ?>
                             </ul>
+                            <?php
+                                pjax::end();
+                            ?>
                         </div>
                     <?php } ?>
                 </div>
@@ -353,17 +391,20 @@ $uId = $user['user_enc_id'];
                         <div class="education-detail">
                             <h5 class="education-head">
                                 <span>Education</span>
-                                <span><a href="javascript:;" class="edu-add-btn edit-btnn" id="add-education"><i class="fa fa-plus"></i> Add Education</a></span>
+                                <span><a href="javascript:;" class="edu-add-btn edit-btnn" data-type="add-new-education" data-id="add-education">
+                                       <i class="fa fa-plus"></i> Add Education</a></span>
                             </h5>
                             <?php
+                            pjax::begin(['id' => 'education_display']);
                             foreach ($education as $edu) {
                                 ?>
                                 <div class="set">
                                     <div class="side-btns">
-                                        <i class="fas fa-pencil-alt edit-profile-pen" type="button" data-toggle="modal"
-                                           data-target="#editModal"></i>
-                                        <i class="fas fa-times edit-profile-pen" type="button" data-toggle="modal"
-                                           data-target="#editModal"></i>
+                                        <i class="fas fa-pencil-alt edit-profile-pen edit-btnn"
+                                           data-id="add-education" data-type="education" type="button" data-toggle="modal"
+                                           id="<?= $edu['education_enc_id'] ?>" data-name="education_enc_id" data-target="#editModal"></i>
+                                        <i class="fas fa-times edit-profile-pen edu-del" type="button"
+                                           id="<?= $edu['education_enc_id'] ?>"></i>
                                     </div>
                                     <div class="prof-p">
                                         <!--                                    <img src="-->
@@ -375,7 +416,8 @@ $uId = $user['user_enc_id'];
                                     <div class="prof-inner">
                                         <div class="uni-name s-text"><?= $edu['institute'] ?>
                                         </div>
-                                        <div class="quelification s-text-2"><?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
+                                        <div class="quelification s-text-2">
+                                            <?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
                                         </div>
                                         <div class="s-time s-text-2"></i><?= date("Y", strtotime($edu['from_date'])) . ' - ' . date("Y", strtotime($edu['to_date'])) ?>
                                         </div>
@@ -383,6 +425,7 @@ $uId = $user['user_enc_id'];
                                 </div>
                                 <?php
                             }
+                            pjax::end();
                             ?>
                         </div>
                         <?php
@@ -392,17 +435,19 @@ $uId = $user['user_enc_id'];
                         <div class="experience-detail">
                             <h5 class="education-head">
                                 <Span>Work Experience</Span>
-                                <span><a href="javascript:;" class="edu-add-btn edit-btnn" id="add-experience"><i class="fa fa-plus"></i> Add Experience</a></span>
+                                <span><a href="javascript:;" class="edu-add-btn edit-btnn" data-id="add-experience"
+                                     data-type="add-new-experience"><i class="fa fa-plus"></i> Add Experience</a></span>
                             </h5>
                             <?php
+                            pjax::begin(['id' => 'experience_display']);
                             foreach ($experience as $exp) {
                                 ?>
                                 <div class="set">
                                     <div class="side-btns">
-                                        <i class="fas fa-pencil-alt edit-profile-pen" type="button" data-toggle="modal"
-                                           data-target="#editModal"></i>
-                                        <i class="fas fa-times edit-profile-pen" type="button" data-toggle="modal"
-                                           data-target="#editModal"></i>
+                                        <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" type="button" data-toggle="modal"
+                                          data-id="add-experience" data-name="experience_enc_id" id="<?= $exp['experience_enc_id'] ?>"
+                                           data-type="experience" data-target="#editModal"></i>
+                                        <i class="fas fa-times edit-profile-pen exp-del" type="button" data-id="<?= $exp['experience_enc_id'] ?>"></i>
                                     </div>
                                     <div class="prof-p">
                                         <canvas class="user-icon" name="<?= $exp['company'] ?>" width="80"
@@ -427,15 +472,19 @@ $uId = $user['user_enc_id'];
                                 </div>
                                 <?php
                             }
+                            pjax::end();
                             ?>
                         </div>
                         <?php
                     }
+                    Pjax::begin([
+                        'id' => 'pjax_achievements',
+                    ]);
                     if ($achievement) {
                         ?>
                         <div class="achievements-detail set-li awesome-size">
                             <h5 class="achievements-head all-head">Achievements
-                                <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" id="add-achievements"></i></h5>
+                                <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="add-achievements"></i></h5>
                             <ul>
                                 <?php
                                 foreach ($achievement as $achive) {
@@ -448,11 +497,18 @@ $uId = $user['user_enc_id'];
                         </div>
                         <?php
                     }
+                    Pjax::end();
+
+                    Pjax::begin([
+                        'id' => 'pjax_hobby',
+                    ]);
                     if ($hobbies) {
                         ?>
                         <div class="hobbies-detail set-li awesome-size">
+
                             <h5 class="hobbies-head all-head">Hobbies
-                                <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" id="add-hobbies"></i></h5>
+                                <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="add-hobbies"></i></h5>
+
                             <ul>
                                 <?php
                                 foreach ($hobbies as $hobby) {
@@ -462,13 +518,19 @@ $uId = $user['user_enc_id'];
                                 }
                                 ?>
                             </ul>
+
                         </div>
                         <?php
                     }
+                    pjax::end();
+
+                    Pjax::begin([
+                        'id' => 'pjax_interest',
+                    ]);
                     if ($interests) {
                         ?>
                         <div class="Interests-detail set-li awesome-size">
-                            <h5 class="interest-head all-head">Interests <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" id="add-interest"></i></h5>
+                            <h5 class="interest-head all-head">Interests <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="add-interest"></i></h5>
                             <ul>
                                 <?php
                                 foreach ($interests as $intrst) {
@@ -481,6 +543,7 @@ $uId = $user['user_enc_id'];
                         </div>
                         <?php
                     }
+                    Pjax::end();
                     ?>
                 </div>
             <?php } ?>
@@ -611,234 +674,328 @@ $uId = $user['user_enc_id'];
                 <div class="parent row">
                     <div class="edit-name-detail col-md-12">
                         <!--                                <h3 class="edit-detail">Personal Details</h3>-->
-                        <form>
-                            <div class="form-group">
-                                <label for="cand-name" class="label-edit">Name</label>
-                                <input type="text" class="form-control form-control-edit" id="cand-name"
-                                       placeholder="Enter Name">
+                        <form class="text-center">
+                            <div class="form-group text-left">
+                                <label for="full_name" class="label-edit">Name</label>
+                                <input type="text" class="form-control form-control-edit" data-name="full_name" id="full_name"
+                                       placeholder="Enter Name" value="<?= $user['first_name'] .''. $user['last_name']  ?>">
+                            </div>
+                            <div class="form-group text-left">
+                                <label for="job_title" class="label-edit">Position</label>
+                                <input type="text" class="form-control form-control-edit" data-name="job_title" id="job_title"
+                                       placeholder="Enter Position" value="<?= $user['job_profile'] ?>">
                             </div>
                             <div class="form-group">
-                                <label for="cand-position" class="label-edit">Position</label>
-                                <input type="text" class="form-control form-control-edit" id="cand-position"
-                                       placeholder="Enter Position">
+                                <div class="form-group lp-form posRel text-left">
+                                    <label class="label-edit">State</label>
+                                    <select id='states_drp' data-name="state" value="<?= $user['state_enc_id'] ?>"
+                                            class="form-control form-control-edit text-capitalize chosen">
+                                        <?php
+                                        if ($states) {
+                                            foreach ($states as $key => $state) {
+                                                ?>
+                                                <option value="<?= $key ?>" <?php echo (($key == $user['state_enc_id']) ? 'selected': ''); ?>><?= $state ?></option>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                    <p class="errorMsg"></p>
+                                </div>
+                                <div class="form-group lp-form posRel text-left">
+                                    <label class="label-edit">City</label>
+                                    <select id="cities_drp" data-name="city" value="<?= $user['city_enc_id'] ?>"
+                                            class="form-control form-control-edit text-capitalize chosen">
+
+                                    </select>
+                                    <p class="errorMsg selectError"></p>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="cand-location" class="label-edit">Location</label>
-                                <input type="text" class="form-control form-control-edit" id="cand-location"
-                                       placeholder="Enter Location Name">
+                            <button type="button" data-name="basic-details" class="btn btn-primary mt10 updatedata">Submit</button>
+                        </form>
+                    </div>
+                    <div class="edit-description col-md-12">
+                        <form class="text-center">
+                            <div class="form-group text-left">
+                                <label for="job_title" class="label-edit">Description</label>
+                                <textarea class="form-control form-control-edit" data-name="description" id="description"
+                                      placeholder="Enter Position" value="<?= $user['description'] ?>"><?= $user['description'] ?></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" data-name="description" class="btn btn-primary mt10 updatedata">Submit</button>
                         </form>
                     </div>
                     <div class="edit-skills col-md-12">
-                        <form>
-                            <div class="form-group">
+                        <form class="text-center">
+                            <div class="form-group text-left">
                                 <label for="skills-name" class="label-edit">Skills</label>
-                                <ul class="old-skills">
+                                <ul class="old-skills tags skill_tag_list">
                                     <?php
                                     foreach ($skills as $sk) { ?>
                                         <li class="addedskills"><?= $sk['skills']; ?>
-                                            <span class="tagRemove">x</span>
-                                            <input type="hidden" name="skills[]" value="">
+                                            <span class="tagRemove" onclick="$(this).parent().remove();">x</span>
+                                            <input type="hidden" name="skills[]" value="<?= $sk['skills'] ?>">
                                         </li>
                                         <?php
                                     }
                                     ?>
-                                    <input type="text" class="form-control form-control-edit" id="skills-name" placeholder="Enter Skills">
+                                    <li class="tagAdd taglist">
+                                        <div class="skill_wrapper">
+                                            <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                            <input type="text" id="search-skill" class="skill-input text-capitalize form-control form-control-edit">
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" data-name="skills" class="btn btn-primary mt10 updateSkills" >Submit</button>
                         </form>
                     </div>
                     <div class="edit-languages col-md-12">
-                        <form>
-                            <div class="form-group">
+                        <form class="text-center">
+                            <div class="form-group text-left">
                                 <label for="language-name" class="label-edit">Spoken Languages</label>
-                                <ul class="old-languages">
+                                <ul class="old-languages tags languages_tag_list">
                                     <?php
-                                    foreach ($language as $lg) { ?>
-                                        <li class="addedskills"><?= $lg['language']; ?>
-                                            <span class="tagRemove">x</span>
-                                            <input type="hidden" name="skills[]" value="">
-                                        </li>
-                                        <?php
-                                    }
+                                        foreach ($language as $lg) { ?>
+                                            <li class="addedskills"><?= $lg['language']; ?>
+                                                <span class="tagRemove" onclick="$(this).parent().remove();">x</span>
+                                                <input type="hidden" name="languages[]" value="<?= $lg['language']; ?>">
+                                            </li>
+                                            <?php
+                                        }
                                     ?>
-                                    <input type="text" class="form-control form-control-edit" id="language-name" placeholder="Enter Languages">
+                                    <li class="tagAdd taglist">
+                                        <div class="language_wrapper">
+                                            <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                            <input type="text" id="search-language" data-name="languages"
+                                                   class="skill-input text-capitalize form-control form-control-edit">
+                                        </div>
+                                    </li>
                                 </ul>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" data-name="languages" class="btn btn-primary mt10 updateSkills">Submit</button>
                         </form>
                     </div>
                     <div class="add-education col-md-12">
-                        <form>
-                            <div class="form-group">
-                                <label for="education-name" class="label-edit">Education</label>
-                                <input type="text" class="form-control form-control-edit" id="education-name"
-                                       placeholder="School/College Name">
+                        <form id="new-edu-form" class="text-center">
+                            <div class="form-group text-left">
+                                <label for="institute" class="label-edit">Education</label>
+                                <input type="text" class="form-control form-control-edit" id="institute"
+                                    data-name="institute" placeholder="School/College Name">
                             </div>
-                            <div class="form-group">
-                                <label for="education-name" class="label-edit">Class/Degree</label>
-                                <input type="text" class="form-control form-control-edit" id="education-name"
-                                       placeholder="Degree">
+                            <div class="form-group text-left">
+                                <label for="degree" class="label-edit">Class/Degree</label>
+                                <input type="text" class="form-control form-control-edit" id="degree"
+                                       data-name="degree" placeholder="Degree">
                             </div>
-                            <div class="form-group">
-                                <label for="education-name" class="label-edit">Stream</label>
-                                <input type="text" class="form-control form-control-edit" id="education-name"
-                                       placeholder="Stream Name">
+                            <div class="form-group text-left">
+                                <label for="field" class="label-edit">Stream</label>
+                                <input type="text" class="form-control form-control-edit" id="field"
+                                       data-name="field" placeholder="Stream Name">
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <div class="input-group  date">
-                                        <span class="input-group-addon kv-date-picker" title="Select date"><i
-                                                    class="glyphicon glyphicon-calendar kv-dp-icon"></i></span>
-                                        <span class="input-group-addon kv-date-remove" title="Clear field"><i
-                                                    class="glyphicon glyphicon-remove kv-dp-icon"></i></span>
-                                        <input type="text" class="form-control krajee-datepicker"
-                                               placeholder="From Year"
-                                               data-datepicker-source="addqualificationform-qualification_from-kvdate"
-                                               data-datepicker-type="2"
-                                               data-krajee-kvdatepicker="kvDatepicker_417747c0"
-                                               aria-invalid="true">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group text-left">
+                                        <div class="input-group date">
+                                            <span class="input-group-addon kv-date-picker" title="Select date"><i
+                                                        class="glyphicon glyphicon-calendar kv-dp-icon"></i></span>
+                                            <input type="text" class="form-control krajee-datepicker"
+                                                   placeholder="From Year" aria-invalid="true"
+                                                   id="from_date" data-name="from_date">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group text-left">
+                                        <div class="input-group  date">
+                                            <span class="input-group-addon kv-date-picker" title="Select date"><i
+                                                        class="glyphicon glyphicon-calendar kv-dp-icon"></i></span>
+                                            <input type="text" class="form-control"
+                                               placeholder="To Year" aria-invalid="true" id="to_date"
+                                               data-name="to_date">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <div class="input-group  date">
-                                        <span class="input-group-addon kv-date-picker" title="Select date"><i
-                                                    class="glyphicon glyphicon-calendar kv-dp-icon"></i></span>
-                                        <span class="input-group-addon kv-date-remove" title="Clear field"><i
-                                                    class="glyphicon glyphicon-remove kv-dp-icon"></i></span>
-                                        <input type="text" class="form-control krajee-datepicker"
-                                               placeholder="To Year"
-                                               data-datepicker-source="addqualificationform-qualification_from-kvdate"
-                                               data-datepicker-type="2"
-                                               data-krajee-kvdatepicker="kvDatepicker_417747c0"
-                                               aria-invalid="true">
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <p class="education_error"></p>
+                            <button type="button" data-name="add_new_education" data-id="education_enc_id"
+                                    class="btn btn-primary mt10 eduUpdate updatedata">Submit</button>
+
                         </form>
                     </div>
                     <div class="add-experience col-md-12">
-                        <form>
-                            <div class="form-group">
-                                <label for="job-name" class="label-edit">Title</label>
-                                <input type="text" class="form-control form-control-edit" id="job-name"
-                                       placeholder="Job Title">
+                        <form class="text-center">
+                            <div class="form-group text-left">
+                                <label for="job-name" class="label-edit">Title *</label>
+                                <input type="text" class="form-control form-control-edit" data-name="title"
+                                       id="update_exp_title" placeholder="Job Title">
                             </div>
-                            <div class="form-group">
-                                <label for="comp-name" class="label-edit">Company</label>
-                                <input type="text" class="form-control form-control-edit" id="comp-name"
-                                       placeholder="Company Name">
+                            <div class="form-group text-left">
+                                <label for="comp-name" class="label-edit">Company *</label>
+                                <input type="text" class="form-control form-control-edit" data-name="company"
+                                       id="update_exp_company" placeholder="Company Name">
                             </div>
-                            <div class="form-group">
-                                <label for="locations-name" class="label-edit">Location</label>
-                                <input type="text" class="form-control form-control-edit" id="locations-name"
-                                       placeholder="Location">
+                            <div class="form-group text-left">
+                                <label for="locations-name" class="label-edit">Location *</label>
+                                <input type="text" class="form-control form-control-edit" id="update_cities"
+                                      data-name="city" placeholder="Location">
+                                <input type="hidden" class="form-control form-control-edit" data-name="city_enc_id" id="update_city_id_exp">
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group text-left">
+                                        <label class="label-edit">Start Date *</label>
+                                        <div class="input-group  date">
+                                            <span class="input-group-addon kv-date-picker" title="Select date"><i
+                                                        class="glyphicon glyphicon-calendar kv-dp-icon"></i></span>
+                                            <input type="text" class="form-control krajee-datepicker"
+                                                   placeholder="Work Experience From" id="update_exp_from"
+                                                   data-name="from_date"
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 update_experience">
+                                <div class="form-group text-left">
+                                    <label class="label-edit">End Date</label>
                                     <div class="input-group  date">
                                         <span class="input-group-addon kv-date-picker" title="Select date"><i
                                                     class="glyphicon glyphicon-calendar kv-dp-icon"></i></span>
-                                        <span class="input-group-addon kv-date-remove" title="Clear field"><i
-                                                    class="glyphicon glyphicon-remove kv-dp-icon"></i></span>
-                                        <input type="text" class="form-control krajee-datepicker"
-                                               placeholder="Work Experience From"
-                                               data-datepicker-source="addqualificationform-qualification_from-kvdate"
-                                               data-datepicker-type="2"
-                                               data-krajee-kvdatepicker="kvDatepicker_417747c0"
-                                               aria-invalid="true">
+                                        <input type="text" class="form-control"
+                                               placeholder="Work Experience To" id="update_exp_to"
+                                               data-name="to_date"
+                                        >
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <div class="input-group  date">
-                                        <span class="input-group-addon kv-date-picker" title="Select date"><i
-                                                    class="glyphicon glyphicon-calendar kv-dp-icon"></i></span>
-                                        <span class="input-group-addon kv-date-remove" title="Clear field"><i
-                                                    class="glyphicon glyphicon-remove kv-dp-icon"></i></span>
-                                        <input type="text" class="form-control krajee-datepicker"
-                                               placeholder="Work Experience To"
-                                               data-datepicker-source="addqualificationform-qualification_from-kvdate"
-                                               data-datepicker-type="2"
-                                               data-krajee-kvdatepicker="kvDatepicker_417747c0"
-                                               aria-invalid="true">
-                                    </div>
-                                </div>
                             </div>
                             <div class="col-md-4">
                                 <label class="control control-check">I currently Work here
-                                    <input type="checkbox" checked="checked">
+                                    <input type="checkbox" id="update_exp_present" data-name="is_current">
                                     <div class="control__indicator"></div>
                                 </label>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
+                                <div class="form-group text-left">
                                     <label for="comp-salary" class="label-edit">Salary</label>
-                                    <input type="text" class="form-control form-control-edit" id="comp-salary">
+                                    <input type="text" class="form-control form-control-edit" data-name="salary"
+                                           id="update_salary">
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group">
+                                <div class="form-group text-left">
                                     <label for="comp-ctc" class="label-edit">CTC</label>
-                                    <input type="text" class="form-control form-control-edit" id="comp-ctc">
+                                    <input type="text" class="form-control form-control-edit" data-name="ctc"
+                                           id="update_ctc">
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="comp-description" class="label-edit">Description</label>
-                                <textarea class="form-control form-textarea" id="comp-description"></textarea>
+                            <div class="form-group text-left">
+                                <label for="comp-description" class="label-edit">Description *</label>
+                                <textarea class="form-control form-textarea" data-name="description" id="update_description"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <p class="experience_error"></p>
+                            <button type="button" data-name="add_new_experience" data-id="experience_enc_id"
+                                class="btn btn-primary expUpdate mt10 updatedata">Submit</button>
+
                         </form>
                     </div>
                     <div class="add-achievements col-md-12">
-                        <form>
+                        <form onsubmit="return false">
                             <div class="form-group">
                                 <label for="achievements-name" class="label-edit">Achievements</label>
-                                <ul class="old-achievements">
-                                    <li class="addedskills">gold medal
-                                        <span class="tagRemove">x</span>
-                                        <input type="hidden" name="skills[]" value="">
+                                <ul class="tags skill_tag_list">
+                                    <?php
+                                    if (!empty($achievement)) {
+                                        foreach ($achievement as $a) { ?>
+                                            <li class="addedTag"><?= $a['achievement'] ?>
+                                                <span id="<?= $a['user_achievement_enc_id'] ?>" class="achievement_remove">x</span>
+                                            </li>
+                                        <?php }
+                                    }
+                                    ?>
+                                    <li class="tagAdd taglist">
+                                        <div class="skill_wrapper">
+                                            <input type="text" id="achievement_input" class="achievement_search input_search text-capitalize
+                                                   form-control  form-control-edit" placeholder="Achievements">
+                                        </div>
                                     </li>
-                                    <input type="text" class="form-control form-control-edit" id="achievements-name" placeholder="Enter Achievements">
                                 </ul>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button type="button" class="btn mt10 btn-primary closeModal">Done</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div class="add-interest col-md-12">
-                        <form>
+                        <form onsubmit="return false">
                             <div class="form-group">
                                 <label for="interest-name" class="label-edit">Interests</label>
-                                <ul class="old-interest">
-                                    <li class="addedskills">games
-                                        <span class="tagRemove">x</span>
-                                        <input type="hidden" name="skills[]" value="">
+                                <ul class="tags skill_tag_list">
+                                    <?php
+                                    if (!empty($interests)) {
+                                        foreach ($interests as $interest) { ?>
+                                            <li class="addedTag"><?= $interest['interest'] ?>
+                                                <span id="<?= $interest['user_interest_enc_id'] ?>"
+                                                      class="interest_remove">x</span>
+                                            </li>
+                                        <?php }
+                                    }
+                                    ?>
+                                    <li class="tagAdd taglist">
+                                        <div class="skill_wrapper">
+                                            <input type="text" id="interest_input"
+                                                   class="interest_search input_search text-capitalize
+                                                   form-control form-control-edit" placeholder="interest">
+                                        </div>
                                     </li>
-                                    <input type="text" class="form-control form-control-edit" id="interest-name" placeholder="Enter interest">
                                 </ul>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button type="button" class="btn mt10 btn-primary closeModal">Done</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <div class="add-hobbies col-md-12">
-                        <form>
+                        <form onsubmit="return false">
                             <div class="form-group">
                                 <label for="hobbies-name" class="label-edit">Hobbies</label>
-                                <ul class="old-interest">
-                                    <li class="addedskills">games
-                                        <span class="tagRemove">x</span>
-                                        <input type="hidden" name="skills[]" value="">
+                                <?php
+                                Pjax::begin([
+                                    'id' => 'pjax_hobby',
+                                ]);
+                                ?>
+                                <ul class="tags skill_tag_list">
+                                    <?php
+
+                                    if (!empty($hobbies)) {
+                                        foreach ($hobbies as $hobby) { ?>
+                                            <li class="addedTag"><?= $hobby['hobby'] ?>
+                                                <span id="<?= $hobby['user_hobby_enc_id'] ?>"
+                                                      class="hobby_remove">x</span>
+                                            </li>
+                                        <?php }
+                                    }
+                                    ?>
+                                    <li class="tagAdd taglist">
+                                        <div class="skill_wrapper">
+                                            <input type="text" id="hobby_input" class="hobby_search input_search text-capitalize
+                                                   form-control form-control-edit"
+                                                   placeholder="Hobbies">
+                                        </div>
                                     </li>
-                                    <input type="text" class="form-control form-control-edit" id="hobbies-name" placeholder="Enter hobbies">
                                 </ul>
+                                <?php
+                                Pjax::end();
+                                ?>
                             </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <button type="button" class="btn mt10 btn-primary closeModal">Done</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -856,7 +1013,62 @@ if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user
         ');
     }
 }
+$item_id = '';
 $this->registerCss('
+.edication_error{
+    color: #df4759;
+    text-align: center;
+}
+.text-left{
+    text-align: left;
+}
+.tags {
+    float: left;
+    width: 100%;
+    border: 2px solid #e8ecec;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+    padding: 8px;
+}
+.tags > .addedTag {
+    float: left;
+    background: #f4f5fa;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+    font-family: Open Sans;
+    font-size: 13px;
+    padding: 7px 17px;
+    margin-right: 10px;
+    margin-bottom:5px;
+    position: relative;
+}
+.tags li {
+    margin: 0;
+}
+.taglist {
+    float: left !important;
+}
+.skill_wrapper,.language_wrapper{
+    position:relative;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+}
+.skill_wrapper .Typeahead-spinner,.language_wrapper .Typeahead-spinner{
+    position: absolute;
+    right: 5px;
+    top: 13px;
+    z-index: 9;
+    display:none;
+}
+.posRel{
+    position: relative;
+}
 .awesome-size h5 i, .side-btns i, .edit-profile-pen i{
     font-size:14px !important;
     cursor: pointer;
@@ -872,7 +1084,8 @@ ul.old-skills input, ul.old-languages input, ul.old-interest input, ul.old-achie
     width: 180px;
     height: 34px;
 }
-li.addedskills {
+li.addedskills,
+li.addedTag{
     background: #f4f5fa;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
@@ -886,7 +1099,10 @@ li.addedskills {
     margin: 0 10px 5px 0;
     position: relative;
 }
-span.tagRemove {
+span.tagRemove,
+span.interest_remove,
+span.achievement_remove,
+span.hobby_remove{
     position: absolute;
     right: -6px;
     top: -5px;
@@ -1531,7 +1747,62 @@ ul.job-requirements li span{
 	width:120px;
 	font-weight:500;
 }
+.twitter-typeahead{
+    width:100%;
+    display: block
+}
+.typeahead {
+  background-color: #fff;
+//  margin-left: 15px !important; 
+}
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
 
+
+
+.tt-hint {
+  color: #999
+}
+.tt-menu {
+  width: 100%;
+  margin: 0;
+  top:90% !important;
+  padding: 8px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          max-height:158px;
+          overflow-y:auto;
+}
+.tt-suggestion {
+  padding: 3px 20px;
+  font-size: 14px;
+  line-height: 24px;
+}
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion p {
+  margin: 0;
+}
 /*---------- Login -------------*/
 img.img-responsive.payment-img {
     margin-top: 20px;
@@ -1912,6 +2183,9 @@ ul.status-detail li>strong {
     font-weight: 500;
     font-style: italic;
 }
+.mt10{
+    margin-top: 10px;
+}
 @media screen and (max-width: 525px){
     .header-details {
         margin-top: 0px;
@@ -1957,28 +2231,51 @@ ul.status-detail li>strong {
     cursor: not-allowed;
 }
 ');
+$stateId = $user['state_enc_id'];
+$cityId = $user['city_enc_id'];
 $script = <<< JS
 var user_id = "$uId";
+var global = [];
+$("#update_exp_to, #update_exp_from, #to_date, #from_date" ).datepicker({
+    autoclose: true,
+    format: "yyyy-mm-dd",
+    endDate: new Date(),
+    fontAwesome: true
+});
+
+$.ajax({
+        url: '/cities/get-cities-by-state',
+        type: 'POST',
+        data: {id: "$stateId",_csrf: $("meta[name=csrf-token]").attr("content")},
+        success: function(response) {
+            if (response.status == 200) {
+                drp_down("cities_drp", response.cities);
+                $("#cities_drp").trigger("chosen:updated");
+                $("#cities_drp").val("$cityId");
+            }
+        },
+});
+    
 $(document).on('click','#phone-val',function(e) {
   e.preventDefault();
-  var phone = $(this).attr('value');
-                swal({
-                        title: phone,
-                        text: "",
-                        type:"info",
-                        showCancelButton: true,  
-                        confirmButtonClass: "btn-primary",
-                        confirmButtonText: "Call",
-                        cancelButtonText:"Close",
-                        closeOnConfirm: true, 
-                        closeOnCancel: true
-                         },
-                            function (isConfirm) { 
-                             if (isConfirm){
-                                 window.open('tel:' + phone);
-                             }
-                         }
-                        );
+var phone = $(this).attr('value');
+    swal({
+        title: phone,
+        text: "",
+        type:"info",
+        showCancelButton: true,  
+        confirmButtonClass: "btn-primary",
+        confirmButtonText: "Call",
+        cancelButtonText:"Close",
+        closeOnConfirm: true, 
+        closeOnCancel: true
+         },
+            function (isConfirm) { 
+             if (isConfirm){
+                 window.open('tel:' + phone);
+             }
+         }
+    );
 })
 $(document).on('click','.download-resume',function (e){
     e.preventDefault();
@@ -2067,15 +2364,681 @@ if(document.getElementById('submitData')){
 }
 $(document).on("click", ".edit-btnn", function (e){
     e.preventDefault();
-    console.log('123');
     $('#exampleModalCenter').modal('show');
     $('.parent').children('div').hide();
-    $('.'+$(this).attr("id")).show();
+    $('.'+$(this).attr("data-id")).show();
+    var id = $(this).attr("id");
+    var type = $(this).attr("data-type");
+    if(type == 'education'){
+        editEducation(id);
+    }else if(type == 'experience'){
+        editExperience(id);
+    }else if(type == 'add-new-experience'){
+        addNewExperience(e);
+    }else if(type == 'add-new-education'){
+        addNewEducation();
+    }
 });
+function editEducation(id){
+    $.ajax({
+    url: '/account/resume-builder/edit-education',
+    method : 'POST',
+    data : {id:id},
+    beforeSend:function(){
+            $('.loader-aj-main').fadeIn(100);
+         },
+    success : function(res){   
+        $('.loader-aj-main').fadeOut(50);
+       var obj = JSON.parse(res);
+       $('#institute').val(obj.institute);
+       $('#degree').val(obj.degree);
+       $('#field').val(obj.field);
+       $('#from_date').val(obj.from_date);
+       $('#to_date').val(obj.to_date);
+       $('.eduUpdate').attr('id',obj.education_enc_id);
+      $('.eduUpdate').attr('data-name', 'education');
+    } 
+    })
+}
+function editExperience(id){
+    $.ajax({
+        url: '/account/resume-builder/edit-experience',
+         method : 'POST',
+         data : {id:id},
+          success : function(res)
+          {
+              var obj = JSON.parse(res);
+              $('#update_exp_title').val(obj.title);
+              $('#update_exp_company').val(obj.company);
+              $('#update_city_id_exp').val(obj.city_enc_id);
+              $('#update_exp_to').val(obj.to_date);
+              $('#update_cities').val(obj.name);
+              $('#update_exp_from').val(obj.from_date);
+              $('#update_ctc').val((obj.ctc != null) ? parseInt(obj.ctc) : '');
+              $('#update_salary').val((obj.salary != null) ? parseInt(obj.salary) : '');
+              if(obj.is_current == 1){
+                  $('#update_exp_present').prop('checked', true);
+                  $('#update_exp_to').val(0);
+                  $('.update_experience').hide();
+              }else{
+                   $('#update_exp_present').prop('checked', false);
+                   $('.update_experience').show();
+              }
+              $('#update_description').val(obj.description );
+              $('.expUpdate').attr('id',obj.experience_enc_id);
+              $('.expUpdate').attr('data-name', 'experience');
+          }
+    });
+}
+$(document).on('click', '.updatedata', function(e){
+    let btn = e.target;
+    let fieldName = btn.getAttribute('data-name');
+    let parentElem = btn.parentElement;
+    let inputElems = parentElem.querySelectorAll('input, select, textarea');
+    let id = btn.getAttribute('id');
+    let id_name = btn.getAttribute('data-id');    
+    let data = null;
+    if(id){
+        data = {...data, [id_name]: id}
+    }
+    for (let i = 0; i < inputElems.length; i++){
+        let inputId = inputElems[i].getAttribute('data-name')
+        let inputValue = inputElems[i].value
+        data = {...data,  [inputId]: inputValue};
+    }
+    if(fieldName == 'education'){
+        if(data['school'] == ''  || data['degree'] == '' || data['field'] == '' || data['from'] == '' || data['to'] == ''){
+            document.querySelector('.education_error').innerText = 'All fields are required';
+            return false;    
+        }else{
+            updateEducation(data);
+        }
+    }else if(fieldName == 'experience'){
+        if(data['title'] == '' || data['company'] == '' || data['city'] == '' || data['from'] == '' || data['description'] == ''){
+            document.querySelector('.experience_error').innerText = 'Please fill all required fields';
+            return false;
+        }else{
+            updateExperience(data)
+        }
+    }else if(fieldName == 'add_new_experience'){
+        add_new_exp(data);
+    }else if(fieldName == 'add_new_education'){
+        if(data['school'] == ''  || data['degree'] == '' || data['field'] == '' || data['from'] == '' || data['to'] == ''){
+            document.querySelector('.education_error').innerText = 'All fields are required';
+            return false;    
+        }else{
+            add_new_edu(data);
+        }
+    }else if(fieldName == 'basic-details' || fieldName == 'description'){
+        sendData(data, fieldName);
+    }
+})
+function updateEducation(data){
+    const{degree, institute, to_date, from_date, education_enc_id, field} = data
+   $.ajax({
+       url: '/account/resume-builder/update-education',
+       method : 'POST',
+       data : {school:institute,degree:degree,field:field,from:from_date,to:to_date,id:education_enc_id},
+       beforeSend:function(){     
+                 $('.loader-aj-main').fadeIn(1000);
+       },
+       success : function(res)
+       {
+           $('.loader-aj-main').fadeOut(1000);
+            if(res == true){
+               $.pjax.reload({container: '#education_display', async: false});
+               utilities.initials();
+            }else{
+                
+            }
+       } 
+    });
+}
+$(document).on('click','.edu-del',function(e){
+   e.preventDefault();
+   
+   var  id = $(this).attr('id');
+   
+   $.ajax({
+        url: '/account/resume-builder/delete-education',
+         method : 'POST',
+         data : {id:id},
+         beforeSend:function(){
+            $('.loader-aj-main').fadeIn(100);
+         },
+          success : function(response)
+          {
+              $('.loader-aj-main').fadeOut(50);
+              var res = JSON.parse(response);
+              
+              if(res.status == 200){
+                  $.pjax.reload({container: '#education_display', async: false});
+              }else if(res.status == 201){
+                  toastr.error(res.message, res.title);
+              }
+              
+          }
+    });
+});
+
+function add_new_exp(data){
+    let {city_enc_id, company, ctc, description, from_date, is_current, name, salary, title, to_date} = data;
+     if($('#update_exp_present').prop("checked")){
+        is_current = 1;
+        $('#update_exp_to').val('');
+        to_date = $('#update_exp_to').val();
+    }else{
+        is_current = 0;
+        if($('#update_exp_to').val() == ''){
+             return false;
+        }else{
+            to_date = $('#update_exp_to').val();
+        }
+    }
+    $.ajax({
+       url: '/account/resume-builder/experience',
+       method: 'POST',
+       data : {title:title, company:company, city:city_enc_id, from:from_date, to:to_date, checkbox:is_current,
+        description:description, salary:salary, ctc:ctc},
+       success : function(response){
+           var res = JSON.parse(response);
+           if(res.status == 200)
+           {
+               // $('#add-experience-modal').modal('toggle');
+               $.pjax.reload({container: '#experience_display', async: false});
+               utilities.initials();
+                $('#exampleModalCenter').modal('hide');
+               
+           } else {
+               toastr.error('something went wrong.Try Again', 'error');
+           }
+        }
+    }); 
+}
+function addNewExperience(e){
+    $('.expUpdate').attr('data-name', 'add_new_experience');
+    $('#update_exp_title').val('');
+    $('#update_exp_company').val('');
+    $('#update_city_id_exp').val('');
+    $('#update_cities').val('');
+    $('#update_exp_from').val('');
+    $('#update_exp_to').val('');
+    $('#update_ctc').val('');
+    $('#update_salary').val('');
+    $('#update_description').val('');
+    $('.update_experience').show();
+}
+
+function addNewEducation(){
+       $('#institute').val('');
+       $('#degree').val('');
+       $('#field').val('');
+       $('#from_date').val('');
+       $('#to_date').val('');
+      $('.eduUpdate').attr('data-name', 'add_new_education');
+}
+function add_new_edu(data){
+    const{institute, degree, field, from_date, to_date} = data;
+    
+     $.ajax({
+        url: '/account/resume-builder/education',
+        method : 'POST',
+  
+        data : {AddQualificationForm: {school:institute, degree:degree, field:field, qualification_to:to_date, qualification_from:from_date}},
+        success : function(res){
+             if(res == true){
+                $.pjax.reload({container: '#education_display', async: false});
+                $('#exampleModalCenter').modal('hide');
+            }else{
+            }
+        } 
+    });
+}
+function updateExperience(data){
+    let{city_enc_id, company, ctc, description, experience_enc_id, from_date, is_current, name, salary, title, to_date}=data
+    
+    ctc = ctc ? parseInt(ctc) : '';
+    salary = salary ? parseInt(salary) : '';
+    if($('#update_exp_present').prop("checked")){
+        is_current = 1;
+        $('#update_exp_to').val('');
+        to_date = $('#update_exp_to').val();
+    }else{
+        is_current = 0;
+        if($('#update_exp_to').val() == ''){
+             return false;
+        }else{
+            to_date = $('#update_exp_to').val();
+        }
+    }
+    $.ajax({
+       url: '/account/resume-builder/update-experience',
+       method: 'POST',
+       data : {id:experience_enc_id, title:title, company:company, city:city_enc_id, from:from_date, 
+        to:to_date, check:is_current, description:description, salary:salary, ctc:ctc},
+       success : function(res){
+            $.pjax.reload({container: '#experience_display', async: false});
+            utilities.initials();
+            $('#exampleModalCenter').modal('hide');
+        }
+    });
+}
+$(document).on('click','.exp-del',function(e){
+   e.preventDefault();
+   var  id = $(this).attr('data-id');
+   $.ajax({
+        url: '/account/resume-builder/delete-experience',
+         method : 'POST',
+         data : {id:id},
+          success : function(response){
+              var res = JSON.parse(response);
+              if(res.status == 200){
+                  $.pjax.reload({container: '#experience_display', async: false});
+                  utilities.initials();
+              }else if(res.status == 201){
+                  toastr.error(res.message, res.title);
+              }
+              
+          }
+   });
+});
+$('#exp_present').click(function(){
+    if (this.checked) {
+        $(this).val('1');
+        $('.experience').hide();
+    }else{
+        $(this).val('0');
+        $('.experience').show();
+        $('#addexperienceform-exp_to').val('');
+    }
+}) ;
+    
+$('#update_exp_present').click(function(){
+    if (this.checked) {
+        $(this).val('1');
+        $('.update_experience').hide();
+    }else{
+        $(this).val('0');
+        $('.update_experience').show();
+        $('#update_exp_to').val('');
+        $('#update_exp_to').focus();
+    }
+}) ;
+$(document).on('keyup','#search-skill',function(e){
+    if(e.which==13)
+        {
+          add_tags($(this),'skill_tag_list','skills');  
+        }
+});
+
+function add_tags(thisObj,tag_class,name,duplicates){
+    var duplicates = [];
+    $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
+        {
+         duplicates.push($.trim($(this).val()).toUpperCase());
+        });
+    if(thisObj.val() == '' || jQuery.inArray($.trim(thisObj.val()).toUpperCase(), duplicates) != -1) {
+        thisObj.val('');
+            } else {
+             $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
+             thisObj.val('');
+        }
+} 
+var skills = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+   remote: {
+    url:'/account/categories-list/skills-data',
+    prepare: function (query, settings) {
+             settings.url += '?q=' +$('#search-skill').val();
+             return settings;
+        },   
+    cache: false,    
+    filter: function(list) {
+             return list;
+        }
+  }
+});    
+            
+$('#search-skill').typeahead(null, {
+  name: 'skill',
+  display: 'value',
+  source: skills,
+   limit: 6,
+}).on('typeahead:asyncrequest', function() {
+     $('.skill_wrapper .Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+     $('.skill_wrapper .Typeahead-spinner').hide();
+  }).on('typeahead:selected',function(e, datum)
+  {
+      add_tags($(this),'skill_tag_list','skills');
+   }).blur(validateSelection);
+
+function validateSelection() {
+  var theIndex = -1;
+  for (var i = 0; i < global.length; i++) {
+      if (global[i].value == $(this).val()) {
+      theIndex = i; 
+      break;
+    }
+  }
+    if (theIndex == -1) {
+       $(this).val(""); 
+       global = [];
+    }
+}
+$(document).on('keyup','#search-language',function(e){
+    if(e.which==13)
+        {
+          add_tags($(this),'languages_tag_list','languages');
+        }
+});
+var languages = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+   remote: {
+    url:'/account/categories-list/languages',
+    prepare: function (query, settings) {
+             settings.url += '?q=' +$('#search-language').val();
+             return settings;
+        },   
+    cache: false,    
+    filter: function(list) {
+             return list;
+        }
+  }
+});    
+
+$('#search-language').typeahead(null, {
+  name: 'languages',
+  display: 'value',
+  source: languages,
+   limit: 6,
+}).on('typeahead:asyncrequest', function() {
+    $('.language_wrapper .Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+   $('.language_wrapper .Typeahead-spinner').hide();
+  }).on('typeahead:selected',function(e, datum)
+  {
+      add_tags($(this),'languages_tag_list','languages');
+   }).blur(validateSelection);
+
+$(document).on('click', '.updateSkills', function (e){
+    let btn = e.target;
+    let parentElem = btn.parentElement;
+    let fieldName = btn.getAttribute('data-name');
+    let val = {}
+    let skills = [];
+    $('input[name="'+fieldName+'[]"]').each(function() {
+        skills.push(this.value);
+    });
+    val[fieldName] = skills;
+    sendData(val, fieldName);
+})
+$(document).on('change','#states_drp',function() {
+   $("#cities_drp").empty().append($("<option>", { 
+         value: "",
+         text : "Select City" 
+     }));
+   $.ajax({
+        url: '/cities/get-cities-by-state',
+        type: 'POST',
+        data: {id: $(this).val(),_csrf: $("meta[name=csrf-token]").attr("content")},
+        success: function(response) {
+            if (response.status == 200) {
+                drp_down("cities_drp", response.cities);
+                $("#cities_drp").trigger("chosen:updated");
+            }
+        },
+    });
+})
+function drp_down(id, data) {
+    var selectbox = $('#' + id + '');
+    $.each(data, function () {
+        selectbox.append($('<option>', {
+            value: this.id,
+            text: this.name
+        }));
+    });
+}
+
+$(document).on('keyup','#achievement_input',function(e){   
+    e.preventDefault();
+    if(e.which==13){
+        var achievement_name = $('#achievement_input').val();
+        if(achievement_name == ''){
+            toastr.error('please enter something', 'error');
+        }else {
+            var last_child = $(this).parentsUntil('.tagAdd').parent().prev('.addedTag');
+            var new_tag = '<li class="addedTag">'+ achievement_name +'<span class="tagRemove">x</span></li>';
+            $(new_tag).insertAfter(last_child);
+            $('#achievement_input').val('');
+             $.ajax({
+                url: '/account/resume-builder/achievements',
+                method : 'POST',
+                data : {achievement_name:achievement_name},
+                success : function(response)
+                {
+                     var res = JSON.parse(response);
+                     $.pjax.reload({container: '#pjax_achievements', async: false});
+                     if(res.status == 201){
+                         toastr.error(res.message, res.title);
+                     }
+                     else if(res.status == 203){
+                         toastr.error(res.message, res.title);
+                     }
+                } 
+            });
+          }
+        }
+});
+$(document).on('click','.achievement_remove', function(e) {
+    e.preventDefault();
+    var tag_main = $(this).parent();
+    tag_main.hide();
+        var id = e.target.id;
+    $.ajax({
+        url: "/account/resume-builder/achievement-remove",
+        method: "POST",
+        data: {id:id},
+       
+        success: function (response) {
+            var data = JSON.parse(response);
+            if(data.status == 200){
+                $.pjax.reload({container: '#pjax_achievements', async: false});
+            }else{
+                tag_main.show();
+                toastr.error(data.message, data.title);
+            }
+        }
+    });
+});
+        
+$(document).on('keyup','#hobby_input',function(e){   
+    e.preventDefault();
+    if(e.which==13){
+    var hobby_name = $('#hobby_input').val();
+    if(hobby_name == ''){
+        toastr.error('please enter something', 'error');
+    }else {     
+        var last_child = $(this).parentsUntil('.tagAdd').parent().prev('.addedTag');
+        var new_tag = '<li class="addedTag">'+ hobby_name +'<span class="hobby_remove">x</span></li>';
+        $(new_tag).insertAfter(last_child);
+        $('#hobby_input').val('');
+        $.ajax({
+            url: '/account/resume-builder/hobbies',
+            method : 'POST',
+            data : {hobby_name:hobby_name},
+            success : function(response)
+            {
+                 var res = JSON.parse(response);
+                 $.pjax.reload({container: '#pjax_hobby', async: false});
+                 if(res.status == 201){
+                     toastr.error(res.message, res.title);
+                 }
+                 else if(res.status == 203){
+                     toastr.error(res.message, res.title);
+                 }
+                 
+            } 
+        });
+      }
+    }
+});
+$(document).on('click','.hobby_remove', function(e) {
+    e.preventDefault();
+    var tag_main = $(this).parent();
+    tag_main.hide();
+        var id = e.target.id;
+    $.ajax({
+        url: "/account/resume-builder/hobby-remove",
+        method: "POST",
+        data: {id:id},
+       
+        success: function (response) {
+            var data = JSON.parse(response);
+            if(data.status == 200){
+                $.pjax.reload({container: '#pjax_hobby', async: false});              
+            }else{
+                tag_main.show();
+                toastr.error(data.message, data.title);
+            }
+        }
+    });
+});
+
+$(document).on('keyup','#interest_input',function(e){   
+    e.preventDefault();
+    if(e.which==13){
+    var interest_name = $('#interest_input').val();
+        if(interest_name == ''){
+            toastr.error('please enter something', 'error');
+        }else {
+            var last_child = $(this).parentsUntil('.tagAdd').parent().prev('.addedTag');
+            var new_tag = '<li class="addedTag">'+ interest_name +'<span class="interest_remove">x</span></li>';
+            $(new_tag).insertAfter(last_child);
+            $('#interest_input').val('');
+            $.ajax({
+                url: '/account/resume-builder/interests',
+                method : 'POST',
+                data : {interest_name:interest_name},
+                success : function(response)
+                {
+                     var res = JSON.parse(response);
+                     $.pjax.reload({container: '#pjax_interest', async: false});
+                     if(res.status == 201){
+                         toastr.error(res.message, res.title);
+                     }
+                     else if(res.status == 203){
+                         toastr.error(res.message, res.title);
+                     }
+                     
+                } 
+            });
+        }
+    }   
+});
+$(document).on('click','.interest_remove', function(e) {
+    e.preventDefault();
+    var tag_main = $(this).parent();
+    tag_main.hide();
+        var id = e.target.id;
+    $.ajax({
+        url: "/account/resume-builder/interest-remove",
+        method: "POST",
+        data: {id:id},
+        
+        success: function (response) {
+            var data = JSON.parse(response);
+            if(data.status == 200){
+                $.pjax.reload({container: '#pjax_interest', async: false});
+            }else{
+                tag_main.show();
+                toastr.error(data.message, data.title);
+            }
+        }
+    });
+});
+
+sendData = (data, fieldName) => {
+    $.ajax({
+        url: '/users/update-basic-detail',
+        method: 'POST',
+        data: data,
+        success: function(response){
+            if(response['status'] == 'success'){
+                let sectionReload = '#'+fieldName+'_display';
+                if (fieldName == 'basic-details'){
+                    $.pjax.reload({container: '#userbasicDetails', async: false});
+                }else if(fieldName == 'description'){
+                    $.pjax.reload({container:'#user_description', async: false})
+                }else{
+                    $.pjax.reload({container: sectionReload, async: false});
+                }
+                $('#exampleModalCenter').modal('hide');
+            }
+        }
+    })
+}
+
+$(document).on('click', '.closeModal', function (){
+  $('#exampleModalCenter').modal('hide');
+})
+var city = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: '',
+  remote: {
+    url:'/account/cities/city-list?q=%QUERY',  
+    wildcard: '%QUERY',
+    filter: function(list) {
+            global = list;
+             return list;
+        }
+  }
+});
+
+$('#update_cities').typeahead(null, {
+  name: 'cities',
+  highlight: true,       
+  display: 'text',
+  source: city,
+   limit: 15,
+   hint:false,
+}).on('typeahead:asyncrequest', function() {
+    $('.city-spin').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    
+    $('.city-spin').hide();
+  }).on('typeahead:selected typeahead:completed',function(e,datum)
+      {
+        $('#update_city_id_exp').val(datum.id);
+     });
+
+var org = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: '',
+  remote: {
+    url:'/account/resume-builder/organizations?q=%QUERY',  
+    wildcard: '%QUERY',
+    filter: function(org) {
+             return org;
+        }
+  }
+});
+
 JS;
 $this->registerJs($script);
+$this->registerCssFile("/assets/themes/jobhunt/css/chosen.css");
+$this->registerCssFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker3.min.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+
+//$this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+
 ?>
