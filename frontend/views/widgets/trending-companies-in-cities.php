@@ -3,18 +3,18 @@
 use yii\helpers\Url;
 
 ?>
-    <script id="org-cards" type="text/template">
-        <div class="top-cities">
-            {{#.}}
-            <a href="/{{slug}}">
-                <div class="top-cities-img">
-                    <img src="{{logo}}" alt="{{name}}" title="{{name}}">
-                </div>
-                <div class="company-name">{{name}}</div>
-            </a>
-            {{/.}}
-        </div>
-    </script>
+<script id="org-cards" type="text/template">
+    <div class="top-cities">
+        {{#.}}
+        <a href="/{{slug}}">
+            <div class="top-cities-img">
+                <img src="{{logo}}" alt="{{name}}" title="{{name}}">
+            </div>
+            <div class="company-name">{{name}}</div>
+        </a>
+        {{/.}}
+    </div>
+</script>
 <?php
 $this->registerCss('
 .top-cities {
@@ -35,7 +35,7 @@ $this->registerCss('
     overflow: hidden;
     box-shadow: 0 0 13px 4px #eee;
     line-height: 85px;
-    padding: 2px;
+    padding: 10px;
 }
 .company-name {
     opacity:0;
@@ -56,18 +56,74 @@ $this->registerCss('
     width: 100%;
     height: 100%;
     object-fit: contain;
-    border-radius: 50%;
 }
 ');
+$userCity = Yii::$app->userData->currentCity;
+if($userCity){
+    $cityName = $userCity['name'];
+} else{
+    $cityName = 0;
+}
 $script = <<< JS
-    $.getJSON('https://ipapi.co/json', function(data){
-            $('#trendingCityName').text(data.city);
-            if(!data.city){
-                $('#trending-companies-by-location').html('Trending Companies');
+let userCity = "$cityName";
+if(userCity != "0"){
+    $('#trendingCityName').text(userCity);
+    getLocationData(userCity);
+    $('#location-btn').attr('href','/organizations?keyword='+userCity);
+} else{
+    if(navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(successCallback,showError);
+    }
+}
+
+//successful locatin permission
+function successCallback(position){
+    let lat = position.coords.latitude;
+    let long = position.coords.longitude;
+    geocodeLatLng(lat,long);
+}
+
+function showError(error) {
+  switch(error.code) {
+    case error.PERMISSION_DENIED:
+        getLocationFromIp();
+        break;
+  }
+}
+//address from lat and long
+function geocodeLatLng(lat,long) {
+    var geocoder = new google.maps.Geocoder();
+    var latlng = {lat: lat, lng: long};
+    geocoder.geocode({'location': latlng}, function(results, status) {
+      if (status === 'OK') {
+        if (results[0]) {
+            let dataList = results[0].address_components;
+            for(let p=0;p<dataList.length;p++) {
+                if(dataList[p].types.includes("administrative_area_level_2")){
+                    $('#trendingCityName').text(dataList[p].long_name);
+                    getLocationData(dataList[p].long_name);
+                    $('#location-btn').attr('href','/organizations?keyword='+dataList[p].long_name);
+                    return false;
+                }
             }
-            getLocationData(data.city);
-        });
-    function getLocationData(city) {
+        } else {
+          getLocationFromIp(); 
+        }
+      }
+    });
+}
+
+function getLocationFromIp(){
+    $.getJSON('https://ipapi.co/json', function(data){
+        $('#trendingCityName').text(data.city);
+        if(!data.city){
+            $('#trending-companies-by-location').html('Trending Companies');
+        }
+        getLocationData(data.city);
+        $('#location-btn').attr('href','/organizations?keyword='+data.city);
+    });
+}
+function getLocationData(city) {
         $.ajax({
       url:'/jobs/top-city-companies',
       method:'Post',

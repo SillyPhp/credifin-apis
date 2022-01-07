@@ -59,7 +59,7 @@ use yii\helpers\Url;
                     <ul class="loan-benefits">
                         <li>An interest rate of <span>1%</span> per month</li>
                         <li>Unsecured loan up to <span>Rs. 2 lakhs</span></li>
-                        <li>Processing fees between <span>500/-</span> and <span>1000/-</span></li>
+                        <li>Processing fee of Rs. <span>500/-</span> per applicant</li>
                         <li>Flexible <span>EMI repayment</span> options</li>
                     </ul>
 
@@ -99,7 +99,7 @@ use yii\helpers\Url;
                     <ul class="loan-benefits">
                         <li><span>100% fee financing</span> covering all expenses</li>
                         <li><span>0% interest</span> rate on select colleges</li>
-                        <li>Processing fees between <span>500/-</span> and <span>1000/-</span></li>
+                        <li>Processing fee of Rs. <span>500/-</span> per applicant</li>
                         <li><span>Unsecured loan</span> of up to <span>2 lakhs</span></li>
                         <li>Digital process, therefore <span>less paperwork</span></li>
                         <li><span>Quick loan</span> disbursal process</li>
@@ -143,7 +143,7 @@ use yii\helpers\Url;
                     <ul class="loan-benefits">
                         <li><span>100% fee financing</span> covering all expenses</li>
                         <li><span>0% interest</span> rate on <span>selected colleges</span></li>
-                        <li>Processing fees between <span>500/-</span> and <span>1000/-</span></li>
+                        <li>Processing fee of Rs. <span>500/-</span> per applicant</li>
                         <li><span>Unsecured loan</span> of up to <span>2 lakhs</span></li>
                     </ul>
                     <div class="cl-icon">

@@ -152,6 +152,7 @@ class UsersController extends Controller
                 'ROUND(DATEDIFF(CURDATE(),
                  a.dob)/ 365.25) as age',
                 'b.name as city',
+                'b.state_enc_id',
                 'c.name as job_profile',
                 'IF(d.candidate_enc_id != "", "true", "false") as is_shortlisted'
             ])
@@ -217,6 +218,7 @@ class UsersController extends Controller
                 ->one();
         }
 
+
         $apps = AppliedApplications::find()
             ->alias('a')
             ->select(['a.applied_application_enc_id', 'a.current_round','a.application_enc_id','j.name type', 'c.slug', 'a.status','h.icon as job_icon', 'f.name as title', 'a.applied_application_enc_id app_id', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active'])
@@ -249,7 +251,7 @@ class UsersController extends Controller
 
         $experience = UserWorkExperience::find()
             ->alias('a')
-            ->select(['a.user_enc_id', 'a.is_current', 'a.city_enc_id', 'a.company', 'a.title', 'a.from_date', 'a.to_date', 'b.name city_name'])
+            ->select(['a.user_enc_id', 'a.experience_enc_id', 'a.is_current', 'a.city_enc_id', 'a.company', 'a.title', 'a.from_date', 'a.to_date', 'b.name city_name'])
             ->where(['a.user_enc_id' => $user['user_enc_id']])
             ->innerJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
             ->orderBy(['created_on' => SORT_DESC])
@@ -295,7 +297,8 @@ class UsersController extends Controller
             'profileProcess' => $profileProcess,
             'available_applications' => $this->getApplications(),
         ];
-
+//        print_r($dataProvider);
+//        die();
         if (Yii::$app->user->isGuest) {
             $page = 'guest-view';
         } else {
@@ -305,7 +308,7 @@ class UsersController extends Controller
                 $page = 'view';
             } else {
                 if (Yii::$app->user->identity->user_enc_id == $user['user_enc_id']) {
-                    $page = 'view';
+                    $page = 'user-view';
                 } else {
                     $page = 'guest-view';
                 }
@@ -431,7 +434,6 @@ class UsersController extends Controller
         }
     }
 
-
     private function getApplications()
     {
         if(Yii::$app->user->identity->organization->organization_enc_id) {
@@ -549,6 +551,7 @@ class UsersController extends Controller
             }
         }
     }
+
     public function actionUpdateUser()
     {
         if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
