@@ -3,6 +3,13 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
+function webDate($webDate)
+{
+    $date = $webDate;
+    $sec = strtotime($date);
+    $newDate = date('d-M', $sec);
+    return $newDate;
+}
 if (!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id) {
     if (!empty($userApplied['applied_application_enc_id'])) {
         $j = 0;
@@ -707,6 +714,67 @@ $uId = $user['user_enc_id'];
         <!--End Sidebar-->
         <!--        </div>-->
     </section>
+
+
+    
+    <section class="webinar-attended">
+        <div class="container">
+            <div class="row">
+                <div class="heading-style">Webinars Attended</div>
+            </div>
+            <div class="row">
+                <?php
+                foreach ($pastWebinar as $pWeb) {
+                    $date = array();
+                    foreach ($pWeb['webinarEvents'] as $key => $row) {
+                        $date[$key] = $row['start_datetime'];
+                    }
+                    array_multisort($date, SORT_DESC, $pWeb['webinarEvents']);
+                    ?>
+                    <div class="col-md-3 col-sm-4 col-xs-12">
+                        <div class="web-card">
+                            <div class="web-img">
+                                <a href="<?= Url::to("/webinar/" . $pWeb['slug']) ?>">
+                                    <img src="<?= $pWeb['image'] ?>">
+                                </a>
+                                <div class="web-detail-date">
+                                    <div class="web-date">
+                                        <?php
+                                        $eventDate = webDate($pWeb['webinarEvents'][0]['start_datetime']);
+                                        echo $eventDate;
+                                        ?>
+                                    </div>
+                                    <!--<div class="web-paid">
+                                        <?php
+                                        $totalPrice = $pWeb['price'];
+                                        $gstAmount = 0;
+                                        if ($pWeb['gst']) {
+                                            $gstPercent = $pWeb['gst'];
+                                            if ($totalPrice > 0) {
+                                                $gstAmount = round($gstPercent * ($totalPrice / 100), 2);
+                                            }
+                                        }
+                                        $finalPrice = $totalPrice + $gstAmount;
+                                        ?>
+                                        <?= (($finalPrice == 0) ? 'Free' : '₹ ' . $finalPrice) ?>
+                                    </div> -->
+                                </div>
+                            </div>
+                            <div class="web-inr">
+                                <div class="web-title"><a href="<?= Url::to("/webinar/" . $pWeb['slug']); ?>">
+                                        <?= $pWeb['name'] ?></a></div>
+                                <div class="web-speaker">
+                                    <span><?= str_replace(',', ', </span><span>', trim($pWeb['speakers'])) ?></span></div>
+                                <div class="web-des"><?= $pWeb['description'] ?></div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>               
+    </section>
 <?php
 if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
     if (!empty($userApplied['applied_application_enc_id'])) {
@@ -717,6 +785,86 @@ if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user
     }
 }
 $this->registerCss('
+
+/*-----------Webinar Attended CSS Starts Here---------*/
+.web-card {
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgb(0 0 0 / 20%);
+    background-color: #fff;
+    margin-bottom: 20px;
+    min-height: 360px;
+}
+.web-img {
+    position: relative;
+}
+.web-img img {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+}
+.web-detail-date {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+}
+.web-date {
+    border-radius: 4px;
+    padding: 0px 8px;
+    text-align: center;
+    border: 2px solid #00a0e3;
+    font-weight: 500;
+    font-family: roboto;
+    background-color: #00a0e3;
+    color: #fff;
+    margin-right: 2px;
+}
+.web-paid {
+    background-color: #ff7803;
+    border: 2px solid #ff7803;
+    border-radius: 4px;
+    padding: 0px 8px;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: roboto;
+    font-weight: 500;
+    color: #fff;
+}
+.web-inr {
+    padding: 5px 10px 10px;
+}
+.web-title {
+    font-size: 22px;
+    font-family: lora;
+    font-weight: 600;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.web-title a {
+    color: #333;
+}
+.web-speaker {
+    font-size: 12px;
+    font-family: roboto;
+    color: #a49f9f;
+    font-weight: 500;
+    height: 22px;
+    overflow: hidden;
+}
+.web-des {
+    font-family: roboto;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 70px;
+}
+/*-----------Webinar Attended CSS Ends Here---------*/
+
 .over-scroll {
     position: relative;
     max-height: 550px;

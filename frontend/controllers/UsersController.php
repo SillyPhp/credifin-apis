@@ -21,11 +21,13 @@ use common\models\UserInterests;
 use common\models\UserPreferences;
 use common\models\Users;
 use common\models\UserWorkExperience;
+use common\models\Webinar;
 use frontend\models\profile\UserProfileBasicEdit;
 use frontend\models\profile\UserProfilePictureEdit;
 use frontend\models\profile\UserProfileSocialEdit;
 use frontend\models\UserTaskForm;
 use Yii;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\HttpException;
 use yii\web\Response;
@@ -276,6 +278,7 @@ class UsersController extends Controller
 
         $job_preference = self::getPreference('Jobs', $user['user_enc_id']);
         $internship_preference = self::getPreference('Internships', $user['user_enc_id']);
+        $pastWebinar = self::showWebinar($user['user_enc_id']);
 
         $dataProvider = [
             'user' => $user,
@@ -294,6 +297,7 @@ class UsersController extends Controller
             'slug' => $slug,
             'profileProcess' => $profileProcess,
             'available_applications' => $this->getApplications(),
+            'pastWebinar' => $pastWebinar,
         ];
 
         if (Yii::$app->user->isGuest) {
@@ -314,7 +318,45 @@ class UsersController extends Controller
         return $this->render($page, $dataProvider);
     }
 
-    private function sendOpenedProfileEmail($receiver_email,$receiver_username,$title,$type){
+    
+    private function showWebinar($userIdd = null, $sortAsc = true)
+    {
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $currentTime = $dt->format('Y-m-d H:i:s');
+        $webinars = Webinar::find()
+            ->alias('a')
+            ->select(['a.name', 'a.description', 'a.webinar_enc_id', 'a.slug',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", a.image_location, "/", a.image) END image',
+                'GROUP_CONCAT(DISTINCT(CONCAT(f.first_name, " " ,f.last_name)) SEPARATOR ",") speakers'])
+            ->joinWith(['webinarEvents b' => function ($b) use ($status, $currentTime) {
+                $b->distinct();
+                $b->select(['b.start_datetime', 'b.webinar_enc_id', 'b.status', 'b.event_enc_id']);
+                $b->groupBy(['b.webinar_enc_id']);
+                $b->joinWith(['webinarSpeakers d' => function ($d) {
+                    $d->select(['d.speaker_enc_id', 'd.webinar_event_enc_id']);
+                    $d->joinWith(['speakerEnc e' => function ($e) {
+                        $e->select(['e.speaker_enc_id', 'e.user_enc_id']);
+                        $e->joinWith(['userEnc f' => function ($f) {
+                            $f->select(['f.user_enc_id', 'f.first_name', 'f.last_name']);
+                        }]);
+                    }]);
+                }], false);
+            }])
+            ->joinWith(['webinarRegistrations c' => function ($c) use ($status, $userIdd) {
+                $c->where(['c.created_by' => $userIdd,'c.status' => 1, 'c.is_deleted' => 0]);
+            }])
+            ->andWhere(['a.is_deleted' => 0])
+            ->groupBy(['a.webinar_enc_id'])
+            ->orderBy(['b.start_datetime' => $sortAsc ? SORT_ASC : SORT_DESC])
+            ->limit(8);
+            $webinars = $webinars->asArray()
+            ->all();
+        return $webinars;
+    } 
+    
+    private function sendOpenedProfileEmail($receiver_email, $receiver_username, $title, $type){
         $is_sent = EmailLogs::find()
             ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
             ->andWhere(['receiver_email' => $receiver_email])
@@ -393,7 +435,6 @@ class UsersController extends Controller
                     'message' => $exception
                 ];
             }
-
         }
         return true;
     }
@@ -540,7 +581,6 @@ class UsersController extends Controller
                     'cv_link' => $cv,
                     'message' => 'success'
                 ];
-
             } catch (\Exception $e) {
                 return [
                     'status' => 500,
@@ -556,9 +596,7 @@ class UsersController extends Controller
             $params = Yii::$app->request->post();
             $user = Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
             if (isset($params['skills']) && !empty($params['skills'])) {
-
             } elseif (isset($params['languages']) && !empty($params['languages'])) {
-
             } elseif (isset($params['job_title']) && !empty($params['job_title'])) {
                 $category_execute = Categories::find()
                     ->alias('a')
@@ -632,5 +670,4 @@ class UsersController extends Controller
             return false;
         }
     }
-
 }
