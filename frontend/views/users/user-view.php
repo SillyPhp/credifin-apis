@@ -123,7 +123,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         <?php
                     }
                     Pjax::end();
-                    if (!Yii::$app->user->identity->organization) {
+                    if (!Yii::$app->user->identity->organization && $profileProcess < 100 ) {
                         ?>
                         <div class="pro-bar">
                             <div class="pro-text"><?= $profileProcess ?>% Completed</div>
@@ -152,7 +152,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                     }
                     if ($user['user_enc_id'] === Yii::$app->user->identity->user_enc_id) {
                         ?>
-                        <a href="javascript:;" class="edit-profile-btn edit-pf">Edit Profile</a>
+<!--                        <a href="javascript:;" class="edit-profile-btn edit-pf">Edit Profile</a>-->
                         <?php
                         if (!empty($userCv)) { ?>
                             <a href="javascript:;" class="edit-profile-btn download-resume" target="_blank"
@@ -166,6 +166,12 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
         </div>
         <div class="col-md-4 col-sm-6  br-gary">
             <div class="right-side-detail">
+                <div class="edit-profile-pen">
+                    <i class="fas fa-pencil-alt edit-btnn" data-id="add-social-details"></i>
+                </div>
+                <?php
+                    pjax::begin(['id' => 'socialDetailsBox'])
+                ?>
                 <ul>
                     <li><span class="detail-info">Availability</span><span
                                 class="set-color"><?= $user['availability'] ?></span></li>
@@ -299,6 +305,9 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         } ?>
                     </div>
                 <?php } ?>
+                <?php
+                    pjax::end();
+                ?>
             </div>
         </div>
     </div>
@@ -677,13 +686,54 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         <form class="text-center">
                             <div class="form-group text-left">
                                 <label for="full_name" class="label-edit">Name</label>
-                                <input type="text" class="form-control form-control-edit" data-name="full_name" id="full_name"
+                                    <input type="text" class="form-control form-control-edit" data-name="full_name" id="full_name"
                                        placeholder="Enter Name" value="<?= $user['first_name'] .''. $user['last_name']  ?>">
                             </div>
                             <div class="form-group text-left">
                                 <label for="job_title" class="label-edit">Position</label>
                                 <input type="text" class="form-control form-control-edit" data-name="job_title" id="job_title"
                                        placeholder="Enter Position" value="<?= $user['job_profile'] ?>">
+                            </div>
+                            <div class="form-group text-left">
+                                <label for="dob" class="label-edit">Date Of Birth</label>
+                                <div class="input-group date">
+                                        <span class="input-group-addon kv-date-picker" title="Select date"><i
+                                                    class="glyphicon glyphicon-calendar kv-dp-icon"></i></span>
+                                    <input type="text" class="form-control form-control-edit"
+                                           placeholder="From Year" aria-invalid="true"
+                                           id="dob" data-name="dob" value="<?= $user['dob'] ?>">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group text-left">
+                                        <?php
+                                            if ($user['experience']) {
+                                                $strToArr = explode('"', $user["experience"]);
+                                                if ($strToArr[1] != 0) {
+                                                    $expYear = $strToArr[1];
+                                                }else{
+                                                    $expYear = 0;
+                                                }
+                                                if ($strToArr[3] != 0) {
+                                                    $expMonth = $strToArr[3];
+                                                }else{
+                                                    $expMonth = 0;
+                                                }
+                                            }
+                                        ?>
+                                        <label for="exp_year" class="label-edit">Experience(Y)</label>
+                                        <input type="text" class="form-control form-control-edit" data-name="exp_year"
+                                               data-id="exp_year" placeholder="Experience Year" value="<?= $expYear ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group text-left">
+                                        <label for="exp_month" class="label-edit">Experience(M)</label>
+                                        <input type="text" class="form-control form-control-edit" data-name="exp_month"
+                                               data-id="exp_month" placeholder="Experience Year" value="<?= $expMonth ?>">
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <div class="form-group lp-form posRel text-left">
@@ -998,6 +1048,41 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             </div>
                         </form>
                     </div>
+                    <div class="add-social-details col-md-12">
+                        <form class="text-center">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group text-left">
+                                        <label for="facebook" class="label-edit">Facebook</label>
+                                        <input type="text" class="form-control form-control-edit" data-name="facebook"
+                                               data-id="facebook" placeholder="Facebook">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group text-left">
+                                        <label for="twitter" class="label-edit">Twitter</label>
+                                        <input type="text" class="form-control form-control-edit" data-name="twitter"
+                                               data-id="twitter" placeholder="Twitter">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group text-left">
+                                        <label for="skype" class="label-edit">Skype</label>
+                                        <input type="text" class="form-control form-control-edit" data-name="skype"
+                                               data-id="skype" placeholder="Skype">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group text-left">
+                                        <label for="linkedin" class="label-edit">Linkedin</label>
+                                        <input type="text" class="form-control form-control-edit" data-name="linkedin"
+                                               data-id="linkedin" placeholder="Linkedin">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" data-name="social-details" class="btn btn-primary updatedata">Save</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1015,6 +1100,9 @@ if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user
 }
 $item_id = '';
 $this->registerCss('
+#userbasicDetails{
+    margin-bottom: 20px;
+}
 .edication_error{
     color: #df4759;
     text-align: center;
@@ -1649,6 +1737,7 @@ body{background-color:#f9f9f9;}
 	border-radius: 8px;
     min-height:300px;
     box-shadow:0 5px 6px rgba(0, 0, 0, 0.2);
+    position: relative;
 }
 .right-side-detail ul {
     padding: 0;
@@ -2236,7 +2325,7 @@ $cityId = $user['city_enc_id'];
 $script = <<< JS
 var user_id = "$uId";
 var global = [];
-$("#update_exp_to, #update_exp_from, #to_date, #from_date" ).datepicker({
+$("#update_exp_to, #update_exp_from, #to_date, #from_date, #dob" ).datepicker({
     autoclose: true,
     format: "yyyy-mm-dd",
     endDate: new Date(),
@@ -2471,8 +2560,24 @@ $(document).on('click', '.updatedata', function(e){
         }
     }else if(fieldName == 'basic-details' || fieldName == 'description'){
         sendData(data, fieldName);
+    }else if(fieldName == 'social-details'){
+        updateSocialDetail(data)
     }
 })
+function updateSocialDetail(data){
+    $.ajax({
+        url:'/users/update-social-detail',
+        method: 'POST',
+        data: data,
+        success: function(res){
+           if(res.status == 'success'){
+               $.pjax.reload({container: '#socialDetailsBox', async: false});
+               $('#exampleModalCenter').modal('hide');
+           }
+        }
+        
+    })
+}
 function updateEducation(data){
     const{degree, institute, to_date, from_date, education_enc_id, field} = data
    $.ajax({
@@ -2970,6 +3075,7 @@ sendData = (data, fieldName) => {
                 let sectionReload = '#'+fieldName+'_display';
                 if (fieldName == 'basic-details'){
                     $.pjax.reload({container: '#userbasicDetails', async: false});
+                    $.pjax.reload({container: '#socialDetailsBox', async: false});
                 }else if(fieldName == 'description'){
                     $.pjax.reload({container:'#user_description', async: false})
                 }else{
