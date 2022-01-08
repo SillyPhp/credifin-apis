@@ -2,6 +2,8 @@
 
 namespace api\modules\v2\controllers;
 
+use api\modules\v2\models\Applied;
+use common\models\AppliedApplications;
 use common\models\AssignedCategories;
 use common\models\AssignedCollegeCourses;
 use common\models\Categories;
@@ -322,6 +324,7 @@ class UtilitiesController extends ApiBaseController
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
         $dt->setTimezone($tz);
+        $dt->modify('first day of previous month');
         $currentDate = $dt->format('Y-m');
 
         $params = Yii::$app->request->post();
@@ -330,12 +333,22 @@ class UtilitiesController extends ApiBaseController
             return $this->response(400, ['status' => 400, 'message' => 'missing information "college_id"']);
         }
 
-        $signed_up_students = UserOtherDetails::find()
+        $signed_up_students_count = UserOtherDetails::find()
             ->where(['organization_enc_id' => $params['college_id'], 'is_deleted' => 0, 'college_actions' => 0])
-            ->andWhere(['like', 'updated_on', $currentDate])
+            ->andWhere(['like', 'created_on', $currentDate])
             ->count();
 
-        return (int)$signed_up_students;
+        $applied_students_count = AppliedApplications::find()
+            ->alias('a')
+            ->joinWith(['createdBy b' => function ($b) {
+                $b->joinWith(['userOtherInfo b1']);
+            }], false)
+            ->where(['b1.organization_enc_id' => $params['college_id'], 'a.is_deleted' => 0, 'b1.college_actions' => 0])
+            ->andWhere(['like', 'a.created_on', $currentDate])
+            ->groupBy(['a.created_by'])
+            ->count();
+
+        return (int)$signed_up_students_count;
 
     }
 
