@@ -1399,6 +1399,69 @@ class DashboardController extends Controller
     {
         return $this->render('safety-posters');
     }
+
+    public function actionLoanDetails()
+    {
+        $loanLoginFee = LoanApplications::find()
+            ->alias('a')
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+            ->select(['a.loan_app_enc_id', 'applicant_name', 'amount',
+                '(count(CASE WHEN b.payment_status IN ("captured","created","withdrawn","refund initiated") THEN "1" ELSE NULL END)) as total_payment',
+            ])
+            ->joinWith(['educationLoanPayments b'], false, 'LEFT JOIN')
+            ->andWhere(['a.is_deleted' => 0])
+            ->having(['total_payment' => 0])
+            ->groupBy(['a.loan_app_enc_id'])
+            ->asArray()
+            ->all();
+        $loanApplication = Yii::$app->userData->loanApplicationObj();
+        if ($loanApplication) {
+            $loanApplication = $loanApplication
+                ->andWhere(['not', ['alp.status' => 10]])
+                ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                ->orderBy(['a.created_on' => SORT_DESC])
+                ->asArray()
+                ->one();
+        }
+        $loan = LoanApplications::find()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id', 'a.loan_status', 'a.applicant_name', 'a.years', 'a.semesters',
+                'a.amount',
+                '(CASE
+                        WHEN c1.course_name IS NOT NULL THEN c1.course_name
+                        WHEN e1.course_name IS NOT NULL THEN e1.course_name
+                        ELSE d.course_name
+                        END) as course_name',
+            ])
+            ->joinWith(['loanApplications b' => function ($b) {
+                $b->select(['b.loan_app_enc_id', 'b.parent_application_enc_id']);
+            }])
+            ->joinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
+                $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
+                    $cc->joinWith(['courseEnc c1']);
+                }], false);
+            }], false)
+            ->joinWith(['pathToUnclaimOrgLoanApplications e' => function ($e) {
+                $e->joinWith(['assignedCourseEnc ee' => function ($ee) {
+                    $ee->joinWith(['courseEnc e1']);
+                }], false);
+            }], false)
+            ->joinWith(['pathToOpenLeads d'], false)
+            ->joinWith(['assignedLoanProviders f'], false)
+            ->where([
+                'a.created_by' => Yii::$app->user->identity->user_enc_id,
+                'f.status' => 11,
+                'a.parent_application_enc_id' => null,
+                'a.is_deleted' => 0,
+            ])
+            ->asArray()
+            ->one();
+        return $this->render('loan-details',[
+            'loanLoginFee' => $loanLoginFee,
+            'loanApplication' => $loanApplication,
+            'loan' => $loan,
+            ]);
+    }
 //    public function actionError(){
 //        $error = Yii::$app->errorHandler->exception;
 //        return $this->render('error',[

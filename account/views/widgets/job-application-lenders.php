@@ -3,16 +3,16 @@
 use yii\helpers\Url;
 
 ?>
-<section class="header-bg">
-    <div class="container">
+    <section class="header-bg">
+        <div class="container">
             <div class="row">
-                <div class="col-md-4 col-sm-4">
+                <div class="col-md-12">
                     <div class="job-app-lender-vector">
                         <img src="<?= Url::to('@eyAssets/images/pages/custom/undraw-envelope.png') ?>" alt="">
                     </div>
                 </div>
-                <div class="col-md-8 col-sm-8">
-                    <div class="job-app-lender-heading">
+                <div class="col-md-12">
+                    <div class="job-app-lender-heading text-center">
                         <h2>We have received your Loan Application.</h2>
                     </div>
                 </div>
@@ -24,8 +24,8 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-4 col-sm-4">
+            <div class="row flex-line">
+                <div class="col-md-2 col-sm-3">
                     <div class="lender-card">
                         <div class="lender-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/AG-logo.png') ?>" alt="Agile Finserv">
@@ -35,7 +35,7 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-4">
+                <div class="col-md-2 col-sm-3">
                     <div class="lender-card">
                         <div class="lender-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/avanse-logo.png') ?>"
@@ -46,7 +46,7 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-4">
+                <div class="col-md-2 col-sm-3">
                     <div class="lender-card">
                         <div class="lender-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/exclusive-logo.png') ?>"
@@ -57,7 +57,7 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-4">
+                <div class="col-md-2 col-sm-3">
                     <div class="lender-card">
                         <div class="lender-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/education-loans/incred_logo.png') ?>"
@@ -68,7 +68,7 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-4">
+                <div class="col-md-2 col-sm-3">
                     <div class="lender-card">
                         <div class="lender-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/ezcapital.png') ?>" alt="EZ Capital">
@@ -78,10 +78,11 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-sm-4">
+                <div class="col-md-2 col-sm-3">
                     <div class="lender-card">
                         <div class="lender-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>" alt="PHF Leasing">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/phf-leasing.png') ?>"
+                                 alt="PHF Leasing">
                         </div>
                         <div class="lender-text">
                             <p>PHF Leasing</p>
@@ -90,12 +91,14 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-</section>
+    </section>
 <?php
 $this->registercss('
 .header-bg {
     background: linear-gradient(154.01deg, #FF4B1A -3.84%, #E2C952 111.2%);
     border-radius: 8px;
+    padding:20px;
+    margin-bottom:30px;
 }
 .job-app-lender-vector {
     text-align: center;
@@ -109,6 +112,7 @@ $this->registercss('
     font-size: 28px;
     color: #fff;
     font-weight: 500;
+    margin:10px 0 20px 0;
 }
 .lender-card {
     text-align: center;
@@ -120,22 +124,29 @@ $this->registercss('
     overflow: hidden;
 }
 .lender-logo{
-    width: 100%;
-    height: 100%;
+    width: 70px;
+    height: 70px;
     margin: auto;
     line-height: 65px;
 }
 .lender-logo img {
-    height: 70px;
-    width: 100px;
+    height: 100%;
+    width: 100%;
     object-fit: contain;
+}
+.flex-line{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 .lender-text p {
     font-family: roboto;
     color: #000;
-    font-size: 18px;
     font-weight: 500;
-    margin-top: 20px;
+    margin: 5px 0 0;
     overflow: hidden;
+    padding: 0 5px;
+    height: 40px;
 }
 ');
