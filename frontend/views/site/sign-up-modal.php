@@ -16,7 +16,7 @@ use yii\helpers\Url;
                 <h1>Sign Up Today</h1>
                 <p>Hire highly skilled candidates and increase your company's worth absolutely free!</p>
                 <a href="/signup/organization"><i class="fa fa-arrow-right"></i></a>
-                <img src="<?= Url::to('@eyAssets/images/sign-up-modal-img.png')?>">
+                <img src="<?= Url::to('@eyAssets/images/sign-up-modal-img.png') ?>">
             </div>
         </div>
         <div class="col-md-4">
@@ -58,78 +58,90 @@ use yii\helpers\Url;
 </div>
 
 <script type="text/javascript">
-    window.onload = function() {
+    window.onload = function modal() {
         let jobBtn = document.querySelectorAll('[data-target="#sign-up-benefit"]');
+        // let contBtn = document.querySelector('.cta-link a');
         let contBtnWrap = document.querySelector('.cta-link');
-        
-        jobBtn.forEach((btn) => {
-            btn.addEventListener("click", () => {
+
+        // jobBtn.forEach((btn)=>{
+        //     btn.addEventListener("click", ()=>{
+        //     });
+        // });
+
+
+
+        // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the button that opens the modal
+        var allBtn = document.querySelectorAll('[data-target="#sign-up-benefit"]');
+        // Get the <span> element that closes the modal
+        // var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks the button, open the modal 
+        allBtn.forEach((btn) => {
+            btn.onclick = function() {
+                modal.style.display = "block";
                 continueLink = btn.getAttribute("data-link");
+                // contBtn.setAttribute("href", continueLink);
                 contBtn = document.querySelectorAll('.continue-btn');
                 
                 contBtn.forEach((con)=>{
                     con.remove();
                 });
 
-                if(continueLink === ""){
-                    return;
-                }else{
+                if(continueLink !== ""){
                     let conbtn = document.createElement('a');
                     let t = document.createTextNode("Continue, without login");
                     conbtn.classList.add('continue-btn');
                     contBtnWrap.appendChild(conbtn);
                     conbtn.appendChild(t);
-                    conbtn.setAttribute("href", continueLink);
+                    conbtn.setAttribute("href", continueLink);   
                 }
-
-
-
-                // let contBtn = document.querySelectorAll('.continue-btn');
-                // contBtn.forEach((conbtn)=>{
-                //     conbtn.remove();
-                // }); 
-            //     contBtn = document.createElement("a");
-            //     contBtn.classList.add("continue-btn");
-            //     contBtn.textContent = "Continue, without login";
-            //     contBtnWrap.appendChild(contBtn);
-                
-            //     if (continueLink === "") {
-            //         contBtn.remove();
-            //     }
-            //     contBtn.setAttribute("href", continueLink);
-            });
+            }
         });
+
+        // When the user clicks on <span> (x), close the modal
+        // span.onclick = function() {
+        // modal.style.display = "none";
+        // }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
     }
 </script>
 
 <?php $this->registerCss('
 /*MODAL CSS STARTS HERE*/
-    .modal-backdrop{
-        display: none;
+    a[data-target="#sign-up-benefit"]{
+        cursor: pointer;
     }
     .sign-up-card ul li {
         line-height: 1.7;
     }
-    .sign-up-modal .modal-dialog {
-        width: fit-content;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%) !important;
+    .sign-up-modal{
+        display: none;
     }
     .sign-up-modal {
         position: fixed;
         width: 100%;
         z-index: 9999;
         background: #00000055;
+        height: 100vh;
     }
     .sign-modal {
         min-width: 900px;
         background: #fff;
         padding: 35px;
         border-radius: 12px;
-        position: relative;
-        margin: 0 10px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
     .cross {
         position: absolute;
