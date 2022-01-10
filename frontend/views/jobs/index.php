@@ -77,6 +77,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
     </div>
 </section>
 
+<?= $this->render('/widgets/work-from-home-banner') ?>
 
 <?= $this->render('/widgets/info-stats'); ?>
 
