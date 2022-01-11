@@ -94,17 +94,15 @@ AppAssets::register($this);
                     <div class="secondary-top-header">
                         <div class="secondary-top-header-left">
                             <span>
-                                <i class="far fa-check-circle"></i><a href="" type="button" data-toggle="modal" data-link="/jobs/quick-jobs" data-target="#sign-up-benefit">Post quick <strong>Job</strong></a>or<a href="" type="button" data-toggle="modal" data-link="/internships/quick-internship" data-target="#sign-up-benefit"><strong>Internship</strong></a>
+                                <i class="far fa-check-circle"></i><a data-link="/jobs/quick-jobs" data-target="#sign-up-benefit">Post quick <strong>Job</strong></a>or<a data-link="/internships/quick-internship" data-target="#sign-up-benefit"><strong>Internship</strong></a>
                             </span>
                             <span>
-                                <i class="fab fa-twitter"></i><a href="" type="button" data-toggle="modal" data-link="/tweets/job/create" data-target="#sign-up-benefit">Post <strong>Job</strong></a>or<a href="" type="button" data-toggle="modal" data-link="/tweets/internship/create" data-target="#sign-up-benefit"><strong>Internship Tweet</strong></a>
+                                <i class="fab fa-twitter"></i><a data-link="/tweets/job/create" data-target="#sign-up-benefit">Post <strong>Job</strong></a>or<a data-link="/tweets/internship/create" data-target="#sign-up-benefit"><strong>Internship Tweet</strong></a>
                             </span>
                         </div>
                         
-                        <div class="modal fade sign-up-modal" id="sign-up-benefit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                    <?= $this->render('/site/sign-up-modal') ?>
-                            </div>
+                        <div class="sign-up-modal" id="myModal">
+                            <?= $this->render('/site/sign-up-modal') ?>
                         </div>
 
                         <div class="secondary-top-header-right">
@@ -407,9 +405,6 @@ AppAssets::register($this);
         ?>
     </div>
     <script type="text/javascript">
-
-
-
         function handleCredentialResponse(response) {
             if (response.credential) {
                 var token = parseJwt(response.credential);

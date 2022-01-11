@@ -271,7 +271,7 @@ use yii\helpers\Url;
 										if(Yii::$app->user->isGuest){
 											?>
 									
-									<a href="" class="learn-btn" type="button" data-toggle="modal" data-link="" data-target="#sign-up-benefit">Learn More</a>
+									<a class="learn-btn" type="button" data-toggle="modal" data-link="" data-target="#sign-up-benefit">Learn More</a>
 									
 									<?php
 										}else{
