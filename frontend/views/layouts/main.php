@@ -94,10 +94,10 @@ AppAssets::register($this);
                     <div class="secondary-top-header">
                         <div class="secondary-top-header-left">
                             <span>
-                                <i class="far fa-check-circle"></i><a data-link="/jobs/quick-jobs" data-target="#sign-up-benefit">Post quick <strong>Job</strong></a>or<a data-link="/internships/quick-internship" data-target="#sign-up-benefit"><strong>Internship</strong></a>
+                                <i class="far fa-check-circle"></i>Post quick <a data-link="/jobs/quick-jobs" data-target="#sign-up-benefit"><strong>Job</strong></a>or<a data-link="/internships/quick-internship" data-target="#sign-up-benefit"><strong>Internship</strong></a>
                             </span>
                             <span>
-                                <i class="fab fa-twitter"></i><a data-link="/tweets/job/create" data-target="#sign-up-benefit">Post <strong>Job</strong></a>or<a data-link="/tweets/internship/create" data-target="#sign-up-benefit"><strong>Internship Tweet</strong></a>
+                                <i class="fab fa-twitter"></i>Post <a data-link="/tweets/job/create" data-target="#sign-up-benefit"><strong>Job</strong></a>or<a data-link="/tweets/internship/create" data-target="#sign-up-benefit"><strong>Internship Tweet</strong></a>
                             </span>
                         </div>
                         

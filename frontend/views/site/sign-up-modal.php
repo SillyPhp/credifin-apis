@@ -157,8 +157,8 @@ use yii\helpers\Url;
     .cross {
         color: #333 !important;
         position: absolute;
-        right: 20px;
-        top: 8px;
+        right: 10px;
+        top: -1px;
         cursor: pointer;
     }
     .sign-today {
@@ -271,7 +271,7 @@ use yii\helpers\Url;
             margin: 10px 0 5px 0;
         }
     }
-    @media only screen and (max-height: 730px){
+    @media screen and (max-width: 475px), screen and (max-height: 730px){
         .sign-modal {
             padding: 10px 35px;
         }
