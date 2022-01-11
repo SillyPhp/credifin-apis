@@ -9,7 +9,7 @@ use yii\helpers\Url;
 
 
 <div class="sign-modal modal-content">
-    <a href="" class="cross"><i class="fa fa-times"></i></a>
+    <a class="cross"><i class="fa fa-times"></i></a>
     <div class="row">
         <div class="col-md-4">
             <div class="sign-today">
@@ -19,8 +19,8 @@ use yii\helpers\Url;
                 <img src="<?= Url::to('@eyAssets/images/sign-up-modal-img.png') ?>">
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="sign-up-card">
+        <div class="col-md-4 col-sm-6">
+            <div class="sign-up-card first">
                 <h1>Without Login</h1>
                 <h2>What you'll get</h2>
                 <ul>
@@ -34,7 +34,7 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 col-sm-6">
             <div class="sign-up-card">
                 <h1>With Login</h1>
                 <h2>What you'll get</h2>
@@ -62,6 +62,7 @@ use yii\helpers\Url;
         let jobBtn = document.querySelectorAll('[data-target="#sign-up-benefit"]');
         // let contBtn = document.querySelector('.cta-link a');
         let contBtnWrap = document.querySelector('.cta-link');
+        let body = document.querySelector('body');
 
         // jobBtn.forEach((btn)=>{
         //     btn.addEventListener("click", ()=>{
@@ -76,20 +77,25 @@ use yii\helpers\Url;
         // Get the button that opens the modal
         var allBtn = document.querySelectorAll('[data-target="#sign-up-benefit"]');
         // Get the <span> element that closes the modal
-        // var span = document.getElementsByClassName("close")[0];
+        var span = document.getElementsByClassName("cross")[0];
+        span.addEventListener('click', () => {
+            modal.style.display = "none";
+            body.classList.remove('modal-open');
+        });
 
         // When the user clicks the button, open the modal 
         allBtn.forEach((btn) => {
             btn.onclick = function() {
                 modal.style.display = "block";
                 continueLink = btn.getAttribute("data-link");
+                body.classList.add('modal-open');
                 // contBtn.setAttribute("href", continueLink);
                 contBtn = document.querySelectorAll('.continue-btn');
                 
                 contBtn.forEach((con)=>{
                     con.remove();
                 });
-
+                
                 if(continueLink !== ""){
                     let conbtn = document.createElement('a');
                     let t = document.createTextNode("Continue, without login");
@@ -100,16 +106,17 @@ use yii\helpers\Url;
                 }
             }
         });
-
+        
         // When the user clicks on <span> (x), close the modal
         // span.onclick = function() {
-        // modal.style.display = "none";
-        // }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
+            // modal.style.display = "none";
+            // }
+            
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                    body.classList.remove('modal-open');
             }
         }
     }
@@ -117,6 +124,9 @@ use yii\helpers\Url;
 
 <?php $this->registerCss('
 /*MODAL CSS STARTS HERE*/
+    .modal-open{
+        overflow: hidden !important;
+    }
     a[data-target="#sign-up-benefit"]{
         cursor: pointer;
     }
@@ -134,7 +144,8 @@ use yii\helpers\Url;
         height: 100vh;
     }
     .sign-modal {
-        min-width: 900px;
+        width: 80%;
+        max-width: 900px;
         background: #fff;
         padding: 35px;
         border-radius: 12px;
@@ -144,9 +155,11 @@ use yii\helpers\Url;
         transform: translate(-50%, -50%);
     }
     .cross {
+        color: #333 !important;
         position: absolute;
         right: 20px;
         top: 8px;
+        cursor: pointer;
     }
     .sign-today {
         background: #00a0e3;
@@ -160,7 +173,7 @@ use yii\helpers\Url;
         width: 100%;
         min-height: 400px;
         font-family: Open Sans;
-        padding: 25px 20px;
+        padding: 25px 20px 50px 20px;
         background: #FFFFFF;
         box-shadow: 0px 0px 19px 3px rgba(0, 0, 0, 0.23);
         border-radius: 12px;
@@ -241,6 +254,35 @@ use yii\helpers\Url;
     .cta-link .login-btn:hover{
         color: #fff !important;
         font-weight: 500;
+    }
+
+    @media only screen and (max-width: 991px){
+        .sign-today{
+            display: none;
+        }
+    }
+
+    @media only screen and (max-width: 767px){
+        .sign-up-card{
+            min-height: auto !important;
+            margin-bottom: 20px;
+        }
+        .sign-up-card h2 {
+            margin: 10px 0 5px 0;
+        }
+    }
+    @media only screen and (max-height: 730px){
+        .sign-modal {
+            padding: 10px 35px;
+        }
+        .sign-up-card {
+            padding: 11px 13px 47px 12px;
+            box-shadow: 0px 0px 12px 0px rgb(0 0 0 / 23%);
+            margin-bottom: 7px;
+        }
+        .sign-up-card.first{
+            padding: 11px 13px 14px 12px;
+        }
     }
 /*MODAL CSS ENDS HERE*/
 ');

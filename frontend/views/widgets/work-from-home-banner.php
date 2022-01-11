@@ -13,14 +13,14 @@ use yii\helpers\Url;
                         <?php if($btnText === 'Jobs' || $btnText === 'home'){ ?>
                         <a href="/work-from-home-jobs" target="_blank" class="job-btn"><span class="btn-text">Explore Jobs</span><span class="btn-icon"><i class="fas fa-briefcase"></i></span></a>
                         <?php }if($btnText === 'Internships' || $btnText === 'home'){ ?>
-                        <a href="/work-from-home-internships" target="_blank" class="intern-btn"><span class="btn-text">Explore Internship</span><span class="btn-icon"><i class="fas fa-graduation-cap"></i></span></a>
+                        <a href="/work-from-home-internships" target="_blank" class="intern-btn"><span class="btn-text">Explore Internships</span><span class="btn-icon"><i class="fas fa-graduation-cap"></i></span></a>
                         <?php }?>
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="banner-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/jobs/work-from-home-img.png') ?>" alt="">
+                    <img src="<?= Url::to('@eyAssets/images/pages/jobs/work-from-home-img.png') ?>" alt="Work From Home">
                 </div>
             </div>
         </div>
