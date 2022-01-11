@@ -970,7 +970,7 @@ AppAssets::register($this);
             }
             ');
     }
-    if(!Yii::$app->user->identity->organization){
+    if(!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization){
         $this->registerJs("
          function openUserDetailsModal(){
             let hasCookie = document.cookie;
