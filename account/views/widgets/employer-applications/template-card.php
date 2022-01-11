@@ -27,6 +27,7 @@ if (!empty($total_processes)) {
                                 <a href="#" onclick="window.open('<?= Url::to('/account/internships/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');" data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
                                     <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
+                                    <p style="height:19px;"><?= $processes[$next]['designation']; ?></p>
                                 </a>
                                 <?php
                             } else{
@@ -34,6 +35,7 @@ if (!empty($total_processes)) {
                                 <a href="#" onclick="window.open('<?= Url::to('/account/jobs/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');"  data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
                                     <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
+                                    <p style="height:19px;"><?= $processes[$next]['designation']; ?></p>
                                 </a>
                                 <?php
                             }
