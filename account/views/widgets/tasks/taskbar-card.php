@@ -25,7 +25,7 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
                 }
                 $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                 $color = Yii::$app->user->identity->initials_color;
-                $link = Url::to('/' . Yii::$app->user->identity->username . '/edit');
+                $link = Url::to('/' . Yii::$app->user->identity->username);
             }
 
             if (empty($image)) :
