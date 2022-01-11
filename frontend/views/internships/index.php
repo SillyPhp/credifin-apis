@@ -99,7 +99,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
 </section>
 
 
-<?= $this->render('/widgets/work-from-home-banner') ?>
+<?= $this->render('/widgets/work-from-home-banner', ['btnText' => 'Internships']) ?>
 
 <?= $this->render('/webinars/webinar-carousel')?>
 

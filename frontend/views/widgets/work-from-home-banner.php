@@ -8,10 +8,13 @@ use yii\helpers\Url;
             <div class="col-sm-6">
                 <div class="banner-text">
                     <h1>Work From Home</h1>
-                    <p>Maintain better work-life balance by working remotely. Apply for work from home jobs and internships without any hassle. Explore the section now!'</p>
+                    <p>Maintain better work-life balance by working remotely. Apply for work from home jobs and internships without any hassle. Explore the section now!</p>
                     <div class="explore-btn">
-                        <a href="/work-from-home-jobs" class="job-btn"><span class="btn-text">Explore Jobs</span><span class="btn-icon"><i class="fas fa-briefcase"></i></span></a>
-                        <a href="/work-from-home-internships" class="intern-btn"><span class="btn-text">Explore Internship</span><span class="btn-icon"><i class="fas fa-graduation-cap"></i></span></a>
+                        <?php if($btnText === 'Jobs' || $btnText === 'home'){ ?>
+                        <a href="/work-from-home-jobs" target="_blank" class="job-btn"><span class="btn-text">Explore Jobs</span><span class="btn-icon"><i class="fas fa-briefcase"></i></span></a>
+                        <?php }if($btnText === 'Internships' || $btnText === 'home'){ ?>
+                        <a href="/work-from-home-internships" target="_blank" class="intern-btn"><span class="btn-text">Explore Internship</span><span class="btn-icon"><i class="fas fa-graduation-cap"></i></span></a>
+                        <?php }?>
                     </div>
                 </div>
             </div>
@@ -104,7 +107,7 @@ use yii\helpers\Url;
         width: 100%;
         transition: .3s all ease-in;
     }
-    .explore-btn a:nth-child(1):hover span.btn-text{
+    .explore-btn .job-btn:hover span.btn-text{
         color: #00a0e3;
         transition: .3s all ease-in;
         font-weight: 600;

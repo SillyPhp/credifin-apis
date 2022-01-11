@@ -1060,7 +1060,7 @@ class SiteController extends Controller
                 return $this->renderAjax('/widgets/drop-resume-section');
                 break;
             case 'getWorkFromHomeBanner':
-                return $this->renderAjax('/widgets/work-from-home-banner');
+                return $this->renderAjax('/widgets/work-from-home-banner', ['btnText' => 'home']);
                 break;
             case 'getShortcuts':
                 $job_profiles = AssignedCategories::find()
