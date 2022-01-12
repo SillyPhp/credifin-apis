@@ -993,6 +993,7 @@ class CollegeIndexController extends ApiBaseController
                 'a.applied_application_enc_id',
                 'a.application_enc_id',
                 'a.current_round',
+                'a.status application_status',
                 'g.name application_type',
                 'b.slug',
                 'b.status',

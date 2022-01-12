@@ -206,7 +206,11 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
-    let courses = '';
+    if(typeof courses !== 'undefined'){
+        courses = '';
+    }else{
+        let courses = ''
+    }
     async function getCourses() {
         let response = await fetch(`${baseUrl}/api/v3/ey-college-profile/courses`, {
             method: 'POST',

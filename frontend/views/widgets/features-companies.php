@@ -137,7 +137,23 @@ use yii\helpers\Url;
 									<div class="row">
 										<div class="col-sm-12">
 											<p class="descrip">Your company's Career Page serves as a personal pitch to job seekers so they know why your company is attractive and can apply to open positions</pclass=>
-											<a href="/account/dashboard" class="learn-btn">Learn More</a>
+											
+											<?php 
+												if(Yii::$app->user->isGuest){
+													?>
+											
+											<a href="/signup/organization" class="learn-btn">Learn More</a>
+											
+											<?php
+												}else{
+													?>
+											
+											<a href="/account/jobs/dashboard" class="learn-btn">Learn More</a>
+											
+											<?php
+												}
+											?>
+
 										</div>
 										<div class="col-lg-6 col-md-6 col-sm-12" style="display: none;">
 											<p>Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius.</p>
@@ -175,7 +191,22 @@ use yii\helpers\Url;
 								<div class="col-lg-6 col-md-12 col-sm-12" data-swiper-parallax="-300">
 									<h5 class="slider-faqs-title">Utilize the chatbox to improve candidate engagement</h5>
 									<p class="descrip">Make communication easy between you and applicants by answering their queries and complex questions, ultimately resulting in a good candidate experience with an instant answering facility using a chatbox.</p>
+									
+									<?php 
+										if(Yii::$app->user->isGuest){
+											?>
+									
+									<a href="/signup/organization" class="learn-btn">Learn More</a>
+									
+									<?php
+										}else{
+											?>
+									
 									<a href="/account/jobs/dashboard" class="learn-btn">Learn More</a>
+									
+									<?php
+										}
+									?>
 
 									<div class="row" style="display: none;">
 										<div class="col-lg-6 col-md-6 col-sm-12">
@@ -235,7 +266,22 @@ use yii\helpers\Url;
 								<div class="col-lg-6 col-md-12 col-sm-12" data-swiper-parallax="-100">
 									<h5 class="slider-faqs-title">'Drop resume' feature to hire candidates at any time</h5>
 									<p class="descrip">The unique feature allows you to choose the best candidate whenever a vacancy arises, as applications are stored under different job profiles in the drop resume section.</p>
-									<a href="/account/dashboard" class="learn-btn">Learn More</a>
+									
+									<?php 
+										if(Yii::$app->user->isGuest){
+											?>
+									
+									<a class="learn-btn" type="button" data-toggle="modal" data-link="" data-target="#sign-up-benefit">Learn More</a>
+									
+									<?php
+										}else{
+											?>
+									
+									<a href="/drop-resume" class="learn-btn">Learn More</a>
+									
+									<?php
+										}
+									?>
 
 									<div class="row" style="display: none;">
 										<div class="col-lg-6 col-md-6 col-sm-12">
@@ -275,7 +321,23 @@ use yii\helpers\Url;
 								<div class="col-lg-6 col-md-12 col-sm-12" data-swiper-parallax="-300">
 									<h5 class="slider-faqs-title">Keep track of each candidate's progress during the hiring process</h5>
 									<p  class="descrip">An applicant tracking system will give you insight into the status of your job openings and the people who have applied for them. You can drill down to the candidate level and see the positions they've applied for and what stage of the workflow they're at. You can also evaluate specific jobs and see how many candidates have applied and where each one is at.</p>
+
+									<?php 
+										if(Yii::$app->user->isGuest){
+									?>
+									
+									<a href="/signup/organization" target="_blank" class="learn-btn">Learn More</a>
+									
+									<?php
+										}else{
+									?>
+									
 									<a href="/account/jobs/dashboard" target="_blank" class="learn-btn">Learn More</a>
+									
+									<?php
+										}
+									?>
+								
 								</div>
 							</div>
 

@@ -94,12 +94,17 @@ AppAssets::register($this);
                     <div class="secondary-top-header">
                         <div class="secondary-top-header-left">
                             <span>
-                                <i class="far fa-check-circle"></i><a href="/jobs/quick-job">Post quick <strong>Job</strong></a>or<a href="/internships/quick-internship"><strong>Internship</strong></a>
+                                <i class="far fa-check-circle"></i> Post quick <a data-link="/jobs/quick-job" data-target="#sign-up-benefit"><strong>Job</strong></a>or<a data-link="/internships/quick-internship" data-target="#sign-up-benefit"><strong>Internship</strong></a>
                             </span>
                             <span>
-                                <i class="fab fa-twitter"></i><a href="/tweets/job/create">Post <strong>Job</strong></a>or<a href="/tweets/internship/create"><strong>Internship Tweet</strong></a>
+                                <i class="fab fa-twitter"></i> Post <a data-link="/tweets/job/create" data-target="#sign-up-benefit"><strong>Job</strong></a>or<a data-link="/tweets/internship/create" data-target="#sign-up-benefit"><strong>Internship Tweet</strong></a>
                             </span>
                         </div>
+                        
+                        <div class="sign-up-modal" id="myModal">
+                            <?= $this->render('/site/sign-up-modal') ?>
+                        </div>
+
                         <div class="secondary-top-header-right">
                             <a href="/employers">Employer Zone</a>
                             <a href="/signup/organization" class="org-signup">Signup as Company</a>
@@ -965,7 +970,33 @@ AppAssets::register($this);
             }
             ');
     }
-
+    if(!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization){
+        $this->registerJs("
+         function openUserDetailsModal(){
+            let hasCookie = document.cookie;
+            if (document.cookie.indexOf('ModalisViewed') != -1) {
+                return false; 
+            }
+            let userModal = document.getElementById('completeProfileModal')
+                if(userModal != null){
+                    $('#completeProfileModal').modal('show');
+                    return false;
+                }                 
+            $.ajax({
+                url: 'account/resume-builder/user-detail-modal',
+                method: 'Post',
+                data:  {'". Yii::$app->request->csrfParam."':'". Yii::$app->request->csrfToken."'},
+                success: function(response){
+                    $('body').append(response);
+                    $('#completeProfileModal').modal('show');
+                }
+            });
+            
+         }
+       
+         openUserDetailsModal();
+        ");
+    }
     if (!empty(Yii::$app->params->google->analytics->id)) {
         $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=' . Yii::$app->params->google->analytics->id, [
             'depends' => [\yii\web\JqueryAsset::className()],
