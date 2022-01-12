@@ -1008,20 +1008,15 @@ body.modal-open{
 }
 ');
 $script = <<< JS
-setCookie = () => {
+
+function setCookie() {
     let date = new Date();
-    date.setTime(date.getTime() + (6 * 24 * 60 * 60 * 1000));
-    let maxAge = 6 * 24 * 60 * 60 * 1000;
+    date.setTime(date.getTime() + (24 * 60 * 60 * 1000));
+    let maxAge = 24 * 60 * 60 * 1000;
     const expires = "expires=" + date.toUTCString();
     document.cookie = "ModalisViewed=modalViewed; expires="+expires+"; max-age="+maxAge+"; path=/";
 }
-function checkCookie(){
-    let hasCookie = document.cookie;
-    if (document.cookie.indexOf('ModalisViewed') == -1) {
-        $('#completeProfileModal').modal('show');
-    }
-}
-checkCookie()
+
 
 $(document).on('keyup','#search-language',function(e){
     if(e.which==13)
@@ -1136,6 +1131,11 @@ function countFields(){
         if(fieldsArr.length == 1){
             cpForm.querySelector('.skipBtn').style.display = "none";
         }
+    }else if(fieldsArr.length == 0){
+        console.log('length 0')
+         $('#completeProfileModal').modal('hide');
+    }else{
+        console.log(fieldsArr.length)
     }
 }
 countFields()
@@ -1242,11 +1242,13 @@ skipToNextQues = () => {
     }
     toActive.classList.add('disShow');
 }
-$('.datepicker3').datepicker({
-    endDate: '0',
-    todayHighlight: true
-});
 
+if($('.datepicker3')){
+    $('.datepicker3').datepicker({
+        endDate: '0',
+        todayHighlight: true
+    });
+}
 formValidations = (event) => {
     let elem = event.currentTarget;
     let elemValue = elem.value;

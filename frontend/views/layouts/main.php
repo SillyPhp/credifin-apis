@@ -970,7 +970,33 @@ AppAssets::register($this);
             }
             ');
     }
-
+    if(!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization){
+        $this->registerJs("
+         function openUserDetailsModal(){
+            let hasCookie = document.cookie;
+            if (document.cookie.indexOf('ModalisViewed') != -1) {
+                return false; 
+            }
+            let userModal = document.getElementById('completeProfileModal')
+                if(userModal != null){
+                    $('#completeProfileModal').modal('show');
+                    return false;
+                }                 
+            $.ajax({
+                url: 'account/resume-builder/user-detail-modal',
+                method: 'Post',
+                data:  {'". Yii::$app->request->csrfParam."':'". Yii::$app->request->csrfToken."'},
+                success: function(response){
+                    $('body').append(response);
+                    $('#completeProfileModal').modal('show');
+                }
+            });
+            
+         }
+       
+         openUserDetailsModal();
+        ");
+    }
     if (!empty(Yii::$app->params->google->analytics->id)) {
         $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=' . Yii::$app->params->google->analytics->id, [
             'depends' => [\yii\web\JqueryAsset::className()],
