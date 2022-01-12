@@ -365,8 +365,10 @@ $this->registerCss('
     padding: 12px 40px;
     border:2px solid #00a0e3;
     border-radius:5px;
-    color:#00a0e3;
+    color:#fff;
     text-transform:uppercase;
+    background:#00a0e3; 
+    font-weight: 600;
 }
 .login-bttn, .sign-up, .sign-up:hover, .login-bttn:hover{
     -o-transition:.3s all;
@@ -377,19 +379,21 @@ $this->registerCss('
 }
 .login-bttn:hover{
     border:2px solid #00a0e3;
-    color:#fff; 
-    background:#00a0e3; 
+    color:#00a0e3; 
+    background:transparent; 
 }
 .sign-up{
     padding: 12px 40px;
     border:2px solid #ff7803;
     border-radius:5px;
-    color:#ff7803;
+    color:#fff;
     text-transform:uppercase;
+    background:#ff7803;  
+    font-weight: 600;
 }
 .sign-up:hover{
-   color:#fff; 
-    background:#ff7803;  
+   color:#ff7803; 
+   background:transparent;  
 }
 .job-field input:focus{
     -webkit-box-shadow: none !important;
