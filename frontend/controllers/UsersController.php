@@ -253,7 +253,7 @@ class UsersController extends Controller
 
         $experience = UserWorkExperience::find()
             ->alias('a')
-            ->select(['a.user_enc_id', 'a.experience_enc_id', 'a.is_current', 'a.city_enc_id', 'a.company', 'a.title', 'a.from_date', 'a.to_date', 'b.name city_name'])
+            ->select(['a.user_enc_id', 'a.experience_enc_id', 'a.is_current', 'a.city_enc_id', 'a.company', 'a.title', 'a.from_date', 'a.to_date', 'b.name city_name', 'a.description'])
             ->where(['a.user_enc_id' => $user['user_enc_id']])
             ->innerJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
             ->orderBy(['created_on' => SORT_DESC])

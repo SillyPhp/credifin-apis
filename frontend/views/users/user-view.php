@@ -113,7 +113,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         ])
                     ?>
                     <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
-                    <p><?= $user['job_profile'] ?></p>
+                    <p><i class="fas fa-building"></i> <?= $user['job_profile'] ?></p>
                     <?php
                     if ($user['city']) {
                         ?>
@@ -318,22 +318,6 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
         <div class="col-md-8 col-sm-12">
             <?php if ($user['job_profile'] || $user['city'] || $user['description'] || $skills || $language) { ?>
                 <div class="container-detail-box">
-                    <div class="apply-job-header">
-                        <?php
-                        if ($user['job_profile']) {
-                            ?>
-                            <a href="#" class="cl-success">
-                                <span><i class="fas fa-building"></i><?= $user['job_profile'] ?></span>
-                            </a>
-                            <?php
-                        }
-                        if ($user['city']) {
-                            ?>
-                            <span><i class="fas fa-map-marker-alt"></i><?= $user['city'] ?></span>
-                            <?php
-                        }
-                        ?>
-                    </div>
                     <div class="apply-job-detail awesome-size ">
                         <h5>About Me <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="edit-description"></i></h5>
                         <?php
@@ -466,13 +450,12 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     <div class="prof-inner">
                                         <div class="uni-name s-text"><?= $exp['company'] . ', ' . $exp['city_name'] ?>
                                         </div>
-                                        <div class="quelification s-text-2"><?= $exp['title'] ?>
-                                        </div>
-                                        <div class="s-time s-text-2"><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' ?>
+                                        <div class="quelification s-text-2"><?= $exp['title'] ?></div>
+                                        <div class="s-time s-text-2"><?= date("d/M/Y", strtotime($exp['from_date'])) . ' to ' ?>
                                             <?php if ($exp['is_current']) {
                                                 echo 'Present';
                                             } else { ?>
-                                                <?php echo date("d/m/Y", strtotime($exp['to_date']));
+                                                <?php echo date("d/M/Y", strtotime($exp['to_date']));
                                             } ?>
                                         </div>
                                         <div class="s-time s-text-2"><?= $exp['description'] ?>
@@ -675,7 +658,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
 </section>
 
 <!--Edit Modal start here-->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+<div class="modal fade modal-shadow" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
      aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -761,7 +744,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     <p class="errorMsg selectError"></p>
                                 </div>
                             </div>
-                            <button type="button" data-name="basic-details" class="btn btn-primary mt10 updatedata">Submit</button>
+                            <button type="button" data-name="basic-details" class="btn edit-profile-btn mt10 updatedata">Submit</button>
                         </form>
                     </div>
                     <div class="edit-description col-md-12">
@@ -771,7 +754,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                 <textarea class="form-control form-control-edit" data-name="description" id="description"
                                       placeholder="Enter Position" value="<?= $user['description'] ?>"><?= $user['description'] ?></textarea>
                             </div>
-                            <button type="button" data-name="description" class="btn btn-primary mt10 updatedata">Submit</button>
+                            <button type="button" data-name="description" class="btn edit-profile-btn mt10 updatedata">Submit</button>
                         </form>
                     </div>
                     <div class="edit-skills col-md-12">
@@ -796,7 +779,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     </li>
                                 </ul>
                             </div>
-                            <button type="button" data-name="skills" class="btn btn-primary mt10 updateSkills" >Submit</button>
+                            <button type="button" data-name="skills" class="btn edit-profile-btn mt10 updateSkills" >Submit</button>
                         </form>
                     </div>
                     <div class="edit-languages col-md-12">
@@ -822,7 +805,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     </li>
                                 </ul>
                             </div>
-                            <button type="button" data-name="languages" class="btn btn-primary mt10 updateSkills">Submit</button>
+                            <button type="button" data-name="languages" class="btn edit-profile-btn mt10 updateSkills">Submit</button>
                         </form>
                     </div>
                     <div class="add-education col-md-12">
@@ -868,32 +851,34 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             </div>
                             <p class="education_error"></p>
                             <button type="button" data-name="add_new_education" data-id="education_enc_id"
-                                    class="btn btn-primary mt10 eduUpdate updatedata">Submit</button>
+                                    class="btn edit-profile-btn mt10 eduUpdate updatedata">Submit</button>
 
                         </form>
                     </div>
                     <div class="add-experience col-md-12">
                         <form class="text-center">
-                            <div class="form-group text-left">
-                                <label for="job-name" class="label-edit">Title *</label>
-                                <input type="text" class="form-control form-control-edit" data-name="title"
-                                       id="update_exp_title" placeholder="Job Title">
-                            </div>
-                            <div class="form-group text-left">
-                                <label for="comp-name" class="label-edit">Company *</label>
-                                <input type="text" class="form-control form-control-edit" data-name="company"
-                                       id="update_exp_company" placeholder="Company Name">
-                            </div>
-                            <div class="form-group text-left">
-                                <label for="locations-name" class="label-edit">Location *</label>
-                                <input type="text" class="form-control form-control-edit" id="update_cities"
-                                      data-name="city" placeholder="Location">
-                                <input type="hidden" class="form-control form-control-edit" data-name="city_enc_id" id="update_city_id_exp">
+                            <div class="row">
+                                <div class="form-group text-left col-md-12">
+                                    <label for="job-name" class="label-edit">Title <span>*</span></label>
+                                    <input type="text" class="form-control form-control-edit" data-name="title"
+                                           id="update_exp_title" placeholder="Job Title">
+                                </div>
+                                <div class="form-group text-left col-md-6">
+                                    <label for="comp-name" class="label-edit">Company <span>*</span></label>
+                                    <input type="text" class="form-control form-control-edit" data-name="company"
+                                           id="update_exp_company" placeholder="Company Name">
+                                </div>
+                                <div class="form-group text-left col-md-6">
+                                    <label for="locations-name" class="label-edit">Location <span>*</span></label>
+                                    <input type="text" class="form-control form-control-edit" id="update_cities"
+                                           data-name="city" placeholder="Location">
+                                    <input type="hidden" class="form-control form-control-edit" data-name="city_enc_id" id="update_city_id_exp">
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group text-left">
-                                        <label class="label-edit">Start Date *</label>
+                                        <label class="label-edit">Start Date <span>*</span></label>
                                         <div class="input-group  date">
                                             <span class="input-group-addon kv-date-picker" title="Select date"><i
                                                         class="glyphicon glyphicon-calendar kv-dp-icon"></i></span>
@@ -939,12 +924,12 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                 </div>
                             </div>
                             <div class="form-group text-left">
-                                <label for="comp-description" class="label-edit">Description *</label>
+                                <label for="comp-description" class="label-edit">Description <span>*</span></label>
                                 <textarea class="form-control form-textarea" data-name="description" id="update_description"></textarea>
                             </div>
                             <p class="experience_error"></p>
                             <button type="button" data-name="add_new_experience" data-id="experience_enc_id"
-                                class="btn btn-primary expUpdate mt10 updatedata">Submit</button>
+                                class="btn edit-profile-btn expUpdate mt10 updatedata">Submit</button>
 
                         </form>
                     </div>
@@ -972,7 +957,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             </div>
                             <div class="row">
                                 <div class="col-md-12 text-center">
-                                    <button type="button" class="btn mt10 btn-primary closeModal">Done</button>
+                                    <button type="button" class="btn mt10 edit-profile-btn closeModal">Done</button>
                                 </div>
                             </div>
                         </form>
@@ -1003,7 +988,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             </div>
                             <div class="row">
                                 <div class="col-md-12 text-center">
-                                    <button type="button" class="btn mt10 btn-primary closeModal">Done</button>
+                                    <button type="button" class="btn mt10 edit-profile-btn closeModal">Done</button>
                                 </div>
                             </div>
                         </form>
@@ -1043,7 +1028,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             </div>
                             <div class="row">
                                 <div class="col-md-12 text-center">
-                                    <button type="button" class="btn mt10 btn-primary closeModal">Done</button>
+                                    <button type="button" class="btn mt10 edit-profile-btn closeModal">Done</button>
                                 </div>
                             </div>
                         </form>
@@ -1080,7 +1065,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" data-name="social-details" class="btn btn-primary updatedata">Save</button>
+                            <button type="button" data-name="social-details" class="btn edit-profile-btn updatedata">Save</button>
                         </form>
                     </div>
                 </div>
@@ -1100,6 +1085,9 @@ if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user
 }
 $item_id = '';
 $this->registerCss('
+.modal-shadow{
+    background-color: rgba(0, 0, 0, 0.55);
+}
 #userbasicDetails{
     margin-bottom: 20px;
 }
@@ -1220,9 +1208,9 @@ span.hobby_remove{
     font-family: Roboto;
 }
 .control-check {
-    display: block;
+    display: flex;
     position: relative;
-    padding-left: 30px;
+    padding-left: 20px;
     margin-bottom: 15px;
     cursor: pointer;
     font-size: 14px;
@@ -1276,7 +1264,7 @@ span.hobby_remove{
 .form-control-edit {
     padding: 4px 8px;
     border: 1px solid #eee;
-    border-radius: 8px;
+    border-radius: 4px;
     height: 40px;
     font-family: Roboto;
 }
@@ -1418,6 +1406,7 @@ span.hobby_remove{
 }
 .prof-p {
 	width: 80px;
+	min-width: 80px;
 	height: 80px;
 	border-radius: 4px;
 	overflow: hidden;
@@ -1472,6 +1461,7 @@ body{background-color:#f9f9f9;}
     font-size: 14px;
     padding: 8px 15px;
     border-radius: 4px;
+    box-shadow: 0px 1px 6px 1px #a5a5a5;
 }
 .edu-add-btn:hover, .edu-add-btn:focus{
     color:#fff;
@@ -1484,7 +1474,7 @@ body{background-color:#f9f9f9;}
     padding: 10px 0;
     border-bottom: 1px solid #dddddd;
     display:flex;
-    flex-wrap: wrap;
+//    flex-wrap: wrap;
     position:relative;
 }
 .side-btns {
@@ -1584,8 +1574,8 @@ body{background-color:#f9f9f9;}
     text-align: center;
     background-color: #00a0e3;
     color: #fff;
-    padding: 5px 25px;
-    box-shadow: 0px 1px 12px 1px #a5a5a5;
+    padding: 7px 25px;
+    box-shadow: 0px 1px 6px 1px #a5a5a5;
     border-radius: 4px;
     margin: 10px 5px 5px;
     font-size: 13px;
