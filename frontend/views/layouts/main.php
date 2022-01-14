@@ -1017,7 +1017,6 @@ AppAssets::register($this);
                 }
             })
          }
-         openPreferenceModal()
         ");
     }
 
