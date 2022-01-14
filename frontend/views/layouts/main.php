@@ -983,7 +983,7 @@ AppAssets::register($this);
                     return false;
                 }                 
             $.ajax({
-                url: 'account/resume-builder/user-detail-modal',
+                url: '/account/resume-builder/user-detail-modal',
                 method: 'Post',
                 data:  {'". Yii::$app->request->csrfParam."':'". Yii::$app->request->csrfToken."'},
                 success: function(response){
@@ -1008,7 +1008,7 @@ AppAssets::register($this);
             }   
             
             $.ajax({
-                url: 'account/resume-builder/user-preference-modal',
+                url: '/account/resume-builder/user-preference-modal',
                 method: 'Post',
                 data: {'". Yii::$app->request->csrfParam."':'". Yii::$app->request->csrfToken."'},
                 success: function(response) {
@@ -1052,9 +1052,6 @@ AppAssets::register($this);
 
     if (Yii::$app->user->isGuest) {
         Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"', \yii\web\View::POS_HEAD);
-        $this->registerJs('
-        
-    ');
     }
     if (!$this->params['header_dark']) {
         $this->registerJs(" $(document).on('scroll', function () {

@@ -1369,14 +1369,16 @@ class SiteController extends Controller
     public function actionEnigma21(){
         return $this->render('aiesec-main');
     }
-  public function actionLinkInBio(){
+    public function actionLinkInBio(){
       $this->layout = 'widget-layout';
     return $this->render('instagram-ey');
   }
+
     public function actionLinkDetail(){
         return $this->render('insta-detail');
     }
-  public function actionGetInstagram(){
+
+    public function actionGetInstagram(){
       if (Yii::$app->request->isAjax) {
           Yii::$app->response->format = Response::FORMAT_JSON;
           $limit = Yii::$app->request->post('limit');
@@ -1403,4 +1405,8 @@ class SiteController extends Controller
           throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
       }
   }
+
+    public function actionPreferenceTesting(){
+        return $this->render('preference-testing');
+    }
 }
