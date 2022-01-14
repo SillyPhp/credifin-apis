@@ -993,10 +993,35 @@ AppAssets::register($this);
             });
             
          }
-       
          openUserDetailsModal();
+         
+         function openPreferenceModal(){
+            let hasCookie = document.cookie;
+            if (document.cookie.indexOf('PreferenceisViewed') != -1) {
+                return false; 
+            }
+            
+            let preferenceModal = document.getElementById('preferenceLocation');
+            if(preferenceModal != null){
+                $('#preferenceLocation').modal('show');
+                return false;
+            }   
+            
+            $.ajax({
+                url: 'account/resume-builder/user-preference-modal',
+                method: 'Post',
+                data: {'". Yii::$app->request->csrfParam."':'". Yii::$app->request->csrfToken."'},
+                success: function(response) {
+                    $('body').append(response);
+                    $('#preferenceLocation').modal('show');
+                }
+            })
+         }
+         openPreferenceModal()
         ");
     }
+
+
     if (!empty(Yii::$app->params->google->analytics->id)) {
         $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=' . Yii::$app->params->google->analytics->id, [
             'depends' => [\yii\web\JqueryAsset::className()],

@@ -33,8 +33,7 @@ use Yii;
  * @property UserPreferredLocations[] $userPreferredLocations
  * @property UserPreferredSkills[] $userPreferredSkills
  */
-class UserPreferences extends \yii\db\ActiveRecord
-{
+class UserPreferences extends \yii\db\ActiveRecord{
     /**
      * @inheritdoc
      */
