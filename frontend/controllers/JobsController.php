@@ -594,9 +594,15 @@ class JobsController extends Controller
                 ->andWhere(['is_deleted' => 0])
                 ->exists();
 
-            $shortlist = \common\models\ShortlistedApplications::find()
-                ->select('shortlisted')
-                ->where(['shortlisted' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
+//            $shortlist = \common\models\ShortlistedApplications::find()
+//                ->select('shortlisted')
+//                ->where(['shortlisted' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
+//                ->asArray()
+//                ->one();
+
+            $shortlist = \common\models\ReviewedApplications::find()
+                ->select('review as shortlisted')
+                ->where(['review' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
                 ->asArray()
                 ->one();
         }
@@ -830,19 +836,19 @@ class JobsController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (Yii::$app->request->isPost) {
             $id = Yii::$app->request->post('itemid');
-            $chkshort = ShortlistedApplications::find()
-                ->select(['shortlisted'])
-                ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
-                ->asArray()
-                ->one();
-            $short_status = $chkshort['shortlisted'];
-            if ($short_status == 1) {
-                $response = [
-                    'status' => 201,
-                    'message' => 'Can not add, it is already shortlisted.',
-                ];
-                return $response;
-            } else {
+//            $chkshort = ShortlistedApplications::find()
+//                ->select(['shortlisted'])
+//                ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
+//                ->asArray()
+//                ->one();
+//            $short_status = $chkshort['shortlisted'];
+//            if ($short_status == 1) {
+//                $response = [
+//                    'status' => 201,
+//                    'message' => 'Can not add, it is already shortlisted.',
+//                ];
+//                return $response;
+//            } else {
                 $chkuser = ReviewedApplications::find()
                     ->select(['review'])
                     ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
@@ -896,7 +902,7 @@ class JobsController extends Controller
                         return $response;
                     }
                 }
-            }
+//            }
 
         }
     }

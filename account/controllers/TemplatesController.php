@@ -70,6 +70,11 @@ class TemplatesController extends Controller
             ->joinWith(['designationEnc g'], false)
             ->where(['f.name' => $type, 'a.is_deleted' => 0, 'a.status' => "Active"])
             ->orderBy(['a.created_on' => SORT_DESC])
+            ->andWhere([
+                'or',
+                ['a.template_industry_enc_id' => NULL],
+                ['a.template_industry_enc_id' => Yii::$app->user->identity->organization->industry_enc_id]
+            ])
             ->asArray()
             ->all();
 
