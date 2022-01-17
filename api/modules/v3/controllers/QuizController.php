@@ -88,13 +88,40 @@ class QuizController extends ApiBaseController
 
     public function actionCategories()
     {
+
+        $params = Yii::$app->request->post();
+
+        $status = null;
+
+        if (isset($params['status']) && !empty($params['status'])) {
+            $status = $params['status'];
+        }
+
+
         $categories = Categories::find()
             ->alias('a')
-            ->select(['a.category_enc_id', 'a.name'])
+            ->select(['a.category_enc_id', 'a.name', "CASE 
+                    WHEN b1.quiz_end_datetime IS NULL THEN NULL
+                    WHEN TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),@@session.time_zone,'+05:30'),b1.quiz_end_datetime) < 0 THEN 'true'
+                 ELSE 'false' END is_expired"])
             ->innerJoinWith(['assignedCategories b' => function ($b) {
                 $b->innerJoinWith(['quizzes b1']);
-            }], false)
-            ->where(['b1.is_deleted' => 0])
+                $b->andWhere(['b1.is_deleted' => 0]);
+            }], false);
+
+        // expired or live
+        if ($status != null) {
+            if ($status == 'expired') {
+                $categories->having(['is_expired' => 'true']);
+            } elseif ($status == 'live') {
+                $categories->having(['or',
+                    ['is_expired' => 'false'],
+                    ['is_expired' => null],
+                ]);
+            }
+        }
+
+        $categories = $categories
             ->groupBy('a.name')
             ->asArray()
             ->all();

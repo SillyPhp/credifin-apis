@@ -1886,7 +1886,7 @@ function work_from_home(job_type_str) {
                     if(res['status'] == 200) {
                         swal({
                         title: "",
-                        text: "Your Job Has Been Created Successfully",
+                        text: "Your Application Has Been Created Successfully",
                         type:'success',
                         showCancelButton: false,  
                         confirmButtonClass: "btn-primary",
