@@ -113,8 +113,12 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         ])
                     ?>
                     <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
-                    <p><i class="fas fa-building"></i> <?= $user['job_profile'] ?></p>
                     <?php
+                        if($user['job_profile']){
+                    ?>
+                        <p class="capitalize"><i class="fas fa-building"></i> <?= $user['job_profile'] ?></p>
+                    <?php
+                }
                     if ($user['city']) {
                         ?>
                         <ul>
@@ -544,7 +548,10 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
         if (array_filter($job_preference)) {
             ?>
             <div class="sidebar-container" style="border-bottom: 3px solid #ff7803;">
-                <div class="prefer" style="background-color:#ff7803; color:#fff;">Job Preferences</div>
+                <div class="prefer" style="background-color:#ff7803; color:#fff;">
+                    Job Preferences
+                    <a href="<?= Url::to('/account/preferences') ?>" target="_blank"> <i class="fas fa-pencil-alt"></i></a>
+                </div>
                 <div class="prefer-detail">
                     <ul>
                         <li><span class="set-width">Profile</span><span
@@ -578,7 +585,10 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
         if (array_filter($internship_preference)) {
             ?>
             <div class="sidebar-container" style="border-bottom: 3px solid #00a0e3;">
-                <div class="prefer" style="background-color:#00a0e3; color:#fff;">Internship Preferences</div>
+                <div class="prefer" style="background-color:#00a0e3; color:#fff;">
+                    Internship Preferences
+                    <a href="<?= Url::to('/account/preferences') ?>" target="_blank"> <i class="fas fa-pencil-alt"></i></a>
+                </div>
                 <div class="prefer-detail">
                     <ul>
                         <li><span class="set-width">Profile</span><span
@@ -667,24 +677,32 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                     <div class="edit-name-detail col-md-12">
                         <!--                                <h3 class="edit-detail">Personal Details</h3>-->
                         <form class="text-center">
-                            <div class="form-group text-left">
-                                <label for="full_name" class="label-edit">Name</label>
-                                    <input type="text" class="form-control form-control-edit" data-name="full_name" id="full_name"
-                                       placeholder="Enter Name" value="<?= $user['first_name'] .''. $user['last_name']  ?>">
-                            </div>
-                            <div class="form-group text-left">
-                                <label for="job_title" class="label-edit">Position</label>
-                                <input type="text" class="form-control form-control-edit" data-name="job_title" id="job_title"
-                                       placeholder="Enter Position" value="<?= $user['job_profile'] ?>">
-                            </div>
-                            <div class="form-group text-left">
-                                <label for="dob" class="label-edit">Date Of Birth</label>
-                                <div class="input-group date">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group text-left">
+                                        <label for="full_name" class="label-edit">Name</label>
+                                        <input type="text" class="form-control form-control-edit" data-name="full_name" id="full_name"
+                                               placeholder="Enter Name" value="<?= $user['first_name'] .''. $user['last_name']  ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group text-left">
+                                        <label for="job_title" class="label-edit">Position</label>
+                                        <input type="text" class="form-control form-control-edit" data-name="job_title" id="job_title"
+                                               placeholder="Enter Position" value="<?= $user['job_profile'] ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group text-left">
+                                        <label for="dob" class="label-edit">Date Of Birth</label>
+                                        <div class="input-group date">
                                         <span class="input-group-addon kv-date-picker" title="Select date"><i
                                                     class="glyphicon glyphicon-calendar kv-dp-icon"></i></span>
-                                    <input type="text" class="form-control form-control-edit"
-                                           placeholder="From Year" aria-invalid="true"
-                                           id="dob" data-name="dob" value="<?= $user['dob'] ?>">
+                                            <input type="text" class="form-control form-control-edit"
+                                                   placeholder="From Year" aria-invalid="true"
+                                                   id="dob" data-name="dob" value="<?= $user['dob'] ?>">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -718,31 +736,37 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="form-group lp-form posRel text-left">
-                                    <label class="label-edit">State</label>
-                                    <select id='states_drp' data-name="state" value="<?= $user['state_enc_id'] ?>"
-                                            class="form-control form-control-edit text-capitalize chosen">
-                                        <?php
-                                        if ($states) {
-                                            foreach ($states as $key => $state) {
-                                                ?>
-                                                <option value="<?= $key ?>" <?php echo (($key == $user['state_enc_id']) ? 'selected': ''); ?>><?= $state ?></option>
-                                                <?php
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group lp-form posRel text-left">
+                                        <label class="label-edit">State</label>
+                                        <select id='states_drp' data-name="state" value="<?= $user['state_enc_id'] ?>"
+                                                class="form-control form-control-edit text-capitalize chosen">
+                                            <?php
+                                            if ($states) {
+                                                foreach ($states as $key => $state) {
+                                                    ?>
+                                                    <option value="<?= $key ?>" <?php echo (($key == $user['state_enc_id']) ? 'selected': ''); ?>><?= $state ?></option>
+                                                    <?php
+                                                }
                                             }
-                                        }
-                                        ?>
-                                    </select>
-                                    <p class="errorMsg"></p>
+                                            ?>
+                                        </select>
+                                        <p class="errorMsg"></p>
+                                    </div>
                                 </div>
-                                <div class="form-group lp-form posRel text-left">
-                                    <label class="label-edit">City</label>
-                                    <select id="cities_drp" data-name="city" value="<?= $user['city_enc_id'] ?>"
-                                            class="form-control form-control-edit text-capitalize chosen">
+                                <div class="col-md-6">
+                                    <div class="form-group lp-form posRel text-left">
+                                        <label class="label-edit">City</label>
+                                        <select id="cities_drp" data-name="city" value="<?= $user['city_enc_id'] ?>"
+                                                class="form-control form-control-edit text-capitalize chosen">
 
-                                    </select>
-                                    <p class="errorMsg selectError"></p>
+                                        </select>
+                                        <p class="errorMsg selectError"></p>
+                                    </div>
                                 </div>
+                            </div>
+                            <div class="form-group">
                             </div>
                             <button type="button" data-name="basic-details" class="btn edit-profile-btn mt10 updatedata">Submit</button>
                         </form>
@@ -872,7 +896,8 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     <label for="locations-name" class="label-edit">Location <span>*</span></label>
                                     <input type="text" class="form-control form-control-edit" id="update_cities"
                                            data-name="city" placeholder="Location">
-                                    <input type="hidden" class="form-control form-control-edit" data-name="city_enc_id" id="update_city_id_exp">
+                                    <input type="hidden" class="form-control form-control-edit"
+                                           data-name="city_enc_id" id="update_city_id_exp">
                                 </div>
                             </div>
                             <div class="row">
@@ -1562,6 +1587,15 @@ body{background-color:#f9f9f9;}
 	font-family: roboto;
 	text-align: center;
 	padding: 3px;
+	position: relative;
+}
+.prefer a{
+    color: #fff;
+    font-size: 16px;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 .set-color{
     background: #ff7803;
@@ -3103,13 +3137,11 @@ $('#update_cities').typeahead(null, {
    hint:false,
 }).on('typeahead:asyncrequest', function() {
     $('.city-spin').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    
+}).on('typeahead:asynccancel typeahead:asyncreceive', function() { 
     $('.city-spin').hide();
-  }).on('typeahead:selected typeahead:completed',function(e,datum)
-      {
-        $('#update_city_id_exp').val(datum.id);
-     });
+}).on('typeahead:selected typeahead:completed',function(e,datum){
+    $('#update_city_id_exp').val(datum.id);
+ });
 
 var org = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
