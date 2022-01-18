@@ -41,7 +41,7 @@ Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->cont
                 </div>
                 <div class="modal-footer">
                     <?= Html::submitbutton('Apply', ['class' => 'btn btn-primary sav_job']); ?>
-                    <?= Html::button('Close', ['class' => 'btn btn-default', 'data-dismiss' => 'modal']); ?>
+                    <?= Html::button('Close', ['class' => 'btn btn-default skipApplyApp', 'data-dismiss' => 'modal']); ?>
                 </div>
                 <?php ActiveForm::end(); ?>
             </div>
@@ -235,6 +235,9 @@ $this->registerCss("
         }
 ");
 $script = <<< JS
+    $(document).on('click', '.skipApplyApp', function (e) {
+        $('.' + btn_class + '').html('<i class="fas fa-paper-plane hvr-icon"></i> <span>Apply for Job</span>');
+    });
     $(document).on('click', '.' + btn_class + '', function (e) {
         e.preventDefault();
         if ($('.' + btn_class + '').attr("disabled") == "disabled") {
@@ -242,11 +245,9 @@ $script = <<< JS
         }
         $('.' + btn_class + '').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         if ($('input[name="JobApplied[location_pref][]"]').length <= 1) {
-            console.log('yess');
             $('input[name="JobApplied[location_pref][]"]').prop('checked', true);
             $('.sav_job').trigger('click');
         } else{
-            console.log('yess22');
             $('#modal').modal('show');
         }
     });
