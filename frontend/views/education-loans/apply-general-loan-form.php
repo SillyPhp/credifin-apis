@@ -6,7 +6,9 @@ Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->p
 Yii::$app->view->registerJs('var getLender = "' .$getLender. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\View::POS_HEAD);
-Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View::POS_HEAD);
+$cookies = Yii::$app->response->cookies;
+$ref_id = $cookies->get('ref_loan_id');
+Yii::$app->view->registerJs('var refferal_id = "' . $ref_id->value . '"', \yii\web\View::POS_HEAD);
 ?>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <section class="bg-blue">

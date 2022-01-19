@@ -13,6 +13,7 @@ use common\models\Organizations;
 use common\models\Posts;
 use common\models\PostTags;
 use common\models\PressReleasePubliser;
+use common\models\Referral;
 use common\models\Tags;
 use common\models\UnclaimedOrganizations;
 use common\models\Users;
@@ -80,11 +81,19 @@ class EducationLoansController extends Controller
         $referrerUrl = trim(Yii::$app->request->referrer, '/');
         $urlParts = parse_url($referrerUrl);
         $action_name = explode('/', $urlParts['path'])[2];
-
+        if ($ref_id) {
+          $referralData = Referral::findOne(['code' => $ref_id]);
+          if ($referralData):
+          $cookies = Yii::$app->response->cookies;
+          $cookies->add(new \yii\web\Cookie([
+          'name' => 'ref_loan_id',
+          'value' => $ref_id,
+          ]));
+          endif;
+        }
         return $this->render('apply-general-loan-form', [
             'india' => $india,
-            'ref_id' => $ref_id,
-            'lead_id' => $lead_id,
+            'lead_id' => $lead_id, 
             'action_name' => $action_name
         ]);
         else:
