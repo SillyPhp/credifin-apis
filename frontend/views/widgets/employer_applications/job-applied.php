@@ -8,6 +8,11 @@ use yii\helpers\Url;
 $location = ArrayHelper::map($locations, 'city_enc_id', 'name');
 Yii::$app->view->registerJs('var btn_class = "' . $btn_class . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->controller->id) . '"', \yii\web\View::POS_HEAD);
+if ($applicationType == 'Internships') {
+    $appType = 'Internship';
+} else{
+    $appType = 'Job';
+}
 ?>
     <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg">
@@ -236,7 +241,7 @@ $this->registerCss("
 ");
 $script = <<< JS
     $(document).on('click', '.skipApplyApp', function (e) {
-        $('.' + btn_class + '').html('<i class="fas fa-paper-plane hvr-icon"></i> <span>Apply for Job</span>');
+        $('.' + btn_class + '').html('<i class="fas fa-paper-plane hvr-icon"></i> <span>Apply for $appType</span>');
     });
     $(document).on('click', '.' + btn_class + '', function (e) {
         e.preventDefault();

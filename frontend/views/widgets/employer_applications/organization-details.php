@@ -586,7 +586,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
 }
 
 .move-anim-btn:hover span {
- transform: translateX(8.5em);
+ transform: translateX(9.8em);
  color: #fff;
 }
 
