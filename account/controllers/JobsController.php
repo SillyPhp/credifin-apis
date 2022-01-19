@@ -1910,6 +1910,7 @@ class JobsController extends Controller
                 }], false)
                 ->joinWith(['applicationTypeEnc f'], false)
                 ->where(['f.name' => "Jobs"])
+                ->andWhere(['a.is_deleted' => 0])
 //            ->groupBy('zz.name')
                 ->asArray()
                 ->all();
