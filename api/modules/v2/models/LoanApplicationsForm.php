@@ -73,7 +73,7 @@ class LoanApplicationsForm extends LoanApplications
                         $this->lead_by = $referralData->user_enc_id;
                     endif;
                     if($referralData->organization_enc_id):
-                        $this->lead_by = Users::find(['organization_enc_id'=>$referralData->organization_enc_id])->user_enc_id;
+                        $this->lead_by = Users::findOne(['organization_enc_id'=>$referralData->organization_enc_id])->user_enc_id;
                     endif;
                 }
             }
