@@ -1666,6 +1666,7 @@ class JobsController extends Controller
                 ->distinct()
                 ->select(['b.city_enc_id', 'name'])
                 ->where(['a.application_enc_id' => $app_id])
+                ->andWhere(['a.is_deleted' => 0])
                 ->joinWith(['locationEnc b' => function ($b) {
                     $b->joinWith(['cityEnc c']);
                 }], false)
