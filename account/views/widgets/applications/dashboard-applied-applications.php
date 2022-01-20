@@ -2,17 +2,6 @@
 
 use yii\helpers\Url;
 ?>
-<?php
-if($loan && empty($loan['loanApplications'])) {
-    ?>
-    <div class="row">
-        <?= $this->render('/widgets/loan-applied', [
-            'loan' => $loan
-        ]) ?>
-    </div>
-    <?php
-}
-?>
     <div class="portlet applied_app light portlet-fit nd-shadow">
         <div class="portlet-title">
             <div class="caption">

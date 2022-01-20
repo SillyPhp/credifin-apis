@@ -151,22 +151,6 @@ endif;
             ?>
 
             <?php
-                if ($loanApplication && Yii::$app->user->identity->type->user_type == 'Individual') {
-                    echo $this->render('/widgets/education-loan/loan-detail-individual-dashboard', [
-                        'loanApplication' => $loanApplication,
-                    ]);
-                }
-            ?>
-            <?php
-                if($loanLoginFee){
-                    foreach ($loanLoginFee as $loginFee){
-                        echo $this->render('/widgets/login-fee-due', [
-                                'loginFee' => $loginFee,
-                        ]);
-                    }
-                }
-            ?>
-            <?php
                 if($registeredQuizzes){
                     echo $this->render('/widgets/user-registered-quiz', [
                             'registeredQuizzes' => $registeredQuizzes,
@@ -179,7 +163,6 @@ endif;
                 'question_list' => $question_list,
                 'shortlist_org' => $shortlist_org,
                 'viewed' => $viewed,
-                'loan' => $loan,
             ]); ?>
             <?= $this->render('/widgets/applications/reminder-applications', [
                 'app_reminder' => $app_reminder,
