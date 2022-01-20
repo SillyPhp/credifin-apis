@@ -131,7 +131,7 @@ $primaryfields = \common\models\Categories::find()
                                             <div class="cat_wrapper">
                                                 <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                                                 <input type="text" data-name="job_title"
-                                                       class="form-control text-capitalize" id="job_title">
+                                                       class="form-control text-capitalize " id="job_title">
                                                 <p class="errorMsg"></p>
                                             </div>
                                         </div>
@@ -924,7 +924,7 @@ $this->registerCss('
     z-index: 10049 !important;
 }
 .lp-dialog-main .modal-content{
-    width: 60vw;
+    max-width: 60vw;
     height: auto;
 }
 .close-lp-modal{
@@ -979,7 +979,7 @@ $this->registerCss('
 }
 @media screen and (min-width: 768px){
     .lp-dialog-main {
-        width: 750px !important;
+        width: auto !important;
         margin: 0px auto;
     }
 }
@@ -1008,7 +1008,6 @@ body.modal-open{
 }
 ');
 $script = <<< JS
-
 function setCookie() {
     let date = new Date();
     date.setTime(date.getTime() + (24 * 60 * 60 * 1000));
@@ -1019,29 +1018,27 @@ function setCookie() {
 
 
 $(document).on('keyup','#search-language',function(e){
-    if(e.which==13)
-        {
-          add_tags($(this),'languages_tag_list','languages');
-        }
+    if(e.which==13){
+        add_tags($(this),'languages_tag_list','languages');
+    }
 });
 $(document).on('keyup','#search-skill',function(e){
-    if(e.which==13)
-        {
-          add_tags($(this),'skill_tag_list','skills');  
-        }
+    if(e.which==13){
+        add_tags($(this),'skill_tag_list','skills');  
+    }
 });
+
 function add_tags(thisObj,tag_class,name,duplicates){
     var duplicates = [];
-    $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
-                        {
-                         duplicates.push($.trim($(this).val()).toUpperCase());
-                        });
+    $.each($('.'+tag_class+' input[type=hidden]'),function(index,value){
+        duplicates.push($.trim($(this).val()).toUpperCase());
+    });
     if(thisObj.val() == '' || jQuery.inArray($.trim(thisObj.val()).toUpperCase(), duplicates) != -1) {
-            thisObj.val('');
-        } else {
-             $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" class="form-control" data-name="'+name+'" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
-             thisObj.val('');
-        }
+        thisObj.val('');
+    } else {
+         $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" class="form-control" data-name="'+name+'" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
+         thisObj.val('');
+    }
 }
 var global = [];
 
@@ -1068,12 +1065,11 @@ $('#search-skill').typeahead(null, {
    limit: 6,
 }).on('typeahead:asyncrequest', function() {
      $('.skill_wrapper .Typeahead-spinner').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+}).on('typeahead:asynccancel typeahead:asyncreceive', function() {
      $('.skill_wrapper .Typeahead-spinner').hide();
-  }).on('typeahead:selected',function(e, datum)
-  {
-      add_tags($(this),'skill_tag_list','skills');
-   }).blur(validateSelection);
+}).on('typeahead:selected',function(e, datum){
+    add_tags($(this),'skill_tag_list','skills');
+}).blur(validateSelection);
 
 var languages = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -1099,8 +1095,7 @@ $('#search-language').typeahead(null, {
     $('.language_wrapper .Typeahead-spinner').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
    $('.language_wrapper .Typeahead-spinner').hide();
-  }).on('typeahead:selected',function(e, datum)
-  {
+  }).on('typeahead:selected',function(e, datum){
       add_tags($(this),'languages_tag_list','languages');
    }).blur(validateSelection);
 
@@ -1121,7 +1116,6 @@ function countFields(){
     let fieldsArr = [];
     let cpForm = document.querySelector('.completeProfileForm')
     let formFields = cpForm.querySelectorAll('.showField');
-    // console.log(formFields);
     for(let i = 0; i<formFields.length; i++){
         fieldsArr.push(formFields[i]);      
     }
@@ -1132,10 +1126,9 @@ function countFields(){
             cpForm.querySelector('.skipBtn').style.display = "none";
         }
     }else if(fieldsArr.length == 0){
-        console.log('length 0')
          $('#completeProfileModal').modal('hide');
     }else{
-        console.log(fieldsArr.length)
+       
     }
 }
 countFields()
@@ -1364,10 +1357,9 @@ document.querySelector('.vanilla-result').addEventListener('click', function (ev
 });
 $(document).on('change','#category_drp',function() {
       $('#job_title').val('');
-      // $('#job_title').typeahead('destroy');
-      // fetchJobProfile($(this).val());
-  if($(this).val()=='')
-      {
+      $('#job_title').typeahead('destroy');
+      fetchJobProfile($(this).val());
+  if($(this).val()==''){
           $('#job_title').val('');
           $('#job_title').closest('.field-job_title').removeClass('has-error');
           $('#job_title').closest('.field-job_title').find('.help-block').remove();
@@ -1379,42 +1371,40 @@ $(document).on('change','#category_drp',function() {
   }
 });
 
-// fetchJobProfile(null);
+fetchJobProfile(null);
 
-var job_titles = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/account/categories-list/job-profiles',  
-    // wildcard: '%QUERY',
-    // ?q=%QUERY&parent=+$("#category_drp").val()
-    prepare: function (query, settings){
-            settings.url += '?q=' +$("#job_title").val() + '&parent=' + $("#category_drp").val()
-            return settings;
-    },
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  }
-})
-        
-$('#job_title').typeahead(null, {
-    name: 'job_title',
-    display: 'value',
-    limit: 6,     
-    hint:false, 
-    minLength: 3,
-    source: job_titles
-}).on('typeahead:asyncrequest', function() {
-    $('.cat_wrapper .Typeahead-spinner').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    $('.cat_wrapper .Typeahead-spinner').hide();
-  }).on('typeahead:selected',function(e, datum){
-        console.log(datum.value);
-        $('#job_title').val(datum.value)
-  })
+function fetchJobProfile(parent){
+  var job_titles = new Bloodhound({
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      remote: {
+        url: '/account/categories-list/job-profiles?q=%QUERY&parent='+parent,  
+        wildcard: '%QUERY',
+        cache: true,     
+            filter: function(list) {
+                global = list;
+                return list;
+            }
+      } 
+  });   
+    
 
+    $('#job_title').typeahead(null, {
+        name: 'job_title',
+        display: 'value',
+        limit: 6,     
+        hint:false, 
+        minLength: 3,
+        source: job_titles
+    }).on('typeahead:asyncrequest', function() {
+        $('.cat_wrapper .Typeahead-spinner').show();
+      }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+        $('.cat_wrapper .Typeahead-spinner').hide();
+      }).on('typeahead:selected',function(e, datum){
+            console.log(datum.value);
+            $('#job_title').val(datum.value)
+    })
+}
 
 JS;
 $script2 = <<< JS
@@ -1431,8 +1421,6 @@ function drp_down(id, data) {
     data_chosen.trigger("chosen:updated");
 };
 JS;
-$this->registerJs($script2, yii\web\View::POS_HEAD);
-$this->registerJs($script);
 $this->registerCssFile("/assets/themes/jobhunt/css/chosen.css");
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.min.css');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -1440,8 +1428,6 @@ $this->registerCssFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/css/bo
 $this->registerJsFile('https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile("/assets/themes/jobhunt/js/select-chosen.js", ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJs($script2);
+$this->registerJs($script);
 ?>
-<script>
-
-
-</script>

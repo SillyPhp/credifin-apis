@@ -993,8 +993,7 @@ AppAssets::register($this);
             });
             
          }
-         openUserDetailsModal();
-         
+                  
          function openPreferenceModal(){
             let hasCookie = document.cookie;
             if (document.cookie.indexOf('PreferenceisViewed') != -1) {
@@ -1017,6 +1016,8 @@ AppAssets::register($this);
                 }
             })
          }
+         
+      
         ");
     }
 
