@@ -22,7 +22,7 @@ foreach ($savedApplicants['data'] as $s) { ?>
                         <?php if (!empty($s['image'])) { ?>
                             <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>"
                                class="blue question_list open-link-new-tab" target="_blank">
-                                <img src="<?= $s['image']; ?>" width="60px" height="60"/>
+                                <img src="<?= $s['image']; ?>" width="60px" height="60"  class="img-circle"/>
                             </a>
                             <?php
                         } else {
