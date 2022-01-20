@@ -15,19 +15,13 @@ if (!empty($total_processes)) {
                     ?>
                     <div class="box-main-col <?= $col_width; ?>">
                         <div class="p-category">
-<!--                            <div class="click hiring-click --><?//= (($processes[$next]["is_bookmared"])?'active active-2 active-3':'') ?><!--">-->
-<!--                                <span class="fa --><?//= (($processes[$next]["is_bookmared"])?'fa-star':'fa-star-o') ?><!--"></span>-->
-<!--                                <div class="ring"></div>-->
-<!--                                <div class="ring2"></div>-->
-<!--                                <input type="hidden" value="--><?//=$processes[$next]["id"]; ?><!--">-->
-<!--                            </div>-->
                             <?php
                             if($type == "Internships") {
                                 ?>
                                 <a href="#" onclick="window.open('<?= Url::to('/account/internships/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');" data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
                                     <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
-                                    <p style="height:19px;"><?= $processes[$next]['designation']; ?></p>
+                                    <p style="height:19px;"><?= $processes[$next]['parent_name']; ?></p>
                                 </a>
                                 <?php
                             } else{
@@ -35,7 +29,7 @@ if (!empty($total_processes)) {
                                 <a href="#" onclick="window.open('<?= Url::to('/account/jobs/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');"  data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
                                     <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
-                                    <p style="height:19px;"><?= $processes[$next]['designation']; ?></p>
+                                    <p style="height:19px;"><?= $processes[$next]['parent_name']; ?></p>
                                 </a>
                                 <?php
                             }
