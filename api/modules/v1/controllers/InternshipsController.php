@@ -565,7 +565,7 @@ class InternshipsController extends ApiBaseController
                 $x->joinWith(['locationEnc s' => function ($x) {
                     $x->joinWith(['cityEnc t'], false);
                 }], false);
-                $x->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 't.city_enc_id', 't.name']);
+                $x->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 't.city_enc_id', 't.name', 's.latitude', 's.longitude']);
             }])
             ->joinWith(['applicationInterviewLocations p' => function ($x) {
                 $x->onCondition(['p.is_deleted' => 0]);

@@ -117,8 +117,15 @@ use yii\helpers\Url;
                 if (event.target == modal) {
                     modal.style.display = "none";
                     body.classList.remove('modal-open');
+                }
             }
-        }
+            
+            window.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape') {
+                    modal.style.display = 'none'
+                    body.classList.remove('modal-open');
+            }
+        })
     }
 </script>
 
@@ -243,17 +250,19 @@ use yii\helpers\Url;
         color: #fff;
         margin: 0 5px;
         border-radius: 3px;
+        border: 1px solid #00a0e3;
     }
     .cta-link .sign-btn{
         background: #ff7803;
+        border: 1px solid #ff7803;
     }
     .cta-link .sign-btn:hover{
-        color: #fff !important;
-        font-weight: 500;
+        color: #ff7803 !important;
+        background: #fff;
     }
     .cta-link .login-btn:hover{
-        color: #fff !important;
-        font-weight: 500;
+        color: #00a0e3 !important;
+        background: #fff;
     }
 
     @media only screen and (max-width: 991px){

@@ -773,18 +773,12 @@ body.modal-open{
 $script = <<< JS
 setCookie = () => {
     let date = new Date();
-    date.setTime(date.getTime() + (6 * 24 * 60 * 60 * 1000));
-    let maxAge = 6 * 24 * 60 * 60 * 1000;
+    date.setTime(date.getTime() + (24 * 60 * 60 * 1000));
+    let maxAge = 24 * 60 * 60 * 1000;
     const expires = "expires=" + date.toUTCString();
-    document.cookie = "ModalisViewed=modalViewed; expires="+expires+"; max-age="+maxAge+"; path=/";
+    document.cookie = "PreferenceisViewed=PreferenceisViewed; expires="+expires+"; max-age="+maxAge+"; path=/";
 }
-function checkCookie(){
-    let hasCookie = document.cookie;
-    if (document.cookie.indexOf('ModalisViewed') == -1) {
-        $('#preferenceLocation').modal('show');
-    }
-}
-checkCookie()
+
 var city = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,

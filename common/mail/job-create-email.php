@@ -135,7 +135,7 @@ table{
                         <table class="content">
                             <tr>
                                 <td class="c-text">
-                                    <p>Your Job has been created <b>Successfully</b>.</p>
+                                    <p>Your Application has been created <b>Successfully</b>.</p>
                                 </td>
                             </tr>
                         </table>
@@ -168,6 +168,7 @@ table{
                                                 <p><?= $data['salary'] ?></p>
                                             </td>
                                         </tr>
+                                        <?php if ($data['position']): ?>
                                         <tr>
                                             <td>
                                                 	<span class="job-detail-img">
@@ -176,6 +177,7 @@ table{
                                                 <p>Openings: <?= $data['position'] ?></p>
                                             </td>
                                         </tr>
+                                        <?php endif; ?>
                                     </table>
                                 </td>
                             </tr>

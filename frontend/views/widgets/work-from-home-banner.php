@@ -11,9 +11,9 @@ use yii\helpers\Url;
                     <p>Maintain better work-life balance by working remotely. Apply for work from home jobs and internships without any hassle. Explore the section now!</p>
                     <div class="explore-btn">
                         <?php if($btnText === 'Jobs' || $btnText === 'home'){ ?>
-                        <a href="/work-from-home-jobs" target="_blank" class="job-btn"><span class="btn-text">Explore Jobs</span><span class="btn-icon"><i class="fas fa-briefcase"></i></span></a>
+                        <a href="/work-from-home-jobs" target="_blank" class="login-bttn"><span class="btn-text">Explore Jobs</span></a>
                         <?php }if($btnText === 'Internships' || $btnText === 'home'){ ?>
-                        <a href="/work-from-home-internships" target="_blank" class="intern-btn"><span class="btn-text">Explore Internships</span><span class="btn-icon"><i class="fas fa-graduation-cap"></i></span></a>
+                        <a href="/work-from-home-internships" target="_blank" class="sign-up"><span class="btn-text">Explore Internships</span></a>
                         <?php }?>
                     </div>
                 </div>
@@ -63,60 +63,80 @@ use yii\helpers\Url;
         margin-top: 30px;
     }
     .banner-text .explore-btn a {
-        padding: 7px 42px 7px 15px;
-        margin: 5px 10px 5px 0;
-        background: #00a0e3;
         display: inline-block;
-        color: #fff;
-        font-weight: 600;
-        position: relative; 
+        padding: 7px 14px;
+        margin: 5px 8px 5px 0;
     }
-    .btn-text{
-        transition: .3s all ease-in;
-    }
-    .explore-btn a span.btn-icon{
-        width: 37px;
-        height: 37px;
-        background: #fff;
-        position: absolute;
-        right: 0px;
-        top: 0px;
-        color: #00a0e3;
-        font-size: 20px;
-        box-shadow: inset 0 0 0 1px #00a0e3;
-        transition: .3s all ease-in;
-        z-index: 1;
-    }
-    span.btn-text{
-        position: relative;
-        z-index: 2;
-    }
-    .explore-btn a span.btn-icon i{
-        position: absolute;
-        top: 8px;
-        right: 6px;
-    }
-    .intern-btn span.btn-icon{
-        color: #ff7803 !important;
-        box-shadow: inset 0 0 0 1px #ff7803 !important;
-    }
-    .banner-text .explore-btn .intern-btn {
-        background: #ff7803;
-    }
-    .explore-btn a:hover span.btn-icon{
-        width: 100%;
-        transition: .3s all ease-in;
-    }
-    .explore-btn .job-btn:hover span.btn-text{
-        color: #00a0e3;
-        transition: .3s all ease-in;
+    .login-bttn{
+        padding: 12px 40px;
+        border:2px solid #00a0e3;
+        border-radius:5px;
+        color:#fff;
+        text-transform:uppercase;
+        background:#00a0e3; 
         font-weight: 600;
     }
-    .explore-btn a:hover span.btn-text{
-        color: #ff7803;
-        transition: .3s all ease-in;
+    .login-bttn, .sign-up, .sign-up:hover, .login-bttn:hover{
+        -o-transition:.3s all;
+        -ms-transition:.3s all;
+        -moz-transition:.3s all;
+        -webkit-transition:.3s all;
+        transition:.3s all;
+    }
+    .login-bttn:hover{
+        border:2px solid #00a0e3;
+        color:#00a0e3; 
+        background:transparent; 
+    }
+    .sign-up{
+        padding: 12px 40px;
+        border:2px solid #ff7803;
+        border-radius:5px;
+        color:#fff;
+        text-transform:uppercase;
+        background:#ff7803;  
         font-weight: 600;
     }
+    .sign-up:hover{
+       color:#ff7803; 
+       background:transparent;  
+    }
+    // .btn-text{
+    //     transition: .3s all ease-in;
+    // }
+    // .explore-btn a span.btn-icon{
+    //     width: 37px;
+    //     height: 37px;
+    //     background: #fff;
+    //     position: absolute;
+    //     right: 0px;
+    //     top: 0px;
+    //     color: #00a0e3;
+    //     font-size: 20px;
+    //     box-shadow: inset 0 0 0 1px #00a0e3;
+    //     transition: .3s all ease-in;
+    //     z-index: 1;
+    // }
+    // span.btn-text{
+    //     position: relative;
+    //     z-index: 2;
+    // }
+    // .explore-btn a span.btn-icon i{
+    //     position: absolute;
+    //     top: 8px;
+    //     right: 6px;
+    // }
+    // .intern-btn span.btn-icon{
+    //     color: #ff7803 !important;
+    //     box-shadow: inset 0 0 0 1px #ff7803 !important;
+    // }
+    // .banner-text .explore-btn .intern-btn {
+    //     background: #ff7803;
+    // }
+    // .explore-btn a:hover span.btn-icon{
+    //     width: 100%;
+    //     transition: .3s all ease-in;
+    // }
     @media only screen and (max-width: 991px){
         .banner-text p {
             font-size: 14px;

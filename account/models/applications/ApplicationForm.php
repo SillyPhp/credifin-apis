@@ -432,7 +432,7 @@ class ApplicationForm extends Model
             }else{
                 $this->flag = true;
             }
-
+            $job_positions = [];
             if (!empty($locations)) {
                 foreach ($locations as $array) {
                     $applicationPlacementLocationsModel = new ApplicationPlacementLocations();
@@ -440,6 +440,7 @@ class ApplicationForm extends Model
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $applicationPlacementLocationsModel->placement_location_enc_id = $utilitiesModel->encrypt();
                     $applicationPlacementLocationsModel->positions = $array->value;
+                    $job_positions[] = $array->value;
                     $applicationPlacementLocationsModel->location_enc_id = $array->id;
                     $applicationPlacementLocationsModel->application_enc_id = $employerApplicationsModel->application_enc_id;
                     $applicationPlacementLocationsModel->created_on = date('Y-m-d H:i:s');
@@ -677,6 +678,20 @@ class ApplicationForm extends Model
             }
             if ($this->flag){
                 $transaction->commit();
+                $locationsarray = array_column($locations, 'name');
+                $params['name'] = Yii::$app->user->identity->organization->name;
+                $params['email'] = Yii::$app->user->identity->organization->email;
+                $params['subject'] = 'Your job/internship application has been live on Empower Youth';
+                $params['job_title'] = $this->title;
+                $params['job_profile'] = Categories::findOne(['category_enc_id'=>$this->primaryfield])->name;
+                $params['salary'] = $this->convertSalary($applicationoptionsModel->min_wage,$applicationoptionsModel->max_wage,$applicationoptionsModel->fixed_wage,$wage_type,$applicationoptionsModel->wage_duration,null);
+                $params['position'] = ($job_positions)?array_sum($job_positions):null;
+                $params['locations'] = ($locationsarray)?implode(',',$locationsarray):'Work From Home';
+                $params['link'] = Url::to(strtolower(substr($type, 0, -1)).'/'.$employerApplicationsModel->slug,'https');
+                $name = strtoupper(Yii::$app->user->identity->organization->name);
+                $color = ltrim(Yii::$app->user->identity->organization->initials_color, '#');
+                $params['org_logo'] = (Yii::$app->user->identity->organization->logo)?Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo:"https://dummyimage.com/150x150/{$color}/fafafa&text={$name}";;
+                Yii::$app->notificationEmails->newJobEmail($params);
                 return [
                     'message'=>'Saved',
                     'status'=>true,
@@ -702,7 +717,54 @@ class ApplicationForm extends Model
             ];
         }
     }
-
+    private function convertSalary($min_salary,$max_salary,$fixed_salary,$salary_type,$salary_duration,$html_code=null){
+        $result = null;
+        $currency = (($html_code) ? $html_code : '₹ ');
+        if ($salary_type == "Fixed") {
+            if ($salary_duration == "Monthly") {
+                $result = $currency . $fixed_salary * 12 . ' p.a.';
+            } elseif ($salary_duration == "Hourly") {
+                $result = $currency . $fixed_salary . ' Per Hour';
+            } elseif ($salary_duration == "Weekly") {
+                $result = $currency . $fixed_salary . ' Per Week';
+            } else {
+                $result = $currency . $fixed_salary . ' p.a.';
+            }
+        } elseif ($salary_type == "Negotiable") {
+            if (!empty($min_salary) && !empty($max_salary)) {
+                if ($salary_duration == "Monthly") {
+                    $result = $currency . (string)($min_salary) * 12 . " - " . $currency . (string)$max_salary * 12 . ' p.a.';
+                } elseif ($salary_duration == "Hourly") {
+                    $result = $currency . (string)($min_salary) . " - " . $currency . (string)($max_salary) . ' Per Hour';
+                } elseif ($salary_duration == "Weekly") {
+                    $result = $currency . (string)($min_salary) . " - " . $currency . (string)($max_salary) . ' Per Week';
+                } else {
+                    $result = $currency . (string)($min_salary) . " - " . $currency . (string)($max_salary) . ' p.a.';
+                }
+            } elseif (!empty($min_salary) && empty($max_salary)) {
+                if ($salary_duration == "Monthly") {
+                    $result = 'From ' .$currency . (string)$min_salary * 12 . ' p.a.';
+                } elseif ($salary_duration == "Hourly") {
+                    $result = 'From ' .$currency . (string)($min_salary) . ' Per Hour';
+                } elseif ($salary_duration == "Weekly") {
+                    $result = 'From ' .$currency . (string)($min_salary) . ' Per Week';
+                } else {
+                    $result = 'From ' .$currency . (string)($min_salary) . ' p.a.';
+                }
+            } elseif (empty($min_salary) && !empty($max_salary)) {
+                if ($salary_duration == "Monthly") {
+                    $result = 'Upto ' .$currency . (string)$max_salary * 12 . ' p.a.';
+                } elseif ($salary_duration == "Hourly") {
+                    $result = 'Upto ' .$currency . (string)($max_salary) . ' Per Hour';
+                } elseif ($salary_duration == "Weekly") {
+                    $result = 'Upto ' .$currency . (string)($max_salary) . ' Per Week';
+                } else {
+                    $result = 'Upto ' .$currency . (string)($max_salary) . ' p.a.';
+                }
+            }
+        }
+        return $result;
+    }
     private function assignCampusJobs($app,$var){
         foreach ($var['colleges'] as $clg) {
             $utilitiesModel = new Utilities();

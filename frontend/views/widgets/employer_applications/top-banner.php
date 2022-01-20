@@ -47,19 +47,23 @@ $(document).on('click','.shortlist_job',function(e){
      e.preventDefault();
      var app_id = $('#application_id').val();
      $.ajax({
-        url:'/account/jobs/shortlist-job',
-        data: {app_id:app_id},                         
+        url:'/jobs/item-id',
+        data: {'itemid':app_id},         
         method: 'post',
         beforeSend:function(){
             $('.shortlist_job').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success:function(data){
-            if(data.message =='Shortlisted'){
+            if(data.status === 200 || data.status === 'short'){
                 $('.shortlist_job').html('<i class="far fa-heart"></i> Shortlisted');
                 $('.hover-change').addClass('col_pink');
-            } else if(data.message =='unshort'){
+            } else if(data.status === 'unshort'){
                 $('.shortlist_job').html('<i class="far fa-heart"></i> Shortlist');
                 $('.hover-change').removeClass('col_pink');
+            } else if (data === 'error') {
+                alert('Please Login first..');
+            } else if(data.status === 201) {
+                alert('Error occurred: ' + data.message);
             }
         }
      });

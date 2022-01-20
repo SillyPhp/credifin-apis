@@ -94,10 +94,10 @@ AppAssets::register($this);
                     <div class="secondary-top-header">
                         <div class="secondary-top-header-left">
                             <span>
-                                <i class="far fa-check-circle"></i>Post quick <a data-link="/jobs/quick-jobs" data-target="#sign-up-benefit"><strong>Job</strong></a>or<a data-link="/internships/quick-internship" data-target="#sign-up-benefit"><strong>Internship</strong></a>
+                                <i class="far fa-check-circle"></i> Post quick <a data-link="/jobs/quick-job" data-target="#sign-up-benefit"><strong>Job</strong></a>or<a data-link="/internships/quick-internship" data-target="#sign-up-benefit"><strong>Internship</strong></a>
                             </span>
                             <span>
-                                <i class="fab fa-twitter"></i>Post <a data-link="/tweets/job/create" data-target="#sign-up-benefit"><strong>Job</strong></a>or<a data-link="/tweets/internship/create" data-target="#sign-up-benefit"><strong>Internship Tweet</strong></a>
+                                <i class="fab fa-twitter"></i> Post <a data-link="/tweets/job/create" data-target="#sign-up-benefit"><strong>Job</strong></a>or<a data-link="/tweets/internship/create" data-target="#sign-up-benefit"><strong>Internship Tweet</strong></a>
                             </span>
                         </div>
                         
@@ -970,6 +970,56 @@ AppAssets::register($this);
             }
             ');
     }
+    if(!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization){
+        $this->registerJs("
+         function openUserDetailsModal(){
+            let hasCookie = document.cookie;
+            if (document.cookie.indexOf('ModalisViewed') != -1) {
+                return false; 
+            }
+            let userModal = document.getElementById('completeProfileModal')
+                if(userModal != null){
+                    $('#completeProfileModal').modal('show');
+                    return false;
+                }                 
+            $.ajax({
+                url: '/account/resume-builder/user-detail-modal',
+                method: 'Post',
+                data:  {'". Yii::$app->request->csrfParam."':'". Yii::$app->request->csrfToken."'},
+                success: function(response){
+                    $('body').append(response);
+                    $('#completeProfileModal').modal('show');
+                }
+            });
+            
+         }
+         openUserDetailsModal();
+         
+         function openPreferenceModal(){
+            let hasCookie = document.cookie;
+            if (document.cookie.indexOf('PreferenceisViewed') != -1) {
+                return false; 
+            }
+            
+            let preferenceModal = document.getElementById('preferenceLocation');
+            if(preferenceModal != null){
+                $('#preferenceLocation').modal('show');
+                return false;
+            }   
+            
+            $.ajax({
+                url: '/account/resume-builder/user-preference-modal',
+                method: 'Post',
+                data: {'". Yii::$app->request->csrfParam."':'". Yii::$app->request->csrfToken."'},
+                success: function(response) {
+                    $('body').append(response);
+                    $('#preferenceLocation').modal('show');
+                }
+            })
+         }
+        ");
+    }
+
 
     if (!empty(Yii::$app->params->google->analytics->id)) {
         $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=' . Yii::$app->params->google->analytics->id, [
@@ -1002,9 +1052,6 @@ AppAssets::register($this);
 
     if (Yii::$app->user->isGuest) {
         Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"', \yii\web\View::POS_HEAD);
-        $this->registerJs('
-        
-    ');
     }
     if (!$this->params['header_dark']) {
         $this->registerJs(" $(document).on('scroll', function () {

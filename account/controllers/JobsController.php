@@ -157,52 +157,52 @@ class JobsController extends Controller
     }
 
     private function __individualDashboard(){
-        $shortlist_jobs = ShortlistedApplications::find()
-            ->alias('a')
-            ->select(['a.application_enc_id', 'k.applied_application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions','b.unclaimed_organization_enc_id','e.logo','e.logo_location','e.initials_color',
-                'auo.positions as unclaim_positions',
-                'uo.name as unclaim_org_name',
-                'uo.logo as unclaim_org_logo',
-                'uo.logo_location as unclaim_org_logo_location',
-                'uo.initials_color as unclaim_org_initials_color',
-                ])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
-            ->joinWith(['applicationEnc b' => function ($a) {
-                $a->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
-                }], false);
-                $a->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE', 'b.application_for' =>1]);
-            }], false)
-            ->innerJoin(EmployerApplications::tableName() . 'as ea', 'ea.application_enc_id = a.application_enc_id')
-            ->leftJoin(ApplicationUnclaimOptions::tableName() . 'as auo', 'auo.application_enc_id = a.application_enc_id')
-            ->leftJoin(UnclaimedOrganizations::tableName() . 'as uo', 'uo.organization_enc_id = ea.unclaimed_organization_enc_id')
-            ->leftJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-            ->leftJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-            ->leftJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-            ->leftJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
-            ->leftJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = a.application_enc_id')
-            ->leftJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-            ->groupBy(['b.application_enc_id'])
-            ->having(['type' => 'Jobs'])
-            ->limit(6)
-            ->orderBy(['a.id' => SORT_DESC])
-            ->asArray()
-            ->all();
+//        $shortlist_jobs = ShortlistedApplications::find()
+//            ->alias('a')
+//            ->select(['a.application_enc_id', 'k.applied_application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions','b.unclaimed_organization_enc_id','e.logo','e.logo_location','e.initials_color',
+//                'auo.positions as unclaim_positions',
+//                'uo.name as unclaim_org_name',
+//                'uo.logo as unclaim_org_logo',
+//                'uo.logo_location as unclaim_org_logo_location',
+//                'uo.initials_color as unclaim_org_initials_color',
+//                ])
+//            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
+//            ->joinWith(['applicationEnc b' => function ($a) {
+//                $a->joinWith(['appliedApplications k' => function ($y) {
+//                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
+//                }], false);
+//                $a->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE', 'b.application_for' =>1]);
+//            }], false)
+//            ->innerJoin(EmployerApplications::tableName() . 'as ea', 'ea.application_enc_id = a.application_enc_id')
+//            ->leftJoin(ApplicationUnclaimOptions::tableName() . 'as auo', 'auo.application_enc_id = a.application_enc_id')
+//            ->leftJoin(UnclaimedOrganizations::tableName() . 'as uo', 'uo.organization_enc_id = ea.unclaimed_organization_enc_id')
+//            ->leftJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
+//            ->leftJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
+//            ->leftJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
+//            ->leftJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
+//            ->leftJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = a.application_enc_id')
+//            ->leftJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
+//            ->groupBy(['b.application_enc_id'])
+//            ->having(['type' => 'Jobs'])
+//            ->limit(6)
+//            ->orderBy(['a.id' => SORT_DESC])
+//            ->asArray()
+//            ->all();
 
-        $total_shortlist = ShortlistedApplications::find()
-            ->alias('a')
-            ->select(['j.name type', 'a.shortlisted_enc_id'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
-            ->joinWith(['applicationEnc b' => function ($a) {
-                $a->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
-                }], false);
-                $a->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE', 'b.application_for' =>1]);
-            }], false)
-            ->leftJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-            ->groupBy(['b.application_enc_id'])
-            ->having(['type' => 'Jobs'])
-            ->count();
+//        $total_shortlist = ShortlistedApplications::find()
+//            ->alias('a')
+//            ->select(['j.name type', 'a.shortlisted_enc_id'])
+//            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
+//            ->joinWith(['applicationEnc b' => function ($a) {
+//                $a->joinWith(['appliedApplications k' => function ($y) {
+//                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
+//                }], false);
+//                $a->onCondition(['b.is_deleted' => 0, 'b.status' => 'ACTIVE', 'b.application_for' =>1]);
+//            }], false)
+//            ->leftJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
+//            ->groupBy(['b.application_enc_id'])
+//            ->having(['type' => 'Jobs'])
+//            ->count();
         $applied_applications = AppliedApplications::find()
             ->alias('a')
             ->select(['j.name type', 'a.id', 'a.application_enc_id as app_id', 'a.status', 'a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions','b.unclaimed_organization_enc_id','e.logo','e.logo_location','e.initials_color'])
@@ -457,14 +457,14 @@ class JobsController extends Controller
         $jobsBySkills = ApplicationCards::jobs($options);
 
         return $this->render('dashboard/individual', [
-            'shortlisted' => $shortlist_jobs,
+//            'shortlisted' => $shortlist_jobs,
             'applied' => $applied_applications,
             'shortlist_org' => $shortlist_org,
             'reviewlist' => $review_list,
             'total_reviews' => $total_reviews,
             'total_shortlist_org' => $total_shortlist_org,
             'total_applied' => $total_applied,
-            'total_shortlist' => $total_shortlist,
+//            'total_shortlist' => $total_shortlist,
             'total_pending' => $total_pending,
             'accepted' => $accepted_jobs,
             'total_accepted' => $total_accepted,
@@ -1903,13 +1903,14 @@ class JobsController extends Controller
         if (!empty(Yii::$app->user->identity->organization)) {
             $application = \common\models\ApplicationTemplates::find()
                 ->alias('a')
-                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name', 'z1.icon_png'])
+                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name', 'z1.icon_png', 'z1.name as parent_name'])
                 ->joinWith(['title0 z' => function ($z) {
                     $z->joinWith(['categoryEnc zz']);
                     $z->joinWith(['parentEnc z1']);
                 }], false)
                 ->joinWith(['applicationTypeEnc f'], false)
                 ->where(['f.name' => "Jobs"])
+                ->andWhere(['a.is_deleted' => 0])
 //            ->groupBy('zz.name')
                 ->asArray()
                 ->all();
