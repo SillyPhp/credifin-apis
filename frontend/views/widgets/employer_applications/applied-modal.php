@@ -174,6 +174,7 @@ $this->registerCss('
     left: 50%;
     transform: translate(-50%, -50%);
     width:100%;
+    z-index:1;
 }
 /* The Close Button */
 .applied-close {
@@ -184,6 +185,7 @@ $this->registerCss('
   position:absolute;
   top:-8px;
   right:8px;
+  z-index:2;
 }
 .applied-close:hover,
 .applied-close:focus {

@@ -68,20 +68,6 @@ use yii\widgets\Pjax;
                         </a>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-                        <a class="dashboard-stat dashboard-stat-v2 red"
-                           href="<?= Url::to('/account/internships/saved') ?>">
-                            <div class="visual">
-                                <i class="fa fa-bar-chart-o"></i>
-                            </div>
-                            <div class="details">
-                                <div class="number">
-                                    <span data-counter="counterup" data-value="12,5"><?= $total_shortlist; ?></span>
-                                </div>
-                                <div class="desc">Applications Saved</div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
                         <a class="dashboard-stat dashboard-stat-v2 green"
                            href="<?= Url::to('/account/internships/applied') ?>">
                             <div class="visual">
@@ -148,10 +134,6 @@ use yii\widgets\Pjax;
                                 <ul class="tabs" id="head-tabs">
                                     <li data-tab="tab-1" data-url="/account/internships/reviewed"
                                         class="tab-link current caption-subject font-dark uppercase">Review List
-                                    </li>
-                                    |
-                                    <li data-tab="tab-2" data-url="/account/internships/saved"
-                                        class="tab-link caption-subject font-dark  uppercase">Applications saved
                                     </li>
                                     |
                                     <li data-tab="tab-3" data-url="/account/internships/applied"
@@ -282,106 +264,6 @@ use yii\widgets\Pjax;
                                                         <div class="tab-empty-text">
                                                             <div class="">You haven't Select any internships for review.
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                    <?php
-                                                }
-                                                Pjax::end();
-                                                ?>
-                                            </div>
-                                            <div id="tab-2" class="tab-con">
-                                                <?php
-                                                Pjax::begin(['id' => 'pjax_shortlist']);
-                                                if ($shortlisted) {
-                                                    foreach ($shortlisted as $shortlist) {
-                                                        ?>
-                                                        <div class="col-md-4 hr-j-box">
-                                                            <div class="topic-con">
-                                                                <div class="hr-company-box">
-                                                                    <div class="hr-com-icon">
-                                                                        <?php
-                                                                        if ($shortlist['unclaimed_organization_enc_id'] != null) {
-                                                                            if ($shortlist['unclaim_org_logo']) {
-                                                                                $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo . $shortlist['unclaim_org_logo_location'] . DIRECTORY_SEPARATOR . $shortlist['unclaim_org_logo'];
-                                                                            } else {
-                                                                                $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['unclaim_org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $shortlist['unclaim_org_initials_color']) . "&color=ffffff";
-                                                                            }
-                                                                        } else {
-                                                                            if ($shortlist['logo']) {
-                                                                                $organizationLogo = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $shortlist['logo_location'] . DIRECTORY_SEPARATOR . $shortlist['logo'];
-                                                                            } else {
-                                                                                $organizationLogo = "https://ui-avatars.com/api/?name=" . $shortlist['org_name'] . "&size=200&rounded=false&background=" . str_replace("#", "", $shortlist['initials_color']) . "&color=ffffff";
-                                                                            }
-                                                                        }
-                                                                        ?>
-                                                                        <img src="<?= $organizationLogo ?>"
-                                                                             class="img-responsive ">
-                                                                    </div>
-
-                                                                    <div class="hr-com-name job-title-name">
-                                                                        <?= (($shortlist['org_name']) ? $shortlist['org_name'] : $shortlist['unclaim_org_name']); ?>
-                                                                    </div>
-                                                                    <div class="merge-name-icon">
-                                                                        <div class="cat-icon">
-                                                                            <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>"
-                                                                                 class="img-responsive ">
-                                                                        </div>
-                                                                        <div class="hr-com-field">
-                                                                            <?= $shortlist['name']; ?>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="opening-txt">
-                                                                        <?php
-                                                                        if ($shortlist['positions'] || $shortlist['unclaim_positions']) {
-                                                                            ?>
-                                                                            <?= (($shortlist["positions"]) ? $shortlist['positions'] : $shortlist['unclaim_positions']); ?> Openings
-                                                                            <?php
-                                                                        }
-                                                                        ?>
-                                                                    </div>
-                                                                    <div class="overlay2">
-                                                                        <div class="text-o">
-                                                                            <?php if ($shortlist['applied_application_enc_id']) { ?>
-                                                                                <a class="over-bttn ob2 hover_short"
-                                                                                   disabled="disabled">
-                                                                                    <i class="fa fa-check"></i>Applied</a>
-                                                                            <?php } else { ?>
-                                                                                <a href="/internship/<?= $shortlist['slug']; ?>"
-                                                                                   class="over-bttn ob2 hover_short apply-btn">Apply</a>
-                                                                            <?php } ?>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="hr-com-jobs">
-                                                                        <div class="row ">
-                                                                            <div class="col-md-12 col-sm-12 minus-15-pad">
-                                                                                <div class=" j-cross">
-                                                                                    <button value="<?= $shortlist['application_enc_id']; ?>"
-                                                                                            class="rmv_list">
-                                                                                        <i class="fa fa-times"></i>
-                                                                                    </button>
-                                                                                </div>
-                                                                                <div class=" j-grid">
-                                                                                    <a href="javascript:;"
-                                                                                       onclick="window.open('<?= Url::to('/internship/' . $shortlist['slug']); ?>', '_blank');">VIEW
-                                                                                        INTERNSHIP</a>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <?php
-                                                    }
-                                                } else {
-                                                    ?>
-                                                    <div class="tab-empty">
-                                                        <div class="tab-empty-icon">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlist-icon.png'); ?>"
-                                                                 class="img-responsive" alt=""/>
-                                                        </div>
-                                                        <div class="tab-empty-text">
-                                                            <div class="">You haven't Saved any internships.</div>
                                                         </div>
                                                     </div>
                                                     <?php
