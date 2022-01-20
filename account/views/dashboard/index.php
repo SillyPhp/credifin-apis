@@ -45,6 +45,8 @@ endif;
                 <span>NO</span>
             </div>
         </section> -->
+
+        <?= $this->render('@common/widgets/career-page-section') ?>
         
         <?php if (Yii::$app->user->identity->organization->organization_enc_id) { ?>
             <?= $this->render('/widgets/safety-widgets', ['scriptModel' => $scriptModel]) ?>
@@ -422,11 +424,11 @@ endif;
                     ?>
                 </div>
             </div>
-
-            <?= $this->render('@common/widgets/career-page-section') ?>
-            <?= $this->render('@common/widgets/resume-bank-widget') ?>
             
             <?= $this->render('/dashboard/calendar') ?>
+
+            <?= $this->render('@common/widgets/resume-bank-widget') ?>
+            
             <div id="form_modal2" class="modal fade in" role="dialog" aria-hidden="true">
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">
