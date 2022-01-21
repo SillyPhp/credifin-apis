@@ -1,13 +1,18 @@
 <?php
 
 use yii\bootstrap\ActiveForm;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
 $location = ArrayHelper::map($locations, 'city_enc_id', 'name');
 Yii::$app->view->registerJs('var btn_class = "' . $application_enc_id.'-apply-now"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->controller->id) . '"', \yii\web\View::POS_HEAD);
+if ($applicationType == 'Internships') {
+    $appType = 'Internship';
+} else{
+    $appType = 'Job';
+}
 ?>
 
 <?php $form = ActiveForm::begin(['id' => 'app_resume_form']); ?>
@@ -36,49 +41,9 @@ Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->cont
         }
         ?>
         <?= $form->field($model, 'questionnaire_id', ['template' => '{input}'])->hiddenInput(['id' => 'app_question_id', 'value' => $ques]); ?>
-        <?php
-        if (!empty($resumes)) {
-            $checkList = [0 => 'Use Existing One', 1 => 'Upload New'];
-        } else {
-            $checkList = [1 => 'Upload New'];
-        }
-        ?>
-        <?= '<div class="control-group appFieldsAll">'.$form->field($model, 'check')->radioList($checkList,[
-            'item' => function($index, $label, $name, $checked, $value) {
-                $return .= '<label class="control control--radio" for="1' . $value . '">' .ucwords($label);
-                $return .= '<input type="radio" id="1' . $value . '" name="' . $name . '" value="' . $value . '">';
-                $return .= '<div class="control__indicator"></div>';
-                $return .=  ' </label>';
-                return $return;
-            }
-        ])->label('Upload Resume') . '</div>' ?>
-
-        <div id="app_new_resume">
-            <?= $form->field($model, 'resume_file')->fileInput(['id' => 'app_resume_file'])->label('Upload Your CV In Doc, Docx,Pdf,Jpg,Jpeg,Png Format Only'); ?>
-        </div>
-        <?php if ($resumes) { ?>
-            <div id="app_use_existing">
-                <div class="row">
-                    <label id="app_warn" class="col-md-offset-1 col-md-3">Select One</label>
-                    <?php foreach ($resumes as $res) {
-                        ?>
-                        <div class="col-md-offset-1 col-md-10">
-                            <div class="radio_questions">
-                                <div class="inputGroup appFieldsAll">
-                                    <input id="app_<?= $res['resume_enc_id']; ?>" name="JobApplied[resume_list]"
-                                           type="radio" value="<?= $res['resume_enc_id']; ?>"/>
-                                    <label for="app_<?= $res['resume_enc_id']; ?>"> <?= $res['title']; ?> </label>
-                                </div>
-                            </div>
-                        </div>
-                    <?php }
-                    ?>
-                </div>
-            </div>
-        <?php } ?>
     </div>
     <div class="modal-footer">
-        <?= Html::submitbutton('Apply', ['class' => 'btn btn-primary sav_job']); ?>
+        <?= Html::submitbutton('Apply', ['class' => 'btn btn-primary '.$application_enc_id.'-applyApp']); ?>
         <?= Html::button('Close', ['class' => 'btn btn-default', 'data-dismiss' => 'modal']); ?>
     </div>
 <?php ActiveForm::end(); ?>
@@ -229,7 +194,7 @@ $script = <<< JS
     });
 
     var que_id = $('#app_question_id').val();
-    $(document).on('click', '.sav_job', function (e) {
+    $(document).on('click', '.$application_enc_id-applyApp', function (e) {
         e.preventDefault();
         if ($('.appFieldsAll input[name="JobApplied[location_pref][]"]').length !== 0) {
             if ($('.appFieldsAll input[name="JobApplied[location_pref][]"]:checked').length <= 0) {
@@ -237,80 +202,29 @@ $script = <<< JS
                 return false;
             }
         }
-        if ($('.appFieldsAll input[name="JobApplied[check]"]:checked').length > 0) {
-            if ($('.appFieldsAll input[name="JobApplied[check]"]:checked').val() == 0) {
-                if ($('.appFieldsAll input[name="JobApplied[resume_list]"]:checked').length == 0) {
-                    $('#app_warn').css('display', 'block');
-                    $('.appFieldsAll input[name="JobApplied[check]"]').focus();
-                    return false;
-                } else if ($('.appFieldsAll input[name="JobApplied[resume_list]"]:checked').length > 0) {
-                    var formData = new FormData();
-                    var id = $('#app_application_id').val();
-                    var org_id = $('#app_organization_id').val();
-                    var check = 1;
-                    var loc_array = [];
-                    if ($('.appFieldsAll input[name="JobApplied[location_pref][]"]').length !== 0) {
-                        $(".appFieldsAll input[name='JobApplied[location_pref][]']:checked").each(function () {
-                            loc_array.push($(this).val());
-                        });
-                    }
-                    var resume_enc_id = $('.appFieldsAll input[name="JobApplied[resume_list]"]').val();
-                    formData.append('application_enc_id', id);
-                    formData.append('resume_enc_id', resume_enc_id);
-                    formData.append('check', check);
-                    formData.append('application_type', application_type);
-                    formData.append('org_id', org_id);
-                    if ($('#app_question_id').val() == 1) {
-                        var status = 'incomplete';
-                        formData.append('status', status);
-                    } else {
-                        var status = 'Pending';
-                        formData.append('status', status);
-                    }
-                    var json_loc = JSON.stringify(loc_array);
-                    formData.append('json_loc', json_loc);
-                    app_ajax_call(formData);
-                    $('#app_warn').css('display', 'none');
-                }
-            } else if ($('.appFieldsAll input[name="JobApplied[check]"]:checked').val() == 1) {
-                if ($('#app_resume_file').val() != '') {
-                    $.each($('#app_resume_file').prop("files"), function (k, v) {
-                        var filename = v['name'];
-                        var ext = filename.split('.').pop().toLowerCase();
-                        if ($.inArray(ext, ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg']) == -1 || v['size'] > 2097152) {
-                            return false;
-                        } else {
-                            var formData = new FormData();
-                            var loc_array = [];
-                            if ($('.appFieldsAll input[name="JobApplied[location_pref][]"]').length !== 0) {
-                                $(".appFieldsAll input[name='JobApplied[location_pref][]']:checked").each(function () {
-                                    loc_array.push($(this).val());
-                                });
-                            }
-                            var formData = new FormData($('#app_resume_form')[0]);
-                            var id = $('#app_application_id').val();
-                            var org_id = $('#app_organization_id').val();
-                            if ($('#app_question_id').val() == 1) {
-                                var status = 'incomplete';
-                                formData.append('status', status);
-                            } else {
-                                var status = 'Pending';
-                                formData.append('status', status);
-                            }
-                            formData.append('id', id);
-                            formData.append('application_type', application_type);
-                            formData.append('org_id', org_id);
-                            var json_loc = JSON.stringify(loc_array);
-                            formData.append('json_loc', json_loc);
-                            app_ajax_call(formData);
-                        }
-                    });
-                }
-            }
-        } else {
-            $('#app_resume_form').yiiActiveForm('validateAttribute', 'jobapplied-check');
-            return false;
+        var formData = new FormData();
+        var id = $('#app_application_id').val();
+        var org_id = $('#app_organization_id').val();
+        var loc_array = [];
+        if ($('.appFieldsAll input[name="JobApplied[location_pref][]"]').length !== 0) {
+            $(".appFieldsAll input[name='JobApplied[location_pref][]']:checked").each(function () {
+                loc_array.push($(this).val());
+            });
         }
+        formData.append('application_enc_id', id);
+        formData.append('application_type', application_type);
+        formData.append('org_id', org_id);
+        if ($('#app_question_id').val() == 1) {
+            var status = 'incomplete';
+            formData.append('status', status);
+        } else {
+            var status = 'Pending';
+            formData.append('status', status);
+        }
+        var json_loc = JSON.stringify(loc_array);
+        formData.append('json_loc', json_loc);
+        app_ajax_call(formData);
+        $('#app_warn').css('display', 'none');
     });
 
     function app_ajax_call(formData) {
@@ -323,7 +237,7 @@ $script = <<< JS
             data: formData,
             type: 'post',
             beforeSend: function () {
-                $('.sav_job').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+                $('.$application_enc_id-applyApp').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
             },
             success: function (data) {
                 var res = JSON.parse(data);
@@ -363,6 +277,11 @@ $script = <<< JS
         $('.' + btn_class + '').html('<i class = "fas fa-check"></i>Applied');
         $('.' + btn_class + '').attr("disabled", "true");
     }
+    
+//    if ($('.appFieldsAll input[name="JobApplied[location_pref][]"]').length <= 1) {
+//        $('.appFieldsAll input[name="JobApplied[location_pref][]"]').prop('checked', true);
+//        $('.application_enc_id-applyApp').trigger('click');
+//    }
 JS;
 
 $this->registerJs($script);
