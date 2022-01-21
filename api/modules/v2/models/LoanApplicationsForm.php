@@ -293,6 +293,18 @@ class LoanApplicationsForm extends LoanApplications
                         $this->created_on = date('Y-m-d H:i:s');
                         $this->setIsNewRecord(true);
                         $this->id = null;
+                        $refferal_id = $params['refferal_id'];
+                        if ($refferal_id) {
+                            $referralData = Referral::findOne(['code' => $refferal_id]);
+                            if ($referralData) {
+                                if($referralData->user_enc_id):
+                                    $this->lead_by = $referralData->user_enc_id;
+                                endif;
+                                if($referralData->organization_enc_id):
+                                    $this->lead_by = Users::findOne(['organization_enc_id'=>$referralData->organization_enc_id])->user_enc_id;
+                                endif;
+                            }
+                        }
                         if (!$this->save()) {
                             $transaction->rollback();
                             $this->_flag = false;
