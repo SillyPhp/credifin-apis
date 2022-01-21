@@ -4,7 +4,7 @@
             <div class="portlet-title tabbable-line">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Internships Templates'); ?></span>
+                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Internship Templates'); ?></span>
                 </div>
             </div>
             <div class="portlet-body">
@@ -12,7 +12,7 @@
                     <div class="tab-pane active">
                         <div class="mt-actions">
                             <div class="row">
-                                <div class="col-lg-12">
+                                <div class="col-lg-12">w
                                     <div class="padding-left">
                                         <div class="manage-jobs-sec">
                                             <?php
