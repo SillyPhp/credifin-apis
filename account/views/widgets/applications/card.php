@@ -284,6 +284,7 @@ $this->registerCss("
     display:block;
     padding:5px 7px;
     border-radius: 0 8px 8px 0;
+    -webkit-appearance: none;
 }
 .fb-book{color:#3b5998;}
 .fb-book:hover{background-color:#3b5998;color:#fff;}

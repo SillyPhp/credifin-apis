@@ -23,7 +23,7 @@ use yii\helpers\Url;
                   <li><i class="fa fa-chevron-right"></i>Time and cost saving</li>
               </ul>
               <div class="btn-div">
-                  <a href="/drop-resume" class="btn-generate-link">Learn More</a>
+                  <a href="/drop-resume" class="btn-learn">Learn More</a>
                   <div class="btn-top-circle"></div>
               </div>
           </div>
@@ -50,18 +50,19 @@ $this->registerCss('
     align-items: center;
     margin-bottom:30px;
     justify-content: center;
+    overflow: hidden;
 }
 .resume-banner .row{
   display: flex;
   align-items: center;
 }
-.heading-text h1 {
-  margin: 0;
+.resume-banner .heading-text h1 {
+  margin: 0 0 10px 0;
   font-family: Roboto;
   font-weight: 700;
   font-size: 30px;
 }
-.heading-text p {
+.resume-banner .heading-text p {
   font-family: roboto;
   color: #333;
   font-size: 14px;
@@ -83,42 +84,41 @@ $this->registerCss('
   color: #333;
   font-size: 14px;
 }
-.blue-strip-img{
+.resume-banner .blue-strip-img{
   position: absolute;
-  top: 0;
-  left: 0;
+  top: -10px;
+  left: -10px;
   width: 80px;
 }
-.blue-strip-img.right-bg{
+.resume-banner .blue-strip-img.right-bg{
   right: 0;
   left: unset;
   width: 340px;
 }
-
-.blue-strip-img img{
+.resume-banner .blue-strip-img img{
   width: 100%;
 }
-.career-heading{
-  padding: 70px 0 45px 60px !important;
+.resume-banner .career-heading{
+  padding: 40px 0 40px 60px !important;
 }
-.heading-text{
+.resume-banner .heading-text{
   margin-bottom: 15px;
 }
-.career-image{
-  padding: 70px 45px 60px 0 !important;
+.resume-banner .career-image{
+  padding: 30px 45px 30px 0 !important;
 }
-.career-image img{
+.resume-banner .career-image img{
   width: 100%;
 }
-.career-img{
-  max-width: 432px;
+.resume-banner .career-img{
+  max-width: 360px;
   margin: auto;
 }
-.btn-div{
+.resume-banner .btn-div{
   position: relative;
   z-index: 1;
 }
-.resume-banner .btn-generate-link{
+.resume-banner .btn-learn{
     padding: 10px 20px;
     border-radius: 8px;
     display: inline-block;
@@ -129,12 +129,12 @@ $this->registerCss('
     transition: all .3s linear;
     box-shadow: none;
 }
-.resume-banner .btn-generate-link:hover {
+.resume-banner .btn-learn:hover {
     padding: 10px 35px;
     transition: all .3 linear;
     color: #fff;
 }
-.btn-top-circle{
+.resume-banner .btn-top-circle{
   position: absolute;
   width: 30px;
   height: 30px;
@@ -146,40 +146,40 @@ $this->registerCss('
   background: linear-gradient(180deg, #8CC8F0 0%, #319EE7 100%);
   display: none;
 }
-.image-mobile{
+.resume-banner .image-mobile{
   display: none;
 }
 @media only screen and (max-width: 600px) {
-  .career-image{
+  .resume-banner .career-image{
     display: none;
   }
-  .career-heading{
+  .resume-banner .career-heading{
     width: 100%;
     font-size: 105%;
     padding: 70px 20px !important;
   }
-  .image-mobile{
+  .resume-banner .image-mobile{
     position: absolute;
     display: block;
     width: 240px;
     bottom: 20px;
     right: 0;
   }
-  .image-mobile img{
+  .resume-banner .image-mobile img{
     width: 100%;
   }
 }
 @media only screen and (max-width: 767px){
-  .career-image{
+  .resume-banner .career-image{
     display: none;
   }
-  .blue-strip-img.right-bg{
+  .resume-banner .blue-strip-img.right-bg{
     display: none;
   }
-  .career-heading{
+  .resume-banner .career-heading{
     padding: 70px 30px !important;
   }
-  .career-heading h1{
+  .resume-banner .career-heading h1{
     font-size: 28px;
   }
 }

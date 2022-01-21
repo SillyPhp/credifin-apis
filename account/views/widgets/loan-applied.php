@@ -99,7 +99,7 @@ use yii\helpers\Url;
 $user_id = Yii::$app->user->identity->user_enc_id;
 $this->registerCss( '
 .loan-app-main {
-    background: linear-gradient(97.96deg, #330867 -33.18%, #25C1C2 105.68%);
+    background: linear-gradient(-30deg, #330867 -33.18%, #25C1C2 105.68%);
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -117,7 +117,8 @@ $this->registerCss( '
     margin-bottom: 10px;
 }
 .loan-mail-logo {
-    flex-basis: 35%;
+    flex-basis: 33%;
+    margin-right:2%;
 }
 .loan-mail-logo img {
     width: 100%;
