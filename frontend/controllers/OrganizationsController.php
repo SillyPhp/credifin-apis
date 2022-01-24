@@ -84,7 +84,7 @@ class OrganizationsController extends Controller
             if (Yii::$app->request->get('sortBy')) {
                 $options['sortBy'] = trim(Yii::$app->request->get('sortBy'));
             }
-            $options['limit'] = 27;
+            $options['limit'] = 12;
             $cards = $get->getAllCompanies($options);
             if (count($cards['cards']) > 0) {
                 $response = [

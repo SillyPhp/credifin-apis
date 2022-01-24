@@ -991,10 +991,12 @@ AppAssets::register($this);
                     $('#completeProfileModal').modal('show');
                 }
             });
-            
          }
-         openUserDetailsModal();
-         
+          
+        window.setTimeout(function(){
+            openUserDetailsModal();
+        },1000); 
+               
          function openPreferenceModal(){
             let hasCookie = document.cookie;
             if (document.cookie.indexOf('PreferenceisViewed') != -1) {
@@ -1017,6 +1019,8 @@ AppAssets::register($this);
                 }
             })
          }
+         
+      
         ");
     }
 
