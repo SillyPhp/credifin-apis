@@ -235,7 +235,6 @@ $this->registerCss('
    font-size: 15px;
     font-family: roboto;
     margin-bottom: 5px;
-    text-transform: capitalize;
     font-weight: 500;
     color: #000;
     

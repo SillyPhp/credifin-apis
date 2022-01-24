@@ -1810,7 +1810,8 @@ function ajaxSubmit(){
                 yearly_income:$('#salary').val(),   
                 child_information:child_information,
                 userID:userID,
-                getLender:getLender
+                getLender:getLender,
+                refferal_id : refferal_id
                 }
         url = '/api/v3/education-loan/save-school-fee-loan';
     }

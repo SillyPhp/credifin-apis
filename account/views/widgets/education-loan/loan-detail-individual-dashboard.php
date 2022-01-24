@@ -33,20 +33,12 @@ use yii\helpers\Url;
                         </div>
                         <div class="statsBox">
                             <p class="mb0">Lender</p>
-                            <?php
-                            $lander = $loanApplication['assignedLoanProviders'][0];
-                            $base_path = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory;
-                            $path = $base_path . Yii::$app->params->upload_directories->organizations->logo . $lander['lander_logo_location'] . '/' . $lander['lander_logo'];
-                            if ($lander['lander_logo']) {
-                                ?>
-                                <div class="vendorImg"><img src="<?= $path ?>"></div>
-                                <?php
-                            }
-                            ?>
+                            <div class="vendorImg"><img src="<?= $loanApplication['organization_logo'] ?>"></div>
+                            <div class="vendorname"><?= $loanApplication['name'] ?></div>
                         </div>
                         <div class="statsBox">
                             <p class="mb0">Loan Profile</p>
-                            <a href="/account/education-loans/candidate-dashboard/<?= $loanApplication['loan_app_enc_id'] ?>">Complete
+                            <a href="/account/education-loans/candidate-dashboard/<?= $loanApplication['loan_application_enc_id'] ?>">Complete
                                 Profile</a>
                         </div>
                         <!--                        <div class="statsBox">-->
@@ -73,14 +65,14 @@ use yii\helpers\Url;
                         <ul class="addressLink">
                             <?php
                             foreach ($loanStatusList as $key => $value) {
-                                if ($lander['status'] == 5) {
+                                if ($loanApplication['status'] == 5) {
                                     $cls = "completedTab";
                                 } else {
                                     switch (true) {
-                                        case ($lander['status'] == $key) :
+                                        case ($loanApplication['status'] == $key) :
                                             $cls = "activeTab";
                                             break;
-                                        case ($lander['status'] > $key) :
+                                        case ($loanApplication['status'] > $key) :
                                             $cls = "completedTab";
                                             break;
                                         default :
@@ -97,46 +89,9 @@ use yii\helpers\Url;
                         </ul>
                     </div>
                 </div>
-                <?php
-                $notifications = $loanApplication['loanApplicationNotifications'];
-                if ($notifications) {
-                    ?>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <ul class="notifications-list">
-                                <?php
-                                    foreach ($notifications as $notification){
-                                        ?>
-                                        <li>
-                                            <div class="container-fluid ">
-                                                <div class="row">
-                                                    <div class="col-xs-12">
-                                                        <div class="new-message-box">
-                                                            <div class="new-message-box-info">
-                                                                <div class="info-tab tip-icon-info" title="error"><i></i></div>
-                                                                <div class="tip-box-info">
-                                                                    <p class="mb-20"><strong class="formattedDate"><?= $notification['created_on'] ?>:</strong>
-                                                                        <?= $notification['message'] ?>
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <?php
-                                    }
-                                ?>
-                            </ul>
-                        </div>
-                    </div>
-                    <?php
-                }
-                ?>
                 <div class="col-md-12">
                     <?php
-                    if($lander['status'] < 1){
+                    if($loanApplication['status'] < 1){
                         ?>
                         <div class="new-message-box">
                             <div class="new-message-box-success">
@@ -168,12 +123,10 @@ $this->registerCss('
     display: flex;
     flex-wrap: wrap;
 }
-.vendorImg img{
-    max-width: 100px;
-    max-height: 50px;
-}
-.portlet.light.portlet-fit>.portlet-body{
-    padding: 10px 0 20px;
+.vendorImg img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
 }
 .status{
     margin-top: 20px;
@@ -206,6 +159,8 @@ $this->registerCss('
     padding: 8px 15px;
     display: inline-block;
     border-radius: 5px;
+    width:145px;
+    text-align:center;
 }
 .statsBox a:hover{
     background: #ff7803;
@@ -314,16 +269,6 @@ $this->registerCss('
         border: none;
     }
 }
-.new-message-box {
-    margin: 15px 0;
-    padding-left: 20px;
-    margin-bottom: 25px!important;
-}
-
-.new-message-box p{
-    font-size: 1.15em;
-    font-weight: 500;
-}
 
 .info-tab {
     width: 40px;
@@ -362,20 +307,8 @@ $this->registerCss('
     transform: rotateX(60deg);
 }
 
-.note-box, .warning-box, .tip-box-success, .tip-box-danger, .tip-box-warning, .tip-box-info, .tip-box-alert {
+.note-box, .warning-box, .tip-box-success, .tip-box-danger, .tip-box-warning, .tip-box-alert {
     padding: 12px 8px 10px 26px;
-}
-
-
-.new-message-box-info {
-    background: #eeeeee;
-    padding: 3px;
-    margin: 10px 0;
-}
-
-.tip-box-info {
-    color: #01579B;
-//    background: #B3E5FC;
 }
 
 .tip-icon-info {
@@ -400,11 +333,6 @@ $this->registerCss('
     background: #FF6F00;
     padding: 3px;
     margin: 10px 0;
-}
-
-.notifications-list{
-    list-style: none;
-    padding-left: 0;
 }
 
 .new-message-box-success {
@@ -439,16 +367,13 @@ $this->registerCss('
 .tip-icon-success i::before {
     background: #8BC34A;
 }
-.formattedDate{
-    font-size: 13px;
-    color: #ff7803;
+.portlet.light.portlet-fit>.portlet-body{
+    padding:10px 20px 20px !important;
+}
+.vendorname {
+    margin: 6px 0 0 0;
+    font-family: "Roboto";
+    font-weight: 500;
 }
 ');
-$script = <<<JS
-var months = ["January", "February", "March", "April", "May", "June", "July", "August", "Sep", "Oct", "November", "December"];
-$('.formattedDate').each(function(){
-    var d = new Date($(this).text());
-    $(this).html(d.getDate() + " " + months[d.getMonth()] + ", " + d.getFullYear()+ ' : ');
-});
-JS;
-$this->registerJs($script);
+?>
