@@ -362,6 +362,14 @@ $script = <<< JS
                 $('.sav_job').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
             },
             success: function (data) {
+                $.ajax({
+                    url: '/jobs/save-preference-according-to-application',
+                    method: 'POST',
+                    data: {eaidk:$('#application_id').val(), type:application_type},
+                    success: function(response){
+                        console.log(response);
+                    }
+                })
                 var res = JSON.parse(data);
                 $('#appliedAppId').val(res.aid);
                 if (res.status == true && $('#question_id').val() == 1) {
