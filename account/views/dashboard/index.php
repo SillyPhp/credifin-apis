@@ -46,7 +46,10 @@ endif;
             </div>
         </section> -->
 
-        <?= $this->render('@common/widgets/career-page-section') ?>
+        <?php if (Yii::$app->user->identity->organization->organization_enc_id) { ?>
+            <?= $this->render('@common/widgets/career-page-section') ?>    
+        <?php } ?>
+        
         
         <?php if (Yii::$app->user->identity->organization->organization_enc_id) { ?>
             <?= $this->render('/widgets/safety-widgets', ['scriptModel' => $scriptModel]) ?>
