@@ -5,26 +5,32 @@ use yii\helpers\Url;
 
 ?>
 
-<section class="fee-bg">
-    <div class="container-fluid">
-        <div class="row dueflex">
-            <div class="col-md-6 col-sm-6">
-                <div class="fee-due-text">
-                    <h3>Login Fee Due</h3>
-                    <p class="mb3">Login Fee of <?= $loginFee['applicant_name'] ?>'s loan of Rs <?= $loginFee['amount'] ?> is pending.</p>
-                    <p>Please pay your login fees to move your loan application one step ahead.</p>
-                    <a href="" class="pay-btn">Pay Now</a>
+    <section class="fee-bg">
+        <div class="container-fluid">
+            <div class="row dueflex">
+                <div class="col-md-6 col-sm-6">
+                    <div class="fee-due-text">
+                        <h3>Login Fee Due</h3>
+                        <p class="mb3">Login Fee of <?= $loginFee['applicant_name'] ?>'s loan of
+                            Rs <?= $loginFee['amount'] ?> is pending.</p>
+                        <p>Please pay your login fees to move your loan application one step ahead.</p>
+                        <a href="javascript:;" data-loan-id="<?= $loginFee['loan_app_enc_id'] ?>"
+                           data-phone="<?= $loginFee['phone'] ?>" data-email="<?= $loginFee['email'] ?>"
+                           data-payment-token="<?= $loginFee['payment_token'] ?>"
+                           data-education-payment-id="<?= $loginFee['education_loan_payment_enc_id'] ?>"
+                           data-name="<?= $loginFee['applicant_name'] ?>"
+                           class="pay-btn">Pay Now</a>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6 col-sm-6">
-                <div class="img-bg"></div>
-                <div class="fee-due-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/fees.png') ?>" alt="">
+                <div class="col-md-6 col-sm-6">
+                    <div class="img-bg"></div>
+                    <div class="fee-due-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/fees.png') ?>" alt="">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 <?php
 $this->registerCss('
@@ -101,18 +107,19 @@ $this->registerCss('
     background-color: #fff;
      border: 1px solid #fff;
 }
-@media screen and (max-width: 1024px) and (min-width: 992px) {
-    .img-bg {
-        width: 360px;
-     }
+@media screen and (max-width: 992px) {
+.img-bg {
+     display:none;
+}
 }
 @media screen and (max-width: 880px) and (min-width: 768px) {
-    .img-bg {
-        width: 360px;
-     }
-     .fee-due-text p {
-        font-size: 15px;
-    }
+.fee-due-text p {
+    font-size: 15px;
+}
+.navigate-loan{
+    position:relative;
+    top:0;
+}
 }
 @media screen and (max-width: 766px) and (min-width: 598px) {
     .img-bg {
@@ -144,3 +151,7 @@ $this->registerCss('
     }
 }
 ');
+$script = <<< JS
+
+JS;
+$this->registerJs($script);
