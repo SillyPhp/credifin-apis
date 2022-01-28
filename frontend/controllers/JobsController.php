@@ -10,6 +10,7 @@ use common\models\ApplicationSkills;
 use common\models\ApplicationTemplates;
 use common\models\ApplicationTypes;
 use common\models\ApplicationUnclaimOptions;
+use common\models\AppliedApplicationLocations;
 use common\models\Cities;
 use common\models\CollegeCourses;
 use common\models\Courses;
@@ -692,16 +693,13 @@ class JobsController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             $eaidk = Yii::$app->request->post("eaidk");
             $type = Yii::$app->request->post("type");
+            $appliedId = Yii::$app->request->post("appliedId");
             $application_details = EmployerApplications::find()
                 ->alias('a')
                 ->select(['a.*', 'c.category_enc_id'])
                 ->joinWith(['title b' => function ($b) {
                     $b->joinWith(['parentEnc c']);
                 }], false)
-                ->joinWith(['applicationPlacementLocations d' => function ($d) {
-                    $d->select(['d.application_enc_id', 'd.location_enc_id', 'da.city_enc_id']);
-                    $d->joinWith(['locationEnc da'], false);
-                }])
                 ->where([
                     'a.application_enc_id' => $eaidk,
                     'a.is_deleted' => 0,
@@ -713,6 +711,11 @@ class JobsController extends Controller
             if (empty($application_details)) {
                 throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
             }
+            $appliedLocations = AppliedApplicationLocations::find()
+                ->select(['city_enc_id'])
+                ->where(['applied_application_enc_id' => $appliedId])
+                ->asArray()
+                ->all();
             $user_preference = UserPreferences::findOne(['created_by' => Yii::$app->user->identity->user_enc_id, 'assigned_to' => $type]);
 
 //        $user_preference->type = $type;
@@ -758,7 +761,7 @@ class JobsController extends Controller
                 }
 
                 $new_location_to_update = [];
-                foreach ($application_details['applicationPlacementLocations'] as $locn) {
+                foreach ($appliedLocations as $locn) {
                     array_push($new_location_to_update, $locn['city_enc_id']);
                 }
 
