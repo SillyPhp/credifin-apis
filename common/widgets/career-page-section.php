@@ -211,7 +211,6 @@ $this->registerCss('
         padding: 55px 8px;
         margin: 20px 0;
         position: relative;
-        overflow: hidden;
     }
     .career-page-sidebar .top-bg{
         position: absolute;
@@ -255,11 +254,11 @@ $this->registerCss('
     .linkDiv{
         background: #fff;
         display: none;
-        width: fit-content;
         padding: 10px 40px 10px 15px;
         border: 1px solid #00a0e3;
         border-radius: 25px;
         position: relative;
+        word-wrap: break-word;
     }
     .linkDiv a{
         color: #333;
@@ -304,6 +303,19 @@ $this->registerCss('
         }
         .career-page-sidebar ul{
             margin-top: 0;
+        }
+        .linkDiv{
+            width: fit-content;
+        }
+    }
+    @media only screen and (min-width: 992px){
+        .career-page-sidebar .bottom-bg{
+            width: 100%;
+        }
+    }
+    @media only screen and (max-width: 380px){
+        .career-page-sidebar .bottom-bg{
+            width: 100%;
         }
     }
 ');
