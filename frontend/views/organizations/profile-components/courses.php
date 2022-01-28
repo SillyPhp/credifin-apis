@@ -182,6 +182,9 @@ $this->registerCSS('
     font-size: 20px;
     color: #000;
 }
+.ps__rail-y{
+    right: 0 !important;
+}
 @media only screen and (max-width: 767px) {
 .set-height{
     height:auto !important;
@@ -238,7 +241,9 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
                         ${course.fees ? `
                         <div class="c-fees"><i class="fas fa-wallet"></i> `+course.fees+`</div>
                         ` : ''}
-                        <div class="c-duration"><i class="fas fa-calendar-times"></i> ${course.course_duration} ${course.type ? course.type : ''}</div>
+                        ${course.course_duration ? `
+                        <div class="c-duration"><i class="fas fa-calendar-times"></i> ${course.course_duration} ${course.type ? course.type : ''}</div>`
+                        : ''}
                         ${course.registration_fee ? `
                             <div class="register-fee"><i class="fa fa-money-bill-alt"></i> ₹ `+course.registration_fee+`</div> `
                         : ''}
