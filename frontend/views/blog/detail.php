@@ -187,6 +187,9 @@ $this->params['seo_tags'] = [
 
 <?php
 $this->registerCss('
+strong{
+    color: unset;
+}
 .share-social-links {
     display: flex;
     justify-content: space-evenly;
