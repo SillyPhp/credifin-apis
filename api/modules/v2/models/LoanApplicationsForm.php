@@ -5,6 +5,7 @@ namespace api\modules\v2\models;
 use common\models\AssignedLoanProvider;
 use common\models\Countries;
 use common\models\EducationLoanPayments;
+use common\models\extended\EducationLoan;
 use common\models\extended\PaymentsModule;
 use common\models\LoanApplicationOptions;
 use common\models\LoanApplications;
@@ -248,6 +249,11 @@ class LoanApplicationsForm extends LoanApplications
                 $data['education_loan_payment_enc_id'] = $loan_payment->education_loan_payment_enc_id;
                 $data['payment_id'] = $loan_payment->payment_token;
                 $data['status'] = true;
+                $data['phone'] = $this->phone;
+                $data['email'] = $this->email;
+                $data['name'] = $this->applicant_name;
+                $educationModel = new EducationLoan();
+                $educationModel->SignUp($data);
                 return $data;
             } else {
                 $transaction->rollBack();
@@ -406,6 +412,11 @@ class LoanApplicationsForm extends LoanApplications
                 $data['education_loan_payment_enc_id'] = $education_loan_payment_id;
                 $data['payment_id'] = $loan_payment->payment_token;
                 $data['status'] = true;
+                $data['phone'] = $this->phone;
+                $data['email'] = $this->email;
+                $data['name'] = $this->applicant_name;
+                $educationModel = new EducationLoan();
+                $educationModel->SignUp($data);
                 return $data;
             } else {
                 $transaction->rollBack();
