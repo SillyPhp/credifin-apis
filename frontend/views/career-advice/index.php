@@ -762,9 +762,8 @@ $this->registerCss('
     background-position: left;
     background-repeat: no-repeat;
 }
-body {
+.main-content {
   background-color:#fefefe;
-  font-family: var(--font-family-primary);
   font-size: 16px;
   line-height: 1.425;
 }

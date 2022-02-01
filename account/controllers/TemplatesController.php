@@ -61,7 +61,7 @@ class TemplatesController extends Controller
     {
         $application = \common\models\ApplicationTemplates::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name','z1.icon_png', 'g.designation'])
+            ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name','z1.icon_png', 'g.designation', 'z1.name as parent_name'])
             ->joinWith(['title0 z' => function ($z) {
                 $z->joinWith(['categoryEnc zz']);
                 $z->joinWith(['parentEnc z1']);
@@ -70,6 +70,11 @@ class TemplatesController extends Controller
             ->joinWith(['designationEnc g'], false)
             ->where(['f.name' => $type, 'a.is_deleted' => 0, 'a.status' => "Active"])
             ->orderBy(['a.created_on' => SORT_DESC])
+            ->andWhere([
+                'or',
+                ['a.template_industry_enc_id' => NULL],
+                ['a.template_industry_enc_id' => Yii::$app->user->identity->organization->industry_enc_id]
+            ])
             ->asArray()
             ->all();
 

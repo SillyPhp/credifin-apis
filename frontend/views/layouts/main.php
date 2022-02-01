@@ -983,7 +983,7 @@ AppAssets::register($this);
                     return false;
                 }                 
             $.ajax({
-                url: 'account/resume-builder/user-detail-modal',
+                url: '/account/resume-builder/user-detail-modal',
                 method: 'Post',
                 data:  {'". Yii::$app->request->csrfParam."':'". Yii::$app->request->csrfToken."'},
                 success: function(response){
@@ -991,12 +991,40 @@ AppAssets::register($this);
                     $('#completeProfileModal').modal('show');
                 }
             });
-            
          }
-       
-         openUserDetailsModal();
+          
+        window.setTimeout(function(){
+            openUserDetailsModal();
+        },1000); 
+               
+         function openPreferenceModal(){
+            let hasCookie = document.cookie;
+            if (document.cookie.indexOf('PreferenceisViewed') != -1) {
+                return false; 
+            }
+            
+            let preferenceModal = document.getElementById('preferenceLocation');
+            if(preferenceModal != null){
+                $('#preferenceLocation').modal('show');
+                return false;
+            }   
+            
+            $.ajax({
+                url: '/account/resume-builder/user-preference-modal',
+                method: 'Post',
+                data: {'". Yii::$app->request->csrfParam."':'". Yii::$app->request->csrfToken."'},
+                success: function(response) {
+                    $('body').append(response);
+                    $('#preferenceLocation').modal('show');
+                }
+            })
+         }
+         
+      
         ");
     }
+
+
     if (!empty(Yii::$app->params->google->analytics->id)) {
         $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=' . Yii::$app->params->google->analytics->id, [
             'depends' => [\yii\web\JqueryAsset::className()],
@@ -1028,9 +1056,6 @@ AppAssets::register($this);
 
     if (Yii::$app->user->isGuest) {
         Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"', \yii\web\View::POS_HEAD);
-        $this->registerJs('
-        
-    ');
     }
     if (!$this->params['header_dark']) {
         $this->registerJs(" $(document).on('scroll', function () {

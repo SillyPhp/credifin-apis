@@ -5,8 +5,8 @@ var today = new Date();
 var events = [];
 
 function getTiming(time,start){
-    console.log(time);
-    console.log(start);
+    // console.log(time);
+    // console.log(start);
 
 }
 

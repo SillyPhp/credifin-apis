@@ -30,7 +30,7 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
             <?php if (Yii::$app->user->isGuest): ?>
                 <div class="btn-parent">
                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
-                       class="apply-job-btn single-btn"><i
+                       class="apply-job-btn single-btn autoApplyAfter"><i
                                 class="fas fa-paper-plane"></i>Apply</a>
                 </div>
                 <div class="sub-actions">
@@ -211,6 +211,37 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
     </div>
 <?php
 $script = <<<JS
+if(localStorage.getItem('autoApplyAfter') == "true"){
+    if(window.location.href == localStorage.getItem('autoApplyUrl')){
+        var date = + new Date();
+        var last = JSON.parse(localStorage.getItem('autoApplyTime'));
+        if ((date - last) < ( 2 * 60 * 1000 ) ) {
+           setTimeout(function() {
+               if($('.apply-job-btn').length > 0) {
+                   $('.apply-job-btn').trigger('click');  
+               }
+               localStorage.removeItem('autoApplyAfter');
+               localStorage.removeItem('autoApplyTime');
+               localStorage.removeItem('autoApplyUrl');
+           },1000)
+        } else{
+           localStorage.removeItem('autoApplyAfter');
+           localStorage.removeItem('autoApplyTime');
+           localStorage.removeItem('autoApplyUrl');
+        }
+    } else{
+        if ((date - last) < ( 2 * 60 * 1000 ) ) {
+           localStorage.removeItem('autoApplyAfter');
+           localStorage.removeItem('autoApplyTime');
+           localStorage.removeItem('autoApplyUrl');
+        }
+    }
+}
+$(document).on('click', '.autoApplyAfter', function(){
+   localStorage.setItem('autoApplyAfter', true); 
+   localStorage.setItem('autoApplyTime', + new Date()); 
+   localStorage.setItem('autoApplyUrl', window.location.href); 
+});
 $(document).on('keypress','.wts-txt',function(e) {
     if(e.which == 13) {
         var val = $(this).val();
@@ -555,7 +586,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
 }
 
 .move-anim-btn:hover span {
- transform: translateX(8em);
+ transform: translateX(9.8em);
  color: #fff;
 }
 

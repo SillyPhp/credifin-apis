@@ -7,7 +7,7 @@ use yii\helpers\Url;
             <div class="portlet-title">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Jobs Templates'); ?></span>
+                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Job Templates'); ?></span>
                 </div>
                 <div class="actions">
                     <?php if (count($jobs) > 4): ?>
@@ -50,7 +50,7 @@ use yii\helpers\Url;
             <div class="portlet-title">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Internships Templates'); ?></span>
+                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Internship Templates'); ?></span>
                 </div>
                 <div class="actions">
                     <?php if (count($internships) > 4): ?>

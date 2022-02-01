@@ -45,7 +45,7 @@ $loginForm = ActiveForm::begin([
 $loginForm->field($loginFormModel, 'username')->textInput([
     'autofocus' => true,
     'autocomplete' => 'off',
-    'placeholder' => $loginFormModel->getAttributeLabel('username or email'),
+    'placeholder' => 'Username or Email',
 ]);
 ?>
 <?=

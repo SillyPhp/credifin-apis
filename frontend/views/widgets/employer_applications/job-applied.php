@@ -8,8 +8,13 @@ use yii\helpers\Url;
 $location = ArrayHelper::map($locations, 'city_enc_id', 'name');
 Yii::$app->view->registerJs('var btn_class = "' . $btn_class . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->controller->id) . '"', \yii\web\View::POS_HEAD);
+if ($applicationType == 'Internships') {
+    $appType = 'Internship';
+} else{
+    $appType = 'Job';
+}
 ?>
-    <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
+    <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <?php $form = ActiveForm::begin(['id' => 'resume_form']); ?>
@@ -41,13 +46,13 @@ Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->cont
                 </div>
                 <div class="modal-footer">
                     <?= Html::submitbutton('Apply', ['class' => 'btn btn-primary sav_job']); ?>
-                    <?= Html::button('Close', ['class' => 'btn btn-default', 'data-dismiss' => 'modal']); ?>
+                    <?= Html::button('Close', ['class' => 'btn btn-default skipApplyApp', 'data-dismiss' => 'modal']); ?>
                 </div>
                 <?php ActiveForm::end(); ?>
             </div>
         </div>
     </div>
-    <div class="modal fade bs-modal-lg in" id="resume_modal" aria-hidden="true">
+    <div class="modal fade bs-modal-lg in" id="resume_modal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <?php $form2 = ActiveForm::begin(['id' => 'resume_form2']); ?>
@@ -235,6 +240,9 @@ $this->registerCss("
         }
 ");
 $script = <<< JS
+    $(document).on('click', '.skipApplyApp', function (e) {
+        $('.' + btn_class + '').html('<i class="fas fa-paper-plane hvr-icon"></i> <span>Apply for $appType</span>');
+    });
     $(document).on('click', '.' + btn_class + '', function (e) {
         e.preventDefault();
         if ($('.' + btn_class + '').attr("disabled") == "disabled") {
@@ -242,11 +250,9 @@ $script = <<< JS
         }
         $('.' + btn_class + '').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         if ($('input[name="JobApplied[location_pref][]"]').length <= 1) {
-            console.log('yess');
             $('input[name="JobApplied[location_pref][]"]').prop('checked', true);
             $('.sav_job').trigger('click');
         } else{
-            console.log('yess22');
             $('#modal').modal('show');
         }
     });
@@ -358,6 +364,14 @@ $script = <<< JS
             success: function (data) {
                 var res = JSON.parse(data);
                 $('#appliedAppId').val(res.aid);
+                $.ajax({
+                    url: '/jobs/save-preference-according-to-application',
+                    method: 'POST',
+                    data: {eaidk:$('#application_id').val(), type:application_type, appliedId:res.aid},
+                    success: function(response){
+                        console.log(response);
+                    }
+                })
                 if (res.status == true && $('#question_id').val() == 1) {
                     // $('#resume_modal').modal('show');
                     applied();

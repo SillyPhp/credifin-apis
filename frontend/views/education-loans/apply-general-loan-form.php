@@ -4,11 +4,13 @@ use yii\helpers\Url;
 
 $userDetail = \common\models\Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
 $this->params['header_dark'] = true;
-Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->prod->apiKey . '"', \yii\web\View::POS_HEAD);
-Yii::$app->view->registerJs('var getLender = "' . $getLender . '"', \yii\web\View::POS_HEAD);
-Yii::$app->view->registerJs('var userID = "' . Yii::$app->user->identity->user_enc_id . '"', \yii\web\View::POS_HEAD);
-Yii::$app->view->registerJs('var default_country = "' . $india . '"', \yii\web\View::POS_HEAD);
-Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->prod->apiKey. '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var getLender = "' .$getLender. '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\View::POS_HEAD);
+$cookies = Yii::$app->request->cookies;
+$ref_id = $cookies->get('ref_loan_id');
+Yii::$app->view->registerJs('var refferal_id = "' . $ref_id->value . '"', \yii\web\View::POS_HEAD);
 ?>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <section class="bg-blue">
@@ -823,7 +825,7 @@ border: 1px solid #ddd !important;
 }
 .college-logo {
     margin-left:50vw;
-    padding:30px 20px 0 20px;
+    padding:60px 25px 0 25px;
     text-align:center;
     color:#000;
     width:50vw;
@@ -1808,7 +1810,8 @@ function ajaxSubmit(){
                 yearly_income:$('#salary').val(),   
                 child_information:child_information,
                 userID:userID,
-                getLender:getLender
+                getLender:getLender,
+                refferal_id : refferal_id
                 }
         url = '/api/v3/education-loan/save-school-fee-loan';
     }
