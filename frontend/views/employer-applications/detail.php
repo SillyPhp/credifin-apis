@@ -1347,11 +1347,12 @@ button.lc-item-video-menu {
         min-height: 68px;
     }
     .job-overview ul > li i {
-        position: absolute;
+        // position: absolute;
         left: 23px;
         top: 5px;
         font-size: 30px;
         color: #4aa1e3;
+        margin-right: 10px;
     }
     .job-overview ul > li h3 {
         float: left;
@@ -1388,12 +1389,19 @@ button.lc-item-video-menu {
     .job-single-sec .job-overview ul li {
         float: left;
         width: 33.334%;
-        padding-left: 50px;
+        /* padding-left: 50px; */
         padding-top: 4px;
         transition: .2s all linear;
+        display: flex;
+        padding: 5px;
+        min-height: 80px;
+    }
+    .for-flex {
+        width: 100px;
     }
     .job-single-sec .job-overview ul li i {
         left: 4px;
+        min-width: 40px;
     }
     .job-overview > a {
         float: left;
@@ -1915,7 +1923,11 @@ button.lc-item-video-menu {
        .job-overview ul li{
          width: 100% !important;
         }
-        .job-single-head2 ul{text-align:center;}
+        .job-single-head2 ul{text-align: left;}
+        
+        .for-flex {
+            width: 100%;
+        }
     }
     /* Profile icons css ends */
 ");
