@@ -1302,7 +1302,7 @@ button.lc-item-video-menu {
         line-height: 21px;
         margin-bottom: 10px;
         font-size: 13px;
-        color: #888888;
+        color: #000;
     }
     .job-details > ul li::before {
         position: absolute;
@@ -1328,7 +1328,7 @@ button.lc-item-video-menu {
     .job-overview ul {
         float: left;
         width: 100%;
-        border: 2px solid #e8ecec;
+        // border: 2px solid #e8ecec;
         -webkit-border-radius: 8px;
         -moz-border-radius: 8px;
         -ms-border-radius: 8px;
@@ -1374,13 +1374,26 @@ button.lc-item-video-menu {
 
         margin-bottom: 20px;
     }
+    .job-single-sec .job-overview ul li:hover {
+        background: #00a0e3;
+        transform: scale(1.1);
+        position: relative;
+        z-index: 2;
+        color: #fff !important;
+        box-shadow: 0 0 7px 0px #00000060;
+    }
+    .job-single-sec .job-overview ul li:hover * {
+        color: #fff;
+    }
     .job-single-sec .job-overview ul li {
         float: left;
         width: 33.334%;
         padding-left: 50px;
+        padding-top: 4px;
+        transition: .2s all linear;
     }
     .job-single-sec .job-overview ul li i {
-        left: 0;
+        left: 4px;
     }
     .job-overview > a {
         float: left;
