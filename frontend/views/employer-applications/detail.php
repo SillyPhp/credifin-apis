@@ -225,7 +225,8 @@ $this->render('/widgets/employer_applications/top-banner', [
     'job_title' => (($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name'])),
     'icon_png' => (($data2['icon_png']) ? ($data2['icon_png']) : ($data1['icon_png'])),
     'shortlist' => $shortlist,
-    'shortlist_btn_display' => true
+    'shortlist_btn_display' => true,
+    'status' => (($data2['status']) ? ($data2['status']) : 'active'),
 ]);
 ?>
 <section>
@@ -356,7 +357,8 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'application_slug' => $application_details["slug"],
                         'shortlist' => $shortlist,
                         'shortlist_btn_display' => true,
-                        'whatsAppmodel' => $whatsAppmodel
+                        'whatsAppmodel' => $whatsAppmodel,
+                        'status'=> $data2['status']
                     ]);
                 else:
                     echo $this->render('/widgets/employer_applications/unclaim_org', [
