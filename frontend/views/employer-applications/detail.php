@@ -1392,14 +1392,13 @@ button.lc-item-video-menu {
         float: left;
         width: 33.334%;
         transition: .2s all linear;
-                display: flex;
+        display: flex;
         align-items: center;
         padding: 0 0 0 10px;
         min-height: 90px;
-        max-height: 90px;
     }
     .for-flex {
-        width: 100px;
+        width: 100%;
     }
     .job-single-sec .job-overview ul li i {
         left: 4px;
