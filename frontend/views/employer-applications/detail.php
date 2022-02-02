@@ -1371,6 +1371,10 @@ button.lc-item-video-menu {
         font-size: 13px;
         color: #545454;
         margin-top: 4px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
     .job-single-sec .job-overview ul {
         padding: 0;
