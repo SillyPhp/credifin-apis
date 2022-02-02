@@ -1407,6 +1407,7 @@ button.lc-item-video-menu {
     .job-single-sec .job-overview ul li i {
         left: 4px;
         min-width: 40px;
+        text-align: center;
     } 
     .job-overview > a {
         float: left;
