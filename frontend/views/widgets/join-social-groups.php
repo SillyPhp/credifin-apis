@@ -5,28 +5,15 @@ use yii\helpers\url;
 ?>
 
     <div class="s-main col-md-10 col-md-offset-1">
-        <div class="row">
-            <h3 class="heading-job-upd">Get the Latest Job Updates on </h3>
-            <div class="col-xs-6">
-                <a href="/social-community#WhatsApp" class="s-head wts" target="_blank"><i class="fab fa-whatsapp"></i></a>
-            </div>
-            <div class="col-xs-6">
-                <a href="/social-community#Telegram" class="s-head tell" target="_blank"><i class="fab fa-telegram-plane"></i></a>
-            </div>
-        </div>
+        <a href="/social-community#WhatsApp" class="s-head wts" target="_blank">get the latest Job updates on Whatsapp</a>
     </div>
 
     <div class="s-main col-md-10 col-md-offset-1">
+        <a href="/social-community#Telegram" class="s-head tell" target="_blank">get the latest Job updates on Telegram</a>
     </div>
 
 <?php
 $this->registercss('
-.heading-job-upd{
-    font-size: 16px;
-    text-align: left;
-    padding-left: 15px;
-    font-weight: 700;
-}
 .s-main {
 	padding: 0;
 	margin-top: 15px;
@@ -49,7 +36,7 @@ $this->registercss('
     border:2px solid #0088cc;
 }
 .s-head {
-    font-size: 22px;
+    font-size: 14px;
     font-family: roboto;
     margin: 0;
     color: #fff;
@@ -57,9 +44,9 @@ $this->registercss('
     font-weight: 500;
     width: 100%;
     display: inline-block;
-    padding: 0px;
+    padding: 10px;
     border-radius: 4px;
     border: 2px solid transparent;
-    transition: all .3s;
+    transition:all .3s; 
 }
 ');

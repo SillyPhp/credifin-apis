@@ -1304,7 +1304,7 @@ button.lc-item-video-menu {
         line-height: 21px;
         margin-bottom: 10px;
         font-size: 13px;
-        color: #000;
+        color: #888888;
     }
     .job-details > ul li::before {
         position: absolute;
@@ -1330,7 +1330,7 @@ button.lc-item-video-menu {
     .job-overview ul {
         float: left;
         width: 100%;
-        // border: 2px solid #e8ecec;
+        border: 2px solid #e8ecec;
         -webkit-border-radius: 8px;
         -moz-border-radius: 8px;
         -ms-border-radius: 8px;
@@ -1349,12 +1349,11 @@ button.lc-item-video-menu {
         min-height: 68px;
     }
     .job-overview ul > li i {
-        // position: absolute;
+        position: absolute;
         left: 23px;
         top: 5px;
         font-size: 30px;
         color: #4aa1e3;
-        margin-right: 10px;
     }
     .job-overview ul > li h3 {
         float: left;
@@ -1377,32 +1376,13 @@ button.lc-item-video-menu {
 
         margin-bottom: 20px;
     }
-    .job-single-sec .job-overview ul li:hover {
-        background: #00a0e3;
-        transform: scale(1.05);
-        position: relative;
-        z-index: 2;
-        color: #fff !important;
-        box-shadow: 0 0 7px 0px #00000060;
-    }
-    .job-single-sec .job-overview ul li:hover * {
-        color: #fff;
-    }
     .job-single-sec .job-overview ul li {
         float: left;
         width: 33.334%;
-        transition: .2s all linear;
-        display: flex;
-        align-items: center;
-        padding: 0 0 0 10px;
-        min-height: 90px;
-    }
-    .for-flex {
-        width: 100%;
+        padding-left: 50px;
     }
     .job-single-sec .job-overview ul li i {
-        left: 4px;
-        min-width: 40px;
+        left: 0;
     }
     .job-overview > a {
         float: left;
@@ -1924,11 +1904,7 @@ button.lc-item-video-menu {
        .job-overview ul li{
          width: 100% !important;
         }
-        .job-single-head2 ul{text-align: left;}
-        
-        .for-flex {
-            width: 100%;
-        }
+        .job-single-head2 ul{text-align:center;}
     }
     /* Profile icons css ends */
 ");
