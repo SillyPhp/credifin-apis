@@ -1379,7 +1379,7 @@ button.lc-item-video-menu {
     }
     .job-single-sec .job-overview ul li:hover {
         background: #00a0e3;
-        transform: scale(1.1);
+        transform: scale(1.05);
         position: relative;
         z-index: 2;
         color: #fff !important;
@@ -1391,15 +1391,14 @@ button.lc-item-video-menu {
     .job-single-sec .job-overview ul li {
         float: left;
         width: 33.334%;
-        /* padding-left: 50px; */
-        padding-top: 4px;
         transition: .2s all linear;
         display: flex;
-        padding: 5px;
+        padding: 0 0 0 10px;
         min-height: 80px;
+        align-items: center;
     }
     .for-flex {
-        width: 100px;
+        width: 100%;
     }
     .job-single-sec .job-overview ul li i {
         left: 4px;
@@ -1927,9 +1926,6 @@ button.lc-item-video-menu {
         }
         .job-single-head2 ul{text-align: left;}
         
-        .for-flex {
-            width: 100%;
-        }
     }
     /* Profile icons css ends */
 ");
