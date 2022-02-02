@@ -1337,7 +1337,7 @@ button.lc-item-video-menu {
         -o-border-radius: 8px;
         border-radius: 8px;
         margin: 0;
-        padding-left: 15px !important;
+//        padding-left: 15px !important;
     }
     .job-overview ul > li {
         float: left;
@@ -1379,7 +1379,7 @@ button.lc-item-video-menu {
     }
     .job-single-sec .job-overview ul li:hover {
         background: #00a0e3;
-        transform: scale(1.1);
+        transform: scale(1.05);
         position: relative;
         z-index: 2;
         color: #fff !important;
@@ -1391,12 +1391,11 @@ button.lc-item-video-menu {
     .job-single-sec .job-overview ul li {
         float: left;
         width: 33.334%;
-        /* padding-left: 50px; */
-        padding-top: 4px;
         transition: .2s all linear;
         display: flex;
-        padding: 5px;
-        min-height: 80px;
+        align-items: center;
+        padding: 0 0 0 10px;
+        min-height: 85px;
     }
     .for-flex {
         width: 100px;
