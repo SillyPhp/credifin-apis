@@ -1086,7 +1086,7 @@ class ApplicationForm extends Model
                 WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NUll THEN CONCAT("Minimum ",a.minimum_exp," Years Experience") 
                 WHEN a.minimum_exp IS NUll AND a.maximum_exp IS NOT NUll THEN CONCAT("Maximum ",a.maximum_exp," Years Experience") 
                 ELSE "No Experience" 
-                END) as experience', 'b.*','CONCAT("/","' . $t . '","/", a.slug) link'])
+                END) as experience', 'b.*','CONCAT("/","' . $t . '","/", a.slug) link','a.status'])
             ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->onCondition(['c.is_deleted' => 0]);

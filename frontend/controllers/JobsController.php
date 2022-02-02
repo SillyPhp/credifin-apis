@@ -574,7 +574,7 @@ class JobsController extends Controller
                 'slug' => $eaidk,
                 'is_deleted' => 0,
                 'application_for' => 1,
-                'status' => 'ACTIVE'
+//                'status' => 'ACTIVE'
             ])
             ->one();
         if (empty($application_details)) {

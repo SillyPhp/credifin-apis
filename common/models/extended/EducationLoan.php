@@ -2,6 +2,7 @@
 
 namespace common\models\extended;
 
+use Yii;
 use common\models\LoanApplications;
 use common\models\Users;
 
@@ -16,7 +17,11 @@ class EducationLoan  {
        if ($id) {
            $get = LoanApplications::findOne(['loan_app_enc_id' => $data['loan_app_enc_id']]);
            $get->created_by = $id->user_enc_id;
-           $get->save();
+           if ($get->save()){
+               return true;
+           }else{
+               return false;
+           }
        } else {
            $params = [];
            $params['id'] = $data['loan_app_enc_id'];
@@ -27,7 +32,11 @@ class EducationLoan  {
            if ($id) {
                $get = LoanApplications::findOne(['loan_app_enc_id' => $data['loan_app_enc_id']]);
                $get->created_by = $id['id'];
-               $get->save();
+               if ($get->save()){
+                   return true;
+               }else{
+                   return false;
+               }
            }
        }
    }
