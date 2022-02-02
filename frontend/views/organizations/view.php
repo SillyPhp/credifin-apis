@@ -1477,7 +1477,7 @@ function getPastCards(type = 'Jobs',container = '.pastblogbox', url = window.loc
             }else{
                 if(container_id){
                     if($('#jobs-cards-past').hasClass('hidden') || $('#internships-cards-past').hasClass('hidden')){
-                        ('#grand-parent-past').addClass('hidden');
+                        $('#grand-parent-past').addClass('hidden');
                     }
                     $(container_id).addClass('hidden');
                 }
