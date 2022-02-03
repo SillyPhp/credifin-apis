@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use common\models\Industries;
 use yii\web\Response;
 use Yii;
 use yii\web\Controller;
@@ -61,11 +62,12 @@ class TemplatesController extends Controller
     {
         $application = \common\models\ApplicationTemplates::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name','z1.icon_png', 'g.designation', 'z1.name as parent_name'])
+            ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name','z1.icon_png', 'g.designation', 'z1.name as parent_name','pref.industry industy'])
             ->joinWith(['title0 z' => function ($z) {
                 $z->joinWith(['categoryEnc zz']);
                 $z->joinWith(['parentEnc z1']);
-            }], false)
+            }],false)
+            ->joinWith(['templateIndustryEnc pref'])
             ->joinWith(['applicationTypeEnc f'], false)
             ->joinWith(['designationEnc g'], false)
             ->where(['f.name' => $type, 'a.is_deleted' => 0, 'a.status' => "Active"])
@@ -77,7 +79,9 @@ class TemplatesController extends Controller
             ])
             ->asArray()
             ->all();
+            // $indusry = Industries::find()->andWhere(['industry_enc_id'=>Yii::$app->user->identity->organization->industry_enc_id])->asArray()->one();
 
+print_r($application);die();
         return $application;
     }
 }
