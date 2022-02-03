@@ -8,12 +8,11 @@ use yii\helpers\Url;
                 <a href="/blog/{{slug}}">
                     <div class="col-md-5">
                         <div class="tp-icon">
-                            <img src="{{image}}" alt="{{title}}">
+                            <img class="load-later" data-src="{{image}}" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="{{title}}">
                         </div>
                     </div>
                     <div class="col-md-7 no-padd">
                         <div class="tp-heading">{{title}}</div>
-                        <!--                        <div class="tp-date">{{name}}</div>-->
                     </div>
                 </a>
             </div>
@@ -106,6 +105,7 @@ $.ajax({
         }
     }
 });
+$('.load-later').Lazy();
 JS;
 $this->registerJs($script);
 }
