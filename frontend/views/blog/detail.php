@@ -187,6 +187,9 @@ $this->params['seo_tags'] = [
 
 <?php
 $this->registerCss('
+.blog-division img{
+    height: auto !important;
+}
 strong{
     color: unset;
 }
