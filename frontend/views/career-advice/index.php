@@ -228,7 +228,7 @@ $careerAdviceCategories = [
                                             <div class="whats-new-box">
                                                 <div class="wn-box-icon">
                                                     <a href="<?= Url::to('/blog/' . $post['slug']); ?>">
-                                                        <img class="load-later" data-src="<?= $image; ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="<?= $post['title']; ?>"/>
+                                                        <img src="<?= $image; ?>" alt="<?= $post['title']; ?>"/>
                                                     </a>
                                                 </div>
                                                 <div class="wn-box-details">

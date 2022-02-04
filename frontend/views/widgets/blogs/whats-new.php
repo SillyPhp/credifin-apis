@@ -14,7 +14,7 @@ if(!$category){
         <div class="whats-new-box">
             <div class="wn-box-icon">
                 <a href="/blog/{{slug}}">
-                    <img class="load-later" data-src="{{image}}" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="{{title}}">
+                    <img src="{{image}}" alt="{{title}}">
                 </a>
             </div>
             <div class="wn-box-details">
@@ -131,7 +131,6 @@ $.ajax({
         }
     }
 });
-$('.load-later').Lazy();
 JS;
 $this->registerJs($script);
 }

@@ -83,6 +83,7 @@ $this->registercss('
 	padding: 10px;
 	transition: all .3s;
 	align-items:center;
+	height:80px;
 }
 .news-bx:hover {
 	background-color: #fff;
