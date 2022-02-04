@@ -36,46 +36,6 @@ class TestCacheController extends Controller
         }
     }
 
-
-    public function actionImages()
-    {
-        $canvas = null;
-        $profile = 'others.png';
-        $company_logo = null;
-        $application_enc_id = 'test';
-        $job_title = 'Shift Supervisor Management Trainee';
-        $company_name = 'CVS Health';
-        $locations = 'Ludhiana, Jalandhar';
-        $content = [
-            'job_title' => $job_title,
-            'company_name' => $company_name,
-            'canvas' => (($canvas) ? false : true),
-            'bg_icon' => $profile,
-            'logo' => (($company_logo) ? $company_logo : null),
-            'initial_color' => RandomColors::one(),
-            'location' => $locations,
-            'app_id' => $application_enc_id,
-            'permissionKey' => Yii::$app->params->EmpowerYouth->permissionKey
-        ];
-        $story= \frontend\models\script\StoriesImageScript::widget(['content' => $content]);
-        echo $story;
-    }
-
-    public function actionSkill(){
-        $data = SkillsUpPostAssignedBlogs::find()
-            ->alias('a')
-            ->select(['b.is_visible','b.post_enc_id'])
-            ->joinWith(['blogPostEnc b'],false,'INNER JOIN')
-            ->asArray()->all();
-        $k = 0;
-        foreach ($data as $d){
-            $update = Posts::findOne(['post_enc_id'=>$d['post_enc_id']]);
-            $update->is_visible = 0;
-            $update->update();
-            $k++;
-        }
-        return $k;
-    }
         public function actionBulkEmail($start=0,$end=0){
             $user_type = UserTypes::findOne([
                 'user_type' => 'Individual',
@@ -152,21 +112,6 @@ class TestCacheController extends Controller
 
         $username = $part1. str_shuffle($part2). $part3; //str_shuffle to randomly shuffle all characters
         return $username;
-    }
-
-    private function educationLoanRegister($params){
-        Yii::$app->mailer->htmlLayout = 'layouts/email';
-        $mail = Yii::$app->mailer->compose(
-            ['html' => 'education-loan-register'],['data'=>$params]
-        )
-            ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
-            ->setTo([$params['email'] => $params['name']])
-            ->setSubject('Your Loan Application Status');
-        if (!$mail->send()) {
-            return false;
-        }else{
-            echo 1;
-        }
     }
 
     public function actionApplicationStatusEmail(){
