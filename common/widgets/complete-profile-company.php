@@ -648,6 +648,14 @@ body.modal-open{
 ');
 
 $script = <<< JS
+function setCookie() {
+    let date = new Date();
+    date.setTime(date.getTime() + (24 * 60 * 60 * 1000));
+    let maxAge = 24 * 60 * 60 * 1000;
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = "CompanyProfile=CompanyProfile; expires="+expires+"; max-age="+maxAge+"; path=/";
+}
+
 let industries2 = '$industries';
 
 var industries = new Bloodhound({

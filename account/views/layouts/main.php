@@ -399,6 +399,11 @@ $this->beginPage();
     if(!Yii::$app->user->isGuest && Yii::$app->user->identity->organization){
         $this->registerJs("
             function completeCompanyProfile(){
+                let hasCookie = document.cookie;
+                if (document.cookie.indexOf('CompanyProfile') != -1) {
+                    return false; 
+                }
+                
                 $.ajax({
                     url: '/account/dashboard/complete-company-profile',
                     method: 'POST',
