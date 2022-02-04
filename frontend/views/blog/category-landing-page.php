@@ -41,7 +41,7 @@ use yii\helpers\Url;
                     <div class="whats-new-box">
                         <div class="wn-box-icon">
                             <a href="<?= Url::to('/blog/' . $post['slug']); ?>">
-                                <img src="<?= $image; ?>" alt="<?= $post['title']; ?>"/>
+                                <img class="load-later" data-src="<?= $image; ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="<?= $post['title']; ?>"/>
                             </a>
                         </div>
                         <div class="wn-box-details">
@@ -140,3 +140,7 @@ $this->registerCss('
     }
 } 
 ');
+$script = <<<JS
+$('.load-later').Lazy();
+JS;
+$this->registerJs($script);

@@ -5,16 +5,12 @@ use yii\helpers\Url;
         {{#.}}
         <div class="what-popular-box">
             <div class="wp-box-icon">
-                <a href="/blog/{{slug}}"><img src="{{image}}" alt="{{title}}"></a>
-<!--                <div class="middle">-->
-<!--                    <a href="" class="">-->
-<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/blog/play-button.png') ?><!--">-->
-<!--                    </a>-->
-<!--                </div>-->
+                <a href="/blog/{{slug}}">
+                    <img class="load-later" data-src="{{image}}" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="{{title}}">
+                </a>
             </div>
             <div class="wn-box-details">
                 <a href="/blog/{{slug}}">
-<!--                    <div class="wn-box-cat">{{name}}</div>-->
                     <div class="wn-box-title">{{title}}</div>
                 </a>
                 <div class="wp-box-des">
@@ -80,6 +76,7 @@ $.ajax({
         }
     }
 });
+$('.load-later').Lazy();
 JS;
 $this->registerJs($script);
 }
