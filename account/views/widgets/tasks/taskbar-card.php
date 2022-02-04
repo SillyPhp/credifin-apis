@@ -358,8 +358,8 @@ ul.widget-todo-list li .todo-actions .todo-remove {
 ");
 $script = <<< JS
     $(document).on('click', '.edit-org-logo', function() {
-        $("#loadData").modal('show');
-        $('.load-content').load('/account/dashboard/update-profile');
+        // $("#loadData").modal('show');
+        // $('.load-content').load('/account/dashboard/update-profile');
     });
     var ps = new PerfectScrollbar('.widget-todo-list');
     var page = 0;

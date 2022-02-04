@@ -1496,5 +1496,34 @@ class DashboardController extends Controller
         }
     }
 
+    public function actionCompleteCompanyProfile(){
+        $industries = \common\models\Industries::find()
+            ->select(['industry_enc_id value', 'industry text'])
+            ->orderBy(['industry' => SORT_ASC])
+            ->asArray()
+            ->all();
 
+        $companyInfo = Organizations::find()
+            ->select(['organization_enc_id','logo', 'logo_location', 'tag_line', 'description', 'mission',
+                'vision', 'website', 'industry_enc_id',
+                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
+            ->where([ 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
+            ->asArray()
+            ->one();
+
+        $ci_complete = 1;
+        foreach($companyInfo as $ci){
+            if($ci == '' || $ci == null){
+                $ci_complete = 0;
+            }
+        }
+
+        if($ci_complete == 1){
+            return false;
+        }
+        return $this->renderAjax('@common/widgets/complete-profile-company',[
+                'industries'=>$industries,
+                'companyInfo'=>$companyInfo
+        ]);
+    }
 }
