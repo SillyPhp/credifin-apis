@@ -258,11 +258,11 @@ $round_avg = round($overall_avg);
                                             <div class="about-det">
                                                 <?php
                                                 $countVacancies = 0;
-                                                if(!empty($count_opportunities)){
-                                                    foreach($count_opportunities as $c){
-                                                        if(!empty($c['positions'])){
+                                                if (!empty($count_opportunities)) {
+                                                    foreach ($count_opportunities as $c) {
+                                                        if (!empty($c['positions'])) {
                                                             $countVacancies += $c['positions'];
-                                                        } else if(!empty($c['positions2'])){
+                                                        } else if (!empty($c['positions2'])) {
                                                             $countVacancies += $c['positions2'];
                                                         }
                                                     }
@@ -366,39 +366,64 @@ $round_avg = round($overall_avg);
                     </div>
 
                     <div class="av-jobs-intern" id="grand-parent-opportunities">
-                            <div class="row">
-                                <div class="heading-style">Available Opportunities</div>
-                                <div class="divider"></div>
+                        <div class="row">
+                            <div class="heading-style">Available Opportunities</div>
+                            <div class="divider"></div>
+                        </div>
+                        <div id="jobs-cards-main" class="row">
+                            <div class="heading-style2">Jobs
+                                <div class="pull-right">
+                                    <a href="/jobs/list?slug=<?= $organization['slug'] ?>"
+                                       class="write-review">View
+                                        All</a>
+                                </div>
                             </div>
-                            <div id="jobs-cards-main" class="row">
-                                <div class="heading-style2">Jobs
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="blogbox"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="internships-cards-main" class="row">
+                            <div class="internships-block">
+                                <div class="heading-style2">Internships
                                     <div class="pull-right">
-                                        <a href="/jobs/list?slug=<?= $organization['slug'] ?>"
-                                           class="write-review">View
-                                            All</a>
+                                        <a href="/internships/list?slug=<?= $organization['slug'] ?>"
+                                           class="write-review">View All</a>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="blogbox"></div>
+                                        <div class="internships_main"></div>
                                     </div>
                                 </div>
                             </div>
-                            <div id="internships-cards-main" class="row">
-                                <div class="internships-block">
-                                    <div class="heading-style2">Internships
-                                        <div class="pull-right">
-                                            <a href="/internships/list?slug=<?= $organization['slug'] ?>"
-                                               class="write-review">View All</a>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="internships_main"></div>
-                                        </div>
+                        </div>
+                    </div>
+
+                    <div class="past-jobs-intern" id="grand-parent-past">
+                        <div class="row">
+                            <div class="heading-style">Past Opportunities</div>
+                            <div class="divider"></div>
+                        </div>
+                        <div id="jobs-cards-past" class="row">
+                            <div class="heading-style2">Jobs</div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="pastblogbox"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="internships-cards-past" class="row">
+                            <div class="internships-block">
+                                <div class="heading-style2">Internships</div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="pastinternships_main"></div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
                     </div>
 
                     <div class="set-mar">
@@ -644,6 +669,9 @@ echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
 ]);
 $this->registerCss('
+.past-jobs-intern {
+    margin-top: 30px;
+}
 .imm1 img, .imm2 img {
     width: 55%;
 }
@@ -1421,6 +1449,42 @@ $(document).ready(function() {
         return false;
     });
 });
+
+function getPastCards(type = 'Jobs',container = '.pastblogbox', url = window.location.pathname, container_id = null) {
+    let data = {};
+    page = 1;
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.append("page", page);
+    for(var pair of searchParams.entries()) {
+        data[pair[0]] = pair[1];                                                                                                                                                                                                              ; 
+    }
+    
+    data['type'] = type;
+    $.ajax({
+        method: "POST",
+        url : url,
+        data: data,
+        success: function(response) {
+            if(response.status === 200) {
+                renderCards(response.cards, container);
+                utilities.initials();
+                if(container_id){
+                    $(container_id).find('.ji-apply').css('pointer-events',"none");
+                    $(container_id).find('.application-card-add').css('pointer-events',"none");
+                    $(container_id).find('.ji-apply').attr('data-app',"");
+                    $(container_id).find('.ji-apply').attr('data-org',"");
+                }
+            }else{
+                if(container_id){
+                    if($('#jobs-cards-past').hasClass('hidden') || $('#internships-cards-past').hasClass('hidden')){
+                        $('#grand-parent-past').addClass('hidden');
+                    }
+                    $(container_id).addClass('hidden');
+                }
+            }
+        }
+    })
+}
 JS;
 $this->registerJs("
 return_message = true;
@@ -1430,6 +1494,8 @@ grand_parent = '#grand-parent-opportunities';
 loader = false;
 getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
+getPastCards('Jobs','.pastblogbox','/organizations/organization-past-opportunities/?org=" . $organization['slug'] . "','#jobs-cards-past');
+getPastCards('Internships','.pastinternships_main','/organizations/organization-past-opportunities/?org=" . $organization['slug'] . "','#internships-cards-past');
 addToReviewList();
 ");
 $this->registerJs($script);

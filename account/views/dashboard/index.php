@@ -46,7 +46,10 @@ endif;
             </div>
         </section> -->
 
-        <?= $this->render('@common/widgets/career-page-section') ?>
+        <?php if (Yii::$app->user->identity->organization->organization_enc_id) { ?>
+            <?= $this->render('@common/widgets/career-page-section') ?>    
+        <?php } ?>
+        
         
         <?php if (Yii::$app->user->identity->organization->organization_enc_id) { ?>
             <?= $this->render('/widgets/safety-widgets', ['scriptModel' => $scriptModel]) ?>
@@ -151,22 +154,7 @@ endif;
                     ]);
                 }
             ?>
-            <?php
-            if ($loanApplication && Yii::$app->user->identity->type->user_type == 'Individual') {
-                echo $this->render('/widgets/education-loan/loan-detail-individual-dashboard', [
-                    'loanApplication' => $loanApplication,
-                ]);
-            }
-            ?>
-            <?php
-            if($loanLoginFee){
-                foreach ($loanLoginFee as $loginFee){
-                    echo $this->render('/widgets/login-fee-due', [
-                        'loginFee' => $loginFee,
-                    ]);
-                }
-            }
-            ?>
+
             <?php
                 if($registeredQuizzes){
                     echo $this->render('/widgets/user-registered-quiz', [

@@ -270,11 +270,17 @@ class ApplicationCards
             ->leftJoin(ApplicationSkills::tableName() . 'as sy', 'sy.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
             ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = sy.skill_enc_id')
-            ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['j.name' => 'Jobs','a.is_deleted'=>0])
             ->andWhere(['a.application_for' => 1])
             //->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
             ->groupBy(['a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
+
+        if(isset($options['status']) && $options['status'] == 'Closed'){
+            $cards1->andWhere(['a.status' => 'Closed']);
+        }else{
+            $cards1->andWhere(['a.status' => 'Active']);
+        }
 
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
@@ -342,12 +348,17 @@ class ApplicationCards
             ->leftJoin(ApplicationSkills::tableName() . 'as sy', 'sy.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
             ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = sy.skill_enc_id')
-            ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['j.name' => 'Jobs','a.is_deleted' => 0])
             ->andWhere(['a.application_for' => 1])
             // ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->groupBy(['a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
+        if(isset($options['status']) && $options['status'] == 'Closed'){
+            $cards2->andWhere(['a.status' => 'Closed']);
+        }else{
+            $cards2->andWhere(['a.status' => 'Active']);
+        }
 
         if (!empty($profiles)) {
             $cards1->andWhere([
@@ -705,10 +716,16 @@ class ApplicationCards
             ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
             ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['j.name' => 'Internships','a.is_deleted'=> 0])
             ->andWhere(['a.application_for' => 1])
             ->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
+
+        if(isset($options['status']) && $options['status'] == 'Closed'){
+            $cards1->andWhere(['a.status' => 'Closed']);
+        }else{
+            $cards1->andWhere(['a.status' => 'Active']);
+        }
 
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
@@ -747,10 +764,16 @@ class ApplicationCards
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
-            ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['j.name' => 'Internships','a.is_deleted'=> 0])
             ->andWhere(['a.application_for' => 1])
             ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
+
+        if(isset($options['status']) && $options['status'] == 'Closed'){
+            $cards2->andWhere(['a.status' => 'Closed']);
+        }else{
+            $cards2->andWhere(['a.status' => 'Active']);
+        }
 
         if (isset($options['company'])) {
             $cards1->andWhere([

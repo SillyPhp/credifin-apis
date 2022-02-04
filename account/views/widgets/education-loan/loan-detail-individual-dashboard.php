@@ -36,11 +36,13 @@ use yii\helpers\Url;
                             <div class="vendorImg"><img src="<?= $loanApplication['organization_logo'] ?>"></div>
                             <div class="vendorname"><?= $loanApplication['name'] ?></div>
                         </div>
+                        <?php if($loanApplication['status'] != 5){ ?>
                         <div class="statsBox">
-                            <p class="mb0">Loan Profile</p>
-                            <a href="/account/education-loans/candidate-dashboard/<?= $loanApplication['loan_application_enc_id'] ?>">Complete
+                            <p class="mb0"><Loan></Loan> Profile</p>
+                            <a href="/account/education-loans/candidate-dashboard/<?= $loanApplication['loan_application_enc_id'] ?>" target="_blank">Complete
                                 Profile</a>
                         </div>
+                        <?php }?>
                         <!--                        <div class="statsBox">-->
                         <!--                            <p class="mb0">Loan Structure</p>-->
                         <!--                            <a href="education-loans/emi-details">View Structure</a>-->
@@ -338,7 +340,7 @@ $this->registerCss('
 .new-message-box-success {
     background: #eeeeee;
     padding: 3px;
-    margin: 10px 0;
+    margin: 10px 0 0 20px;
 }
 
 .tip-icon-success {

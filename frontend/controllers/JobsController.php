@@ -10,6 +10,7 @@ use common\models\ApplicationSkills;
 use common\models\ApplicationTemplates;
 use common\models\ApplicationTypes;
 use common\models\ApplicationUnclaimOptions;
+use common\models\AppliedApplicationLocations;
 use common\models\Cities;
 use common\models\CollegeCourses;
 use common\models\Courses;
@@ -27,6 +28,10 @@ use common\models\UnclaimOrganizationLocations;
 use common\models\UsaDepartments;
 use common\models\Usernames;
 use common\models\UserPreferences;
+use common\models\UserPreferredIndustries;
+use common\models\UserPreferredJobProfile;
+use common\models\UserPreferredLocations;
+use common\models\UserPreferredSkills;
 use common\models\UserResume;
 use common\models\UserSkills;
 use frontend\models\applications\JobApplied;
@@ -167,7 +172,6 @@ class JobsController extends Controller
                 $cid = Yii::$app->request->post("org_id");
                 $res = $model->saveValues();
                 if ($res['status']) {
-//                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id, $model->id, $company_id = $cid, $unclaim_company_id = null, $type = $application_typ, $res['aid']);
                     return $res;
                 } else {
                     return false;
@@ -179,7 +183,6 @@ class JobsController extends Controller
                     $cid = Yii::$app->request->post("org_id");
                     $res = $model->upload();
                     if ($res['status']) {
-//                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id, $model->id, $company_id = $cid, $unclaim_company_id = null, $type = $application_typ, $res['aid']);
                         return $res;
                     } else {
                         return false;
@@ -571,7 +574,7 @@ class JobsController extends Controller
                 'slug' => $eaidk,
                 'is_deleted' => 0,
                 'application_for' => 1,
-                'status' => 'ACTIVE'
+//                'status' => 'ACTIVE'
             ])
             ->one();
         if (empty($application_details)) {
@@ -684,6 +687,212 @@ class JobsController extends Controller
             'whatsAppmodel' => $whatsAppForm,
             'similar_companies' => $cards['cards']
         ]);
+    }
+
+    public function actionSavePreferenceAccordingToApplication(){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            $eaidk = Yii::$app->request->post("eaidk");
+            $type = Yii::$app->request->post("type");
+            $appliedId = Yii::$app->request->post("appliedId");
+            $application_details = EmployerApplications::find()
+                ->alias('a')
+                ->select(['a.*', 'c.category_enc_id'])
+                ->joinWith(['title b' => function ($b) {
+                    $b->joinWith(['parentEnc c']);
+                }], false)
+                ->where([
+                    'a.application_enc_id' => $eaidk,
+                    'a.is_deleted' => 0,
+                    'a.application_for' => 1,
+                    'a.status' => 'ACTIVE'
+                ])
+                ->asArray()
+                ->one();
+            if (empty($application_details)) {
+                throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+            }
+            $appliedLocations = AppliedApplicationLocations::find()
+                ->select(['city_enc_id'])
+                ->where(['applied_application_enc_id' => $appliedId])
+                ->asArray()
+                ->all();
+            $user_preference = UserPreferences::findOne(['created_by' => Yii::$app->user->identity->user_enc_id, 'assigned_to' => $type]);
+
+//        $user_preference->type = $type;
+//        $user_preference->timings_from = date('H:i:s', strtotime($this->from));
+//        $user_preference->timings_to = date('H:i:s', strtotime($this->to));
+//        $min_max = explode(';', $this->salary_range);
+//        $user_preference->min_expected_salary = $min_max[0];
+//        $user_preference->max_expected_salary = $min_max[1];
+//        $user_preference->experience = $application_details->experience;
+//        $user_preference->working_days = json_encode($this->weekdays);
+//        $user_preference->sat_frequency = $this->weekoptsat;
+//        $user_preference->sun_frequency = $this->weekoptsund;
+            if($user_preference) {
+                $user_preference->last_updated_on = date('Y-m-d H:i:s');
+                $user_preference->last_updated_by = Yii::$app->user->identity->user_enc_id;
+                if (!$user_preference->update()) {
+                    return false;
+                }
+            } else {
+                $user_preference = new UserPreferences();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $user_preference->preference_enc_id = $utilitiesModel->encrypt();
+                $user_preference->assigned_to = $type;
+                $user_preference->created_on = date('Y-m-d h:i:s');
+                $user_preference->created_by = Yii::$app->user->identity->user_enc_id;
+                if (!$user_preference->save()) {
+                    return false;
+                }
+            }
+
+                //update Location.
+                $already_saved_location = UserPreferredLocations::find()
+                    ->select(['city_enc_id'])
+                    ->where(['preference_enc_id' => $user_preference['preference_enc_id']])
+                    ->andWhere(['is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+
+                $already_saved_locations = [];
+                foreach ($already_saved_location as $loc) {
+                    array_push($already_saved_locations, $loc['city_enc_id']);
+                }
+
+                $new_location_to_update = [];
+                foreach ($appliedLocations as $locn) {
+                    array_push($new_location_to_update, $locn['city_enc_id']);
+                }
+
+                $to_be_added_location = array_diff($new_location_to_update, $already_saved_locations);
+
+                if (count($to_be_added_location) > 0) {
+                    foreach ($to_be_added_location as $loc) {
+
+                        $userpreferredlocationsModel = new UserPreferredLocations();
+                        $utilitiesModel = new Utilities();
+                        $userpreferredlocationsModel->preference_enc_id = $user_preference['preference_enc_id'];
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $userpreferredlocationsModel->preferred_location_enc_id = $utilitiesModel->encrypt();
+                        $userpreferredlocationsModel->city_enc_id = $loc;
+                        $userpreferredlocationsModel->created_on = date('Y-m-d h:i:s');
+                        $userpreferredlocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                        if (!$userpreferredlocationsModel->save()) {
+                            return false;
+                        }
+                    }
+                }
+
+
+                //update Industry.
+                $already_saved_industrry = UserPreferredIndustries::find()
+                    ->where(['preference_enc_id' => $user_preference['preference_enc_id']])
+                    ->andWhere(['industry_enc_id' => $application_details['preferred_industry']])
+                    ->andWhere(['is_deleted' => 0])
+                    ->exists();
+
+
+                if (!$already_saved_industrry) {
+                    $UserpreferredindustriesModel = new UserPreferredIndustries();
+                    $utilitiesModel = new Utilities();
+                    $UserpreferredindustriesModel->preference_enc_id = $user_preference['preference_enc_id'];
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $UserpreferredindustriesModel->preferred_industry_enc_id = $utilitiesModel->encrypt();
+                    $UserpreferredindustriesModel->industry_enc_id = $application_details['preferred_industry'];
+                    $UserpreferredindustriesModel->created_on = date('Y-m-d h:i:s');
+                    $UserpreferredindustriesModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$UserpreferredindustriesModel->save()) {
+                        return false;
+                    }
+                } else {
+                    $to_delete_indus = UserPreferredIndustries::find()
+                        ->where(['industry_enc_id' => $application_details['preferred_industry'], 'preference_enc_id' => $user_preference['preference_enc_id']])
+                        ->andWhere(['is_deleted' => 1])
+                        ->one();
+                    if ($to_delete_indus) {
+                        $to_delete_indus->is_deleted = 0;
+                        $to_delete_indus->update();
+                    }
+                }
+
+                //update Skills.
+//            $user_skill = UserPreferredSkills::find()
+//                ->select(['skill_enc_id'])
+//                ->where(['preference_enc_id' => $user_preference['preference_enc_id']])
+//                ->andWhere(['is_deleted' => 0])
+//                ->asArray()
+//                ->all();
+//
+//            $s_name = [];
+//            foreach ($user_skill as $skill_id){
+//
+//                $skill_name = Skills::find()
+//                    ->select(['skill'])
+//                    ->where(['skill_enc_id'=>$skill_id])
+//                    ->asArray()
+//                    ->one();
+//
+//                array_push($s_name,$skill_name['skill']);
+//            }
+//
+//            $new_userskill_to_update = $this->key_skills;
+//
+//
+//            $userskill = [];
+//            foreach ($user_skill as $skill){
+//                array_push($userskill,$skill['skill_enc_id']);
+//            }
+//
+//            $to_be_added_userskill = array_diff($new_userskill_to_update, $s_name);
+//            $to_be_deleted_userskill = array_diff($s_name, $new_userskill_to_update);
+//
+//            if(count($to_be_deleted_userskill) > 0) {
+//                foreach ($to_be_deleted_userskill as $del) {
+//                    $this->delSkills($del,$user_preference['preference_enc_id']);
+//                }
+//            }
+//
+//            if(count($to_be_added_userskill) > 0) {
+//                foreach ($to_be_added_userskill as $skill) {
+//                    $this->setSkills($skill,$user_preference['preference_enc_id']);
+//                }
+//            }
+//
+                //update Job Profile.
+                $user_job_profile = UserPreferredJobProfile::find()
+                    ->where(['preference_enc_id' => $user_preference['preference_enc_id']])
+                    ->andWhere(['is_deleted' => 0])
+                    ->andWhere(['job_profile_enc_id' => $application_details['category_enc_id']])
+                    ->exists();
+
+                if (!$user_job_profile) {
+                    $userpreferredJobsModel = new UserPreferredJobProfile();
+                    $utilitiesModel = new Utilities();
+                    $userpreferredJobsModel->preference_enc_id = $user_preference->preference_enc_id;
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $userpreferredJobsModel->preferred_job_profile_enc_id = $utilitiesModel->encrypt();
+                    $userpreferredJobsModel->job_profile_enc_id = $application_details['category_enc_id'];
+                    $userpreferredJobsModel->created_on = date('Y-m-d h:i:s');
+                    $userpreferredJobsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$userpreferredJobsModel->save()) {
+                        return false;
+                    }
+                } else {
+                    $to_delete_userjob = UserPreferredJobProfile::find()
+                        ->where(['job_profile_enc_id' => $application_details['category_enc_id'], 'preference_enc_id' => $user_preference['preference_enc_id']])
+                        ->andWhere(['is_deleted' => 1])
+                        ->one();
+                    if ($to_delete_userjob) {
+                        $to_delete_userjob->is_deleted = 0;
+                        $to_delete_userjob->update();
+                    }
+                }
+                return true;
+
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
     }
 
     public function actionFetchSkills($q)

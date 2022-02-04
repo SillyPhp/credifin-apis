@@ -364,6 +364,14 @@ $script = <<< JS
             success: function (data) {
                 var res = JSON.parse(data);
                 $('#appliedAppId').val(res.aid);
+                $.ajax({
+                    url: '/jobs/save-preference-according-to-application',
+                    method: 'POST',
+                    data: {eaidk:$('#application_id').val(), type:application_type, appliedId:res.aid},
+                    success: function(response){
+                        console.log(response);
+                    }
+                })
                 if (res.status == true && $('#question_id').val() == 1) {
                     // $('#resume_modal').modal('show');
                     applied();

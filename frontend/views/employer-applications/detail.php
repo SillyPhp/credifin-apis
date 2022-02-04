@@ -225,7 +225,8 @@ $this->render('/widgets/employer_applications/top-banner', [
     'job_title' => (($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name'])),
     'icon_png' => (($data2['icon_png']) ? ($data2['icon_png']) : ($data1['icon_png'])),
     'shortlist' => $shortlist,
-    'shortlist_btn_display' => true
+    'shortlist_btn_display' => true,
+    'status' => (($data2['status']) ? ($data2['status']) : 'active'),
 ]);
 ?>
 <section>
@@ -356,7 +357,8 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'application_slug' => $application_details["slug"],
                         'shortlist' => $shortlist,
                         'shortlist_btn_display' => true,
-                        'whatsAppmodel' => $whatsAppmodel
+                        'whatsAppmodel' => $whatsAppmodel,
+                        'status'=> $data2['status']
                     ]);
                 else:
                     echo $this->render('/widgets/employer_applications/unclaim_org', [
@@ -1302,7 +1304,7 @@ button.lc-item-video-menu {
         line-height: 21px;
         margin-bottom: 10px;
         font-size: 13px;
-        color: #888888;
+        color: #000;
     }
     .job-details > ul li::before {
         position: absolute;
@@ -1328,14 +1330,14 @@ button.lc-item-video-menu {
     .job-overview ul {
         float: left;
         width: 100%;
-        border: 2px solid #e8ecec;
+        // border: 2px solid #e8ecec;
         -webkit-border-radius: 8px;
         -moz-border-radius: 8px;
         -ms-border-radius: 8px;
         -o-border-radius: 8px;
         border-radius: 8px;
         margin: 0;
-        padding-left: 15px !important;
+//        padding-left: 15px !important;
     }
     .job-overview ul > li {
         float: left;
@@ -1347,11 +1349,12 @@ button.lc-item-video-menu {
         min-height: 68px;
     }
     .job-overview ul > li i {
-        position: absolute;
+        // position: absolute;
         left: 23px;
         top: 5px;
         font-size: 30px;
         color: #4aa1e3;
+        margin-right: 10px;
     }
     .job-overview ul > li h3 {
         float: left;
@@ -1368,20 +1371,44 @@ button.lc-item-video-menu {
         font-size: 13px;
         color: #545454;
         margin-top: 4px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
     .job-single-sec .job-overview ul {
         padding: 0;
 
         margin-bottom: 20px;
     }
+    .job-single-sec .job-overview ul li:hover {
+        background: #00a0e3;
+        transform: scale(1.05);
+        position: relative;
+        z-index: 2;
+        color: #fff !important;
+        box-shadow: 0 0 7px 0px #00000060;
+    }
+    .job-single-sec .job-overview ul li:hover * {
+        color: #fff;
+    }
     .job-single-sec .job-overview ul li {
         float: left;
         width: 33.334%;
-        padding-left: 50px;
+        transition: .2s all linear;
+        display: flex;
+        padding: 0 0 0 10px;
+        min-height: 80px;
+        align-items: center;
+    }
+    .for-flex {
+        width: 100%;
     }
     .job-single-sec .job-overview ul li i {
-        left: 0;
-    }
+        left: 4px;
+        min-width: 40px;
+        text-align: center;
+    } 
     .job-overview > a {
         float: left;
         width: 100%;
@@ -1902,7 +1929,8 @@ button.lc-item-video-menu {
        .job-overview ul li{
          width: 100% !important;
         }
-        .job-single-head2 ul{text-align:center;}
+        .job-single-head2 ul{text-align: left;}
+        
     }
     /* Profile icons css ends */
 ");

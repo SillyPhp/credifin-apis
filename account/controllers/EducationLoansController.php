@@ -557,7 +557,7 @@ class EducationLoansController extends Controller
     {
         $loan_application = LoanApplications::find()
             ->alias('a')
-            ->select(['a.loan_app_enc_id','a.applicant_name','a.amount loan_amount','b.payment_status','a.loan_type'])
+            ->select(['a.loan_app_enc_id','a.applicant_name','a.amount loan_amount','b.payment_status','a.loan_type','b.payment_token','b.education_loan_payment_enc_id','a.email','a.phone','b.payment_amount amount'])
             ->joinWith(['educationLoanPayments b'],false)
             ->joinWith(['assignedLoanProviders c'=>function($c){
                 $c->select(['c.assigned_loan_provider_enc_id','c.loan_application_enc_id','c.status','c1.name','(CASE
