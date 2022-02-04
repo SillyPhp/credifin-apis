@@ -14,8 +14,8 @@ $industries = json_encode($industries)
                             <p>Why Complete<br> Your Profile</p>
                             <ul>
                                 <li>It improves your visibility in search results.</li>
-                                <li>You are 50% more likely to get the right job matches.</li>
-                                <li>You get more accurate job descriptions.</li>
+                                <li>Depicts organization's predominant values and culture.</li>
+                                <li>Convincing your audience about the nature of your business.</li>
                             </ul>
                             <div class="lp-icon-top">
                                 <!--                                <i class="far fa-check-circle"></i>-->
