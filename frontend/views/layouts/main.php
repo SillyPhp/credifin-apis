@@ -452,6 +452,7 @@ AppAssets::register($this);
         }
     </script>
     <?php
+    $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
     $this->registerCss('
     .upcoming-webinar{
         width: 100%;
