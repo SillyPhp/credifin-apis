@@ -140,8 +140,59 @@ $industries = json_encode($industries)
                             </div>
                             <?php
                                 }
+                                if(!$companyInfo['facebook']){
                             ?>
-
+                            <div class="row dis-none showField posRel" data-id="facebook">
+                                <div class="col-md-12 lp-error">
+                                    <div class="form-group lp-form with-load">
+                                        <p class="input-label" for="input">Facebook Profile Link</p>
+                                        <input type="text" class="lp-skill-input form-control" data-name="facebook" id="facebook">
+                                    </div>
+                                    <p class="errorMsg"></p>
+                                </div>
+                            </div>
+                            <?php
+                                }
+                                if(!$companyInfo['twitter']){
+                            ?>
+                            <div class="row dis-none showField posRel" data-id="twitter">
+                                <div class="col-md-12 lp-error">
+                                    <div class="form-group lp-form with-load">
+                                        <p class="input-label" for="input">Twitter Profile Link</p>
+                                        <input type="text" class="lp-skill-input form-control" data-name="twitter" id="twitter">
+                                    </div>
+                                    <p class="errorMsg"></p>
+                                </div>
+                            </div>
+                            <?php
+                                }
+                                if(!$companyInfo['linkedin']){
+                            ?>
+                            <div class="row dis-none showField posRel" data-id="linkedin">
+                                <div class="col-md-12 lp-error">
+                                    <div class="form-group lp-form with-load">
+                                        <p class="input-label" for="input">Linked In Profile Link</p>
+                                        <input type="text" class="lp-skill-input form-control" data-name="linkedin" id="linkedin">
+                                    </div>
+                                    <p class="errorMsg"></p>
+                                </div>
+                            </div>
+                            <?php
+                                }
+                                if(!$companyInfo['instagram']){
+                            ?>
+                            <div class="row dis-none showField posRel" data-id="instagram">
+                                <div class="col-md-12 lp-error">
+                                    <div class="form-group lp-form with-load">
+                                        <p class="input-label" for="input">Instagram Profile Link</p>
+                                        <input type="text" class="lp-skill-input form-control" data-name="instagram" id="instagram">
+                                    </div>
+                                    <p class="errorMsg"></p>
+                                </div>
+                            </div>
+                            <?php
+                                }
+                            ?>
                             <div class="row">
                                 <div class="col-md-12">
                                     <button type="button" onclick="showNextQues()" class="saveBtn">Save</button>
