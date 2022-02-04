@@ -185,7 +185,15 @@ switch ([$controller_id, $action_id]) {
             </div>
         </div>
     </div>
+    <div class="modal fade bs-modal-lg in" id="job-resume-widget-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="appResumeModalData">
+
+            </div>
+        </div>
+    </div>
 <?php
+echo $this->render('/widgets/employer_applications/applied-modal-common');
 $c_user = Yii::$app->user->identity->user_enc_id;
 $script = <<< JS
 function gitHubJobs() {
