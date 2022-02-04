@@ -627,6 +627,7 @@ $this->registerCss('
 }
 .blog-mirror {
     background: linear-gradient(180deg, #2b2d32 60%, #fff 40%);
+    overflow:hidden;
 }
 .whats-block-heading, .whats-popular-heading, .trending-heading, .articles-head{
     position: relative;
