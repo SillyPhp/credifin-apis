@@ -25,6 +25,7 @@ class TemplatesController extends Controller
                 'interview_processes' => $this->__interviewProcess(4),
                 'jobs' => $this->__getApplications("Jobs"),
                 'internships' => $this->__getApplications("Internships"),
+                'industry' => Industries::find()->andWhere(['industry_enc_id'=>Yii::$app->user->identity->organization->industry_enc_id])->asArray()->one()
             ]);
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
@@ -62,12 +63,11 @@ class TemplatesController extends Controller
     {
         $application = \common\models\ApplicationTemplates::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name','z1.icon_png', 'g.designation', 'z1.name as parent_name','pref.industry industy'])
+            ->select(['a.application_enc_id', 'a.title', 'a.template_industry_enc_id', 'zz.name as cat_name','z1.icon_png', 'g.designation', 'z1.name as parent_name'])
             ->joinWith(['title0 z' => function ($z) {
                 $z->joinWith(['categoryEnc zz']);
                 $z->joinWith(['parentEnc z1']);
             }],false)
-            ->joinWith(['templateIndustryEnc pref'])
             ->joinWith(['applicationTypeEnc f'], false)
             ->joinWith(['designationEnc g'], false)
             ->where(['f.name' => $type, 'a.is_deleted' => 0, 'a.status' => "Active"])
@@ -79,9 +79,24 @@ class TemplatesController extends Controller
             ])
             ->asArray()
             ->all();
-            // $indusry = Industries::find()->andWhere(['industry_enc_id'=>Yii::$app->user->identity->organization->industry_enc_id])->asArray()->one();
 
-print_r($application);die();
+            // $industry = Industries::find()->andWhere(['industry_enc_id'=>Yii::$app->user->identity->organization->industry_enc_id])->asArray()->one();
+            // $indusry = Yii::$app->user->identity->organization->industry_enc_id;
+            
+            // $industryjobs=[];
+            // foreach($application as $job){
+            //     if($job['template_industry_enc_id'] == null){
+            //         array_push($industryjobs, $job);
+            //     }
+            // };
+            
+            // echo "<pre>";
+            // print_r($industryjobs);
+            // echo "</pre>";die();
+
+            // print_r($indusry);
+            // echo Yii::$app->user->identity->organization->industry_enc_id;die();
+
         return $application;
     }
 }

@@ -11,7 +11,6 @@ namespace common\models;
  * @property string $designation_enc_id Foreign Key to Designations Table
  * @property string $type Type (Full Time, Part Time, Work from Home)
  * @property string $preferred_industry Foreign Key to Industries Table
- * @property string $template_industry_enc_id
  * @property string $interview_process_enc_id Foreign Key to Organization Interview Process
  * @property string $timings_from Timings From
  * @property string $timings_to Timings To
@@ -62,7 +61,7 @@ class ApplicationTemplates extends \yii\db\ActiveRecord
             [['description', 'type', 'experience', 'preferred_gender', 'status'], 'string'],
             [['timings_from', 'timings_to', 'joining_date', 'last_date', 'created_on', 'last_updated_on'], 'safe'],
             [['has_questionnaire', 'has_benefits', 'is_deleted'], 'integer'],
-            [['application_enc_id', 'application_type_enc_id', 'title', 'designation_enc_id', 'preferred_industry', 'template_industry_enc_id', 'interview_process_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['application_enc_id', 'application_type_enc_id', 'title', 'designation_enc_id', 'preferred_industry', 'interview_process_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['application_enc_id'], 'unique'],
             [['image', 'image_location'], 'string', 'max' => 100],
             [['application_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => ApplicationTypes::className(), 'targetAttribute' => ['application_type_enc_id' => 'application_type_enc_id']],
@@ -71,7 +70,6 @@ class ApplicationTemplates extends \yii\db\ActiveRecord
             [['designation_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Designations::className(), 'targetAttribute' => ['designation_enc_id' => 'designation_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
-            [['template_industry_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Industries::className(), 'targetAttribute' => ['template_industry_enc_id' => 'industry_enc_id']],
         ];
     }
     /**
@@ -150,13 +148,5 @@ class ApplicationTemplates extends \yii\db\ActiveRecord
     public function getLastUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
-    }
-    
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTemplateIndustryEnc()
-    {
-        return $this->hasOne(Industries::className(), ['industry_enc_id' => 'template_industry_enc_id']);
     }
 }

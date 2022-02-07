@@ -4,6 +4,11 @@ $total_processes = count($processes);
 if(!$limit){
     $limit = $total_processes;
 }
+
+// echo "<pre>";
+// print_r($processes);
+// echo "</pre>";die();
+
 $next = 0;
 if (!empty($total_processes)) {
     ?>
@@ -12,24 +17,32 @@ if (!empty($total_processes)) {
             <?php
             for ($j = 0; $j < $limit; $j++) {
                 if ($next < $total_processes) {
+                    
+                    // echo "<pre>";
+                    // print_r($processes[$next]['temp_type']);
+                    // echo "</pre>";
                     ?>
                     <div class="box-main-col <?= $col_width; ?>">
                         <div class="p-category">
                             <?php
                             if($type == "Internships") {
                                 ?>
-                                <a href="#" onclick="window.open('<?= Url::to('/account/internships/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');" data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
+                                <a href="#" onclick="window.open('<?= Url::to('/account/'.$processes[$next]['temp_type'].'/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');" data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
+                                    <?php if($processes[$next]['temp_type']){ ?><span class="temp-type"><?= $processes[$next]['temp_type'] ?></span><?php } ?>
                                     <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
                                     <p style="height:19px;"><?= $processes[$next]['parent_name']; ?></p>
+                                    <!-- <p style="height:19px;"><?= $processes[$next]['application_enc_id']; ?></p> -->
                                 </a>
                                 <?php
                             } else{
                                 ?>
-                                <a href="#" onclick="window.open('<?= Url::to('/account/jobs/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');"  data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
+                                <a href="#" onclick="window.open('<?= Url::to('/account/'.$processes[$next]['temp_type'].'/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');"  data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
+                                    <?php if($processes[$next]['temp_type']){ ?><span class="temp-type"><?= $processes[$next]['temp_type']?></span><?php } ?>
                                     <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
                                     <p style="height:19px;"><?= $processes[$next]['parent_name']; ?></p>
+                                    <!-- <p style="height:19px;"><?= $processes[$next]['application_enc_id']; ?></p> -->
                                 </a>
                                 <?php
                             }
