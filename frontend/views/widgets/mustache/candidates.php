@@ -107,6 +107,12 @@ $script = <<<JS
                } else {
                     $('#user_cards').html(Mustache.render($('#candidates').html(), res));
                }
+               const searchParams = new URLSearchParams(window.location.search);
+               if(searchParams.has('app_id')) {
+                   setTimeout(function(){
+                       $('.shortlist-main').attr('class','btn btn-paid-candidate bt-1 shortlistFixedApp');
+                   }, 2000);
+               }
                 utilities.initials();
                 offset++;
             },
