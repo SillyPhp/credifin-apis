@@ -452,6 +452,7 @@ AppAssets::register($this);
         }
     </script>
     <?php
+    $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
     $this->registerCss('
     .upcoming-webinar{
         width: 100%;
@@ -991,9 +992,12 @@ AppAssets::register($this);
                     $('#completeProfileModal').modal('show');
                 }
             });
-            
          }
-                  
+          
+        window.setTimeout(function(){
+            openUserDetailsModal();
+        },1000); 
+               
          function openPreferenceModal(){
             let hasCookie = document.cookie;
             if (document.cookie.indexOf('PreferenceisViewed') != -1) {

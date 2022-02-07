@@ -84,7 +84,7 @@ class OrganizationsController extends Controller
             if (Yii::$app->request->get('sortBy')) {
                 $options['sortBy'] = trim(Yii::$app->request->get('sortBy'));
             }
-            $options['limit'] = 27;
+            $options['limit'] = 12;
             $cards = $get->getAllCompanies($options);
             if (count($cards['cards']) > 0) {
                 $response = [
@@ -962,6 +962,36 @@ class OrganizationsController extends Controller
             $options['limit'] = 6;
             $options['page'] = 1;
             $options['slug'] = $org;
+            if ($type == 'Jobs') {
+                $cards = ApplicationCards::jobs($options);
+            } else {
+                $cards = ApplicationCards::internships($options);
+            }
+            if ($cards) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'cards' => $cards,
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
+    }
+
+    public function actionOrganizationPastOpportunities($org)
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $type = Yii::$app->request->post('type');
+            $options = [];
+            $options['limit'] = 6;
+            $options['page'] = 1;
+            $options['slug'] = $org;
+            $options['status'] = 'Closed';
             if ($type == 'Jobs') {
                 $cards = ApplicationCards::jobs($options);
             } else {
