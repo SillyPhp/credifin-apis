@@ -2016,7 +2016,7 @@ function initOwl() {
 // initOwl();
 setTimeout(function() {
     initOwl();
-    console.log("done");
+    // console.log("done");
 },1000)
 
  $(document).on('click','#close_btn',function(){
