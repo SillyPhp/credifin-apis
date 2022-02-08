@@ -33,6 +33,19 @@ switch ([$controller_id, $action_id]) {
                                 {{/logo}}
                             </a>
                         </div>
+                        <div class="ji-city">
+                            {{#city}}
+                            <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                                  data-long="{{longitude}}"><i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
+                                </span>
+                            {{/city}}
+                            {{^city}}
+                            <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                                  data-long="{{longitude}}" data-locations=""><i
+                                        class="fas fa-map-marker-alt"></i>&nbsp;Work From Home
+                                </span>
+                            {{/city}}
+                        </div>
                         <div class="side-description" data-slug="{{application_slug}}">
                             <div class="ji-title">
                                 <a href="{{link}}" title="{{title}}" class="application-title capitalize">
@@ -43,19 +56,6 @@ switch ([$controller_id, $action_id]) {
                                 <a href="{{link}}" target="_blank" title="{{organization_name}}">
                                     <h4 class="org_name comp-name org_name">{{{organization_name}}}</h4>
                                 </a>
-                            </div>
-                            <div class="ji-city">
-                                {{#city}}
-                                <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
-                                      data-long="{{longitude}}"><i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
-                                </span>
-                                {{/city}}
-                                {{^city}}
-                                <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
-                                      data-long="{{longitude}}" data-locations=""><i
-                                            class="fas fa-map-marker-alt"></i>&nbsp;Work From Home
-                                </span>
-                                {{/city}}
                             </div>
                             <div class="ji-salarydata">
                                 {{#salary}}
@@ -666,6 +666,8 @@ $this->registerCss('
 .side-description {
     width: calc(100% - 105px);
     margin-left:15px;
+    position:relative;
+    min-height:123px;
 }
 .city
 {

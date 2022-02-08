@@ -118,7 +118,9 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
             <?php endif; ?>
         </div>
         <?php }else{?>
-            <p class="rec-comp">Recruitment Completed</p>
+            <div class="btn-parent">
+                <span class="stamp is-nope">Recruitment Completed</span>
+            </div>
         <?php }?>
         <div class="effect thurio">
             <h3 class="text-white size-set">Sharing Links</h3>
@@ -283,6 +285,26 @@ $('.send').click(function () {
 JS;
 
 $this->registerCss('
+.is-nope {
+    color: #d23;
+    border: 0.5rem double #d23;
+    transform: rotate(-15deg);
+    font-size: 16px;
+    width: 100%;
+    background-color: #fff;
+    line-height: 19px;
+}
+.stamp {
+    max-width: 190px;
+    text-align: center;
+    font-weight: 700;
+    padding: 5px;
+    text-transform: uppercase;
+    border-radius: 1rem;
+    font-family: Courier;
+    display: block;
+    margin: 20px auto;
+}
 p.rec-comp {
     color: #ff7803;
     font-family: Roboto;
@@ -647,6 +669,12 @@ a.add-or-compare:hover, a.add-or-compare:focus {
         z-index: 9;
         background: rgba(0,0,0,.1);
         padding: 7px;
+    }
+    .is-nope{
+        transform:rotate(0deg);
+    }
+    .stamp{
+        margin:auto;
     }
     .down-img{width:100%;}
 }
