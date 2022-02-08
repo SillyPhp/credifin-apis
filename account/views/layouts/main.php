@@ -396,6 +396,29 @@ $this->beginPage();
                 }
             }
         ');
+    if(!Yii::$app->user->isGuest && Yii::$app->user->identity->organization){
+        $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+        $this->registerJs("
+            function completeCompanyProfile(){
+                let hasCookie = document.cookie;
+                if (document.cookie.indexOf('CompanyProfile') != -1) {
+                    return false; 
+                }
+                
+                $.ajax({
+                    url: '/account/dashboard/complete-company-profile',
+                    method: 'POST',
+                    data: {'". Yii::$app->request->csrfParam."':'". Yii::$app->request->csrfToken."'},
+                    success: function(response){
+                        $('body').append(response);
+                        $('#complete-company-profile').modal('show');
+                    }
+                })
+            }
+            
+            completeCompanyProfile()
+        ");
+    }
     $script = <<<JS
         // var thispageurl = window.location.pathname;
         // $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
@@ -428,9 +451,12 @@ $this->beginPage();
             "hideMethod": "fadeOut"
         };
         $(".page-loading").fadeOut();
+        
+        
 JS;
     $this->registerJs($script);
     $this->registerJsFile('@eyAssets/js/functions.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+//    $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
     $this->endBody();
     ?>
     </body>

@@ -854,7 +854,6 @@ function countFields(){
     let fieldsArr = [];
     let cpForm = document.querySelector('.updatePreferenceForm')
     let formFields = cpForm.querySelectorAll('.showField');
-    // console.log(formFields);
     for(let i = 0; i<formFields.length; i++){
         fieldsArr.push(formFields[i]);      
     }

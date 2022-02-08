@@ -163,16 +163,20 @@ endif;
                 }
             ?>
             <?=
-            $this->render('/widgets/applications/dashboard-applied-applications', [
-                'applied' => $applied,
-                'question_list' => $question_list,
-                'shortlist_org' => $shortlist_org,
-                'viewed' => $viewed,
-            ]); ?>
-            <?= $this->render('/widgets/applications/reminder-applications', [
-                'app_reminder' => $app_reminder,
-                'app_reminder_form' => $app_reminder_form,
-            ]); ?>
+                $this->render('/widgets/applications/dashboard-applied-applications', [
+                    'applied' => $applied,
+                    'question_list' => $question_list,
+                    'shortlist_org' => $shortlist_org,
+                    'viewed' => $viewed,
+                ]);
+            ?>
+
+            <?=
+                $this->render('/widgets/applications/reminder-applications', [
+                    'app_reminder' => $app_reminder,
+                    'app_reminder_form' => $app_reminder_form,
+                ]);
+            ?>
 
 
 
@@ -241,8 +245,7 @@ endif;
                                     </div>
                                     <div class="how-heading">Create a Job</div>
                                     <div class="how-text">
-                                        <p>Create a Job, get applications, let candidates fill
-                                            Questionnaire.</p>
+                                        <p>Create a Job, get applications, let candidates fill Questionnaire.</p>
                                         <p class="pera">Ask them what's relevant to your organization.</p>
                                     </div>
                                 </div>
@@ -253,9 +256,7 @@ endif;
                                     </div>
                                     <div class="how-heading">Invite Candidates</div>
                                     <div class="how-text">
-                                        <p>Share application with candidates that you have found
-                                            by
-                                            any other means.</p>
+                                        <p>Share application with candidates that you have found by any other means.</p>
                                     </div>
                                 </div>
                             </div>
@@ -276,8 +277,7 @@ endif;
                                     </div>
                                     <div class="how-heading">Process Applications</div>
                                     <div class="how-text">Finalize the candidates that you would like to interview
-                                        and
-                                        schedule seamlessly.
+                                        and schedule seamlessly.
                                     </div>
                                 </div>
                             </div>
@@ -398,7 +398,7 @@ endif;
                 </div>
             </div>
             
-            <?= $this->render('/dashboard/calendar') ?>
+<!--            --><?//= $this->render('/dashboard/calendar') ?>
 
             <?= $this->render('@common/widgets/resume-bank-widget') ?>
             

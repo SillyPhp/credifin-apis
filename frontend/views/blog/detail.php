@@ -66,7 +66,7 @@ $this->params['seo_tags'] = [
                             <?php
                         }
                         ?>
-                        <div id="blog-description" class="blog-text">
+                        <div id="blog-description" class="blog-text<?= (!$catagory[0]['categoryEnc']['name']) ? ' for-quote' : '' ?>">
                             <?= $post->description; ?>
                         </div>
                     </div>
@@ -187,6 +187,17 @@ $this->params['seo_tags'] = [
 
 <?php
 $this->registerCss('
+.blog-division img{
+    height: auto !important;
+}
+.blog-division div#blog-description.for-quote {
+    margin: 35px 0;
+    font-size: 17px;
+    line-height: 1.8;
+    font-weight: 600;
+    letter-spacing: 0.9px;
+    text-align: justify;
+}
 strong{
     color: unset;
 }
