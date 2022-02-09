@@ -397,6 +397,7 @@ $this->beginPage();
             }
         ');
     if(!Yii::$app->user->isGuest && Yii::$app->user->identity->organization){
+        $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
         $this->registerJs("
             function getCookie(name){
               var re = new RegExp(name + '=([^;]+)');

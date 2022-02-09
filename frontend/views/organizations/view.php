@@ -1383,6 +1383,30 @@ a.twitter, .twitter:hover, a.linkedin-social, .linkedin-social:hover, a.web, .we
 .morelink:focus, .morelink:hover{
     color: #00a0e3;
 }
+.is-nope {
+    color: #d23;
+    border: 0.5rem double #d23;
+    -webkit-transform: translate(-50%,-50%) rotate(-15deg);
+    transform: translate(-50%,-50%) rotate(-15deg);
+    -webkit-mask-position: 2rem 3rem;
+    font-size: 14px;
+    position: absolute;
+    width: 100%;
+    left: 35%;
+    bottom: 0%;
+    background-color: #fff;
+    line-height: 19px;
+}
+.stamp {
+    max-width: 180px;
+    height: 55px;
+    text-align: center;
+    font-weight: 700;
+    padding: 2px;
+    text-transform: uppercase;
+    border-radius: 1rem;
+    font-family: Courier;
+}
 ');
 $script = <<<JS
 $(document).on('click','.follow',function(e){
@@ -1469,10 +1493,12 @@ function getPastCards(type = 'Jobs',container = '.pastblogbox', url = window.loc
                 renderCards(response.cards, container);
                 utilities.initials();
                 if(container_id){
+                    $(container_id).find('.side-description').append('<span class="stamp is-nope">Recruitment Completed</span>');
                     $(container_id).find('.ji-apply').css('pointer-events',"none");
                     $(container_id).find('.application-card-add').css('pointer-events',"none");
                     $(container_id).find('.ji-apply').attr('data-app',"");
                     $(container_id).find('.ji-apply').attr('data-org',"");
+                    
                 }
             }else{
                 if(container_id){

@@ -95,6 +95,15 @@ $this->params['seo_tags'] = [
 
 <section>
     <div class="container-fluid">
+    <?php
+    if($single_app && count($available_applications) == 1){
+        ?>
+            <div class="col-md-12 text-center">
+                <h3 style="margin-top:0px;">ShortList Candidates For <?= $available_applications[0]['name'];?></h3>
+            </div>
+    <?php
+    }
+    ?>
         <div class="col-md-3 col-sm-4 mobile-hidden" id="filters">
             <form>
                 <div class="filters">
@@ -1288,6 +1297,29 @@ $(document).on('click', '.shortlist-main', function (event) {
 					})
 				}
 				$('#shortList').modal('toggle');
+			}
+		}
+	});
+});
+const urlSearchParams = new URLSearchParams(window.location.search);
+const params = Object.fromEntries(urlSearchParams.entries());
+$(document).on('click', '.shortlistFixedApp', function (event) {
+	event.preventDefault();
+	let u_id = $(this).attr('id');
+	let elem = $(this);
+	$.ajax({
+		type: "POST",
+		url: "candidates/shortlist",
+		data: {
+			user_id: u_id,
+			app_id: params.app_id
+		},
+		success: function (response) {
+			if (JSON.parse(response)["status"] == 200) {
+                elem.html('Shortlisted');
+				toastr.success('successfully shortlisted', 'success');
+			} else {
+				toastr.error('an error occurred', 'error');
 			}
 		}
 	});

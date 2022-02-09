@@ -30,7 +30,7 @@ $this->registerCss('
     background-color: #35394F;
     background-image: linear-gradient(-40deg, #35394F 25%, #787D90);
     display: inline-block;
-    margin: 8px;
+    margin: 8px 8px 8px 0;
     box-shadow: 0px 1px 10px -2px #ddd;
 }
 .p-locations li a{

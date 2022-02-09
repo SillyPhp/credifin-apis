@@ -196,6 +196,7 @@ $script = <<< JS
     var que_id = $('#app_question_id').val();
     $(document).on('click', '.$application_enc_id-applyApp', function (e) {
         e.preventDefault();
+        $(this).prop('disabled', true);
         if ($('.appFieldsAll input[name="JobApplied[location_pref][]"]').length !== 0) {
             if ($('.appFieldsAll input[name="JobApplied[location_pref][]"]:checked').length <= 0) {
                 $('#app_resume_form').yiiActiveForm('validateAttribute', 'jobapplied-location_pref');
@@ -237,6 +238,7 @@ $script = <<< JS
             data: formData,
             type: 'post',
             beforeSend: function () {
+                $('.' + btn_class + '').attr("disabled", "true");
                 $('.$application_enc_id-applyApp').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
             },
             success: function (data) {
@@ -283,8 +285,9 @@ $script = <<< JS
     function app_applied() {
         $('#job-apply-widget-modal').modal('hide');
         $('.' + btn_class + '').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
-        $('.' + btn_class + '').html('<i class="fas fa-check"></i>Applied');
+        $('.' + btn_class + '').html('Applied');
         $('.' + btn_class + '').attr("disabled", "true");
+        $('.' + btn_class + '').attr("class", "ji-apply no-anim");
         // $('#job-resume-widget-modal').modal('show');
         $('#appResumeModalData').html('<div class="p-20"><i class="fas fa-circle-notch fa-spin fa-fw"></i> Loading...</div>')
         let app_type = '$applicationType';
