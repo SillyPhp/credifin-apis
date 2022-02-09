@@ -18,8 +18,10 @@
                     </div>
                 </div>
                 <div class="paid-candidate-box-extra">
-                    <ul>
+                    <ul style="height: 24px;">
+                        {{#skills.length}}
                         <li class="skills-h"><i class="fas fa-pencil-ruler"></i></li>
+                        {{/skills.length}}
                         {{#skills}}
                         {{{.}}}
                         {{/skills}}

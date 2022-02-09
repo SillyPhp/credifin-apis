@@ -350,7 +350,7 @@ usort($locations, "cmp");
                             <?php ActiveForm::end(); ?>
                         </div>
                         <div class="scd-btn">
-                            <a href="/candidates?app_id=<?= $application_name['application_enc_id'] ?>">
+                            <a href="/candidates?app_id=<?= $application_name['application_enc_id'] ?>" target="_blank">
                                 Browse Candidates
                             </a>
                         </div>
@@ -1270,7 +1270,10 @@ $this->registerCss('
 .job-mail, .job-whatsapp {
     position: relative;
     margin: 5px 10px 5px 0px;
-    flex-basis:35%;
+    flex-basis:38%;
+}
+.job-mail{
+    flex-basis:32%;
 }
 .location-posts {
     height: 36px;
