@@ -398,11 +398,24 @@ $this->beginPage();
         ');
     if(!Yii::$app->user->isGuest && Yii::$app->user->identity->organization){
         $this->registerJs("
+            function getCookie(name){
+              var re = new RegExp(name + '=([^;]+)');
+              var value = re.exec(document.cookie);
+              return (value != null) ? unescape(value[1]) : null;
+            }   
             function completeCompanyProfile(){
-                let hasCookie = document.cookie;
+                let cookieVal = getCookie('CompanyProfile'); 
+                if(cookieVal == 'CompanyProfile'){
+                    let date = new Date();
+                    date.setTime(date.getTime() + (1 * 24 * 60 * 60 * 1000));
+                    let jdate = date.toUTCString()
+                    const expires = 'expires=' + date.toUTCString();
+                    document.cookie='CompanyProfile='+jdate+'; expires='+expires+'; path=/'
+                }
+                
                 if (document.cookie.indexOf('CompanyProfile') != -1) {
                     return false; 
-                }
+                }    
                 
                 $.ajax({
                     url: '/account/dashboard/complete-company-profile',

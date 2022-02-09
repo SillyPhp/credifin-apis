@@ -195,6 +195,7 @@ $industries = json_encode($industries)
                             ?>
                             <div class="row">
                                 <div class="col-md-12">
+                                    <button type="button" onclick="showPreviousQues()" class="prevBtn">Previous</button>
                                     <button type="button" onclick="showNextQues()" class="saveBtn">Save</button>
                                     <button type="button" onclick="skipToNextQues()" class="skipBtn">Skip</button>
                                 </div>
@@ -229,6 +230,10 @@ $industries = json_encode($industries)
 </div>
 <?php
 $this->registerCss('
+.disabledBtn{
+    cursor: not-allowed; 
+    pointer-events: none;
+}
 #cropLogoPop{
     z-index:99999
 }
@@ -341,7 +346,7 @@ $this->registerCss('
     border: 2px solid #e8ecec;
 }
 
-.saveBtn, .skipBtn{
+.saveBtn, .skipBtn, .prevBtn{
     background: #00a0e3;
     padding: 10px 15px;
     border: 1px solid #00a0e3;
@@ -350,11 +355,12 @@ $this->registerCss('
     margin-top: 20px;
     color: #fff
 }
-.skipBtn{
+.skipBtn, .prevBtn{
     background: transparent;
     border: 1px solid #00a0e3;
     color: #00a0e3;
-}.relationList{
+}
+.relationList{
     padding:0px;
 }
 .dis-none{
@@ -697,14 +703,15 @@ body.modal-open{
   margin: 0;
 }
 ');
-
+$slug = $companyInfo["slug"];
 $script = <<< JS
+let slug = '$slug'
 function setCookie() {
     let date = new Date();
-    date.setTime(date.getTime() + (24 * 60 * 60 * 1000));
-    let maxAge = 24 * 60 * 60 * 1000;
+    date.setTime(date.getTime() + (1 * 24 * 60 * 60 * 1000));
+    let jdate = date.toUTCString()
     const expires = "expires=" + date.toUTCString();
-    document.cookie = "CompanyProfile=CompanyProfile; expires="+expires+"; max-age="+maxAge+"; path=/";
+    document.cookie = "CompanyProfile="+jdate+"; expires="+expires+"; path=/";
 }
 
 let industries2 = '$industries';
@@ -735,12 +742,13 @@ function countFields(){
     let fieldsArr = [];
     let cpForm = document.querySelector('.updateCompanyDetails')
     let formFields = cpForm.querySelectorAll('.showField');
+    let prevBtn = document.querySelector('.prevBtn');
     for(let i = 0; i<formFields.length; i++){
         fieldsArr.push(formFields[i]);      
     }
     if(fieldsArr.length){
         fieldsArr[0].classList.add('disShow');
-        fieldsArr[0].classList.remove('showField')
+        prevBtn.classList.add('disabledBtn');
         if(fieldsArr.length == 1){
             cpForm.querySelector('.skipBtn').style.display = "none";
         }
@@ -758,9 +766,9 @@ showNextQues = () =>{
     let indexOfDisShow = fieldsArr.indexOf(disShow);
     let nxtIndex = (indexOfDisShow + 1) % fieldsArr.length;
     let toActive = fieldsArr[nxtIndex];
-    if(toActive){
-        toActive.classList.remove('showField');
-    }
+    // if(toActive){
+    //     toActive.classList.remove('showField');
+    // }
     let inputVal =  disShow.querySelectorAll('.form-control')
     let val = {};
     let valObj = '';
@@ -784,11 +792,11 @@ showNextQues = () =>{
             }else{
                 errorMsg.classList.add('showError');
                 errorMsg.innerHTML = "This field can not Be empty";
-                return false;    
+                return false
             }
         }
-     }
        sendData(disShow, toActive, val);
+     }
 }
 function sendData(disShow, toActive, val){
     $.ajax({
@@ -802,7 +810,9 @@ function sendData(disShow, toActive, val){
                     if(disShow.classList.contains('showField')){
                         disShow.classList.remove('showField')
                     }
+                   
                     toActive.classList.add('disShow');
+                     console.log(toActive);
                 }else{
                     $('#complete-company-profile').modal('hide');
                 }
@@ -821,17 +831,53 @@ function getParentUntillLpForm(elem){
         return parElem[0];
     }
 }
+showPreviousQues = () => {
+    let fieldsArr = [];
+    let cpForm = document.querySelector('.updateCompanyDetails')
+    let formFields = cpForm.querySelectorAll('.showField');
+    let prevBtn = document.querySelector('.prevBtn');
+    let skipBtn = document.querySelector('.skipBtn');
+    for(let i = 0; i<formFields.length; i++){
+        fieldsArr.push(formFields[i]);      
+    }
+    let lastIndex = fieldsArr.length - 1;
+    let disShow = cpForm.querySelector('.disShow');
+    let indexOfDisShow = fieldsArr.indexOf(disShow);
+    let prevIndex = (indexOfDisShow - 1) % fieldsArr.length;
+    if(prevIndex == 0){
+        prevBtn.classList.add('disabledBtn') 
+    }
+    if(prevIndex < lastIndex){
+        skipBtn.classList.remove('disabledBtn');
+    }
+    let toActive = fieldsArr[prevIndex]; 
+    if(disShow){
+        disShow.classList.remove('disShow')
+    }
+    toActive.classList.add('disShow');
+}
 skipToNextQues = () => {
     let fieldsArr = [];
     let cpForm = document.querySelector('.updateCompanyDetails')
     let formFields = cpForm.querySelectorAll('.showField');
+    let prevBtn = document.querySelector('.prevBtn');
+    let skipBtn = document.querySelector('.skipBtn');
     for(let i = 0; i<formFields.length; i++){
         fieldsArr.push(formFields[i]);      
     }
+    let lastIndex = fieldsArr.length - 1;
     let disShow = cpForm.querySelector('.disShow');
+    console.log(disShow, 'disShow')
     disShow.classList.add('showField');
+    prevBtn.classList.remove('disabledBtn');
     let indexOfDisShow = fieldsArr.indexOf(disShow);
+    console.log(indexOfDisShow, 'indexOfDisShow');
     let nxtIndex = (indexOfDisShow + 1) % fieldsArr.length;
+    
+    if(nxtIndex == lastIndex){
+       window.location.href='/'+slug;
+       skipBtn.classList.add('disabledBtn');
+    }
     let toActive = fieldsArr[nxtIndex]; 
     if(disShow){
         disShow.classList.remove('disShow')

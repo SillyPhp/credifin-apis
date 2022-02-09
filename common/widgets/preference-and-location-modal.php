@@ -798,10 +798,10 @@ span.select2-search.select2-search--inline, .select2-container--default .select2
 $script = <<< JS
 setCookie = () => {
     let date = new Date();
-    date.setTime(date.getTime() + (24 * 60 * 60 * 1000));
-    let maxAge = 24 * 60 * 60 * 1000;
+    date.setDate(date.getDate() + 1);
+    let jdate = date.toUTCString()
     const expires = "expires=" + date.toUTCString();
-    document.cookie = "PreferenceisViewed=PreferenceisViewed; expires="+expires+"; max-age="+maxAge+"; path=/";
+    document.cookie = "PreferenceisViewed="+jdate+"; expires="+expires+"; path=/";
 }
 var city = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
