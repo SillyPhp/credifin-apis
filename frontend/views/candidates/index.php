@@ -1305,6 +1305,7 @@ const urlSearchParams = new URLSearchParams(window.location.search);
 const params = Object.fromEntries(urlSearchParams.entries());
 $(document).on('click', '.shortlistFixedApp', function (event) {
 	event.preventDefault();
+    $(this).prop('disabled', true);
 	let u_id = $(this).attr('id');
 	let elem = $(this);
 	$.ajax({
@@ -1319,6 +1320,7 @@ $(document).on('click', '.shortlistFixedApp', function (event) {
                 elem.html('Shortlisted');
 				toastr.success('successfully shortlisted', 'success');
 			} else {
+                $(this).prop('disabled', false);
 				toastr.error('an error occurred', 'error');
 			}
 		}
