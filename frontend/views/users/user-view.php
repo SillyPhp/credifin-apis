@@ -320,7 +320,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
 <section class="detail-section">
     <div class="container">
         <div class="col-md-8 col-sm-12">
-            <?php if ($user['job_profile'] || $user['city'] || $user['description'] || $skills || $language) { ?>
+            <?php if ($user['job_profile'] || $user['city'] || $user['description']) { ?>
                 <div class="container-detail-box">
                     <div class="apply-job-detail awesome-size ">
                         <h5>About Me <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="edit-description"></i></h5>
@@ -334,7 +334,6 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         pjax::end();
                         ?>
                     </div>
-                    <?php if ($skills) { ?>
                         <div class="apply-job-detail awesome-size">
                             <h5>Skills <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="edit-skills"></i></h5>
                             <?php
@@ -354,9 +353,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                 Pjax::end();
                             ?>
                         </div>
-                    <?php }
-                    if ($language) {
-                        ?>
+
                         <div class="apply-job-detail awesome-size">
                             <h5>Spoken Languages <i class="fas fa-pencil-alt edit-profile-pen edit-btnn"
                                                     data-id="edit-languages"></i></h5>
@@ -377,14 +374,10 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                 pjax::end();
                             ?>
                         </div>
-                    <?php } ?>
                 </div>
             <?php } ?>
-            <?php if ($education || $experience || $achievement || $hobbies || $interests) { ?>
                 <div class="container-detail-box">
-                    <?php
-                    if ($education) {
-                        ?>
+
                         <div class="education-detail">
                             <h5 class="education-head">
                                 <span>Education</span>
@@ -425,10 +418,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             pjax::end();
                             ?>
                         </div>
-                        <?php
-                    }
-                    if ($experience) {
-                        ?>
+
                         <div class="experience-detail">
                             <h5 class="education-head">
                                 <Span>Work Experience</Span>
@@ -472,12 +462,11 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             ?>
                         </div>
                         <?php
-                    }
+
                     Pjax::begin([
                         'id' => 'pjax_achievements',
                     ]);
-                    if ($achievement) {
-                        ?>
+                    ?>
                         <div class="achievements-detail set-li awesome-size">
                             <h5 class="achievements-head all-head">Achievements
                                 <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="add-achievements"></i></h5>
@@ -492,13 +481,12 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             </ul>
                         </div>
                         <?php
-                    }
+
                     Pjax::end();
 
                     Pjax::begin([
                         'id' => 'pjax_hobby',
                     ]);
-                    if ($hobbies) {
                         ?>
                         <div class="hobbies-detail set-li awesome-size">
 
@@ -517,13 +505,12 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
 
                         </div>
                         <?php
-                    }
+
                     pjax::end();
 
                     Pjax::begin([
                         'id' => 'pjax_interest',
                     ]);
-                    if ($interests) {
                         ?>
                         <div class="Interests-detail set-li awesome-size">
                             <h5 class="interest-head all-head">Interests <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="add-interest"></i></h5>
@@ -538,11 +525,11 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             </ul>
                         </div>
                         <?php
-                    }
+
                     Pjax::end();
                     ?>
                 </div>
-            <?php } ?>
+
         </div>
         <?php
         if (array_filter($job_preference)) {
