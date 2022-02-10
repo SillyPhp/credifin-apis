@@ -18,8 +18,10 @@
                     </div>
                 </div>
                 <div class="paid-candidate-box-extra">
-                    <ul>
+                    <ul style="height: 24px;">
+                        {{#skills.length}}
                         <li class="skills-h"><i class="fas fa-pencil-ruler"></i></li>
+                        {{/skills.length}}
                         {{#skills}}
                         {{{.}}}
                         {{/skills}}
@@ -106,6 +108,12 @@ $script = <<<JS
                     $('#user_cards').append(Mustache.render($('#candidates').html(), res));
                } else {
                     $('#user_cards').html(Mustache.render($('#candidates').html(), res));
+               }
+               const searchParams = new URLSearchParams(window.location.search);
+               if(searchParams.has('app_id')) {
+                   setTimeout(function(){
+                       $('.shortlist-main').attr('class','btn btn-paid-candidate bt-1 shortlistFixedApp');
+                   }, 2000);
                }
                 utilities.initials();
                 offset++;

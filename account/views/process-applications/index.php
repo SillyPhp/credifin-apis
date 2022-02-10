@@ -325,7 +325,7 @@ usort($locations, "cmp");
                 </div>
             </div>
             <div class="col-md-12 use-ff">
-                <div class="col-md-6 col-sm-12">
+                <div class="col-md-6 col-sm-12" style="padding:0px;">
                     <div class="job-txt pos-left">Invite Candidates via</div>
                     <div class="dis-flex">
                         <div class="job-mail">
@@ -348,6 +348,11 @@ usort($locations, "cmp");
                             <p id="phone-error" style="color:red;" class="help-block help-block-error"></p>
                             <button class="grn" id="whatsapp-invitation"><i class="fa fa-whatsapp"></i></button>
                             <?php ActiveForm::end(); ?>
+                        </div>
+                        <div class="scd-btn">
+                            <a href="/candidates?app_id=<?= $application_name['application_enc_id'] ?>" target="_blank">
+                                Browse Candidates
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -1254,6 +1259,7 @@ $this->registerCss('
 }
 .use-ff {
     border-top: 2px solid #e0e0e0;
+    padding:0px;
     padding-top: 10px;
     display: flex;
     justify-content: space-around;
@@ -1264,7 +1270,10 @@ $this->registerCss('
 .job-mail, .job-whatsapp {
     position: relative;
     margin: 5px 10px 5px 0px;
-    flex-basis:45%;
+    flex-basis:38%;
+}
+.job-mail{
+    flex-basis:32%;
 }
 .location-posts {
     height: 36px;

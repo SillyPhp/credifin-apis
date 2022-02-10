@@ -172,8 +172,10 @@ class BlogController extends Controller
         $tags = ArrayHelper::getColumn($post->postTags, 'tagEnc.name');
         if ($post) {
             $post_categories = PostCategories::find()
-                ->select(['category_enc_id'])
-                ->where(['post_enc_id' => $post->post_enc_id])
+                ->alias('a')
+                ->select(['a.category_enc_id', 'b.name category'])
+                ->joinWith(['categoryEnc b'])
+                ->where(['a.post_enc_id' => $post->post_enc_id])
                 ->asArray()
                 ->all();
             $categories = [];
@@ -201,6 +203,7 @@ class BlogController extends Controller
 
             return $this->render('detail', [
                 'post' => $post,
+                'catagory' => $post_categories,
                 'similar_posts' => $similar_posts,
             ]);
         } else {

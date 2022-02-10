@@ -331,7 +331,7 @@ class InternshipsController extends Controller
                 'slug' => $eaidk,
                 'is_deleted' => 0,
                 'application_for' => 1,
-                'status' => 'ACTIVE'
+//                'status' => 'ACTIVE'
             ])
             ->joinWith(['applicationTypeEnc b' => function ($b) {
                 $b->andWhere(['b.name' => 'internships']);
