@@ -856,6 +856,10 @@ class EducationLoanController extends ApiBaseController
         $image = UploadedFile::getInstanceByName('image');
         $image_ext = $image->extension;
 
+        if(!$image_ext){
+            $image_ext = 'pdf';
+        }
+
         $image_temp = $image->tempName;
         if ($res = $this->upload($user_id, $params, $image_temp, $image_ext)) {
             return $this->response(200, ['status' => 200, 'id' => $res['id'], 'fileUrl' => $res['fileUrl']]);
