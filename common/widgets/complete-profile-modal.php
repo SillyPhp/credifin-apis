@@ -1010,10 +1010,10 @@ body.modal-open{
 $script = <<< JS
 function setCookie() {
     let date = new Date();
-    date.setTime(date.getTime() + (24 * 60 * 60 * 1000));
-    let maxAge = 24 * 60 * 60 * 1000;
+    date.setDate(date.getDate() + 1);
+    let jdate = date.toUTCString()
     const expires = "expires=" + date.toUTCString();
-    document.cookie = "ModalisViewed=modalViewed; expires="+expires+"; max-age="+maxAge+"; path=/";
+    document.cookie = "ModalisViewed="+jdate+"; expires="+expires+"; path=/";
 }
 
 
