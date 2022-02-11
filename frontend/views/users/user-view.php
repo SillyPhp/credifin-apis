@@ -320,7 +320,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
 <section class="detail-section">
     <div class="container">
         <div class="col-md-8 col-sm-12">
-            <?php if ($user['job_profile'] || $user['city'] || $user['description'] || $skills || $language) { ?>
+            <?php ?>
                 <div class="container-detail-box">
                     <div class="apply-job-detail awesome-size ">
                         <h5>About Me <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="edit-description"></i></h5>
@@ -334,7 +334,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         pjax::end();
                         ?>
                     </div>
-                    <?php if ($skills) { ?>
+                    <?php  ?>
                         <div class="apply-job-detail awesome-size">
                             <h5>Skills <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="edit-skills"></i></h5>
                             <?php
@@ -354,8 +354,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                 Pjax::end();
                             ?>
                         </div>
-                    <?php }
-                    if ($language) {
+                    <?php
                         ?>
                         <div class="apply-job-detail awesome-size">
                             <h5>Spoken Languages <i class="fas fa-pencil-alt edit-profile-pen edit-btnn"
@@ -377,13 +376,11 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                 pjax::end();
                             ?>
                         </div>
-                    <?php } ?>
+                    <?php ?>
                 </div>
-            <?php } ?>
-            <?php if ($education || $experience || $achievement || $hobbies || $interests) { ?>
+            <?php  ?>
                 <div class="container-detail-box">
                     <?php
-                    if ($education) {
                         ?>
                         <div class="education-detail">
                             <h5 class="education-head">
@@ -426,8 +423,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             ?>
                         </div>
                         <?php
-                    }
-                    if ($experience) {
+
                         ?>
                         <div class="experience-detail">
                             <h5 class="education-head">
@@ -472,11 +468,10 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             ?>
                         </div>
                         <?php
-                    }
+
                     Pjax::begin([
                         'id' => 'pjax_achievements',
                     ]);
-                    if ($achievement) {
                         ?>
                         <div class="achievements-detail set-li awesome-size">
                             <h5 class="achievements-head all-head">Achievements
@@ -492,13 +487,12 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             </ul>
                         </div>
                         <?php
-                    }
+
                     Pjax::end();
 
                     Pjax::begin([
                         'id' => 'pjax_hobby',
                     ]);
-                    if ($hobbies) {
                         ?>
                         <div class="hobbies-detail set-li awesome-size">
 
@@ -517,13 +511,12 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
 
                         </div>
                         <?php
-                    }
+
                     pjax::end();
 
                     Pjax::begin([
                         'id' => 'pjax_interest',
                     ]);
-                    if ($interests) {
                         ?>
                         <div class="Interests-detail set-li awesome-size">
                             <h5 class="interest-head all-head">Interests <i class="fas fa-pencil-alt edit-profile-pen edit-btnn" data-id="add-interest"></i></h5>
@@ -538,11 +531,10 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             </ul>
                         </div>
                         <?php
-                    }
+
                     Pjax::end();
                     ?>
                 </div>
-            <?php } ?>
         </div>
         <?php
         if (array_filter($job_preference)) {
@@ -678,28 +670,22 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         <!--                                <h3 class="edit-detail">Personal Details</h3>-->
                         <form class="text-center">
                             <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group text-left">
-                                        <label for="full_name" class="label-edit">Name</label>
-                                        <input type="text" class="form-control form-control-edit" data-name="full_name" id="full_name"
-                                               placeholder="Enter Name" value="<?= $user['first_name'] .''. $user['last_name']  ?>">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
+
+                                <div class="col-md-6">
                                     <div class="form-group text-left">
                                         <label for="job_title" class="label-edit">Position</label>
                                         <input type="text" class="form-control form-control-edit" data-name="job_title" id="job_title"
                                                placeholder="Enter Position" value="<?= $user['job_profile'] ?>">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="form-group text-left">
                                         <label for="dob" class="label-edit">Date Of Birth</label>
                                         <div class="input-group date">
                                         <span class="input-group-addon kv-date-picker" title="Select date"><i
                                                     class="glyphicon glyphicon-calendar kv-dp-icon"></i></span>
                                             <input type="text" class="form-control form-control-edit"
-                                                   placeholder="From Year" aria-invalid="true"
+                                                   placeholder="Date Of Birth" aria-invalid="true"
                                                    id="dob" data-name="dob" value="<?= $user['dob'] ?>">
                                         </div>
                                     </div>
@@ -723,16 +709,16 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                                 }
                                             }
                                         ?>
-                                        <label for="exp_year" class="label-edit">Experience(Y)</label>
+                                        <label for="exp_year" class="label-edit">Experience(In Years)</label>
                                         <input type="text" class="form-control form-control-edit" data-name="exp_year"
                                                data-id="exp_year" placeholder="Experience Year" value="<?= $expYear ?>">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group text-left">
-                                        <label for="exp_month" class="label-edit">Experience(M)</label>
+                                        <label for="exp_month" class="label-edit">Experience(In Months)</label>
                                         <input type="text" class="form-control form-control-edit" data-name="exp_month"
-                                               data-id="exp_month" placeholder="Experience Year" value="<?= $expMonth ?>">
+                                               data-id="exp_month" placeholder="Experience Months" value="<?= $expMonth ?>">
                                     </div>
                                 </div>
                             </div>
@@ -742,6 +728,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                         <label class="label-edit">State</label>
                                         <select id='states_drp' data-name="state" value="<?= $user['state_enc_id'] ?>"
                                                 class="form-control form-control-edit text-capitalize chosen">
+                                            <option value="">Select State</option>
                                             <?php
                                             if ($states) {
                                                 foreach ($states as $key => $state) {
@@ -776,7 +763,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             <div class="form-group text-left">
                                 <label for="job_title" class="label-edit">Description</label>
                                 <textarea class="form-control form-control-edit" data-name="description" id="description"
-                                      placeholder="Enter Position" value="<?= $user['description'] ?>"><?= $user['description'] ?></textarea>
+                                      placeholder="Tell us about yourself" value="<?= $user['description'] ?>"><?= $user['description'] ?></textarea>
                             </div>
                             <button type="button" data-name="description" class="btn edit-profile-btn mt10 updatedata">Submit</button>
                         </form>
@@ -2494,23 +2481,23 @@ $(document).on("click", ".edit-btnn", function (e){
 });
 function editEducation(id){
     $.ajax({
-    url: '/account/resume-builder/edit-education',
-    method : 'POST',
-    data : {id:id},
-    beforeSend:function(){
-            $('.loader-aj-main').fadeIn(100);
-         },
-    success : function(res){   
-        $('.loader-aj-main').fadeOut(50);
-       var obj = JSON.parse(res);
-       $('#institute').val(obj.institute);
-       $('#degree').val(obj.degree);
-       $('#field').val(obj.field);
-       $('#from_date').val(obj.from_date);
-       $('#to_date').val(obj.to_date);
-       $('.eduUpdate').attr('id',obj.education_enc_id);
-      $('.eduUpdate').attr('data-name', 'education');
-    } 
+        url: '/account/resume-builder/edit-education',
+        method : 'POST',
+        data : {id:id},
+        beforeSend:function(){
+                $('.loader-aj-main').fadeIn(100);
+             },
+        success : function(res){   
+            $('.loader-aj-main').fadeOut(50);
+           var obj = JSON.parse(res);
+           $('#institute').val(obj.institute);
+           $('#degree').val(obj.degree);
+           $('#field').val(obj.field);
+           $('#from_date').val(obj.from_date);
+           $('#to_date').val(obj.to_date);
+           $('.eduUpdate').attr('id',obj.education_enc_id);
+          $('.eduUpdate').attr('data-name', 'education');
+        } 
     })
 }
 function editExperience(id){
@@ -2625,9 +2612,7 @@ function updateEducation(data){
 }
 $(document).on('click','.edu-del',function(e){
    e.preventDefault();
-   
    var  id = $(this).attr('id');
-   
    $.ajax({
         url: '/account/resume-builder/delete-education',
          method : 'POST',
@@ -2794,10 +2779,9 @@ $('#update_exp_present').click(function(){
     }
 }) ;
 $(document).on('keyup','#search-skill',function(e){
-    if(e.which==13)
-        {
-          add_tags($(this),'skill_tag_list','skills');  
-        }
+    if(e.which==13){
+      add_tags($(this),'skill_tag_list','skills');  
+    }
 });
 
 function add_tags(thisObj,tag_class,name,duplicates){
@@ -2901,7 +2885,8 @@ $(document).on('click', '.updateSkills', function (e){
     $('input[name="'+fieldName+'[]"]').each(function() {
         skills.push(this.value);
     });
-    val[fieldName] = skills;
+    let unqSkills = skills.filter((value, index) => skills.indexOf(value) == index);
+    val[fieldName] = unqSkills;
     sendData(val, fieldName);
 })
 $(document).on('change','#states_drp',function() {
@@ -2939,8 +2924,13 @@ $(document).on('keyup','#achievement_input',function(e){
             toastr.error('please enter something', 'error');
         }else {
             var last_child = $(this).parentsUntil('.tagAdd').parent().prev('.addedTag');
+            var fieldTag = $(this).parentsUntil('.tagAdd').parent();
             var new_tag = '<li class="addedTag">'+ achievement_name +'<span class="tagRemove">x</span></li>';
-            $(new_tag).insertAfter(last_child);
+            if(last_child.length == 0){
+                $(new_tag).insertBefore(fieldTag)
+            }else{
+                $(new_tag).insertAfter(last_child);
+            }
             $('#achievement_input').val('');
              $.ajax({
                 url: '/account/resume-builder/achievements',
@@ -2986,13 +2976,18 @@ $(document).on('click','.achievement_remove', function(e) {
 $(document).on('keyup','#hobby_input',function(e){   
     e.preventDefault();
     if(e.which==13){
-    var hobby_name = $('#hobby_input').val();
+        var hobby_name = $('#hobby_input').val();
     if(hobby_name == ''){
         toastr.error('please enter something', 'error');
     }else {     
         var last_child = $(this).parentsUntil('.tagAdd').parent().prev('.addedTag');
+        var fieldTag = $(this).parentsUntil('.tagAdd').parent();
         var new_tag = '<li class="addedTag">'+ hobby_name +'<span class="hobby_remove">x</span></li>';
-        $(new_tag).insertAfter(last_child);
+        if(last_child.length == 0){
+            $(new_tag).insertBefore(fieldTag)
+        }else{
+            $(new_tag).insertAfter(last_child);
+        }
         $('#hobby_input').val('');
         $.ajax({
             url: '/account/resume-builder/hobbies',
@@ -3044,8 +3039,13 @@ $(document).on('keyup','#interest_input',function(e){
             toastr.error('please enter something', 'error');
         }else {
             var last_child = $(this).parentsUntil('.tagAdd').parent().prev('.addedTag');
+            var fieldTag = $(this).parentsUntil('.tagAdd').parent();
             var new_tag = '<li class="addedTag">'+ interest_name +'<span class="interest_remove">x</span></li>';
-            $(new_tag).insertAfter(last_child);
+            if(last_child.length == 0){
+                $(new_tag).insertBefore(fieldTag)
+            }else{
+                $(new_tag).insertAfter(last_child);
+            }
             $('#interest_input').val('');
             $.ajax({
                 url: '/account/resume-builder/interests',
@@ -3090,6 +3090,7 @@ $(document).on('click','.interest_remove', function(e) {
 });
 
 sendData = (data, fieldName) => {
+    console.log(data);
     $.ajax({
         url: '/users/update-basic-detail',
         method: 'POST',
