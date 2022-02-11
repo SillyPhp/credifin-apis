@@ -1,18 +1,58 @@
 <?php
+
 use yii\helpers\Url;
-// print_r($industry);die(); 
+
+
+$other_jobs_intern = array_merge($other_jobs, $other_internships);
+$industry_jobs_intern = array_merge($ind_jobs, $ind_internships);
+
 ?>
 <div class="row">
+
+    <?php if ($industry_jobs_intern) { ?>
+        <div class="col-lg-12 col-xs-12 col-sm-12">
+            <div class="portlet light">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class=" icon-social-twitter font-dark hide"></i>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', $industry['industry'] . ' Templates'); ?></span>
+                    </div>
+                    <div class="actions">
+                        <?php if (count($industry_jobs_intern) > 4) : ?>
+                            <a href="<?= Url::toRoute('/templates/industry'); ?>" data-toggle="tooltip" title="View All">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <?php
+                                echo $this->render('/widgets/employer-applications/template-card', [
+                                    'processes' => $industry_jobs_intern,
+                                    'limit' => 8,
+                                    'ind' => 'ind',
+                                    // 'type' => "Jobs",
+                                    'col_width' => 'col-lg-3 col-md-6 col-sm-6',
+                                ]);
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
+
     <div class="col-lg-12 col-xs-12 col-sm-12">
         <div class="portlet light">
             <div class="portlet-title">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', $industry['industry'] . ' Job & Internship Templates'); ?></span>
+                    <span class="caption-subject font-dark bold uppercase"><?= $industry_jobs_intern ? Yii::t('account', 'Other Templates') : Yii::t('account', 'Job and Internship Templates'); ?></span>
                 </div>
                 <div class="actions">
-                    <?php if (count($jobs) > 4): ?>
-                        <a href="<?= Url::toRoute('/jobs/view-templates'); ?>" data-toggle="tooltip" title="View All">
+                    <?php if (count($other_jobs_intern) > 4) : ?>
+                        <a href="<?= Url::toRoute('/templates/other'); ?>" data-toggle="tooltip" title="View All">
                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                     <?php endif; ?>
                 </div>
@@ -20,188 +60,35 @@ use yii\helpers\Url;
             <div class="portlet-body">
                 <div class="row">
                     <div class="col-lg-12">
-                        <?php 
-                        if (count($jobs) > 0) {
+                        <?php
+                        // if (count($jobs) > 0) {
 
-                            $industry_jobs_intern=[];
-                            foreach($jobs as $x => $job){
-                                // if($job['template_industry_enc_id'] == $industry['industry_enc_id'] && $x < 4){
-                                if($job['template_industry_enc_id'] == null && $x < 4){
-                                    $job['temp_type'] = 'jobs';
-                                    array_push($industry_jobs_intern, $job);
-                                }
-                            };
-                            
-                            foreach($internships as $intern){
-                                // if($intern['template_industry_enc_id'] == $industry['industry_enc_id']){
-                                if($intern['template_industry_enc_id'] == null){
-                                    $intern['temp_type'] = 'internships';
-                                    array_push($industry_jobs_intern, $intern);
-                                }
-                            };
 
+                            // print_r($other_jobs_intern);die();
                             echo $this->render('/widgets/employer-applications/template-card', [
-                                'processes' => $industry_jobs_intern,
+                                'processes' => $other_jobs_intern,
                                 'limit' => 8,
-                                'type' => "Jobs",
+                                // 'type' => "Jobs",
                                 'col_width' => 'col-lg-3 col-md-6 col-sm-6',
                             ]);
-
-                        } else {
-                            ?>
-                            <div class="tab-empty">
+                        // } else {
+                        ?>
+                            <!-- <div class="tab-empty">
                                 <div class="tab-empty-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.png'); ?>"
-                                         class="img-responsive" alt=""/>
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.png'); ?>" class="img-responsive" alt="" />
                                 </div>
                                 <div class="tab-empty-text">
                                     <div class="">No process to display</div>
                                 </div>
-                            </div>
-                        <?php }
+                            </div> -->
+                        <?php 
                         ?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- <div class="col-lg-12 col-xs-12 col-sm-12">
-        <div class="portlet light">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account',  $industry['industry'] . ' Internship Templates'); ?></span>
-                </div>
-                <div class="actions">
-                    <?php if (count($internships) > 4): ?>
-                        <a href="<?= Url::toRoute('/internships/view-templates'); ?>" data-toggle="tooltip" title="View All">
-                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                    <?php endif; ?>
-                </div>
-            </div>
-            <div class="portlet-body">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <?php
-                        if (count($internships) > 0) {
 
-                            $industryintern=[];
-                            foreach($internships as $job){
-                                if($job['template_industry_enc_id'] == $industry['industry_enc_id']){
-                                    array_push($industryintern, $job);
-                                }
-                            };
-
-                            echo $this->render('/widgets/employer-applications/template-card', [
-                                'processes' => $industryintern,
-                                'limit' => 4,
-                                'type' => "Internships",
-                                'col_width' => 'col-lg-4 col-md-6 col-sm-6',
-                            ]);
-                        } else {
-                            ?>
-                            <div class="tab-empty">
-                                <div class="tab-empty-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.png'); ?>"
-                                         class="img-responsive" alt=""/>
-                                </div>
-                                <div class="tab-empty-text">
-                                    <div class="">No process to display</div>
-                                </div>
-                            </div>
-                        <?php }
-                        ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-    <div class="col-lg-6 col-xs-12 col-sm-12">
-        <div class="portlet light">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Other Job Templates'); ?></span>
-                </div>
-                <div class="actions">
-                    <?php if (count($jobs) > 4): ?>
-                        <a href="<?= Url::toRoute('/jobs/view-templates'); ?>" data-toggle="tooltip" title="View All">
-                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                    <?php endif; ?>
-                </div>
-            </div>
-            <div class="portlet-body">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <?php
-                        if (count($jobs) > 0) {
-                            echo $this->render('/widgets/employer-applications/template-card', [
-                                'processes' => $jobs,
-                                'limit' => 4,
-                                'type' => "Jobs",
-                                'col_width' => 'col-lg-6 col-md-6 col-sm-6',
-                            ]);
-                        } else {
-                            ?>
-                            <div class="tab-empty">
-                                <div class="tab-empty-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.png'); ?>"
-                                         class="img-responsive" alt=""/>
-                                </div>
-                                <div class="tab-empty-text">
-                                    <div class="">No process to display</div>
-                                </div>
-                            </div>
-                        <?php }
-                        ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-6 col-xs-12 col-sm-12">
-        <div class="portlet light">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Other Internship Templates'); ?></span>
-                </div>
-                <div class="actions">
-                    <?php if (count($internships) > 4): ?>
-                        <a href="<?= Url::toRoute('/internships/view-templates'); ?>" data-toggle="tooltip" title="View All">
-                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                    <?php endif; ?>
-                </div>
-            </div>
-            <div class="portlet-body">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <?php
-                        if (count($internships) > 0) {
-                            echo $this->render('/widgets/employer-applications/template-card', [
-                                'processes' => $internships,
-                                'limit' => 4,
-                                'type' => "Internships",
-                                'col_width' => 'col-lg-6 col-md-6 col-sm-6',
-                            ]);
-                        } else {
-                            ?>
-                            <div class="tab-empty">
-                                <div class="tab-empty-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.png'); ?>"
-                                         class="img-responsive" alt=""/>
-                                </div>
-                                <div class="tab-empty-text">
-                                    <div class="">No process to display</div>
-                                </div>
-                            </div>
-                        <?php }
-                        ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 <div class="row">
     <div class="col-lg-6 col-xs-12 col-sm-12">
@@ -212,7 +99,7 @@ use yii\helpers\Url;
                     <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Questionnaire Templates'); ?></span>
                 </div>
                 <div class="actions">
-                    <?php if ($questionnaire['total'] > 4): ?>
+                    <?php if ($questionnaire['total'] > 4) : ?>
                         <a href="<?= Url::toRoute('templates/questionnaire/index'); ?>" data-toggle="tooltip" title="View All">
                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                     <?php endif; ?>
@@ -229,11 +116,10 @@ use yii\helpers\Url;
                                 'col_width' => 'col-lg-6 col-md-6 col-sm-6',
                             ]);
                         } else {
-                            ?>
+                        ?>
                             <div class="tab-empty">
                                 <div class="tab-empty-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/questionnaires.png'); ?>"
-                                         class="img-responsive" alt=""/>
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/questionnaires.png'); ?>" class="img-responsive" alt="" />
                                 </div>
                                 <div class="tab-empty-text">
                                     <div class="">No Questionnaires</div>
@@ -254,7 +140,7 @@ use yii\helpers\Url;
                     <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Hiring Process Templates'); ?></span>
                 </div>
                 <div class="actions">
-                    <?php if ($interview_processes['total'] > 4): ?>
+                    <?php if ($interview_processes['total'] > 4) : ?>
                         <a href="<?= Url::toRoute('templates/hiring-process/index'); ?>" data-toggle="tooltip" title="View All">
                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                     <?php endif; ?>
@@ -271,11 +157,10 @@ use yii\helpers\Url;
                                 'col_width' => 'col-lg-6 col-md-6 col-sm-6',
                             ]);
                         } else {
-                            ?>
+                        ?>
                             <div class="tab-empty">
                                 <div class="tab-empty-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.png'); ?>"
-                                         class="img-responsive" alt=""/>
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.png'); ?>" class="img-responsive" alt="" />
                                 </div>
                                 <div class="tab-empty-text">
                                     <div class="">No process to display</div>
