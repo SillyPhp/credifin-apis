@@ -709,14 +709,14 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                                 }
                                             }
                                         ?>
-                                        <label for="exp_year" class="label-edit">Experience(Y)</label>
+                                        <label for="exp_year" class="label-edit">Experience(In Years)</label>
                                         <input type="text" class="form-control form-control-edit" data-name="exp_year"
                                                data-id="exp_year" placeholder="Experience Year" value="<?= $expYear ?>">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group text-left">
-                                        <label for="exp_month" class="label-edit">Experience(M)</label>
+                                        <label for="exp_month" class="label-edit">Experience(In Months)</label>
                                         <input type="text" class="form-control form-control-edit" data-name="exp_month"
                                                data-id="exp_month" placeholder="Experience Months" value="<?= $expMonth ?>">
                                     </div>
