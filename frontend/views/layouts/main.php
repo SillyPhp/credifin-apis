@@ -452,6 +452,7 @@ AppAssets::register($this);
         }
     </script>
     <?php
+    $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
     $this->registerCss('
     .upcoming-webinar{
         width: 100%;
@@ -972,8 +973,20 @@ AppAssets::register($this);
     }
     if(!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization){
         $this->registerJs("
-         function openUserDetailsModal(){
-            let hasCookie = document.cookie;
+        function getCookie(name){
+            var re = new RegExp(name + '=([^;]+)');
+            var value = re.exec(document.cookie);
+            return (value != null) ? unescape(value[1]) : null;
+        }  
+        function openUserDetailsModal(){
+            let cookieVal = getCookie('ModalisViewed'); 
+            if(cookieVal == 'modalViewed'){
+                let date = new Date();
+                date.setTime(date.getTime() + (1 * 24 * 60 * 60 * 1000));
+                let jdate = date.toUTCString()
+                const expires = 'expires=' + date.toUTCString();
+                document.cookie='CompanyProfile='+jdate+'; expires='+expires+'; path=/'
+            }
             if (document.cookie.indexOf('ModalisViewed') != -1) {
                 return false; 
             }

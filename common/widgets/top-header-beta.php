@@ -254,6 +254,14 @@
                                             <a href="/account/dashboard">Dashboard</a>
                                         </li>
                                         <?= $this->render('education-loans'); ?>
+                                        <?php if(\common\models\LoanApplications::find()
+                                            ->where(['created_by'=>Yii::$app->user->identity->user_enc_id,'is_deleted'=>0])
+                                            ->exists()){
+                                            ?>
+                                        <li>
+                                            <a href="/account/education-loans/loan-details">Manage Loan Applications</a>
+                                        </li>
+                                        <?php }?>
                                         <li>
                                             <a href="/account/jobs/dashboard">Manage Jobs</a>
                                         </li>

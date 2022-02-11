@@ -27,7 +27,6 @@ class AppAssets extends AssetBundle {
         'js/lazyload.min.js',
         'https://cdnjs.cloudflare.com/ajax/libs/jquery.lazy/1.7.9/jquery.lazy.min.js',
         'https://unpkg.com/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js',
-        '@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js',
         'https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js'
 //        'js/functions.js',
     ];

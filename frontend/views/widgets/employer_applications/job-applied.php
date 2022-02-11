@@ -249,6 +249,7 @@ $script = <<< JS
             return false;
         }
         $('.' + btn_class + '').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+        $('.' + btn_class + '').attr("disabled", "true");
         if ($('input[name="JobApplied[location_pref][]"]').length <= 1) {
             $('input[name="JobApplied[location_pref][]"]').prop('checked', true);
             $('.sav_job').trigger('click');
@@ -271,6 +272,7 @@ $script = <<< JS
     var que_id = $('#question_id').val();
     $(document).on('click', '.sav_job', function (e) {
         e.preventDefault();
+        $(this).prop('disabled', true);
         if ($('input[name="JobApplied[location_pref][]"]').length !== 0) {
             if ($('input[name="JobApplied[location_pref][]"]:checked').length <= 0) {
                 $('#resume_form').yiiActiveForm('validateAttribute', 'jobapplied-location_pref');
@@ -364,6 +366,14 @@ $script = <<< JS
             success: function (data) {
                 var res = JSON.parse(data);
                 $('#appliedAppId').val(res.aid);
+                $.ajax({
+                    url: '/jobs/save-preference-according-to-application',
+                    method: 'POST',
+                    data: {eaidk:$('#application_id').val(), type:application_type, appliedId:res.aid},
+                    success: function(response){
+                        console.log(response);
+                    }
+                })
                 if (res.status == true && $('#question_id').val() == 1) {
                     // $('#resume_modal').modal('show');
                     applied();

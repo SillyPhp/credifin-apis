@@ -2,11 +2,13 @@
 
 use yii\helpers\Url;
 
+Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->prod->apiKey . '"', \yii\web\View::POS_HEAD);
 ?>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <section>
     <div class="">
         <div class="row">
-            <div class="col-md-3 col-xs-12" id="side-bar-main">
+            <div class="col-md-3 col-sm-3 col-xs-12" id="side-bar-main" class="remove-height">
                 <div class="navigate-loan nd-shadow">
                     <ul class="nav nav-pills set-width">
                         <li class="active height-main"><a href="#homedata" data-toggle="tab"><i
@@ -28,12 +30,13 @@ use yii\helpers\Url;
                                 </ul>
                             </li>
                         <?php } ?>
+
                         <li class="height-main"><a href="#notifications" data-toggle="tab"><i
                                         class="fa fa-bell"></i> Notifications</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="col-md-9 col-xs-12" id="integration-main">
+            <div class="col-md-9 col-sm-9 col-xs-12" id="integration-main">
 
                 <div class="tab-content clearfix">
                     <div class="tab-pane active" id="homedata">
@@ -155,6 +158,7 @@ $this->RegisterCss('
     padding: 20px 0;
     position:sticky;
     top:115px;
+    margin-bottom:30px;
 }
 .design-list {
     max-height: 250px;
@@ -209,7 +213,11 @@ $this->RegisterCss('
     0% { opacity: 0; transform: translateY(30%); }
     50% { opacity: 1; transform: translateY(0); }
 }
-
+@media screen and (max-width: 768px) {
+.remove-height{
+    height:auto !important;
+}
+}
 ');
 $script = <<<JS
  $('.company-logo').on('click', function(e){
@@ -226,8 +234,11 @@ $script = <<<JS
     });
  });
  function initializePosSticky() {
+     
+if ($(window).width() > 768) {
   var mainHeight = $('#integration-main').height();
   $('#side-bar-main').css('height',mainHeight);
+}
 }
 initializePosSticky();
 $(document).on('click', '.height-main', function(){
@@ -235,12 +246,95 @@ $(document).on('click', '.height-main', function(){
       initializePosSticky();
    },1000);
 });
+
 if($('.design-list').length){
  var ps = new PerfectScrollbar('.design-list');
  }
+function _razoPay(ptoken,loan_id,education_loan_id,email,phone,name){
+    var options = {
+    "key": access_key, 
+    "name": "Empower Youth",
+    "description": "Application Login Fee",
+    "image": "/assets/common/logos/logo.svg",
+    "order_id": ptoken, 
+    "handler": function (response){
+        updateStatus(education_loan_id,loan_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
+    },
+    "prefill": {
+        "name": name,
+        "email": email,
+        "contact": phone,
+    },
+    "theme": {
+        "color": "#ff7803"
+    }
+};
+     var rzp1 = new Razorpay(options);
+     rzp1.open();
+     rzp1.on('payment.failed', function (response){
+         updateStatus(education_loan_id,loan_id,null,"failed");
+      swal({
+      title:"Error",
+      text: response.error.description,
+      });
+});
+}  
+function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,signature=null){
+    $.ajax({
+            url : '/api/v3/education-loan/update-widget-loan-application',
+            method : 'POST', 
+            data : {
+              loan_payment_id:education_loan_id,
+              loan_app_id:loan_app_enc_id,
+              payment_id:payment_id, 
+              status:status, 
+              signature:signature,
+            },
+            success:function(e)
+            {
+                if (status=="captured"){
+                    if (e.response.status=='200'){
+                        swal({
+                         title: "Success",
+                         text: "Payment Is Submitted Successfully",
+                         type:'success',
+                         showCancelButton: false,  
+                         confirmButtonClass: "btn-primary",
+                         confirmButtonText: "Close",
+                         closeOnConfirm: true, 
+                         closeOnCancel: true
+                          },
+                             function (isConfirm) { 
+                              location.reload(true);
+                          }
+                         );
+                    } else {
+                        swal({
+                         title:"Payment Error",
+                         text: 'Your Payment Status Will Be Update In 1-2 Business Day',
+                      });
+                    }
+                }
+                $('#subBtn').show();     
+                $('#prevBtn').show();     
+                $('#loadBtn').hide();
+            }
+    })
+}
+$('.pay-btn').click(function(e){
+  let loan_id = $(this).attr("data-loan-id");
+  let phone = $(this).attr("data-phone");
+  let email = $(this).attr("data-email");
+  let payment_token = $(this).attr("data-payment-token");
+  let education_payment_id = $(this).attr("data-education-payment-id");
+  let data_name = $(this).attr("data-name");
+  _razoPay(payment_token,loan_id,education_payment_id,email,phone,data_name)
+});
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 ?>
 

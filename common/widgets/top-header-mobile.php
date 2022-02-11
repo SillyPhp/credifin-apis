@@ -262,6 +262,16 @@
                             <?= $this->render('education-loans-mobile'); ?>
                             <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                                 <div class="ey-mobile-sub-menu-heading">
+                                    <?php if (\common\models\LoanApplications::find()
+                                        ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'is_deleted' => 0])
+                                        ->exists()) {
+                                        ?>
+                                        <a href="/account/education-loans/loan-details">Manage Loan Applications</a>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                            <div class="ey-mob-sub-item ey-mobile-sub-has-container">
+                                <div class="ey-mobile-sub-menu-heading">
                                     <a href="/account/jobs/dashboard">Manage Jobs</a>
                                 </div>
                             </div>
