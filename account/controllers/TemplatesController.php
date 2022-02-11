@@ -61,7 +61,7 @@ class TemplatesController extends Controller
         return $processess->getProcesses($options);
     }
 
-    private function __getApplications($type = 'Internships', $con)
+    private function __getApplications($type = 'Jobs', $con)
     {
         $application = \common\models\ApplicationTemplates::find()
             ->alias('a')

@@ -17,7 +17,7 @@ if (!empty($total_processes)) {
                     ?>
                     <div class="box-main-col <?= $col_width; ?>">
                         <div class="p-category">
-                                <a href="#" onclick="window.open('<?= Url::to('/account/'.$processes[$next]['temp_type'].'/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');"  data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
+                                <a href="#" onclick="window.open('<?= Url::to('/account/'.lcfirst($processes[$next]['temp_type']).'/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');"  data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
                                     <?php if($processes[$next]['temp_type']){ ?><span class="temp-type"><?= $processes[$next]['temp_type']?></span><?php } ?>
                                     <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
