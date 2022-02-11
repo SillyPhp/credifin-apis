@@ -985,7 +985,7 @@ AppAssets::register($this);
                 date.setTime(date.getTime() + (1 * 24 * 60 * 60 * 1000));
                 let jdate = date.toUTCString()
                 const expires = 'expires=' + date.toUTCString();
-                document.cookie='CompanyProfile='+jdate+'; expires='+expires+'; path=/'
+                document.cookie='ModalisViewed='+jdate+'; expires='+expires+'; path=/'
             }
             if (document.cookie.indexOf('ModalisViewed') != -1) {
                 return false; 

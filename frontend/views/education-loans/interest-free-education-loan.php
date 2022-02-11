@@ -92,50 +92,51 @@ use yii\helpers\Url;
 
 
 <?= $this->render('/widgets/interest-free-loan-process') ?>
+<?= $this->render('/widgets/benefits-parents') ?>
 
-    <section class="benefit-bg">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style bene-head">Benefits For Parents</div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3 col-sm-3 col-xs-12">
-                    <div class="bene-img">
-                        <span class="img-fs"><i class="fa fa-file-signature"></i></span>
-                    </div>
-                    <div class="bene-img-text">
-                        <p>Minimal Paper Work</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-3 col-xs-12">
-                    <div class="bene-img">
-                        <span class="img-fs"><i class="fas fa-thumbs-up"></i></span>
-                    </div>
-                    <div class="bene-img-text">
-                        <p>Approval In Minutes</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-3 col-xs-12">
-                    <div class="bene-img">
-                        <span class="img-fs"><i class="fa fa-hand-holding-usd"></i></span>
-                    </div>
-                    <div class="bene-img-text">
-                        <p>No Prepayment Charges</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-3 col-xs-12">
-                    <div class="bene-img">
-                        <span class="img-fs">EMI</span>
-                    </div>
-                    <div class="bene-img-text">
-                        <p>Repay In Easy Monthly Installments</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section class="benefit-bg">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-12">-->
+<!--                    <div class="heading-style bene-head">Benefits For Parents</div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-3 col-sm-3 col-xs-12">-->
+<!--                    <div class="bene-img">-->
+<!--                        <span class="img-fs"><i class="fa fa-file-signature"></i></span>-->
+<!--                    </div>-->
+<!--                    <div class="bene-img-text">-->
+<!--                        <p>Minimal Paper Work</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-3 col-sm-3 col-xs-12">-->
+<!--                    <div class="bene-img">-->
+<!--                        <span class="img-fs"><i class="fas fa-thumbs-up"></i></span>-->
+<!--                    </div>-->
+<!--                    <div class="bene-img-text">-->
+<!--                        <p>Approval In Minutes</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-3 col-sm-3 col-xs-12">-->
+<!--                    <div class="bene-img">-->
+<!--                        <span class="img-fs"><i class="fa fa-hand-holding-usd"></i></span>-->
+<!--                    </div>-->
+<!--                    <div class="bene-img-text">-->
+<!--                        <p>No Prepayment Charges</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-3 col-sm-3 col-xs-12">-->
+<!--                    <div class="bene-img">-->
+<!--                        <span class="img-fs">EMI</span>-->
+<!--                    </div>-->
+<!--                    <div class="bene-img-text">-->
+<!--                        <p>Repay In Easy Monthly Installments</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
 
 <?= $this->render('/widgets/interest-free-upto-10lakhs') ?>
 

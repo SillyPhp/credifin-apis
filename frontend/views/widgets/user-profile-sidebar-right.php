@@ -52,11 +52,6 @@ use yii\widgets\Pjax;
 
                     </li>
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username; ?>/edit" title="" class="tree-toggler"><i
-                                    class="fas fa-edit"></i>Edit Profile</a>
-
-                    </li>
-                    <li class="inner-child">
                         <a href="/account/jobs/saved" title="" class="tree-toggler"><i
                                     class="far fa-money-bill-alt"></i>Saved
                             Jobs</a>
