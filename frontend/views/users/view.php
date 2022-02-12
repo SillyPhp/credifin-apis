@@ -270,6 +270,14 @@ $uId = $user['user_enc_id'];
                                 </a>
                             </li>
                         <?php }
+                        if(!empty($user['telegram'])) {?>
+                            <li class="telegram">
+                                <a href="https://t.me/<?= Html::encode($user['telegram']) ?>"
+                                   target="_blank">
+                                    <i class="fab fa-telegram"></i>
+                                </a>
+                            </li>
+                        <?php }
                         if (!empty($user['email'])) { ?>
                             <li class="mael">
                                 <a href="mailto:<?= Html::encode($user['email']) ?>" target="_blank">
@@ -959,6 +967,9 @@ $this->registerCss('
 }
 .lin a {
 	background-color: #007bb6;
+}
+.telegram a{
+    background-color: #229ED9;
 }
 .mael a {
 	background-color: #bb0000;

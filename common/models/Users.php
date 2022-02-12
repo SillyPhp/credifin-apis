@@ -26,6 +26,7 @@ namespace common\models;
  * @property string $facebook Facebook URL
  * @property string $google Google+ URL
  * @property string $twitter Twitter URL
+ * @property string $telegram Telegram URL
  * @property string $instagram Instagram URL
  * @property string $linkedin Linkedin URL
  * @property string $youtube Youtube URL
@@ -424,7 +425,7 @@ class Users extends \yii\db\ActiveRecord
             [['dob', 'created_on', 'last_updated_on', 'last_visit'], 'safe'],
             [['gender', 'is_available', 'is_email_verified', 'is_phone_verified', 'is_credential_change', 'is_deleted'], 'integer'],
             [['user_enc_id', 'auth_key', 'user_type_enc_id', 'address', 'image', 'image_location', 'cover_image', 'cover_image_location', 'city_enc_id', 'organization_enc_id', 'job_function', 'asigned_job_function'], 'string', 'max' => 100],
-            [['username', 'email', 'facebook', 'google', 'twitter', 'instagram', 'linkedin', 'youtube', 'skype'], 'string', 'max' => 50],
+            [['username', 'email', 'facebook', 'google', 'twitter', 'telegram', 'instagram', 'linkedin', 'youtube', 'skype'], 'string', 'max' => 50],
             [['password'], 'string', 'max' => 200],
             [['first_name', 'last_name'], 'string', 'max' => 30],
             [['phone', 'experience'], 'string', 'max' => 15],
