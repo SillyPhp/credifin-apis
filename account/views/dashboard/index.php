@@ -6,9 +6,6 @@ use kartik\widgets\DatePicker;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
-//echo $this->render('/widgets/header/secondary-header', [
-//    'for' => 'Dashboard',
-//]);
 $is_email_verified = true;
 if (Yii::$app->user->identity->organization->organization_enc_id) :
     if (!Yii::$app->user->identity->organization->is_email_verified) :
@@ -398,7 +395,7 @@ endif;
                 </div>
             </div>
             
-<!--            --><?//= $this->render('/dashboard/calendar') ?>
+            <?= $this->render('/dashboard/calendar') ?>
 
             <?= $this->render('@common/widgets/resume-bank-widget') ?>
             
