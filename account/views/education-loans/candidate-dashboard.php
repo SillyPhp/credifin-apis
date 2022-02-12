@@ -1699,7 +1699,7 @@ $script = <<<JS
 var apiUrl = '/';
 var docEditIcon = '<i class="fa fa-pencil docEditIcon"></i>';
 if(document.domain != 'empoweryouth.com'){
-    apiUrl = 'https://sneh.eygb.me/';
+    apiUrl = 'https://ravinder.eygb.me/';
 }
 function showImage(input, inp_id, file_extension, fileUrl) {
     if (input.files && input.files[0]) {
@@ -1930,8 +1930,7 @@ function frontInptValidation(x, type) {
     return false;
 }
 
-function validate_fileupload(file, type)
-{
+function validate_fileupload(file, type){
     var extValidate = false;
     var fileName = file.name;
     var size=(file.size);
@@ -1939,12 +1938,8 @@ function validate_fileupload(file, type)
         toastr.error("File should be less than 5MB", "Large File");
         return false;
     }
-    var allowed_extensions = "";
-    if(type == "applicant"){
-        allowed_extensions = new Array("jpg","jpeg","png");
-    } else {
-        allowed_extensions = new Array("jpg","jpeg","png","pdf");
-    }
+    let allowed_extensions = new Array("jpg","jpeg","png","pdf");
+  
     var file_extension = fileName.split('.').pop().toLowerCase(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
     for(var i = 0; i <= allowed_extensions.length; i++)
     {
@@ -2530,6 +2525,76 @@ function readURL(input) {
   }
 }
 
+let base_uri = '';
+async function readFileAsDataURL(file) {
+    let result_base64 = await new Promise((resolve) => {
+        let fileReader = new FileReader();
+        fileReader.onload = (e) => resolve(fileReader.result);
+        fileReader.readAsDataURL(file);
+    });
+    
+    base = result_base64;
+    base_uri = base;
+    return result_base64;
+}
+async function getUri(file) {
+    let result_base64 = await new Promise((resolve) => {
+        new Compressor(file, {
+            quality: 0.6,
+            success(result) {
+                let dataURL = readFileAsDataURL(result).then(data => {
+                    resolve(data);
+                });
+            },
+        });
+    });
+    return result_base64;
+}
+let Pagewidth;
+let doc;
+let Pageheight;
+let pdf_uri;
+async function createPDF(imgData) {
+    if (imgData.length=="undefined" || imgData.length==0){
+        alert("select image");
+        return false;
+    }
+    let result_base64 = await new Promise((resolve) => {
+        doc = new jsPDF('p', 'pt', 'a4');
+        Pagewidth = doc.internal.pageSize.width;
+        Pageheight = doc.internal.pageSize.height;
+        
+        const img = new Image();
+        img.src = imgData;
+        img.length = imgData.length;
+        img.onload = function() {
+            img.imgWidth = img.naturalWidth;
+            img.imgHeight = img.naturalHeight;
+            callback(img.imgWidth,img.imgHeight,img.src,img.i,img.length).then(data => {
+                resolve(true);
+            });
+        };
+    });
+    return result_base64;
+}
+
+async function callback(width,height,src,i,fileLength){
+    let result_base64 = await new Promise((resolve) => {
+        const widthRatio = Pagewidth / width;
+        const heightRatio = Pageheight / height;
+        const ratio = widthRatio > heightRatio ? heightRatio : widthRatio;
+        const canvasWidth = width * ratio;
+        const canvasHeight = height * ratio;
+        const marginX = (Pagewidth - canvasWidth) / 2;
+        const marginY = (Pageheight - canvasHeight) / 2;
+        doc.addImage(src, 'JPEG', marginX, marginY, canvasWidth, canvasHeight, i);
+        
+        pdf_uri = doc.output('blob');
+        resolve(true);
+    });
+    return result_base64;
+}
+
  $(document).on('change','input:file', function(e) {
     var elem = $(this);
     var elem_id = elem.attr('id');
@@ -2565,11 +2630,10 @@ function readURL(input) {
      var files = e.target.files;
      if(files.length){
          var formData = new FormData();
-         formData.append("image", files[0]);
          formData.append("upload_file", 'test');
          formData.append("user_enc_id", user_enc_id);
          formData.append("loan_app_id", loan_app_id);
-         formData.append("image_name", files[0].name);
+         formData.append("image_name", files[0].name.split('.')[0]);
          if(typeof relation !== "undefined"){
             formData.append("relation", relation);
          }
@@ -2590,7 +2654,25 @@ function readURL(input) {
              formData.append("id", key);
          }
          var section = elem.closest('section');
-         $.ajax({
+         
+         if(file_extension != 'pdf'){
+             getUri(files[0]).then(data => {
+                 createPDF(base_uri).then(data => {
+                     formData.append("image", pdf_uri); 
+                     file_extension = 'pdf'
+                     uploadImage(formData,mainSection,elem,file_extension)
+                 })
+             });
+         }else{
+             formData.append("image", files[0]); 
+             uploadImage(formData,mainSection,elem,file_extension)
+         }
+         
+     }
+ });
+
+function uploadImage(formData,mainSection,elem,file_extension){
+    $.ajax({
              url: apiUrl+'api/v3/education-loan/upload-image',
              method: 'POST',
              data: formData,
@@ -2621,8 +2703,8 @@ function readURL(input) {
                  $('#fadder').fadeOut();
              }
          });
-     }
- });
+}
+
  function removeIcons() {
     $('.process_icon').remove();
     $('.done_icon').remove();
@@ -2631,6 +2713,8 @@ function readURL(input) {
 JS;
 $this->registerJS($script);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJSFile('https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.1.1/compressor.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJSFile('https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.1/jspdf.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
     var apiUrl = '/';
