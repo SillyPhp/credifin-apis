@@ -1754,45 +1754,7 @@ button.lc-item-video-menu {
         line-height: 56px;
         cursor: pointer;
     }
-    /*Drop Resume PopUp Styles Change*/
-        .i-review-close:before, .i-review-close:after {
-            height: 35px;
-            border-left: 3px solid #fff;
-            border-radius: 10px;
-        }
-        .i-review-start-end-container * {
-            color: #fff;
-        }
-        .up-btn, .i-review-next, .i-review-next-review{
-            border: solid 2px #fff;
-            display: inline-block;
-        }
-        .i-review-next-icon::before{
-            background-color: #fff;
-        }
-        .i-review-next-icon::after{
-            border-color: transparent transparent transparent #fff;
-        }
-        .i-review-button-text {
-            color: #fff;
-        }
-        .i-review-start-end-title {
-            line-height: 1.3;
-        }
-        .i-review-start-end-container .i-review-next, .i-review-start-end-container .i-review-next-review{
-            margin: 0;
-        }
-        @media screen and (max-width: 699px){
-            // .i-review-next, .i-review-next-review {
-                //     width: unset !important;
-                // }
-                .i-review-next::after, .i-review-next-review::after{
-                    width: unset !important;
-                }
-                .up-btn{
-                    width: 100%;
-                }
-            }
+    
             @media only screen and (max-width: 575px) {
                 .job-overview ul li{
              width: 50% !important;
