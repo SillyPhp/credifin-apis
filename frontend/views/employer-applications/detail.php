@@ -1782,6 +1782,12 @@ button.lc-item-video-menu {
         .i-review-start-end-container .i-review-next, .i-review-start-end-container .i-review-next-review{
             margin: 0;
         }
+        .toggle input + label {
+            border: solid 2px #fff;
+        }
+        .i-review-description {
+            opacity: 1;
+        }
         @media screen and (max-width: 699px){
             // .i-review-next, .i-review-next-review {
                 //     width: unset !important;
