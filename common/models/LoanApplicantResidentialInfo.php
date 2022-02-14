@@ -20,7 +20,7 @@ use Yii;
  * @property string $created_on
  * @property string $updated_by
  * @property string $updated_on
- * @property int $is_sane_cur_addr 1 as no, 2 as yes
+ * @property int $is_sane_cur_addr 1 as No, 2 as Yes
  * @property int $is_deleted
  *
  * @property LoanApplications $loanAppEnc
@@ -33,7 +33,7 @@ use Yii;
 class LoanApplicantResidentialInfo extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -41,7 +41,7 @@ class LoanApplicantResidentialInfo extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
