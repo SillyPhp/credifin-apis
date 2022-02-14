@@ -1,5 +1,5 @@
 <?php
-$column = 'col-md-4 col-sm-6';
+$column = 'col-lg-4 col-md-6';
 if (isset($size)) {
     $column = $size;
 }
@@ -11,30 +11,30 @@ if (isset($size)) {
                 ?>
                 <div class="<?= $column ?> loader-padding">
                     <div class="main-box">
-                        <div class="short">
+                        <!-- <div class="short">
                             <div class="loader anim"></div>
-                        </div>
+                        </div> -->
                         <div class="short-dp">
                             <div class="loader anim"></div>
                         </div>
                         <div class="short-name">
                             <div class="loader anim"></div>
                         </div>
-                        <div class="short-desc">
+                        <div class="short-skills">
+                            <div class="loader anim" style"></div>
+                            <div class="loader anim"></div>
                             <div class="loader anim"></div>
                         </div>
-                        <div class="short-skills">
-                            <div class="loader anim"></div>
-                            <div class="loader anim"></div>
+                        <div class="short-desc">
                             <div class="loader anim"></div>
                         </div>
                         <div class="short-location">
                             <div class="loader anim"></div>
                             <div class="loader anim"></div>
                         </div>
-                        <div class="short-view">
+                        <!-- <div class="short-view">
                             <div class="loader anim"></div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <?php
@@ -48,7 +48,8 @@ $this->registerCss('
     border: 1px solid #eee;
     border-radius: 7px;
     position: relative;
-    height: 395px;
+    height: 320px;
+    padding: 20px 10px;
 }
 .loader-padding{
     margin-bottom:20px;
@@ -67,44 +68,42 @@ $this->registerCss('
     width:100%
 }
 .short-dp .loader {
-    width: 120px;
-    height: 120px;
+    width: 80px;
+    height: 80px;
     border-radius: 100px;
-    margin: 0 auto;
-    margin-top: 25px;
 }
 .short-name .loader{
-    width: 190px;
+    width: 80%;
     height: 22px;
-    margin: 0 auto;
     margin-top: 20px;
 }
 .short-desc .loader{
-    width: 150px;
+    width: 90px;
     height: 18px;
-    margin: 0 auto;
     margin-top: 5px;
 }
 .short-skills{
     margin-top: 15px;
-    text-align: center;
+    // text-align: center;
     padding: 3px;
     }
 .short-skills .loader{
-    width: 100px;
+    width: 60px;
     height: 20px;
-    margin: 0 auto;
-    border-radius:8px;
-    margin-top:3px;
+    margin-right: 10px;
+    border-radius: 8px;
+    margin-top: 3px;
     display: inline-block;
 }
-.short-location{
+.short-location {
     margin: 31px 0 10px 0;
     text-align: center;
+    display: flex;
+    justify-content: space-between;
 }
-.short-location .loader{
-    width: 100px;
-    height: 23px;
+.short-location .loader {
+    flex-basis: 47%;
+    height: 35px;
     display: inline-block;
 }
 .short-view {
@@ -142,4 +141,4 @@ $this->registerCss('
     100% { background-position: 12rem 0; }
 }
 ')
-?>
+?>`

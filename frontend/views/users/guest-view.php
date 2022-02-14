@@ -109,6 +109,14 @@ $this->params['header_dark'] = false;
                                     <i class="fab fa-skype"></i>
                                 </a>
                             </li>
+                        <?php }
+                        if(!empty($user['telegram'])) {?>
+                            <li>
+                                <a href="https://t.me/<?= Html::encode($user['telegram']) ?>"
+                                   target="_blank">
+                                    <i class="fab fa-telegram"></i>
+                                </a>
+                            </li>
                         <?php } ?>
                     </ul>
                 </div>

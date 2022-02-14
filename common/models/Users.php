@@ -27,7 +27,7 @@ namespace common\models;
  * @property string $facebook Facebook URL
  * @property string $google Google+ URL
  * @property string $twitter Twitter URL
- * @property string $telegram
+ * @property string $telegram Telegram URL
  * @property string $instagram Instagram URL
  * @property string $linkedin Linkedin URL
  * @property string $youtube Youtube URL
