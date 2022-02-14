@@ -7,7 +7,7 @@ if (isset($size)) {
     <div class="loading-main">
         <div class="row">
             <?php
-            for ($i = 0; $i < 3; $i++) {
+            for ($i = 0; $i < 9; $i++) {
                 ?>
                 <div class="<?= $column ?> loader-padding">
                     <div class="main-box">
