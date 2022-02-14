@@ -1698,7 +1698,7 @@ ul > .process_icon, ul > .done_icon{
 $script = <<<JS
 var apiUrl = '/';
 var docEditIcon = '<i class="fa fa-pencil docEditIcon"></i>';
-if(document.domain != 'empoweryouth.com'){
+if(document.domain != 'www.empoweryouth.com'){
     apiUrl = 'https://ravinder.eygb.me/';
 }
 function showImage(input, inp_id, file_extension, fileUrl) {
@@ -2718,8 +2718,8 @@ $this->registerJSFile('https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.1/jspdf.
 ?>
 <script>
     var apiUrl = '/';
-    if(document.domain != 'empoweryouth.com'){
-        apiUrl = 'https://sneh.eygb.me/';
+    if(document.domain != 'www.empoweryouth.com'){
+        apiUrl = 'https://ravinder.eygb.me/';
     }
     function eduTemp(edu_count) {
         // return '<div class="row mt10"> <div class="col-md-4 padd-20"><div class="form-group"><label for="eduName' + edu_count + '" class="input-group-text" data-field="name">Qualification </label><input type="text" class="form-control" id="eduName' + edu_count + '" placeholder="Degree Name"></div></div><div class="col-md-4 padd-20"><div class="form-group"><label for="instituteName' + edu_count + '" class="input-group-text" data-field="institution">Name Of Institution</label><input type="text" class="form-control" id="instituteName' + edu_count + '" placeholder=""></div></div><div class="col-md-4 padd-20 hidden"><div class="form-group"><label for="marksObtained' + edu_count + '" class="input-group-text" data-field="obtained_marks">Marks Obtained</label><input type="text" class="form-control" id="marksObtained' + edu_count + '" placeholder=""></div></div></div>';
