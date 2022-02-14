@@ -557,10 +557,13 @@ class EducationLoansController extends Controller
     {
         $loan_application = LoanApplications::find()
             ->alias('a')
-            ->select(['a.loan_app_enc_id','a.applicant_name','a.amount loan_amount','b.payment_status','a.loan_type','b.payment_token','b.education_loan_payment_enc_id','a.email','a.phone','b.payment_amount amount'])
-            ->joinWith(['educationLoanPayments b'],false)
-            ->joinWith(['assignedLoanProviders c'=>function($c){
-                $c->select(['c.assigned_loan_provider_enc_id','c.loan_application_enc_id','c.status','c1.name','(CASE
+            ->select(['a.loan_app_enc_id', 'a.applicant_name', 'a.amount loan_amount', 'a.loan_type', 'b.payment_token', 'b.education_loan_payment_enc_id', 'a.email', 'a.phone', 'b.payment_amount amount'])
+            ->joinWith(['educationLoanPayments b' => function ($b) {
+                $b->select(['b.loan_app_enc_id', 'b.payment_status']);
+                $b->onCondition(['b.payment_status' => ['captured', 'created', 'waived off']]);
+            }])
+            ->joinWith(['assignedLoanProviders c' => function ($c) {
+                $c->select(['c.assigned_loan_provider_enc_id', 'c.loan_application_enc_id', 'c.status', 'c1.name', '(CASE
                 WHEN c1.logo IS NULL OR c1.logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", c1.name, "&size=50&rounded=false&background=", REPLACE(c1.initials_color, "#", ""), "&color=ffffff") ELSE
                 CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory .  Yii::$app->params->upload_directories->organizations->logo . '", c1.logo_location, "/", c1.logo) END

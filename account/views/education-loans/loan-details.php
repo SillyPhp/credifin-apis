@@ -43,20 +43,19 @@ Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->
 
                         <?php
                         if ($applications) {
-                            $vals = ['captured', 'created', 'waived off'];
                             $application = $applications[0];
 
-                            if ($application['payment_status'] != '' && in_array($application['payment_status'], $vals) && $application['assignedLoanProviders'][0]['status'] != 5) {
+                            if ($application['educationLoanPayments'] && $application['assignedLoanProviders'][0]['status'] != 5) {
                                 echo $this->render('/widgets/education-loan/complete-profile', [
                                     'loan_app_id' => $application['loan_app_enc_id'],
                                 ]);
                             }
 
-                            if ($application['payment_status'] == '' || !in_array($application['payment_status'], $vals)) {
+                            if (!$application['educationLoanPayments']) {
                                 echo $this->render('/widgets/login-fee-due', [
                                     'loginFee' => $application,
                                 ]);
-                            } elseif (in_array($application['payment_status'], $vals) && empty($application['assignedLoanProviders'])) {
+                            } elseif ($application['educationLoanPayments'] && empty($application['assignedLoanProviders'])) {
                                 echo $this->render('/widgets/job-application-lenders');
                             } elseif (!empty($application['assignedLoanProviders'])) {
                                 echo $this->render('/widgets/loan-approved', [
@@ -95,17 +94,16 @@ Yii::$app->view->registerJs('var access_key = "' . Yii::$app->params->razorPay->
                     <?php foreach ($applications as $application) { ?>
                         <div class="tab-pane" id="<?= $application['loan_app_enc_id'] ?>">
                             <?php
-                            $vals = ['captured', 'created', 'waived off'];
-                            if ($application['payment_status'] != '' && in_array($application['payment_status'], $vals) && $application['assignedLoanProviders'][0]['status'] != 5) {
+                            if ($application['educationLoanPayments'] && $application['assignedLoanProviders'][0]['status'] != 5) {
                                 echo $this->render('/widgets/education-loan/complete-profile', [
                                     'loan_app_id' => $application['loan_app_enc_id'],
                                 ]);
                             }
-                            if ($application['payment_status'] == '' || !in_array($application['payment_status'], $vals)) {
+                            if (!$application['educationLoanPayments']) {
                                 echo $this->render('/widgets/login-fee-due', [
                                     'loginFee' => $application,
                                 ]);
-                            } elseif (in_array($application['payment_status'], $vals) && empty($application['assignedLoanProviders'])) {
+                            } elseif ($application['educationLoanPayments'] && empty($application['assignedLoanProviders'])) {
                                 echo $this->render('/widgets/job-application-lenders');
                             } elseif (!empty($application['assignedLoanProviders'])) {
                                 echo $this->render('/widgets/loan-approved', [

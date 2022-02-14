@@ -234,6 +234,14 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             </a>
                         </li>
                     <?php }
+                    if(!empty($user['telegram'])) {?>
+                        <li class="lin">
+                            <a href="https://t.me/<?= Html::encode($user['telegram']) ?>"
+                               target="_blank">
+                                <i class="fab fa-telegram"></i>
+                            </a>
+                        </li>
+                    <?php }
                     if (!empty($user['email'])) { ?>
                         <li class="mael">
                             <a href="mailto:<?= Html::encode($user['email']) ?>"
@@ -1050,14 +1058,14 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group text-left">
-                                        <label for="facebook" class="label-edit">Facebook</label>
+                                        <label for="facebook" class="label-edit">Facebook Username</label>
                                         <input type="text" class="form-control form-control-edit" data-name="facebook"
                                                data-id="facebook" placeholder="Facebook">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group text-left">
-                                        <label for="twitter" class="label-edit">Twitter</label>
+                                        <label for="twitter" class="label-edit">Twitter Username</label>
                                         <input type="text" class="form-control form-control-edit" data-name="twitter"
                                                data-id="twitter" placeholder="Twitter">
                                     </div>
@@ -1071,9 +1079,16 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group text-left">
-                                        <label for="linkedin" class="label-edit">Linkedin</label>
+                                        <label for="linkedin" class="label-edit">Linkedin Username</label>
                                         <input type="text" class="form-control form-control-edit" data-name="linkedin"
                                                data-id="linkedin" placeholder="Linkedin">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group text-left">
+                                        <label for="linkedin" class="label-edit">Telegram Username</label>
+                                        <input type="text" class="form-control form-control-edit" data-name="telegram"
+                                               data-id="telegram" placeholder="Telegram">
                                     </div>
                                 </div>
                             </div>
