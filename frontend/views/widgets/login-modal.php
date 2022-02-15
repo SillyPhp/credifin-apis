@@ -548,8 +548,12 @@ $this->registerJs($script);
     }
 
     function changeSignup() {
-        document.getElementById('loginForm').style.display = "none";
-        document.getElementById('signForm').style.display = "block";
+        if(localStorage.getItem('autoApplyAfter') == "true"){
+            window.location.replace("/signup/individual");
+        } else{
+            document.getElementById('loginForm').style.display = "none";
+            document.getElementById('signForm').style.display = "block";
+        }
     }
 
     function changeBackLogin() {
