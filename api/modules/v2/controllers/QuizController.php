@@ -1140,6 +1140,7 @@ class QuizController extends ApiBaseController
             }
 
             $params['user_id'] = $user->user_enc_id;
+            $params['e_campus'] = true;
 
             $quizModel = new Quiz();
             $register = $quizModel->registerUser($params);
@@ -1161,6 +1162,7 @@ class QuizController extends ApiBaseController
             $params = Yii::$app->request->post();
 
             $params['user_id'] = $user->user_enc_id;
+            $params['e_campus'] = true;
 
             $quizModel = new Quiz();
             $update = $quizModel->updateStatus($params);

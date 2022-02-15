@@ -5,6 +5,7 @@ namespace common\models\extended;
 use common\models\QuizRegistration;
 use common\models\QuizSubmittedAnswers;
 use common\models\Quizzes;
+use common\models\Users;
 use yii\helpers\Url;
 use Yii;
 use yii\data\Pagination;
@@ -215,6 +216,21 @@ class Quiz extends Quizzes
                 }
 
                 $transaction->commit();
+
+                $user = Users::findOne(['user_enc_id' => $options['user_id']]);
+                $params = [];
+                $params['quiz_id'] = $options['quiz_id'];
+                $params['email'] = $user->email;
+                $params['name'] = $user->first_name . ' ' . $user->last_name;
+                if (isset($params['e_campus']) && $params['e_campus']) {
+                    $params['from'] = 'no-reply@myecampus.in';
+                    $params['site_name'] = 'My E-Campus';
+                } else {
+                    $params['from'] = Yii::$app->params->from_email;
+                    $params['site_name'] = Yii::$app->params->site_name;
+                }
+                Yii::$app->notificationEmails->quizRegistrationEmail($params);
+
                 return ['status' => 201, 'message' => 'success', 'data' => []];
 
             } catch (\Exception $e) {
@@ -323,6 +339,20 @@ class Quiz extends Quizzes
             if (!$registration->update()) {
                 return false;
             }
+
+            $user = Users::findOne(['user_enc_id' => $args['user_id']]);
+            $params = [];
+            $params['quiz_id'] = $registration->quiz_enc_id;
+            $params['email'] = $user->email;
+            $params['name'] = $user->first_name . ' ' . $user->last_name;
+            if (isset($params['e_campus']) && $params['e_campus']) {
+                $params['from'] = 'no-reply@myecampus.in';
+                $params['site_name'] = 'My E-Campus';
+            } else {
+                $params['from'] = Yii::$app->params->from_email;
+                $params['site_name'] = Yii::$app->params->site_name;
+            }
+            Yii::$app->notificationEmails->quizRegistrationEmail($params);
         }
 
         return true;
