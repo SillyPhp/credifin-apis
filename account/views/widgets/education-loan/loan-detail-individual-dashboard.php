@@ -4,7 +4,7 @@ use yii\helpers\Url;
 
 ?>
     <div class="portlet light portlet-fit nd-shadow">
-        <div class="portlet-title">
+        <div class="portlet-title" style="position:relative;">
             <div class="caption">
                 <i class=" icon-social-twitter font-dark hide"></i>
                 <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Loan Details'); ?>
@@ -13,6 +13,9 @@ use yii\helpers\Url;
                     </span>
                 </span>
             </div>
+            <?php if($loanApplication['status'] == 10) {?>
+                <div class="rejected-loan">Application Rejected</div>
+            <?php } ?>
         </div>
         <div class="portlet-body">
             <div class="row">
@@ -36,7 +39,7 @@ use yii\helpers\Url;
                             <div class="vendorImg"><img src="<?= $loanApplication['organization_logo'] ?>"></div>
                             <div class="vendorname"><?= $loanApplication['name'] ?></div>
                         </div>
-                        <?php if($loanApplication['status'] != 5){ ?>
+                        <?php if($loanApplication['status'] != 5 && $loanApplication['status'] != 10){ ?>
                         <div class="statsBox">
                             <p class="mb0"><Loan></Loan> Profile</p>
                             <a href="/account/education-loans/candidate-dashboard/<?= $loanApplication['loan_application_enc_id'] ?>" target="_blank">Complete
@@ -118,6 +121,18 @@ use yii\helpers\Url;
     </div>
 <?php
 $this->registerCss('
+.rejected-loan {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: red;
+    color: #fff;
+    padding: 6px 14px;
+    font-family: roboto;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: .5px;
+}
 .mt20{
     margin-top: 20px;
 }
