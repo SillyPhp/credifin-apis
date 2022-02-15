@@ -5,6 +5,8 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
+
+
 $base_url = 'https://empoweryouth.com';
 switch ($application_name['application_type']) {
     case 'Jobs':
@@ -834,6 +836,7 @@ usort($locations, "cmp");
                                         <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                         <!--                                            <a href="#">Request to Complete Profile</a>-->
                                     </div>
+
                                     <ul>
                                         <!--                                            <li>-->
                                         <!--                                                <a href="#">-->
@@ -1115,6 +1118,18 @@ $this->registerCss('
     font-size:12px;
     text-transform:uppercase;
 }
+.Can-num p{
+    text-align: right;
+    margin: 0;
+    padding-top: 13px;
+    font-size: 18px;
+}
+.Can-num p i{
+    font-size: 15px;
+    margin-right: 5px;
+    color: #00a0e3;
+}
+
 .has-success #phone-input {
     border-color: #c2cad8;
 }
@@ -2425,6 +2440,9 @@ overflow: hidden;
     padding: 5px;
     max-width: 30px;
     margin-right: 8px;
+}
+.modal-backdrop.in{
+    display: none !important;
 }
 @media (min-width:1400px){
     .sticky{

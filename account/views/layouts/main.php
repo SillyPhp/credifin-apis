@@ -398,6 +398,8 @@ $this->beginPage();
         ');
     if(!Yii::$app->user->isGuest && Yii::$app->user->identity->organization){
         $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+        $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.min.css');
+        $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
         $this->registerJs("
             function getCookie(name){
               var re = new RegExp(name + '=([^;]+)');
