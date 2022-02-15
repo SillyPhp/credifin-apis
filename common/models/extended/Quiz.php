@@ -215,8 +215,6 @@ class Quiz extends Quizzes
                     return false;
                 }
 
-                $transaction->commit();
-
                 $user = Users::findOne(['user_enc_id' => $options['user_id']]);
                 $params = [];
                 $params['quiz_id'] = $options['quiz_id'];
@@ -230,6 +228,8 @@ class Quiz extends Quizzes
                     $params['site_name'] = Yii::$app->params->site_name;
                 }
                 Yii::$app->notificationEmails->quizRegistrationEmail($params);
+
+                $transaction->commit();
 
                 return ['status' => 201, 'message' => 'success', 'data' => []];
 
