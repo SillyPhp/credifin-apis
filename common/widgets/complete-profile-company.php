@@ -894,7 +894,6 @@ if(croppieContainer){
 }
 var cropLogoPop = document.querySelector('#cropLogoPop');
 var el = cropLogoPop.querySelector('#demo');
-console.log(el);
 var vanilla = new Croppie(el, {
     viewport: { width: 400, height: 400 },
     boundary: { width: 500, height: 500 },
