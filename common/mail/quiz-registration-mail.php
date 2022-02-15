@@ -152,7 +152,7 @@
             <table class="quiz-vector">
                 <tr>
                     <td class="quiz-vec">
-                        <img src="<?= $data['sharing_image'] ?>">
+                        <img src="<?= $data['sharing_image'] ? $data['sharing_image'] : "https://www.empoweryouth.com/assets/themes/ey/images/pages/quiz/quiz-template-default.png" ?>">
                     </td>
                 </tr>
             </table>
@@ -189,7 +189,7 @@
                                     <?php foreach ($data['similar_quizzes'] as $val) { ?>
                                         <td style="padding: 10px;">
                                             <a href=""><img
-                                                        src="<?= $val['sharing_image'] ?>"></a>
+                                                        src="<?= $val['sharing_image'] ? $val['sharing_image'] : "https://www.empoweryouth.com/assets/themes/ey/images/pages/quiz/quiz-template-default.png" ?>"></a>
                                             <div class="rec-text">
                                                 <p><?= $val['name'] ?></p>
                                             </div>

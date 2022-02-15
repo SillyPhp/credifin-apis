@@ -252,6 +252,7 @@ class NotificationEmails extends Component
                 $c->joinWith(['categoryEnc c1']);
                 $c->joinWith(['parentEnc c2']);
             }], false)
+            ->andWhere(['not', ['c1.name' => $data['category']]])
             ->andFilterWhere(['c1.name' => $data['category']])
             ->limit(3)
             ->asArray()
