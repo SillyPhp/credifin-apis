@@ -5,11 +5,10 @@ use yii\helpers\Url;
 
 $other_jobs_intern = array_merge($other_jobs, $other_internships);
 $industry_jobs_intern = array_merge($ind_jobs, $ind_internships);
-
 ?>
 <div class="row">
 
-    <?php if ($industry_jobs_intern) { ?>
+    <?php if ($industry_jobs_intern && $industry['industry_enc_id']) { ?>
         <div class="col-lg-12 col-xs-12 col-sm-12">
             <div class="portlet light">
                 <div class="portlet-title">
@@ -48,7 +47,7 @@ $industry_jobs_intern = array_merge($ind_jobs, $ind_internships);
             <div class="portlet-title">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase"><?= $industry_jobs_intern ? Yii::t('account', 'Other Templates') : Yii::t('account', 'Job and Internship Templates'); ?></span>
+                    <span class="caption-subject font-dark bold uppercase"><?= ($industry_jobs_intern && $industry['industry_enc_id']) ? Yii::t('account', 'Other Templates') : Yii::t('account', 'Job and Internship Templates'); ?></span>
                 </div>
                 <div class="actions">
                     <?php if (count($other_jobs_intern) > 4) : ?>

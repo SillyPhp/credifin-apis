@@ -1754,8 +1754,9 @@ button.lc-item-video-menu {
         line-height: 56px;
         cursor: pointer;
     }
-    @media only screen and (max-width: 575px) {
-        .job-overview ul li{
+    
+            @media only screen and (max-width: 575px) {
+                .job-overview ul li{
              width: 50% !important;
         }
     }

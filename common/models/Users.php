@@ -13,6 +13,7 @@ namespace common\models;
  * @property string $password Password
  * @property string $auth_key User Authentication Key for verification
  * @property string $first_name First Name
+ * @property string $last_name Last Name (Optional)
  * @property string $user_type_enc_id Foreign Key to User Types Table
  * @property string $phone Phone
  * @property string $address Address
