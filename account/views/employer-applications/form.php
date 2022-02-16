@@ -1770,7 +1770,10 @@ var prime_id = null;
 $('#primaryfield').on('change',function()
     {
       prime_id = $(this).val();
-      $('#title').val('');
+      let edit = window.location.pathname.split('/').pop()
+      if(edit != 'edit'){
+        $('#title').val('');
+      }
       $('#title').typeahead('destroy');
       load_job_titles(prime_id);
    });
