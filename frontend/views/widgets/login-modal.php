@@ -88,7 +88,7 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
                                 </div>
                                 <?php ActiveForm::end(); ?>
                                 <div class="separator pb-10">
-                                    <span><?= Yii::t('frontend', 'Login With Social Accounts'); ?></span>
+                                    <span><?= Yii::t('frontend', 'Login/Register With Social Accounts'); ?></span>
                                 </div>
                                 <div class="form-group mt-10">
                                     <?=
