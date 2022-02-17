@@ -74,7 +74,7 @@ use yii\helpers\Url;
                                         Teacher Loan
                                 </div>
                             </a>
-                            <a href="#" target="_blank">
+                            <a target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
                                         <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/edtech-loans.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
