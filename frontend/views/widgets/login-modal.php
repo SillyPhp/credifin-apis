@@ -140,7 +140,7 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
 <?php
 $this->registerCss('
 .black-set span{
-    color:#000;
+//    color:#000;
     font-family:roboto;
     }
 .auth-clients{
