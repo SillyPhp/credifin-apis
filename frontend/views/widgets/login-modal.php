@@ -87,7 +87,7 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
                                     <button type="button" onclick="changeSignup()"> Sign Up</button>
                                 </div>
                                 <?php ActiveForm::end(); ?>
-                                <div class="separator pb-10">
+                                <div class="separator pb-10 text-black">
                                     <span><?= Yii::t('frontend', 'Login/Register With Social Accounts'); ?></span>
                                 </div>
                                 <div class="form-group mt-10">
