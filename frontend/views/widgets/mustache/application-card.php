@@ -601,6 +601,8 @@ $this->registerCss('
 }
 .ji-apply {
     font-family: Roboto;
+    background-color: #ff7803;
+    color: #fff;
     padding: 4px 0px;
     font-weight: 500;
     text-align: center;
