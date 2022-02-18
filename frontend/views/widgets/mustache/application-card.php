@@ -595,7 +595,11 @@ $this->registerCss('
     width:100%;
     position:relative;
 }
-.ji-apply, .ji-apply:focus {
+.ji-apply:focus{
+    background-color: #ff7803;
+    color: #fff;
+}
+.ji-apply {
     font-family: Roboto;
     background-color: #ff7803;
     color: #fff;
