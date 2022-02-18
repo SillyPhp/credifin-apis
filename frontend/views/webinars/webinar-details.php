@@ -721,6 +721,10 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.ts-intro-outcome .section-title span{
+    font-size: 25px;
+    font-weight: 800;
+}
 .addeventatc{
     max-height: 40px;
     margin-top: 5px;
