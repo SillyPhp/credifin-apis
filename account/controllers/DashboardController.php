@@ -1511,6 +1511,8 @@ class DashboardController extends Controller
             ->asArray()
             ->one();
 
+//        print_r($companyInfo);
+//        die();
 
         $ci_complete = 1;
         foreach($companyInfo as $ci){
