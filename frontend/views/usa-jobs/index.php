@@ -345,7 +345,7 @@ $this->registerCss("
     padding: 8px 0px 8px 0px;
     background-color:#00a0e3;
 }
-.agency-count a {
+.agency-count a, .agency-count span {
     font-family: roboto;
     color: #fff;
     padding: 4px 6px;
@@ -964,8 +964,7 @@ var authKey = 'ePz5DRXvkE/1XaIu++wGwe5EzgmvM3jNTbHRe9dGMRM=';
 $(document).on('submit','#form-search',function(e) {
   e.preventDefault();
   var keyword = $('#search_company').val();
-   if (keyword)
-      {
+   if (keyword) {
           window.location.assign('/usa-jobs/search/'+keyword.replace(/\s+/g, '-'));
       }
 });
