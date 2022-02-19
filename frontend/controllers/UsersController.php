@@ -301,8 +301,6 @@ class UsersController extends Controller
             'available_applications' => $this->getApplications(),
             'pastWebinar' => $pastWebinar,
         ];
-//        print_r($dataProvider);
-//        die();
         if (Yii::$app->user->isGuest) {
             $page = 'guest-view';
         } else {

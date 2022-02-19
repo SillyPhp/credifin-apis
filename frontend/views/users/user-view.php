@@ -2801,6 +2801,7 @@ $(document).on('keyup','#search-skill',function(e){
 
 function add_tags(thisObj,tag_class,name,duplicates){
     var duplicates = [];
+    console.log(duplicates);
     $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
         {
          duplicates.push($.trim($(this).val()).toUpperCase());
