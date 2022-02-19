@@ -2801,7 +2801,6 @@ $(document).on('keyup','#search-skill',function(e){
 
 function add_tags(thisObj,tag_class,name,duplicates){
     var duplicates = [];
-    console.log(duplicates);
     $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
         {
          duplicates.push($.trim($(this).val()).toUpperCase());
@@ -3106,7 +3105,7 @@ $(document).on('click','.interest_remove', function(e) {
 });
 
 sendData = (data, fieldName) => {
-    console.log(data);
+
     $.ajax({
         url: '/users/update-basic-detail',
         method: 'POST',

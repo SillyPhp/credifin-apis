@@ -992,7 +992,7 @@ color: #fff !important;
 }
 .web-img img{
 	height: 200px;
-	object-fit: cover;
+	object-fit: fill;
 	width: 100%;
 }
 .web-detail-date {
