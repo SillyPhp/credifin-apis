@@ -3,7 +3,7 @@ use yii\helpers\Url;
 ?>
 <script id="departments-card" type="text/template">
     {{#.}}
-<div class="col-md-3 col-sm-6">
+        <div class="col-md-3 col-sm-6">
              <div class="agency-box">
                  <a href="/usa-jobs/department/{{slug}}" title="{{Value}}">
                     <div class="agency-logo">
@@ -17,11 +17,11 @@ use yii\helpers\Url;
                     </div>
                     <div class="agency-name">{{Value}}</div>
                     <div class="agency-count">
-                        <a href="/usa-jobs/department/{{slug}}">{{total_applications}} Jobs</a>
+                        <span href="/usa-jobs/department/{{slug}}">{{total_applications}} Jobs</span>
                     </div>
                  </a>
              </div>
-</div>
+        </div>
     {{/.}}
 </script>
 <?php

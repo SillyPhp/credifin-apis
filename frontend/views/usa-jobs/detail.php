@@ -252,7 +252,38 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="heading-style">More Jobs</div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="type-1">
+                    <div>
+                        <a href="/usa-jobs/search" class="btn btn-3">
+                            <span class="txt-cate">View all</span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!--            <div class="loader_screen">-->
+            <!--                <img src="--><?//= Url::to('@eyAssets/images/loader/91.gif'); ?><!--" class="img_load">-->
+            <!--            </div>-->
+            <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>
+            <div id="cards">
+            </div>
+            <!--            <div class="align_btn">-->
+            <!--                <button id="loader" class="btn btn-success">Load More</button>-->
+            <!--            </div>-->
+        </div>
+    </div>
+</section>
 <?php
+echo $this->render('/widgets/mustache/usa-jobs-card');
 $this->registerCss('
 .app_btn
 {
@@ -721,6 +752,7 @@ $(window).scroll(function() {
         }
     });
 }).scroll();
+fetchLocalData(template=$('#cards'),0,5,loader=true,loader_btn=false);
 JS;
 $this->registerJs($script);
 ?>

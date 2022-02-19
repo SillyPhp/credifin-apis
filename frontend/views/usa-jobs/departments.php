@@ -40,7 +40,7 @@ body{
     box-shadow: 0px 0px 20px 5px #eee !important;
     transition: .3s ease-in-out;
 }
-.agency-box:hover .agency-count a {
+.agency-box:hover .agency-count a, .agency-box:hover .agency-count span{
     color:#fff;
     background-color:#00a0e3;
 }
@@ -74,15 +74,17 @@ body{
 }
 .agency-count {
     text-align: center;
-    padding: 5px 0px 10px 0px;
+    padding: 8px 0px 8px 0px;
+    background-color:#00a0e3;
 }
-.agency-count a {
+.agency-count a, .agency-count span {
     font-family: roboto;
-    color: #bdbdbd;
+    color: #fff;
     padding: 4px 6px;
     font-size: 14px;
     border-radius: 4px;
     margin: 0px 4px;
+    font-weight: 500;
     transition: all ease-out .3s;
 }
 .button-set{
