@@ -162,6 +162,8 @@ $this->params['header_dark'] = false;
 <?= $this->render('/widgets/product-offerings') ?>
 
 <?= $this->render('/webinars/webinar-carousel')?>
+<?= $this->render('/widgets/webinar-templates/webinar_one_speaker4', ['bg' => 'white']) ?>
+
 
 
 <div id="app-data"></div>

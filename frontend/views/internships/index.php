@@ -105,6 +105,8 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
 
 <?php echo $this->render('/widgets/info-stats'); ?>
 
+<?= $this->render('/widgets/webinar-templates/webinar_one_speaker4') ?>
+
 <section id="trendingCompaniesSectionMain">
     <div class="container">
         <div class="row">
@@ -130,6 +132,8 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
         </div>
     </div>
 </section>
+
+
 
 <?php
 echo $this->render('/widgets/top-cities', [

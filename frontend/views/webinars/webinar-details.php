@@ -273,7 +273,6 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                        value="not interested">Not Interested</a>
                                     <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn">Attending</a>
                                     <!-- Button code -->
-
                                     <div title="Add to Calendar" class="addeventatc">
                                         Add to Calendar
                                         <span class="start"><?= date('m/d/Y h:i A', strtotime($nextEvent['start_datetime'])) ?></span>
@@ -304,7 +303,19 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                         <span class="title"><?= $webinar['title'] ?></span>
                                         <span class="description"><?= $webinar['description'] ?></span>
                                     </div>
-                                <?php }
+                                <?php } else if(!$is_expired){
+                                    ?>
+                                    <!-- Button code -->
+                                    <div title="Add to Calendar" class="addeventatc">
+                                        Add to Calendar
+                                        <span class="start"><?= date('m/d/Y h:i A', strtotime($nextEvent['start_datetime'])) ?></span>
+                                        <span class="end"><?= date('m/d/Y h:i A', strtotime($nextEvent['end_datetime'])) ?></span>
+                                        <span class="timezone">Asia/Kolkata</span>
+                                        <span class="title"><?= $webinar['title'] ?></span>
+                                        <span class="description"><?= $webinar['description'] ?></span>
+                                    </div>
+                                <?php
+                                }
                                 ?>
                             </div>
                         </div>
@@ -721,6 +732,10 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.ts-intro-outcome .section-title span{
+    font-size: 25px;
+    font-weight: 800;
+}
 .addeventatc{
     max-height: 40px;
     margin-top: 5px;
