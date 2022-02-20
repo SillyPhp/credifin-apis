@@ -2074,7 +2074,7 @@ div.icon span {
 
 .register-action {
     display: flex;
-    
+    flex-wrap: wrap;
 }
 .speaker-author {
     margin-right: 15px;
