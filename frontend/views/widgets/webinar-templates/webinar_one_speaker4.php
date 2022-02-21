@@ -34,8 +34,15 @@ use yii\helpers\Url;
                             </span>
                         </div>
                     </div>
+                    <div class="share-bar">
+                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/the-future-of-business-analyst-39800" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/the-future-of-business-analyst-39800" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/the-future-of-business-analyst-39800" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/the-future-of-business-analyst-39800" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/the-future-of-business-analyst-39800" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
                     <div class="register-btn">
-                        <a href="/webinar/the-future-of-business-analyst-39800">Register Now<span><i class="fas fa-chevron-right"></i><i class="fas fa-chevron-right"></i></span></a>
+                        <a href="/webinar/the-future-of-business-analyst-39800">Register Now<span><i class="fas fa-chevron-right" style="margin-right: -3px;"></i><i class="fas fa-chevron-right"></i></span></a>
                     </div>
                 </div>
             </div>
@@ -61,7 +68,7 @@ $this->registerCss('
     background: #fff;
 }
 .webinar-one-speaker4{
-    min-height: 450px;
+    min-height: 550px;
     background: #e0ebff;
     position: relative;
     padding: 50px 0;
@@ -171,8 +178,83 @@ $this->registerCss('
     color: #737373;
     font-size: 20px;
 }
+.share-bar {
+    margin-top: 20px;
+}
 
+.share-bar a {
+    display: inline-block;
+    font-size: 18px;
+    color: #fff;
+    width: 30px;
+    border-radius: 4px;
+    height: 30px;
+    position: relative;
+    border-radius: 10px;
+    background: #FFFFFF;
+    box-shadow: 0px 0px 4px rgb(0 0 0 / 25%);
+    border-radius: 11px;
+    transition: .2s all ease-in;
+    margin-left: 10px;
+}
 
+.share-bar .fab, .share-bar .far {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.share-bar a:not(.share-fb) {
+    margin-left: 7px;
+}
+
+.share-bar a.share-fb {
+    color: #3b5998;
+}
+
+.share-bar a.share-twitter {
+    color: #1DA1F2;
+}
+
+.share-bar a.share-whatsapp {
+    color: #25D366;
+}
+.share-bar a.share-linkedin {
+    color: #0e76a8;
+}
+
+.share-bar a.tg-tele {
+    color: #0088cc;
+    border-color: #0088cc;
+}
+
+.share-bar a:hover {
+    color: #fff;
+    transition: 0.2s all ease-in;
+    font-size: 12px;
+    border-radius: 20px;
+}
+
+.share-bar a.share-fb:hover {
+    background-color: #3b5998;
+}
+
+.share-bar a.share-twitter:hover {
+    background-color: #1DA1F2;
+}
+
+.share-bar a.share-whatsapp:hover {
+    background-color: #25D366;
+}
+.share-bar a.share-linkedin:hover {
+    background-color: #0e76a8;
+}
+
+.share-bar a.tg-tele:hover {
+    background-color: #0088cc;
+    border-color: #0088cc;
+}
 
 @media (min-width: 768px) and (max-width:991px){
     .webinar-one-speaker4 .row{
@@ -227,8 +309,10 @@ $this->registerCss('
     .webinar-one-speaker4 .webinar-speaker-img .speaker-bg {
         border: 6px solid #254887;
         margin-right: 40px;
-        width: 160px;
-        height: 160px;
+        min-width: 160px;
+        max-width: 160px;
+        min-height: 160px;
+        max-height: 160px;
         margin-left: 0;
     }
 }
@@ -250,16 +334,32 @@ $this->registerCss('
         margin-bottom: 18px;
     }
     .webinar-one-speaker4 .webinar-text .register-btn a {
-        font-size: 20px;
         font-weight: 700;
     }
     .webinar-one-speaker4 .webinar-text .date-and-time {
         margin: 18px 0;
     }
     .webinar-one-speaker4 .webinar-speaker-img .speaker-bg{
-        height: unset;
+        min-width: 120px;
+        max-width: 120px;
+        min-height: 120px;
+        max-height: 120px;
     }
-    
+    .webinar-speaker-img {
+        margin-top: 44px;
+    }
+    .webinar-one-speaker4 .webinar-text .date-and-time .date .large-text {
+        font-size: 16px;
+    }   
+}
+
+@media only screen and (max-width: 575px){
+    .webinar-one-speaker4 .webinar-text h1 {
+        font-size: 35px;
+    }
+    .webinar-one-speaker4 .webinar-text p {
+        font-size: 18px;
+    }
 }
 ');
 ?>

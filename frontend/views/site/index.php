@@ -161,8 +161,7 @@ $this->params['header_dark'] = false;
 </section>
 <?= $this->render('/widgets/product-offerings') ?>
 
-<?= $this->render('/webinars/webinar-carousel')?>
-<?= $this->render('/widgets/webinar-templates/webinar_one_speaker4', ['bg' => 'white']) ?>
+<?= $this->render('/webinars/webinar-carousel', ['bg' => 'white']) ?>
 
 
 
