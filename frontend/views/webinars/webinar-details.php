@@ -2251,6 +2251,11 @@ div.icon span {
 }
 ');
 $script = <<<JS
+let registeration_status = '$registeration_status';
+console.log(registeration_status);
+if(registeration_status == '1'){
+    openUserDetailsModal();
+}
 function countdown(e){
     var countDownDate = new Date(e).getTime();
     var x = setInterval(function() {
