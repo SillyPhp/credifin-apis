@@ -100,7 +100,7 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                     if (Yii::$app->user->isGuest && !$is_expired) {
                         ?>
                         <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
-                           class="ra-btn"><?= $btnName ?></a>
+                           class="ra-btn autoRegisterAfter"><?= $btnName ?></a>
                     <?php } else {
                         ?>
                         <button id="loadingBtn" style="display: none" class="ra-btn">
@@ -740,6 +740,7 @@ $this->registerCss('
     max-height: 40px;
     margin-top: 5px;
     padding: 12px 12px 12px 43px;
+    z-index:999 !Important;
 }
 .outflex {
     display: flex;
@@ -2267,6 +2268,40 @@ console.log(registeration_status);
 if(registeration_status == '1'){
     openUserDetailsModal();
 }
+if(localStorage.getItem('autoRegisterAfter') == "true"){
+    if(window.location.href == localStorage.getItem('autoRegisterUrl')){
+        var date = + new Date();
+        var last = JSON.parse(localStorage.getItem('autoRegisterTime'));
+        if ((date - last) < ( 2 * 60 * 1000 ) ) {
+           setTimeout(function() {
+               if($('#registerBtn').length > 0) {
+                   $('#registerBtn').trigger('click');  
+               }
+               if($('#paidRegisterBtn').length > 0) {
+                   $('#paidRegisterBtn').trigger('click');  
+               }
+               localStorage.removeItem('autoRegisterAfter');
+               localStorage.removeItem('autoRegisterTime');
+               localStorage.removeItem('autoRegisterUrl');
+           },1000)
+        } else{
+           localStorage.removeItem('autoRegisterAfter');
+           localStorage.removeItem('autoRegisterTime');
+           localStorage.removeItem('autoRegisterUrl');
+        }
+    } else{
+        if ((date - last) < ( 2 * 60 * 1000 ) ) {
+           localStorage.removeItem('autoRegisterAfter');
+           localStorage.removeItem('autoRegisterTime');
+           localStorage.removeItem('autoRegisterUrl');
+        }
+    }
+}
+$(document).on('click', '.autoRegisterAfter', function(){
+   localStorage.setItem('autoRegisterAfter', true); 
+   localStorage.setItem('autoRegisterTime', + new Date()); 
+   localStorage.setItem('autoRegisterUrl', window.location.href); 
+});
 function countdown(e){
     var countDownDate = new Date(e).getTime();
     var x = setInterval(function() {
