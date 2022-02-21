@@ -94,7 +94,7 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
             <img src="<?= $webinar['image'] ?>" class="absolute">
             <div class="element-percent">
                 <h1><?= $webinar['title'] ?></h1>
-                <div class="register-btn" id="registerEventSection">
+                <div class="register-btn btn-parent" id="registerEventSection">
                     <?php
                     $btnName = 'Register Now';
                     if (Yii::$app->user->isGuest && !$is_expired) {
@@ -1310,6 +1310,17 @@ transform: rotate(100deg);
     justify-content: space-between;
     margin: 0 10px 10px;
 }
+@media screen and (max-width: 991px){
+    .btn-parent {
+        position: fixed;
+        bottom: 28px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9;
+        background: rgba(0,0,0,.1);
+        padding: 7px;
+    }
+}
 @media screen and (min-width: 991px){
     .md-flex{
         display:flex;
@@ -1330,14 +1341,14 @@ transform: rotate(100deg);
 }
 @media screen and (max-width: 550px){
     .flex2 {
-    display: block;
+        display: block;
     }
     .speak-img, .speak-cntnt {
-    flex: inherit;
-    max-width: 100%;
-    width: 90% !important;
-    min-height:50vh;
-}
+        flex: inherit;
+        max-width: 100%;
+        width: 90% !important;
+        min-height:50vh;
+    }
 }
 .ask-people{
     margin-top: 10px;
