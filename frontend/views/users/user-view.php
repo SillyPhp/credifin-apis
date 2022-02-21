@@ -957,7 +957,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         <form onsubmit="return false">
                             <div class="form-group">
                                 <label for="achievements-name" class="label-edit">Achievements</label>
-                                <ul class="tags skill_tag_list">
+                                <ul class="tags">
                                     <?php
                                     if (!empty($achievement)) {
                                         foreach ($achievement as $a) { ?>
@@ -968,7 +968,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     }
                                     ?>
                                     <li class="tagAdd taglist">
-                                        <div class="skill_wrapper">
+                                        <div class="">
                                             <input type="text" id="achievement_input" class="achievement_search input_search text-capitalize
                                                    form-control  form-control-edit" placeholder="Achievements">
                                         </div>
@@ -986,7 +986,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         <form onsubmit="return false">
                             <div class="form-group">
                                 <label for="interest-name" class="label-edit">Interests</label>
-                                <ul class="tags skill_tag_list">
+                                <ul class="tags">
                                     <?php
                                     if (!empty($interests)) {
                                         foreach ($interests as $interest) { ?>
@@ -1022,7 +1022,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     'id' => 'pjax_hobby',
                                 ]);
                                 ?>
-                                <ul class="tags skill_tag_list">
+                                <ul class="tags">
                                     <?php
 
                                     if (!empty($hobbies)) {
@@ -2801,6 +2801,7 @@ $(document).on('keyup','#search-skill',function(e){
 
 function add_tags(thisObj,tag_class,name,duplicates){
     var duplicates = [];
+    console.log(duplicates);
     $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
         {
          duplicates.push($.trim($(this).val()).toUpperCase());
