@@ -3105,7 +3105,7 @@ $(document).on('click','.interest_remove', function(e) {
 });
 
 sendData = (data, fieldName) => {
-    console.log(data);
+
     $.ajax({
         url: '/users/update-basic-detail',
         method: 'POST',
