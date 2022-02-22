@@ -391,7 +391,6 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                         <!--                                                Workshop-->
                                     </div>
                                     <div class="schedule-slot-info">
-                                        <a href="#">
                                             <?php
                                             $image = Url::to('@eyAssets/images/pages/webinar/default-user.png');
                                             $speaker_icon = $v['webinarSpeakers'][0]['image'];
@@ -401,7 +400,6 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                             }
                                             ?>
                                             <img class="schedule-slot-speakers" src="<?= $image ?>" alt="">
-                                        </a>
                                         <div class="schedule-slot-info-content">
                                             <h3 class="schedule-slot-title"><?= $v['webinarSpeakers'][0]['fullname'] ?>
                                                 <!--                                                <strong>@ Fredric Martinsson</strong>-->
@@ -426,7 +424,24 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
     </div><!-- container end-->
 </section>
 <!-- Schedules event section end here -->
-
+<?php if($webinar['other_details']) {?>
+<section class="other-details-web">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="section-title">Other Details</h2>
+            </div>
+            <div class="col-md-12">
+                <div class="webinar-description">
+                    <p>
+                        <?= $webinar['other_details'] ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<?php }?>
 
 <!-- sharing widget start -->
 <div class="container">
@@ -1428,7 +1443,7 @@ transform: rotate(100deg);
     width: 100%;
     height: 100%;
     content: \'\';
-    background: rgba(59, 29, 130, 0.5);
+    background: rgba(0, 0, 0, 0.2);
     -o-transition: all 0.4s ease;
     transition: all 0.4s ease;
     -webkit-transition: all 0.4s ease;
@@ -1451,7 +1466,7 @@ transform: rotate(100deg);
     width: 50px;
     height: 50px;
     margin: auto;
-    border: 2px solid #ddd;
+    border: 2px solid #fff;
     border-radius: 50%;
     -webkit-border-radius: 50%;
     -ms-border-radius: 50%;
@@ -1852,7 +1867,7 @@ b, strong {
     color: #fff;
 }
 .section-title, .column-title {
-    margin:20px 0;
+    margin:20px 0 5px;
     font-size: 36px;
     font-weight: 800;
     color: #333;
@@ -2022,6 +2037,7 @@ a:link, a:visited {
     text-align: justify;
     line-height: 26px;
     color: #333;
+    font-family:roboto;
     margin-bottom: 30px;
 }
 
