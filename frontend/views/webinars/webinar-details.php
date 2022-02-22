@@ -94,13 +94,13 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
             <img src="<?= $webinar['image'] ?>" class="absolute">
             <div class="element-percent">
                 <h1><?= $webinar['title'] ?></h1>
-                <div class="register-btn" id="registerEventSection">
+                <div class="register-btn btn-parent" id="registerEventSection">
                     <?php
                     $btnName = 'Register Now';
                     if (Yii::$app->user->isGuest && !$is_expired) {
                         ?>
                         <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
-                           class="ra-btn"><?= $btnName ?></a>
+                           class="ra-btn autoRegisterAfter"><?= $btnName ?></a>
                     <?php } else {
                         ?>
                         <button id="loadingBtn" style="display: none" class="ra-btn">
@@ -391,7 +391,6 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                         <!--                                                Workshop-->
                                     </div>
                                     <div class="schedule-slot-info">
-                                        <a href="#">
                                             <?php
                                             $image = Url::to('@eyAssets/images/pages/webinar/default-user.png');
                                             $speaker_icon = $v['webinarSpeakers'][0]['image'];
@@ -401,7 +400,6 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                             }
                                             ?>
                                             <img class="schedule-slot-speakers" src="<?= $image ?>" alt="">
-                                        </a>
                                         <div class="schedule-slot-info-content">
                                             <h3 class="schedule-slot-title"><?= $v['webinarSpeakers'][0]['fullname'] ?>
                                                 <!--                                                <strong>@ Fredric Martinsson</strong>-->
@@ -426,7 +424,24 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
     </div><!-- container end-->
 </section>
 <!-- Schedules event section end here -->
-
+<?php if($webinar['other_details']) {?>
+<section class="other-details-web">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="section-title">Other Details</h2>
+            </div>
+            <div class="col-md-12">
+                <div class="webinar-description">
+                    <p>
+                        <?= $webinar['other_details'] ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<?php }?>
 
 <!-- sharing widget start -->
 <div class="container">
@@ -740,6 +755,7 @@ $this->registerCss('
     max-height: 40px;
     margin-top: 5px;
     padding: 12px 12px 12px 43px;
+    z-index:999 !Important;
 }
 .outflex {
     display: flex;
@@ -962,9 +978,9 @@ p.show-l {
   margin-bottom: 0;
 }
 
-.schedule-listing:hover .schedule-slot-title {
-  color: #3b1d82;
-}
+//.schedule-listing:hover .schedule-slot-title {
+//  color: #3b1d82;
+//}
 
 .schedule-listing:nth-of-type(even) .schedule-slot-time {
   background: #00a0e3;
@@ -1310,6 +1326,17 @@ transform: rotate(100deg);
     justify-content: space-between;
     margin: 0 10px 10px;
 }
+@media screen and (max-width: 991px){
+    .btn-parent {
+        position: fixed;
+        bottom: 28px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9;
+        background: rgba(0,0,0,.1);
+        padding: 7px;
+    }
+}
 @media screen and (min-width: 991px){
     .md-flex{
         display:flex;
@@ -1330,14 +1357,14 @@ transform: rotate(100deg);
 }
 @media screen and (max-width: 550px){
     .flex2 {
-    display: block;
+        display: block;
     }
     .speak-img, .speak-cntnt {
-    flex: inherit;
-    max-width: 100%;
-    width: 90% !important;
-    min-height:50vh;
-}
+        flex: inherit;
+        max-width: 100%;
+        width: 90% !important;
+        min-height:50vh;
+    }
 }
 .ask-people{
     margin-top: 10px;
@@ -1416,7 +1443,7 @@ transform: rotate(100deg);
     width: 100%;
     height: 100%;
     content: \'\';
-    background: rgba(59, 29, 130, 0.5);
+    background: rgba(0, 0, 0, 0.2);
     -o-transition: all 0.4s ease;
     transition: all 0.4s ease;
     -webkit-transition: all 0.4s ease;
@@ -1439,7 +1466,7 @@ transform: rotate(100deg);
     width: 50px;
     height: 50px;
     margin: auto;
-    border: 2px solid #ddd;
+    border: 2px solid #fff;
     border-radius: 50%;
     -webkit-border-radius: 50%;
     -ms-border-radius: 50%;
@@ -1840,7 +1867,7 @@ b, strong {
     color: #fff;
 }
 .section-title, .column-title {
-    margin:20px 0;
+    margin:20px 0 5px;
     font-size: 36px;
     font-weight: 800;
     color: #333;
@@ -2010,6 +2037,7 @@ a:link, a:visited {
     text-align: justify;
     line-height: 26px;
     color: #333;
+    font-family:roboto;
     margin-bottom: 30px;
 }
 
@@ -2251,6 +2279,45 @@ div.icon span {
 }
 ');
 $script = <<<JS
+let registeration_status = '$registeration_status';
+console.log(registeration_status);
+if(registeration_status == '1'){
+    openUserDetailsModal();
+}
+if(localStorage.getItem('autoRegisterAfter') == "true"){
+    if(window.location.href == localStorage.getItem('autoRegisterUrl')){
+        var date = + new Date();
+        var last = JSON.parse(localStorage.getItem('autoRegisterTime'));
+        if ((date - last) < ( 2 * 60 * 1000 ) ) {
+           setTimeout(function() {
+               if($('#registerBtn').length > 0) {
+                   $('#registerBtn').trigger('click');  
+               }
+               if($('#paidRegisterBtn').length > 0) {
+                   $('#paidRegisterBtn').trigger('click');  
+               }
+               localStorage.removeItem('autoRegisterAfter');
+               localStorage.removeItem('autoRegisterTime');
+               localStorage.removeItem('autoRegisterUrl');
+           },1000)
+        } else{
+           localStorage.removeItem('autoRegisterAfter');
+           localStorage.removeItem('autoRegisterTime');
+           localStorage.removeItem('autoRegisterUrl');
+        }
+    } else{
+        if ((date - last) < ( 2 * 60 * 1000 ) ) {
+           localStorage.removeItem('autoRegisterAfter');
+           localStorage.removeItem('autoRegisterTime');
+           localStorage.removeItem('autoRegisterUrl');
+        }
+    }
+}
+$(document).on('click', '.autoRegisterAfter', function(){
+   localStorage.setItem('autoRegisterAfter', true); 
+   localStorage.setItem('autoRegisterTime', + new Date()); 
+   localStorage.setItem('autoRegisterUrl', window.location.href); 
+});
 function countdown(e){
     var countDownDate = new Date(e).getTime();
     var x = setInterval(function() {
