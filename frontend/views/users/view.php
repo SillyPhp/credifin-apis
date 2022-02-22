@@ -31,7 +31,7 @@ if (!empty($userApplied) && Yii::$app->user->identity->organization->organizatio
         }
     }
 }
-$this->params['header_dark'] = false;
+$this->params['header_dark'] = true;
 $uId = $user['user_enc_id'];
 ?>
 
@@ -725,7 +725,7 @@ $uId = $user['user_enc_id'];
 
 
     <?php 
-    if(count($pastWebinar) !== 0){
+    if($pastWebinar && count($pastWebinar) !== 0){
     ?>
     <section class="webinar-attended">
         <div class="container">
