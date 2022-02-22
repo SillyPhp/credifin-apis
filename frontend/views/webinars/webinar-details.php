@@ -978,9 +978,9 @@ p.show-l {
   margin-bottom: 0;
 }
 
-.schedule-listing:hover .schedule-slot-title {
-  color: #3b1d82;
-}
+//.schedule-listing:hover .schedule-slot-title {
+//  color: #3b1d82;
+//}
 
 .schedule-listing:nth-of-type(even) .schedule-slot-time {
   background: #00a0e3;
