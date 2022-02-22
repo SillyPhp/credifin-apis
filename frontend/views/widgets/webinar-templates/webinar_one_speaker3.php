@@ -69,7 +69,7 @@ use yii\helpers\Url;
                     <h5>WEBINAR</h5>
                     <h1>How to Start Your Career in Digital Marketing in 2022</h1>
                     <p>E-certificates will be provided to all the registered participants.</p>
-                    <a href="/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
+                    <a href="/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" target="_blank" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
                     <div class="share-bar">
                         <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" class="share-fb"><i class="fab fa-facebook-f"></i></a>
                         <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
@@ -120,7 +120,7 @@ use yii\helpers\Url;
         background-repeat: no-repeat;
         background-size: cover;
         font-family: Roboto;
-        padding: 20px 0;
+        // padding: 20px 0;
         min-height: 550px;
         display: flex;
         align-items: center;
@@ -433,6 +433,12 @@ use yii\helpers\Url;
             margin-top: -80px;
         }
     }
- 
+
+    @media (min-width: 768px) and (max-width: 991px){
+        .webinar-one-speaker1 .speaker-image{
+            width: 200px !important;
+            height: 200px !important;
+        }
+    }
 
 ') ?>

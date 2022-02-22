@@ -2,7 +2,7 @@
 
 use yii\helpers\Url;
 ?>
-<script id="webinar_one_speaker2" type="text/javascript">
+<!-- <script id="webinar_one_speaker2" type="text/javascript">
     <section class="webinar-one-speaker1">
         <div class="green-strip"></div>
         <div class="green-strip"></div>
@@ -14,52 +14,105 @@ use yii\helpers\Url;
                 {{date}}
             </div>
         </div>
+        <div class="container">
+            <div class="row">
+                {{#webinarEvents}}
+                {{#webinarSpeakers}}
+                <div class="col-sm-5">
+                    <div class="speaker-details">
+                        <div class="speaker-image">
+                            <div class="inside-div">
+                                <img src="{{speaker_image}}">
+                            </div>
+                        </div>
+                        <div class="speaker-name">
+                        <h5>Speaker:</h5>
+                        <h3>{{speaker_name}}</h3>
+                        <h4>{{designation}}</h4>
+                    </div>
+                    </div>
+                </div>
+                {{/webinarSpeakers}}
+                {{/webinarEvents}}
+                <div class="col-sm-7">
+                    <div class="webinar-text">
+                        <h1>{{name}}</h1>
+                        <div class="date-time">
+                            <div class="time">
+                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/time-icon.png') ?>">{{time}}
+                            </div>
+                            <div class="date">
+                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/calendar-icon.png') ?>">{{date}}
+                            </div>
+                        </div>
+                        <p>{{description}}</p>
+                        <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
+                        <div class="share-bar">
+                            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/{{slug}}" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                            <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/{{slug}}" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                            <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                            <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/{{slug}}" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</script> -->
+
+<section class="webinar-one-speaker1">
+    <div class="green-strip"></div>
+    <div class="green-strip"></div>
+    <div class="date-time">
+        <div class="time">
+            4PM - 5PM
+        </div>
+        <div class="date">
+            March 14, 2022
+        </div>
+    </div>
     <div class="container">
         <div class="row">
-            {{#webinarEvents}}
-            {{#webinarSpeakers}}
             <div class="col-sm-5">
                 <div class="speaker-details">
                     <div class="speaker-image">
                         <div class="inside-div">
-                            <img src="{{speaker_image}}">
+                            <img src="<?= Url::to('@eyAssets/images/pages/webinar-widgets/Ovais.png') ?>">
                         </div>
                     </div>
                     <div class="speaker-name">
-                    <h5>Speaker:</h5>
-                    <h3>{{speaker_name}}</h3>
-                    <h4>{{designation}}</h4>
-                </div>
+                        <h5>Speaker:</h5>
+                        <h3>Ovais Rehman</h3>
+                        <h4>Human Resource Manager</h4>
+                    </div>
                 </div>
             </div>
-            {{/webinarSpeakers}}
-            {{/webinarEvents}}
             <div class="col-sm-7">
                 <div class="webinar-text">
-                    <h1>{{name}}</h1>
+                    <h1>HR Trends For 2022 : Rethink your workplace</h1>
                     <div class="date-time">
                         <div class="time">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/time-icon.png')?>">{{time}}
+                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/time-icon.png') ?>">4PM - 5PM
                         </div>
                         <div class="date">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/calendar-icon.png')?>">{{date}}
+                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/calendar-icon.png') ?>">March 14, 2022
                         </div>
                     </div>
-                    <p>{{description}}</p>
-                    <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
+                    <p>E-certificates will be provided to all the registered participants.</p>
+                    <a href="/webinar/hr-trends-for-2022-rethink-your-workplace-39828" target="_blank" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
                     <div class="share-bar">
-                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/{{slug}}" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/{{slug}}" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
-                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-twitter"><i class="fab fa-twitter"></i></a>
-                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/{{slug}}" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/hr-trends-for-2022-rethink-your-workplace-39828" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/hr-trends-for-2022-rethink-your-workplace-39828" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/hr-trends-for-2022-rethink-your-workplace-39828" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/hr-trends-for-2022-rethink-your-workplace-39828" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/hr-trends-for-2022-rethink-your-workplace-39828" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-</script>
 <?php
 $this->registerCss('
 img{
@@ -314,6 +367,7 @@ a.register-btn:hover i{
 @media only screen and (max-width: 576px){
     .webinar-one-speaker1{
         min-height: 650px;
+        display: block;
     }
     .green-strip{
         display: none;
@@ -354,7 +408,11 @@ a.register-btn:hover i{
         font-size: 16px;
         padding: 0 20px;
     }
+    .webinar-one-speaker1 .webinar-text h1{
+        font-size: 36px;
+    }
 }
+
 @media only screen and (max-width: 480px){
     .webinar-one-speaker1{
         min-height: 650px;

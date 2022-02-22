@@ -5,7 +5,7 @@ use yii\helpers\Url;
 ?>
 <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Sansita+One" />
 
-<section class="webinar-one-speaker4 <?= $bg ?>">
+<section class="webinar-one-speaker4">
     <img src="<?= Url::to('@eyAssets/images/pages/webinar-widgets/one-speaker4-bg-top.png') ?>" class="bg-top" alt="">
     <img src="<?= Url::to('@eyAssets/images/pages/webinar-widgets/one-speaker4-bg-bottom.png') ?>" class="bg-bottom" alt="">
     <img src="<?= Url::to('@eyAssets/images/pages/webinar-widgets/dotted-square.png') ?>" class="dotted-square" alt="">
@@ -34,15 +34,16 @@ use yii\helpers\Url;
                             </span>
                         </div>
                     </div>
+                    <div class="register-btn">
+                        <a href="/webinar/the-future-of-business-analyst-39800" target="_blank"
+                        >Register Now<span><i class="fas fa-chevron-right" style="margin-right: -3px;"></i><i class="fas fa-chevron-right"></i></span></a>
+                    </div>
                     <div class="share-bar">
                         <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/the-future-of-business-analyst-39800" class="share-fb"><i class="fab fa-facebook-f"></i></a>
                         <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/the-future-of-business-analyst-39800" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
                         <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/the-future-of-business-analyst-39800" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
                         <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/the-future-of-business-analyst-39800" class="share-twitter"><i class="fab fa-twitter"></i></a>
                         <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/the-future-of-business-analyst-39800" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                    <div class="register-btn">
-                        <a href="/webinar/the-future-of-business-analyst-39800">Register Now<span><i class="fas fa-chevron-right" style="margin-right: -3px;"></i><i class="fas fa-chevron-right"></i></span></a>
                     </div>
                 </div>
             </div>
@@ -71,7 +72,9 @@ $this->registerCss('
     min-height: 550px;
     background: #e0ebff;
     position: relative;
-    padding: 50px 0;
+    display: flex;
+    align-items: center;
+    // padding: 50px 0;
 }
 .webinar-one-speaker4 .bg-top{
     position: absolute;
@@ -90,6 +93,7 @@ $this->registerCss('
     position: absolute;
     top: 50px;
     left: 50%;
+    width: unset;
 }
 .webinar-one-speaker4 .webinar-text h1 {
     font-size: 55px;
@@ -256,6 +260,13 @@ $this->registerCss('
     border-color: #0088cc;
 }
 
+@media only screen and (min-width: 768px) {
+    .webinar-one-speaker4 .row{
+        display: flex;
+        align-items: center;
+    }
+}
+
 @media (min-width: 768px) and (max-width:991px){
     .webinar-one-speaker4 .row{
         display: flex;
@@ -360,6 +371,13 @@ $this->registerCss('
     .webinar-one-speaker4 .webinar-text p {
         font-size: 18px;
     }
+    .webinar-one-speaker4{
+        display: block;
+    }
+    .webinar-one-speaker4 .webinar-text .register-btn a{
+        margin-top: 0;
+    }
 }
+
 ');
 ?>
