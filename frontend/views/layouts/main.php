@@ -1006,9 +1006,9 @@ AppAssets::register($this);
             });
          }
           
-        window.setTimeout(function(){
-            openUserDetailsModal();
-        },1000); 
+//        window.setTimeout(function(){
+//            openUserDetailsModal();
+//        },1000); 
                
          function openPreferenceModal(){
             let hasCookie = document.cookie;

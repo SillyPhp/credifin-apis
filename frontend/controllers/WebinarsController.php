@@ -407,6 +407,7 @@ class WebinarsController extends Controller
                 'a.slug',
                 'a.title',
                 'a.description',
+                'a.other_details',
                 'a.seats',
                 'a.webinar_conduct_on',
                 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", a.image_location, "/", a.image) END image',
