@@ -762,6 +762,9 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.tab-content{
+    padding: 15px 0;
+}
 .ts-intro-outcome .section-title span{
     font-size: 25px;
     font-weight: 800;
@@ -977,6 +980,8 @@ p.show-l {
   -ms-border-radius: 50%;
   bottom: 0;
   margin: auto;
+  object-fit: cover;
+  object-position: top;
 }
 
 .schedule-listing .schedule-slot-info .schedule-slot-title {
@@ -2019,7 +2024,7 @@ a:link, a:visited {
     object-position: top center;
 }
 .element-percent {
-    background:#5e6a6fb8;
+    background:#585858d6;
     width: 100%;
     margin: 0 auto;
     height: 90vh;
