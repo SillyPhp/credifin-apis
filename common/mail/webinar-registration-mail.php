@@ -39,6 +39,7 @@ img + div{
 }
 .web-img img {
     width: 100%;
+    max-width: 320px;
 }
 .content {
     padding: 10px 20px 0;
@@ -99,6 +100,9 @@ img + div{
 .redfont {
 	color: #DC143C;
 	font-weight: bold;
+}
+.cont a {
+    text-decoration: none;
 }
 .join-btn {
 	padding: 10px 16px;
