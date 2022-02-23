@@ -116,7 +116,7 @@ AppAssets::register($this);
                 ?>
                 <div class="ey-head-main">
                     <div class="container-fluid">
-                        <div class="large-container container">
+                        <div class="large-container container" style="padding: 0;">
                             <div class="ey-header-main">
                                 <div class="ey-header-logo">
                                     <a class="ey-logo" href="/">
@@ -708,6 +708,7 @@ AppAssets::register($this);
 .secondary-top-header-left{padding-left:0;float:left;}
 .secondary-top-header-left a i, .secondary-top-header-left span i{font-size:16px;}
 .secondary-top-header-left a, .secondary-top-header-left span{margin:5px;}
+.secondary-top-header-left span:first-child{margin-left:0px;}
 .secondary-top-header-left span a{font-weight:500;}
 .secondary-top-header-right{padding-right:0px;float:right;}
 .upcoming-webinar, .secondary-top-header a, .secondary-top-header span, .secondary-top-header-left *{

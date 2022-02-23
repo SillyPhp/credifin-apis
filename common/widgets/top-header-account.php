@@ -307,6 +307,7 @@ $this->registerCss('
 }
 .ey-logo img{
     max-height: 45px;
+    max-width: 182px;
 }
 .ey-menu-main {
     -webkit-box-flex:16;
