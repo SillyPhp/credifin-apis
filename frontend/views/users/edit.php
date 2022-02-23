@@ -759,8 +759,7 @@ function add_tags(thisObj,tag_class,name,duplicates)
              thisObj.val('');
         }
 }    
-$(document).on('submit','#basicDetailForm',function(event)
-{
+$(document).on('submit','#basicDetailForm',function(event){
     event.preventDefault();
     data = new FormData(this);
     var btn = $('.btn_submit_basic');
@@ -771,16 +770,14 @@ $(document).on('submit','#basicDetailForm',function(event)
     },1500)
 });
     
-$(document).on('submit','#socialDetailForm',function(event)
-{
+$(document).on('submit','#socialDetailForm',function(event){
     event.preventDefault();
     data = new FormData(this);
     var btn = $('.btn_submit_contact');
     runAjax($(this),data,btn);
 });
 var global = [];
-$(document).on('submit','#userProfilePicture',function(event)
-{
+$(document).on('submit','#userProfilePicture',function(event){
     event.preventDefault();
     data = new FormData(this);
     var btn = $('.btn_submit_picture');
