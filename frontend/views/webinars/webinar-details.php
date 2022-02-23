@@ -282,6 +282,21 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                         <span class="description"><?= $webinar['description'] ?></span>
                                     </div>
                                 <?php } else if($registeration_status != 1 && !$is_expired) { ?>
+                                    <?php
+                                    if ((int)$webinar['price']) {
+                                        if ($promo) { ?>
+                                            <button class="ra-btn registerBtn" id="registerBtn2"><?= $btnName ?></button>
+                                        <?php } else { ?>
+                                            <button class="ra-btn" id="paidRegisterBtn2"><?= $btnName ?></button>
+                                        <?php }
+                                        ?>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <button class="ra-btn registerBtn" id="registerBtn2"><?= $btnName ?></button>
+                                        <?php
+                                    }
+                                    ?>
                                     <button class="ra-btn interestBtn <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
                                             id="interested" data-key="<?= $webinar['webinar_enc_id'] ?>"
                                             value="1">Interested <span id="interestCount">(<?= 50 + rand(1,10) + $interestCount?>)</span>
@@ -2341,7 +2356,7 @@ function countdown(e){
     }, 1000);
 };
 countdown('$time');
-$(document).on('click','#paidRegisterBtn',function(event){
+$(document).on('click','#paidRegisterBtn, #paidRegisterBtn2',function(event){
     var btn = $(this);
     var demobtn = $('#loadingBtn');
     $.ajax({
@@ -2404,7 +2419,7 @@ $(document).on('click','.interestBtn',function(event){
         toastr.info('Message', 'Already Updated..');
      }
 });
-$(document).on('click','#registerBtn',function(event){
+$(document).on('click','#registerBtn, #registerBtn2',function(event){
     event.preventDefault();
      var btn = $(this);
      var demobtn = $('#loadingBtn');
