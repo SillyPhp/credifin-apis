@@ -1399,7 +1399,7 @@ transform: rotate(100deg);
     border: 2px solid #fff;
     border-radius: 50%;
     display: inline-block;
-    margin-right: -20px;
+    margin-right: -25px;
 }
 .ask-people li img{
     width: 100%;
@@ -1961,7 +1961,7 @@ a:link, a:visited {
     font-size: 14px;
     height: 40px;
     padding: 0 0;
-    width: 150px;
+    width: 140px;
     line-height: 40px;
     background: #00a0e3;
     color: #fff;
