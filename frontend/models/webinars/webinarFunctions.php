@@ -31,7 +31,7 @@ class webinarFunctions extends Model
             ->andWhere(['not', ['c.image' => null]])
             ->andWhere(['not', ['c.image' => '']])
             ->orderBy(['z.created_on' => SORT_DESC])
-            ->limit(4)
+            ->limit(6)
             ->asArray()
             ->all();
         return $data;
