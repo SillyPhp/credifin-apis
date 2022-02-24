@@ -10,6 +10,7 @@ use yii\web\View;
 use yii\widgets\Pjax;
 use frontend\assets\AppAssets;
 use frontend\widgets\login;
+use frontend\widgets\upcomingWebinar;
 
 AppAssets::register($this);
 ?>
@@ -34,7 +35,7 @@ AppAssets::register($this);
         foreach ($this->params['seo_tags']['rel'] as $key => $value) {
             $this->registerLinkTag([
                 'rel' => $key,
-                'href' => $value,
+                'href' => Url::to($value,'https'),
             ]);
         }
         foreach ($this->params['seo_tags']['name'] as $key => $value) {
@@ -78,42 +79,32 @@ AppAssets::register($this);
         <header id="header" class="header">
             <?= (!$this->params['header_dark']) ? '<div id="main-header" class="header-nav navbar-fixed-top header-dark navbar-white navbar-transparent navbar-sticky-animated animated-active">' : ''; ?>
             <div id="header-main" class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
-<!--                <section class="upcoming-webinar">-->
-<!--                    <div class="container">-->
-<!--                        <div class="row">-->
-<!--                            <div class="col-md-3 col-sm-2">-->
-<!--                                <div class="webinar-heading">-->
-<!--                                    Upcoming Webinar-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-6 col-sm-8">-->
-<!--                                <div class="webinar-name">-->
-<!--                                    Whither Education-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="col-md-3 col-sm-2">-->
-<!--                                <div class="view-detail">-->
-<!--                                    <a href="https://www.empoweryouth.com/webinar/whither-education-the-challenge-of-change-90286" class="view-btn">-->
-<!--                                        View Details-->
-<!--                                    </a>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </section>-->
+               
+            
+            
+                <?php
+                echo upcomingWebinar::widget();
+                ?>
+
+
                 <?php
                 //            if (Yii::$app->user->isGuest && empty($this->params['sub_header'])) {
                 if (Yii::$app->user->isGuest) {
                 ?>
-                    <div class="secondary-top-header">
+                    <div class="secondary-top-header container-fluid">
                         <div class="secondary-top-header-left">
                             <span>
-                                <i class="far fa-check-circle"></i><a href="/jobs/quick-job">Post quick <strong>Job</strong></a>or<a href="/internships/quick-internship"><strong>Internship</strong></a>
+                                <i class="far fa-check-circle"></i> Post quick <a data-link="/jobs/quick-job" data-target="#sign-up-benefit"><strong>Job</strong></a>or<a data-link="/internships/quick-internship" data-target="#sign-up-benefit"><strong>Internship</strong></a>
                             </span>
                             <span>
-                                <i class="fab fa-twitter"></i><a href="/tweets/job/create">Post <strong>Job</strong></a>or<a href="/tweets/internship/create"><strong>Internship Tweet</strong></a>
+                                <i class="fab fa-twitter"></i> Post <a data-link="/tweets/job/create" data-target="#sign-up-benefit"><strong>Job</strong></a>or<a data-link="/tweets/internship/create" data-target="#sign-up-benefit"><strong>Internship Tweet</strong></a>
                             </span>
                         </div>
+                        
+                        <div class="sign-up-modal" id="myModal">
+                            <?= $this->render('/site/sign-up-modal') ?>
+                        </div>
+
                         <div class="secondary-top-header-right">
                             <a href="/employers">Employer Zone</a>
                             <a href="/signup/organization" class="org-signup">Signup as Company</a>
@@ -125,7 +116,7 @@ AppAssets::register($this);
                 ?>
                 <div class="ey-head-main">
                     <div class="container-fluid">
-                        <div class="large-container container">
+                        <div class="large-container container" style="padding: 0;">
                             <div class="ey-header-main">
                                 <div class="ey-header-logo">
                                     <a class="ey-logo" href="/">
@@ -355,7 +346,7 @@ AppAssets::register($this);
                                         <ul class="styled-icons icon-bordered icon-sm mb-5">
                                             <li><a href="https://www.facebook.com/empower" target="_blank" class="overfb"><i class="fab fa-facebook-f"></i></a></li>
                                             <li><a href="https://twitter.com/EmpowerYouthin" target="_blank" class="overtw"><i class="fab fa-twitter"></i></a></li>
-                                            <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank" class="overig"><i class="fab fa-instagram"></i></a></li>
+                                            <li><a href="https://www.instagram.com/empoweryouth.in/" target="_blank" class="overig"><i class="fab fa-instagram"></i></a></li>
                                             <li><a href="https://www.pinterest.com/empoweryouthin" target="_blank" class="overpt"><i class="fab fa-pinterest"></i></a></li>
                                             <li><a href="https://www.linkedin.com/company/empoweryouth" target="_blank" class="overlink"><i class="fab fa-linkedin-in"></i></a></li>
                                         </ul>
@@ -461,18 +452,20 @@ AppAssets::register($this);
         }
     </script>
     <?php
+    $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
     $this->registerCss('
     .upcoming-webinar{
         width: 100%;
-        background: #301164;
+        background: #1F1F1F;
         display: flex;
         position: relative;
-        margin-top:-65px;
+        margin-top:-39px;
         // top: 0;
         z-index: 20;
       }
-      .upcoming-webinar .container{
-          padding: 0 !important;
+      .upcoming-webinar .container-fluid{
+          padding-top: 0 !important;
+          width: 100%;
       }
       .upcoming-webinar .row{
         display: flex;
@@ -481,7 +474,7 @@ AppAssets::register($this);
         text-transform: capitalize;
         font-family: lora;
         font-weight: 700;
-        font-size: 18pt;
+        font-size: 22px;
         line-height: 28px;
         color: #FFDF39;
         display: flex;
@@ -492,19 +485,19 @@ AppAssets::register($this);
         font-family: Lobster;
         font-style: normal;
         font-weight: normal;
-        font-size: 28pt;
+        font-size: 22px;
         text-align: center;
         color: #FFFFFF;
-        background: url(' .  Url::to("https://user-images.githubusercontent.com/72601463/133762664-79a23bf9-ec89-4f06-8c97-37465d1a16f5.png")  . ');
         background-repeat: no-repeat;
         background-size: 100% 100%;
         height: 100%;
+        letter-spacing: 1.3px;
       }
       .view-btn{
         background: linear-gradient(91.16deg, #FFBB54 -43.72%, #CB650C 125.14%, #DB7E2E 125.14%);
         border-radius: 27px;
         color: #fff;
-        padding: 5px 20px;
+        padding: 2px 13px;
         display: block;
         margin-left: auto;
         width: fit-content;
@@ -521,7 +514,10 @@ AppAssets::register($this);
         opacity: 0.9;
       }
       
-      @media only screen and (max-width: 768px){
+      @media only screen and (max-width: 767px){
+          .webinar-heading{
+              font-size: 19px;
+          }
         .upcoming-webinar .row{
           display: block;
         }
@@ -529,7 +525,7 @@ AppAssets::register($this);
           background: none;
         }
         .upcoming-webinar{
-          background: url(' . Url::to('https://user-images.githubusercontent.com/72601463/133765334-22ac93c4-167b-4f7a-b145-11caa4175341.png') . '), #301164;
+          //background: url(' . Url::to('https://user-images.githubusercontent.com/72601463/133765334-22ac93c4-167b-4f7a-b145-11caa4175341.png') . '), #0e1c3d;
           background-repeat: no-repeat;
           background-size: 100% 100%;
           display: block;
@@ -538,9 +534,6 @@ AppAssets::register($this);
         .view-btn{
           margin: 10px auto;
         }
-        .webinar-name{
-          font-size: 21pt;
-        }  
         .webinar-heading{
           justify-content: center;
         }
@@ -693,14 +686,15 @@ AppAssets::register($this);
 
 .secondary-top-header{
     height:32px;
-    margin-top:-34px;
+//    margin-top:-34px;
+    margin-top:-2px;
     line-height: 30px;
     display: block;
     transition: margin 500ms;
     background-color: rgba(0, 0, 0, 0.4);
 }
 .header-show .secondary-top-header{
-    margin-top: -2px;
+//    margin-top: -2px;
 }
 .header-show .upcoming-webinar{
     margin-top: -2px !important;
@@ -711,11 +705,12 @@ AppAssets::register($this);
 .secondary-top-header-left, .secondary-top-header-right{
     width:auto;
 }
-.secondary-top-header-left{padding-left:40px;float:left;}
+.secondary-top-header-left{padding-left:0;float:left;}
 .secondary-top-header-left a i, .secondary-top-header-left span i{font-size:16px;}
 .secondary-top-header-left a, .secondary-top-header-left span{margin:5px;}
+.secondary-top-header-left span:first-child{margin-left:0px;}
 .secondary-top-header-left span a{font-weight:500;}
-.secondary-top-header-right{padding-right:40px;float:right;}
+.secondary-top-header-right{padding-right:0px;float:right;}
 .upcoming-webinar, .secondary-top-header a, .secondary-top-header span, .secondary-top-header-left *{
     color:#fff;
     transition: all 500ms;
@@ -955,6 +950,15 @@ AppAssets::register($this);
         width:100%;
     }
 }
+@media (max-width: 992px) and (min-width: 768px){
+    .view-btn{
+        font-size: 13px;
+    }
+    .webinar-heading{
+        font-size: 19px;
+    }
+
+}
 ');
 
     if ($this->params['header_dark']) {
@@ -968,6 +972,72 @@ AppAssets::register($this);
             }
             ');
     }
+    if(!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization){
+        $this->registerJs("
+        function getCookie(name){
+            var re = new RegExp(name + '=([^;]+)');
+            var value = re.exec(document.cookie);
+            return (value != null) ? unescape(value[1]) : null;
+        }  
+        function openUserDetailsModal(){
+            let cookieVal = getCookie('ModalisViewed'); 
+            if(cookieVal == 'modalViewed'){
+                let date = new Date();
+                date.setTime(date.getTime() + (1 * 24 * 60 * 60 * 1000));
+                let jdate = date.toUTCString()
+                const expires = 'expires=' + date.toUTCString();
+                document.cookie='ModalisViewed='+jdate+'; expires='+expires+'; path=/'
+            }
+            if (document.cookie.indexOf('ModalisViewed') != -1) {
+                return false; 
+            }
+            let userModal = document.getElementById('completeProfileModal')
+                if(userModal != null){
+                    $('#completeProfileModal').modal('show');
+                    return false;
+                }                 
+            $.ajax({
+                url: '/account/resume-builder/user-detail-modal',
+                method: 'Post',
+                data:  {'". Yii::$app->request->csrfParam."':'". Yii::$app->request->csrfToken."'},
+                success: function(response){
+                    $('body').append(response);
+                    $('#completeProfileModal').modal('show');
+                }
+            });
+         }
+          
+//        window.setTimeout(function(){
+//            openUserDetailsModal();
+//        },1000); 
+               
+         function openPreferenceModal(){
+            let hasCookie = document.cookie;
+            if (document.cookie.indexOf('PreferenceisViewed') != -1) {
+                return false; 
+            }
+            
+            let preferenceModal = document.getElementById('preferenceLocation');
+            if(preferenceModal != null){
+                $('#preferenceLocation').modal('show');
+                return false;
+            }   
+            
+            $.ajax({
+                url: '/account/resume-builder/user-preference-modal',
+                method: 'Post',
+                data: {'". Yii::$app->request->csrfParam."':'". Yii::$app->request->csrfToken."'},
+                success: function(response) {
+                    $('body').append(response);
+                    $('#preferenceLocation').modal('show');
+                }
+            })
+         }
+         
+      
+        ");
+    }
+
 
     if (!empty(Yii::$app->params->google->analytics->id)) {
         $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=' . Yii::$app->params->google->analytics->id, [
@@ -1000,9 +1070,6 @@ AppAssets::register($this);
 
     if (Yii::$app->user->isGuest) {
         Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"', \yii\web\View::POS_HEAD);
-        $this->registerJs('
-        
-    ');
     }
     if (!$this->params['header_dark']) {
         $this->registerJs(" $(document).on('scroll', function () {
@@ -1036,7 +1103,7 @@ AppAssets::register($this);
 //$(".page-loading").fadeOut();
 var thispageurl = window.location.pathname;
 var hasAccessForSubHeader = true;
-var preventHeaderFor = ["/jobs/list","/internships/list","/jobs/compare","/internships/compare","/jobs/near-me","/internships/near-me"];
+var preventHeaderFor = ["/mentors/webinar-view","/mentors/webinar-live","/jobs/list","/internships/list","/jobs/compare","/internships/compare","/jobs/near-me","/internships/near-me"];
 for(var jj = 0;jj<preventHeaderFor.length;jj++){
     if(thispageurl == preventHeaderFor[jj]){
         hasAccessForSubHeader = false;
@@ -1056,6 +1123,9 @@ $(".ey-sub-nav-items > li > a").each(function(){
         return false;
       }
 });
+if(!hasAccessForSubHeader){
+    $(".upcoming-webinar").css("display","none");
+}
 
 
 $(document).on("click", ".partnerWith", function(e){

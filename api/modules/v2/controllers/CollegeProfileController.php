@@ -165,7 +165,7 @@ class CollegeProfileController extends ApiBaseController
             $streams = AssignedCollegeCourses::find()
                 ->distinct()
                 ->alias('a')
-                ->select(['a.assigned_college_enc_id', 'c.course_name stream'])
+                ->select(['a.assigned_college_enc_id', 'c.course_name stream', 'a.course_enc_id'])
                 ->joinWith(['courseEnc c'], false)
                 ->where(['a.organization_enc_id' => $organizations['organization_enc_id'], 'a.is_deleted' => 0, 'c.type' => 'Stream'])
                 ->orderBy(['c.course_name' => SORT_ASC])
@@ -276,13 +276,48 @@ class CollegeProfileController extends ApiBaseController
             $req = Yii::$app->request->post();
             $college_id = $this->getOrgId();
 
-            if (!isset($req['course_duration']) && empty($req['course_duration'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
-            } elseif (!isset($req['type']) && empty($req['type'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
-            } elseif (!isset($req['course_name']) && empty($req['course_name'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            if (!isset($req['courses'])) {
+                if (!isset($req['course_duration']) && empty($req['course_duration'])) {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+                } elseif (!isset($req['type']) && empty($req['type'])) {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+                } elseif (!isset($req['course_name']) && empty($req['course_name'])) {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+                }
+
+                $res = $this->saveCourse($req);
+                if ($res['status'] == 500) {
+                    return $this->response(500, ['status' => 500, 'message' => 'There is an error']);
+                } elseif ($res['status'] == 409) {
+                    return $this->response(409, ['status' => 409, 'message' => 'already added']);
+                }
+
+                return $this->response(200, ['status' => 200, 'courses' => $res]);
+
+            } else {
+
+                foreach ($req['courses'] as $val) {
+                    if (!empty($val['course_name'])) {
+                        $res = $this->saveCourse($val, true);
+                        if ($res['status'] == 500) {
+                            return $this->response(500, ['status' => 500, 'message' => 'There is an error']);
+                        }
+                    }
+                }
+
+                return $this->response(200, ['status' => 200, 'courses' => $res]);
             }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function saveCourse($req, $is_bulk = false)
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $college_id = $this->getOrgId();
 
             $already_have = AssignedCollegeCourses::find()
                 ->alias('a')
@@ -305,6 +340,8 @@ class CollegeProfileController extends ApiBaseController
                     $college_course_id->created_by = $user->user_enc_id;
                     $college_course_id->created_on = date('Y-m-d H:i:s');
                     if (!$college_course_id->save()) {
+                        print_r($college_course_id->getErrors());
+                        die();
                         return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                     }
                 }
@@ -315,8 +352,19 @@ class CollegeProfileController extends ApiBaseController
                 $course->assigned_college_enc_id = $utilities->encrypt();
                 $course->organization_enc_id = $college_id;
                 $course->course_enc_id = $college_course_id->course_enc_id;
-                $course->course_duration = (int)$req['course_duration'];
-                $course->type = $req['type'];
+                if ($is_bulk) {
+                    if (!empty($req['years'])) {
+                        $course->course_duration = (int)$req['years'];
+                        $course->type = 'Years';
+                    } elseif (!empty($req['semesters'])) {
+                        $course->course_duration = (int)$req['semesters'];
+                        $course->type = 'Semesters';
+                    }
+                } else {
+                    $course->course_duration = (int)$req['course_duration'];
+                    $course->type = $req['type'];
+                }
+
                 $course->created_by = $user->user_enc_id;
                 $course->created_on = date('Y-m-d H:i:s');
                 if ($course->save()) {
@@ -335,31 +383,37 @@ class CollegeProfileController extends ApiBaseController
                         }
                     }
 
-                    $courses = AssignedCollegeCourses::find()
-                        ->distinct()
-                        ->alias('a')
-                        ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
-                        ->joinWith(['courseEnc c'], false)
-                        ->joinWith(['collegeSections b' => function ($b) {
-                            $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
-                            $b->onCondition(['b.is_deleted' => 0]);
-                        }])
-                        ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
-//                        ->groupBy(['b.course_name'])
-                        ->asArray()
-                        ->all();
-
-                    return $this->response(200, ['status' => 200, 'courses' => $courses]);
+                    return $this->getCourses();
                 } else {
-                    return $this->response(500, ['status' => 500, 'message' => 'There is an error']);
+                    return ['status' => 500];
                 }
             } else {
-                return $this->response(409, ['status' => 409, 'message' => 'already added']);
+                if ($is_bulk) {
+                    return $this->getCourses();
+                }
+                return ['status' => 409];
             }
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    private function getCourses()
+    {
+        $college_id = $this->getOrgId();
+
+        $courses = AssignedCollegeCourses::find()
+            ->distinct()
+            ->alias('a')
+            ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.course_duration', 'a.type'])
+            ->joinWith(['courseEnc c'], false)
+            ->joinWith(['collegeSections b' => function ($b) {
+                $b->select(['b.assigned_college_enc_id', 'b.section_enc_id', 'b.section_name']);
+                $b->onCondition(['b.is_deleted' => 0]);
+            }])
+            ->where(['a.organization_enc_id' => $college_id, 'a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        return $courses;
     }
 
     public function actionUpdateCourse()
@@ -1419,6 +1473,10 @@ class CollegeProfileController extends ApiBaseController
                     }]);
                     $j->onCondition(['j.is_deleted' => 0]);
                 }])
+                ->joinWith(['appliedApplicationLocations k' => function ($k) {
+                    $k->select(['k.application_location_enc_id', 'k.applied_application_enc_id', 'k.city_enc_id', 'k1.name city_name']);
+                    $k->joinWith(['cityEnc k1'], false);
+                }])
                 ->groupBy(['a.applied_application_enc_id'])
                 ->where(['b.slug' => $slug, 'a.is_deleted' => 0, 'd.college_enc_id' => $college_id, 'g.organization_enc_id' => $college_id])
                 ->asArray()
@@ -2244,7 +2302,7 @@ class CollegeProfileController extends ApiBaseController
                 $assignedCourse->type = $params['type'];
                 $assignedCourse->updated_by = $user->user_enc_id;
                 $assignedCourse->updated_on = date('Y-m-d H:i:s');
-                if(!$assignedCourse->update()){
+                if (!$assignedCourse->update()) {
                     return $this->response(500, ['status' => 500, 'message' => $assignedCourse->getErrors()]);
                 }
             }

@@ -84,7 +84,7 @@ class OrganizationsController extends Controller
             if (Yii::$app->request->get('sortBy')) {
                 $options['sortBy'] = trim(Yii::$app->request->get('sortBy'));
             }
-            $options['limit'] = 27;
+            $options['limit'] = 12;
             $cards = $get->getAllCompanies($options);
             if (count($cards['cards']) > 0) {
                 $response = [
@@ -330,8 +330,15 @@ class OrganizationsController extends Controller
                 ->asArray()
                 ->all();
             $count_opportunities = \common\models\EmployerApplications::find()
-                ->where(['organization_enc_id' => $organization['organization_enc_id'], 'for_careers' => 0, 'is_deleted' => 0])
-                ->count();
+                ->alias('a')
+                ->select(['a.application_enc_id','SUM(b.positions) as positions', 'c.positions as positions2'])
+                ->joinWith(['applicationPlacementLocations b'])
+                ->joinWith(['applicationOptions c'])
+                ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.for_careers' => 0, 'a.is_deleted' => 0])
+                ->groupBy(['a.application_enc_id'])
+                ->asArray()
+                ->all();
+
             $from_date_app = date("Y-m-d", strtotime("-180 day"));
             $jobs_count = EmployerApplications::find()
                 ->alias('a')
@@ -392,6 +399,10 @@ class OrganizationsController extends Controller
                     'industries' => $industries,
                     'count_opportunities' => $count_opportunities,
                     'org_products' => $org_products,
+                    'available_jobs' => $this -> __getApplicationsCount($organization['organization_enc_id'],'Jobs'),
+                    'available_internships' => $this -> __getApplicationsCount($organization['organization_enc_id'],'Internships'),
+                    'expired_jobs' => $this -> __getApplicationsCount($organization['organization_enc_id'],'Jobs',false),
+                    'expired_internships' => $this -> __getApplicationsCount($organization['organization_enc_id'],'Internships',false),
                 ]);
             } else {
                 $follow = FollowedOrganizations::find()
@@ -433,6 +444,20 @@ class OrganizationsController extends Controller
         } else {
             throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
         }
+    }
+
+    private function __getApplicationsCount($org_id, $type, $is_live = true){
+        $applications = EmployerApplications::find()
+            ->alias('a')
+            ->joinWith(['applicationTypeEnc b'])
+            ->where(['b.name' => $type, 'a.organization_enc_id' => $org_id]);
+//            ->andWhere(['a.application_for' => 1]);
+            if($is_live){
+                $applications ->andWhere(['a.status' => 'Active', 'a.is_deleted' => 0, 'a.application_for' => 1]);
+            }else{
+                $applications ->andWhere(['a.status' => 'Closed']);
+            }
+            return $applications ->count();
     }
 
     public function actionUpdateLogo()
@@ -937,6 +962,36 @@ class OrganizationsController extends Controller
             $options['limit'] = 6;
             $options['page'] = 1;
             $options['slug'] = $org;
+            if ($type == 'Jobs') {
+                $cards = ApplicationCards::jobs($options);
+            } else {
+                $cards = ApplicationCards::internships($options);
+            }
+            if ($cards) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'cards' => $cards,
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
+    }
+
+    public function actionOrganizationPastOpportunities($org)
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $type = Yii::$app->request->post('type');
+            $options = [];
+            $options['limit'] = 6;
+            $options['page'] = 1;
+            $options['slug'] = $org;
+            $options['status'] = 'Closed';
             if ($type == 'Jobs') {
                 $cards = ApplicationCards::jobs($options);
             } else {
@@ -1569,6 +1624,9 @@ class OrganizationsController extends Controller
             ->joinWith(['organizationReviewLikeDislikes f' => function ($b) {
                 $b->onCondition(['f.created_by' => Yii::$app->user->identity->user_enc_id]);
             }], false);
+        if ($ridk && $ridk != '') {
+            $reviews->andWhere(['a.review_enc_id' => $ridk]);
+        }
         return [
             'total' => $reviews->count(),
             'reviews' => $reviews->orderBy([new \yii\db\Expression('FIELD (a.review_enc_id,"' . $ridk . '") DESC,FIELD (a.created_by,"' . Yii::$app->user->identity->user_enc_id . '") DESC, a.created_on DESC')])

@@ -3,6 +3,8 @@
 namespace account\controllers;
 
 use common\models\ResumeTemplates;
+use common\models\UserPreferences;
+use common\models\Users;
 use frontend\models\profiles\ResumeData;
 use yii\web\HttpException;
 use account\models\resumeBuilder\AddExperienceForm;
@@ -337,21 +339,17 @@ class ResumeBuilderController extends Controller
 
     }
 
-    public function actionEducation()
-    {
+    public function actionEducation(){
+        Yii::$app->response->format = Response::FORMAT_JSON;
         $model = new AddQualificationForm();
-
         if ($model->load(Yii::$app->request->post())) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
             return $model->save();
             if (!$model->save()) {
                 return false;
             } else {
                 return true;
             }
-
         }
-
     }
 
     public function actionEditEducation()
@@ -567,6 +565,7 @@ class ResumeBuilderController extends Controller
                 $user_obj->created_by = Yii::$app->user->identity->user_enc_id;
 
                 if (!$user_obj->save()) {
+
                     return json_encode($response = [
                         'status' => 201,
                         'title' => 'error',
@@ -691,4 +690,86 @@ class ResumeBuilderController extends Controller
         return $this->render('template-preview',['templates'=>$templates]);
     }
 
+    private function _CompleteProfile(){
+        $user = Users::find()
+            ->alias('a')
+            ->select([
+                'a.user_enc_id', 'a.dob', 'a.experience', 'a.gender', 'a.city_enc_id',
+                'a.image', 'a.job_function', 'a.asigned_job_function', 'a.description', 'a.is_available'
+            ])
+            ->joinWith(['userSkills b' => function ($b) {
+                $b->onCondition(['b.is_deleted' => 0]);
+            }])
+            ->joinWith(['userSpokenLanguages c' => function ($c) {
+                $c->onCondition(['c.is_deleted' => 0]);
+            }])
+            ->where([
+                'a.user_enc_id' => Yii::$app->user->identity->user_enc_id,
+                'a.is_deleted' => 0
+            ])
+            ->asArray()
+            ->one();
+
+        $is_complete = 1;
+        foreach ($user as $val) {
+            if ($val == '' || $val == null) {
+                $is_complete = 0;
+                break;
+            }
+        }
+        return ['is_complete' => $is_complete, 'userVal' => $user];
+    }
+
+    private function _CompletePreference(){
+        $userPref = UserPreferences::find()
+            ->alias('a')
+            ->select(['a.preference_enc_id', 'a.assigned_to'])
+            ->joinWith(['userPreferredJobProfiles b' => function ($b) {
+                $b->select(['b.preferred_job_profile_enc_id', 'b.preference_enc_id']);
+                $b->onCondition(['b.is_deleted' => 0]);
+            }])
+            ->joinWith(['userPreferredLocations c' => function ($c) {
+                $c->select(['c.preferred_location_enc_id', 'c.preference_enc_id']);
+                $c->onCondition(['c.is_deleted' => 0]);
+            }])
+            ->joinWith(['userPreferredIndustries d' => function ($d) {
+                $d->select(['d.preferred_industry_enc_id', 'd.preference_enc_id']);
+                $d->onCondition(['d.is_deleted' => 0]);
+            }])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0, 'a.assigned_to' => 'Jobs'])
+            ->asArray()
+            ->one();
+
+        $is_preference_complete = 1;
+        if (empty($userPref['userPreferredJobProfiles'])) {
+            $is_preference_complete = 0;
+        }
+        if (empty($userPref['userPreferredLocations'])) {
+            $is_preference_complete = 0;
+        }
+        if (empty($userPref['userPreferredIndustries'])) {
+            $is_preference_complete = 0;
+        }
+        return ['is_preference_complete' => $is_preference_complete, 'userPref' => $userPref];
+    }
+
+    public function actionUserDetailModal(){
+        $is_complete = $this->_CompleteProfile()['is_complete'];
+        if ($is_complete == 1){
+            return false;
+        }
+        return $this->renderAjax('@common/widgets/complete-profile-modal', [
+            'userData' => $this->_CompleteProfile()['userVal'],
+        ]);
+    }
+
+    public function actionUserPreferenceModal(){
+        $is_preference_complete = $this->_CompletePreference()['is_preference_complete'];
+        if($is_preference_complete == 1){
+            return false;
+        }
+        return $this->renderAjax('@common/widgets/preference-and-location-modal',[
+            'userPref' => $this->_CompletePreference()['userPref']
+        ]);
+    }
 }

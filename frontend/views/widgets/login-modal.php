@@ -58,7 +58,7 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
                                         'autofocus' => true,
                                         'autocomplete' => 'off',
                                         'class' => 'uname-in',
-                                        'placeholder' => $loginFormModel->getAttributeLabel('username'),
+                                        'placeholder' => 'Username or Email',
                                     ]);
                                     ?>
                                 </div>
@@ -82,20 +82,18 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
                                     </div>
                                 </div>
                                 <div class="login-btn">
-                                    <?= Html::submitButton('Login', ['class' => 'lg-form', 'name' => 'login-button']); ?>
+                                    <button <?= Html::submitButton('Login', ['class' => 'lg-form', 'name' => 'login-button']); ?> </button>
+                                    or
+                                    <button type="button" onclick="changeSignup()"> Sign Up</button>
                                 </div>
                                 <?php ActiveForm::end(); ?>
-                                <div class="separator pb-10">
-                                    <span><?= Yii::t('frontend', 'Login With Social Accounts'); ?></span>
+                                <div class="separator pb-10 black-set">
+                                    <span><?= Yii::t('frontend', 'Login/Register With Social Accounts'); ?></span>
                                 </div>
                                 <div class="form-group mt-10">
                                     <?=
                                     \yii\authclient\widgets\AuthChoice::widget([ 'baseAuthUrl' => ['site/auth'], 'popupMode' => true, ])
                                     ?>
-                                </div>
-                                <div class="new-user">
-                                    New User?
-                                    <button type="button" onclick="changeSignup()"> Sign Up</button>
                                 </div>
                             </div>
 
@@ -141,6 +139,10 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
 </div>
 <?php
 $this->registerCss('
+.black-set span{
+//    color:#000;
+    font-family:roboto;
+    }
 .auth-clients{
     display: flex !important;
     justify-content: center !important;
@@ -209,13 +211,14 @@ $this->registerCss('
     margin-top: 20px;
 }
 .indi-btn a{
+    font-family: roboto;
     background: #00a0e3;
     color: #fff;
-    padding: 6px 9px;
+    padding: 6px 4px;
     border: 1px solid #00a0e3;
     border-radius: 5px;
     text-transform: capitalize;
-    font-size: 11px;
+    font-size: 12px;
 //    width: 155px;
     margin: auto;
     margin-top: 5px;
@@ -227,13 +230,14 @@ $this->registerCss('
     transition: 0.2s ease-in;
 }
 .organ-btn a{
+    font-family: roboto;
     background: #ff7803;
     color: #fff;
     padding: 6px 4px;
     border: 1px solid #ff7803;
     border-radius: 5px;
     text-transform: capitalize;
-    font-size: 11px;
+    font-size: 12px;
 //    width: 160px;
     margin: auto;
     margin-top: 5px;
@@ -397,12 +401,14 @@ input{
     padding-top:10px;
 }
 .login-btn button{
+    font-family: roboto;
     background:#00a0e3;
     color:#fff;
     border:#00a0e3;
     padding:10px 20px;
     border-radius:5px;
-    font-size:13px;
+    font-size:12px;
+    margin: 0 8px;
 }
 @media screen and (max-width: 992px){
     .half-bg{
@@ -546,8 +552,12 @@ $this->registerJs($script);
     }
 
     function changeSignup() {
-        document.getElementById('loginForm').style.display = "none";
-        document.getElementById('signForm').style.display = "block";
+        if(localStorage.getItem('autoApplyAfter') == "true"){
+            window.location.replace("/signup/individual");
+        } else{
+            document.getElementById('loginForm').style.display = "none";
+            document.getElementById('signForm').style.display = "block";
+        }
     }
 
     function changeBackLogin() {

@@ -172,9 +172,6 @@ $this->registerCss('
     text-align: center;
     height: 46px;
 }
-.press-bg .heading-style{
-    margin: 0 !important;
-}
 ');
 $script = <<<JS
 $('.load-later').Lazy();

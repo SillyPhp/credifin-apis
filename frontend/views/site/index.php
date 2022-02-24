@@ -159,7 +159,11 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
+<?= $this->render('/widgets/product-offerings') ?>
+
+<?= $this->render('/webinars/webinar-carousel')?>
+
+
 
 <div id="app-data"></div>
 <div id="sectionIsLoading" class="sectionLoad">
@@ -362,8 +366,10 @@ $this->registerCss('
     padding: 12px 40px;
     border:2px solid #00a0e3;
     border-radius:5px;
-    color:#00a0e3;
+    color:#fff;
     text-transform:uppercase;
+    background:#00a0e3; 
+    font-weight: 600;
 }
 .login-bttn, .sign-up, .sign-up:hover, .login-bttn:hover{
     -o-transition:.3s all;
@@ -374,19 +380,21 @@ $this->registerCss('
 }
 .login-bttn:hover{
     border:2px solid #00a0e3;
-    color:#fff; 
-    background:#00a0e3; 
+    color:#00a0e3; 
+    background:transparent; 
 }
 .sign-up{
     padding: 12px 40px;
     border:2px solid #ff7803;
     border-radius:5px;
-    color:#ff7803;
+    color:#fff;
     text-transform:uppercase;
+    background:#ff7803;  
+    font-weight: 600;
 }
 .sign-up:hover{
-   color:#fff; 
-    background:#ff7803;  
+   color:#ff7803; 
+   background:transparent;  
 }
 .job-field input:focus{
     -webkit-box-shadow: none !important;
@@ -1250,17 +1258,18 @@ if (!Yii::$app->user->isGuest) {
     var loadElems = [
         'getOurServices',
         'getFeaturedApplications',
-        'getStats',
-        'getProductOffering',
-        'getTopCities',
+//        'getStats',
+//        'getProductOffering',
+//        'getTopCities',
+        'getWorkFromHomeBanner',
         'getDropResume',
         'getGovernmentJobs',
         'getInternationalJobs',
         'getCompaniesWithUs',
-        'getLearningTopics',
-        'getWhatsappCommunityj',
+//        'getLearningTopics',
+//        'getWhatsappCommunity',
 //        'getTweets',
-        'getStudentLoan',
+//        'getStudentLoan',
         'getPressRelease',
         'getShortcuts'
     ];
@@ -1270,24 +1279,24 @@ if (!Yii::$app->user->isGuest) {
     var loadElems = [
         'getOurServices',
         'getFeaturedApplications',
-        'getFeaturedInternships',
-        'getStats',
-        'getProductOffering',
+//        'getStats',
+//        'getProductOffering',
+        'getWorkFromHomeBanner',
         'getDropResume',
-        'getTopCities',
+//        'getTopCities',
 //        'getEduAndRedbull',
         'getGovernmentJobs',
         'getInternationalJobs',
         'getCompaniesWithUs',
-        'getLearningTopics',
+//        'getLearningTopics',
 //        'getOpportunities',
 //        'getSafetySigns',
 //        'getOnlineClasses',
-        'getWhatsappCommunity',
+//        'getWhatsappCommunity',
         'getHowItWorks',
 //        'getNewsUpdate',
 //        'getTweets',
-        'getStudentLoan',
+//        'getStudentLoan',
         'getPressRelease',
         'getNewsletter',
         'getShortcuts'

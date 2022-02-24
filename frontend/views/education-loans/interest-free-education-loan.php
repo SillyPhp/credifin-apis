@@ -1,34 +1,6 @@
 <?php
 
 use yii\helpers\Url;
-$this->title = 'Interest Free Education Loan';
-$keywords = 'Interest Free Loans available for select colleges/Universities | Empower Youth';
-$description = 'Do Not let monetary constraints stop your from getting admission in your dream college/ university';
-$image = Url::to('@eyAssets/images/pages/education-loans/interest-free-education-loan.png', 'https');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouthin',
-        'twitter:creator' => '@EmpowerYouthin',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
 
     <section class="interest-free-header">
@@ -116,54 +88,55 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
-    <?= $this->render('/widgets/covid-offer-banner', ['availUrl' => '/education-loans/apply']) ?>
+    
 
 
 <?= $this->render('/widgets/interest-free-loan-process') ?>
+<?= $this->render('/widgets/benefits-parents') ?>
 
-    <section class="benefit-bg">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style bene-head">Benefits For Parents</div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-3 col-sm-3 col-xs-12">
-                    <div class="bene-img">
-                        <span class="img-fs"><i class="fa fa-file-signature"></i></span>
-                    </div>
-                    <div class="bene-img-text">
-                        <p>Minimal Paper Work</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-3 col-xs-12">
-                    <div class="bene-img">
-                        <span class="img-fs"><i class="fas fa-thumbs-up"></i></span>
-                    </div>
-                    <div class="bene-img-text">
-                        <p>Approval In Minutes</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-3 col-xs-12">
-                    <div class="bene-img">
-                        <span class="img-fs"><i class="fa fa-hand-holding-usd"></i></span>
-                    </div>
-                    <div class="bene-img-text">
-                        <p>No Prepayment Charges</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-3 col-xs-12">
-                    <div class="bene-img">
-                        <span class="img-fs">EMI</span>
-                    </div>
-                    <div class="bene-img-text">
-                        <p>Repay In Easy Monthly Installments</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section class="benefit-bg">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-12">-->
+<!--                    <div class="heading-style bene-head">Benefits For Parents</div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-3 col-sm-3 col-xs-12">-->
+<!--                    <div class="bene-img">-->
+<!--                        <span class="img-fs"><i class="fa fa-file-signature"></i></span>-->
+<!--                    </div>-->
+<!--                    <div class="bene-img-text">-->
+<!--                        <p>Minimal Paper Work</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-3 col-sm-3 col-xs-12">-->
+<!--                    <div class="bene-img">-->
+<!--                        <span class="img-fs"><i class="fas fa-thumbs-up"></i></span>-->
+<!--                    </div>-->
+<!--                    <div class="bene-img-text">-->
+<!--                        <p>Approval In Minutes</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-3 col-sm-3 col-xs-12">-->
+<!--                    <div class="bene-img">-->
+<!--                        <span class="img-fs"><i class="fa fa-hand-holding-usd"></i></span>-->
+<!--                    </div>-->
+<!--                    <div class="bene-img-text">-->
+<!--                        <p>No Prepayment Charges</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-3 col-sm-3 col-xs-12">-->
+<!--                    <div class="bene-img">-->
+<!--                        <span class="img-fs">EMI</span>-->
+<!--                    </div>-->
+<!--                    <div class="bene-img-text">-->
+<!--                        <p>Repay In Easy Monthly Installments</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
 
 <?= $this->render('/widgets/interest-free-upto-10lakhs') ?>
 
@@ -246,6 +219,10 @@ $this->params['seo_tags'] = [
         </div>
     </section>
 
+<?= $this->render('/widgets/testimonials-interestfree') ?>
+<?php
+    if($loan_colleges){
+?>
     <section class="bgeEd pdbtm">
         <div class="container">
             <div class="row">
@@ -254,66 +231,29 @@ $this->params['seo_tags'] = [
                 </div>
             </div>
             <div class="row">
+                <?php
+                    foreach ($loan_colleges as $l) {
+                ?>
                 <div class="col-md-3 col-sm-4">
-                    <a href="/education-loans/apply-loan/jmXaKq76pdwGOrrJmvm4d9gMN83Bbv" target="_blank">
+                    <a href="<?= Url::to('/education-loans/apply-loan/' . $l['organization_enc_id'], true) ?>" target="_blank">
                         <div class="college-card-partner">
                             <div class="college-img-partner">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/gna.png') ?>" alt="">
+                                <img src="<?= $l['org_logo'] ?>" alt="">
                             </div>
                             <div class="img-back-partner"></div>
-                            <p>GNA University</p>
+                            <p><?= $l['name'] ?></p>
                         </div>
                     </a>
                 </div>
-                <div class="col-md-3 col-sm-4">
-                    <a href="/education-loans/apply-loan/jKbDalL5YRxwPJmXgPnkQGqgwrkA06" target="_blank">
-                        <div class="college-card-partner">
-                            <div class="college-img-partner">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rayat.png') ?>" alt="">
-                            </div>
-                            <div class="img-back-partner"></div>
-                            <p>Rayat Bahra University</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-3 col-sm-4">
-                    <a href="/education-loans/apply-loan/jE3DW981MQMkWEeja3wvol5zrZyBag" target="_blank">
-                        <div class="college-card-partner">
-                            <div class="college-img-partner">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/bahra.png') ?>" alt="">
-                            </div>
-                            <div class="img-back-partner"></div>
-                            <p>Bahra University, Shimla</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-3 col-sm-4">
-                    <a href="/education-loans/apply-loan/7B0P3kNEldvGVa3MyZgNQm14wrJXbj" target="_blank">
-                        <div class="college-card-partner">
-                            <div class="college-img-partner">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/rayat2.png') ?>" alt="">
-                            </div>
-                            <div class="img-back-partner"></div>
-                            <p>Rayat Bahra Hoshiarpur Campus</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="col-md-3 col-sm-4">
-                    <a href="#" target="_blank">
-                        <div class="college-card-partner">
-                            <div class="college-img-partner">
-                                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/st-soldire.png') ?>"
-                                     alt="">
-                            </div>
-                            <div class="img-back-partner"></div>
-                            <p>St Soldier Group Of Institutions</p>
-                        </div>
-                    </a>
-                </div>
+                <?php
+                    }
+                ?>
             </div>
         </div>
     </section>
-
+        <?php
+    }
+        ?>
 <?php
 if ($blogs['blogs']) {
     echo $this->render('/widgets/education-loan/blogs', [

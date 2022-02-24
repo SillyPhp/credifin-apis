@@ -1,10 +1,10 @@
 <?php
 
-use yii\helpers\Url;
-use yii\helpers\html;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\html;
+use yii\helpers\Url;
 
-$this->params['header_dark'] = false;
+$this->params['header_dark'] = true;
 
 function finalAmount($totalPrice, $gstAmount)
 {
@@ -27,6 +27,7 @@ function webDate($webDate)
 }
 
 ?>
+
 <section class="header-web">
     <div class="back-shadow"></div>
     <div class="container-fluid">
@@ -38,15 +39,12 @@ function webDate($webDate)
                         Created To Help You Understand And Immerse Yourself In The Latest Career Options.</h2>
                 </div>
             </div>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="header-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/webinar/web.png') ?>"/>
-                </div>
-            </div>
         </div>
     </div>
 </section>
-
+<?php
+if ($upcomingWebinar) {
+?>
 <section class="upcoming-web">
     <div class="container">
         <div class="row">
@@ -54,7 +52,7 @@ function webDate($webDate)
         </div>
         <div class="row">
             <?php
-            if ($upcomingWebinar) {
+
                 foreach ($upcomingWebinar as $web) {
                     ?>
                     <div class="col-md-4 col-sm-6">
@@ -62,23 +60,25 @@ function webDate($webDate)
                             <div class="web-img">
                                 <a href="<?= Url::to("/webinar/" . $web['slug']) ?>">
                                     <img src="<?= $web['image'] ?>"></a>
-                                <div class="web-date">
-                                    <div class="date">
+                                <div class="web-detail-date">
+                                    <div class="web-date">
                                         <?php
                                         $eventDate = webDate($web['webinarEvents'][0]['start_datetime']);
                                         echo $eventDate;
                                         ?>
                                     </div>
-                                </div>
-                                <div class="web-paid">
-                                    <?php
-                                    $finalPrice = finalAmount($web['price'], $web['gst']);
-                                    echo $finalPrice;
-                                    ?>
+                                    <div class="web-paid">
+                                        <?php
+                                        $finalPrice = finalAmount($web['price'], $web['gst']);
+                                        echo $finalPrice;
+                                        ?>
+                                    </div>
                                 </div>
                             </div>
                             <div class="web-inr">
-                                <div class="web-title"><a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a></div>
+                                <div class="web-title"><a
+                                            href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a>
+                                </div>
                                 <div class="web-speaker">
                                     <span><?= str_replace(',', ', </span><span>', trim($web['speakers'])) ?></span>
                                 </div>
@@ -108,21 +108,29 @@ function webDate($webDate)
                                     </div>
                                     <span class="cont"> <?= count($web['webinarRegistrations']) ?> Registered</span>
                                 </div>
-                                <div class="register-btns">
-                                    <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
-                                                class="icon-drib fa fa-arrow-right"></i> Register Now</a>
-                                </div>
+                                <?php if (array_search(Yii::$app->user->identity->user_enc_id, array_column($web['webinarRegistrations'], 'created_by'))) { ?>
+                                    <div class="register-btns">
+                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib">
+                                            Registered</a>
+                                    </div>
+                                <?php } else { ?>
+                                    <div class="register-btns">
+                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
+                                                    class="icon-drib fa fa-arrow-right"></i> Register Now</a>
+                                    </div>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
                     <?php
                 }
-            }
             ?>
         </div>
     </div>
 </section>
-
+<?php
+}
+?>
 <section class="how-it-works">
     <div class="container">
         <div class="row">
@@ -136,7 +144,9 @@ function webDate($webDate)
                     </div>
                     <div class="step-text">
                         <h3>1. Register</h3>
-                        <p>Register for the webinar by simply filling all the required details and clicking on the "Request For a Webinar' button. Once registered, a mail will the join link will be sent to you.</p>
+                        <p>Register for the webinar by simply filling all the required details and clicking on the
+                            "Request For a Webinar' button. Once registered, a mail will the join link will be sent to
+                            you.</p>
                     </div>
                 </div>
             </div>
@@ -147,7 +157,9 @@ function webDate($webDate)
                     </div>
                     <div class="step-text">
                         <h3>2. Join</h3>
-                        <p>At the time of the webinar, click on the join link sent in the mail. You will be redirected to the webinar detail page. Click on the 'Join Now' button and you will be in the webinar.</p>
+                        <p>At the time of the webinar, click on the join link sent in the mail. You will be redirected
+                            to the webinar detail page. Click on the 'Join Now' button and you will be in the
+                            webinar.</p>
                     </div>
                 </div>
             </div>
@@ -158,7 +170,8 @@ function webDate($webDate)
                     </div>
                     <div class="step-text">
                         <h3>3. Watch</h3>
-                        <p>Once the organiser arrived, the webinar will begin. You can also interact with them before the Live Chat. Enjoy your creative learning!</p>
+                        <p>Once the organiser arrived, the webinar will begin. You can also interact with them before
+                            the Live Chat. Enjoy your creative learning!</p>
                     </div>
                 </div>
             </div>
@@ -174,28 +187,28 @@ if ($optedWebinar) {
             <div class="row">
                 <div class="heading-opted">Opted Webinars</div>
             </div>
-            <?php
-            foreach ($optedWebinar as $opWeb) {
-                ?>
-                <div class="row">
+            <div class="row">
+                <?php
+                foreach ($optedWebinar as $opWeb) {
+                    ?>
                     <div class="col-md-4 col-sm-6">
                         <div class="web-card">
                             <div class="web-img">
                                 <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"><img
                                             src="<?= $opWeb['image'] ?>"></a>
-                                <div class="web-date">
-                                    <div class="date">
+                                <div class="web-detail-date">
+                                    <div class="web-date">
                                         <?php
                                         $eventDate = webDate($opWeb['webinarEvents'][0]['start_datetime']);
                                         echo $eventDate;
                                         ?>
                                     </div>
-                                </div>
-                                <div class="web-paid">
-                                    <?php
-                                    $finalPrice = finalAmount($opWeb['price'], $opWeb['gst']);
-                                    echo $finalPrice;
-                                    ?>
+                                    <div class="web-paid">
+                                        <?php
+                                        $finalPrice = finalAmount($opWeb['price'], $opWeb['gst']);
+                                        echo $finalPrice;
+                                        ?>
+                                    </div>
                                 </div>
                             </div>
                             <div class="web-inr">
@@ -208,37 +221,41 @@ if ($optedWebinar) {
                                 <div class="web-des"><?= $opWeb['description'] ?></div>
                             </div>
                             <div class="reg-btn-count">
-                                <div class="register-count">
-                                    <div class="reg-img">
-                                        <?php
-                                        if (count($opWeb['webinarRegistrations']) > 0) {
-                                            $reg = 1;
-                                            foreach ($opWeb['webinarRegistrations'] as $uImage) {
-                                                ?>
-                                                <span class="reg<?= $reg ?> reg">
-                                                        <img src="<?= $uImage['createdBy']['image'] ?>">
-                                                    </span>
-                                                <?php
-                                                $reg++;
-                                                if ($reg == 4) {
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        ?>
-                                    </div>
-                                    <span class="cont"><?= count($opWeb['webinarRegistrations']) ?> Registered</span>
+                                <div class="register-btns">
+                                    <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>" class="btn-drib"><i
+                                                class="icon-drib fa fa-arrow-right"></i>View Details</a>
                                 </div>
+                                <!-- <div class="register-count">
+                                        <div class="reg-img">
+                                            <?php
+                                if (count($opWeb['webinarRegistrations']) > 0) {
+                                    $reg = 1;
+                                    foreach ($opWeb['webinarRegistrations'] as $uImage) {
+                                        ?>
+                                                    <span class="reg<?= $reg ?> reg">
+                                                            <img src="<?= $uImage['createdBy']['image'] ?>">
+                                                        </span>
+                                                    <?php
+                                        $reg++;
+                                        if ($reg == 4) {
+                                            break;
+                                        }
+                                    }
+                                }
+                                ?>
+                                        </div>
+                                        <span class="cont"><?= count($opWeb['webinarRegistrations']) ?> Registered</span>
+                                    </div> -->
                                 <!--                        <div class="register-btns">-->
                                 <!--                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>-->
                                 <!--                        </div>-->
                             </div>
                         </div>
                     </div>
-                </div>
-                <?php
-            }
-            ?>
+                    <?php
+                }
+                ?>
+            </div>
         </div>
     </section>
     <?php
@@ -254,8 +271,7 @@ if ($optedWebinar) {
             <?php
             foreach ($pastWebinar as $pWeb) {
                 $date = array();
-                foreach ($pWeb['webinarEvents'] as $key => $row)
-                {
+                foreach ($pWeb['webinarEvents'] as $key => $row) {
                     $date[$key] = $row['start_datetime'];
                 }
                 array_multisort($date, SORT_DESC, $pWeb['webinarEvents']);
@@ -266,31 +282,31 @@ if ($optedWebinar) {
                             <a href="<?= Url::to("/webinar/" . $pWeb['slug']) ?>">
                                 <img src="<?= $pWeb['image'] ?>">
                             </a>
-                            <div class="web-date">
-                                <div class="date">
+                            <div class="web-detail-date">
+                                <div class="web-date">
                                     <?php
                                     $eventDate = webDate($pWeb['webinarEvents'][0]['start_datetime']);
                                     echo $eventDate;
                                     ?>
                                 </div>
-                            </div>
-                            <div class="web-paid">
-                                <?php
-                                $totalPrice = $pWeb['price'];
-                                $gstAmount = 0;
-                                if ($pWeb['gst']) {
-                                    $gstPercent = $pWeb['gst'];
-                                    if ($totalPrice > 0) {
-                                        $gstAmount = round($gstPercent * ($totalPrice / 100), 2);
+                                <div class="web-paid">
+                                    <?php
+                                    $totalPrice = $pWeb['price'];
+                                    $gstAmount = 0;
+                                    if ($pWeb['gst']) {
+                                        $gstPercent = $pWeb['gst'];
+                                        if ($totalPrice > 0) {
+                                            $gstAmount = round($gstPercent * ($totalPrice / 100), 2);
+                                        }
                                     }
-                                }
-                                $finalPrice = $totalPrice + $gstAmount;
-                                ?>
-                                <?= (($finalPrice == 0) ? 'Free' : '₹ ' . $finalPrice) ?>
+                                    $finalPrice = $totalPrice + $gstAmount;
+                                    ?>
+                                    <?= (($finalPrice == 0) ? 'Free' : '₹ ' . $finalPrice) ?>
+                                </div>
                             </div>
                         </div>
                         <div class="web-inr">
-                            <div class="web-title"><a href="<?= Url::to("/webinar/" . $pWeb['slug']) ?>">
+                            <div class="web-title"><a href="<?= Url::to("/webinar/" . $pWeb['slug']); ?>">
                                     <?= $pWeb['name'] ?></a></div>
                             <div class="web-speaker">
                                 <span><?= str_replace(',', ', </span><span>', trim($pWeb['speakers'])) ?></span></div>
@@ -322,17 +338,17 @@ if ($optedWebinar) {
             <div class="col-sm-4">
                 <div class="icon">
                     <div class="icon-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-smartphone.png'); ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-tablet.png'); ?>">
                     </div>
-                    On your Smartphone
+                    On your Tablet
                 </div>
             </div>
             <div class="col-sm-4">
                 <div class="icon">
                     <div class="icon-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-tablet.png'); ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-smartphone.png'); ?>">
                     </div>
-                    On your Tablet
+                    On your Smartphone
                 </div>
             </div>
         </div>
@@ -377,26 +393,26 @@ if ($optedWebinar) {
         </div>
         <div class="col-md-7 col-sm-12 col-xs-12" style="background-color: #fff;padding: 30px 20px;">
             <?php $form = ActiveForm::begin([
-                'id'=>'requestWebForm'
+                'id' => 'requestWebForm'
             ])
             ?>
             <div class="row">
                 <div class="col-md-12">
                     <div class="web-form">
                         <label for="title">Topic</label>
-                        <?= $form->field($model,'topic')->textInput(['class' => 'form-control', 'id' => 'topic', 'placeholder' => ''])->label(false)?>
+                        <?= $form->field($model, 'topic')->textInput(['class' => 'form-control', 'id' => 'topic', 'placeholder' => ''])->label(false) ?>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="web-form">
                         <label for="date">Date</label>
-                        <?= $form->field($model,'date')->textInput(['class' => 'form-control datepicker', 'id' => 'date', 'placeholder' => ''])->label(false)?>
+                        <?= $form->field($model, 'date')->textInput(['class' => 'form-control datepicker', 'id' => 'date', 'placeholder' => ''])->label(false) ?>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="web-form">
                         <label for="seats">Seats</label>
-                       <?= $form->field($model,'seats')->textInput(['class' => 'form-control', 'id' => 'seats', 'placeholder' => ''])->label(false)?>
+                        <?= $form->field($model, 'seats')->textInput(['class' => 'form-control', 'id' => 'seats', 'placeholder' => ''])->label(false) ?>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -405,7 +421,7 @@ if ($optedWebinar) {
                         <div class="load-suggestions">
                             <span></span><span></span><span></span>
                         </div>
-                        <?= $form->field($model,'speakers[]',['template' => '{input}{error}'])->textInput(['class' => 'form-control typeahead', 'id' => 'speakers', 'placeholder' => ''])->label(false)?>
+                        <?= $form->field($model, 'speakers[]', ['template' => '{input}{error}'])->textInput(['class' => 'form-control typeahead', 'id' => 'speakers', 'placeholder' => ''])->label(false) ?>
                         <div class="pf-field no-margin">
                             <ul class="tags languages_tag_list">
                                 <li class="tagAdd taglist"></li>
@@ -416,7 +432,7 @@ if ($optedWebinar) {
                 <div class="col-md-12 mt10">
                     <div class="web-form">
                         <label for="objectives">Objectives</label><br>
-                       <?= $form->field($model,'objective')->textArea(['rows'=> 6, 'cols'=> 20,'class' => 'form-control', 'id' => 'objective', 'placeholder' => ''])->label(false)?>
+                        <?= $form->field($model, 'objective')->textArea(['rows' => 6, 'cols' => 20, 'class' => 'form-control', 'id' => 'objective', 'placeholder' => ''])->label(false) ?>
                     </div>
                 </div>
                 <div class="col-md-12 text-center">
@@ -468,7 +484,6 @@ $this->registerCss("
     align-items: center;
     justify-content: center;
     margin: auto;
-    background: #204E8445;
     margin-bottom: 10px;
 }
 .icon-img img {
@@ -488,9 +503,16 @@ $this->registerCss("
     min-height: 300px;
     margin-bottom: 10px;
 }
-.icon{
-    margin-bottom: 40px;
+.webinar-on-device .icon{
+    box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.25);
+    padding: 40px 0;
+    text-align: center;
+    border-top: 5px solid #00a0e3;
+    margin-bottom: 20px;
+    width: 100%;
+    width: 100%;
 }
+
 .how-it-works{
     background:#fcfcfc;
     margin-bottom: 20px;
@@ -817,7 +839,7 @@ color: #fff !important;
     margin-top: 0px !important;
 }
 .ornge {
-    color: #00a0e3;
+    color: #000;
     font-weight:500;
 }
 .speakers{
@@ -846,8 +868,9 @@ color: #fff !important;
 	transition: all .2s;
 }
 .header-web {
-    background-color: #E8F6EF;
+    background: url(/assets/themes/ey/images/pages/webinar/webinar-landing-bg.png) right top;
     position: relative;
+    background-repeat: no-repeat;
     overflow: hidden;
     min-height: 500px;
     display: flex;
@@ -856,19 +879,20 @@ color: #fff !important;
 }
 .back-shadow {
     position: absolute;
-    top: -22%;
+    top: 0;
     right: 0;
-    width: 50%;
-    background-color: #00a0e3;
-    height: 144%;
-    border-radius: 50% 0 0 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    z-index: 0;
+    background: linear-gradient(91.87deg, #00A0E3 30.09%, rgba(67, 137, 162, 0.53) 77.58%);
 }
 .header-txt h1 {
     font-size: 44px;
     font-family: roboto;
     font-weight: 700;
     margin-top: 0px;
-    color: #00a0e3;
+    color: #fff;
     margin-bottom: 0;
     letter-spacing: 1.5px;
     text-transform: uppercase;
@@ -877,7 +901,7 @@ color: #fff !important;
     font-size: 20px;
     font-family: roboto;
     margin: 0 0 0 8px;
-    color: #707070;
+    color: #fff;
     font-weight: 500;
     text-transform: capitalize;
 }
@@ -961,19 +985,24 @@ color: #fff !important;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 	background-color:#fff;
 	margin-bottom:20px;
+    min-height: 385px;
 }
 .web-img {
 	position: relative;
 }
 .web-img img{
 	height: 200px;
-	object-fit: cover;
+	object-fit: fill;
 	width: 100%;
 }
-.web-date {
+.web-detail-date {
     position: absolute;
     bottom: 5px;
-    right: 67px;
+    right: 10px;
+    display:flex;
+    align-items: center;
+}
+.web-date {
     border-radius: 4px;
     padding: 0px 8px;
     text-align: center;
@@ -982,11 +1011,9 @@ color: #fff !important;
     font-family: roboto;
     background-color: #00a0e3;
     color: #fff;
+    margin-right: 2px;
 }
-.web-paid {
-    position: absolute;
-    bottom: 5px;
-    right: 10px;
+.web-paid{
     background-color: #ff7803;
     border: 2px solid #ff7803;
     border-radius: 4px;
@@ -1028,7 +1055,17 @@ color: #fff !important;
 	-webkit-line-clamp: 3;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
-	height: 75px;
+	height: 70px;
+}
+.web-info{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-top: 10px;
+}
+.web-info img{
+    margin-right: 6px;
 }
 .opted-web {
 	background-image: url(" . Url::to('@eyAssets/images/pages/webinar/wb2.png') . "); 
@@ -1063,6 +1100,11 @@ color: #fff !important;
 	/* text-transform: uppercase; */
 	margin-bottom: 35px;
 	position: relative;
+}
+.web-card .price{
+    color: #FF5C58;
+    font-family: roboto;
+    font-weight: 800;
 }
 .reg-btn-count {
 	display: flex;
@@ -1195,6 +1237,17 @@ color: #fff !important;
     transform: translate3d(0, -2px, 0);
   }
 }
+@media only screen and (min-width: 992px){
+    .webinar-on-device .icon{
+        min-width: 250px;
+    }
+}
+@media (min-width: 768px) and (max-width: 991px){
+    .webinar-on-device .icon{
+        min-width: 200px;
+    }
+}
+
 @media only screen and (max-width: 991px) {
     .header-txt h1{margin-top:40px;}
     .header-txt h2{font-size:18px;}
@@ -1217,15 +1270,8 @@ color: #fff !important;
         padding-left: 0px;
         padding-bottom:30px;
     }
-    .back-shadow {
-        position: absolute;
-        top:inherit;
-        bottom: -50%;
-        left: -22%;
-        width: 140%;
-        background-color: #00a0e3;
-        height: 100%;
-        border-radius: 50% 50% 0 0;
+    .back-shadow{
+        background: linear-gradient(91.87deg, #00A0E3 30.09%, rgba(67, 137, 162, 0.53) 166.58%);
     }
 }
 ");
@@ -1373,3 +1419,4 @@ $this->registerJS($script);
 
 ?>
 <script></script>
+

@@ -30,7 +30,7 @@ $this->beginPage();
             foreach ($this->params['seo_tags']['rel'] as $key => $value) {
                 $this->registerLinkTag([
                     'rel' => $key,
-                    'href' => $value,
+                    'href' => Url::to($value,'https'),
                 ]);
             }
             foreach ($this->params['seo_tags']['name'] as $key => $value) {
@@ -286,6 +286,22 @@ $this->beginPage();
             gtag("config", "' . Yii::$app->params->google->analytics->id . '");        
         ');
     }
+
+    if (!empty(Yii::$app->params->facebook->pixel->id)) {
+        $this->registerJs('
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version="2.0";
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,"script",
+            "https://connect.facebook.net/en_US/fbevents.js");
+            fbq("init", "' . Yii::$app->params->facebook->pixel->id . '");
+            fbq("track", "PageView");
+        ');
+    }
+
     ?>
     <?php $this->endBody(); ?>
     </body>

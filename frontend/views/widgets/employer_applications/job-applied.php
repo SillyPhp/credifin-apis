@@ -8,8 +8,13 @@ use yii\helpers\Url;
 $location = ArrayHelper::map($locations, 'city_enc_id', 'name');
 Yii::$app->view->registerJs('var btn_class = "' . $btn_class . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->controller->id) . '"', \yii\web\View::POS_HEAD);
+if ($applicationType == 'Internships') {
+    $appType = 'Internship';
+} else{
+    $appType = 'Job';
+}
 ?>
-    <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
+    <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <?php $form = ActiveForm::begin(['id' => 'resume_form']); ?>
@@ -18,12 +23,12 @@ Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->cont
                 </div>
                 <div class="modal-body">
                     <?php if (!empty($location)) {
-                        echo '<div class="control-group">'.$form->field($model, 'location_pref')->checkBoxList($location,[
-                                'item' => function($index, $label, $name, $checked, $value) {
-                                    $return .= '<label class="control control--checkbox" for="2' . $value . '">' .ucwords($label);
+                        echo '<div class="control-group">' . $form->field($model, 'location_pref')->checkBoxList($location, [
+                                'item' => function ($index, $label, $name, $checked, $value) {
+                                    $return .= '<label class="control control--checkbox" for="2' . $value . '">' . ucwords($label);
                                     $return .= '<input type="checkbox" id="2' . $value . '" name="' . $name . '" value="' . $value . '">';
                                     $return .= '<div class="control__indicator"></div>';
-                                    $return .=  ' </label>';
+                                    $return .= ' </label>';
                                     return $return;
                                 }
                             ])->label('Select Placement Location') . '</div>';
@@ -38,6 +43,23 @@ Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->cont
                     }
                     ?>
                     <?= $form->field($model, 'questionnaire_id', ['template' => '{input}'])->hiddenInput(['id' => 'question_id', 'value' => $ques]); ?>
+                </div>
+                <div class="modal-footer">
+                    <?= Html::submitbutton('Apply', ['class' => 'btn btn-primary sav_job']); ?>
+                    <?= Html::button('Close', ['class' => 'btn btn-default skipApplyApp', 'data-dismiss' => 'modal']); ?>
+                </div>
+                <?php ActiveForm::end(); ?>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bs-modal-lg in" id="resume_modal" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <?php $form2 = ActiveForm::begin(['id' => 'resume_form2']); ?>
+                <div class="modal-header">
+                    <h4 class="modal-title">Upload Resume</h4>
+                </div>
+                <div class="modal-body">
                     <?php
                     if (!empty($resumes)) {
                         $checkList = [0 => 'Use Existing One', 1 => 'Upload New'];
@@ -45,18 +67,18 @@ Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->cont
                         $checkList = [1 => 'Upload New'];
                     }
                     ?>
-                    <?= '<div class="control-group">'.$form->field($model, 'check')->radioList($checkList,[
-                        'item' => function($index, $label, $name, $checked, $value) {
-                            $return .= '<label class="control control--radio" for="2' . $value . '">' .ucwords($label);
+                    <?= '<div class="control-group">' . $form2->field($resumeModel, 'check')->radioList($checkList, [
+                        'item' => function ($index, $label, $name, $checked, $value) {
+                            $return .= '<label class="control control--radio" for="2' . $value . '">' . ucwords($label);
                             $return .= '<input type="radio" id="2' . $value . '" name="' . $name . '" value="' . $value . '">';
                             $return .= '<div class="control__indicator"></div>';
-                            $return .=  ' </label>';
+                            $return .= ' </label>';
                             return $return;
                         }
-                    ])->label('Upload Resume') . '</div>' ?>
+                    ])->label(false) . '</div>' ?>
 
                     <div id="new_resume">
-                        <?= $form->field($model, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf,Jpg,Jpeg,Png Format Only'); ?>
+                        <?= $form2->field($resumeModel, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf,Jpg,Jpeg,Png Format Only'); ?>
                     </div>
                     <?php if ($resumes) { ?>
                         <div id="use_existing">
@@ -67,7 +89,7 @@ Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->cont
                                     <div class="col-md-offset-1 col-md-10">
                                         <div class="radio_questions">
                                             <div class="inputGroup">
-                                                <input id="<?= $res['resume_enc_id']; ?>" name="JobApplied[resume_list]"
+                                                <input id="<?= $res['resume_enc_id']; ?>" name="JobAppliedResume[resume_list]"
                                                        type="radio" value="<?= $res['resume_enc_id']; ?>"/>
                                                 <label for="<?= $res['resume_enc_id']; ?>"> <?= $res['title']; ?> </label>
                                             </div>
@@ -80,13 +102,14 @@ Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->cont
                     <?php } ?>
                 </div>
                 <div class="modal-footer">
-                    <?= Html::submitbutton('Apply', ['class' => 'btn btn-primary sav_job']); ?>
-                    <?= Html::button('Close', ['class' => 'btn btn-default', 'data-dismiss' => 'modal']); ?>
+                    <?= Html::submitbutton('Save', ['class' => 'btn btn-primary sav_resume']); ?>
+                    <?= Html::button('Skip', ['class' => 'btn btn-default skipResume']); ?>
                 </div>
                 <?php ActiveForm::end(); ?>
             </div>
         </div>
     </div>
+<input type="hidden" name="appliedAppId" id="appliedAppId"/>
 <?php
 echo $this->render('/widgets/employer_applications/applied-modal', ['applicationType' => $applicationType]);
 $this->registerCss("
@@ -217,20 +240,30 @@ $this->registerCss("
         }
 ");
 $script = <<< JS
+    $(document).on('click', '.skipApplyApp', function (e) {
+        $('.' + btn_class + '').html('<i class="fas fa-paper-plane hvr-icon"></i> <span>Apply for $appType</span>');
+    });
     $(document).on('click', '.' + btn_class + '', function (e) {
         e.preventDefault();
         if ($('.' + btn_class + '').attr("disabled") == "disabled") {
             return false;
         }
-        $('#modal').modal('show');
+        $('.' + btn_class + '').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+        $('.' + btn_class + '').attr("disabled", "true");
+        if ($('input[name="JobApplied[location_pref][]"]').length <= 1) {
+            $('input[name="JobApplied[location_pref][]"]').prop('checked', true);
+            $('.sav_job').trigger('click');
+        } else{
+            $('#modal').modal('show');
+        }
     });
 
-    $('input[name="JobApplied[check]"]').on('change', function () {
+    $('input[name="JobAppliedResume[check]"]').on('change', function () {
         if ($(this).val() == 1) {
             $('#use_existing').css('display', 'none');
             $('#new_resume').css('display', 'block');
         } else if ($(this).val() == 0) {
-            $('#resume_form').yiiActiveForm('validate', false);
+            $('#resume_form2').yiiActiveForm('validate', false);
             $('#new_resume').css('display', 'none');
             $('#use_existing').css('display', 'block');
         }
@@ -239,48 +272,60 @@ $script = <<< JS
     var que_id = $('#question_id').val();
     $(document).on('click', '.sav_job', function (e) {
         e.preventDefault();
+        $(this).prop('disabled', true);
         if ($('input[name="JobApplied[location_pref][]"]').length !== 0) {
             if ($('input[name="JobApplied[location_pref][]"]:checked').length <= 0) {
                 $('#resume_form').yiiActiveForm('validateAttribute', 'jobapplied-location_pref');
                 return false;
             }
         }
-        if ($('input[name="JobApplied[check]"]:checked').length > 0) {
-            if ($('input[name="JobApplied[check]"]:checked').val() == 0) {
-                if ($('input[name="JobApplied[resume_list]"]:checked').length == 0) {
+        var formData = new FormData();
+        var id = $('#application_id').val();
+        var org_id = $('#organization_id').val();
+        var loc_array = [];
+        if ($('input[name="JobApplied[location_pref][]"]').length !== 0) {
+            $("input[name='JobApplied[location_pref][]']:checked").each(function () {
+                loc_array.push($(this).val());
+            });
+        }
+        formData.append('application_enc_id', id);
+        formData.append('application_type', application_type);
+        formData.append('org_id', org_id);
+        if ($('#question_id').val() == 1) {
+            var status = 'incomplete';
+            formData.append('status', status);
+        } else {
+            var status = 'Pending';
+            formData.append('status', status);
+        }
+        var json_loc = JSON.stringify(loc_array);
+        formData.append('json_loc', json_loc);
+        ajax_call(formData);
+        $('#warn').css('display', 'none');
+    });
+    $(document).on('click', '.sav_resume', function (e) {
+        e.preventDefault();
+        if ($('input[name="JobAppliedResume[check]"]:checked').length > 0) {
+            if ($('input[name="JobAppliedResume[check]"]:checked').val() == 0) {
+                if ($('input[name="JobAppliedResume[resume_list]"]:checked').length == 0) {
                     $('#warn').css('display', 'block');
-                    $('input[name="JobApplied[check]"]').focus();
+                    $('input[name="JobAppliedResume[check]"]').focus();
                     return false;
-                } else if ($('input[name="JobApplied[resume_list]"]:checked').length > 0) {
+                } else if ($('input[name="JobAppliedResume[resume_list]"]:checked').length > 0) {
                     var formData = new FormData();
-                    var id = $('#application_id').val();
+                    var id = $('#appliedAppId').val();
                     var org_id = $('#organization_id').val();
                     var check = 1;
-                    var loc_array = [];
-                    if ($('input[name="JobApplied[location_pref][]"]').length !== 0) {
-                        $("input[name='JobApplied[location_pref][]']:checked").each(function () {
-                            loc_array.push($(this).val());
-                        });
-                    }
-                    var resume_enc_id = $('input[name="JobApplied[resume_list]"]').val();
+                    var resume_enc_id = $('input[name="JobAppliedResume[resume_list]"]').val();
                     formData.append('application_enc_id', id);
                     formData.append('resume_enc_id', resume_enc_id);
                     formData.append('check', check);
                     formData.append('application_type', application_type);
                     formData.append('org_id', org_id);
-                    if ($('#question_id').val() == 1) {
-                        var status = 'incomplete';
-                        formData.append('status', status);
-                    } else {
-                        var status = 'Pending';
-                        formData.append('status', status);
-                    }
-                    var json_loc = JSON.stringify(loc_array);
-                    formData.append('json_loc', json_loc);
-                    ajax_call(formData);
+                    ajax_call2(formData);
                     $('#warn').css('display', 'none');
                 }
-            } else if ($('input[name="JobApplied[check]"]:checked').val() == 1) {
+            } else if ($('input[name="JobAppliedResume[check]"]:checked').val() == 1) {
                 if ($('#resume_file').val() != '') {
                     $.each($('#resume_file').prop("files"), function (k, v) {
                         var filename = v['name'];
@@ -289,34 +334,19 @@ $script = <<< JS
                             return false;
                         } else {
                             var formData = new FormData();
-                            var loc_array = [];
-                            if ($('input[name="JobApplied[location_pref][]"]').length !== 0) {
-                                $("input[name='JobApplied[location_pref][]']:checked").each(function () {
-                                    loc_array.push($(this).val());
-                                });
-                            }
-                            var formData = new FormData($('#resume_form')[0]);
-                            var id = $('#application_id').val();
+                            var formData = new FormData($('#resume_form2')[0]);
+                            var id = $('#appliedAppId').val();
                             var org_id = $('#organization_id').val();
-                            if ($('#question_id').val() == 1) {
-                                var status = 'incomplete';
-                                formData.append('status', status);
-                            } else {
-                                var status = 'Pending';
-                                formData.append('status', status);
-                            }
                             formData.append('id', id);
                             formData.append('application_type', application_type);
                             formData.append('org_id', org_id);
-                            var json_loc = JSON.stringify(loc_array);
-                            formData.append('json_loc', json_loc);
-                            ajax_call(formData);
+                            ajax_call2(formData);
                         }
                     });
                 }
             }
         } else {
-            $('#resume_form').yiiActiveForm('validateAttribute', 'jobapplied-check');
+            $('#resume_form2').yiiActiveForm('validateAttribute', 'jobapplied-check');
             return false;
         }
     });
@@ -335,7 +365,17 @@ $script = <<< JS
             },
             success: function (data) {
                 var res = JSON.parse(data);
+                $('#appliedAppId').val(res.aid);
+                $.ajax({
+                    url: '/jobs/save-preference-according-to-application',
+                    method: 'POST',
+                    data: {eaidk:$('#application_id').val(), type:application_type, appliedId:res.aid},
+                    success: function(response){
+                        console.log(response);
+                    }
+                })
                 if (res.status == true && $('#question_id').val() == 1) {
+                    // $('#resume_modal').modal('show');
                     applied();
                     swal({
                             title: "Submitted!",
@@ -356,7 +396,8 @@ $script = <<< JS
                             }
                         });
                 } else if (res.status == true) {
-                    $('#appliedModal').modal('show');
+                    // $('#resume_modal').modal('show');
+                    // $('#appliedModal').modal('show');
                     applied();
                 } else {
                     alert('something went wrong..');
@@ -364,12 +405,71 @@ $script = <<< JS
             }
         });
     }
+    
+    function ajax_call2(formData) {
+        $.ajax({
+            url: '/jobs/jobs-apply-resume',
+            dataType: 'text',
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: formData,
+            type: 'post',
+            beforeSend: function () {
+                $('.sav_resume').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+            },
+            success: function (data) {
+                var res = JSON.parse(data);
+                if (res.status == true && $('#question_id').val() == 1) {
+                    // $('#resume_modal').modal('show');
+                    applied2();
+                    swal({
+                            title: "Submitted!",
+                            text: "Your Application Has been successfully registered But There Are Some Questionnaire Pending From Your Side you can fill them now By clicking below Fill Questionnaire button!",
+                            type: "success",
+                            showCancelButton: true,
+                            confirmButtonClass: "btn-primary",
+                            confirmButtonText: "Fill Questionnaire!",
+                            cancelButtonText: "Fill Later!",
+                            closeOnConfirm: false,
+                            closeOnCancel: false
+                        },
+                        function (isConfirm) {
+                            if (isConfirm) {
+                                window.location.pathname = "/account/dashboard";
+                            } else {
+                                swal("Please Note!", "Your Application Would not be process further if your don't complete it. To fill it visit your dashboard.", "warning");
+                            }
+                        });
+                } else if (res.status == true) {
+                    // $('#resume_modal').modal('show');
+                    $('#appliedModal').modal('show');
+                    applied2();
+                } else {
+                    alert('something went wrong..');
+                }
+            }
+        });
+    }
+    
+    $(document).on('click','.skipResume', function() {
+        $('#resume_modal').modal('hide');
+        $('#appliedModal').modal('show');
+    });
 
     function applied() {
-        $('#modal').modal('toggle');
+        $('#modal').modal('hide');
         $('.' + btn_class + '').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         $('.' + btn_class + '').html('<i class = "fas fa-check"></i>Applied');
         $('.' + btn_class + '').attr("disabled", "true");
+        $('#resume_modal').modal('show');
+    }
+    
+    function applied2() {
+        $('#resume_modal').modal('hide');
+        // $('.' + btn_class + '').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+        // $('.' + btn_class + '').html('<i class = "fas fa-check"></i>Applied');
+        // $('.' + btn_class + '').attr("disabled", "true");
     }
 JS;
 

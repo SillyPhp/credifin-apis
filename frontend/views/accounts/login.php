@@ -45,7 +45,7 @@ $loginForm = ActiveForm::begin([
 $loginForm->field($loginFormModel, 'username')->textInput([
     'autofocus' => true,
     'autocomplete' => 'off',
-    'placeholder' => $loginFormModel->getAttributeLabel('username'),
+    'placeholder' => 'Username or Email',
 ]);
 ?>
 <?=
@@ -72,7 +72,7 @@ $loginForm->field($loginFormModel, 'password')->passwordInput([
         </div>
     </div>
     <div class="separator pb-10 text-black">
-        <span><?= Yii::t('frontend', 'Login With Social Accounts'); ?></span>
+        <span><?= Yii::t('frontend', 'Login/Register With Social Accounts'); ?></span>
     </div>
     <div class="form-group mt-10">
         <?= \yii\authclient\widgets\AuthChoice::widget(['baseAuthUrl' => ['site/auth'], 'popupMode' => true,]); ?>

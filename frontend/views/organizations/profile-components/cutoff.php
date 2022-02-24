@@ -2,9 +2,6 @@
 ?>
 <div class="container cutoff">
     <div class="row">
-        <div class="col-md-12">
-            <h1>CutOff</h1>
-        </div>
         <div class='col-md-12 cutoff-table'>
             <table>
                 <thead>
@@ -65,7 +62,7 @@ $this->registerCSS('
         if(res['response']['status'] == 200){
             createCutoffRow(res['response']['cutoff']);
         }else{
-            document.querySelector('.cutoff-data').innerHTML = '<p class="noResults">No Details Added</p>';
+            document.querySelector('.cutoff-table').innerHTML = noDetailsFound();
         }
     }
     getCutoff();

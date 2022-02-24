@@ -206,8 +206,6 @@ class ApplicationCards
             $limit = $options['limit'];
             $offset = ($options['page'] - 1) * $options['limit'];
         }
-
-        $from_date_app = date("Y-m-d", strtotime("-180 day"));
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
@@ -272,11 +270,17 @@ class ApplicationCards
             ->leftJoin(ApplicationSkills::tableName() . 'as sy', 'sy.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
             ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = sy.skill_enc_id')
-            ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['j.name' => 'Jobs','a.is_deleted'=>0])
             ->andWhere(['a.application_for' => 1])
             //->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
             ->groupBy(['a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
+
+        if(isset($options['status']) && $options['status'] == 'Closed'){
+            $cards1->andWhere(['a.status' => 'Closed']);
+        }else{
+            $cards1->andWhere(['a.status' => 'Active']);
+        }
 
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
@@ -344,12 +348,17 @@ class ApplicationCards
             ->leftJoin(ApplicationSkills::tableName() . 'as sy', 'sy.application_enc_id = a.application_enc_id')
             ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
             ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = sy.skill_enc_id')
-            ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['j.name' => 'Jobs','a.is_deleted' => 0])
             ->andWhere(['a.application_for' => 1])
             // ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->groupBy(['a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
+        if(isset($options['status']) && $options['status'] == 'Closed'){
+            $cards2->andWhere(['a.status' => 'Closed']);
+        }else{
+            $cards2->andWhere(['a.status' => 'Active']);
+        }
 
         if (!empty($profiles)) {
             $cards1->andWhere([
@@ -582,7 +591,6 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->having(['>=', 'created', $from_date_app])
                 ->orderBy(new \yii\db\Expression('rand()'))
                 ->all();
         } else {
@@ -592,7 +600,6 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->having(['>=', 'created', $from_date_app])
                 ->orderBy(['created' => SORT_DESC])
                 ->all();
         }
@@ -626,23 +633,23 @@ class ApplicationCards
                     }
                 } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = $currency . (string)$val['min_salary'] * 12 . ' p.a.';
+                        $result[$i]['salary'] = 'From ' .$currency . (string)$val['min_salary'] * 12 . ' p.a.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = $currency . (string)($val['min_salary']) . ' Per Hour';
+                        $result[$i]['salary'] = 'From ' .$currency . (string)($val['min_salary']) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = $currency . (string)($val['min_salary']) . ' Per Week';
+                        $result[$i]['salary'] = 'From ' .$currency . (string)($val['min_salary']) . ' Per Week';
                     } else {
-                        $result[$i]['salary'] = $currency . (string)($val['min_salary']) . ' p.a.';
+                        $result[$i]['salary'] = 'From ' .$currency . (string)($val['min_salary']) . ' p.a.';
                     }
                 } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = $currency . (string)$val['max_salary'] * 12 . ' p.a.';
+                        $result[$i]['salary'] = 'Upto ' .$currency . (string)$val['max_salary'] * 12 . ' p.a.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = $currency . (string)($val['max_salary']) . ' Per Hour';
+                        $result[$i]['salary'] = 'Upto ' .$currency . (string)($val['max_salary']) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = $currency . (string)($val['max_salary']) . ' Per Week';
+                        $result[$i]['salary'] = 'Upto ' .$currency . (string)($val['max_salary']) . ' Per Week';
                     } else {
-                        $result[$i]['salary'] = $currency . (string)($val['max_salary']) . ' p.a.';
+                        $result[$i]['salary'] = 'Upto ' .$currency . (string)($val['max_salary']) . ' p.a.';
                     }
                 }
             } else {
@@ -665,7 +672,6 @@ class ApplicationCards
             $limit = $options['limit'];
             $offset = ($options['page'] - 1) * $options['limit'];
         }
-        $from_date_app = date("Y-m-d", strtotime("-180 day"));
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
@@ -710,10 +716,16 @@ class ApplicationCards
             ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
             ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['j.name' => 'Internships','a.is_deleted'=> 0])
             ->andWhere(['a.application_for' => 1])
             ->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
+
+        if(isset($options['status']) && $options['status'] == 'Closed'){
+            $cards1->andWhere(['a.status' => 'Closed']);
+        }else{
+            $cards1->andWhere(['a.status' => 'Active']);
+        }
 
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
@@ -752,10 +764,16 @@ class ApplicationCards
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->leftJoin(AppliedApplications::tableName() . 'as ap', 'ap.application_enc_id = a.application_enc_id AND ap.created_by = "'.Yii::$app->user->identity->user_enc_id.'"')
-            ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['j.name' => 'Internships','a.is_deleted'=> 0])
             ->andWhere(['a.application_for' => 1])
             ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
+
+        if(isset($options['status']) && $options['status'] == 'Closed'){
+            $cards2->andWhere(['a.status' => 'Closed']);
+        }else{
+            $cards2->andWhere(['a.status' => 'Active']);
+        }
 
         if (isset($options['company'])) {
             $cards1->andWhere([
@@ -873,7 +891,6 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->having(['>=', 'created', $from_date_app])
                 ->orderBy(new \yii\db\Expression('rand()'))
                 ->all();
         } else {
@@ -883,7 +900,6 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->having(['>=', 'created', $from_date_app])
                 ->orderBy(['created' => SORT_DESC])
                 ->all();
         }

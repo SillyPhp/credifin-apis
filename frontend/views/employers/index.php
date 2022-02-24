@@ -113,8 +113,13 @@ echo $this->render('/widgets/e-campus')
     <section class="great-bg">
         <div class="container">
             <div class="row">
-                <div class="head-about">
-                    <h3>What's Great About Empower Youth?</h3>
+                <div class="header">
+                    <div class="head-about">
+                        <h3>What's Great About Empower Youth?</h3>
+                    </div>
+                    <div class="great-red hide-md-scr">
+                        <a href="/employers/features">View All Features</a>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -198,7 +203,7 @@ echo $this->render('/widgets/e-campus')
                     </a>
                 </div>
             </div>
-            <div class="great-red">
+            <div class="bottom-btn show-md-scr text-center great-red">
                 <a href="/employers/features">View All Features</a>
             </div>
         </div>
@@ -217,9 +222,21 @@ echo $this->render('/widgets/drop-resume-section')
                         its free to hire from empower youth
                     </div>
                     <div class="post-job-bttn">
-                        <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">
-                            Post Now
-                        </a>
+                        <?php 
+                            if(Yii::$app->user->isGuest){
+                                ?>
+                                <a href="" id="myBttn" class="hvr-float-shadow" type="button" data-toggle="modal" data-link="" data-target="#sign-up-benefit">
+                                    Post Now
+                                </a>
+                            <?php
+                            } else{
+                                ?>
+                                <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">
+                                    Post Now
+                                </a>  
+                            <?php
+                            }
+                        ?>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -243,6 +260,9 @@ echo $this->render('/widgets/drop-resume-section')
     </section>
 <?php } ?>
 
+    <?php if(Yii::$app->user->isGuest){
+    
+    ?>
     <section class="stats">
         <div class="container">
             <div class="row">
@@ -280,6 +300,8 @@ echo $this->render('/widgets/drop-resume-section')
             </div>
         </div>
     </section>
+    
+    <?php } ?>
 
     <section class="emp-back">
         <div class="container">
@@ -385,6 +407,7 @@ echo $this->render('/widgets/drop-resume-section')
 
 <?= $this->render('/widgets/safety-signs') ?>
     <!--    <div class="bluebg"></div>-->
+
 <?php
 $this->registerCss('
 .txt-bold{
@@ -429,7 +452,7 @@ $this->registerCss('
 .header-text{
   margin: 25px 0 40px;
   position: relative;
-  z-index: 1;
+  z-index: 9;
 }
 
 .header-text h1{
@@ -1069,13 +1092,16 @@ $this->registerCss('
   transform: translateY(5px);
 }
 /*Whats Great About Us css starts */
+.bottom-btn{
+    display: none;
+}
 .great-red{
-    text-align: center;
-    position: relative;
-    max-width: 175px;
-    margin: 0 auto;
-    margin-top: 15px;
-    margin-bottom: 10px;
+    // text-align: center;
+    // position: relative;
+    // max-width: 175px;
+    // margin: 0 auto;
+    // margin-top: 15px;
+    // margin-bottom: 10px;
 }
 .great-red a{
     background:#00a0e3;
@@ -1131,6 +1157,11 @@ $this->registerCss('
 }
 .great-bg{
     padding-bottom: 20px;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 .head-about{
     text-align:center;
@@ -1195,6 +1226,15 @@ $this->registerCss('
   .bg-line {width:100%;left:0;transform:translatey(0%);}
   .waves{
     height: 35px;
+  }
+  .hide-md-scr{
+    display: none !important;
+  }
+  .show-md-scr{
+    display: block !important;
+  }
+  .great-bg .header{
+      justify-content: center;
   }
 }
 @media only screen and (max-width: 550px){

@@ -5,14 +5,8 @@ use kartik\widgets\DatePicker;
 <div class="row">
     <div class="col-md-3">
         <div class="select">
-            <?php if ($type == 'Edit_Internships') {
-                echo $form->field($model, 'mainfield')->dropDownList($primary_cat, ['prompt' => 'Choose Internship Profile', 'disabled' => true])->label(false);
-                echo $form->field($model, 'primaryfield', ['template' => '{input}', 'options' => []])->hiddenInput()->label(false);
-            }
-            else
-            {
-                echo $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Internship Profile', 'disabled' => true])->label(false);
-            }
+            <?php
+                echo $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Internship Profile', 'disabled' => false])->label(false);
             ?>
         </div>
     </div>
@@ -23,11 +17,9 @@ use kartik\widgets\DatePicker;
                 <span></span>
                 <span></span>
             </div>
-            <?php if ($type == 'Edit_Internships') {
-                echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Internship Title', 'id' => 'title','readonly' => true])->label(false);
-            } else {
-                echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Internship Title', 'id' => 'title','disabled' => true])->label(false);
-            } ?>
+            <?php
+                echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Internship Title', 'id' => 'title','disabled' => false])->label(false);
+            ?>
         </div>
     </div>
     <div class="col-md-3">
@@ -45,7 +37,7 @@ use kartik\widgets\DatePicker;
     <div class="col-md-3">
       <div class="row">
           <div class="col-md-6">
-              <?= $form->field($model, 'internship_duration')->textInput(['maxLength'=>1])->label('Duration'); ?>
+              <?= $form->field($model, 'internship_duration')->textInput(['maxLength'=>1, 'placeholder' => 'Duration'])->label(false); ?>
               <div class="duration_errors"></div>
           </div>
           <div class="col-md-6">
@@ -57,7 +49,7 @@ use kartik\widgets\DatePicker;
 <div class="row">
     <div class="col-md-6">
         <div id="radio_rules"></div>
-        <label>Type Of Stipend</label>
+        <label class="bold">Type Of Stipend</label>
         <div class="md-radio-inline">
             <?= $form->field($model, 'wage_type')->inline()->radioList([
                 0 => 'Unpaid',
@@ -82,15 +74,15 @@ use kartik\widgets\DatePicker;
         <div class="row">
             <div id="fixed_stip">
                 <div class="col-md-8">
-                    <?= $form->field($model, 'fixed_wage')->label('Stipend Paid') ?>
+                    <?= $form->field($model, 'fixed_wage')->textInput(['placeholder' =>'Stipend Paid'])->label(false) ?>
                 </div>
             </div>
             <div id="min_max">
                 <div class="col-md-4">
-                    <?= $form->field($model, 'min_wage')->label('Min Stipend') ?>
+                    <?= $form->field($model, 'min_wage')->textInput(['placeholder' =>'Min Stipend'])->label(false) ?>
                 </div>
                 <div class="col-md-4">
-                    <?= $form->field($model, 'max_wage')->label('Max Stipend') ?>
+                    <?= $form->field($model, 'max_wage')->textInput(['placeholder' =>'Max Stipend'])->label(false) ?>
                 </div>
             </div>
             <div id="wage_duration">
@@ -187,7 +179,7 @@ use kartik\widgets\DatePicker;
     <div class="col-md-3">
         <?=
         $form->field($model, 'last_date')->widget(DatePicker::classname(), [
-            'options' => ['placeholder' => 'Last Date To Apply'],
+            'options' => ['placeholder' => 'Last Date'],
             'readonly' => true,
             'pluginOptions' => [
                 'autoclose' => true,
@@ -195,7 +187,7 @@ use kartik\widgets\DatePicker;
                 'name' => 'earliestjoiningdate',
                 'todayHighlight' => true,
                 'startDate' => '+0d',
-            ]])->label(false);
+            ]])->label('Last Date to Apply');
         ?>
     </div>
     <div class="col-md-3">
@@ -209,7 +201,7 @@ use kartik\widgets\DatePicker;
                 'name' => 'earliestjoiningdate',
                 'todayHighlight' => true,
                 'startDate' => '+0d',
-            ]])->label(false);
+            ]])->label('Joining Date');
         ?>
     </div>
     <div class="col-md-3">
@@ -235,7 +227,7 @@ use kartik\widgets\DatePicker;
     </div>
     <div class="col-md-3">
         <div id="pre_package">
-            <?= $form->field($model, 'pre_placement_package')->label('Salary Package(Yearly)') ?>
+            <?= $form->field($model, 'pre_placement_package')->textInput(['placeholder' =>'Salary Package(Yearly)'])->label(false) ?>
         </div>
     </div>
 </div>
@@ -314,6 +306,19 @@ function wage_types(stipendtyp)
         $('#fixed_wage').val('');
         }
 }
+function getFullDate() {
+    var d = new Date();
+    d.setDate(d.getDate() + 15);
+    var months = ["January", "February", "March", "April", "May", "June", "July", "August", "Sep", "Oct", "November", "December"];
+    return d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
+}
+
+if (doc_type=='Clone_Internships'||doc_type=='Edit_Internships') 
+    {
+     $('#last_date, #earliestjoiningdate').val();   
+    }else{
+      $('#last_date, #earliestjoiningdate').val(getFullDate()).datepicker('refresh');
+    }
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

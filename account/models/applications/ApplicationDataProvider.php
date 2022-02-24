@@ -7,6 +7,10 @@ use common\models\ApplicationInterviewQuestionnaire;
 use common\models\ApplicationJobDescription;
 use common\models\ApplicationOptions;
 use common\models\ApplicationSkills;
+use common\models\ApplicationTypes;
+use common\models\AssignedCategories;
+use common\models\Categories;
+use common\models\Designations;
 use common\models\EducationalRequirements;
 use common\models\JobDescription;
 use common\models\Skills;
@@ -148,17 +152,18 @@ class ApplicationDataProvider extends Model
         $flag = 0;
         if ($type=='Edit_Jobs')
         {
-            $typ = 'Jobs';
+            $type = 'Jobs';
         }
         elseif ($type=='Edit_Internships')
         {
-            $typ = 'Internships';
+            $type = 'Internships';
         }
         $employerApplicationsModel = EmployerApplications::find()
                                ->where(['application_enc_id'=>$aidk])
                                ->one();
 
         $employerApplicationsModel->interview_process_enc_id = $model->interview_process;
+        $employerApplicationsModel->preferred_industry = $model->industry;
         $employerApplicationsModel->description = $model->othrdetail;
         $employerApplicationsModel->type = $model->type;
         $employerApplicationsModel->timings_from = date("H:i:s", strtotime($model->from));
@@ -171,6 +176,76 @@ class ApplicationDataProvider extends Model
         $employerApplicationsModel->last_date = date('Y-m-d', strtotime($model->last_date));
         $employerApplicationsModel->last_updated_on = date('Y-m-d H:i:s');
         $employerApplicationsModel->last_updated_by = Yii::$app->user->identity->user_enc_id;
+        $employerApplicationsModel->image = '1';
+        $employerApplicationsModel->square_image = '1';
+        $employerApplicationsModel->story_image = '1';
+        $category_execute = Categories::find()
+            ->alias('a')
+            ->where(['name' => $model->title]);
+        $chk_cat = $category_execute->asArray()->one();
+
+        if (empty($chk_cat)) {
+            $categoriesModel = new Categories;
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+            $categoriesModel->name = $model->title;
+            $utilitiesModel->variables['name'] = $model->title;
+            $utilitiesModel->variables['table_name'] = Categories::tableName();
+            $utilitiesModel->variables['field_name'] = 'slug';
+            $categoriesModel->slug = $utilitiesModel->create_slug();
+            $categoriesModel->created_on = date('Y-m-d H:i:s');
+            $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
+            if ($categoriesModel->save()) {
+                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplicationsModel,$type,$model->primaryfield);
+            } else {
+                return false;
+            }
+        } else {
+            $chk_assigned = $category_execute
+                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id', 'b.parent_enc_id', 'b.assigned_to'])
+                ->andWhere(['not', ['b.parent_enc_id' => null]])
+                ->andWhere(['b.assigned_to' => $type, 'b.parent_enc_id' => $model->primaryfield])
+                ->asArray()
+                ->one();
+            if (empty($chk_assigned)) {
+                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplicationsModel, $type,$model->primaryfield);
+            } else {
+                $employerApplicationsModel->title = $chk_assigned['assigned_category_enc_id'];
+            }
+        }
+
+        if (!empty($model->designations)) {
+            $chk_d = Designations::find()
+                ->select(['designation_enc_id', 'designation'])
+                ->where(['designation' => $model->designations])
+                ->asArray()
+                ->one();
+
+            if (empty($chk_d)) {
+                $desigModel = new Designations;
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $desigModel->designation_enc_id = $utilitiesModel->encrypt();
+                $utilitiesModel->variables['name'] = $model->designations;
+                $utilitiesModel->variables['table_name'] = Designations::tableName();
+                $utilitiesModel->variables['field_name'] = 'slug';
+                $desigModel->slug = $utilitiesModel->create_slug();
+                $desigModel->designation = $model->designations;
+                $desigModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+                $desigModel->created_on = date('Y-m-d H:i:s');
+                $desigModel->created_by = Yii::$app->user->identity->user_enc_id;
+                if ($desigModel->save()) {
+                    $employerApplicationsModel->designation_enc_id = $desigModel->designation_enc_id;
+                } else {
+                    return false;
+                }
+            } else {
+                $employerApplicationsModel->designation_enc_id = $chk_d['designation_enc_id'];
+            }
+        }
+
         if ($employerApplicationsModel->save())
         {
             $flag++;
@@ -701,5 +776,24 @@ class ApplicationDataProvider extends Model
             }
         }
         return true;
+    }
+
+    private function addNewAssignedCategory($category_id, $employerApplicationsModel, $type,$primaryfield)
+    {
+        $assignedCategoryModel = new AssignedCategories();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $assignedCategoryModel->assigned_category_enc_id = $utilitiesModel->encrypt();
+        $assignedCategoryModel->category_enc_id = $category_id;
+        $assignedCategoryModel->parent_enc_id = $primaryfield;
+        $assignedCategoryModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+        $assignedCategoryModel->assigned_to = $type;
+        $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
+        $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
+        if ($assignedCategoryModel->save()) {
+            $employerApplicationsModel->title = $assignedCategoryModel->assigned_category_enc_id;
+        } else {
+            return false;
+        }
     }
 }

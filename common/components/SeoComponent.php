@@ -5,6 +5,7 @@ namespace common\components;
 use Yii;
 use yii\base\Component;
 use common\models\Seo;
+use yii\helpers\Url;
 
 class SeoComponent extends Component
 {
@@ -22,13 +23,14 @@ class SeoComponent extends Component
             if ($seoDetails) {
                 $object->view->title = $seoDetails->title;
                 if ($seoDetails->featured_image) {
-                    $image = $seoDetails->featured_image;
+                    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->seo->image . $seoDetails->featured_image_location . '/' . $seoDetails->featured_image;
+//                    $image = $seoDetails->featured_image;
                 } else {
                     $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
                 }
                 $object->view->params['seo_tags'] = [
                     'rel' => [
-                        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+                        'canonical' => Url::to(Yii::$app->request->url,'https'),
                     ],
                     'name' => [
                         'keywords' => $seoDetails->keywords,
@@ -45,7 +47,7 @@ class SeoComponent extends Component
                         'og:locale' => 'en',
                         'og:type' => 'website',
                         'og:site_name' => Yii::$app->params->site_name,
-                        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+                        'og:url' => Url::to(Yii::$app->request->url,'https'),
                         'og:title' => $seoDetails->og_title,
                         'og:description' => $seoDetails->og_description,
                         'og:image' => $image,

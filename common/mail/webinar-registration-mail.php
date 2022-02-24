@@ -11,11 +11,14 @@ img + div{
 }
 .white-bg {
     background-color: #fff;
-    margin: 10px;
     border-radius: 4px;
+    padding: 10px;
+}
+.content ul {
+	margin-top: -10px !important;
 }
 .webinar-main {
-	background-color: #e2f2f1;
+	background-color: #fff;
 	padding: 2px;
 	max-width: 650px;
 	margin: auto;
@@ -25,14 +28,14 @@ img + div{
 }
 .logo {
     padding: 20px;
-    text-align: left;
+    text-align: center;
+    background-color: #e6e6e6;
 }
 .logo img {
 	width: 155px;
 }
 .web-img {
     text-align: center;
-    padding: 15px;
 }
 .web-img img {
     width: 100%;
@@ -40,61 +43,76 @@ img + div{
 }
 .content {
     padding: 10px 20px 0;
-    text-align: center;
+    text-align: left;
 }
 .cont {
 	text-align: center;
 }
+.content h3 {
+	color: #000;
+	line-height: 32px;
+    font-size: 18px;
+}
 .content p, .cont p {
 	color: #000;
-    line-height: 26px;
+    line-height: 24px;
     letter-spacing: 0.3px;
-    font-size: 16px;
+    font-size: 14px;
     overflow: hidden;
 }
 .content li {
 	font-size: 14px;
-    text-align: justify;
-    color: #000;
-    font-family: 'Roboto', sans-serif;
-    margin-top: 0px;
-    margin-bottom: 4px;
+	text-align: justify;
+	color: #000;
+	font-family: 'Roboto', sans-serif;
+	margin-top: 0px;
+	margin-bottom: 4px;
+	line-height: 22px;
 }
 .webinar {
 	margin: 10px auto;
     padding: 2px 10px;
-    background-color: #e2f2f1;
+    background-color: #e6e6e6;
     border-radius: 8px;
-    border: 3px solid #e2f2f1;
+    border: 3px solid #e6e6e6;
     display: flex;
     align-items: center;
     max-width: 350px;
-    min-width: 350px;
 }
-.webinar-details {
+.webdetails {
     padding: 5px 0px;
 }
-.webinar-details p 
-    {
-    font-size: 14px;
+.webdetails p {
+    font-size: 15px;
     text-align: justify;
     color: #000;
     font-family: 'Roboto', sans-serif;
-    margin-top: 0px;
-    margin-bottom: 4px;
+    margin-top: 4px;
+	line-height: 14px;
 }
 .wd {
 	font-weight: bold;
+	color: #000;
+}
+.register {
+	text-align: center;
+}
+.redfont {
+	color: #DC143C;
+	font-weight: bold;
+}
+.cont a {
+    text-decoration: none;
 }
 .join-btn {
-	padding: 10px 26px;
-    font-size: 16px;
+	padding: 10px 16px;
+	font-size: 14px;
     background-color: #00a0e3;
     color: #fff;
     border: 1px solid #00a0e3;
     border-radius: 4px;
     cursor: pointer;
-    width: 80px;
+    width: 100px;
     text-decoration: none;
     display: inline-block;
     margin-bottom: 15px;
@@ -103,9 +121,17 @@ img + div{
 	background-color: #fff;
 	color: #00a0e3;
 }
+.discount {
+	text-decoration: line-through;
+}
+.greet {
+	text-align: center;
+	font-weight: bold;
+}
 .footer {
 	padding: 30px 20px;
 	width: 95%;
+	background-color: #e6e6e6;
 }
 .footer-content p {
     font-size: 16px;
@@ -156,25 +182,29 @@ img + div{
     <div class="logo">
         <img src="https://www.empoweryouth.com/assets/themes/email/images/qOLw3GDM1RZDDwMENZJxdgjYBra6Ak.png">
     </div>
-    <div class="white-bg">
-        <div class="web-img">
+    <div class="web-img">
+        <?php if ($data['image']){ ?>
+            <img src="<?= $data['image']; ?>">
+        <?php }else{ ?>
             <img src="https://www.empoweryouth.com/assets/themes/email/images/rNap3jW8EobD27J5vG5LQB0yYn7GXq.png">
-        </div>
+       <?php } ?>
+    </div>
+    <div class="white-bg">
         <div class="content">
             <h3>Greetings from <span class="blue">Empower</span><span class="orange">Youth</span></h3>
             <p>You have successfully Registered for the following webinar:</p>
         </div>
         <div class="webinar">
             <div class="webdetails">
-                <p> <span class="wd">Webinar Name:</span> Whither Education? The Challenge of Change</p>
-                <p> <span class="wd">Speakers:</span> Aastha Hora, Kavya Khurana, Saourabh Sameer</p>
-                <p> <span class="wd">Time:</span> 03:45 PM - 05:14 PM</p>
-                <p> <span class="wd">Date:</span> 18 September 2021</p>
+                <p> <span class="wd">Webinar Name:</span> <?= $data['title'] ?></p>
+                <p> <span class="wd">Speakers:</span> <?= $data['speakers'] ?></p>
+                <p> <span class="wd">Time:</span> <?= $data['time'] ?></p>
+                <p> <span class="wd">Date:</span><?= $data['date'] ?></p>
             </div>
         </div>
         <div class="cont">
             <p>Please Join the webinar by clicking the button below:</p>
-            <a href="https://www.empoweryouth.com/webinar/whither-education-the-challenge-of-change-90286" class="join-btn">Join</a>
+            <a href="<?= $data['link'] ?>" class="join-btn">Join</a>
         </div>
     </div>
     <div class="footer">

@@ -44,16 +44,17 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                 </button>
                             </li>
                             <?php
-                                if($data['ask_guarantor_info'] == 1){
-                                    ?>
+                            if ($data['ask_guarantor_info'] == 1) {
+                                ?>
                                 /
                                 <li>
-                                    <button data-id="guarantorProfile" class="topTab" onclick="activeTab(event)">Guarantor's
+                                    <button data-id="guarantorProfile" class="topTab" onclick="activeTab(event)">
+                                        Guarantor's
                                         Profile
                                     </button>
                                 </li>
-                            <?php
-                                }
+                                <?php
+                            }
                             ?>
                         </ul>
                         <div class="tab tabActive" id="applicantProfile">
@@ -99,12 +100,32 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                     </div>
                                     <div class="col-md-3 col-sm-4 padd-20">
                                         <div class="form-group">
-                                            <label for="applicantDob" class="input-group-text">
+                                            <label for="applicantDob" class="input-group-text" data-field="applicant_dob">
                                                 DOB
                                             </label>
-                                            <input value="<?= date('d/m/Y', strtotime($data['applicant_dob'])) ?>"
-                                                   type="text" class="form-control" id="applicantDob"
-                                                   placeholder="--/--/----" disabled>
+                                            <?php
+                                            echo DatePicker::widget([
+                                                'name' => 'check_issue_date',
+                                                'type' => DatePicker::TYPE_INPUT,
+                                                'id' => 'applicantDob',
+                                                'options' => [
+                                                    'placeholder' => 'Select Birth Date',
+                                                ],
+                                                'readonly' => true,
+                                                'pluginOptions' => [
+                                                    'format' => 'dd-M-yyyy',
+                                                    'todayHighlight' => true,
+                                                    'autoclose' => true,
+                                                ],
+                                                'pluginEvents' => [
+                                                    "changeDate" => "function(e) { 
+                                                        var elem = $(this);
+                                                        var value = elem.val();
+                                                        updateValue(elem, value);
+                                                     }",
+                                                ]
+                                            ]);
+                                            ?>
                                         </div>
                                     </div>
                                     <div class="col-md-3 col-sm-4 padd-20">
@@ -432,7 +453,8 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                 </div>
                             </div>
                             <div class="text-center">
-                                <button type="button" class="btn btn-primary custom-buttons2 eduBtn" data-id="parentsProfile"
+                                <button type="button" class="btn btn-primary custom-buttons2 eduBtn"
+                                        data-id="parentsProfile"
                                         onclick="activeTab(event)">Next <i class="fa fa-angle-right"></i>
                                 </button>
                             </div>
@@ -468,7 +490,8 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                         <div class="col-md-4 col-sm-4 padd-20">
                                             <div class="form-group disFlex">
                                                 <div id="co_borrower_image_<?= $i ?>">
-                                                    <label for="co_borrower_pic_<?= $i ?>" class="input-group-text posRel pull-left">
+                                                    <label for="co_borrower_pic_<?= $i ?>"
+                                                           class="input-group-text posRel pull-left">
                                                         <div class="uploadPic">
                                                             <i class="fa fa-cloud-upload"></i>
                                                         </div>
@@ -723,7 +746,8 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                                 <div class="col-md-4 padd-20">
                                                     <div class="form-group text-center">
                                                         <div id="co_borrower_IDproofimage_<?= $i ?>">
-                                                            <label for="idProof_co_borrower_<?= $i ?>" class="posRel pull-left">
+                                                            <label for="idProof_co_borrower_<?= $i ?>"
+                                                                   class="posRel pull-left">
                                                                 <div class="idPhoto">
                                                                     <i class="fa fa-cloud-upload"></i>
                                                                     Upload ID Proof's Photo
@@ -777,7 +801,8 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                                 <div class="col-md-4 padd-20">
                                                     <div class="form-group text-center">
                                                         <div id="co_borrower_finance_image_<?= $i ?>">
-                                                            <label for="finance_co_borrower_<?= $i ?>" class="posRel pull-left">
+                                                            <label for="finance_co_borrower_<?= $i ?>"
+                                                                   class="posRel pull-left">
                                                                 <div class="idPhoto">
                                                                     <i class="fa fa-cloud-upload"></i>
                                                                     Upload Proof's Photo
@@ -798,20 +823,24 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                             }
                             ?>
                             <div class="text-center">
-                                <button type="button" class="btn custom-buttons3 eduBtn eduBtnLight" data-id="applicantProfile"
+                                <button type="button" class="btn custom-buttons3 eduBtn eduBtnLight"
+                                        data-id="applicantProfile"
                                         onclick="activeTab(event)"><i class="fa fa-angle-left"></i> Previous
                                 </button>
                                 <?php
-                                if($data['ask_guarantor_info'] == 1){
+                                if ($data['ask_guarantor_info'] == 1) {
                                     ?>
-                                    <button type="button" class="btn btn-primary custom-buttons2 eduBtn" data-id="guarantorProfile"
+                                    <button type="button" class="btn btn-primary custom-buttons2 eduBtn"
+                                            data-id="guarantorProfile"
                                             onclick="activeTab(event)">Next <i class="fa fa-angle-right"></i>
                                     </button>
-                                <?php
+                                    <?php
                                 } else {
                                     ?>
-                                    <button id="sbt2ndForm" type="button" class="btn btn-primary custom-buttons2 eduBtn">Update</button>
-                                <?php
+                                    <button id="sbt2ndForm" type="button"
+                                            class="btn btn-primary custom-buttons2 eduBtn">Update
+                                    </button>
+                                    <?php
                                 }
                                 ?>
                             </div>
@@ -1207,10 +1236,13 @@ $relationOptions = ['Father', 'Mother', 'Brother', 'Sister', 'Sibling', 'Guardia
                                 </div>
                             </section>
                             <div class="text-center">
-                                <button type="button" class="btn custom-buttons3 eduBtn eduBtnLight" data-id="parentsProfile"
+                                <button type="button" class="btn custom-buttons3 eduBtn eduBtnLight"
+                                        data-id="parentsProfile"
                                         onclick="activeTab(event)"><i class="fa fa-angle-left"></i> Previous
                                 </button>
-                                <button id="sbt2ndForm" type="button" class="btn btn-primary custom-buttons2 eduBtn">Update</button>
+                                <button id="sbt2ndForm" type="button" class="btn btn-primary custom-buttons2 eduBtn">
+                                    Update
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1698,8 +1730,8 @@ ul > .process_icon, ul > .done_icon{
 $script = <<<JS
 var apiUrl = '/';
 var docEditIcon = '<i class="fa fa-pencil docEditIcon"></i>';
-if(document.domain != 'empoweryouth.com'){
-    apiUrl = 'https://sneh.eygb.me/';
+if(document.domain != 'www.empoweryouth.com'){
+    apiUrl = 'https://ravinder.eygb.me/';
 }
 function showImage(input, inp_id, file_extension, fileUrl) {
     if (input.files && input.files[0]) {
@@ -1930,8 +1962,7 @@ function frontInptValidation(x, type) {
     return false;
 }
 
-function validate_fileupload(file, type)
-{
+function validate_fileupload(file, type){
     var extValidate = false;
     var fileName = file.name;
     var size=(file.size);
@@ -1939,12 +1970,8 @@ function validate_fileupload(file, type)
         toastr.error("File should be less than 5MB", "Large File");
         return false;
     }
-    var allowed_extensions = "";
-    if(type == "applicant"){
-        allowed_extensions = new Array("jpg","jpeg","png");
-    } else {
-        allowed_extensions = new Array("jpg","jpeg","png","pdf");
-    }
+    let allowed_extensions = new Array("jpg","jpeg","png","pdf");
+  
     var file_extension = fileName.split('.').pop().toLowerCase(); // split function will split the filename by dot(.), and pop function will pop the last element from the array which will give you the extension as well. If there will be no extension then it will return the filename.
     for(var i = 0; i <= allowed_extensions.length; i++)
     {
@@ -2530,6 +2557,76 @@ function readURL(input) {
   }
 }
 
+let base_uri = '';
+async function readFileAsDataURL(file) {
+    let result_base64 = await new Promise((resolve) => {
+        let fileReader = new FileReader();
+        fileReader.onload = (e) => resolve(fileReader.result);
+        fileReader.readAsDataURL(file);
+    });
+    
+    base = result_base64;
+    base_uri = base;
+    return result_base64;
+}
+async function getUri(file) {
+    let result_base64 = await new Promise((resolve) => {
+        new Compressor(file, {
+            quality: 0.6,
+            success(result) {
+                let dataURL = readFileAsDataURL(result).then(data => {
+                    resolve(data);
+                });
+            },
+        });
+    });
+    return result_base64;
+}
+let Pagewidth;
+let doc;
+let Pageheight;
+let pdf_uri;
+async function createPDF(imgData) {
+    if (imgData.length=="undefined" || imgData.length==0){
+        alert("select image");
+        return false;
+    }
+    let result_base64 = await new Promise((resolve) => {
+        doc = new jsPDF('p', 'pt', 'a4');
+        Pagewidth = doc.internal.pageSize.width;
+        Pageheight = doc.internal.pageSize.height;
+        
+        const img = new Image();
+        img.src = imgData;
+        img.length = imgData.length;
+        img.onload = function() {
+            img.imgWidth = img.naturalWidth;
+            img.imgHeight = img.naturalHeight;
+            callback(img.imgWidth,img.imgHeight,img.src,img.i,img.length).then(data => {
+                resolve(true);
+            });
+        };
+    });
+    return result_base64;
+}
+
+async function callback(width,height,src,i,fileLength){
+    let result_base64 = await new Promise((resolve) => {
+        const widthRatio = Pagewidth / width;
+        const heightRatio = Pageheight / height;
+        const ratio = widthRatio > heightRatio ? heightRatio : widthRatio;
+        const canvasWidth = width * ratio;
+        const canvasHeight = height * ratio;
+        const marginX = (Pagewidth - canvasWidth) / 2;
+        const marginY = (Pageheight - canvasHeight) / 2;
+        doc.addImage(src, 'JPEG', marginX, marginY, canvasWidth, canvasHeight, i);
+        
+        pdf_uri = doc.output('blob');
+        resolve(true);
+    });
+    return result_base64;
+}
+
  $(document).on('change','input:file', function(e) {
     var elem = $(this);
     var elem_id = elem.attr('id');
@@ -2565,11 +2662,10 @@ function readURL(input) {
      var files = e.target.files;
      if(files.length){
          var formData = new FormData();
-         formData.append("image", files[0]);
          formData.append("upload_file", 'test');
          formData.append("user_enc_id", user_enc_id);
          formData.append("loan_app_id", loan_app_id);
-         formData.append("image_name", files[0].name);
+         formData.append("image_name", files[0].name.split('.')[0]);
          if(typeof relation !== "undefined"){
             formData.append("relation", relation);
          }
@@ -2590,7 +2686,28 @@ function readURL(input) {
              formData.append("id", key);
          }
          var section = elem.closest('section');
-         $.ajax({
+         
+         if(type == 'applicant' || type == 'co_applicant'){
+             formData.append("image", files[0]); 
+             uploadImage(formData,mainSection,elem,file_extension)
+         }else if(file_extension != 'pdf'){
+             getUri(files[0]).then(data => {
+                 createPDF(base_uri).then(data => {
+                     formData.append("image", pdf_uri); 
+                     file_extension = 'pdf'
+                     uploadImage(formData,mainSection,elem,file_extension)
+                 })
+             });
+         }else{
+             formData.append("image", files[0]); 
+             uploadImage(formData,mainSection,elem,file_extension)
+         }
+         
+     }
+ });
+
+function uploadImage(formData,mainSection,elem,file_extension){
+    $.ajax({
              url: apiUrl+'api/v3/education-loan/upload-image',
              method: 'POST',
              data: formData,
@@ -2621,8 +2738,8 @@ function readURL(input) {
                  $('#fadder').fadeOut();
              }
          });
-     }
- });
+}
+
  function removeIcons() {
     $('.process_icon').remove();
     $('.done_icon').remove();
@@ -2631,12 +2748,15 @@ function readURL(input) {
 JS;
 $this->registerJS($script);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJSFile('https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.1.1/compressor.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJSFile('https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.1/jspdf.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
     var apiUrl = '/';
-    if(document.domain != 'empoweryouth.com'){
-        apiUrl = 'https://sneh.eygb.me/';
+    if (document.domain != 'www.empoweryouth.com') {
+        apiUrl = 'https://ravinder.eygb.me/';
     }
+
     function eduTemp(edu_count) {
         // return '<div class="row mt10"> <div class="col-md-4 padd-20"><div class="form-group"><label for="eduName' + edu_count + '" class="input-group-text" data-field="name">Qualification </label><input type="text" class="form-control" id="eduName' + edu_count + '" placeholder="Degree Name"></div></div><div class="col-md-4 padd-20"><div class="form-group"><label for="instituteName' + edu_count + '" class="input-group-text" data-field="institution">Name Of Institution</label><input type="text" class="form-control" id="instituteName' + edu_count + '" placeholder=""></div></div><div class="col-md-4 padd-20 hidden"><div class="form-group"><label for="marksObtained' + edu_count + '" class="input-group-text" data-field="obtained_marks">Marks Obtained</label><input type="text" class="form-control" id="marksObtained' + edu_count + '" placeholder=""></div></div></div>';
         return '<div class="row mt10">' +
@@ -2680,7 +2800,7 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
             '</div></div>';
     }
 
-    function substringMatcher (strs) {
+    function substringMatcher(strs) {
         return function findMatches(q, cb) {
             var matches, substringRegex;
 
@@ -2692,7 +2812,7 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
 
             // iterate through the pool of strings and for any string that
             // contains the substring `q`, add it to the `matches` array
-            $.each(strs, function(i, str) {
+            $.each(strs, function (i, str) {
                 if (substrRegex.test(str)) {
                     matches.push(str);
                 }
@@ -2702,17 +2822,17 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
     }
 
     var courseList = "";
-    function getCourses(id, count)
-    {
-        if(count <= 0){
+
+    function getCourses(id, count) {
+        if (count <= 0) {
             var _courses = [];
             $.ajax({
-                url : apiUrl + 'api/v3/education-loan/course-pool-list',
-                method : 'GET',
-                success : function(res) {
-                    if (res.response.status==200){
+                url: apiUrl + 'api/v3/education-loan/course-pool-list',
+                method: 'GET',
+                success: function (res) {
+                    if (res.response.status == 200) {
                         res = res.response.course;
-                        $.each(res,function(index,value){
+                        $.each(res, function (index, value) {
                             _courses.push(value.value);
                         });
                     } else {
@@ -2722,11 +2842,11 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
             });
             courseList = _courses;
         }
-        $('#'+id+' .typeahead').typeahead({
+        $('#' + id + ' .typeahead').typeahead({
             hint: true,
             highlight: true,
             minLength: 1
-        },{
+        }, {
             name: '_courses',
             source: substringMatcher(courseList)
         });
@@ -2772,6 +2892,7 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
             elemHide.style.display = 'none';
         }
     }
+
     function activeTab(event) {
         let tabs = document.getElementsByClassName('tabActive');
         for (var i = 0; i < tabs.length; i++) {

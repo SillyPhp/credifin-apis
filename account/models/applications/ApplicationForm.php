@@ -110,6 +110,7 @@ class ApplicationForm extends Model
     public $benefit_selection;
     public $questionnaire_selection;
     public $vacancy = null;
+    public $flag = false;
 
     public function formName()
     {
@@ -218,6 +219,9 @@ class ApplicationForm extends Model
             $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Internships']);
             $type = 'Internships';
         }
+        //transections properties start//
+        $transaction = Yii::$app->db->beginTransaction();
+        try{
         $employerApplicationsModel = new EmployerApplications();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -248,9 +252,12 @@ class ApplicationForm extends Model
             $categoriesModel->created_on = date('Y-m-d H:i:s');
             $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
             if ($categoriesModel->save()) {
+                $this->flag = true;
                 $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplicationsModel,$type);
             } else {
-                return false;
+                $this->flag = false;
+                $transaction->rollback();
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($categoriesModel->errors, 0, false)));
             }
         } else {
             $cat_id = $chk_cat['category_enc_id'];
@@ -292,9 +299,12 @@ class ApplicationForm extends Model
                 $desigModel->created_on = date('Y-m-d H:i:s');
                 $desigModel->created_by = Yii::$app->user->identity->user_enc_id;
                 if ($desigModel->save()) {
+                    $this->flag = true;
                     $employerApplicationsModel->designation_enc_id = $desigModel->designation_enc_id;
                 } else {
-                    return false;
+                    $this->flag = false;
+                    $transaction->rollback();
+                    throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($desigModel->errors, 0, false)));
                 }
             } else {
                 $employerApplicationsModel->designation_enc_id = $chk_d['designation_enc_id'];
@@ -324,38 +334,45 @@ class ApplicationForm extends Model
             }
         }
         if ($employerApplicationsModel->save()) {
-            if ($this->questionnaire_selection == 1) {
-                $process_questionnaire = json_decode($this->question_process);
-                if (!empty($process_questionnaire)) {
-                    foreach ($process_questionnaire as $process) {
-                        $processModel = new ApplicationInterviewQuestionnaire();
-                        $utilitiesModel = new Utilities();
-                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                        $processModel->interview_questionnaire_enc_id = $utilitiesModel->encrypt();
-                        $processModel->application_enc_id = $employerApplicationsModel->application_enc_id;
-                        $processModel->field_enc_id = $process->process_id;
-                        $processModel->questionnaire_enc_id = $process->id;
-                        $processModel->created_on = date('Y-m-d H:i:s');
-                        $processModel->created_by = Yii::$app->user->identity->user_enc_id;
-                        if (!$processModel->save()) {
-                            return false;
+            $this->flag = true;
+            if ($this->flag){
+                if ($this->questionnaire_selection == 1) {
+                    $process_questionnaire = json_decode($this->question_process);
+                    if (!empty($process_questionnaire)) {
+                        foreach ($process_questionnaire as $process) {
+                            $processModel = new ApplicationInterviewQuestionnaire();
+                            $utilitiesModel = new Utilities();
+                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                            $processModel->interview_questionnaire_enc_id = $utilitiesModel->encrypt();
+                            $processModel->application_enc_id = $employerApplicationsModel->application_enc_id;
+                            $processModel->field_enc_id = $process->process_id;
+                            $processModel->questionnaire_enc_id = $process->id;
+                            $processModel->created_on = date('Y-m-d H:i:s');
+                            $processModel->created_by = Yii::$app->user->identity->user_enc_id;
+                            if (!$processModel->save()) {
+                                $this->flag = false;
+                                $transaction->rollback();
+                                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($processModel->errors, 0, false)));
+                            }
                         }
                     }
                 }
-            }
-            if ($this->benefit_selection == 1) {
-                if (!empty($this->emp_benefit)) {
-                    foreach ($this->emp_benefit as $benefit) {
-                        $benefitModel = new ApplicationEmployeeBenefits();
-                        $utilitiesModel = new Utilities();
-                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                        $benefitModel->application_benefit_enc_id = $utilitiesModel->encrypt();
-                        $benefitModel->benefit_enc_id = $benefit;
-                        $benefitModel->application_enc_id = $employerApplicationsModel->application_enc_id;
-                        $benefitModel->created_on = date('Y-m-d H:i:s');
-                        $benefitModel->created_by = Yii::$app->user->identity->user_enc_id;
-                        if (!$benefitModel->save()) {
-                            return false;
+                if ($this->benefit_selection == 1) {
+                    if (!empty($this->emp_benefit)) {
+                        foreach ($this->emp_benefit as $benefit) {
+                            $benefitModel = new ApplicationEmployeeBenefits();
+                            $utilitiesModel = new Utilities();
+                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                            $benefitModel->application_benefit_enc_id = $utilitiesModel->encrypt();
+                            $benefitModel->benefit_enc_id = $benefit;
+                            $benefitModel->application_enc_id = $employerApplicationsModel->application_enc_id;
+                            $benefitModel->created_on = date('Y-m-d H:i:s');
+                            $benefitModel->created_by = Yii::$app->user->identity->user_enc_id;
+                            if (!$benefitModel->save()) {
+                                $this->flag = false;
+                                $transaction->rollback();
+                                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($benefitModel->errors, 0, false)));
+                            }
                         }
                     }
                 }
@@ -409,9 +426,13 @@ class ApplicationForm extends Model
                 $locations = json_decode($this->placement_loc);
             }
             if (!$applicationoptionsModel->save()) {
-                return false;
+                $this->flag = false;
+                $transaction->rollback();
+                throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($applicationoptionsModel->errors, 0, false)));
+            }else{
+                $this->flag = true;
             }
-
+            $job_positions = [];
             if (!empty($locations)) {
                 foreach ($locations as $array) {
                     $applicationPlacementLocationsModel = new ApplicationPlacementLocations();
@@ -419,12 +440,17 @@ class ApplicationForm extends Model
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $applicationPlacementLocationsModel->placement_location_enc_id = $utilitiesModel->encrypt();
                     $applicationPlacementLocationsModel->positions = $array->value;
+                    $job_positions[] = $array->value;
                     $applicationPlacementLocationsModel->location_enc_id = $array->id;
                     $applicationPlacementLocationsModel->application_enc_id = $employerApplicationsModel->application_enc_id;
                     $applicationPlacementLocationsModel->created_on = date('Y-m-d H:i:s');
                     $applicationPlacementLocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationPlacementLocationsModel->save()) {
-                        return false;
+                        $this->flag = false;
+                        $transaction->rollback();
+                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($applicationPlacementLocationsModel->errors, 0, false)));
+                    }else{
+                        $this->flag = true;
                     }
                 }
             }
@@ -440,7 +466,11 @@ class ApplicationForm extends Model
                     $applicationInterviewLocationsModel->created_on = date('Y-m-d H:i:s');
                     $applicationInterviewLocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationInterviewLocationsModel->save()) {
-                        return false;
+                        $this->flag = false;
+                        $transaction->rollback();
+                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($applicationInterviewLocationsModel->errors, 0, false)));
+                    }else{
+                        $this->flag = true;
                     }
                 }
             }
@@ -463,18 +493,19 @@ class ApplicationForm extends Model
                     $applicationSkillsModel->created_on = date('Y-m-d H:i:s');
                     $applicationSkillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if ($applicationSkillsModel->save()) {
+                        $this->flag = true;
                         $chk_skill = $data_skill
-                            ->innerJoin(AssignedSkills::tableName().'as b','b.skill_enc_id = a.skill_enc_id')
-                            ->andWhere(['b.assigned_to'=>$type,'category_enc_id'=>$cat_id])
+                            ->innerJoin(AssignedSkills::tableName() . 'as b', 'b.skill_enc_id = a.skill_enc_id')
+                            ->andWhere(['b.assigned_to' => $type, 'category_enc_id' => $cat_id])
                             ->asArray()
                             ->one();
                         if (empty($chk_skill)):
-                            $this->assignedSkill($skills_set['skill_enc_id'], $cat_id,$type);
+                            $this->assignedSkill($skills_set['skill_enc_id'], $cat_id, $type);
                         endif;
-                    }
-                    else
-                    {
-                        return false;
+                    } else {
+                        $this->flag = false;
+                        $transaction->rollback();
+                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($applicationSkillsModel->errors, 0, false)));
                     }
                 } else {
                     $skillsModel = new Skills();
@@ -486,6 +517,7 @@ class ApplicationForm extends Model
                     $skillsModel->created_on = date('Y-m-d H:i:s');
                     $skillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if ($skillsModel->save()) {
+                        $this->flag = true;
                         $applicationSkillsModel = new ApplicationSkills();
                         $utilitiesModel = new Utilities();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -495,9 +527,17 @@ class ApplicationForm extends Model
                         $applicationSkillsModel->created_on = date('Y-m-d H:i:s');
                         $applicationSkillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationSkillsModel->save()) {
-                            return false;
+                            $this->flag = false;
+                            $transaction->rollback();
+                            throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($applicationSkillsModel->errors, 0, false)));
+                        }else{
+                            $this->flag = true;
                         }
-                        $this->assignedSkill($skillsModel->skill_enc_id, $cat_id,$type);
+                        $this->assignedSkill($skillsModel->skill_enc_id, $cat_id, $type);
+                    }else{
+                        $this->flag = false;
+                        $transaction->rollback();
+                        return false;
                     }
                 }
             }
@@ -519,18 +559,19 @@ class ApplicationForm extends Model
                     $applicationJobDescriptionModel->created_on = date('Y-m-d H:i:s');
                     $applicationJobDescriptionModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if ($applicationJobDescriptionModel->save()) {
+                        $this->flag = true;
                         $chk_jd_des = $data_job_desc
-                            ->innerJoin(AssignedJobDescription::tableName().'as b','b.job_description_enc_id = a.job_description_enc_id')
-                            ->andWhere(['b.assigned_to'=>$type,'category_enc_id'=>$cat_id])
+                            ->innerJoin(AssignedJobDescription::tableName() . 'as b', 'b.job_description_enc_id = a.job_description_enc_id')
+                            ->andWhere(['b.assigned_to' => $type, 'category_enc_id' => $cat_id])
                             ->asArray()
                             ->one();
                         if (empty($chk_jd_des)):
-                            $this->assignedJob($job_desc['job_description_enc_id'], $cat_id,$type);
+                            $this->assignedJob($job_desc['job_description_enc_id'], $cat_id, $type);
                         endif;
-                    }
-                    else
-                    {
-                        return false;
+                    } else {
+                        $this->flag = false;
+                        $transaction->rollback();
+                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($applicationJobDescriptionModel->errors, 0, false)));
                     }
                     //new code added//
                 } else {
@@ -543,6 +584,7 @@ class ApplicationForm extends Model
                     $jobDescriptionModel->created_on = date('Y-m-d H:i:s');
                     $jobDescriptionModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if ($jobDescriptionModel->save()) {
+                        $this->flag = true;
                         $applicationJobDescriptionModel = new ApplicationJobDescription();
                         $utilitiesModel = new Utilities();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -552,10 +594,12 @@ class ApplicationForm extends Model
                         $applicationJobDescriptionModel->created_on = date('Y-m-d H:i:s');
                         $applicationJobDescriptionModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationJobDescriptionModel->save()) {
-                            return false;
+                            $this->flag = false;
+                            $transaction->rollback();
+                            throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($applicationJobDescriptionModel->errors, 0, false)));
                         }
                         //new code added//
-                        $this->assignedJob($jobDescriptionModel->job_description_enc_id, $cat_id,$type);
+                        $this->assignedJob($jobDescriptionModel->job_description_enc_id, $cat_id, $type);
                         //new code added//
                     }
                 }
@@ -579,18 +623,19 @@ class ApplicationForm extends Model
                     $applicationEducationalModel->created_on = date('Y-m-d H:i:s');
                     $applicationEducationalModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if ($applicationEducationalModel->save()) {
+                        $this->flag = true;
                         $chk_ed_des = $data_edu_quali
-                            ->innerJoin(AssignedEducationalRequirements::tableName().'as b','b.educational_requirement_enc_id = a.educational_requirement_enc_id')
-                            ->andWhere(['b.assigned_to'=>$type,'category_enc_id'=>$cat_id])
+                            ->innerJoin(AssignedEducationalRequirements::tableName() . 'as b', 'b.educational_requirement_enc_id = a.educational_requirement_enc_id')
+                            ->andWhere(['b.assigned_to' => $type, 'category_enc_id' => $cat_id])
                             ->asArray()
                             ->one();
                         if (empty($chk_ed_des)):
-                            $this->assignedEdu($edu_quali['educational_requirement_enc_id'], $cat_id,$type);
+                            $this->assignedEdu($edu_quali['educational_requirement_enc_id'], $cat_id, $type);
                         endif;
-                    }
-                    else
-                    {
-                        return false;
+                    } else {
+                        $this->flag = false;
+                        $transaction->rollback();
+                        throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($applicationEducationalModel->errors, 0, false)));
                     }
                     //new code//
                 } else {
@@ -603,6 +648,7 @@ class ApplicationForm extends Model
                     $qualificationsModel->created_on = date('Y-m-d H:i:s');
                     $qualificationsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if ($qualificationsModel->save()) {
+                        $this->flag = true;
                         $applicationEducationalModel = new ApplicationEducationalRequirements();
                         $utilitiesModel = new Utilities();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -612,28 +658,113 @@ class ApplicationForm extends Model
                         $applicationEducationalModel->created_on = date('Y-m-d H:i:s');
                         $applicationEducationalModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationEducationalModel->save()) {
-                            return false;
+                            $this->flag = false;
+                            $transaction->rollback();
+                            throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($applicationEducationalModel->errors, 0, false)));
                         }
                         //new code//
-                        $this->assignedEdu($qualificationsModel->educational_requirement_enc_id, $cat_id,$type);
+                        $this->assignedEdu($qualificationsModel->educational_requirement_enc_id, $cat_id, $type);
                         //new code//
                     }
                 }
             }
             Yii::$app->sitemap->generate();
             $session = Yii::$app->session;
-            if ($session->has('campusPlacementData')){
+            if ($session->has('campusPlacementData')) {
                 $var = $session->get('campusPlacementData');
-                if(!empty($var)){
-                    $this->assignCampusJobs($employerApplicationsModel->application_enc_id,$var);
+                if (!empty($var)) {
+                    $this->assignCampusJobs($employerApplicationsModel->application_enc_id, $var);
                 }
             }
-            return $employerApplicationsModel->application_enc_id;
-        } else {
-            return false;
+            if ($this->flag){
+                $transaction->commit();
+                $locationsarray = array_column($locations, 'name');
+                $params['name'] = Yii::$app->user->identity->organization->name;
+                $params['email'] = Yii::$app->user->identity->organization->email;
+                $params['subject'] = 'Your job/internship application has been live on Empower Youth';
+                $params['job_title'] = $this->title;
+                $params['job_profile'] = Categories::findOne(['category_enc_id'=>$this->primaryfield])->name;
+                $params['salary'] = $this->convertSalary($applicationoptionsModel->min_wage,$applicationoptionsModel->max_wage,$applicationoptionsModel->fixed_wage,$wage_type,$applicationoptionsModel->wage_duration,null);
+                $params['position'] = ($job_positions)?array_sum($job_positions):null;
+                $params['locations'] = ($locationsarray)?implode(',',$locationsarray):'Work From Home';
+                $params['link'] = Url::to(strtolower(substr($type, 0, -1)).'/'.$employerApplicationsModel->slug,'https');
+                $name = strtoupper(Yii::$app->user->identity->organization->name);
+                $color = ltrim(Yii::$app->user->identity->organization->initials_color, '#');
+                $params['org_logo'] = (Yii::$app->user->identity->organization->logo)?Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo:"https://dummyimage.com/150x150/{$color}/fafafa&text={$name}";;
+                Yii::$app->notificationEmails->newJobEmail($params);
+                return [
+                    'message'=>'Saved',
+                    'status'=>true,
+                    'id'=>$employerApplicationsModel->application_enc_id
+                ];
+            }else{
+                $transaction->rollBack();
+                return [
+                    'message'=>'Unable to Save',
+                    'status'=>false
+                ];
+            }
+        }else{
+            $transaction->rollBack();
+            throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($employerApplicationsModel->errors, 0, false)));
+        }
+        }catch (\Exception $exception) {
+            //transection properties end//
+            $transaction->rollBack();
+            return [
+                'message'=>$exception->getMessage(),
+                'status'=>false
+            ];
         }
     }
-
+    private function convertSalary($min_salary,$max_salary,$fixed_salary,$salary_type,$salary_duration,$html_code=null){
+        $result = null;
+        $currency = (($html_code) ? $html_code : '₹ ');
+        if ($salary_type == "Fixed") {
+            if ($salary_duration == "Monthly") {
+                $result = $currency . $fixed_salary * 12 . ' p.a.';
+            } elseif ($salary_duration == "Hourly") {
+                $result = $currency . $fixed_salary . ' Per Hour';
+            } elseif ($salary_duration == "Weekly") {
+                $result = $currency . $fixed_salary . ' Per Week';
+            } else {
+                $result = $currency . $fixed_salary . ' p.a.';
+            }
+        } elseif ($salary_type == "Negotiable") {
+            if (!empty($min_salary) && !empty($max_salary)) {
+                if ($salary_duration == "Monthly") {
+                    $result = $currency . (string)($min_salary) * 12 . " - " . $currency . (string)$max_salary * 12 . ' p.a.';
+                } elseif ($salary_duration == "Hourly") {
+                    $result = $currency . (string)($min_salary) . " - " . $currency . (string)($max_salary) . ' Per Hour';
+                } elseif ($salary_duration == "Weekly") {
+                    $result = $currency . (string)($min_salary) . " - " . $currency . (string)($max_salary) . ' Per Week';
+                } else {
+                    $result = $currency . (string)($min_salary) . " - " . $currency . (string)($max_salary) . ' p.a.';
+                }
+            } elseif (!empty($min_salary) && empty($max_salary)) {
+                if ($salary_duration == "Monthly") {
+                    $result = 'From ' .$currency . (string)$min_salary * 12 . ' p.a.';
+                } elseif ($salary_duration == "Hourly") {
+                    $result = 'From ' .$currency . (string)($min_salary) . ' Per Hour';
+                } elseif ($salary_duration == "Weekly") {
+                    $result = 'From ' .$currency . (string)($min_salary) . ' Per Week';
+                } else {
+                    $result = 'From ' .$currency . (string)($min_salary) . ' p.a.';
+                }
+            } elseif (empty($min_salary) && !empty($max_salary)) {
+                if ($salary_duration == "Monthly") {
+                    $result = 'Upto ' .$currency . (string)$max_salary * 12 . ' p.a.';
+                } elseif ($salary_duration == "Hourly") {
+                    $result = 'Upto ' .$currency . (string)($max_salary) . ' Per Hour';
+                } elseif ($salary_duration == "Weekly") {
+                    $result = 'Upto ' .$currency . (string)($max_salary) . ' Per Week';
+                } else {
+                    $result = 'Upto ' .$currency . (string)($max_salary) . ' p.a.';
+                }
+            }
+        }
+        return $result;
+    }
     private function assignCampusJobs($app,$var){
         foreach ($var['colleges'] as $clg) {
             $utilitiesModel = new Utilities();
@@ -955,7 +1086,7 @@ class ApplicationForm extends Model
                 WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NUll THEN CONCAT("Minimum ",a.minimum_exp," Years Experience") 
                 WHEN a.minimum_exp IS NUll AND a.maximum_exp IS NOT NUll THEN CONCAT("Maximum ",a.maximum_exp," Years Experience") 
                 ELSE "No Experience" 
-                END) as experience', 'b.*','CONCAT("/","' . $t . '","/", a.slug) link'])
+                END) as experience', 'b.*','CONCAT("/","' . $t . '","/", a.slug) link','a.status'])
             ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->onCondition(['c.is_deleted' => 0]);

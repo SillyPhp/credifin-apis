@@ -1,35 +1,6 @@
 <?php
 
 use yii\helpers\Url;
-
-$this->title = 'Education Loan';
-$keywords = 'Education Loan | Empower Youth';
-$description = 'Everyone deserves access To Education, EmpowerYouth believes in funding dreams by helping youth fulfill their career potentials.';
-$image = Url::to('@eyAssets/images/pages/education-loans/education-loan-share.png', 'https');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouthin',
-        'twitter:creator' => '@EmpowerYouthin',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
 
     <section class="bg-loans-set">
@@ -198,9 +169,11 @@ $this->registerCss('
 @media only screen and (max-width: 767px) {
     .bg-loans-set{
         background-position: left;
+        padding-top:0;
     }
     .heading-data-set {
         text-align: center;
+        padding-top:20px;
     }
     .heading-data-set h3 {
         font-size: 25px;

@@ -4,6 +4,8 @@ $total_processes = count($processes);
 if(!$limit){
     $limit = $total_processes;
 }
+
+
 $next = 0;
 if (!empty($total_processes)) {
     ?>
@@ -15,29 +17,14 @@ if (!empty($total_processes)) {
                     ?>
                     <div class="box-main-col <?= $col_width; ?>">
                         <div class="p-category">
-<!--                            <div class="click hiring-click --><?//= (($processes[$next]["is_bookmared"])?'active active-2 active-3':'') ?><!--">-->
-<!--                                <span class="fa --><?//= (($processes[$next]["is_bookmared"])?'fa-star':'fa-star-o') ?><!--"></span>-->
-<!--                                <div class="ring"></div>-->
-<!--                                <div class="ring2"></div>-->
-<!--                                <input type="hidden" value="--><?//=$processes[$next]["id"]; ?><!--">-->
-<!--                            </div>-->
-                            <?php
-                            if($type == "Internships") {
-                                ?>
-                                <a href="#" onclick="window.open('<?= Url::to('/account/internships/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');" data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
+                                <a href="#" onclick="window.open('<?= Url::to('/account/'.lcfirst($processes[$next]['temp_type']).'/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');"  data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
+                                    <?php if($processes[$next]['temp_type']){ ?><span class="temp-type"><?= $processes[$next]['temp_type']?></span><?php } ?>
                                     <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
+                                    <p style="height:19px; display: -webkit-box;-webkit-line-clamp: 1;-webkit-box-orient: vertical; overflow: hidden;"><?= $processes[$next]['parent_name']; ?></p>
+                                    <p style="height:19px;color: #333;font-weight: 700; letter-spacing: 1px;"><?= (!$ind) ? $processes[$next]['template_industry'] : "" ; ?></p>
+                                    <!-- <p style="height:19px;"><?= $processes[$next]['application_enc_id']; ?></p> -->
                                 </a>
-                                <?php
-                            } else{
-                                ?>
-                                <a href="#" onclick="window.open('<?= Url::to('/account/jobs/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');"  data-toggle="tooltip" title="Use this Template"  data-placement="bottom">
-                                    <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
-                                    <span><?= $processes[$next]['cat_name']; ?></span>
-                                </a>
-                                <?php
-                            }
-                                ?>
                         </div>
                     </div>
                     <?php

@@ -5,6 +5,7 @@ namespace api\modules\v2\models;
 use common\models\AssignedLoanProvider;
 use common\models\Countries;
 use common\models\EducationLoanPayments;
+use common\models\extended\EducationLoan;
 use common\models\extended\PaymentsModule;
 use common\models\LoanApplicationOptions;
 use common\models\LoanApplications;
@@ -69,7 +70,12 @@ class LoanApplicationsForm extends LoanApplications
             if ($refferal_id) {
                 $referralData = Referral::findOne(['code' => $refferal_id]);
                 if ($referralData) {
-                    $this->lead_by = $referralData->user_enc_id;
+                    if($referralData->user_enc_id):
+                        $this->lead_by = $referralData->user_enc_id;
+                    endif;
+                    if($referralData->organization_enc_id):
+                        $this->lead_by = Users::findOne(['organization_enc_id'=>$referralData->organization_enc_id])->user_enc_id;
+                    endif;
                 }
             }
             if (!$this->save()) {
@@ -243,6 +249,11 @@ class LoanApplicationsForm extends LoanApplications
                 $data['education_loan_payment_enc_id'] = $loan_payment->education_loan_payment_enc_id;
                 $data['payment_id'] = $loan_payment->payment_token;
                 $data['status'] = true;
+                $data['phone'] = $this->phone;
+                $data['email'] = $this->email;
+                $data['name'] = $this->applicant_name;
+                $educationModel = new EducationLoan();
+                $educationModel->SignUp($data);
                 return $data;
             } else {
                 $transaction->rollBack();
@@ -288,6 +299,18 @@ class LoanApplicationsForm extends LoanApplications
                         $this->created_on = date('Y-m-d H:i:s');
                         $this->setIsNewRecord(true);
                         $this->id = null;
+                        $refferal_id = $params['refferal_id'];
+                        if ($refferal_id) {
+                            $referralData = Referral::findOne(['code' => $refferal_id]);
+                            if ($referralData) {
+                                if($referralData->user_enc_id):
+                                    $this->lead_by = $referralData->user_enc_id;
+                                endif;
+                                if($referralData->organization_enc_id):
+                                    $this->lead_by = Users::findOne(['organization_enc_id'=>$referralData->organization_enc_id])->user_enc_id;
+                                endif;
+                            }
+                        }
                         if (!$this->save()) {
                             $transaction->rollback();
                             $this->_flag = false;
@@ -389,6 +412,11 @@ class LoanApplicationsForm extends LoanApplications
                 $data['education_loan_payment_enc_id'] = $education_loan_payment_id;
                 $data['payment_id'] = $loan_payment->payment_token;
                 $data['status'] = true;
+                $data['phone'] = $this->phone;
+                $data['email'] = $this->email;
+                $data['name'] = $this->applicant_name;
+                $educationModel = new EducationLoan();
+                $educationModel->SignUp($data);
                 return $data;
             } else {
                 $transaction->rollBack();

@@ -2,7 +2,7 @@
 use yii\helpers\Url;
 ?>
 <div class="container">
-    <div class="row">
+    <div class="row noDataFound">
         <div class="col-md-4 set-height" id="side-bar-main">
             <div class="search-main set-sticky">
                 <h3 class="ou-head">Find Course</h3>
@@ -182,6 +182,9 @@ $this->registerCSS('
     font-size: 20px;
     color: #000;
 }
+.ps__rail-y{
+    right: 0 !important;
+}
 @media only screen and (max-width: 767px) {
 .set-height{
     height:auto !important;
@@ -206,7 +209,11 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
-    let courses = '';
+    if(typeof courses !== 'undefined'){
+        courses = '';
+    }else{
+        let courses = ''
+    }
     async function getCourses() {
         let response = await fetch(`${baseUrl}/api/v3/ey-college-profile/courses`, {
             method: 'POST',
@@ -234,7 +241,9 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
                         ${course.fees ? `
                         <div class="c-fees"><i class="fas fa-wallet"></i> `+course.fees+`</div>
                         ` : ''}
-                        <div class="c-duration"><i class="fas fa-calendar-times"></i> ${course.course_duration} ${course.type ? course.type : ''}</div>
+                        ${course.course_duration ? `
+                        <div class="c-duration"><i class="fas fa-calendar-times"></i> ${course.course_duration} ${course.type ? course.type : ''}</div>`
+                        : ''}
                         ${course.registration_fee ? `
                             <div class="register-fee"><i class="fa fa-money-bill-alt"></i> ₹ `+course.registration_fee+`</div> `
                         : ''}
@@ -264,7 +273,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
         }).join('');
         document.querySelector('#integration-main').innerHTML = courseCard;
         }else {
-            document.querySelector('#integration-main').innerHTML = '<p class="noResults">No Courses To Display</p>';
+            document.querySelector('.noDataFound').innerHTML = noDetailsFound();
         }
         initializePosSticky()
     }
@@ -283,7 +292,6 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 
     }
     function searchCourse(event){
-        console.log(courses);
         let str = event.currentTarget.value.toLowerCase();
         let filteredCourses = courses.filter(
             course => { return course.course_name.toLowerCase().startsWith(str); }

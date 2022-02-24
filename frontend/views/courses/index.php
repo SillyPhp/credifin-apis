@@ -74,6 +74,8 @@ $this->params['seo_tags'] = [
         </div>
     </section>
 
+    <?= $this->render('/webinars/webinar-carousel')?>
+
     <section class="popular-skills">
         <h3>Popular Categories</h3>
         <div class="container" id="popular-category"></div>

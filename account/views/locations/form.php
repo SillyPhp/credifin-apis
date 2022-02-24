@@ -162,6 +162,9 @@ label[for="phone"]{
 .iti__flag-container{
     z-index:9 !important;
 }
+#location-form .form-group.form-md-line-input .form-control {
+    height: 45px !important;
+}
 //.iti, .intl-tel-input {
 //    width: 100% !important;
 //}
@@ -172,11 +175,18 @@ label[for="phone"]{
 $script = <<<JS
 var input = document.querySelector("#phone");
 var iti;
-var myVar = setInterval(myTimer, 300);
-
+function startTimer() {
+    if (typeof intlTelInput != 'undefined') {
+        myTimer();
+    }
+    else {
+        setTimeout(function (){
+            startTimer();
+        },500)
+    }
+}
+startTimer();
 function myTimer() {
-  if(intlTelInput){
-      myStopFunction();
       iti = window.intlTelInput(input, {
             'utilsScript': "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/utils.min.js",
            'allowExtensions': false,
@@ -184,11 +194,6 @@ function myTimer() {
            'nationalMode': false,
            'separateDialCode':true
       });
-  }
-}
-
-function myStopFunction() {
-  clearInterval(myVar);
 }
 var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
 $(document).on('blur','#phone', function() {

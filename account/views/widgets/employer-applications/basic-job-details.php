@@ -6,14 +6,8 @@ use kartik\select2\Select2;
 <div class="row">
     <div class="col-md-3">
         <div class="select">
-            <?php if ($type == 'Edit_Jobs') {
-                echo $form->field($model, 'mainfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false);
-                echo $form->field($model, 'primaryfield', ['template' => '{input}', 'options' => []])->hiddenInput()->label(false);
-            }
-            else
-            {
-               echo $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => true])->label(false);
-            }
+            <?php
+               echo $form->field($model, 'primaryfield')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile', 'disabled' => false])->label(false);
              ?>
         </div>
     </div>
@@ -24,11 +18,9 @@ use kartik\select2\Select2;
                 <span></span>
                 <span></span>
             </div>
-    <?php if ($type == 'Edit_Jobs') {
-        echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'title','readonly' => true])->label(false);
-    } else {
-        echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'title','disabled' => true])->label(false);
-    } ?>
+    <?php
+        echo $form->field($model, 'title')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Job Title', 'id' => 'title','disabled' => false,'maxLength'=>50])->label(false);
+     ?>
         </div>
     </div>
     <div class="col-md-3">
@@ -38,11 +30,9 @@ use kartik\select2\Select2;
                 <span></span>
                 <span></span>
             </div>
-    <?php if ($type == 'Edit_Jobs') {
-        echo $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation','readonly' => true])->label(false);
-    } else {
-        echo $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation','disabled' => true])->label(false);
-    }?>
+    <?php
+        echo $form->field($model, 'designations')->textInput(['class' => 'capitalize form-control', 'id' => 'designations', 'placeholder' => 'Designation','disabled' => false,'maxLength'=>50])->label(false);
+    ?>
         </div>
     </div>
     <div class="col-md-3">
@@ -171,14 +161,6 @@ use kartik\select2\Select2;
     </div>
     <div class="col-md-3">
         <?php
-        if ($type=='Edit_Jobs')
-        {
-            echo $form->field($model, 'pref_indus')->dropDownList($industry, ['prompt' => 'Preferred industry','disabled' => true])->label(false);
-            echo $form->field($model, 'industry',['template' => '{input}', 'options' => []])->hiddenInput()->label(false);
-        }
-        else
-            {
-//              echo $form->field($model, 'industry')->dropDownList($industry, ['prompt' => 'Preferred industry','disabled' => true])->label(false);
             echo $form->field($model, 'industry')->widget(Select2::classname(), [
                 'name' => 'kv-state-210',
                 'data' => $industry,
@@ -188,7 +170,6 @@ use kartik\select2\Select2;
                     'allowClear' => true,
                 ],
             ])->label(false);
-        }
         ?>
     </div>
 </div>
@@ -270,7 +251,7 @@ use kartik\select2\Select2;
                         'name' => 'earliestjoiningdate',
                         'todayHighlight' => true,
                         'startDate' => '+0d',
-                    ]])->label(false);
+                    ]])->label('Last Date to Apply');
                 ?>
             </div>
             <div class="col-md-6">
@@ -284,7 +265,7 @@ use kartik\select2\Select2;
                         'name' => 'earliestjoiningdate',
                         'todayHighlight' => true,
                         'startDate' => '+0d',
-                    ]])->label(false);
+                    ]])->label('Joining Date');
                 ?>
             </div>
         </div>
@@ -393,6 +374,18 @@ function _setExperience(e,exp_id,experience) {
     selectbox.val('$model->maximum_exp');
     }
   }
+function getFullDate() {
+    var d = new Date();
+    d.setDate(d.getDate() + 15);
+    var months = ["January", "February", "March", "April", "May", "June", "July", "August", "Sep", "Oct", "November", "December"];
+    return d.getDate() + " " + months[d.getMonth()] + " " + d.getFullYear();
+}
+if (doc_type=='Clone_Jobs'||doc_type=='Edit_Jobs') 
+    {
+     $('#last_date, #earliestjoiningdate').val();  
+    }else{
+         $('#last_date, #earliestjoiningdate').val(getFullDate()).datepicker('refresh');  
+    }
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

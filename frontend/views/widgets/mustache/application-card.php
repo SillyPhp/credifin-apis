@@ -17,7 +17,7 @@ switch ([$controller_id, $action_id]) {
 ?>
     <script id="application-card" type="text/template">
         {{#.}}
-        <div class="col-md-4 col-sm-12 col-xs-12">
+        <div class="col-md-4 col-sm-6 col-xs-12">
             <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
                  class="application-card-main">
                 <div class="app-box">
@@ -33,6 +33,19 @@ switch ([$controller_id, $action_id]) {
                                 {{/logo}}
                             </a>
                         </div>
+                        <div class="ji-city">
+                            {{#city}}
+                            <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                                  data-long="{{longitude}}"><i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
+                                </span>
+                            {{/city}}
+                            {{^city}}
+                            <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                                  data-long="{{longitude}}" data-locations=""><i
+                                        class="fas fa-map-marker-alt"></i>&nbsp;Work From Home
+                                </span>
+                            {{/city}}
+                        </div>
                         <div class="side-description" data-slug="{{application_slug}}">
                             <div class="ji-title">
                                 <a href="{{link}}" title="{{title}}" class="application-title capitalize">
@@ -44,19 +57,6 @@ switch ([$controller_id, $action_id]) {
                                     <h4 class="org_name comp-name org_name">{{{organization_name}}}</h4>
                                 </a>
                             </div>
-                            <div class="ji-city">
-                                {{#city}}
-                                <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
-                                      data-long="{{longitude}}"><i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
-                                </span>
-                                {{/city}}
-                                {{^city}}
-                                <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
-                                      data-long="{{longitude}}" data-locations=""><i
-                                            class="fas fa-map-marker-alt"></i>&nbsp;Work From Home
-                                </span>
-                                {{/city}}
-                            </div>
                             <div class="ji-salarydata">
                                 {{#salary}}
                                 <h5 class="salary">{{salary}}</h5>
@@ -67,7 +67,7 @@ switch ([$controller_id, $action_id]) {
                                                 class="far fa-money-bill-alt"></i> View In Details</a></h5>
                                 {{/sal}}
                                 {{^sal}}
-                                <h5 class="salary">Negotiable</h5>
+                                <h5 class="salary">Undisclosed</h5>
                                 {{/sal}}
                                 {{/salary}}
                                 {{#type}}
@@ -185,7 +185,15 @@ switch ([$controller_id, $action_id]) {
             </div>
         </div>
     </div>
+    <div class="modal fade bs-modal-lg in" id="job-resume-widget-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="appResumeModalData">
+
+            </div>
+        </div>
+    </div>
 <?php
+echo $this->render('/widgets/employer_applications/applied-modal-common');
 $c_user = Yii::$app->user->identity->user_enc_id;
 $script = <<< JS
 function gitHubJobs() {
@@ -212,6 +220,7 @@ let draggable = false;
 let review_list_draggable = false;
 let return_message = false;
 let jobs_parent;
+let grand_parent;
 let internships_parent;
 let page = 0;
 function renderCards(cards, container){
@@ -220,12 +229,14 @@ function renderCards(cards, container){
     if(cardsLength%3 !==0 && loader === true) {
         $('#loadMore').css('display','none');
     }
-    var noRows = Math.ceil(cardsLength / 3);
-    var j = 0;
-    for(var i = 1; i <= noRows; i++){
-        $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
-        j+=3;
-    }
+    // var noRows = Math.ceil(cardsLength / 3);
+    // var j = 0;
+    // for(var i = 1; i <= noRows; i++){
+        let allDataRow = $('<div class="row"></div>').append(Mustache.render(card, cards));
+        $(container).append(allDataRow);
+        // $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
+        // j+=3;
+    // }
 }
 
 function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname, location = "", limit = "", dataType = "") {
@@ -283,6 +294,9 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
                             $(internships_parent).addClass('hidden');
                         }
                         if($(jobs_parent).hasClass('hidden') && $(internships_parent).hasClass('hidden')){
+                            if(grand_parent){
+                                $(grand_parent).addClass('hidden');
+                            }
                             $(jobs_parent).html('<h2 class="text-center">There are no Jobs or Internships in this Company</h2>');
                             $(jobs_parent).removeClass('hidden');
                         }
@@ -581,7 +595,11 @@ $this->registerCss('
     width:100%;
     position:relative;
 }
-.ji-apply, .ji-apply:focus {
+.ji-apply:focus{
+    background-color: #ff7803;
+    color: #fff;
+}
+.ji-apply {
     font-family: Roboto;
     background-color: #ff7803;
     color: #fff;
@@ -652,6 +670,8 @@ $this->registerCss('
 .side-description {
     width: calc(100% - 105px);
     margin-left:15px;
+    position:relative;
+    min-height:123px;
 }
 .city
 {

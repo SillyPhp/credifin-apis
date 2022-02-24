@@ -10,6 +10,7 @@ use common\models\ApplicationSkills;
 use common\models\ApplicationTemplates;
 use common\models\ApplicationTypes;
 use common\models\ApplicationUnclaimOptions;
+use common\models\AppliedApplicationLocations;
 use common\models\Cities;
 use common\models\CollegeCourses;
 use common\models\Courses;
@@ -27,13 +28,19 @@ use common\models\UnclaimOrganizationLocations;
 use common\models\UsaDepartments;
 use common\models\Usernames;
 use common\models\UserPreferences;
+use common\models\UserPreferredIndustries;
+use common\models\UserPreferredJobProfile;
+use common\models\UserPreferredLocations;
+use common\models\UserPreferredSkills;
 use common\models\UserResume;
 use common\models\UserSkills;
 use frontend\models\applications\JobApplied;
+use frontend\models\applications\JobAppliedResume;
 use frontend\models\applications\PreferredApplicationCards;
 use frontend\models\curl\RollingCurl;
 use frontend\models\curl\RollingCurlRequest;
 use frontend\models\curl\RollingRequest;
+use frontend\models\reviews\ReviewCardsMod;
 use frontend\models\script\Box;
 use frontend\models\script\Color;
 use frontend\models\script\scriptModel;
@@ -135,32 +142,48 @@ class JobsController extends Controller
         if (Yii::$app->request->isPost) {
             if (!Yii::$app->user->isGuest) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
+                $arr_loc = Yii::$app->request->post("json_loc");
+                $model->id = Yii::$app->request->post("application_enc_id");
+                $model->resume_list = NULL;
+                $model->location_pref = $arr_loc;
+                $model->status = Yii::$app->request->post("status");
+                $application_typ = Yii::$app->request->post("application_type");
+                $cid = Yii::$app->request->post("org_id");
+                $res = $model->saveValues();
+                if ($res['status']) {
+                    Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id, $model->id, $company_id = $cid, $unclaim_company_id = null, $type = $application_typ, $res['aid']);
+                    return $res;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+
+    public function actionJobsApplyResume()
+    {
+        $model = new \frontend\models\applications\JobAppliedResume();
+        if (Yii::$app->request->isPost) {
+            if (!Yii::$app->user->isGuest) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 if (Yii::$app->request->post("check") == 1) {
-                    $arr_loc = Yii::$app->request->post("json_loc");
-                    $model->id = Yii::$app->request->post("application_enc_id");
-                    $model->resume_list = Yii::$app->request->post("resume_enc_id");
-                    $model->location_pref = $arr_loc;
-                    $model->status = Yii::$app->request->post("status");
-                    $application_typ = Yii::$app->request->post("application_type");
-                    $cid = Yii::$app->request->post("org_id");
-                    $res = $model->saveValues();
-                    if ($res['status']) {
-                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id, $model->id, $company_id = $cid, $unclaim_company_id = null, $type = $application_typ, $res['aid']);
-                        return $res;
-                    } else {
-                        return false;
-                    }
+                $model->id = Yii::$app->request->post("application_enc_id");
+                $model->resume_list = Yii::$app->request->post("resume_enc_id");
+                $application_typ = Yii::$app->request->post("application_type");
+                $cid = Yii::$app->request->post("org_id");
+                $res = $model->saveValues();
+                if ($res['status']) {
+                    return $res;
+                } else {
+                    return false;
+                }
                 } else if (Yii::$app->request->post("check") == 0) {
-                    $arr_loc = Yii::$app->request->post("json_loc");
                     $model->resume_file = UploadedFile::getInstance($model, 'resume_file');
                     $model->id = Yii::$app->request->post("id");
-                    $model->location_pref = $arr_loc;
-                    $model->status = Yii::$app->request->post("status");
                     $application_typ = Yii::$app->request->post("application_type");
                     $cid = Yii::$app->request->post("org_id");
                     $res = $model->upload();
                     if ($res['status']) {
-                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id, $model->id, $company_id = $cid, $unclaim_company_id = null, $type = $application_typ, $res['aid']);
                         return $res;
                     } else {
                         return false;
@@ -169,7 +192,6 @@ class JobsController extends Controller
             }
         }
     }
-
     public function actionIndex()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -327,8 +349,46 @@ class JobsController extends Controller
             'cities' => $cities,
             'tweets' => $tweets,
             'cities_jobs' => $cities_jobs,
-            'type' => $type
+            'type' => $type,
+            'organizations' => $organizations
         ]);
+    }
+
+    public function actionTopCityCompanies(){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $options = Yii::$app->request->post();
+            $organizations = Organizations::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['COUNT(distinct d.application_enc_id) as app_count, a.organization_enc_id', 'a.name', 'a.slug',
+                    'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo',
+                ])
+                ->joinWith(['organizationLocations b' => function ($b) {
+                    $b->joinWith(['cityEnc c']);
+                }], false)
+                ->joinWith(['employerApplications d' => function ($d) {
+//                    $b->joinWith(['cityEnc c']);
+                }])
+                ->where(['a.is_deleted' => 0, 'a.status' => 'Active'])
+                ->andWhere(['not', ['a.logo' => null]])
+                ->andWhere(['not', ['a.logo' => '']]);
+            if(isset($options['city_name']) && !empty($options['city_name'])){
+                $organizations->andWhere(['like', 'c.name', $options['city_name']]);
+            }else{
+                $organizations->andWhere(['like', 'c.name', 'Ludhiana']);
+            }
+                $organizations = $organizations
+                ->groupBy(['a.organization_enc_id'])
+                ->limit(11)
+                ->orderBy(['app_count' => SORT_DESC])
+                ->asArray()
+                ->all();
+            if($organizations){
+                return ['status' => 200, 'organizations' => $organizations];
+            }
+            return ['status' => 404, 'Message' => 'No organizations found'];
+        }
     }
 
     public function actionPreferredList()
@@ -458,7 +518,7 @@ class JobsController extends Controller
         }
         $app = EmployerApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'l.name profile_name','a.story_image', 'a.square_image', 'l.category_enc_id profile_id', 'a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
+            ->select(['a.application_enc_id', 'l.name profile_name', 'a.story_image', 'a.square_image', 'l.category_enc_id profile_id', 'a.image', 'a.image_location', 'a.unclaimed_organization_enc_id'])
             ->where(['a.unique_source_id' => $eaidk, 'a.status' => 'ACTIVE'])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
@@ -515,7 +575,7 @@ class JobsController extends Controller
                 'slug' => $eaidk,
                 'is_deleted' => 0,
                 'application_for' => 1,
-                'status' => 'ACTIVE'
+//                'status' => 'ACTIVE'
             ])
             ->one();
         if (empty($application_details)) {
@@ -538,9 +598,15 @@ class JobsController extends Controller
                 ->andWhere(['is_deleted' => 0])
                 ->exists();
 
-            $shortlist = \common\models\ShortlistedApplications::find()
-                ->select('shortlisted')
-                ->where(['shortlisted' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
+//            $shortlist = \common\models\ShortlistedApplications::find()
+//                ->select('shortlisted')
+//                ->where(['shortlisted' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
+//                ->asArray()
+//                ->one();
+
+            $shortlist = \common\models\ReviewedApplications::find()
+                ->select('review as shortlisted')
+                ->where(['review' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
                 ->asArray()
                 ->one();
         }
@@ -601,6 +667,12 @@ class JobsController extends Controller
         $industry = $application_details->preferredIndustry->industry;
         array_push($searchItems, $app_title, $industry);
         $searchItems = implode(',', $searchItems);
+        $get = new ReviewCardsMod();
+        $options = [];
+        $options['industry'] = [$data2['industry']];
+        $options['limit'] = 3;
+        $cards = $get->getAllCompanies($options);
+
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
@@ -614,7 +686,214 @@ class JobsController extends Controller
             'searchItems' => $searchItems,
             'cat_name' => $cat_name,
             'whatsAppmodel' => $whatsAppForm,
+            'similar_companies' => $cards['cards']
         ]);
+    }
+
+    public function actionSavePreferenceAccordingToApplication(){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            $eaidk = Yii::$app->request->post("eaidk");
+            $type = Yii::$app->request->post("type");
+            $appliedId = Yii::$app->request->post("appliedId");
+            $application_details = EmployerApplications::find()
+                ->alias('a')
+                ->select(['a.*', 'c.category_enc_id'])
+                ->joinWith(['title b' => function ($b) {
+                    $b->joinWith(['parentEnc c']);
+                }], false)
+                ->where([
+                    'a.application_enc_id' => $eaidk,
+                    'a.is_deleted' => 0,
+                    'a.application_for' => 1,
+                    'a.status' => 'ACTIVE'
+                ])
+                ->asArray()
+                ->one();
+            if (empty($application_details)) {
+                throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+            }
+            $appliedLocations = AppliedApplicationLocations::find()
+                ->select(['city_enc_id'])
+                ->where(['applied_application_enc_id' => $appliedId])
+                ->asArray()
+                ->all();
+            $user_preference = UserPreferences::findOne(['created_by' => Yii::$app->user->identity->user_enc_id, 'assigned_to' => $type]);
+
+//        $user_preference->type = $type;
+//        $user_preference->timings_from = date('H:i:s', strtotime($this->from));
+//        $user_preference->timings_to = date('H:i:s', strtotime($this->to));
+//        $min_max = explode(';', $this->salary_range);
+//        $user_preference->min_expected_salary = $min_max[0];
+//        $user_preference->max_expected_salary = $min_max[1];
+//        $user_preference->experience = $application_details->experience;
+//        $user_preference->working_days = json_encode($this->weekdays);
+//        $user_preference->sat_frequency = $this->weekoptsat;
+//        $user_preference->sun_frequency = $this->weekoptsund;
+            if($user_preference) {
+                $user_preference->last_updated_on = date('Y-m-d H:i:s');
+                $user_preference->last_updated_by = Yii::$app->user->identity->user_enc_id;
+                if (!$user_preference->update()) {
+                    return false;
+                }
+            } else {
+                $user_preference = new UserPreferences();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $user_preference->preference_enc_id = $utilitiesModel->encrypt();
+                $user_preference->assigned_to = $type;
+                $user_preference->created_on = date('Y-m-d h:i:s');
+                $user_preference->created_by = Yii::$app->user->identity->user_enc_id;
+                if (!$user_preference->save()) {
+                    return false;
+                }
+            }
+
+                //update Location.
+                $already_saved_location = UserPreferredLocations::find()
+                    ->select(['city_enc_id'])
+                    ->where(['preference_enc_id' => $user_preference['preference_enc_id']])
+                    ->andWhere(['is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+
+                $already_saved_locations = [];
+                foreach ($already_saved_location as $loc) {
+                    array_push($already_saved_locations, $loc['city_enc_id']);
+                }
+
+                $new_location_to_update = [];
+                foreach ($appliedLocations as $locn) {
+                    array_push($new_location_to_update, $locn['city_enc_id']);
+                }
+
+                $to_be_added_location = array_diff($new_location_to_update, $already_saved_locations);
+
+                if (count($to_be_added_location) > 0) {
+                    foreach ($to_be_added_location as $loc) {
+
+                        $userpreferredlocationsModel = new UserPreferredLocations();
+                        $utilitiesModel = new Utilities();
+                        $userpreferredlocationsModel->preference_enc_id = $user_preference['preference_enc_id'];
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $userpreferredlocationsModel->preferred_location_enc_id = $utilitiesModel->encrypt();
+                        $userpreferredlocationsModel->city_enc_id = $loc;
+                        $userpreferredlocationsModel->created_on = date('Y-m-d h:i:s');
+                        $userpreferredlocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                        if (!$userpreferredlocationsModel->save()) {
+                            return false;
+                        }
+                    }
+                }
+
+
+                //update Industry.
+                $already_saved_industrry = UserPreferredIndustries::find()
+                    ->where(['preference_enc_id' => $user_preference['preference_enc_id']])
+                    ->andWhere(['industry_enc_id' => $application_details['preferred_industry']])
+                    ->andWhere(['is_deleted' => 0])
+                    ->exists();
+
+
+                if (!$already_saved_industrry) {
+                    $UserpreferredindustriesModel = new UserPreferredIndustries();
+                    $utilitiesModel = new Utilities();
+                    $UserpreferredindustriesModel->preference_enc_id = $user_preference['preference_enc_id'];
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $UserpreferredindustriesModel->preferred_industry_enc_id = $utilitiesModel->encrypt();
+                    $UserpreferredindustriesModel->industry_enc_id = $application_details['preferred_industry'];
+                    $UserpreferredindustriesModel->created_on = date('Y-m-d h:i:s');
+                    $UserpreferredindustriesModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$UserpreferredindustriesModel->save()) {
+                        return false;
+                    }
+                } else {
+                    $to_delete_indus = UserPreferredIndustries::find()
+                        ->where(['industry_enc_id' => $application_details['preferred_industry'], 'preference_enc_id' => $user_preference['preference_enc_id']])
+                        ->andWhere(['is_deleted' => 1])
+                        ->one();
+                    if ($to_delete_indus) {
+                        $to_delete_indus->is_deleted = 0;
+                        $to_delete_indus->update();
+                    }
+                }
+
+                //update Skills.
+//            $user_skill = UserPreferredSkills::find()
+//                ->select(['skill_enc_id'])
+//                ->where(['preference_enc_id' => $user_preference['preference_enc_id']])
+//                ->andWhere(['is_deleted' => 0])
+//                ->asArray()
+//                ->all();
+//
+//            $s_name = [];
+//            foreach ($user_skill as $skill_id){
+//
+//                $skill_name = Skills::find()
+//                    ->select(['skill'])
+//                    ->where(['skill_enc_id'=>$skill_id])
+//                    ->asArray()
+//                    ->one();
+//
+//                array_push($s_name,$skill_name['skill']);
+//            }
+//
+//            $new_userskill_to_update = $this->key_skills;
+//
+//
+//            $userskill = [];
+//            foreach ($user_skill as $skill){
+//                array_push($userskill,$skill['skill_enc_id']);
+//            }
+//
+//            $to_be_added_userskill = array_diff($new_userskill_to_update, $s_name);
+//            $to_be_deleted_userskill = array_diff($s_name, $new_userskill_to_update);
+//
+//            if(count($to_be_deleted_userskill) > 0) {
+//                foreach ($to_be_deleted_userskill as $del) {
+//                    $this->delSkills($del,$user_preference['preference_enc_id']);
+//                }
+//            }
+//
+//            if(count($to_be_added_userskill) > 0) {
+//                foreach ($to_be_added_userskill as $skill) {
+//                    $this->setSkills($skill,$user_preference['preference_enc_id']);
+//                }
+//            }
+//
+                //update Job Profile.
+                $user_job_profile = UserPreferredJobProfile::find()
+                    ->where(['preference_enc_id' => $user_preference['preference_enc_id']])
+                    ->andWhere(['is_deleted' => 0])
+                    ->andWhere(['job_profile_enc_id' => $application_details['category_enc_id']])
+                    ->exists();
+
+                if (!$user_job_profile) {
+                    $userpreferredJobsModel = new UserPreferredJobProfile();
+                    $utilitiesModel = new Utilities();
+                    $userpreferredJobsModel->preference_enc_id = $user_preference->preference_enc_id;
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $userpreferredJobsModel->preferred_job_profile_enc_id = $utilitiesModel->encrypt();
+                    $userpreferredJobsModel->job_profile_enc_id = $application_details['category_enc_id'];
+                    $userpreferredJobsModel->created_on = date('Y-m-d h:i:s');
+                    $userpreferredJobsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$userpreferredJobsModel->save()) {
+                        return false;
+                    }
+                } else {
+                    $to_delete_userjob = UserPreferredJobProfile::find()
+                        ->where(['job_profile_enc_id' => $application_details['category_enc_id'], 'preference_enc_id' => $user_preference['preference_enc_id']])
+                        ->andWhere(['is_deleted' => 1])
+                        ->one();
+                    if ($to_delete_userjob) {
+                        $to_delete_userjob->is_deleted = 0;
+                        $to_delete_userjob->update();
+                    }
+                }
+                return true;
+
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
     }
 
     public function actionFetchSkills($q)
@@ -767,19 +1046,19 @@ class JobsController extends Controller
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (Yii::$app->request->isPost) {
             $id = Yii::$app->request->post('itemid');
-            $chkshort = ShortlistedApplications::find()
-                ->select(['shortlisted'])
-                ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
-                ->asArray()
-                ->one();
-            $short_status = $chkshort['shortlisted'];
-            if ($short_status == 1) {
-                $response = [
-                    'status' => 201,
-                    'message' => 'Can not add, it is already shortlisted.',
-                ];
-                return $response;
-            } else {
+//            $chkshort = ShortlistedApplications::find()
+//                ->select(['shortlisted'])
+//                ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
+//                ->asArray()
+//                ->one();
+//            $short_status = $chkshort['shortlisted'];
+//            if ($short_status == 1) {
+//                $response = [
+//                    'status' => 201,
+//                    'message' => 'Can not add, it is already shortlisted.',
+//                ];
+//                return $response;
+//            } else {
                 $chkuser = ReviewedApplications::find()
                     ->select(['review'])
                     ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'application_enc_id' => $id])
@@ -833,7 +1112,7 @@ class JobsController extends Controller
                         return $response;
                     }
                 }
-            }
+//            }
 
         }
     }
@@ -849,9 +1128,9 @@ class JobsController extends Controller
                 WHEN a.source = 2 THEN CONCAT("/job/git-hub/",a.slug,"/",a.unique_source_id)
                 ELSE CONCAT("/job/", a.slug)
                 END) as link', 'ap.application_enc_id as applied'])
-                ->joinWith(['appliedApplications as ap' => function($ap){
+                ->joinWith(['appliedApplications as ap' => function ($ap) {
                     $ap->onCondition(['ap.created_by' => Yii::$app->user->identity->user_enc_id]);
-                }],false)
+                }], false)
                 ->where([
                     'a.slug' => $eaidk,
                     'a.is_deleted' => 0
@@ -864,13 +1143,13 @@ class JobsController extends Controller
             }
 
             $claimedOrg = Organizations::find()
-                ->select(['name org_name', 'tag_line', 'initials_color color', 'slug as org_slug','CONCAT("/",slug) as org_link','email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
+                ->select(['name org_name', 'tag_line', 'initials_color color', 'slug as org_slug', 'CONCAT("/",slug) as org_link', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
                 ->where(['organization_enc_id' => $application_details['organization_enc_id']])
                 ->asArray()
                 ->one();
 
             $unclaimedOrg = UnclaimedOrganizations::find()
-                ->select(['name org_name', 'initials_color color', 'slug as org_slug','CONCAT("/",slug,"/reviews") org_link','email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
+                ->select(['name org_name', 'initials_color color', 'slug as org_slug', 'CONCAT("/",slug,"/reviews") org_link', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])
                 ->where(['organization_enc_id' => $application_details['unclaimed_organization_enc_id']])
                 ->asArray()
                 ->one();
@@ -1586,7 +1865,8 @@ class JobsController extends Controller
         }
     }
 
-    public function actionApplicationApplyModal(){
+    public function actionApplicationApplyModal()
+    {
         $app_id = Yii::$app->request->post('app_id');
         $org_id = Yii::$app->request->post('org_id');
         if (Yii::$app->request->isAjax && $app_id && $org_id && !Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
@@ -1596,6 +1876,7 @@ class JobsController extends Controller
                 ->distinct()
                 ->select(['b.city_enc_id', 'name'])
                 ->where(['a.application_enc_id' => $app_id])
+                ->andWhere(['a.is_deleted' => 0])
                 ->joinWith(['locationEnc b' => function ($b) {
                     $b->joinWith(['cityEnc c']);
                 }], false)
@@ -1619,14 +1900,6 @@ class JobsController extends Controller
                     ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
                     ->andWhere(['b.field_name' => 'Get Applications'])
                     ->exists();
-
-                $resumes = UserResume::find()
-                    ->select(['user_enc_id', 'resume_enc_id', 'title'])
-                    ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                    ->orderBy(['id' => SORT_DESC])
-                    ->asArray()
-                    ->limit(3)
-                    ->all();
             }
 
             $applicationType = EmployerApplications::find()
@@ -1644,9 +1917,30 @@ class JobsController extends Controller
                 'organization_enc_id' => $org_id,
                 'applicationType' => $applicationType,
                 'locations' => $locations,
-                'que' => $app_que,
-                'resumes' => $resumes]);
-        } else{
+                'que' => $app_que]);
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
+    }
+
+    public function actionApplicationApplyResumeModal()
+    {
+        $applicationType = Yii::$app->request->post('applicationType');
+        if (Yii::$app->request->isAjax && !Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
+            $resumeModel = new JobAppliedResume();
+            $resumes = UserResume::find()
+                ->select(['user_enc_id', 'resume_enc_id', 'title'])
+                ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
+                ->orderBy(['id' => SORT_DESC])
+                ->asArray()
+                ->limit(3)
+                ->all();
+
+            return $this->renderAjax('@frontend/views/widgets/employer_applications/job-applied-resume', [
+                'applicationType' => $applicationType,
+                'resumes' => $resumes,
+                'resumeModel' => $resumeModel,]);
+        } else {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
     }

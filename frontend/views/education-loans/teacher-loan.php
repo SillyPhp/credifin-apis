@@ -118,9 +118,6 @@ $this->registerCss('
 	height: 100%;
 	background: rgba(0,0,0,.4);
 }
-html {
-  scroll-behavior: smooth;
-}
 .teacher-txt p {
     font-family: roboto;
     color: #000;

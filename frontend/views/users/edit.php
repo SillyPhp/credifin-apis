@@ -156,9 +156,8 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                                 foreach ($userSkills as $skill) { ?>
                                                     <li class="addedTag"><?= $skill['skill'] ?><span
                                                                 onclick="$(this).parent().remove();"
-                                                                class="tagRemove">x</span><input type="hidden"
-                                                                                                 name="skills[]"
-                                                                                                 value="<?= $skill['skill'] ?>">
+                                                                class="tagRemove">x</span>
+                                                        <input type="hidden" name="skills[]" value="<?= $skill['skill'] ?>">
                                                     </li>
                                                 <?php }
                                             } ?>
@@ -679,6 +678,7 @@ $(document).on('keypress','input',function(e)
             return false;
         }
 });
+
 $(document).on('keyup','#search-skill',function(e)
 {
     if(e.which==13)
@@ -699,8 +699,7 @@ $(document).on('keyup','#search-language',function(e)
                 event.preventDefault();
             }
         });
-function setCity()
-{
+function setCity(){
     if(!$('#current_city').val()=='')
         {
             $("#cities_drp").empty().append($("<option>", {
@@ -711,14 +710,13 @@ function setCity()
                 "/cities/get-cities-by-state",
                 {id: $('#states_drp').val(),_csrf: $("input[name=_csrf]").val()},
                 function(res){
-                if(res.status === 200) {
-                drp_down("cities_drp", res.cities);
-                var currnt_city = $('#current_city').val();
-                $("#cities_drp").val(currnt_city);
-                $("#cities_drp").trigger("chosen:updated");
-                }
-                }
-                );
+                    if(res.status === 200) {
+                    drp_down("cities_drp", res.cities);
+                    var currnt_city = $('#current_city').val();
+                    $("#cities_drp").val(currnt_city);
+                    $("#cities_drp").trigger("chosen:updated");
+                    }
+                });
         }
 }
 setCity();
@@ -766,7 +764,11 @@ $(document).on('submit','#basicDetailForm',function(event)
     event.preventDefault();
     data = new FormData(this);
     var btn = $('.btn_submit_basic');
-    runAjax($(this),data,btn);
+    toastr.warning('Validating your data.', 'Please Wait...');
+    var thiss = $(this);
+    setTimeout(function() {
+        runAjax(thiss,data,btn);
+    },1500)
 });
     
 $(document).on('submit','#socialDetailForm',function(event)

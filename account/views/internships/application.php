@@ -1425,7 +1425,6 @@ display:none;
 }
 
 .large-container{
-    max-width: 1400px !important;
     padding-left: 15px;
     padding-right: 15px;
     margin:auto;

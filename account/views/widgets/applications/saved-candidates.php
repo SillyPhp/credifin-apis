@@ -13,7 +13,7 @@ foreach ($savedApplicants['data'] as $s) { ?>
                 <div class="remove-btn">
                     <button type="button" class="remove-saved-candidate" data-toggle="tooltip"
                             data-original-title="Remove Candidate"
-                            data-id="<?= $application['candidate_rejection_enc_id'] ?>">
+                            data-id="<?= $s['candidate_rejection_enc_id'] ?>">
                         <i class="fa fa-times" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -22,7 +22,7 @@ foreach ($savedApplicants['data'] as $s) { ?>
                         <?php if (!empty($s['image'])) { ?>
                             <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>"
                                class="blue question_list open-link-new-tab" target="_blank">
-                                <img src="<?= $s['image']; ?>" width="60px" height="60"/>
+                                <img src="<?= $s['image']; ?>" width="60px" height="60"  class="img-circle"/>
                             </a>
                             <?php
                         } else {
@@ -81,7 +81,6 @@ $(document).on('click','.slide-bttn',function(){
 $(document).on('click','.remove-saved-candidate',function (e){
     e.preventDefault()
     let id = $(this).attr('data-id');
-    console.log(id);
     $.ajax({
             url: "remove-saved-candidate",
             method: "POST",

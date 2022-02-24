@@ -215,7 +215,7 @@ class ReviewsController extends ApiBaseController
             }
             $data['hasReviewed'] = $hasReviewed;
             $data['total_reviewers'] = $overall['reviews_cnt'];
-            $data['reviews_count'] = $overall['average_rating'];
+            $data['reviews_count'] = ($overall['average_rating'])?$overall['average_rating']:0;
             $data['overall_rating'] = $stats;
 
             if (!empty($data)) {
@@ -371,7 +371,7 @@ class ReviewsController extends ApiBaseController
             }
             $data['org_detail'] = $org;
             $data['total_reviewers'] = $overall['reviews_cnt'];
-            $data['reviews_count'] = $overall['average_rating'];
+            $data['reviews_count'] = ($overall['average_rating'])?$overall['average_rating']:0;
             $data['follow'] = $follow->followed == 1 ? true : false;
             $data['hasReviewed'] = $hasReviewed;
             $data['review_type'] = $reviewed_in;

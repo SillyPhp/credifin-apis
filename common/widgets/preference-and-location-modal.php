@@ -65,7 +65,7 @@ $primaryfields = \common\models\Categories::find()
                                         <select id="category_drp" data-id="Jobs" data-name="profiles"
                                                 name="job_profiles[]"
                                                 multiple="multiple"
-                                                class="js-example-basic-multiple form-control text-capitalize">
+                                                class="form-control js-example-basic-multiple js-states">
                                             <?php
                                             if ($primaryfields) {
                                                 foreach ($primaryfields as $pf) {
@@ -146,7 +146,13 @@ $this->registerCss('
     margin: 0 auto;
     text-align: center
 }
-.chip, .select2-selection__choice {
+.select2-container--open{
+    z-index:99999 ;
+}
+.select2-container--default {
+    width: 100% !important;
+}
+.chip{
     display: inline-block;
     position: relative;
     height: 32px;
@@ -159,14 +165,22 @@ $this->registerCss('
     margin-right: 5px;
     margin-top: 3px;
     margin-bottom: 3px;
-    background: #f4f5fa;
     color: #333;
 }
-.select2-selection__choice{
-    float: left;
-    margin-right: 8px;
-    margin-top: 5px;
+.select2-selection__choice,
+.select2-selection__choice__display{
+//    float: left;
+    background-color: #f4f5fa;
+    font-size: 13px;
+    font-weight: 500;
+    position: relative !important;
+    border-radius: 8px;
+    margin-right: 5px;
     margin-bottom: 5px;
+}
+.select2-selection__choice__display{
+    padding: 5px !important;
+
 }
 .select2-container .select2-search--inline .select2-search__field{
     margin-top: 0px;
@@ -174,38 +188,58 @@ $this->registerCss('
 }
 .chip i, .select2-selection__choice__remove{
     cursor:pointer;
-    position: absolute;
-    background-color: #00a0e3;
+    position: absolute !important;
+    background-color: #00a0e3 !important;
     padding: 1px;
-    border-radius: 100%;
-    top: -4px;
-    right: -4px;
-    width: 16px;
-    height: 16px;
-    text-align: center;
-    color: #fff;
+    border-radius: 100% !important;
+    top: -4px !important;
+    right: -4px !important;
+    left: unset !important;
+    width: 16px !important;
+    height: 16px !important;
+    text-align: center !important;
+    color: #fff !important;
     font-weight: 100;
     font-size: 11px;
 }
 .select2-selection__choice__remove{
-    border: none;
+    border: none !important;
     margin-right: 0px !important;
     font-size: 14px;
     line-height: 0px;
      top: -6px;
     right: -4px;
+    z-index: 9;
 }
 .select2-results__option--highlighted{
     background: #00a0e3;
     color: #fff;
 }
-.updatePreferenceForm .select2-search.select2-search--inline{
-    float: left;
-    border: 1px solid #eee;
-    padding: 3px 6px 4px;
-    border-radius: 8px;
-    margin-top: 1px;
+.select2-selection.select2-selection--multiple{
+    display:inline-block;
+    width:100%;
 }
+.select2-container--default .select2-selection--multiple .select2-selection__choice{
+    padding-left: 0px;
+    background: transparent;
+    border: none;
+    overflow: visible;
+}
+.select2-selection{
+    border: 2px solid #e8ecec !important;
+    border-radius: 8px !important;
+    box-shadow: none;
+    padding: 6px 5px;
+    display: inline-block;
+}
+.select2-container .select2-search--inline .select2-search__field{
+    margin-top: 0px;
+    margin-left: 0px;
+}
+.select2-container{
+    display: block
+}
+
 .lp-modal-text{
     text-align: center;
     display: flex;
@@ -214,7 +248,7 @@ $this->registerCss('
     height: 450px !important;
 }
 .lp-dialog-main .modal-content{
-    width: 60vw;
+    max-width: 60vw;
     height: auto;
 }
 .lp-fom h3{
@@ -268,7 +302,7 @@ $this->registerCss('
     font-weight: 900;
     color: #00a0e3;
 }
-.lp-skill-input, .select2-container{
+.lp-skill-input{
     position: relative;
     vertical-align: top;
     background-color: transparent;
@@ -276,19 +310,7 @@ $this->registerCss('
     font-size: 15px;
     border-radius: 7px;
 }
- .select2-container{
-    float: left;
-    max-width: 350px;
-    width: 100%;
-    border: 2px solid #e8ecec;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-    padding: 8px;
- }
- .select2-results__options {
+.select2-results__options {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -763,6 +785,9 @@ body.modal-open{
 .bootstrap-tagsinput input:focus{
     box-shadow:none !important;
 }
+span.select2-search.select2-search--inline, .select2-container--default .select2-selection--multiple .select2-selection__choice{
+    float: left;
+}
 @media only screen and (max-width: 450px) {
     .close-lg-modal{
         right: -5px;
@@ -773,18 +798,11 @@ body.modal-open{
 $script = <<< JS
 setCookie = () => {
     let date = new Date();
-    date.setTime(date.getTime() + (6 * 24 * 60 * 60 * 1000));
-    let maxAge = 6 * 24 * 60 * 60 * 1000;
+    date.setDate(date.getDate() + 1);
+    let jdate = date.toUTCString()
     const expires = "expires=" + date.toUTCString();
-    document.cookie = "ModalisViewed=modalViewed; expires="+expires+"; max-age="+maxAge+"; path=/";
+    document.cookie = "PreferenceisViewed="+jdate+"; expires="+expires+"; path=/";
 }
-function checkCookie(){
-    let hasCookie = document.cookie;
-    if (document.cookie.indexOf('ModalisViewed') == -1) {
-        $('#preferenceLocation').modal('show');
-    }
-}
-checkCookie()
 var city = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -836,7 +854,6 @@ function countFields(){
     let fieldsArr = [];
     let cpForm = document.querySelector('.updatePreferenceForm')
     let formFields = cpForm.querySelectorAll('.showField');
-    // console.log(formFields);
     for(let i = 0; i<formFields.length; i++){
         fieldsArr.push(formFields[i]);      
     }
@@ -945,20 +962,21 @@ skipToNextQues = () => {
     }
     toActive.classList.add('disShow');
 }
-$('.js-example-basic-multiple').select2();
+$('.js-example-basic-multiple').select2({
+    placeholder: 'Select Job Profile',  
+});
 $('.select2-search__field').css('width',$(".select2-selection__rendered").width());
-console.log($('.select2-selection'))
-if($('.select2-selection').length > 0){
-    var ps = new PerfectScrollbar('.select2-selection.select2-selection--multiple');
-}
+// if($('.select2-selection').length > 0){
+//     var ps = new PerfectScrollbar('.select2-selection.select2-selection--multiple');
+// }
 
 JS;
-$this->registerJs($script);
+$this->registerJsFile('@root/assets/common/select2Plugin/select2.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@root/assets/common/select2Plugin/select2.min.css');
 $this->registerCssFile('@eyAssets/materialized/materialize-tags/css/materialize-tags.css');
 $this->registerJsFile('@eyAssets/materialized/materialize-tags/js/materialize-tags.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerCssFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css');
-$this->registerJsFile('https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJs($script);
 ?>

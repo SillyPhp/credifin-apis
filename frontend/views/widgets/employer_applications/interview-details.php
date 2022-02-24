@@ -2,16 +2,22 @@
 <ul style="border:0px;">
     <?php if (!empty($interview_start) && $interview_end) { ?>
         <li><i class="far fa-calendar-check"></i>
-            <h3>Interview Dates</h3>
-            <span><?= date('d-M-y', strtotime($interview_start)); ?> To <?= date('d-M-y', strtotime($interview_end)); ?></span>
+            <div class="for-flex">    
+                <h3>Interview Dates</h3>
+                <span><?= date('d-M-y', strtotime($interview_start)); ?> To <?= date('d-M-y', strtotime($interview_end)); ?></span>
+            </div>
         </li>
         <li><i class="far fa-clock"></i>
-            <h3>Interview Time</h3>
-            <span><?= date('H:i A', strtotime($interview_start)); ?> To <?= date('H:i A', strtotime($interview_end)); ?></span>
+            <div class="for-flex">
+                <h3>Interview Time</h3>
+                <span><?= date('H:i A', strtotime($interview_start)); ?> To <?= date('H:i A', strtotime($interview_end)); ?></span>
+            </div>
         </li>
     <?php } ?>
-    <li><i class="fas fa-map-marker-alt"></i>
-        <h3>Interview Locations</h3><span> <?php
+    <li>
+        <i class="fas fa-map-marker-alt"></i>
+        <div class="for-flex">
+            <h3>Interview Locations</h3><span> <?php
             if (!empty($interview_locations))
             {
                 $str2 = "";
@@ -26,5 +32,7 @@
             {
                 echo 'Online/Skype/Telephonic';
             }
-            ?></span></li>
+            ?></span>
+            </div>
+            </li>
 </ul>
