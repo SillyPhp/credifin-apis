@@ -267,11 +267,6 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                 <?php
                                 if (Yii::$app->user->isGuest && !$is_expired) {
                                     ?>
-                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
-                                       value="interested">Interested <span id="interestCount">(<?= 50 + rand(1,10) + $interestCount?>)</span></a>
-                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
-                                       value="not interested">Not Interested</a>
-                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn">Attending</a>
                                     <!-- Button code -->
                                     <div title="Add to Calendar" class="addeventatc">
                                         Add to Calendar
@@ -297,18 +292,6 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                         <?php
                                     }
                                     ?>
-                                    <button class="ra-btn interestBtn <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
-                                            id="interested" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="1">Interested <span id="interestCount">(<?= 50 + rand(1,10) + $interestCount?>)</span>
-                                    </button>
-                                    <button class="ra-btn interestBtn <?php echo $interest_status == 2 ? 'actionColor' : '' ?>"
-                                            id="notInterested" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="2">Not Interested
-                                    </button>
-                                    <button class="ra-btn interestBtn <?php echo $interest_status == 3 ? 'actionColor' : '' ?>"
-                                            id="attending" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="3">Attending
-                                    </button>
                                     <!-- Button code -->
                                     <div title="Add to Calendar" class="addeventatc">
                                         Add to Calendar
@@ -1959,14 +1942,14 @@ a:link, a:visited {
 }
 .ra-btn{
     font-size: 14px;
-    height: 40px;
+    height: 41px;
     padding: 0 0;
     width: 140px;
     line-height: 40px;
     background: #00a0e3;
     color: #fff;
     border: none;
-    margin:5px 5px;
+    margin:5px 10px;
 }
 .vc-ra-btn{
     font-size: 14px;
@@ -2298,10 +2281,11 @@ div.icon span {
     top: 5px; }
 }
 ');
+$canLogin = Yii::$app->user->identity->type->user_type;
 $script = <<<JS
+let canLogin = '$canLogin';
 let registeration_status = '$registeration_status';
-console.log(registeration_status);
-if(registeration_status == '1'){
+if(registeration_status == '1' && canLogin == 'Individual'){
     openUserDetailsModal();
 }
 if(localStorage.getItem('autoRegisterAfter') == "true"){
