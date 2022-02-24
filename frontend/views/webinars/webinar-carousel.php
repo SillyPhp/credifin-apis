@@ -3,6 +3,7 @@
  <ol class="carousel-indicators">
    <li data-target="#mycarousel" data-slide-to="0" class="active"></li>
    <li data-target="#mycarousel" data-slide-to="1"></li>
+   <li data-target="#mycarousel" data-slide-to="2"></li>
  </ol>
 
   <!-- Wrapper for slides -->
@@ -11,7 +12,10 @@
       <?= $this->render('/widgets/webinar-templates/webinar_one_speaker3') ?>
     </div>
     <div class="item">
-      <?= $this->render('/widgets/webinar-templates/webinar_one_speaker4', ['bg' => $bg]) ?>
+      <?= $this->render('/widgets/webinar-templates/webinar_one_speaker4') ?>
+    </div>
+    <div class="item">
+      <?= $this->render('/widgets/webinar-templates/webinar_one_speaker2') ?>
     </div>
 
     <!-- more slides here -->
@@ -106,6 +110,11 @@ background-repeat: no-repeat;
     min-height: 750px;
     max-height: 750px;
 }
+}
+@media (min-width: 768px) and (max-width: 991px){
+  .item > section {
+    min-height: 450px;    
+  }
 }
 ');
 

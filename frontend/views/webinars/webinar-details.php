@@ -100,7 +100,7 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                     if (Yii::$app->user->isGuest && !$is_expired) {
                         ?>
                         <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
-                           class="ra-btn"><?= $btnName ?></a>
+                           class="ra-btn autoRegisterAfter"><?= $btnName ?></a>
                     <?php } else {
                         ?>
                         <button id="loadingBtn" style="display: none" class="ra-btn">
@@ -282,6 +282,21 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                         <span class="description"><?= $webinar['description'] ?></span>
                                     </div>
                                 <?php } else if($registeration_status != 1 && !$is_expired) { ?>
+                                    <?php
+                                    if ((int)$webinar['price']) {
+                                        if ($promo) { ?>
+                                            <button class="ra-btn registerBtn" id="registerBtn2"><?= $btnName ?></button>
+                                        <?php } else { ?>
+                                            <button class="ra-btn" id="paidRegisterBtn2"><?= $btnName ?></button>
+                                        <?php }
+                                        ?>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <button class="ra-btn registerBtn" id="registerBtn2"><?= $btnName ?></button>
+                                        <?php
+                                    }
+                                    ?>
                                     <button class="ra-btn interestBtn <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
                                             id="interested" data-key="<?= $webinar['webinar_enc_id'] ?>"
                                             value="1">Interested <span id="interestCount">(<?= 50 + rand(1,10) + $interestCount?>)</span>
@@ -391,7 +406,6 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                         <!--                                                Workshop-->
                                     </div>
                                     <div class="schedule-slot-info">
-                                        <a href="#">
                                             <?php
                                             $image = Url::to('@eyAssets/images/pages/webinar/default-user.png');
                                             $speaker_icon = $v['webinarSpeakers'][0]['image'];
@@ -401,7 +415,6 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                             }
                                             ?>
                                             <img class="schedule-slot-speakers" src="<?= $image ?>" alt="">
-                                        </a>
                                         <div class="schedule-slot-info-content">
                                             <h3 class="schedule-slot-title"><?= $v['webinarSpeakers'][0]['fullname'] ?>
                                                 <!--                                                <strong>@ Fredric Martinsson</strong>-->
@@ -426,7 +439,24 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
     </div><!-- container end-->
 </section>
 <!-- Schedules event section end here -->
-
+<?php if($webinar['other_details']) {?>
+<section class="other-details-web">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="section-title">Other Details</h2>
+            </div>
+            <div class="col-md-12">
+                <div class="webinar-description">
+                    <p>
+                        <?= $webinar['other_details'] ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<?php }?>
 
 <!-- sharing widget start -->
 <div class="container">
@@ -732,6 +762,9 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.tab-content{
+    padding: 15px 0;
+}
 .ts-intro-outcome .section-title span{
     font-size: 25px;
     font-weight: 800;
@@ -740,6 +773,7 @@ $this->registerCss('
     max-height: 40px;
     margin-top: 5px;
     padding: 12px 12px 12px 43px;
+    z-index:999 !Important;
 }
 .outflex {
     display: flex;
@@ -946,6 +980,8 @@ p.show-l {
   -ms-border-radius: 50%;
   bottom: 0;
   margin: auto;
+  object-fit: cover;
+  object-position: top;
 }
 
 .schedule-listing .schedule-slot-info .schedule-slot-title {
@@ -962,9 +998,9 @@ p.show-l {
   margin-bottom: 0;
 }
 
-.schedule-listing:hover .schedule-slot-title {
-  color: #3b1d82;
-}
+//.schedule-listing:hover .schedule-slot-title {
+//  color: #3b1d82;
+//}
 
 .schedule-listing:nth-of-type(even) .schedule-slot-time {
   background: #00a0e3;
@@ -1363,7 +1399,7 @@ transform: rotate(100deg);
     border: 2px solid #fff;
     border-radius: 50%;
     display: inline-block;
-    margin-right: -20px;
+    margin-right: -25px;
 }
 .ask-people li img{
     width: 100%;
@@ -1427,7 +1463,7 @@ transform: rotate(100deg);
     width: 100%;
     height: 100%;
     content: \'\';
-    background: rgba(59, 29, 130, 0.5);
+    background: rgba(0, 0, 0, 0.2);
     -o-transition: all 0.4s ease;
     transition: all 0.4s ease;
     -webkit-transition: all 0.4s ease;
@@ -1450,7 +1486,7 @@ transform: rotate(100deg);
     width: 50px;
     height: 50px;
     margin: auto;
-    border: 2px solid #ddd;
+    border: 2px solid #fff;
     border-radius: 50%;
     -webkit-border-radius: 50%;
     -ms-border-radius: 50%;
@@ -1851,7 +1887,7 @@ b, strong {
     color: #fff;
 }
 .section-title, .column-title {
-    margin:20px 0;
+    margin:20px 0 5px;
     font-size: 36px;
     font-weight: 800;
     color: #333;
@@ -1925,7 +1961,7 @@ a:link, a:visited {
     font-size: 14px;
     height: 40px;
     padding: 0 0;
-    width: 150px;
+    width: 140px;
     line-height: 40px;
     background: #00a0e3;
     color: #fff;
@@ -1988,7 +2024,7 @@ a:link, a:visited {
     object-position: top center;
 }
 .element-percent {
-    background:#5e6a6fb8;
+    background:#585858d6;
     width: 100%;
     margin: 0 auto;
     height: 90vh;
@@ -2021,6 +2057,7 @@ a:link, a:visited {
     text-align: justify;
     line-height: 26px;
     color: #333;
+    font-family:roboto;
     margin-bottom: 30px;
 }
 
@@ -2267,6 +2304,40 @@ console.log(registeration_status);
 if(registeration_status == '1'){
     openUserDetailsModal();
 }
+if(localStorage.getItem('autoRegisterAfter') == "true"){
+    if(window.location.href == localStorage.getItem('autoRegisterUrl')){
+        var date = + new Date();
+        var last = JSON.parse(localStorage.getItem('autoRegisterTime'));
+        if ((date - last) < ( 2 * 60 * 1000 ) ) {
+           setTimeout(function() {
+               if($('#registerBtn').length > 0) {
+                   $('#registerBtn').trigger('click');  
+               }
+               if($('#paidRegisterBtn').length > 0) {
+                   $('#paidRegisterBtn').trigger('click');  
+               }
+               localStorage.removeItem('autoRegisterAfter');
+               localStorage.removeItem('autoRegisterTime');
+               localStorage.removeItem('autoRegisterUrl');
+           },1000)
+        } else{
+           localStorage.removeItem('autoRegisterAfter');
+           localStorage.removeItem('autoRegisterTime');
+           localStorage.removeItem('autoRegisterUrl');
+        }
+    } else{
+        if ((date - last) < ( 2 * 60 * 1000 ) ) {
+           localStorage.removeItem('autoRegisterAfter');
+           localStorage.removeItem('autoRegisterTime');
+           localStorage.removeItem('autoRegisterUrl');
+        }
+    }
+}
+$(document).on('click', '.autoRegisterAfter', function(){
+   localStorage.setItem('autoRegisterAfter', true); 
+   localStorage.setItem('autoRegisterTime', + new Date()); 
+   localStorage.setItem('autoRegisterUrl', window.location.href); 
+});
 function countdown(e){
     var countDownDate = new Date(e).getTime();
     var x = setInterval(function() {
@@ -2290,7 +2361,7 @@ function countdown(e){
     }, 1000);
 };
 countdown('$time');
-$(document).on('click','#paidRegisterBtn',function(event){
+$(document).on('click','#paidRegisterBtn, #paidRegisterBtn2',function(event){
     var btn = $(this);
     var demobtn = $('#loadingBtn');
     $.ajax({
@@ -2353,7 +2424,7 @@ $(document).on('click','.interestBtn',function(event){
         toastr.info('Message', 'Already Updated..');
      }
 });
-$(document).on('click','#registerBtn',function(event){
+$(document).on('click','#registerBtn, #registerBtn2',function(event){
     event.preventDefault();
      var btn = $(this);
      var demobtn = $('#loadingBtn');
