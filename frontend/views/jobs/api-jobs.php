@@ -6,18 +6,16 @@ use frontend\models\script\ImageScript;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 
-// $date = date_format(date_create($get['created_at']),"Y-m-d");
-// $date = date('d M Y', strtotime($date));
-// $cur = date('d M Y', strtotime($cur));
 $date = new DateTime($get['created_at']);
 $now = new DateTime();
-$diff=date_diff($now, $date);
-$diff = $date->diff($now)->format("%d"); die();
+$diff = date_diff($now, $date);
+$diff = $date->diff($now)->format("%d");
+
 if($diff > 30){
-    // $get['lastdate'] = echo date('d/m/Y',strtotime('+30 days',strtotime(str_replace('/', '-', '05/06/2016')))) . PHP_EOL;
+    $get['last_date'] = Date('d:m:y', strtotime('+30 days'));
 }
 
-echo date('d/m/Y',strtotime('+30 days',strtotime(str_replace('/', '-', '05/06/2016')))) . PHP_EOL;die();
+
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
 if (!isset($get['company_logo']) || empty($get['company_logo'])) {
