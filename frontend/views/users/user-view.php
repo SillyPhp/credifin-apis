@@ -777,14 +777,15 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         </form>
                     </div>
                     <div class="edit-resume">
-                        <form class="">
-                            <div class="field-resume_upload has-success">
+                        <form class="text-center" id="updateResume">
+                            <div class="field-resume_upload has-success text-left">
                                 <div class="file-upload-wrapper" data-text="Select your file!">
                                     <input type="hidden" name="resume" value="">
-                                    <input type="file" id="resume_upload" class="resume_upload" name="resume" aria-invalid="false">
+                                    <input type="file" id="resume_upload" class="resume_upload" data-name="resume" name="resume" aria-invalid="false">
                                     <p class="help-block help-block-error"></p>
                                 </div>
                             </div>
+                            <button type="submit" data-name="resume" class="btn edit-profile-btn mt10 updateResume">Submit</button>
                         </form>
                     </div>
                     <div class="edit-skills col-md-12">
@@ -2773,6 +2774,7 @@ function addNewEducation(){
        $('#to_date').val('');
       $('.eduUpdate').attr('data-name', 'add_new_education');
 }
+
 function add_new_edu(data){
     const{institute, degree, field, from_date, to_date} = data;
     
@@ -3181,8 +3183,52 @@ $(document).on("change", ".file-upload-wrapper input", function(){
     }
 });
 
-sendData = (data, fieldName) => {
+// $(document).on('click', '.updateResume', function (e){
+//     let btn = e.target;
+//     let fieldName = btn.getAttribute('data-name');
+//     let parentElem = btn.parentElement;
+//     let inputElems = parentElem.querySelectorAll('input');
+//     let file = document.getElementById("resume_upload").files[0]
+//     console.log(file);
+//     var formData = new FormData();
+//     formData.append(fieldName, file);
+//     $.ajax({
+//         url: '/users/update-basic-detail',
+//         method: 'POST',
+//         dataType: 'json',
+//         data: formData,
+//         processData: false,
+//         success: function(response){
+//             console.log(response)
+//         }
+//     })
+// });
 
+$(document).on('submit', '#updateResume', function (e){
+    e.preventDefault();
+    console.log('hello');
+    // let btn = e.target;
+    // let fieldName = btn.getAttribute('data-name');
+    // let parentElem = btn.parentElement;
+    // let inputElems = parentElem.querySelectorAll('input');
+    // let file = document.getElementById("resume_upload").files[0]
+    // console.log(file);
+    var formData = new FormData(this);
+    // formData.append(fieldName, file);
+    $.ajax({
+        url: '/users/update-basic-detail',
+        method: 'POST',
+        data: formData,
+        contentType: false,
+     cache:false,
+     processData: false,
+        success: function(response){
+            console.log(response)
+        }
+    })
+});
+sendData = (data, fieldName) => {
+    console.log(data);
     $.ajax({
         url: '/users/update-basic-detail',
         method: 'POST',
