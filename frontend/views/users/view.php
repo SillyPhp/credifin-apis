@@ -31,7 +31,7 @@ if (!empty($userApplied) && Yii::$app->user->identity->organization->organizatio
         }
     }
 }
-$this->params['header_dark'] = false;
+$this->params['header_dark'] = true;
 $uId = $user['user_enc_id'];
 ?>
 
@@ -267,6 +267,14 @@ $uId = $user['user_enc_id'];
                                 <a href="https://www.linkedin.com/in/<?= Html::encode($user['linkedin']) ?>"
                                    target="_blank">
                                     <i class="fab fa-linkedin-in"></i>
+                                </a>
+                            </li>
+                        <?php }
+                        if(!empty($user['telegram'])) {?>
+                            <li class="telegram">
+                                <a href="https://t.me/<?= Html::encode($user['telegram']) ?>"
+                                   target="_blank">
+                                    <i class="fab fa-telegram"></i>
                                 </a>
                             </li>
                         <?php }
@@ -717,7 +725,7 @@ $uId = $user['user_enc_id'];
 
 
     <?php 
-    if(count($pastWebinar) !== 0){
+    if($pastWebinar && count($pastWebinar) !== 0){
     ?>
     <section class="webinar-attended">
         <div class="container">
@@ -959,6 +967,9 @@ $this->registerCss('
 }
 .lin a {
 	background-color: #007bb6;
+}
+.telegram a{
+    background-color: #229ED9;
 }
 .mael a {
 	background-color: #bb0000;

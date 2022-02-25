@@ -3,10 +3,10 @@ use yii\helpers\Url;
 ?>
 <section class="main-bg">
     <div class="image-top-right">
-        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/lv-s1.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
+        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/lv-s1.png') ?>" alt="">
     </div>
     <div class="image-bottom-right">
-        <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/lv-s2.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
+        <img src="<?= Url::to('@eyAssets/images/pages/education-loans/lv-s2.png') ?>" alt="">
     </div>
     <div class="container-fluid">
         <div class="row loan-offerings">
@@ -74,7 +74,7 @@ use yii\helpers\Url;
                                         Teacher Loan
                                 </div>
                             </a>
-                            <a href="#" target="_blank">
+                            <a target="_blank">
                                 <div class="loan-product">
                                     <div class="loan-product-icon">
                                         <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/edtech-loans.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
@@ -88,7 +88,7 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-5 col-sm-5">
                 <div class="loan-vector">
-                    <img class="load-later" data-src="<?= Url::to('@eyAssets/images/pages/education-loans/loan-vector1.png') ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/loan-vector1.png') ?>" alt="">
                 </div>
             </div>
         </div>

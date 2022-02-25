@@ -5,6 +5,8 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
+
+
 $base_url = 'https://empoweryouth.com';
 switch ($application_name['application_type']) {
     case 'Jobs':
@@ -325,7 +327,7 @@ usort($locations, "cmp");
                 </div>
             </div>
             <div class="col-md-12 use-ff">
-                <div class="col-md-6 col-sm-12">
+                <div class="col-md-6 col-sm-12" style="padding:0px;">
                     <div class="job-txt pos-left">Invite Candidates via</div>
                     <div class="dis-flex">
                         <div class="job-mail">
@@ -348,6 +350,11 @@ usort($locations, "cmp");
                             <p id="phone-error" style="color:red;" class="help-block help-block-error"></p>
                             <button class="grn" id="whatsapp-invitation"><i class="fa fa-whatsapp"></i></button>
                             <?php ActiveForm::end(); ?>
+                        </div>
+                        <div class="scd-btn">
+                            <a href="/candidates?app_id=<?= $application_name['application_enc_id'] ?>" target="_blank">
+                                Browse Candidates
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -829,6 +836,7 @@ usort($locations, "cmp");
                                         <!--                                            <a href="#" class="tt" data-toggle="tooltip" title="Request to Complete Profile"><i class="fa fa-id-card"></i></a>-->
                                         <!--                                            <a href="#">Request to Complete Profile</a>-->
                                     </div>
+
                                     <ul>
                                         <!--                                            <li>-->
                                         <!--                                                <a href="#">-->
@@ -1110,6 +1118,18 @@ $this->registerCss('
     font-size:12px;
     text-transform:uppercase;
 }
+.Can-num p{
+    text-align: right;
+    margin: 0;
+    padding-top: 13px;
+    font-size: 18px;
+}
+.Can-num p i{
+    font-size: 15px;
+    margin-right: 5px;
+    color: #00a0e3;
+}
+
 .has-success #phone-input {
     border-color: #c2cad8;
 }
@@ -1254,6 +1274,7 @@ $this->registerCss('
 }
 .use-ff {
     border-top: 2px solid #e0e0e0;
+    padding:0px;
     padding-top: 10px;
     display: flex;
     justify-content: space-around;
@@ -1264,7 +1285,10 @@ $this->registerCss('
 .job-mail, .job-whatsapp {
     position: relative;
     margin: 5px 10px 5px 0px;
-    flex-basis:45%;
+    flex-basis:38%;
+}
+.job-mail{
+    flex-basis:32%;
 }
 .location-posts {
     height: 36px;
@@ -2416,6 +2440,9 @@ overflow: hidden;
     padding: 5px;
     max-width: 30px;
     margin-right: 8px;
+}
+.modal-backdrop.in{
+    display: none !important;
 }
 @media (min-width:1400px){
     .sticky{

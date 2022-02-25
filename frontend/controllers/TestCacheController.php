@@ -1,6 +1,8 @@
 <?php
 
 namespace frontend\controllers;
+use common\models\Categories;
+use common\models\OpenTitles;
 use common\models\User;
 use common\models\Usernames;
 use common\models\UserTypes;
@@ -17,6 +19,7 @@ use common\models\Utilities;
 use yii\helpers\Url;
 use yii\web\Controller;
 use Yii;
+use yii\web\Response;
 
 class TestCacheController extends Controller
 {
@@ -36,46 +39,6 @@ class TestCacheController extends Controller
         }
     }
 
-
-    public function actionImages()
-    {
-        $canvas = null;
-        $profile = 'others.png';
-        $company_logo = null;
-        $application_enc_id = 'test';
-        $job_title = 'Shift Supervisor Management Trainee';
-        $company_name = 'CVS Health';
-        $locations = 'Ludhiana, Jalandhar';
-        $content = [
-            'job_title' => $job_title,
-            'company_name' => $company_name,
-            'canvas' => (($canvas) ? false : true),
-            'bg_icon' => $profile,
-            'logo' => (($company_logo) ? $company_logo : null),
-            'initial_color' => RandomColors::one(),
-            'location' => $locations,
-            'app_id' => $application_enc_id,
-            'permissionKey' => Yii::$app->params->EmpowerYouth->permissionKey
-        ];
-        $story= \frontend\models\script\StoriesImageScript::widget(['content' => $content]);
-        echo $story;
-    }
-
-    public function actionSkill(){
-        $data = SkillsUpPostAssignedBlogs::find()
-            ->alias('a')
-            ->select(['b.is_visible','b.post_enc_id'])
-            ->joinWith(['blogPostEnc b'],false,'INNER JOIN')
-            ->asArray()->all();
-        $k = 0;
-        foreach ($data as $d){
-            $update = Posts::findOne(['post_enc_id'=>$d['post_enc_id']]);
-            $update->is_visible = 0;
-            $update->update();
-            $k++;
-        }
-        return $k;
-    }
         public function actionBulkEmail($start=0,$end=0){
             $user_type = UserTypes::findOne([
                 'user_type' => 'Individual',
@@ -154,21 +117,6 @@ class TestCacheController extends Controller
         return $username;
     }
 
-    private function educationLoanRegister($params){
-        Yii::$app->mailer->htmlLayout = 'layouts/email';
-        $mail = Yii::$app->mailer->compose(
-            ['html' => 'education-loan-register'],['data'=>$params]
-        )
-            ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
-            ->setTo([$params['email'] => $params['name']])
-            ->setSubject('Your Loan Application Status');
-        if (!$mail->send()) {
-            return false;
-        }else{
-            echo 1;
-        }
-    }
-
     public function actionApplicationStatusEmail(){
         $params = AppliedApplications::find()
             ->alias('a')
@@ -191,5 +139,71 @@ class TestCacheController extends Controller
             }
         }
         echo $k;
+    }
+    public function actionMoveTitles($limit=50, $offset=0){
+        $_flag = false;
+        $model = OpenTitles::find()
+            ->select(['title_enc_id','name'])
+            ->where(['is_deleted' => 0])
+            ->limit($limit)
+            ->offset($offset)
+            ->orderBy(['created_on' => SORT_DESC])
+            ->all();
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if($model) {
+            foreach ($model as $m) {
+                $category = Categories::find()
+                    ->where(['name' => $m->name])
+                    ->asArray()
+                    ->one();
+                if (empty($category)) {
+                    $category = new Categories();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $category->category_enc_id = $m->title_enc_id;
+                    $category->name = $m->name;
+                    $utilitiesModel->variables['name'] = $category->name;
+                    $utilitiesModel->variables['table_name'] = Categories::tableName();
+                    $utilitiesModel->variables['field_name'] = 'slug';
+                    $category->slug = $utilitiesModel->create_slug();
+                    $category->source = 1;
+                    $category->created_on = date('Y-m-d H:i:s');
+                    $category->created_by = Yii::$app->user->identity->user_enc_id;
+                    if ($category->save()) {
+                        $_flag = true;
+                    } else {
+                        $_flag = false;
+                    }
+                }
+                $titleModel = OpenTitles::findOne(['title_enc_id' => $m->title_enc_id]);
+                $titleModel->is_deleted = 1;
+                $titleModel->last_updated_by = Yii::$app->user->identity->user_enc_id;
+                $titleModel->last_updated_on = date('Y-m-d H:i:s');
+                if($titleModel->save()){
+                    $_flag = true;
+                } else {
+                    $_flag = false;
+                }
+            }
+            if($_flag){
+                return [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Data Move Successfully'
+                ];
+            } else {
+                return [
+                    'status' => 201,
+                    'title' => 'Oops!!',
+                    'message' => 'Something went wrong...'
+                ];
+            }
+        } else {
+            return [
+                'status' => 201,
+                'title' => 'Oops!!',
+                'message' => 'Data Not Found'
+            ];
+        }
     }
 }

@@ -556,6 +556,7 @@ class EducationLoanController extends ApiBaseController
         $model->updated_on = date('Y-m-d H:i:s');
         $model->gender = $params['gender'] ? $params['gender'] : $model->gender;
         $model->phone = $params['phone'] ? $params['phone'] : $model->phone;
+        $model->applicant_dob = $params['applicant_dob'] ? date('Y-m-d', strtotime($params['applicant_dob'])) : $model->applicant_dob;
         if ($model->save()) {
             return true;
         }
@@ -855,6 +856,10 @@ class EducationLoanController extends ApiBaseController
 
         $image = UploadedFile::getInstanceByName('image');
         $image_ext = $image->extension;
+
+        if(!$image_ext){
+            $image_ext = 'pdf';
+        }
 
         $image_temp = $image->tempName;
         if ($res = $this->upload($user_id, $params, $image_temp, $image_ext)) {

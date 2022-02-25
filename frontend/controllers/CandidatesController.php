@@ -182,7 +182,7 @@ class CandidatesController extends Controller
         }
     }
 
-    public function actionIndex($salary = null)
+    public function actionIndex($salary = null, $app_id = null)
     {
         if (Yii::$app->user->identity->organization->organization_enc_id) {
             if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -225,9 +225,12 @@ class CandidatesController extends Controller
                         'COUNT(DISTINCT(e.experience_enc_id)) as exp_count',
                         'f.name city_name',
                     ])
-                    ->joinWith(['shortlistedApplicants bb' => function ($bb) {
+                    ->joinWith(['shortlistedApplicants bb' => function ($bb) use ($parameters) {
                         $bb->select(['bb.shortlisted_applicant_enc_id', 'bb.candidate_enc_id']);
                         $bb->onCondition(['bb.is_deleted' => 0]);
+                        if (isset($parameters['app_id']) && !empty($parameters['app_id'])) {
+                            $bb->onCondition(['bb.application_enc_id' => $parameters['app_id']]);
+                        }
                     }])
                     ->joinWith(['userTypeEnc b'], false)
                     ->joinWith(['userSkills c' => function ($c) {
@@ -322,8 +325,20 @@ class CandidatesController extends Controller
                 }
                 return $users;
             } else {
+
+                $single_app = false;
+
+                if ($app_id != null) {
+                    $application = $this->getApplications($app_id);
+                    $single_app = true;
+                } else {
+                    $application = $this->getApplications($app_id);
+                }
+
+
                 return $this->render('index', [
-                    'available_applications' => $this->getApplications(),
+                    'available_applications' => $application,
+                    'single_app' => $single_app
                 ]);
             }
         } else {
@@ -398,7 +413,7 @@ class CandidatesController extends Controller
         }
     }
 
-    private function getApplications()
+    private function getApplications($app_id = null)
     {
         $employer_applications = EmployerApplications::find()
             ->alias('a')
@@ -408,10 +423,16 @@ class CandidatesController extends Controller
             }], false)
             ->joinWith(['organizationEnc b'], false)
             ->joinWith(['applicationTypeEnc e'], false)
-            ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.application_for' => 1])
+            ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.application_for' => 1]);
 //            ->andWhere(['c.assigned_to' => $type])
-            ->asArray()
+        if ($app_id != null) {
+            $employer_applications->andWhere(['a.application_enc_id' => $app_id]);
+        }
+
+        $employer_applications = $employer_applications->asArray()
             ->all();
+
+
         return $employer_applications;
     }
 

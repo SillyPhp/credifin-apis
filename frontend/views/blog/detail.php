@@ -66,7 +66,7 @@ $this->params['seo_tags'] = [
                             <?php
                         }
                         ?>
-                        <div id="blog-description" class="blog-text">
+                        <div id="blog-description" class="blog-text<?= (!$catagory[0]['categoryEnc']['name']) ? ' for-quote' : '' ?>">
                             <?= $post->description; ?>
                         </div>
                     </div>
@@ -157,7 +157,7 @@ $this->params['seo_tags'] = [
                                 ?>
                                 <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-10 col-xs-offset-1">
                                     <div class="video-container">
-                                        <a href="/blog/<?= $related['slug'] ?>">
+                                        <a href="<?= ($related['is_crawled'] == 0)? Url::to("/blog/c/". $related['slug']): Url::to("/blog/". $related['slug']) ?>">
                                             <div class="video-icon">
                                                 <img src="<?= $image ?>">
                                             </div>
@@ -187,6 +187,17 @@ $this->params['seo_tags'] = [
 
 <?php
 $this->registerCss('
+.blog-division img{
+    height: auto !important;
+}
+.blog-division div#blog-description.for-quote {
+    margin: 35px 0;
+    font-size: 17px;
+    line-height: 1.8;
+    font-weight: 600;
+    letter-spacing: 0.9px;
+    text-align: justify;
+}
 strong{
     color: unset;
 }

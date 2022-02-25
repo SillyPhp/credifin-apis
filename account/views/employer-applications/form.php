@@ -817,7 +817,6 @@ display:none;
 }
 
 .large-container{
-    max-width: 1400px !important;
     padding-left: 15px;
     padding-right: 15px;
     margin:auto;
@@ -1770,7 +1769,10 @@ var prime_id = null;
 $('#primaryfield').on('change',function()
     {
       prime_id = $(this).val();
-      $('#title').val('');
+      let edit = window.location.pathname.split('/').pop()
+      if(edit != 'edit'){
+        $('#title').val('');
+      }
       $('#title').typeahead('destroy');
       load_job_titles(prime_id);
    });

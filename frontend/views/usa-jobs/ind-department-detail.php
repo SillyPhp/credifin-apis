@@ -74,10 +74,6 @@ $this->params['seo_tags'] = [
 <?php
 echo $this->render('/widgets/mustache/application-card-bk');
 $this->registerCss('
-.application-card-main
-{
-height:175px;
-}
 .align_btn
 {
 text-align:center;

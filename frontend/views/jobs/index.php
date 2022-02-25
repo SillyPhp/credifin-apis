@@ -81,6 +81,9 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
 
 <?= $this->render('/widgets/info-stats'); ?>
 
+<?= $this->render('/webinars/webinar-carousel') ?>
+
+
 <section id="trendingCompaniesSectionMain">
     <div class="container">
         <div class="row">

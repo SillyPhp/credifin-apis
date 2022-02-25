@@ -33,6 +33,19 @@ switch ([$controller_id, $action_id]) {
                                 {{/logo}}
                             </a>
                         </div>
+                        <div class="ji-city">
+                            {{#city}}
+                            <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                                  data-long="{{longitude}}"><i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
+                                </span>
+                            {{/city}}
+                            {{^city}}
+                            <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                                  data-long="{{longitude}}" data-locations=""><i
+                                        class="fas fa-map-marker-alt"></i>&nbsp;Work From Home
+                                </span>
+                            {{/city}}
+                        </div>
                         <div class="side-description" data-slug="{{application_slug}}">
                             <div class="ji-title">
                                 <a href="{{link}}" title="{{title}}" class="application-title capitalize">
@@ -43,19 +56,6 @@ switch ([$controller_id, $action_id]) {
                                 <a href="{{link}}" target="_blank" title="{{organization_name}}">
                                     <h4 class="org_name comp-name org_name">{{{organization_name}}}</h4>
                                 </a>
-                            </div>
-                            <div class="ji-city">
-                                {{#city}}
-                                <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
-                                      data-long="{{longitude}}"><i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
-                                </span>
-                                {{/city}}
-                                {{^city}}
-                                <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
-                                      data-long="{{longitude}}" data-locations=""><i
-                                            class="fas fa-map-marker-alt"></i>&nbsp;Work From Home
-                                </span>
-                                {{/city}}
                             </div>
                             <div class="ji-salarydata">
                                 {{#salary}}
@@ -185,7 +185,15 @@ switch ([$controller_id, $action_id]) {
             </div>
         </div>
     </div>
+    <div class="modal fade bs-modal-lg in" id="job-resume-widget-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="appResumeModalData">
+
+            </div>
+        </div>
+    </div>
 <?php
+echo $this->render('/widgets/employer_applications/applied-modal-common');
 $c_user = Yii::$app->user->identity->user_enc_id;
 $script = <<< JS
 function gitHubJobs() {
@@ -587,7 +595,11 @@ $this->registerCss('
     width:100%;
     position:relative;
 }
-.ji-apply, .ji-apply:focus {
+.ji-apply:focus{
+    background-color: #ff7803;
+    color: #fff;
+}
+.ji-apply {
     font-family: Roboto;
     background-color: #ff7803;
     color: #fff;
@@ -658,6 +670,8 @@ $this->registerCss('
 .side-description {
     width: calc(100% - 105px);
     margin-left:15px;
+    position:relative;
+    min-height:123px;
 }
 .city
 {

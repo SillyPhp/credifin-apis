@@ -101,9 +101,9 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
 
 <?= $this->render('/widgets/work-from-home-banner', ['btnText' => 'Internships']) ?>
 
-<?= $this->render('/webinars/webinar-carousel')?>
-
 <?php echo $this->render('/widgets/info-stats'); ?>
+
+<?= $this->render('/webinars/webinar-carousel') ?>
 
 <section id="trendingCompaniesSectionMain">
     <div class="container">
@@ -130,6 +130,8 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
         </div>
     </div>
 </section>
+
+
 
 <?php
 echo $this->render('/widgets/top-cities', [

@@ -35,6 +35,7 @@ use common\models\UserPreferredSkills;
 use common\models\UserResume;
 use common\models\UserSkills;
 use frontend\models\applications\JobApplied;
+use frontend\models\applications\JobAppliedResume;
 use frontend\models\applications\PreferredApplicationCards;
 use frontend\models\curl\RollingCurl;
 use frontend\models\curl\RollingCurlRequest;
@@ -574,7 +575,7 @@ class JobsController extends Controller
                 'slug' => $eaidk,
                 'is_deleted' => 0,
                 'application_for' => 1,
-                'status' => 'ACTIVE'
+//                'status' => 'ACTIVE'
             ])
             ->one();
         if (empty($application_details)) {
@@ -1899,14 +1900,6 @@ class JobsController extends Controller
                     ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
                     ->andWhere(['b.field_name' => 'Get Applications'])
                     ->exists();
-
-                $resumes = UserResume::find()
-                    ->select(['user_enc_id', 'resume_enc_id', 'title'])
-                    ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                    ->orderBy(['id' => SORT_DESC])
-                    ->asArray()
-                    ->limit(3)
-                    ->all();
             }
 
             $applicationType = EmployerApplications::find()
@@ -1924,8 +1917,29 @@ class JobsController extends Controller
                 'organization_enc_id' => $org_id,
                 'applicationType' => $applicationType,
                 'locations' => $locations,
-                'que' => $app_que,
-                'resumes' => $resumes]);
+                'que' => $app_que]);
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
+    }
+
+    public function actionApplicationApplyResumeModal()
+    {
+        $applicationType = Yii::$app->request->post('applicationType');
+        if (Yii::$app->request->isAjax && !Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
+            $resumeModel = new JobAppliedResume();
+            $resumes = UserResume::find()
+                ->select(['user_enc_id', 'resume_enc_id', 'title'])
+                ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
+                ->orderBy(['id' => SORT_DESC])
+                ->asArray()
+                ->limit(3)
+                ->all();
+
+            return $this->renderAjax('@frontend/views/widgets/employer_applications/job-applied-resume', [
+                'applicationType' => $applicationType,
+                'resumes' => $resumes,
+                'resumeModel' => $resumeModel,]);
         } else {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }

@@ -87,8 +87,8 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
                                     <button type="button" onclick="changeSignup()"> Sign Up</button>
                                 </div>
                                 <?php ActiveForm::end(); ?>
-                                <div class="separator pb-10">
-                                    <span><?= Yii::t('frontend', 'Login With Social Accounts'); ?></span>
+                                <div class="separator pb-10 black-set">
+                                    <span><?= Yii::t('frontend', 'Login/Register With Social Accounts'); ?></span>
                                 </div>
                                 <div class="form-group mt-10">
                                     <?=
@@ -139,6 +139,10 @@ Yii::$app->view->registerJs('var returnUrl = "' . Yii::$app->request->url . '"',
 </div>
 <?php
 $this->registerCss('
+.black-set span{
+//    color:#000;
+    font-family:roboto;
+    }
 .auth-clients{
     display: flex !important;
     justify-content: center !important;
@@ -548,8 +552,12 @@ $this->registerJs($script);
     }
 
     function changeSignup() {
-        document.getElementById('loginForm').style.display = "none";
-        document.getElementById('signForm').style.display = "block";
+        if(localStorage.getItem('autoApplyAfter') == "true"){
+            window.location.replace("/signup/individual");
+        } else{
+            document.getElementById('loginForm').style.display = "none";
+            document.getElementById('signForm').style.display = "block";
+        }
     }
 
     function changeBackLogin() {

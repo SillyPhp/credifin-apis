@@ -164,6 +164,7 @@ $this->params['header_dark'] = false;
 <?= $this->render('/webinars/webinar-carousel')?>
 
 
+
 <div id="app-data"></div>
 <div id="sectionIsLoading" class="sectionLoad">
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;background:transparent;display:block;" width="60px" height="60px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">

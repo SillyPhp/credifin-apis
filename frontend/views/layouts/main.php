@@ -91,7 +91,7 @@ AppAssets::register($this);
                 //            if (Yii::$app->user->isGuest && empty($this->params['sub_header'])) {
                 if (Yii::$app->user->isGuest) {
                 ?>
-                    <div class="secondary-top-header">
+                    <div class="secondary-top-header container-fluid">
                         <div class="secondary-top-header-left">
                             <span>
                                 <i class="far fa-check-circle"></i> Post quick <a data-link="/jobs/quick-job" data-target="#sign-up-benefit"><strong>Job</strong></a>or<a data-link="/internships/quick-internship" data-target="#sign-up-benefit"><strong>Internship</strong></a>
@@ -116,7 +116,7 @@ AppAssets::register($this);
                 ?>
                 <div class="ey-head-main">
                     <div class="container-fluid">
-                        <div class="large-container container">
+                        <div class="large-container container" style="padding: 0;">
                             <div class="ey-header-main">
                                 <div class="ey-header-logo">
                                     <a class="ey-logo" href="/">
@@ -452,6 +452,7 @@ AppAssets::register($this);
         }
     </script>
     <?php
+    $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
     $this->registerCss('
     .upcoming-webinar{
         width: 100%;
@@ -704,11 +705,12 @@ AppAssets::register($this);
 .secondary-top-header-left, .secondary-top-header-right{
     width:auto;
 }
-.secondary-top-header-left{padding-left:40px;float:left;}
+.secondary-top-header-left{padding-left:0;float:left;}
 .secondary-top-header-left a i, .secondary-top-header-left span i{font-size:16px;}
 .secondary-top-header-left a, .secondary-top-header-left span{margin:5px;}
+.secondary-top-header-left span:first-child{margin-left:0px;}
 .secondary-top-header-left span a{font-weight:500;}
-.secondary-top-header-right{padding-right:40px;float:right;}
+.secondary-top-header-right{padding-right:0px;float:right;}
 .upcoming-webinar, .secondary-top-header a, .secondary-top-header span, .secondary-top-header-left *{
     color:#fff;
     transition: all 500ms;
@@ -972,8 +974,20 @@ AppAssets::register($this);
     }
     if(!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization){
         $this->registerJs("
-         function openUserDetailsModal(){
-            let hasCookie = document.cookie;
+        function getCookie(name){
+            var re = new RegExp(name + '=([^;]+)');
+            var value = re.exec(document.cookie);
+            return (value != null) ? unescape(value[1]) : null;
+        }  
+        function openUserDetailsModal(){
+            let cookieVal = getCookie('ModalisViewed'); 
+            if(cookieVal == 'modalViewed'){
+                let date = new Date();
+                date.setTime(date.getTime() + (1 * 24 * 60 * 60 * 1000));
+                let jdate = date.toUTCString()
+                const expires = 'expires=' + date.toUTCString();
+                document.cookie='ModalisViewed='+jdate+'; expires='+expires+'; path=/'
+            }
             if (document.cookie.indexOf('ModalisViewed') != -1) {
                 return false; 
             }
@@ -993,9 +1007,9 @@ AppAssets::register($this);
             });
          }
           
-        window.setTimeout(function(){
-            openUserDetailsModal();
-        },1000); 
+//        window.setTimeout(function(){
+//            openUserDetailsModal();
+//        },1000); 
                
          function openPreferenceModal(){
             let hasCookie = document.cookie;
