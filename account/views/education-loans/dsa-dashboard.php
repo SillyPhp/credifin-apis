@@ -1076,6 +1076,12 @@ input.checkbox:checked + label:before {
 .intl-tel-input{
     width: 100% !important;
 }
+@media (min-width: 768px) and (max-width: 991px){
+    .widget-row{
+        height: 220px;
+    }
+}
+
 @media screen and (max-width: 992px){
     .loan-icon img{
       display: none;
@@ -1096,6 +1102,10 @@ input.checkbox:checked + label:before {
     }
     #sanctionModal .modal-content{
         height: 80vh
+    }
+    
+    .dsa-box {
+        margin-top: 10px;
     }
 }
 @media only screen and (max-width: 760px),
