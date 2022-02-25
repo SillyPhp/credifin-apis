@@ -17,9 +17,9 @@ if (isset($_GET['filter'])) {
         'id' => 'stat-container',
     ]);
     ?>
-    <div class="col-md-9">
+    <div class="col-md-6">
         <div class="widget-row">
-            <div class="col-md-3 col-sm-6">
+            <div class="col-sm-6">
                 <a href="/account/education-loans/leads?filter=0" data-pjax="0">
                     <div class="box-des box1 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
@@ -27,8 +27,6 @@ if (isset($_GET['filter'])) {
                         <span class="box-text">New Leads</span>
                     </div>
                 </a>
-            </div>
-            <div class="col-md-3 col-sm-6">
                 <a href="/account/education-loans/leads?filter=all" data-pjax="0">
                     <div class="box-des box3 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
@@ -37,7 +35,7 @@ if (isset($_GET['filter'])) {
                     </div>
                 </a>
             </div>
-            <div class="col-md-3 col-sm-6">
+            <div class="col-sm-6">
                 <a href="/account/education-loans/leads?filter=3" data-pjax="0">
                     <div class="box-des box5 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
@@ -45,8 +43,6 @@ if (isset($_GET['filter'])) {
                         <span class="box-text">Under Process</span>
                     </div>
                 </a>
-            </div>
-            <div class="col-md-3 col-sm-6">
                 <a href="/account/education-loans/leads?filter=4" data-pjax="0">
                     <div class="box-des box7 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
@@ -147,6 +143,17 @@ if (isset($_GET['filter'])) {
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dsa-box">
+        <h3 class="text-white size-set">Invite DSA <i data-toggle="tooltip"
+                                                                title="This is your personalized invite link which is used to add DSA direct into your account "
+                                                                class="fa fa-question-circle tooltip-text"></i></h3>
+            <p class="link line-clamp">
+                http://aman.eygb.me/account/education-loans/leads
+            </p>
+            <a href="" class="create-btn">Copy Link</a>
         </div>
     </div>
     <?php Pjax::end(); ?>
@@ -513,6 +520,44 @@ if (isset($_GET['filter'])) {
 </div>
 <?php
 $this->registerCss('
+.line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+  }
+.dsa-box {
+    background: black;
+    padding: 15px;
+    text-align: center;
+    border-radius: 10px;
+    height: 196px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.dsa-box h4 {
+    color: #fff;
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+}
+.dsa-box a.create-btn {
+    background: #ff7803;
+    color: #fff;
+    padding: 7px 20px;
+    display: inline-block;
+    margin-top: 15px;
+    border-radius: 5px;
+}
+.dsa-box p.link{
+    height: 28px;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 4px;
+    padding: 0 6px;
+    line-height: 25px;
+}
 .tooltip-text{
     cursor:pointer;
 }
@@ -572,6 +617,7 @@ $this->registerCss('
     background-color: #000;
     text-align: center;
     padding: 1px 10px;
+    border-radius:10px;
 }
 .size-set {
     font-size: 18px;
@@ -834,12 +880,13 @@ input.checkbox:checked + label:before {
    background-size: 100% 100%;
    background-repeat: no-repeat;
    position: relative;
-   height: 160px;
+   height: 90px;
+   border-radius: 10px;
 }
 .mt{margin-bottom:15px;}
 .box-des img{
    position: absolute;
-   max-width: 63px;
+   max-width: 34px;
    right: 25px;
    top: 15px;
 }
