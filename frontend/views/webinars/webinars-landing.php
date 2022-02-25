@@ -52,7 +52,6 @@ if ($upcomingWebinar) {
         </div>
         <div class="row">
             <?php
-
                 foreach ($upcomingWebinar as $web) {
                     ?>
                     <div class="col-md-4 col-sm-6">
@@ -76,8 +75,8 @@ if ($upcomingWebinar) {
                                 </div>
                             </div>
                             <div class="web-inr">
-                                <div class="web-title"><a
-                                            href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a>
+                                <div class="web-title">
+                                    <a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a>
                                 </div>
                                 <div class="web-speaker">
                                     <span><?= str_replace(',', ', </span><span>', trim($web['speakers'])) ?></span>
@@ -108,7 +107,7 @@ if ($upcomingWebinar) {
                                     </div>
                                     <span class="cont"> <?= count($web['webinarRegistrations']) ?> Registered</span>
                                 </div>
-                                <?php if (array_search(Yii::$app->user->identity->user_enc_id, array_column($web['webinarRegistrations'], 'created_by'))) { ?>
+                                <?php if (in_array(Yii::$app->user->identity->user_enc_id, array_column($web['webinarRegistrations'], 'created_by'))) { ?>
                                     <div class="register-btns">
                                         <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib">
                                             Registered</a>
@@ -985,7 +984,7 @@ color: #fff !important;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 	background-color:#fff;
 	margin-bottom:20px;
-    min-height: 385px;
+    min-height: 390px;
 }
 .web-img {
 	position: relative;
@@ -1122,7 +1121,7 @@ color: #fff !important;
 .reg img {
     width: 35px;
     border-radius: 81px;
-    height: 30px;
+    height: 35px;
     object-fit: cover;
     border: 2px solid #fff;
 }
