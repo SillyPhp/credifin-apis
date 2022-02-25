@@ -115,7 +115,7 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
-img{
+.webinar-one-speaker1 img{
 width : 100%;
 }
 .webinar-one-speaker1 {
