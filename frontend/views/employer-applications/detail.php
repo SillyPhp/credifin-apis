@@ -516,7 +516,7 @@ if ($settings["showNewPositionsWidget"]):
                             <div class="lc-item-desciption">
                                 <div class="lc-item-user-detail">
                                     <h3 class="lc-item-video-title">
-                                        <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" target="_blank"
+                                        <a href="<?= Url::to('/learning/video/' . $p['slug']); ?>" target="_blank"
                                            class="ml-20">
                                             <?= Yii::t('frontend', $p['title']); ?>
                                         </a>

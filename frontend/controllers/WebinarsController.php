@@ -11,6 +11,7 @@ use common\models\WebinarEvents;
 use common\models\WebinarOutcomes;
 use common\models\WebinarPayments;
 use common\models\WebinarRegistrations;
+use common\models\WebinarRewards;
 use common\models\Webinars;
 use common\models\WebinarSessions;
 use common\models\WebinarSpeakers;
@@ -180,7 +181,7 @@ class WebinarsController extends Controller
                 ])
                 ->one();
             $interestCount = UserWebinarInterest::find()
-                ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'interest_status'=>1])
+                ->where(['webinar_enc_id' => $webinar['webinar_enc_id'], 'interest_status' => 1])
                 ->count();
 
             $userInterest = UserWebinarInterest::findOne(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id]);
@@ -192,9 +193,23 @@ class WebinarsController extends Controller
                 $user_link = WebinarRegistrations::findOne(['webinar_enc_id' => $webinar['webinar_enc_id'], 'created_by' => $user_id])->unique_access_link;
             }
 
+            $webinarRewards = WebinarRewards::find()
+                ->alias('a')
+                ->select(['a.webinar_reward_enc_id', 'a.webinar_enc_id', 'a.position_enc_id', 'b.name position_name', 'a.price', 'a.amount'])
+                ->joinWith(['positionEnc b'], false)
+                ->joinWith(['webinarRewardCertificates c' => function ($c) {
+                    $c->select(['c.reward_certificate_enc_id', 'c.webinar_reward_enc_id', 'c.name']);
+                    $c->onCondition(['c.is_deleted' => 0]);
+                }])
+                ->where(['a.is_deleted' => 0, 'a.webinar_enc_id' => $webinar['webinar_enc_id']])
+                ->orderBy('a.sequence')
+                ->groupBy(['a.webinar_reward_enc_id'])
+                ->asArray()
+                ->all();
+
             return $this->render('webinar-details', [
                 'webinar' => $webinar,
-                'interestCount'=>$interestCount,
+                'interestCount' => $interestCount,
                 'assignSpeaker' => $assignSpeaker,
                 'is_expired' => $is_expired,
                 'outComes' => $outComes,
@@ -207,7 +222,8 @@ class WebinarsController extends Controller
                 'dateEvents' => $dateEvents,
                 'nextEvent' => $nextEvent,
                 'webinar_link' => $user_link,
-                'upcoming' =>  self::showWebinar($status = 'upcoming', $webinar_id = $webinar['webinar_enc_id'])
+                'webinarRewards' => $webinarRewards,
+                'upcoming' => self::showWebinar($status = 'upcoming', $webinar_id = $webinar['webinar_enc_id'])
             ]);
         } else {
             return $this->redirect('/');
@@ -289,8 +305,8 @@ class WebinarsController extends Controller
                 }
                 $model->status = 1;
                 if ($model->save()) {
-                    $get = Users::findOne(['user_enc_id'=>$uid]);
-                    $data = Webinar::findOne(['webinar_enc_id'=>$wid]);
+                    $get = Users::findOne(['user_enc_id' => $uid]);
+                    $data = Webinar::findOne(['webinar_enc_id' => $wid]);
                     $params = [];
                     $params['email'] = $get->email;
                     $params['name'] = $get->first_name . ' ' . $get->last_name;
@@ -300,8 +316,8 @@ class WebinarsController extends Controller
                     $params['first_name'] = $get->first_name;
                     $params['last_name'] = $get->last_name;
                     $params["user_id"] = $uid;
-                    $interestedUser = UserWebinarInterest::findOne(['webinar_enc_id'=>$wid, 'created_by' => $uid]);
-                    if($interestedUser){
+                    $interestedUser = UserWebinarInterest::findOne(['webinar_enc_id' => $wid, 'created_by' => $uid]);
+                    if ($interestedUser) {
                         $interestedUser->interest_status = 1;
                         $interestedUser->is_deleted = 0;
                         $interestedUser->last_updated_on = date('Y-m-d H:i:s');
@@ -317,7 +333,7 @@ class WebinarsController extends Controller
                     }
                     $interestedUser->save();
                     Yii::$app->notificationEmails->webinarRegistrationEmail($params);
-                    if ($data->webinar_conduct_on==1){
+                    if ($data->webinar_conduct_on == 1) {
                         $params["webinar_zoom_id"] = $data->platform_webinar_id;
                         Yii::$app->notificationEmails->zoomRegisterAccess($params);
                     }
@@ -610,10 +626,10 @@ class WebinarsController extends Controller
             ->groupBy(['a.webinar_enc_id'])
             ->orderBy(['b.start_datetime' => $sortAsc ? SORT_ASC : SORT_DESC])
             ->limit(6);
-            if ($webinar_id != null) {
-                $webinars->andWhere(['not', ['a.webinar_enc_id' => $webinar_id]]);
-            }
-            $webinars = $webinars->asArray()
+        if ($webinar_id != null) {
+            $webinars->andWhere(['not', ['a.webinar_enc_id' => $webinar_id]]);
+        }
+        $webinars = $webinars->asArray()
             ->all();
         return $webinars;
     }
@@ -645,26 +661,30 @@ class WebinarsController extends Controller
             'webinars' => $webinars,
         ]);
     }
-    public function actionWebinarWidgetTemplate($id){
+
+    public function actionWebinarWidgetTemplate($id)
+    {
         $template_name = $id;
         $this->layout = 'widget-layout';
-        return $this->render('template-preview',[
+        return $this->render('template-preview', [
             'template_name' => $template_name
         ]);
 
     }
-    public function actionTemplateView($id){
+
+    public function actionTemplateView($id)
+    {
         $this->layout = 'widget-layout';
         $webinarWidget = WebinarWidgetTemplates::find()
-            ->select(['widget_enc_id','template_name','template_path'])
-            ->where(['webinar_enc_id' => $id,'is_deleted' => 0])
+            ->select(['widget_enc_id', 'template_name', 'template_path'])
+            ->where(['webinar_enc_id' => $id, 'is_deleted' => 0])
             ->asArray()
             ->one();
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $model = Webinar::find()
                 ->alias('z')->distinct()
-                ->select(['z.webinar_enc_id', 'z.name', 'z.description','z.slug',
+                ->select(['z.webinar_enc_id', 'z.name', 'z.description', 'z.slug',
                     'CASE WHEN z.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", z.image_location, "/", z.image) END image',
                     'GROUP_CONCAT(DISTINCT DATE_FORMAT(a.start_datetime, "%d-%M-%y")) date', 'GROUP_CONCAT(DISTINCT DATE_FORMAT(a.start_datetime, "%H:%i %p")) time'
                 ])
@@ -674,14 +694,14 @@ class WebinarsController extends Controller
                         $b->addSelect(['c.webinar_event_enc_id', 'c.speaker_enc_id', 'CONCAT(e.first_name, " ",e.last_name) speaker_name',
                             'CASE WHEN e.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", e.image_location, "/", e.image) END speaker_image',
                             'd1.designation'
-                            ]);
+                        ]);
                         $b->joinWith(['speakerEnc d' => function ($b) {
-                                $b->joinWith(['designationEnc d1' => function($d1){
-                                    $d1->onCondition(['d1.is_deleted' => 0]);
-                                }]);
-                            $b->joinWith(['userEnc e' => function($e){
-                            }],false);
-                        }],false);
+                            $b->joinWith(['designationEnc d1' => function ($d1) {
+                                $d1->onCondition(['d1.is_deleted' => 0]);
+                            }]);
+                            $b->joinWith(['userEnc e' => function ($e) {
+                            }], false);
+                        }], false);
                         $b->onCondition(['c.is_deleted' => 0]);
                     }]);
                     $a->onCondition(['a.is_deleted' => 0]);
@@ -695,7 +715,7 @@ class WebinarsController extends Controller
                 'cards' => $model
             ];
         }
-        return $this->render('template-view',[
+        return $this->render('template-view', [
             'id' => $id,
             'webinarWidget' => $webinarWidget,
             'tempName' => $webinarWidget['template_name']
