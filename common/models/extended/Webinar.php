@@ -179,7 +179,10 @@ class Webinar extends \common\models\Webinar
                 ->count();
 
             $events = WebinarEvents::find()
-                ->select(["DATE_FORMAT(start_datetime, '%Y/%m/%d %H:%i:%s') start_datetime", 'session_enc_id'])
+                ->select(["DATE_FORMAT(start_datetime, '%Y/%m/%d %H:%i:%s') start_datetime",
+                    "DATE_FORMAT(ADDDATE(start_datetime, INTERVAL duration MINUTE), '%Y/%m/%d %h:%i %p') endCalendarEvent",
+                    "DATE_FORMAT(start_datetime, '%Y/%m/%d %h:%i %p') startCalendarEvent",
+                    'session_enc_id'])
                 ->where(['webinar_enc_id' => $webinar_detail['webinar_enc_id'], 'status' => [0, 1]])
                 ->andWhere(['>', "ADDDATE(start_datetime, INTERVAL duration MINUTE)", $currentTime])
                 ->orderBy(['start_datetime' => SORT_ASC])
