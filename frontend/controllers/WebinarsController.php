@@ -557,7 +557,7 @@ class WebinarsController extends Controller
 
     public function actionIndex()
     {
-        $upcomingWebinar = self::showWebinar($status = 'upcoming', '', '', '', $limit = 9);
+        $upcomingWebinar = self::showWebinar($status = 'upcoming', '', true, '', $limit = 9);
         $pastWebinar = self::showWebinar($status = 'past', '', false);
         if (Yii::$app->user->identity->type->user_type == 'Individual') {
             $userIdd = Yii::$app->user->identity->user_enc_id;
