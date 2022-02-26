@@ -6,6 +6,16 @@ use frontend\models\script\ImageScript;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 
+$date = new DateTime($get['created_at']);
+$now = new DateTime();
+$diff = date_diff($now, $date);
+$diff = $date->diff($now)->format("%d");
+
+if($diff > 30){
+    $get['last_date'] = Date('d:m:y', strtotime('+30 days'));
+}
+
+
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
 if (!isset($get['company_logo']) || empty($get['company_logo'])) {
@@ -310,6 +320,7 @@ if (Yii::$app->params->options->showSchema) {
             "title" : "<?= $get['title']; ?>",
             "description" : "<?= str_replace('"', "" ,str_replace("'","",$get['description'])) ?>",
             "datePosted" : "<?= $get['created_at'] ?>",
+            "validThrough" : "<?= $get['last_date'] ?>",
             "employmentType" : "<?= $get['type'] ?>",
             "hiringOrganization" : {
                 "@type" : "Organization",
@@ -321,7 +332,10 @@ if (Yii::$app->params->options->showSchema) {
                 "@type": "Place",
                 "address": {
                     "@type": "PostalAddress",
-                    "addressLocality": "<?= $location ?>"
+                    "addressLocality": "<?= $location ?>",
+                    "addressRegion": "",
+                    "postalCode": "",
+                    "streetAddress": ""
                 }
             }
         }
@@ -329,6 +343,7 @@ if (Yii::$app->params->options->showSchema) {
     </script>
     <?php
 }
+
 ?>
 <script>
     function copyToClipboard() {

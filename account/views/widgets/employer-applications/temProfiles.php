@@ -396,6 +396,9 @@ $script = <<< JS
         $('#hidden_profile').val(p);
         goNext(p);
  })
+ $(document).on('click','input[name="tRadio"]',function(e) {
+   window.location.href = '/account/'+type+'/clone-template?aidk='+$('input[name="tRadio"]:checked').val();
+ })
  function goNext(id) {
     tabs1.hide();
     ajaxFunction(id)

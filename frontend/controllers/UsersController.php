@@ -301,8 +301,6 @@ class UsersController extends Controller
             'available_applications' => $this->getApplications(),
             'pastWebinar' => $pastWebinar,
         ];
-//        print_r($dataProvider);
-//        die();
         if (Yii::$app->user->isGuest) {
             $page = 'guest-view';
         } else {
@@ -498,6 +496,7 @@ class UsersController extends Controller
     public function actionUpdateBasicDetail()
     {
         $basicDetails = new UserProfileBasicEdit();
+
         if ($basicDetails->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             if ($basicDetails->update(Yii::$app->request->post())) {

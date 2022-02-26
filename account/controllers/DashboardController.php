@@ -1510,8 +1510,6 @@ class DashboardController extends Controller
             ->where([ 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
             ->asArray()
             ->one();
-
-
         $ci_complete = 1;
         foreach($companyInfo as $ci){
             if($ci == '' || $ci == null){

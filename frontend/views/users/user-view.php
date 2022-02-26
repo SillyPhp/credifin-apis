@@ -156,7 +156,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                     }
                     if ($user['user_enc_id'] === Yii::$app->user->identity->user_enc_id) {
                         ?>
-<!--                        <a href="javascript:;" class="edit-profile-btn edit-pf">Edit Profile</a>-->
+                        <a href="javascript:;" class="edit-profile-btn edit-btnn" data-id="edit-resume">Upload CV</a>
                         <?php
                         if (!empty($userCv)) { ?>
                             <a href="javascript:;" class="edit-profile-btn download-resume" target="_blank"
@@ -776,6 +776,18 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                             <button type="button" data-name="description" class="btn edit-profile-btn mt10 updatedata">Submit</button>
                         </form>
                     </div>
+                    <div class="edit-resume">
+                        <form class="text-center" id="updateResume">
+                            <div class="field-resume_upload has-success text-left">
+                                <div class="file-upload-wrapper" data-text="Select your file!">
+                                    <input type="hidden" name="resume" value="">
+                                    <input type="file" id="resume_upload" class="resume_upload" data-name="resume" name="resume" aria-invalid="false">
+                                    <p class="help-block help-block-error"></p>
+                                </div>
+                            </div>
+                            <button type="submit" data-name="resume" class="btn edit-profile-btn mt10 updateResume">Submit</button>
+                        </form>
+                    </div>
                     <div class="edit-skills col-md-12">
                         <form class="text-center">
                             <div class="form-group text-left">
@@ -957,7 +969,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         <form onsubmit="return false">
                             <div class="form-group">
                                 <label for="achievements-name" class="label-edit">Achievements</label>
-                                <ul class="tags skill_tag_list">
+                                <ul class="tags">
                                     <?php
                                     if (!empty($achievement)) {
                                         foreach ($achievement as $a) { ?>
@@ -968,7 +980,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     }
                                     ?>
                                     <li class="tagAdd taglist">
-                                        <div class="skill_wrapper">
+                                        <div class="">
                                             <input type="text" id="achievement_input" class="achievement_search input_search text-capitalize
                                                    form-control  form-control-edit" placeholder="Achievements">
                                         </div>
@@ -986,7 +998,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         <form onsubmit="return false">
                             <div class="form-group">
                                 <label for="interest-name" class="label-edit">Interests</label>
-                                <ul class="tags skill_tag_list">
+                                <ul class="tags">
                                     <?php
                                     if (!empty($interests)) {
                                         foreach ($interests as $interest) { ?>
@@ -1022,7 +1034,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                                     'id' => 'pjax_hobby',
                                 ]);
                                 ?>
-                                <ul class="tags skill_tag_list">
+                                <ul class="tags">
                                     <?php
 
                                     if (!empty($hobbies)) {
@@ -1112,6 +1124,62 @@ if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user
 }
 $item_id = '';
 $this->registerCss('
+.file-upload-wrapper {
+    position: relative;
+    width: 330px;
+    height: 50px;
+    margin: 0 auto;
+}
+.file-upload-wrapper:before {
+    content: "Upload Resume";
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-block;
+    height: 48px;
+    background: #fff;
+    color: #555;
+    z-index: 25;
+    font-size: 13px;
+    border: 2px solid #e8ecec;
+    line-height: 45px;
+    padding: 0 15px;
+    pointer-events: none;
+    border-radius: 0 10px 10px 0;
+}
+.file-upload-wrapper input {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 99;
+    height: 60px;
+    margin: 0;
+    padding: 0;
+    display: block;
+    cursor: pointer;
+    width: 100%;
+}
+.file-upload-wrapper:after {
+    content: attr(data-text);
+    font-size: 14px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #fff;
+    padding: 10px 15px;
+    display: block;
+    width: calc(100% - 40px);
+    pointer-events: none;
+    z-index: 20;
+    height: 48px;
+    line-height: 27px;
+    border: 2px solid #e8ecec;
+    color: #999;
+    border-radius: 10px 0px 0px 10px;
+}
 .modal-shadow{
     background-color: rgba(0, 0, 0, 0.55);
 }
@@ -2706,6 +2774,7 @@ function addNewEducation(){
        $('#to_date').val('');
       $('.eduUpdate').attr('data-name', 'add_new_education');
 }
+
 function add_new_edu(data){
     const{institute, degree, field, from_date, to_date} = data;
     
@@ -2801,6 +2870,7 @@ $(document).on('keyup','#search-skill',function(e){
 
 function add_tags(thisObj,tag_class,name,duplicates){
     var duplicates = [];
+    console.log(duplicates);
     $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
         {
          duplicates.push($.trim($(this).val()).toUpperCase());
@@ -3104,6 +3174,59 @@ $(document).on('click','.interest_remove', function(e) {
     });
 });
 
+$(document).on("change", ".file-upload-wrapper input", function(){
+    var file_val = document.getElementById("resume_upload").files[0].name;
+    $(this).parent(".file-upload-wrapper").attr("data-text", file_val );
+    var file_name = $('.file-upload-wrapper').attr('data-text');
+    if(file_name == ""){
+        $('.file-upload-wrapper').attr('data-text', 'No file chosed');
+    }
+});
+
+// $(document).on('click', '.updateResume', function (e){
+//     let btn = e.target;
+//     let fieldName = btn.getAttribute('data-name');
+//     let parentElem = btn.parentElement;
+//     let inputElems = parentElem.querySelectorAll('input');
+//     let file = document.getElementById("resume_upload").files[0]
+//     console.log(file);
+//     var formData = new FormData();
+//     formData.append(fieldName, file);
+//     $.ajax({
+//         url: '/users/update-basic-detail',
+//         method: 'POST',
+//         dataType: 'json',
+//         data: formData,
+//         processData: false,
+//         success: function(response){
+//             console.log(response)
+//         }
+//     })
+// });
+
+$(document).on('submit', '#updateResume', function (e){
+    e.preventDefault();
+    console.log('hello');
+    // let btn = e.target;
+    // let fieldName = btn.getAttribute('data-name');
+    // let parentElem = btn.parentElement;
+    // let inputElems = parentElem.querySelectorAll('input');
+    // let file = document.getElementById("resume_upload").files[0]
+    // console.log(file);
+    var formData = new FormData(this);
+    // formData.append(fieldName, file);
+    $.ajax({
+        url: '/users/update-basic-detail',
+        method: 'POST',
+        data: formData,
+        contentType: false,
+     cache:false,
+     processData: false,
+        success: function(response){
+            console.log(response)
+        }
+    })
+});
 sendData = (data, fieldName) => {
     console.log(data);
     $.ajax({

@@ -157,7 +157,7 @@ $this->params['seo_tags'] = [
                                 ?>
                                 <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-10 col-xs-offset-1">
                                     <div class="video-container">
-                                        <a href="/blog/<?= $related['slug'] ?>">
+                                        <a href="<?= ($related['is_crawled'] == 0)? Url::to("/blog/c/". $related['slug']): Url::to("/blog/". $related['slug']) ?>">
                                             <div class="video-icon">
                                                 <img src="<?= $image ?>">
                                             </div>

@@ -193,7 +193,12 @@ $industries = json_encode($industries)
                             <?php
                                 }
                             ?>
-                            <div class="row">
+                            <div class="row linkDisplay">
+                                <div class="col-md-12">
+                                    <a href="/<?=$companyInfo['slug']?>" class="profileBtn">View Profile</a>
+                                </div>
+                            </div>
+                            <div class="row acBtns">
                                 <div class="col-md-12">
                                     <button type="button" onclick="showPreviousQues()" class="prevBtn">Previous</button>
                                     <button type="button" onclick="showNextQues()" class="saveBtn">Save</button>
@@ -233,6 +238,9 @@ $this->registerCss('
 .disabledBtn{
     cursor: not-allowed; 
     pointer-events: none;
+}
+.linkDisplay{
+    display: none;
 }
 #cropLogoPop{
     z-index:99999
@@ -346,7 +354,7 @@ $this->registerCss('
     border: 2px solid #e8ecec;
 }
 
-.saveBtn, .skipBtn, .prevBtn{
+.saveBtn, .skipBtn, .prevBtn, .profileBtn{
     background: #00a0e3;
     padding: 10px 15px;
     border: 1px solid #00a0e3;
@@ -354,6 +362,11 @@ $this->registerCss('
     border-radius: 4px;
     margin-top: 20px;
     color: #fff
+}
+.profileBtn:hover{
+    color: #00a0e3;
+    background: #fff;
+        
 }
 .skipBtn, .prevBtn{
     background: transparent;
@@ -778,11 +791,13 @@ showNextQues = () =>{
             let errorMsg = inputParent.querySelector('.errorMsg');
             let field_data_name = inputVal[i].getAttribute('data-name');
             if(inputVal[i].value != '' || field_data_name == 'industry_enc_id'){
-                console.log(inputVal[i], 'inputVal[i]');
                 if(field_data_name == 'industry_enc_id'){
                     let str = $('#industry').attr('data-id');
                     valObj = str;
                 }else{
+                    if(linkValidations(field_data_name, inputVal[i].value, errorMsg) == false){
+                        return false;
+                    }
                     let str = inputVal[i].value
                     valObj = str;
                 }                
@@ -791,12 +806,46 @@ showNextQues = () =>{
                 val['pk'] = field_data_name; 
             }else{
                 errorMsg.classList.add('showError');
-                errorMsg.innerHTML = "This field can not Be empty";
+                errorMsg.innerHTML = "This field cannot be empty";
                 return false
             }
         }
        sendData(disShow, toActive, val);
      }
+}
+function linkValidations(field_data_name, val, errorMsg){
+    let linkPattern = null;
+    switch (field_data_name){
+        case 'website':
+            linkPattern =  /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+            break;
+        
+        case 'facebook':
+            linkPattern = /(?:https?:\/\/)?(?:www\.)?(?:facebook|fb|m\.facebook)\.(?:com|me)\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-\.]+)(?:\/)?/i;
+            break;
+        
+        case 'twitter':
+            linkPattern = /^(?:https?:\/\/)?(?:www\.)?twitter\.com\/(#!\/)?[a-zA-Z0-9_]+$/i;
+            break;
+            
+        case 'linkedin':
+            // linkPattern = /(https?)?:?(\/\/)?(([w]{3}||\w\w)\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+            linkPattern = /(ftp|http|https):\/\/?((www|\w\w)\.)?linkedin.com(\w+:{0,1}\w*@)?(\S+)(:([0-9])+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+            break;
+      
+        case 'instagram':
+            linkPattern = /(?:(?:http|https):\/\/)?(?:www.)?(?:instagram.com|instagr.am|instagr.com)\/(\w+)/igm;
+            break;
+    }
+    
+    if(!linkPattern.test(val)){
+        errorMsg.classList.add('showError');
+        errorMsg.innerHTML = "Please enter a valid "+field_data_name+" URL";
+        return false
+    }else{
+        errorMsg.classList.remove('showError');
+        errorMsg.innerHTML = "";
+    }
 }
 function sendData(disShow, toActive, val){
     $.ajax({
@@ -867,25 +916,26 @@ skipToNextQues = () => {
     }
     let lastIndex = fieldsArr.length - 1;
     let disShow = cpForm.querySelector('.disShow');
-    console.log(disShow, 'disShow')
     disShow.classList.add('showField');
     prevBtn.classList.remove('disabledBtn');
     let indexOfDisShow = fieldsArr.indexOf(disShow);
-    console.log(indexOfDisShow, 'indexOfDisShow');
     let nxtIndex = (indexOfDisShow + 1) % fieldsArr.length;
     
-    if(nxtIndex == lastIndex){
-       window.location.href='/'+slug;
-       skipBtn.classList.add('disabledBtn');
-    }
     let toActive = fieldsArr[nxtIndex]; 
     if(disShow){
         disShow.classList.remove('disShow')
     }
     toActive.classList.add('disShow');
+    if(nxtIndex == 0){
+        document.querySelector('.linkDisplay').style.display = 'block';
+        document.querySelector('.acBtns').style.display = 'none';
+        toActive.classList.remove('disShow');
+        skipBtn.classList.add('disabledBtn');
+    }else {
+        document.querySelector('.linkDisplay').style.display = 'none';
+    }
 }
 $(".tg-fileinput").change(function() {
-    console.log('hello');
     readURL(this);
 });
 let croppieContainer = document.querySelector('.croppie-container');

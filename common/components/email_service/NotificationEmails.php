@@ -312,7 +312,7 @@ class NotificationEmails extends Component
             CURLOPT_POST => 1,
             CURLOPT_POSTFIELDS => $requestBody,
             CURLOPT_HTTPHEADER => array(
-                "authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6ImtWdk05VXp3UWNtZFVXS3hudFZiekEiLCJleHAiOjE2MzQ5MzAxNDMsImlhdCI6MTYzNDMyNTM0NH0.zJI1ZjK5mDeAsHAlGH3WgDhxjdUxQAKBT8iip-iM0Jo",
+                "authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6ImM1TEd2bWJTUmJPTldOSjVYdzU3bnciLCJleHAiOjE2NDYyMTQwNjYsImlhdCI6MTY0NTYwOTI2Nn0.IHlAeb32WM3bRgwGZn-MM05XkGSTEUJDpomP9NF9ikA",
                 "content-type: application/json"
             ),
         ));
@@ -349,7 +349,7 @@ class NotificationEmails extends Component
             CURLOPT_POST => 1,
             CURLOPT_POSTFIELDS => $requestBody,
             CURLOPT_HTTPHEADER => array(
-                "authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6ImtWdk05VXp3UWNtZFVXS3hudFZiekEiLCJleHAiOjE2MzQxNTk0MjQsImlhdCI6MTYzMzU1NDYyNX0._mnivTgCBZOo88NW_KGgqVyR8bwPr4xvrxnA1zEiZOE",
+                "authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6ImM1TEd2bWJTUmJPTldOSjVYdzU3bnciLCJleHAiOjE2NDYyMTQwNjYsImlhdCI6MTY0NTYwOTI2Nn0.IHlAeb32WM3bRgwGZn-MM05XkGSTEUJDpomP9NF9ikA",
                 "content-type: application/json"
             ),
         ));

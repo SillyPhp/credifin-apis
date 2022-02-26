@@ -1,32 +1,45 @@
 <div id="mycarousel" class="carousel slide" data-ride="carousel">
   <!-- Indicators -->
- <!-- <ol class="carousel-indicators">
+ <ol class="carousel-indicators">
    <li data-target="#mycarousel" data-slide-to="0" class="active"></li>
    <li data-target="#mycarousel" data-slide-to="1"></li>
- </ol> -->
+   <li data-target="#mycarousel" data-slide-to="2"></li>
+ </ol>
 
   <!-- Wrapper for slides -->
   <div class="carousel-inner" role="listbox">
     <div class="item active">
+      <?= $this->render('/widgets/webinar-templates/webinar_one_speaker3') ?>
+    </div>
+    <div class="item">
+      <?= $this->render('/widgets/webinar-templates/webinar_one_speaker4') ?>
+    </div>
+    <div class="item">
+      <?= $this->render('/widgets/webinar-templates/webinar_one_speaker2') ?>
     </div>
 
     <!-- more slides here -->
   </div>
 
   <!-- Controls -->
- <!-- <a class="left carousel-control" href="#mycarousel" role="button" data-slide="prev">
+ <a class="left carousel-control" href="#mycarousel" role="button" data-slide="prev">
    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
    <span class="sr-only">Previous</span>
  </a>
  <a class="right carousel-control" href="#mycarousel" role="button" data-slide="next">
    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
    <span class="sr-only">Next</span>
- </a> -->
+ </a>
 </div>
 <?php
 $this->registerCss('
-  #mycarousel{
-    display: none;
+  // #mycarousel{
+  //   display: none;
+  // }
+  .item{
+    margin: 0 !important;
+    text-align: unset !important;
+    color: unset !important;
   }
 .box {
   border: 1px solid grey;
@@ -81,10 +94,26 @@ background-repeat: no-repeat;
   background: none !important;
 }
 
-@media only screen and (max-width: 576px){
+@media only screen and (max-width: 575px){
   #mycarousel {
     height: 650px;
     overflow: hidden;
+  }
+  .item > section {
+    padding: 0 !important; 
+    max-height: 750px;
+    min-height: 750px;
+  }
+}
+@media (min-width:576px) and (max-width: 767px){
+  .item > section {
+    min-height: 750px;
+    max-height: 750px;
+}
+}
+@media (min-width: 768px) and (max-width: 991px){
+  .item > section {
+    min-height: 450px;    
   }
 }
 ');
