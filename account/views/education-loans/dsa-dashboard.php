@@ -10,6 +10,13 @@ $filters = [];
 if (isset($_GET['filter'])) {
     $filters = explode(',', $_GET['filter']);
 }
+
+$httpsAbsoluteHomeUrl = Url::home(true);
+$fullUrl = explode('/', $httpsAbsoluteHomeUrl);
+$baseUrl = $fullUrl[2];
+if (Yii::$app->user->identity->organization->organization_enc_id) {
+$org_id = Yii::$app->user->identity->organization->organization_enc_id;
+}
 ?>
 <div class="row">
     <?php
@@ -147,13 +154,11 @@ if (isset($_GET['filter'])) {
     </div>
     <div class="col-md-3">
         <div class="dsa-box">
-        <h3 class="text-white size-set">Invite DSA <i data-toggle="tooltip"
-                                                                title="This is your personalized invite link which is used to add DSA direct into your account "
-                                                                class="fa fa-question-circle tooltip-text"></i></h3>
-            <p class="link line-clamp">
-                http://aman.eygb.me/account/education-loans/leads
-            </p>
-            <a href="" class="create-btn">Copy Link</a>
+        <h3 class="text-white size-set">Invite DSA
+            <i data-toggle="tooltip"  title="This is your personalized invite link which is used to add DSA direct into your account " class="fa fa-question-circle tooltip-text"></i></h3>
+            <input type="text" class="link line-clamp" id="dsaLink"
+                   value="https://<?= $baseUrl ?>/signup/individual?dsaRefId=<?= $org_id ?> ">
+            <a href="" class="create-btn" onclick="copyToDsaLink()">Copy Link</a>
         </div>
     </div>
     <?php Pjax::end(); ?>
@@ -520,18 +525,24 @@ if (isset($_GET['filter'])) {
 </div>
 <?php
 $this->registerCss('
+#dsaLink{
+    pointer-events: none;
+    border-radius: 5px;
+    padding: 6px;
+}
 .line-clamp {
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;  
     overflow: hidden;
-  }
+}
 .dsa-box {
     background: black;
     padding: 15px;
     text-align: center;
     border-radius: 10px;
-    height: 196px;
+    max-height: 196px;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1477,5 +1488,12 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         document.execCommand("copy");
         toastr.success("", "Copied");
         $('#share_manually').addClass('hidden');
+    }
+
+    function copyToDsaLink(){
+        var copyLink = document.getElementById("dsaLink");
+        copyLink.select();
+        document.execCommand("copy");
+        toastr.success("", "Copied");
     }
 </script>
