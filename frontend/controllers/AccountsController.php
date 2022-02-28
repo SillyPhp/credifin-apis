@@ -158,7 +158,7 @@ class AccountsController extends Controller
 
     }
 
-    public function actionSignup($type, $loan_id_ref = null)
+    public function actionSignup($type, $loan_id_ref = null,$dsaRefId=null)
     {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
@@ -170,6 +170,17 @@ class AccountsController extends Controller
 
         if ($type == 'individual') {
             $model = new IndividualSignUpForm();
+            if (!empty($dsaRefId)) {
+                $dsaRefExist = IndividualSignUpForm::DsaOrgExist($dsaRefId);
+                if ($dsaRefExist) {
+                    $cookies = Yii::$app->response->cookies;
+                    $cookies->add(new \yii\web\Cookie([
+                        'name' => 'dsaRefId',
+                        'value' => $dsaRefId,
+                    ]));
+                }
+                $model->_dsaRefID = $dsaRefId;
+            }
             $loan_ref = LoanApplications::find()->where(['loan_app_enc_id' => $loan_id_ref, 'created_by' => null])->exists();
             if (!empty($loan_id_ref)) {
                 if ($loan_ref) {

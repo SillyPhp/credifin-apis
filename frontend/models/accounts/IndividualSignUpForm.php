@@ -2,7 +2,11 @@
 
 namespace frontend\models\accounts;
 
+use common\models\AssignedSupervisor;
 use common\models\EmailLogs;
+use common\models\Organizations;
+use common\models\SelectedServices;
+use common\models\Services;
 use frontend\models\referral\EducationLoan;
 use Yii;
 use yii\base\Model;
@@ -32,6 +36,7 @@ class IndividualSignUpForm extends Model
     public $user_type;
     public $loan_id_ref;
     public $_flag;
+    public $_dsaRefID;
 
 //    public function behaviors()
 //    {
@@ -52,7 +57,7 @@ class IndividualSignUpForm extends Model
     {
         return [
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password'], 'required'],
-            [['loan_id_ref', 'referer'],'safe'],
+            [['loan_id_ref', 'referer','_dsaRefID'],'safe'],
             ['referer', 'string'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password'], 'trim'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
@@ -178,6 +183,13 @@ class IndividualSignUpForm extends Model
                     EducationLoan::JoinWithLoan($this->loan_id_ref,$usersModel->user_enc_id);
                 }
                 Referral::widget(['user_id' => $usersModel->user_enc_id]);
+                $cookies_request = Yii::$app->request->cookies;
+                $dsaRefId = $cookies_request->get('dsaRefId');
+                if ($dsaRefId):
+                $this->assignedDsaService($usersModel->user_enc_id,$dsaRefId);
+                elseif ($this->_dsaRefID):
+                $this->assignedDsaService($usersModel->user_enc_id,$this->_dsaRefID);
+                endif;
                 $transaction->commit();
                 return true;
             } else {
@@ -187,6 +199,42 @@ class IndividualSignUpForm extends Model
         } catch (Exception $e) {
             $transaction->rollBack();
             return false;
+        }
+    }
+
+    public static function DsaOrgExist($dsaRefId){
+      return  Organizations::find()
+          ->alias('a')
+          ->where(['a.organization_enc_id'=>$dsaRefId])
+          ->joinWith(['selectedServices b'=>function($x){
+              $x->andWhere(['b.is_selected'=>1]);
+              $x->joinWith(['serviceEnc c'=>function($b){
+                  $b->andWhere(['c.name'=>'E-Partners']);
+              }],'INNER JOIN');
+          }],'INNER JOIN')
+          ->exists();
+    }
+
+    public function assignedDsaService($userId,$dsaRefId){
+        $id = Services::findOne(['name'=>'E-Partners'])->service_enc_id;
+        $model = new SelectedServices();
+        $model->selected_service_enc_id = Yii::$app->security->generateRandomString(32);
+        $model->service_enc_id = $id;
+        $model->is_selected = 1;
+        $model->created_by = $userId;
+        $model->created_on = date('Y-m-d H:i:s');
+        if ($model->save()){
+            $assignedSuper = new AssignedSupervisor();
+            $assignedSuper->assigned_enc_id =  Yii::$app->security->generateRandomString(32);
+            $assignedSuper->supervisor_enc_id = Organizations::findOne(['organization_enc_id'=>$dsaRefId])->created_by;
+            $assignedSuper->assigned_user_enc_id = $userId;
+            $assignedSuper->is_supervising = 1;
+            $assignedSuper->supervisor_role = 'Manager';
+            $assignedSuper->created_on = date('Y-m-d H:i:s');
+            $assignedSuper->created_by = $userId;
+            if (!$assignedSuper->save()){
+                return false;
+            }
         }
     }
 

@@ -557,7 +557,7 @@ class WebinarsController extends Controller
 
     public function actionIndex()
     {
-        $upcomingWebinar = self::showWebinar($status = 'upcoming');
+        $upcomingWebinar = self::showWebinar($status = 'upcoming', '', true, '', $limit = 9);
         $pastWebinar = self::showWebinar($status = 'past', '', false);
         if (Yii::$app->user->identity->type->user_type == 'Individual') {
             $userIdd = Yii::$app->user->identity->user_enc_id;
@@ -570,7 +570,7 @@ class WebinarsController extends Controller
             $model->load(Yii::$app->request->post());
             return $model->save($speaker_id);
         }
-
+        
         return $this->render('webinars-landing', [
             'upcomingWebinar' => $upcomingWebinar,
             'pastWebinar' => $pastWebinar,
@@ -579,7 +579,7 @@ class WebinarsController extends Controller
         ]);
     }
 
-    private function showWebinar($status, $userIdd = null, $sortAsc = true, $webinar_id = null)
+    private function showWebinar($status, $userIdd = null, $sortAsc = true, $webinar_id = null, $limit = 6)
     {
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
@@ -626,7 +626,7 @@ class WebinarsController extends Controller
             ->andWhere(['a.is_deleted' => 0])
             ->groupBy(['a.webinar_enc_id'])
             ->orderBy(['b.start_datetime' => $sortAsc ? SORT_ASC : SORT_DESC])
-            ->limit(6);
+            ->limit($limit);
         if ($webinar_id != null) {
             $webinars->andWhere(['not', ['a.webinar_enc_id' => $webinar_id]]);
         }
