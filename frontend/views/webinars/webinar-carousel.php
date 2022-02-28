@@ -3,15 +3,11 @@
  <ol class="carousel-indicators">
    <li data-target="#mycarousel" data-slide-to="0" class="active"></li>
    <li data-target="#mycarousel" data-slide-to="1"></li>
-   <li data-target="#mycarousel" data-slide-to="2"></li>
  </ol>
 
   <!-- Wrapper for slides -->
   <div class="carousel-inner" role="listbox">
     <div class="item active">
-      <?= $this->render('/widgets/webinar-templates/webinar_one_speaker3') ?>
-    </div>
-    <div class="item">
       <?= $this->render('/widgets/webinar-templates/webinar_one_speaker4') ?>
     </div>
     <div class="item">
