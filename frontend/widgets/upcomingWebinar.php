@@ -17,7 +17,7 @@ class upcomingWebinar extends Widget
             ->alias('a')
             ->select(['a.title', 'a.slug', 'a.webinar_enc_id'])
             ->joinWith(['webinarEvents b' => function($b) use($currentTime){
-                $b->andWhere(['>', 'b.start_datetime', $currentTime]);
+                $b->andWhere(['>', 'ADDDATE(b.start_datetime, INTERVAL b.duration MINUTE)', $currentTime]);
             }])
             ->where(['a.is_deleted' => 0])
             ->orderBy(['b.start_datetime' => SORT_ASC])

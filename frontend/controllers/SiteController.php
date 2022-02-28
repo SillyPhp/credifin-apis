@@ -1409,4 +1409,9 @@ class SiteController extends Controller
     public function actionPreferenceTesting(){
         return $this->render('preference-testing');
     }
+
+    public function actionHowToCreateCareerPageLink()
+    {
+        return $this->render('how-to-create-career-page-link');
+    }
 }
