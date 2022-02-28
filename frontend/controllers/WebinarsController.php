@@ -557,7 +557,7 @@ class WebinarsController extends Controller
 
     public function actionIndex()
     {
-        $upcomingWebinar = self::showWebinar($status = 'upcoming', '', '', '', $limit = 9);
+        $upcomingWebinar = self::showWebinar($status = 'upcoming', '', true, '', $limit = 9);
         $pastWebinar = self::showWebinar($status = 'past', '', false);
         if (Yii::$app->user->identity->type->user_type == 'Individual') {
             $userIdd = Yii::$app->user->identity->user_enc_id;
@@ -570,7 +570,7 @@ class WebinarsController extends Controller
             $model->load(Yii::$app->request->post());
             return $model->save($speaker_id);
         }
-        
+
         return $this->render('webinars-landing', [
             'upcomingWebinar' => $upcomingWebinar,
             'pastWebinar' => $pastWebinar,
@@ -594,7 +594,7 @@ class WebinarsController extends Controller
                 $b->distinct();
                 $b->select(['b.start_datetime', 'b.webinar_enc_id', 'b.status', 'b.event_enc_id']);
                 if ($status == 'upcoming' || $status == 'opted') {
-                    $b->andWhere(['>', 'b.start_datetime', $currentTime]);
+                    $b->andWhere(['>', 'ADDDATE(b.start_datetime, INTERVAL b.duration MINUTE)', $currentTime]);
                 } else {
                     $b->andWhere(['<', 'b.start_datetime', $currentTime]);
                 }
@@ -671,6 +671,33 @@ class WebinarsController extends Controller
             'template_name' => $template_name
         ]);
 
+    }
+
+    public function actionList()
+    {
+        return $this->render('list');
+    }
+
+    public function actionGetWebinars()
+    {
+        $webinars = self::showWebinar($status = 'upcoming', '', true, '', $limit = 8);
+        if ($webinars) {
+
+            foreach ($webinars as $key=>$val){
+                $webinars[$key]['isRegistered'] = $this->isRegistered($val['webinar_enc_id']);
+            }
+
+            return json_encode(['status' => 200, 'data' => $webinars]);
+        } else {
+            return json_encode(['status' => 404, 'message' => 'No Data Found']);
+        }
+    }
+
+    private function isRegistered($webinar_id)
+    {
+        return WebinarRegistrations::find()
+            ->where(['webinar_enc_id' => $webinar_id, 'status' => 1, 'created_by' => Yii::$app->user->identity->user_enc_id])
+            ->exists();
     }
 
     public function actionTemplateView($id)

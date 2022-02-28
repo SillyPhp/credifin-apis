@@ -29,23 +29,29 @@ function webDate($webDate)
 ?>
 
 <section class="header-web">
-    <div class="back-shadow"></div>
-    <div class="container-fluid">
-        <div class="row flex-set">
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="header-txt">
-                    <h1>Webinars</h1>
-                    <h2>Introducing <span class="ornge">EmpowerYouth Masterclass - A Webinar Series</span>
-                        Created To Help You Understand And Immerse Yourself In The Latest Career Options.</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="webinar-head-text">                
+                    <h1>WEBINARS</h1>
+                    <p>Introducing EmpowerYouth Masterclass - A Webinar Series Created To Help You Understand And Immerse Yourself In The Latest Career Options.</p>
+                    <a href="#up-webinar" class="view-all-btn">View All</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="webinar-head-img">
+                    <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar-head-img.png'); ?>" alt="">
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+
 <?php
 if ($upcomingWebinar) {
 ?>
-<section class="upcoming-web">
+<section class="upcoming-web" id="up-webinar">
     <div class="container">
         <div class="row">
             <div class="heading-style">Upcoming Webinars</div>
@@ -445,6 +451,74 @@ if ($optedWebinar) {
 <?php
 echo $this->render('/widgets/mustache/speakers-card');
 $this->registerCss("
+html {
+    scroll-behavior: smooth;
+  }
+/*=====WEBINAR HEADER=====*/
+.header-web{
+    min-height: 450px;
+    background: linear-gradient(96.87deg, #0E0624 8.52%, #2F2451 50.75%, #0E0624 92.34%);
+    display: flex;
+    align-items: center;
+}
+.webinar-head-text h1 {
+    font-size: 55px;
+    font-weight: 900;
+    color: #fff;
+    font-family: 'Roboto';
+    line-height: 1;
+}
+.webinar-head-text p {
+    font-size: 16px;
+    font-weight: 800;
+    color: #d5d5d5;
+    line-height: 1.5;
+    max-width: 450px;
+}
+.header-web .row {
+    display: flex;
+    align-items: center;
+}
+.webinar-head-img {
+    width: 301px;
+    display: block;
+    margin: auto;
+}
+header-web {
+    padding-top: 0 !important;
+}
+a.view-all-btn {
+    display: inline-block;
+    border: 2px solid #ef5281;
+    padding: 5px 30px;
+    margin-top: 20px;
+    border-radius: 6px;
+    color: #ef5281;
+    position: relative;
+    z-index: 2;
+    transition: all linear .2s;
+    font-weight: 700;
+}
+a.view-all-btn::before{
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 100%;
+    background: #ef5281;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    transition: all linear .2s;
+}
+a.view-all-btn:hover{
+    color: #fff;
+}
+a.view-all-btn:hover::before{
+    width: 100%;
+    transition: all linear .2s;
+}
+
 .how-it-works .step {
     text-align: center;
     background-color: #fff;
@@ -866,44 +940,6 @@ color: #fff !important;
 	transform: translateY(-3px);
 	transition: all .2s;
 }
-.header-web {
-    background: url(/assets/themes/ey/images/pages/webinar/webinar-landing-bg.png) right top;
-    position: relative;
-    background-repeat: no-repeat;
-    overflow: hidden;
-    min-height: 500px;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-}
-.back-shadow {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 0;
-    z-index: 0;
-    background: linear-gradient(91.87deg, #00A0E3 30.09%, rgba(67, 137, 162, 0.53) 77.58%);
-}
-.header-txt h1 {
-    font-size: 44px;
-    font-family: roboto;
-    font-weight: 700;
-    margin-top: 0px;
-    color: #fff;
-    margin-bottom: 0;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-}
-.header-txt h2 {
-    font-size: 20px;
-    font-family: roboto;
-    margin: 0 0 0 8px;
-    color: #fff;
-    font-weight: 500;
-    text-transform: capitalize;
-}
 .header-img {
     width: 350px;
     margin: auto;
@@ -1251,6 +1287,30 @@ color: #fff !important;
     .header-txt h1{margin-top:40px;}
     .header-txt h2{font-size:18px;}
     .header-img{width:300px;}
+    
+    
+    .webinar-head-img{
+        width: 200px;
+    }
+    .header-web{
+        justify-content: space-between;
+        min-height: 400px;
+    }
+    .webinar-head-text p{
+        font-size: 14px;
+    }
+    .webinar-head-text h1{
+        font-size: 45px;
+    }
+}
+@media only screen and (max-width: 767px){
+    .header-web {
+        padding-top: 80px;
+        display: block;
+    }
+    .header-web .row{
+        display: block;
+    }
 }
 @media only screen and (max-width: 767px) and (min-width: 300px){
     .header-txt h1{
@@ -1271,6 +1331,14 @@ color: #fff !important;
     }
     .back-shadow{
         background: linear-gradient(91.87deg, #00A0E3 30.09%, rgba(67, 137, 162, 0.53) 166.58%);
+    }
+    
+    .webinar-head-img {
+        position: absolute;
+        width: 145px;
+        right: 46px;
+        bottom: -74px;
+        opacity: .2;
     }
 }
 ");
