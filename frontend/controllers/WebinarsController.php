@@ -579,7 +579,7 @@ class WebinarsController extends Controller
         ]);
     }
 
-    private function showWebinar($status, $userIdd = null, $sortAsc = true, $webinar_id = null, $limit = 6)
+    private function showWebinar($status, $userIdd = null, $sortAsc = true, $webinar_id = null, $limit = 6, $page = 1, $price = null)
     {
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
@@ -593,10 +593,12 @@ class WebinarsController extends Controller
             ->joinWith(['webinarEvents b' => function ($b) use ($status, $currentTime) {
                 $b->distinct();
                 $b->select(['b.start_datetime', 'b.webinar_enc_id', 'b.status', 'b.event_enc_id']);
-                if ($status == 'upcoming' || $status == 'opted') {
-                    $b->andWhere(['>', 'ADDDATE(b.start_datetime, INTERVAL b.duration MINUTE)', $currentTime]);
-                } else {
-                    $b->andWhere(['<', 'b.start_datetime', $currentTime]);
+                if ($status != 'all') {
+                    if ($status == 'upcoming' || $status == 'opted') {
+                        $b->andWhere(['>', 'ADDDATE(b.start_datetime, INTERVAL b.duration MINUTE)', $currentTime]);
+                    } else {
+                        $b->andWhere(['<', 'b.start_datetime', $currentTime]);
+                    }
                 }
                 $b->groupBy(['b.webinar_enc_id']);
                 $b->joinWith(['webinarSpeakers d' => function ($d) {
@@ -623,13 +625,25 @@ class WebinarsController extends Controller
                     $c->where(['c.created_by' => $userIdd]);
                 }
             }])
-            ->andWhere(['a.is_deleted' => 0])
-            ->groupBy(['a.webinar_enc_id'])
-            ->orderBy(['b.start_datetime' => $sortAsc ? SORT_ASC : SORT_DESC])
-            ->limit($limit);
+            ->andWhere(['a.is_deleted' => 0]);
+
+        // price filter
+        if ($price != null) {
+            if ($price == 'paid') {
+                $webinars->andWhere(['!=', 'a.price', null]);
+            } elseif ($price == 'free') {
+                $webinars->andWhere(['a.price' => null]);
+            }
+        }
+
         if ($webinar_id != null) {
             $webinars->andWhere(['not', ['a.webinar_enc_id' => $webinar_id]]);
         }
+
+        $webinars->groupBy(['a.webinar_enc_id'])
+            ->orderBy(['b.start_datetime' => $sortAsc ? SORT_ASC : SORT_DESC])
+            ->limit($limit)
+            ->offset(($page - 1) * $limit);
         $webinars = $webinars->asArray()
             ->all();
         return $webinars;
@@ -678,13 +692,16 @@ class WebinarsController extends Controller
         return $this->render('list');
     }
 
-    public function actionGetWebinars()
+    public function actionGetWebinars($status = 'upcoming', $price = null, $limit = 8, $page = 1)
     {
-        $webinars = self::showWebinar($status = 'upcoming', '', true, '', $limit = 8);
+        $webinars = self::showWebinar($status, '', false, '', $limit, $page, $price);
         if ($webinars) {
 
-            foreach ($webinars as $key=>$val){
+            foreach ($webinars as $key => $val) {
                 $webinars[$key]['isRegistered'] = $this->isRegistered($val['webinar_enc_id']);
+                $webinars[$key]['webinarEvents'][0]['start_datetime'] = date('d-M', strtotime($val['webinarEvents'][0]['start_datetime']));
+                $webinars[$key]['price'] = $this->getWebinarPrice($val['price'], $val['gst']);
+                $webinars[$key]['registeredImages'] = $this->getRegisteredUserImages($val['webinarRegistrations']);
             }
 
             return json_encode(['status' => 200, 'data' => $webinars]);
@@ -698,6 +715,34 @@ class WebinarsController extends Controller
         return WebinarRegistrations::find()
             ->where(['webinar_enc_id' => $webinar_id, 'status' => 1, 'created_by' => Yii::$app->user->identity->user_enc_id])
             ->exists();
+    }
+
+    private function getWebinarPrice($price, $gstAmount)
+    {
+        if ($price) {
+            $gstPercent = $gstAmount;
+            if ($price > 0) {
+                $gstAmount = round($gstPercent * ($price / 100), 2);
+            }
+        }
+        $finalPrice = $price + $gstAmount;
+        return ($finalPrice == 0 ? 'Free' : '₹' . $finalPrice);
+    }
+
+    private function getRegisteredUserImages($webinarRegistrations)
+    {
+        $i = 1;
+        $images = [];
+        foreach ($webinarRegistrations as $val) {
+            if ($i == 4) {
+                break;
+            }
+            if ($val['createdBy']['image']) {
+                array_push($images, $val['createdBy']['image']);
+                $i++;
+            }
+        }
+        return $images;
     }
 
     public function actionTemplateView($id)
