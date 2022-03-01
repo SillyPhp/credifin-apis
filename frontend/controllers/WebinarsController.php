@@ -632,8 +632,6 @@ class WebinarsController extends Controller
         }
         $webinars = $webinars->asArray()
             ->all();
-        print_r($webinars);
-        die();
         return $webinars;
     }
 
