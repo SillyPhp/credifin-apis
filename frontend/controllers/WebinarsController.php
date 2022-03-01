@@ -722,4 +722,25 @@ class WebinarsController extends Controller
             'tempName' => $webinarWidget['template_name']
         ]);
     }
+
+    public function actionUpcomingWebinarBox(){
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $currentTime = $dt->format('Y-m-d H:i:s');
+        $upcomingWebinar = Webinar::find()
+            ->alias('a')
+            ->select(['a.title', 'a.slug', 'a.webinar_enc_id'])
+            ->joinWith(['webinarEvents b' => function($b) use($currentTime){
+                $b->andWhere(['>', 'b.start_datetime', $currentTime]);
+            }])
+            ->where(['a.is_deleted' => 0])
+            ->orderBy(['b.start_datetime' => SORT_ASC])
+            ->asArray()
+            ->one();
+
+        return $this->renderAjax('/widgets/webinar-detail-popup', [
+            'upcomingWebinar' => $upcomingWebinar
+        ]);
+    }
 }

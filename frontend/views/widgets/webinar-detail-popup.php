@@ -7,9 +7,9 @@ use yii\helpers\Url;
         <div class="web-popup-main">
             <div class="cross-popup"><i class="fa fa-times"></i></div>
             <h3>Upcoming Webinar</h3>
-            <p class="title-popup">How to start your career in digital marketing in 2022</p>
+            <p class="title-popup"><?= $upcomingWebinar['title'] ?></p>
             <div class="view-detail-popup">
-                <a href="" class="view-btn-popup">View Details</a>
+                <a href="/webinar/<?=$upcomingWebinar['slug']?>" class="view-btn-popup">View Details</a>
             </div>
         </div>
     </section>
