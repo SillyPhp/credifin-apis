@@ -570,7 +570,7 @@ class WebinarsController extends Controller
             $model->load(Yii::$app->request->post());
             return $model->save($speaker_id);
         }
-        
+
         return $this->render('webinars-landing', [
             'upcomingWebinar' => $upcomingWebinar,
             'pastWebinar' => $pastWebinar,
@@ -594,7 +594,7 @@ class WebinarsController extends Controller
                 $b->distinct();
                 $b->select(['b.start_datetime', 'b.webinar_enc_id', 'b.status', 'b.event_enc_id']);
                 if ($status == 'upcoming' || $status == 'opted') {
-                    $b->andWhere(['>', 'b.start_datetime', $currentTime]);
+                    $b->andWhere(['>', 'ADDDATE(b.start_datetime, INTERVAL b.duration MINUTE)', $currentTime]);
                 } else {
                     $b->andWhere(['<', 'b.start_datetime', $currentTime]);
                 }
@@ -632,6 +632,8 @@ class WebinarsController extends Controller
         }
         $webinars = $webinars->asArray()
             ->all();
+        print_r($webinars);
+        die();
         return $webinars;
     }
 
@@ -671,6 +673,33 @@ class WebinarsController extends Controller
             'template_name' => $template_name
         ]);
 
+    }
+
+    public function actionList()
+    {
+        return $this->render('list');
+    }
+
+    public function actionGetWebinars()
+    {
+        $webinars = self::showWebinar($status = 'upcoming', '', true, '', $limit = 8);
+        if ($webinars) {
+
+            foreach ($webinars as $key=>$val){
+                $webinars[$key]['isRegistered'] = $this->isRegistered($val['webinar_enc_id']);
+            }
+
+            return json_encode(['status' => 200, 'data' => $webinars]);
+        } else {
+            return json_encode(['status' => 404, 'message' => 'No Data Found']);
+        }
+    }
+
+    private function isRegistered($webinar_id)
+    {
+        return WebinarRegistrations::find()
+            ->where(['webinar_enc_id' => $webinar_id, 'status' => 1, 'created_by' => Yii::$app->user->identity->user_enc_id])
+            ->exists();
     }
 
     public function actionTemplateView($id)
