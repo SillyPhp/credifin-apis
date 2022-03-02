@@ -1004,6 +1004,9 @@ AppAssets::register($this);
     $this->registerJs("
         let winWidth = screen.width;
         
+        if(winWidth <= 500){
+            showWebinarBox();
+        }
         function showWebinarBox(){
             $.ajax({
                 url: '/webinars/upcoming-webinar-box',
@@ -1013,9 +1016,6 @@ AppAssets::register($this);
                     $('body').append(response);
                 }
             })
-        }
-        if(winWidth <= 500){
-            showWebinarBox();
         }
     ");
     if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
