@@ -537,6 +537,9 @@ $org_slug = Yii::$app->user->identity->organization->slug;
 </div>
 <?php
 $this->registerCss('
+.iti{
+    width: 100%;
+}
 #dsaLink{
     pointer-events: none;
     border-radius: 5px;
@@ -900,11 +903,12 @@ input.checkbox:checked + label:before {
 .box6{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/college.png");}
 .box7{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/g.png");}
 .box-des {
-   background-size: 100% 100%;
-   background-repeat: no-repeat;
-   position: relative;
-   height: 90px;
-   border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    height: 90px;
+    border-radius: 10px;
 }
 .mt{margin-bottom:15px;}
 .box-des img{
