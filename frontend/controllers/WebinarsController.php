@@ -557,7 +557,7 @@ class WebinarsController extends Controller
 
     public function actionIndex()
     {
-        $upcomingWebinar = self::showWebinar($status = 'upcoming', '', true, '', $limit = 9);
+        $upcomingWebinar = self::showWebinar($status = 'upcoming', '', true, '', $limit = 6);
         $pastWebinar = self::showWebinar($status = 'past', '', false);
         if (Yii::$app->user->identity->type->user_type == 'Individual') {
             $userIdd = Yii::$app->user->identity->user_enc_id;
@@ -592,7 +592,7 @@ class WebinarsController extends Controller
                 'GROUP_CONCAT(DISTINCT(CONCAT(f.first_name, " " ,f.last_name)) SEPARATOR ",") speakers'])
             ->joinWith(['webinarEvents b' => function ($b) use ($status, $currentTime) {
                 $b->distinct();
-                $b->select(['b.start_datetime', 'b.webinar_enc_id', 'b.status', 'b.event_enc_id']);
+                $b->select(['b.start_datetime', 'b.duration', 'b.webinar_enc_id', 'b.status', 'b.event_enc_id']);
                 if ($status != 'all') {
                     if ($status == 'upcoming' || $status == 'opted') {
                         $b->andWhere(['>', 'ADDDATE(b.start_datetime, INTERVAL b.duration MINUTE)', $currentTime]);
@@ -632,7 +632,7 @@ class WebinarsController extends Controller
             if ($price == 'paid') {
                 $webinars->andWhere(['!=', 'a.price', null]);
             } elseif ($price == 'free') {
-                $webinars->andWhere(['a.price' => null]);
+                $webinars->andWhere(['a.price' => [null,0]]);
             }
         }
 
@@ -694,7 +694,12 @@ class WebinarsController extends Controller
 
     public function actionGetWebinars($status = 'upcoming', $price = null, $limit = 8, $page = 1)
     {
-        $webinars = self::showWebinar($status, '', false, '', $limit, $page, $price);
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $currentTime = $dt->format('Y-m-d H:i:s');
+
+        $webinars = self::showWebinar($status, '', true, '', $limit, $page, $price);
         if ($webinars) {
 
             foreach ($webinars as $key => $val) {
@@ -702,6 +707,8 @@ class WebinarsController extends Controller
                 $webinars[$key]['webinarEvents'][0]['start_datetime'] = date('d-M', strtotime($val['webinarEvents'][0]['start_datetime']));
                 $webinars[$key]['price'] = $this->getWebinarPrice($val['price'], $val['gst']);
                 $webinars[$key]['registeredImages'] = $this->getRegisteredUserImages($val['webinarRegistrations']);
+                $webinar_end_datetime = date('Y-m-d H:i:s','+'.strtotime($val['webinarEvents'][0]['duration'].' minutes', strtotime($val['webinarEvents'][0]['start_datetime'])));
+                $webinars[$key]['is_expired'] = $webinar_end_datetime < $currentTime;
             }
 
             return json_encode(['status' => 200, 'data' => $webinars]);
@@ -795,7 +802,8 @@ class WebinarsController extends Controller
         ]);
     }
 
-    public function actionUpcomingWebinarBox(){
+    public function actionUpcomingWebinarBox()
+    {
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
         $dt->setTimezone($tz);
@@ -803,7 +811,7 @@ class WebinarsController extends Controller
         $upcomingWebinar = Webinar::find()
             ->alias('a')
             ->select(['a.title', 'a.slug', 'a.webinar_enc_id'])
-            ->joinWith(['webinarEvents b' => function($b) use($currentTime){
+            ->joinWith(['webinarEvents b' => function ($b) use ($currentTime) {
                 $b->andWhere(['>', 'b.start_datetime', $currentTime]);
             }])
             ->where(['a.is_deleted' => 0])

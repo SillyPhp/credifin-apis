@@ -116,9 +116,9 @@ html {
     top: 80px;
 }
 .set-height-s {
-    height: 80vh;
+    height: 255px;
     overflow: hidden;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     padding:20px 10px;
     border-radius: 4px;
     position:relative;
@@ -277,7 +277,7 @@ h3.side-top-heading {
 	overflow: hidden;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 	background-color:#fff;
-	margin-bottom:20px;
+	margin-bottom:30px;
     min-height: 390px;
 }
 .web-img {
@@ -405,10 +405,12 @@ web-card .price{
 	font-size: 14px;
 	border-radius: 5px;
 	cursor: pointer;
-	padding: 6px 10px;
+	padding: 3px 10px;
 	background-color: #00a0e3;
 	font-family:roboto;
 	font-weight:500;
+	min-width:100px;
+	display:inline-block;
 }
 .icon-drib {
   margin-right: 5px;
@@ -431,6 +433,12 @@ web-card .price{
   }
 }
 /* card css ends here */
+@media screen and (max-width: 992px) {
+.pos-stick{
+    position:relative;
+    top:auto;
+    }
+}
 ');
 $script = <<<JS
 var ps = new PerfectScrollbar('.filters-bar');
@@ -498,6 +506,7 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
     }
 
     async function getAllWebinars() {
+        window.scrollTo(0,0);
         let response = await fetch(`/webinar/get-webinars?status=${data['status']}&price=${data['payment']}&limit=${data['limit']}&page=${data['page']}`, {
             method: 'GET',
         });
@@ -559,17 +568,22 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
                                 <div class="web-des">${webinar['description']}</div>
                             </div>
                             <div class="reg-btn-count">
-                                <div class="register-count">
-                                    <div class="reg-img">
+                                <div class="register-count">${ webinar['is_expired'] ? ' ' :
+                                    `<div class="reg-img">
                                         ${webinar['registeredImages'] ? webinar['registeredImages'].map((reg,index)=>{
                                                 return `<span class="reg${index} reg">
                                                             <img src="${reg}">
                                                         </span>`
                                         }).join('') : ''}
                                     </div>
-                                    <span class="cont"> ${webinar['webinarRegistrations'].length} Registered</span>
+                                    <span class="cont"> ${webinar['webinarRegistrations'].length} Registered</span>`
+                                }
                                 </div>
-                                ${webinar['isRegistered'] ? `<div class="register-btns">
+                                ${ webinar['is_expired'] ? `
+                                    <div class="register-btns">
+                                        <a href="javascript:;" class="btn-drib">Expired</a>
+                                    </div>
+                                ` : webinar['isRegistered']  ? `<div class="register-btns">
                                         <a href="/webinar/${webinar['slug']}" class="btn-drib">
                                             Registered</a>
                                     </div>` : `<div class="register-btns">
