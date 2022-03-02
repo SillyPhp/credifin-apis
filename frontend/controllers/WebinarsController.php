@@ -819,8 +819,10 @@ class WebinarsController extends Controller
             ->asArray()
             ->one();
 
-        return $this->renderAjax('/widgets/webinar-detail-popup', [
-            'upcomingWebinar' => $upcomingWebinar
-        ]);
+        if($upcomingWebinar){
+            return $this->renderAjax('/widgets/webinar-detail-popup', [
+                'upcomingWebinar' => $upcomingWebinar
+            ]);
+        }
     }
 }
