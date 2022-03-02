@@ -666,7 +666,7 @@ $this->registerCss('
     min-height: 370px;
     display: flex;
     justify-content: flex-start;
-    align-items: flex-end;
+    align-items: center;
     color: #000;
 }
 .ca-comming-soon-icon{
@@ -809,14 +809,19 @@ $this->registerCss('
     .card{
         margin: 0 auto;
     }
+    .career-advice-header {
+        background-position: -200px 0;
+    }
 } 
-@media only screen and (max-width: 992px){
+@media only screen and (max-width: 991px){
     .career-advice-header{
-        min-height:300px;
+        min-height:450px;
+        background-position: -170px 0;
     }
     .career-txt h1{
     font-size: 35px;
     min-height: 260px;
+    align-items: flex-end;
     }
 }
 .card:hover::before{
@@ -959,7 +964,7 @@ $this->registerCss('
 @media only screen and (max-width: 600px) and (min-width:320px){
 .career-txt h1 {
     font-size: 30px;
-    min-height:190px;
+    min-height:240px;
     }
 }
 @media only screen and (max-width: 1200px) and (min-width: 992px){
@@ -1030,6 +1035,11 @@ a.button:hover span:after {
         padding-left: 26px;
     }
 }
+@media only screen and (min-width: 768px){
+    .view-btn{
+        bottom: 5px;
+    }
+}
 @media screen and (max-width: 768px){   
 .tp-heading{
     margin: 10px 0;
@@ -1064,6 +1074,9 @@ a.button:hover span:after {
     display:block;
 }
 @media screen and (max-width: 768px){
+    .col-item{
+        margin-bottom: 10px;
+    }
     .imgmain-div{
         width: 70%;
         height: 275px;

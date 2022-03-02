@@ -89,7 +89,7 @@ $this->registerCss('
       
       @media only screen and (max-width: 767px){
           .webinar-heading{
-              font-size: 19px;
+              font-size: 16px;
           }
         .upcoming-webinar .row{
           display: block;
