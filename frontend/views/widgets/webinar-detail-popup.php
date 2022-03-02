@@ -7,10 +7,9 @@ use yii\helpers\Url;
         <div class="web-popup-main">
             <div class="cross-popup"><i class="fa fa-times"></i></div>
             <h3>Upcoming Webinar</h3>
-            <p class="title-popup"><?= $upcomingWebinar['title'] ?></p>
             <div class="webinar-det">
                 <div class="webinar-title">
-                    <h2>How to start your career your as data analyst.</h2>
+                    <h2><?= $upcomingWebinar['title'] ?>.</h2>
                 </div>
                 <div class="view-detail-popup">
                     <a href="/webinar/<?=$upcomingWebinar['slug']?>" class="view-btn-popup">View Details</a>
@@ -23,7 +22,7 @@ $this->registerCss('
 .move-popup{
     position:fixed;
     z-index:999;
-    bottom: 0;
+    bottom: -2px;
     width: 100%;
 }
 .web-popup-main {
