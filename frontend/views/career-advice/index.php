@@ -1035,6 +1035,11 @@ a.button:hover span:after {
         padding-left: 26px;
     }
 }
+@media only screen and (min-width: 768px){
+    .view-btn{
+        bottom: 5px;
+    }
+}
 @media screen and (max-width: 768px){   
 .tp-heading{
     margin: 10px 0;
