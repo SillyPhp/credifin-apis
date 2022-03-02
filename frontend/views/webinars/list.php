@@ -341,6 +341,10 @@ h3.side-top-heading {
 	font-family: roboto;
 	color: #a49f9f;
 	font-weight: 500;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 .web-des {
 	font-family: roboto;
