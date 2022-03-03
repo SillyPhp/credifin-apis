@@ -226,7 +226,9 @@ class IndividualSignUpForm extends Model
         if ($model->save()){
            $this->assignedSupervisor($userId,$dsaRefId);
            $this->assignedSupervisor($userId,$dsaRefId,'Lead Source');
-            unset(Yii::$app->request->cookies['dsaRefId']);
+            $cookies = Yii::$app->response->cookies;
+            $cookies->remove('dsaRefId');
+            unset($cookies['dsaRefId']);
         }
     }
 
