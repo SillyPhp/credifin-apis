@@ -224,17 +224,23 @@ class IndividualSignUpForm extends Model
         $model->created_by = $userId;
         $model->created_on = date('Y-m-d H:i:s');
         if ($model->save()){
-            $assignedSuper = new AssignedSupervisor();
-            $assignedSuper->assigned_enc_id =  Yii::$app->security->generateRandomString(32);
-            $assignedSuper->supervisor_enc_id = Organizations::findOne(['organization_enc_id'=>$dsaRefId])->created_by;
-            $assignedSuper->assigned_user_enc_id = $userId;
-            $assignedSuper->is_supervising = 1;
-            $assignedSuper->supervisor_role = 'Manager';
-            $assignedSuper->created_on = date('Y-m-d H:i:s');
-            $assignedSuper->created_by = $userId;
-            if (!$assignedSuper->save()){
-                return false;
-            }
+           $this->assignedSupervisor($userId,$dsaRefId);
+           $this->assignedSupervisor($userId,$dsaRefId,'Lead Source');
+            unset(Yii::$app->request->cookies['dsaRefId']);
+        }
+    }
+
+    public function assignedSupervisor($userId,$dsaRefId,$role='Manager'){
+        $assignedSuper = new AssignedSupervisor();
+        $assignedSuper->assigned_enc_id =  Yii::$app->security->generateRandomString(32);
+        $assignedSuper->supervisor_enc_id = Organizations::findOne(['organization_enc_id'=>$dsaRefId])->created_by;
+        $assignedSuper->assigned_user_enc_id = $userId;
+        $assignedSuper->is_supervising = 1;
+        $assignedSuper->supervisor_role = $role;
+        $assignedSuper->created_on = date('Y-m-d H:i:s');
+        $assignedSuper->created_by = $userId;
+        if (!$assignedSuper->save()){
+            return false;
         }
     }
 
