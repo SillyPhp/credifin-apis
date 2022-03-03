@@ -35,7 +35,7 @@ function webDate($webDate)
                 <div class="webinar-head-text">                
                     <h1>WEBINARS</h1>
                     <p>Introducing EmpowerYouth Masterclass - A Webinar Series Created To Help You Understand And Immerse Yourself In The Latest Career Options.</p>
-                    <a href="#up-webinar" class="view-all-btn">View All</a>
+                    <a href="/webinars/list" target="_blank" class="view-all-btn">View All</a>
                 </div>
             </div>
             <div class="col-md-6">
