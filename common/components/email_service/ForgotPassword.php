@@ -69,11 +69,11 @@ class ForgotPassword extends Component
 
         UserVerificationTokens::updateAll([
             'last_updated_on' => date('Y-m-d H:i:s'),
-            'last_updated_by' => $data['user_id'],
+            'last_updated_by' => $data['id'],
             'is_deleted' => 1
         ], ['and',
             ['verification_type' => 1],
-            ['created_by' => $data['user_id']],
+            ['created_by' => $data['id']],
             ['status' => 'Pending'],
             ['is_deleted' => 0]
         ]);
