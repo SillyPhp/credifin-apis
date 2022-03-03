@@ -163,6 +163,10 @@ class SiteController extends Controller
             if ($credentialsSetup->save()) {
                 $session = Yii::$app->session;
                 $o = $session->get('current_url');
+                $dsaRefExist = IndividualSignUpForm::DsaUserExist(Yii::$app->user->identity->user_enc_id);
+                if ($dsaRefExist):
+                    return $this->redirect('/account/education-loans/leads');
+                    endif;
                 if ($o):
                     return $this->redirect($o);
                 else :
