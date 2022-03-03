@@ -223,7 +223,7 @@ class WebinarsController extends Controller
                 'nextEvent' => $nextEvent,
                 'webinar_link' => $user_link,
                 'webinarRewards' => $webinarRewards,
-                'upcoming' => self::showWebinar($status = 'upcoming', $webinar_id = $webinar['webinar_enc_id'])
+                'upcoming' => self::showWebinar($status = 'upcoming', $webinar_id = $webinar['webinar_enc_id'])['webinars']
             ]);
         } else {
             return $this->redirect('/');
@@ -558,10 +558,12 @@ class WebinarsController extends Controller
     public function actionIndex()
     {
         $upcomingWebinar = self::showWebinar($status = 'upcoming', '', true, '', $limit = 6);
-        $pastWebinar = self::showWebinar($status = 'past', '', false);
+        $count = $upcomingWebinar['count'];
+        $upcomingWebinar = $upcomingWebinar['webinars'];
+        $pastWebinar = self::showWebinar($status = 'past', '', false)['webinars'];
         if (Yii::$app->user->identity->type->user_type == 'Individual') {
             $userIdd = Yii::$app->user->identity->user_enc_id;
-            $optedWebinar = self::showWebinar($status = 'opted', $userIdd);
+            $optedWebinar = self::showWebinar($status = 'opted', $userIdd)['webinars'];
         }
         $model = new WebinarRequestForm();
         if (Yii::$app->request->isPost) {
@@ -575,7 +577,8 @@ class WebinarsController extends Controller
             'upcomingWebinar' => $upcomingWebinar,
             'pastWebinar' => $pastWebinar,
             'optedWebinar' => $optedWebinar,
-            'model' => $model
+            'model' => $model,
+            'webinars_count' => $count
         ]);
     }
 
@@ -640,13 +643,16 @@ class WebinarsController extends Controller
             $webinars->andWhere(['not', ['a.webinar_enc_id' => $webinar_id]]);
         }
 
-        $webinars->groupBy(['a.webinar_enc_id'])
-            ->orderBy(['b.start_datetime' => $sortAsc ? SORT_ASC : SORT_DESC])
+        $webinars->groupBy(['a.webinar_enc_id']);
+
+        $count = $webinars->count();
+
+        $webinars->orderBy(['b.start_datetime' => $sortAsc ? SORT_ASC : SORT_DESC])
             ->limit($limit)
             ->offset(($page - 1) * $limit);
         $webinars = $webinars->asArray()
             ->all();
-        return $webinars;
+        return ['webinars' => $webinars, 'count' => $count];
     }
 
     public function actionSearchSpeakers($q = null)
@@ -699,7 +705,7 @@ class WebinarsController extends Controller
         $dt->setTimezone($tz);
         $currentTime = $dt->format('Y-m-d H:i:s');
 
-        $webinars = self::showWebinar($status, '', true, '', $limit, $page, $price);
+        $webinars = self::showWebinar($status, '', true, '', $limit, $page, $price)['webinars'];
         if ($webinars) {
 
             foreach ($webinars as $key => $val) {
