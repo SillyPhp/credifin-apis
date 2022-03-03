@@ -34,7 +34,7 @@ function webDate($webDate)
             <div class="col-md-6">
                 <div class="webinar-head-text">                
                     <h1>WEBINARS</h1>
-                    <p>Introducing EmpowerYouth Masterclass - A Webinar Series Created To Help You Understand And Immerse Yourself In The Latest Career Options.</p>
+                    <p>Introducing Empower Youth Masterclass - A Webinar Series Created To Help You Understand And Immerse Yourself In The Latest Career Options.</p>
                     <a href="/webinars/list" target="_blank" class="view-all-btn">View All</a>
                 </div>
             </div>
@@ -495,13 +495,15 @@ html {
     color: #fff;
     font-family: 'Roboto';
     line-height: 1;
+    margin-bottom: 0;
 }
 .webinar-head-text p {
-    font-size: 16px;
-    font-weight: 800;
-    color: #d5d5d5;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
     line-height: 1.5;
-    max-width: 450px;
+    max-width: 420px;
+    letter-spacing: 1px;
 }
 .header-web .row {
     display: flex;
@@ -1299,6 +1301,14 @@ color: #fff !important;
   90% {
     transform: translate3d(0, -2px, 0);
   }
+}
+@media only screen and (max-width: 1024px){
+    .reg2.reg, .reg3.reg {
+        margin-left: -25px;
+    }
+    .btn-drib {
+        font-size: 12px;
+    }
 }
 @media only screen and (min-width: 992px){
     .webinar-on-device .icon{
