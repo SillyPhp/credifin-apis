@@ -15,48 +15,50 @@ use frontend\widgets\upcomingWebinar;
 AppAssets::register($this);
 ?>
 <?php $this->beginPage(); ?>
-<!DOCTYPE html>
-<html lang="<?= Yii::$app->language; ?>">
+    <!DOCTYPE html>
+    <html lang="<?= Yii::$app->language; ?>">
 
-<head>
-    <meta charset="<?= Yii::$app->charset; ?>">
-    <?= Html::csrfMetaTags(); ?>
-    <title><?= Html::encode((!empty($this->title)) ? Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name : Yii::$app->params->site_name); ?></title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
-    <?php if (Yii::$app->params->options->crawl) { ?>
-        <meta name="robots" content="index" />
-    <?php } else { ?>
-        <meta name="robots" content="noindex,nofollow" />
-        <meta name="googlebot" content="noindex,nofollow">
-    <?php }
-    if (isset($this->params['seo_tags']) && !empty($this->params['seo_tags'])) {
-        foreach ($this->params['seo_tags']['rel'] as $key => $value) {
-            $this->registerLinkTag([
-                'rel' => $key,
-                'href' => Url::to($value,'https'),
-            ]);
+    <head>
+        <meta charset="<?= Yii::$app->charset; ?>">
+        <?= Html::csrfMetaTags(); ?>
+        <title><?= Html::encode((!empty($this->title)) ? Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name : Yii::$app->params->site_name); ?></title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <?php if (Yii::$app->user->isGuest): ?>
+            <script src="https://accounts.google.com/gsi/client" async defer></script>
+        <?php endif; ?>
+        <link rel="icon" href="<?= Url::to('/favicon.ico'); ?>">
+        <?php if (Yii::$app->params->options->crawl) { ?>
+            <meta name="robots" content="index"/>
+        <?php } else { ?>
+            <meta name="robots" content="noindex,nofollow"/>
+            <meta name="googlebot" content="noindex,nofollow">
+        <?php }
+        if (isset($this->params['seo_tags']) && !empty($this->params['seo_tags'])) {
+            foreach ($this->params['seo_tags']['rel'] as $key => $value) {
+                $this->registerLinkTag([
+                    'rel' => $key,
+                    'href' => Url::to($value, 'https'),
+                ]);
+            }
+            foreach ($this->params['seo_tags']['name'] as $key => $value) {
+                $this->registerMetaTag([
+                    'name' => $key,
+                    'content' => $value,
+                ]);
+            }
+            foreach ($this->params['seo_tags']['property'] as $key => $value) {
+                $this->registerMetaTag([
+                    'property' => $key,
+                    'content' => $value,
+                ]);
+            }
+            if (!isset($this->params['header_dark'])) {
+                $this->params['header_dark'] = false;
+            }
         }
-        foreach ($this->params['seo_tags']['name'] as $key => $value) {
-            $this->registerMetaTag([
-                'name' => $key,
-                'content' => $value,
-            ]);
-        }
-        foreach ($this->params['seo_tags']['property'] as $key => $value) {
-            $this->registerMetaTag([
-                'property' => $key,
-                'content' => $value,
-            ]);
-        }
-        if (!isset($this->params['header_dark'])) {
-            $this->params['header_dark'] = false;
-        }
-    }
-    ?>
-    <?php $this->head(); ?>
-    <script type="application/ld+json">
+        ?>
+        <?php $this->head(); ?>
+        <script type="application/ld+json">
         {
             "@context": "https://schema.org",
             "@type": "WebSite",
@@ -68,20 +70,21 @@ AppAssets::register($this);
                 "query-input": "required name=search_term_string"
             }
         }
-    </script>
-</head>
 
-<body class="fullwidth-page">
+        </script>
+    </head>
+
+    <body class="fullwidth-page">
     <?php $this->beginBody(); ?>
     <div class="body-overlay"></div>
     <div id="wrapper" class="clearfix">
 
         <header id="header" class="header">
             <?= (!$this->params['header_dark']) ? '<div id="main-header" class="header-nav navbar-fixed-top header-dark navbar-white navbar-transparent navbar-sticky-animated animated-active">' : ''; ?>
-            <div id="header-main" class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
-               
-            
-            
+            <div id="header-main"
+                 class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
+
+
                 <?php
                 echo upcomingWebinar::widget();
                 ?>
@@ -90,17 +93,22 @@ AppAssets::register($this);
                 <?php
                 //            if (Yii::$app->user->isGuest && empty($this->params['sub_header'])) {
                 if (Yii::$app->user->isGuest) {
-                ?>
+                    ?>
                     <div class="secondary-top-header container-fluid">
                         <div class="secondary-top-header-left">
                             <span>
-                                <i class="far fa-check-circle"></i> Post quick <a data-link="/jobs/quick-job" data-target="#sign-up-benefit"><strong>Job</strong></a>or<a data-link="/internships/quick-internship" data-target="#sign-up-benefit"><strong>Internship</strong></a>
+                                <i class="far fa-check-circle"></i> Post quick <a data-link="/jobs/quick-job"
+                                                                                  data-target="#sign-up-benefit"><strong>Job</strong></a>or<a
+                                        data-link="/internships/quick-internship"
+                                        data-target="#sign-up-benefit"><strong>Internship</strong></a>
                             </span>
                             <span>
-                                <i class="fab fa-twitter"></i> Post <a data-link="/tweets/job/create" data-target="#sign-up-benefit"><strong>Job</strong></a>or<a data-link="/tweets/internship/create" data-target="#sign-up-benefit"><strong>Internship Tweet</strong></a>
+                                <i class="fab fa-twitter"></i> Post <a data-link="/tweets/job/create"
+                                                                       data-target="#sign-up-benefit"><strong>Job</strong></a>or<a
+                                        data-link="/tweets/internship/create" data-target="#sign-up-benefit"><strong>Internship Tweet</strong></a>
                             </span>
                         </div>
-                        
+
                         <div class="sign-up-modal" id="myModal">
                             <?= $this->render('/site/sign-up-modal') ?>
                         </div>
@@ -111,7 +119,7 @@ AppAssets::register($this);
                             <a href="/signup/individual">Signup as Candidate</a>
                         </div>
                     </div>
-                <?php
+                    <?php
                 }
                 ?>
                 <div class="ey-head-main">
@@ -120,12 +128,14 @@ AppAssets::register($this);
                             <div class="ey-header-main">
                                 <div class="ey-header-logo">
                                     <a class="ey-logo" href="/">
-                                        <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
+                                        <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>"
+                                             src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
                                         <?php
                                         if (!$this->params['header_dark']) {
-                                        ?>
-                                            <img id="logo-white" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo_white.svg'); ?>">
-                                        <?php
+                                            ?>
+                                            <img id="logo-white" alt="<?= Yii::$app->params->site_name; ?>"
+                                                 src="<?= Url::to('@commonAssets/logos/logo_white.svg'); ?>">
+                                            <?php
                                         }
                                         ?>
                                         <!--                                    <span class="logo-beta">Beta</span>-->
@@ -155,23 +165,26 @@ AppAssets::register($this);
                                                 $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                                                 $color = Yii::$app->user->identity->initials_color;
                                             }
-                                        ?>
+                                            ?>
                                             <?php Pjax::begin(['id' => 'pjax_profile_icon']); ?>
                                             <div class="my-profiles-sec">
                                                 <?php if ($image) : ?>
-                                                    <span><img src="<?= $image; ?>" title="<?= $name; ?>" alt="<?= $name; ?>" /></span>
+                                                    <span><img src="<?= $image; ?>" title="<?= $name; ?>"
+                                                               alt="<?= $name; ?>"/></span>
                                                 <?php else : ?>
-                                                    <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="40" height="40" font="20px"></canvas></span>
+                                                    <span><canvas class="user-icon" name="<?= $name; ?>"
+                                                                  color="<?= $color; ?>" width="40" height="40"
+                                                                  font="20px"></canvas></span>
                                                 <?php endif; ?>
                                             </div>
                                             <?php Pjax::end(); ?>
-                                        <?php
+                                            <?php
                                         } else {
-                                        ?>
+                                            ?>
                                             <a href="javascript:;" data-toggle="modal" data-target="#loginModal">
                                                 Log In
                                             </a>
-                                        <?php
+                                            <?php
                                         }
                                         ?>
                                     </div>
@@ -186,7 +199,8 @@ AppAssets::register($this);
                             <div class="container">
                                 <div class="ey-mob-nav-items">
                                     <div class="ey-humburger-menu-main">
-                                        <button id="open-mobile-menu" class="ey-humburger-menu" type="button" aria-expanded="false">
+                                        <button id="open-mobile-menu" class="ey-humburger-menu" type="button"
+                                                aria-expanded="false">
                                             <span aria-hidden="true"></span>
                                             <span aria-hidden="true"></span>
                                             <span aria-hidden="true"></span>
@@ -195,7 +209,7 @@ AppAssets::register($this);
                                     </div>
                                     <div class="ey-mobile-logo-main">
                                         <a class="ey-logo" href="/">
-                                            <img src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>" />
+                                            <img src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>"/>
                                         </a>
                                     </div>
                                     <div class="ey-mob-actions">
@@ -215,23 +229,26 @@ AppAssets::register($this);
                                                 $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                                                 $color = Yii::$app->user->identity->initials_color;
                                             }
-                                        ?>
+                                            ?>
                                             <?php Pjax::begin(['id' => 'pjax_profile_icon']); ?>
                                             <div class="my-profiles-sec">
                                                 <?php if ($image) : ?>
-                                                    <span><img src="<?= $image; ?>" title="<?= $name; ?>" alt="<?= $name; ?>" /></span>
+                                                    <span><img src="<?= $image; ?>" title="<?= $name; ?>"
+                                                               alt="<?= $name; ?>"/></span>
                                                 <?php else : ?>
-                                                    <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="40" height="40" font="20px"></canvas></span>
+                                                    <span><canvas class="user-icon" name="<?= $name; ?>"
+                                                                  color="<?= $color; ?>" width="40" height="40"
+                                                                  font="20px"></canvas></span>
                                                 <?php endif; ?>
                                             </div>
                                             <?php Pjax::end(); ?>
-                                        <?php
+                                            <?php
                                         } else {
-                                        ?>
+                                            ?>
                                             <a href="javascript:;" data-toggle="modal" data-target="#loginModal">
                                                 Log In
                                             </a>
-                                        <?php
+                                            <?php
                                         }
                                         ?>
                                     </div>
@@ -314,7 +331,8 @@ AppAssets::register($this);
                                             <li><a href="<?= "/reviews/companies"; ?>">Company Reviews</a></li>
                                             <li><a href="<?= "/reviews/colleges"; ?>">College Reviews</a></li>
                                             <li><a href="<?= "/reviews/schools"; ?>">School Reviews</a></li>
-                                            <li><a href="<?= "/reviews/institutes"; ?>">Educational Institute Reviews</a>
+                                            <li><a href="<?= "/reviews/institutes"; ?>">Educational Institute
+                                                    Reviews</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -344,17 +362,23 @@ AppAssets::register($this);
                                 <div class="col-md-12 col-sm-12">
                                     <div class="si-icons">
                                         <ul class="styled-icons icon-bordered icon-sm mb-5">
-                                            <li><a href="https://www.facebook.com/empower" target="_blank" class="overfb"><i class="fab fa-facebook-f"></i></a></li>
-                                            <li><a href="https://twitter.com/EmpowerYouthin" target="_blank" class="overtw"><i class="fab fa-twitter"></i></a></li>
-                                            <li><a href="https://www.instagram.com/empoweryouth.in/" target="_blank" class="overig"><i class="fab fa-instagram"></i></a></li>
-                                            <li><a href="https://www.pinterest.com/empoweryouthin" target="_blank" class="overpt"><i class="fab fa-pinterest"></i></a></li>
-                                            <li><a href="https://www.linkedin.com/company/empoweryouth" target="_blank" class="overlink"><i class="fab fa-linkedin-in"></i></a></li>
+                                            <li><a href="https://www.facebook.com/empower" target="_blank"
+                                                   class="overfb"><i class="fab fa-facebook-f"></i></a></li>
+                                            <li><a href="https://twitter.com/EmpowerYouthin" target="_blank"
+                                                   class="overtw"><i class="fab fa-twitter"></i></a></li>
+                                            <li><a href="https://www.instagram.com/empoweryouth.in/" target="_blank"
+                                                   class="overig"><i class="fab fa-instagram"></i></a></li>
+                                            <li><a href="https://www.pinterest.com/empoweryouthin" target="_blank"
+                                                   class="overpt"><i class="fab fa-pinterest"></i></a></li>
+                                            <li><a href="https://www.linkedin.com/company/empoweryouth" target="_blank"
+                                                   class="overlink"><i class="fab fa-linkedin-in"></i></a></li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-sm-12">
                                     <div class="send_mail">
-                                        <a class="" href="mailto:info@empoweryouth.com"><i class="far fa-envelope mt-5 mr-5"></i>
+                                        <a class="" href="mailto:info@empoweryouth.com"><i
+                                                    class="far fa-envelope mt-5 mr-5"></i>
                                             <span>info@empoweryouth.com</span></a>
                                     </div>
                                 </div>
@@ -364,15 +388,19 @@ AppAssets::register($this);
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <div class="f-logo">
                             <a href="<?= "/"; ?>" title='Empower Youth'>
-                                <img src="<?= Url::to('/assets/common/logos/fg2.png') ?>" title='Empower Youth' alt="Empower Youth" />
+                                <img src="<?= Url::to('/assets/common/logos/fg2.png') ?>" title='Empower Youth'
+                                     alt="Empower Youth"/>
                             </a>
                         </div>
                         <div class="ftxt">Empowering youth and going beyond</div>
                     </div>
                     <div class="col-md-3 col-sm-12 col-xs-12">
                         <div class="app-btn">
-                            <a href='https://play.google.com/store/apps/details?id=com.empoweryouth.app&hl=en' title='Download Empower Youth App on Google Play' target="_blank">
-                                <img alt='Get it on Google Play' src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png' title='Download Empower Youth App on Google Play' />
+                            <a href='https://play.google.com/store/apps/details?id=com.empoweryouth.app&hl=en'
+                               title='Download Empower Youth App on Google Play' target="_blank">
+                                <img alt='Get it on Google Play'
+                                     src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png'
+                                     title='Download Empower Youth App on Google Play'/>
                             </a>
                         </div>
                     </div>
@@ -418,7 +446,7 @@ AppAssets::register($this);
         function parseJwt(token) {
             var base64Url = token.split('.')[1];
             var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            var jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
                 return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
             }).join(''));
 
@@ -433,18 +461,18 @@ AppAssets::register($this);
                     token: token,
                     returnUrl: returnUrl
                 },
-                beforeSend: function(e) {
+                beforeSend: function (e) {
                     $('#auth_loading_img').addClass('show');
                     $('.auth_fader').css('display', 'block');
                 },
-                success: function(e) {
+                success: function (e) {
                     $('#auth_loading_img').removeClass('show');
                     $('.auth_fader').css('display', 'none');
                     if (response.status == 201) {
                         toastr.error(response.message, response.title);
                     }
                 },
-                complete: function() {
+                complete: function () {
                     $('#auth_loading_img').removeClass('show');
                     $('.auth_fader').css('display', 'none');
                 }
@@ -972,7 +1000,25 @@ AppAssets::register($this);
             }
             ');
     }
-    if(!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization){
+
+    $this->registerJs("
+        let winWidth = screen.width;
+        
+        if(winWidth <= 500){
+            showWebinarBox();
+        }
+        function showWebinarBox(){
+            $.ajax({
+                url: '/webinars/upcoming-webinar-box',
+                method: 'POST',
+                data: {'" . Yii::$app->request->csrfParam . "':'" . Yii::$app->request->csrfToken . "'},
+                success: function(response) {
+                    $('body').append(response);
+                }
+            })
+        }
+    ");
+    if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
         $this->registerJs("
         function getCookie(name){
             var re = new RegExp(name + '=([^;]+)');
@@ -999,7 +1045,7 @@ AppAssets::register($this);
             $.ajax({
                 url: '/account/resume-builder/user-detail-modal',
                 method: 'Post',
-                data:  {'". Yii::$app->request->csrfParam."':'". Yii::$app->request->csrfToken."'},
+                data:  {'" . Yii::$app->request->csrfParam . "':'" . Yii::$app->request->csrfToken . "'},
                 success: function(response){
                     $('body').append(response);
                     $('#completeProfileModal').modal('show');
@@ -1026,7 +1072,7 @@ AppAssets::register($this);
             $.ajax({
                 url: '/account/resume-builder/user-preference-modal',
                 method: 'Post',
-                data: {'". Yii::$app->request->csrfParam."':'". Yii::$app->request->csrfToken."'},
+                data: {'" . Yii::$app->request->csrfParam . "':'" . Yii::$app->request->csrfToken . "'},
                 success: function(response) {
                     $('body').append(response);
                     $('#preferenceLocation').modal('show');
@@ -1143,7 +1189,7 @@ $(document).on("click", ".giveFeedback", function(e){
 ');
     ?>
     <?php $this->endBody(); ?>
-</body>
+    </body>
 
-</html>
+    </html>
 <?php $this->endPage(); ?>

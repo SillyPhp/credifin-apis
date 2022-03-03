@@ -223,7 +223,7 @@ class WebinarsController extends Controller
                 'nextEvent' => $nextEvent,
                 'webinar_link' => $user_link,
                 'webinarRewards' => $webinarRewards,
-                'upcoming' => self::showWebinar($status = 'upcoming', $webinar_id = $webinar['webinar_enc_id'])
+                'upcoming' => self::showWebinar($status = 'upcoming', $webinar_id = $webinar['webinar_enc_id'])['webinars']
             ]);
         } else {
             return $this->redirect('/');
@@ -557,11 +557,13 @@ class WebinarsController extends Controller
 
     public function actionIndex()
     {
-        $upcomingWebinar = self::showWebinar($status = 'upcoming', '', true, '', $limit = 9);
-        $pastWebinar = self::showWebinar($status = 'past', '', false);
+        $upcomingWebinar = self::showWebinar($status = 'upcoming', '', true, '', $limit = 6);
+        $count = $upcomingWebinar['count'];
+        $upcomingWebinar = $upcomingWebinar['webinars'];
+        $pastWebinar = self::showWebinar($status = 'past', '', false)['webinars'];
         if (Yii::$app->user->identity->type->user_type == 'Individual') {
             $userIdd = Yii::$app->user->identity->user_enc_id;
-            $optedWebinar = self::showWebinar($status = 'opted', $userIdd);
+            $optedWebinar = self::showWebinar($status = 'opted', $userIdd)['webinars'];
         }
         $model = new WebinarRequestForm();
         if (Yii::$app->request->isPost) {
@@ -570,16 +572,17 @@ class WebinarsController extends Controller
             $model->load(Yii::$app->request->post());
             return $model->save($speaker_id);
         }
-        
+
         return $this->render('webinars-landing', [
             'upcomingWebinar' => $upcomingWebinar,
             'pastWebinar' => $pastWebinar,
             'optedWebinar' => $optedWebinar,
-            'model' => $model
+            'model' => $model,
+            'webinars_count' => $count
         ]);
     }
 
-    private function showWebinar($status, $userIdd = null, $sortAsc = true, $webinar_id = null, $limit = 6)
+    private function showWebinar($status, $userIdd = null, $sortAsc = true, $webinar_id = null, $limit = 6, $page = 1, $price = null)
     {
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
@@ -592,11 +595,13 @@ class WebinarsController extends Controller
                 'GROUP_CONCAT(DISTINCT(CONCAT(f.first_name, " " ,f.last_name)) SEPARATOR ",") speakers'])
             ->joinWith(['webinarEvents b' => function ($b) use ($status, $currentTime) {
                 $b->distinct();
-                $b->select(['b.start_datetime', 'b.webinar_enc_id', 'b.status', 'b.event_enc_id']);
-                if ($status == 'upcoming' || $status == 'opted') {
-                    $b->andWhere(['>', 'b.start_datetime', $currentTime]);
-                } else {
-                    $b->andWhere(['<', 'b.start_datetime', $currentTime]);
+                $b->select(['b.start_datetime', 'b.duration', 'b.webinar_enc_id', 'b.status', 'b.event_enc_id']);
+                if ($status != 'all') {
+                    if ($status == 'upcoming' || $status == 'opted') {
+                        $b->andWhere(['>', 'ADDDATE(b.start_datetime, INTERVAL b.duration MINUTE)', $currentTime]);
+                    } else {
+                        $b->andWhere(['<', 'b.start_datetime', $currentTime]);
+                    }
                 }
                 $b->groupBy(['b.webinar_enc_id']);
                 $b->joinWith(['webinarSpeakers d' => function ($d) {
@@ -623,16 +628,31 @@ class WebinarsController extends Controller
                     $c->where(['c.created_by' => $userIdd]);
                 }
             }])
-            ->andWhere(['a.is_deleted' => 0])
-            ->groupBy(['a.webinar_enc_id'])
-            ->orderBy(['b.start_datetime' => $sortAsc ? SORT_ASC : SORT_DESC])
-            ->limit($limit);
+            ->andWhere(['a.is_deleted' => 0]);
+
+        // price filter
+        if ($price != null) {
+            if ($price == 'paid') {
+                $webinars->andWhere(['!=', 'a.price', null]);
+            } elseif ($price == 'free') {
+                $webinars->andWhere(['a.price' => [null,0]]);
+            }
+        }
+
         if ($webinar_id != null) {
             $webinars->andWhere(['not', ['a.webinar_enc_id' => $webinar_id]]);
         }
+
+        $webinars->groupBy(['a.webinar_enc_id']);
+
+        $count = $webinars->count();
+
+        $webinars->orderBy(['b.start_datetime' => $sortAsc ? SORT_ASC : SORT_DESC])
+            ->limit($limit)
+            ->offset(($page - 1) * $limit);
         $webinars = $webinars->asArray()
             ->all();
-        return $webinars;
+        return ['webinars' => $webinars, 'count' => $count];
     }
 
     public function actionSearchSpeakers($q = null)
@@ -671,6 +691,71 @@ class WebinarsController extends Controller
             'template_name' => $template_name
         ]);
 
+    }
+
+    public function actionList()
+    {
+        return $this->render('list');
+    }
+
+    public function actionGetWebinars($status = 'upcoming', $price = null, $limit = 8, $page = 1)
+    {
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $currentTime = $dt->format('Y-m-d H:i:s');
+
+        $webinars = self::showWebinar($status, '', true, '', $limit, $page, $price)['webinars'];
+        if ($webinars) {
+
+            foreach ($webinars as $key => $val) {
+                $webinars[$key]['isRegistered'] = $this->isRegistered($val['webinar_enc_id']);
+                $webinars[$key]['webinarEvents'][0]['start_datetime'] = date('d-M', strtotime($val['webinarEvents'][0]['start_datetime']));
+                $webinars[$key]['price'] = $this->getWebinarPrice($val['price'], $val['gst']);
+                $webinars[$key]['registeredImages'] = $this->getRegisteredUserImages($val['webinarRegistrations']);
+                $webinar_end_datetime = date('Y-m-d H:i:s','+'.strtotime($val['webinarEvents'][0]['duration'].' minutes', strtotime($val['webinarEvents'][0]['start_datetime'])));
+                $webinars[$key]['is_expired'] = $webinar_end_datetime < $currentTime;
+            }
+
+            return json_encode(['status' => 200, 'data' => $webinars]);
+        } else {
+            return json_encode(['status' => 404, 'message' => 'No Data Found']);
+        }
+    }
+
+    private function isRegistered($webinar_id)
+    {
+        return WebinarRegistrations::find()
+            ->where(['webinar_enc_id' => $webinar_id, 'status' => 1, 'created_by' => Yii::$app->user->identity->user_enc_id])
+            ->exists();
+    }
+
+    private function getWebinarPrice($price, $gstAmount)
+    {
+        if ($price) {
+            $gstPercent = $gstAmount;
+            if ($price > 0) {
+                $gstAmount = round($gstPercent * ($price / 100), 2);
+            }
+        }
+        $finalPrice = $price + $gstAmount;
+        return ($finalPrice == 0 ? 'Free' : '₹' . $finalPrice);
+    }
+
+    private function getRegisteredUserImages($webinarRegistrations)
+    {
+        $i = 1;
+        $images = [];
+        foreach ($webinarRegistrations as $val) {
+            if ($i == 4) {
+                break;
+            }
+            if ($val['createdBy']['image']) {
+                array_push($images, $val['createdBy']['image']);
+                $i++;
+            }
+        }
+        return $images;
     }
 
     public function actionTemplateView($id)
@@ -721,5 +806,29 @@ class WebinarsController extends Controller
             'webinarWidget' => $webinarWidget,
             'tempName' => $webinarWidget['template_name']
         ]);
+    }
+
+    public function actionUpcomingWebinarBox()
+    {
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $currentTime = $dt->format('Y-m-d H:i:s');
+        $upcomingWebinar = Webinar::find()
+            ->alias('a')
+            ->select(['a.title', 'a.slug', 'a.webinar_enc_id'])
+            ->joinWith(['webinarEvents b' => function ($b) use ($currentTime) {
+                $b->andWhere(['>', 'b.start_datetime', $currentTime]);
+            }])
+            ->where(['a.is_deleted' => 0])
+            ->orderBy(['b.start_datetime' => SORT_ASC])
+            ->asArray()
+            ->one();
+
+        if($upcomingWebinar){
+            return $this->renderAjax('/widgets/webinar-detail-popup', [
+                'upcomingWebinar' => $upcomingWebinar
+            ]);
+        }
     }
 }

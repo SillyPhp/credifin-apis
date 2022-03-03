@@ -35,7 +35,7 @@ function webDate($webDate)
                 <div class="webinar-head-text">                
                     <h1>WEBINARS</h1>
                     <p>Introducing EmpowerYouth Masterclass - A Webinar Series Created To Help You Understand And Immerse Yourself In The Latest Career Options.</p>
-                    <a href="#up-webinar" class="view-all-btn">View All</a>
+                    <a href="/webinars/list" target="_blank" class="view-all-btn">View All</a>
                 </div>
             </div>
             <div class="col-md-6">
@@ -54,7 +54,22 @@ if ($upcomingWebinar) {
 <section class="upcoming-web" id="up-webinar">
     <div class="container">
         <div class="row">
-            <div class="heading-style">Upcoming Webinars</div>
+            <div class="col-md-8 col-sm-8 col-xs-12">
+                <div class="heading-style">Upcoming Webinars</div>
+            </div>
+            <?php
+            if($webinars_count > 6) {?>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="type-1">
+                    <div>
+                        <a id="course-list-btn" href="<?= Url::to('/webinars/list') ?>" target="_blank" class="btn btn-3">
+                            <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <?php }?>
         </div>
         <div class="row">
             <?php
@@ -139,7 +154,9 @@ if ($upcomingWebinar) {
 <section class="how-it-works">
     <div class="container">
         <div class="row">
-            <div class="heading-style">How To Join A Webinar</div>
+            <div class="col-md-12">
+                <div class="heading-style">How To Join A Webinar</div>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-4 col-sm-4">
@@ -270,7 +287,9 @@ if ($optedWebinar) {
 <section class="past-web">
     <div class="container">
         <div class="row">
-            <div class="heading-style">Past Webinars</div>
+            <div class="col-md-12">
+                <div class="heading-style">Past Webinars</div>
+            </div>
         </div>
         <div class="row">
             <?php
@@ -329,32 +348,36 @@ if ($optedWebinar) {
 <section class="webinar-on-device">
     <div class="container">
         <div class="row">
-            <h1 class="heading-style">Engage from anywhere on any device</h1>
+            <div class="col-md-12">
+                    <div class="heading-style">Engage from anywhere on any device</div>
+            </div>
         </div>
-        <div class="row steps">
-            <div class="col-sm-4">
-                <div class="icon">
-                    <div class="icon-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-computer.png'); ?>">
+        <div class="row">
+            <div class="engage-left">
+                <div class="col-sm-4">
+                    <div class="icon">
+                        <div class="icon-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-computer.png'); ?>">
+                        </div>
+                        On your Desktop
                     </div>
-                    On your Desktop
                 </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="icon">
-                    <div class="icon-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-tablet.png'); ?>">
+                <div class="col-sm-4">
+                    <div class="icon">
+                        <div class="icon-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-tablet.png'); ?>">
+                        </div>
+                        On your Tablet
                     </div>
-                    On your Tablet
                 </div>
-            </div>
-            <div class="col-sm-4">
+                <div class="col-sm-4">
                 <div class="icon">
                     <div class="icon-img">
                         <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-smartphone.png'); ?>">
                     </div>
                     On your Smartphone
                 </div>
+            </div>
             </div>
         </div>
     </div>
@@ -363,7 +386,9 @@ if ($optedWebinar) {
 <section class="speakers">
     <div class="container">
         <div class="row">
-            <div class="heading-style">Webinars Speaker</div>
+            <div class="col-md-12">
+                <div class="heading-style">Webinars Speaker</div>
+            </div>
         </div>
         <div class="row">
             <div class="loader_screen">
@@ -451,6 +476,9 @@ if ($optedWebinar) {
 <?php
 echo $this->render('/widgets/mustache/speakers-card');
 $this->registerCss("
+.type-1 div a:focus{
+    color:#fff;
+}
 html {
     scroll-behavior: smooth;
   }
