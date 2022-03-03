@@ -6,6 +6,7 @@ use common\models\User;
 use common\models\Usernames;
 use common\models\Users;
 use common\models\UserTypes;
+use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\LoginForm;
 use Yii;
 use common\models\RandomColors;
@@ -172,6 +173,13 @@ class AuthHandler
                 ]);
             }
         }
+
+        $cookies_request = Yii::$app->request->cookies;
+        $dsaRefId = $cookies_request->get('dsaRefId');
+        $individualsUser = new IndividualSignUpForm();
+        if ($dsaRefId):
+            $individualsUser->assignedDsaService($user->user_enc_id,$dsaRefId);
+        endif;
     }
 
     /**
