@@ -54,7 +54,19 @@ if ($upcomingWebinar) {
 <section class="upcoming-web" id="up-webinar">
     <div class="container">
         <div class="row">
-            <div class="heading-style">Upcoming Webinars</div>
+            <div class="col-md-8 col-sm-8 col-xs-12 row">
+                <div class="heading-style">Upcoming Webinars</div>
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="type-1">
+                    <div>
+                        <a id="course-list-btn" href="<?= Url::to('/webinars/list') ?>" target="_blank" class="btn btn-3">
+                            <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row">
             <?php
@@ -331,30 +343,32 @@ if ($optedWebinar) {
         <div class="row">
             <h1 class="heading-style">Engage from anywhere on any device</h1>
         </div>
-        <div class="row steps">
-            <div class="col-sm-4">
-                <div class="icon">
-                    <div class="icon-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-computer.png'); ?>">
+        <div class="row">
+            <div class="engage-left">
+                <div class="col-sm-4">
+                    <div class="icon">
+                        <div class="icon-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-computer.png'); ?>">
+                        </div>
+                        On your Desktop
                     </div>
-                    On your Desktop
                 </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="icon">
-                    <div class="icon-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-tablet.png'); ?>">
+                <div class="col-sm-4">
+                    <div class="icon">
+                        <div class="icon-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-tablet.png'); ?>">
+                        </div>
+                        On your Tablet
                     </div>
-                    On your Tablet
                 </div>
-            </div>
-            <div class="col-sm-4">
+                <div class="col-sm-4">
                 <div class="icon">
                     <div class="icon-img">
                         <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-smartphone.png'); ?>">
                     </div>
                     On your Smartphone
                 </div>
+            </div>
             </div>
         </div>
     </div>

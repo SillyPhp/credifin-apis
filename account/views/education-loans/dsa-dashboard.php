@@ -16,6 +16,8 @@ $fullUrl = explode('/', $httpsAbsoluteHomeUrl);
 $baseUrl = $fullUrl[2];
 if (Yii::$app->user->identity->organization->organization_enc_id) {
 $org_id = Yii::$app->user->identity->organization->organization_enc_id;
+$org_slug = Yii::$app->user->identity->organization->slug;
+
 }
 ?>
 <div class="row">
@@ -24,9 +26,9 @@ $org_id = Yii::$app->user->identity->organization->organization_enc_id;
         'id' => 'stat-container',
     ]);
     ?>
-    <div class="col-md-6">
+    <div class="<?= $org_slug == 'phfleasing' ? 'col-md-6' : 'col-md-9'?>">
         <div class="widget-row">
-            <div class="col-sm-6">
+            <div class="<?= $org_slug == 'phfleasing' ? 'col-md-6' : 'col-md-3' ?>">
                 <a href="/account/education-loans/leads?filter=0" data-pjax="0">
                     <div class="box-des box1 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
@@ -34,6 +36,8 @@ $org_id = Yii::$app->user->identity->organization->organization_enc_id;
                         <span class="box-text">New Leads</span>
                     </div>
                 </a>
+            </div>
+            <div class="<?= $org_slug == 'phfleasing' ? 'col-md-6' : 'col-md-3' ?>">
                 <a href="/account/education-loans/leads?filter=all" data-pjax="0">
                     <div class="box-des box3 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
@@ -42,7 +46,7 @@ $org_id = Yii::$app->user->identity->organization->organization_enc_id;
                     </div>
                 </a>
             </div>
-            <div class="col-sm-6">
+            <div class="<?= $org_slug == 'phfleasing' ? 'col-md-6' : 'col-md-3' ?>">
                 <a href="/account/education-loans/leads?filter=3" data-pjax="0">
                     <div class="box-des box5 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
@@ -50,6 +54,8 @@ $org_id = Yii::$app->user->identity->organization->organization_enc_id;
                         <span class="box-text">Under Process</span>
                     </div>
                 </a>
+            </div>
+            <div class="<?= $org_slug == 'phfleasing' ? 'col-md-6' : 'col-md-3' ?>">
                 <a href="/account/education-loans/leads?filter=4" data-pjax="0">
                     <div class="box-des box7 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
@@ -152,6 +158,9 @@ $org_id = Yii::$app->user->identity->organization->organization_enc_id;
             </div>
         </div>
     </div>
+    <?php
+        if($org_slug == 'phfleasing'){
+    ?>
     <div class="col-md-3">
         <div class="dsa-box">
         <h3 class="text-white size-set">Invite DSA
@@ -161,6 +170,9 @@ $org_id = Yii::$app->user->identity->organization->organization_enc_id;
             <a href="" class="create-btn" onclick="copyToDsaLink()">Copy Link</a>
         </div>
     </div>
+    <?php
+        }
+    ?>
     <?php Pjax::end(); ?>
 </div>
 <div class="col-xs-12 col-sm-12">
@@ -525,6 +537,9 @@ $org_id = Yii::$app->user->identity->organization->organization_enc_id;
 </div>
 <?php
 $this->registerCss('
+.iti{
+    width: 100%;
+}
 #dsaLink{
     pointer-events: none;
     border-radius: 5px;
@@ -888,11 +903,12 @@ input.checkbox:checked + label:before {
 .box6{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/college.png");}
 .box7{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/g.png");}
 .box-des {
-   background-size: 100% 100%;
-   background-repeat: no-repeat;
-   position: relative;
-   height: 90px;
-   border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    height: 90px;
+    border-radius: 10px;
 }
 .mt{margin-bottom:15px;}
 .box-des img{
