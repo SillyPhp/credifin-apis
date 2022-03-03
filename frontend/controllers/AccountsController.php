@@ -73,8 +73,11 @@ class AccountsController extends Controller
             $loginFormModel->load(Yii::$app->request->post());
             if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
                 $loginFormModel->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
-                if (Yii::$app->user->identity->organization)
+                $dsa_permission = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "E-Partners");
+                if($dsa_permission)
                 {
+                    return $this->redirect($dsa_permission['link']);
+                } else if (Yii::$app->user->identity->organization){
 //                    return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
                     return $this->redirect('/account/dashboard');
                 }
@@ -99,9 +102,12 @@ class AccountsController extends Controller
             if ($loginFormModel->isMaster) {
                 Yii::$app->session->set('userSessionTimeout', time() + Yii::$app->params->session->timeout);
             }
-            if (Yii::$app->user->identity->organization)
+            $dsa_permission = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "E-Partners");
+            if($dsa_permission)
             {
-//                return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
+                return $this->redirect($dsa_permission['link']);
+            } else if (Yii::$app->user->identity->organization){
+//                    return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
                 return $this->redirect('/account/dashboard');
             }
             return $this->goBack($loginFormModel->referer);
