@@ -173,13 +173,6 @@ class AuthHandler
                 ]);
             }
         }
-
-        $cookies_request = Yii::$app->request->cookies;
-        $dsaRefId = $cookies_request->get('dsaRefId');
-        $individualsUser = new IndividualSignUpForm();
-        if ($dsaRefId):
-            $individualsUser->assignedDsaService($user->user_enc_id,$dsaRefId);
-        endif;
     }
 
     /**
