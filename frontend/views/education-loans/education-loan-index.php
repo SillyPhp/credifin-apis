@@ -3,19 +3,12 @@
 use yii\helpers\Url;
 ?>
 
-<?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
+    <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
     <div class="clearfix"></div>
     <?= $this->render('/widgets/loan-products') ?>
-    
-    
-
     <?= $this->render('/widgets/loan-why-empower-youth') ?>
     <?= $this->render('/widgets/testimonials') ?>
     <?= $this->render('/widgets/education-loan-internship') ?>
-    
-
-
-
     <section class="edu-with-sec">
         <div class="container">
             <div class="row mt-20">
@@ -299,33 +292,33 @@ if ($blogs['blogs']) {
 <?php
 $script = <<<JS
 $('#company-slider').owlCarousel({
-loop: true,
-nav: true,
-dots: false,
-pauseControls: true,
-margin: 20,
-responsiveClass: true,
-navText: [
-'<i class="fa fa-angle-left set_icon"></i>',
-'<i class="fa fa-angle-right set_icon"></i>'
-],
-responsive: {
-0: {
-items: 1
-},
-568: {
-items: 2
-},
-600: {
-items: 3
-},
-1000: {
-items: 6
-},
-1400: {
-items: 7
-}
-}
+    loop: true,
+    nav: true,
+    dots: false,
+    pauseControls: true,
+    margin: 20,
+    responsiveClass: true,
+    navText: [
+        '<i class="fa fa-angle-left set_icon"></i>',
+        '<i class="fa fa-angle-right set_icon"></i>'
+    ],
+    responsive: {
+        0: {
+            items: 1
+        },
+        568: {
+            items: 2
+        },
+        600: {
+            items: 3
+        },
+        1000: {
+            items: 6
+        },
+        1400: {
+            items: 7
+        }
+    }
 });
 $('.faqs').click(function () {
     arrow= $(this).find('.collaspe-trigger')
@@ -337,14 +330,14 @@ $('.faqs').click(function () {
 });
 var num = '+918727985888';
 $(document).on("keypress",'#whatsAppText', function(e) {
-     if (e.keyCode == 13) {
-         if ($(this).val()!=''){
-             window.open('https://api.whatsapp.com/send?phone='+num+'&text=' + $(this).val(), '_blank', 'width=800,height=400,left=200,top=100');
+    if (e.keyCode == 13) {
+        if ($(this).val()!=''){
+            window.open('https://api.whatsapp.com/send?phone='+num+'&text=' + $(this).val(), '_blank', 'width=800,height=400,left=200,top=100');
             return false; // prevent the button click from happening   
-         }else{
-             alert('Enter Text');
-         }
+        } else{
+            alert('Enter Text');
         }
+    }
 });
 $(document).on("keypress",'#telegramText', function(e) {
      if (e.keyCode == 13) {
@@ -1209,6 +1202,6 @@ $this->registerCss('
     .faq-s-bg{
      display: none;
     }
-    }
+}
 ');
 $this->registerCssFile('@eyAssets/css/blog.css');
