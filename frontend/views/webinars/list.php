@@ -354,7 +354,7 @@ h3.side-top-heading {
 	overflow: hidden;
 	height: 70px;
 }
-..web-des p{
+.web-des p{
     margin:0;
 }
 .web-info{
