@@ -173,7 +173,7 @@ $this->registerCss('
     }
     .heading-data-set {
         text-align: center;
-        padding-top:20px;
+        padding-top:90px;
     }
     .heading-data-set h3 {
         font-size: 25px;
