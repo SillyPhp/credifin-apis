@@ -138,12 +138,12 @@ class SiteController extends Controller
         $login = new LoginForm();
         $login->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
         $cookies_request = Yii::$app->request->cookies;
-        $dsaRefId = $cookies_request->get('dsaRefId');
-        $individualsUser = new IndividualSignUpForm();
-        if ($dsaRefId):
-            $individualsUser->assignedDsaService(Yii::$app->user->identity->user_enc_id,$dsaRefId);
-        endif;
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->is_credential_change === 1) {
+            $dsaRefId = $cookies_request->get('dsaRefId');
+            $individualsUser = new IndividualSignUpForm();
+            if ($dsaRefId):
+                $individualsUser->assignedDsaService(Yii::$app->user->identity->user_enc_id,$dsaRefId);
+            endif;
             return $this->render('auth-varify', ['credentialsSetup' => $credentialsSetup]);
         } else {
             $session = Yii::$app->session;
