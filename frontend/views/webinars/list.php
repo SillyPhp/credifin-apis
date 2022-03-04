@@ -354,6 +354,9 @@ h3.side-top-heading {
 	overflow: hidden;
 	height: 70px;
 }
+.web-des p{
+    margin:0;
+}
 .web-info{
     display: flex;
     align-items: center;
@@ -389,7 +392,7 @@ web-card .price{
     object-fit: cover;
     border: 2px solid #fff;
 }
-.reg2.reg, .reg3.reg {
+.reg1.reg, .reg2.reg, .reg3.reg {
     margin-left: -25px;
 }
 .cont {

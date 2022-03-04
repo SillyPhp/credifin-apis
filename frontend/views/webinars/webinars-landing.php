@@ -34,8 +34,8 @@ function webDate($webDate)
             <div class="col-md-6">
                 <div class="webinar-head-text">                
                     <h1>WEBINARS</h1>
-                    <p>Introducing EmpowerYouth Masterclass - A Webinar Series Created To Help You Understand And Immerse Yourself In The Latest Career Options.</p>
-                    <a href="#up-webinar" class="view-all-btn">View All</a>
+                    <p>Introducing Empower Youth Masterclass - A Webinar Series Created To Help You Understand And Immerse Yourself In The Latest Career Options.</p>
+                    <a href="/webinars/list" target="_blank" class="view-all-btn">View All</a>
                 </div>
             </div>
             <div class="col-md-6">
@@ -54,10 +54,12 @@ if ($upcomingWebinar) {
 <section class="upcoming-web" id="up-webinar">
     <div class="container">
         <div class="row">
-            <div class="col-md-8 col-sm-8 col-xs-12 row">
+            <div class="col-md-8 col-sm-8 col-xs-12">
                 <div class="heading-style">Upcoming Webinars</div>
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-12">
+            <?php
+            if($webinars_count > 6) {?>
+                <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="type-1">
                     <div>
                         <a id="course-list-btn" href="<?= Url::to('/webinars/list') ?>" target="_blank" class="btn btn-3">
@@ -67,6 +69,7 @@ if ($upcomingWebinar) {
                     </div>
                 </div>
             </div>
+            <?php }?>
         </div>
         <div class="row">
             <?php
@@ -151,7 +154,9 @@ if ($upcomingWebinar) {
 <section class="how-it-works">
     <div class="container">
         <div class="row">
-            <div class="heading-style">How To Join A Webinar</div>
+            <div class="col-md-12">
+                <div class="heading-style">How To Join A Webinar</div>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-4 col-sm-4">
@@ -282,7 +287,9 @@ if ($optedWebinar) {
 <section class="past-web">
     <div class="container">
         <div class="row">
-            <div class="heading-style">Past Webinars</div>
+            <div class="col-md-12">
+                <div class="heading-style">Past Webinars</div>
+            </div>
         </div>
         <div class="row">
             <?php
@@ -341,7 +348,9 @@ if ($optedWebinar) {
 <section class="webinar-on-device">
     <div class="container">
         <div class="row">
-            <h1 class="heading-style">Engage from anywhere on any device</h1>
+            <div class="col-md-12">
+                    <div class="heading-style">Engage from anywhere on any device</div>
+            </div>
         </div>
         <div class="row">
             <div class="engage-left">
@@ -377,7 +386,9 @@ if ($optedWebinar) {
 <section class="speakers">
     <div class="container">
         <div class="row">
-            <div class="heading-style">Webinars Speaker</div>
+            <div class="col-md-12">
+                <div class="heading-style">Webinars Speaker</div>
+            </div>
         </div>
         <div class="row">
             <div class="loader_screen">
@@ -465,6 +476,9 @@ if ($optedWebinar) {
 <?php
 echo $this->render('/widgets/mustache/speakers-card');
 $this->registerCss("
+.type-1 div a:focus{
+    color:#fff;
+}
 html {
     scroll-behavior: smooth;
   }
@@ -481,13 +495,15 @@ html {
     color: #fff;
     font-family: 'Roboto';
     line-height: 1;
+    margin-bottom: 0;
 }
 .webinar-head-text p {
-    font-size: 16px;
-    font-weight: 800;
-    color: #d5d5d5;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
     line-height: 1.5;
-    max-width: 450px;
+    max-width: 420px;
+    letter-spacing: 1px;
 }
 .header-web .row {
     display: flex;
@@ -1285,6 +1301,14 @@ color: #fff !important;
   90% {
     transform: translate3d(0, -2px, 0);
   }
+}
+@media only screen and (max-width: 1024px){
+    .reg2.reg, .reg3.reg {
+        margin-left: -25px;
+    }
+    .btn-drib {
+        font-size: 12px;
+    }
 }
 @media only screen and (min-width: 992px){
     .webinar-on-device .icon{

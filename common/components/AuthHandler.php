@@ -6,6 +6,7 @@ use common\models\User;
 use common\models\Usernames;
 use common\models\Users;
 use common\models\UserTypes;
+use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\LoginForm;
 use Yii;
 use common\models\RandomColors;
