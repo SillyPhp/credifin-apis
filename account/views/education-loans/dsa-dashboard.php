@@ -27,8 +27,8 @@ $org_slug = Yii::$app->user->identity->organization->slug;
     ]);
     ?>
     <div class="<?= $org_slug == 'phfleasing' ? 'col-md-6' : 'col-md-9'?>">
-        <div class="widget-row">
-            <div class="<?= $org_slug == 'phfleasing' ? 'col-md-6' : 'col-md-3' ?>">
+        <div class="widget-row row">
+            <div class="col-md-6 <?= $org_slug == 'phfleasing' ? '' : 'col-lg-3 inc-height' ?>">
                 <a href="/account/education-loans/leads?filter=0" data-pjax="0">
                     <div class="box-des box1 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
@@ -37,7 +37,7 @@ $org_slug = Yii::$app->user->identity->organization->slug;
                     </div>
                 </a>
             </div>
-            <div class="<?= $org_slug == 'phfleasing' ? 'col-md-6' : 'col-md-3' ?>">
+            <div class="col-md-6 <?= $org_slug == 'phfleasing' ? '' : 'col-lg-3 inc-height' ?>">
                 <a href="/account/education-loans/leads?filter=all" data-pjax="0">
                     <div class="box-des box3 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
@@ -46,7 +46,7 @@ $org_slug = Yii::$app->user->identity->organization->slug;
                     </div>
                 </a>
             </div>
-            <div class="<?= $org_slug == 'phfleasing' ? 'col-md-6' : 'col-md-3' ?>">
+            <div class="col-md-6 <?= $org_slug == 'phfleasing' ? '' : 'col-lg-3 inc-height' ?>">
                 <a href="/account/education-loans/leads?filter=3" data-pjax="0">
                     <div class="box-des box5 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
@@ -55,7 +55,7 @@ $org_slug = Yii::$app->user->identity->organization->slug;
                     </div>
                 </a>
             </div>
-            <div class="<?= $org_slug == 'phfleasing' ? 'col-md-6' : 'col-md-3' ?>">
+            <div class="col-md-6 <?= $org_slug == 'phfleasing' ? '' : 'col-lg-3 inc-height' ?>">
                 <a href="/account/education-loans/leads?filter=4" data-pjax="0">
                     <div class="box-des box7 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
@@ -87,7 +87,7 @@ $org_slug = Yii::$app->user->identity->organization->slug;
         </div>
     </div>
     <div class="col-md-3">
-        <div class="effect thurio">
+        <div class="effect thurio <?= $org_slug == 'phfleasing' ? 'tr-height' : '' ?>">
             <h3 class="text-white size-set">Invite Candidate <i data-toggle="tooltip"
                                                                 title="This is your personalized invite link which is used to add referral leads direct into your account "
                                                                 class="fa fa-question-circle tooltip-text"></i></h3>
@@ -162,7 +162,7 @@ $org_slug = Yii::$app->user->identity->organization->slug;
         if($org_slug == 'phfleasing'){
     ?>
     <div class="col-md-3">
-        <div class="dsa-box">
+        <div class="dsa-box <?= $org_slug == 'phfleasing' ? 'tr-height' : '' ?>">
         <h3 class="text-white size-set">Invite DSA
             <i data-toggle="tooltip"  title="This is your personalized invite link which is used to add DSA direct into your account " class="fa fa-question-circle tooltip-text"></i></h3>
             <input type="text" class="link line-clamp" id="dsaLink"
@@ -175,6 +175,7 @@ $org_slug = Yii::$app->user->identity->organization->slug;
     ?>
     <?php Pjax::end(); ?>
 </div>
+<div class="row mt-5">
 <div class="col-xs-12 col-sm-12">
     <div class="portlet light ">
         <div class="portlet-title tabbable-line">
@@ -366,6 +367,7 @@ $org_slug = Yii::$app->user->identity->organization->slug;
         </div>
     </div>
 </div>
+</div>
 <div id="loanDetailModal" class="modal">
     <!-- Modal content -->
     <div class="modal-content">
@@ -537,6 +539,12 @@ $org_slug = Yii::$app->user->identity->organization->slug;
 </div>
 <?php
 $this->registerCss('
+.mt-5{
+    margin-top: 2.5rem;
+}
+.tr-height{
+    min-height: 194px;
+}
 .iti{
     width: 100%;
 }
@@ -544,6 +552,8 @@ $this->registerCss('
     pointer-events: none;
     border-radius: 5px;
     padding: 6px;
+    height: 39.98px;
+    margin: 4px 0;
 }
 .line-clamp {
     display: -webkit-box;
@@ -553,14 +563,14 @@ $this->registerCss('
 }
 .dsa-box {
     background: black;
-    padding: 15px;
+    padding: 0 15px;
     text-align: center;
     border-radius: 10px;
     max-height: 196px;
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
 }
 .dsa-box h4 {
     color: #fff;
@@ -571,7 +581,7 @@ $this->registerCss('
 .dsa-box a.create-btn {
     background: #ff7803;
     color: #fff;
-    padding: 7px 20px;
+    padding: 8px 20px;
     display: inline-block;
     margin-top: 15px;
     border-radius: 5px;
@@ -1103,11 +1113,21 @@ input.checkbox:checked + label:before {
 .intl-tel-input{
     width: 100% !important;
 }
-@media (min-width: 768px) and (max-width: 991px){
-    .widget-row{
-        height: 220px;
+@media (min-width: 1200px) and (max-width: 1317px){
+    .inc-height .box-des{
+        height: 199px;
     }
 }
+@media only screen and (min-width: 1318px){
+    .inc-height .box-des{
+        height: 157px;
+    }
+}
+// @media (min-width: 768px) and (max-width: 991px){
+//     .widget-row{
+//         height: 220px;
+//     }
+// }
 
 @media screen and (max-width: 992px){
     .loan-icon img{

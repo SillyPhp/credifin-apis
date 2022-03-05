@@ -563,8 +563,10 @@ if (!empty($data2) && Yii::$app->params->options->showSchema) {
     }
     $finalJobDescription = implode("<br/>", $onlyJd);
     if(empty($finalJobDescription)){
-        $finalJobDescription = $data2['cat_name'] . ',' .$data2['designation'];
+        $finalJobDescription = $data2['cat_name'] .(($data2['designation']) ? ',' . $data2['designation'] : "");
     }
+    $minMaxWage = (($data2['max_wage']) ? $data2['max_wage'] : $data2['min_wage']);
+    $schema_amount = (($data2['fixed_wage']) ? $data2['fixed_wage'] : $minMaxWage);
     ?>
     <script type="application/ld+json">
         {
@@ -592,13 +594,9 @@ if (!empty($data2) && Yii::$app->params->options->showSchema) {
             "baseSalary": {
                 "@type": "MonetaryAmount",
                 "currency": "INR",
-                "value":<?= (($data2['fixed_wage']) ? $data2['fixed_wage'] : $data2['max_wage']) ?>
+                "value":<?= $schema_amount; ?>
             }
         }
-
-
-
-
     </script>
     <?php
 }

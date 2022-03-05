@@ -7,6 +7,7 @@ use common\models\EmailLogs;
 use common\models\Organizations;
 use common\models\SelectedServices;
 use common\models\Services;
+use common\models\User;
 use frontend\models\referral\EducationLoan;
 use Yii;
 use yii\base\Model;
@@ -214,6 +215,15 @@ class IndividualSignUpForm extends Model
           }],'INNER JOIN')
           ->exists();
     }
+    public static function DsaUserExist($userId){
+        return  SelectedServices::find()
+            ->alias('a')
+            ->where(['a.created_by'=>$userId])
+            ->joinWith(['serviceEnc b'=>function($x){
+                $x->andWhere(['b.name'=>'E-Partners']);
+            }],'INNER JOIN')
+            ->exists();
+    }
 
     public function assignedDsaService($userId,$dsaRefId){
         $id = Services::findOne(['name'=>'E-Partners'])->service_enc_id;
@@ -226,7 +236,9 @@ class IndividualSignUpForm extends Model
         if ($model->save()){
            $this->assignedSupervisor($userId,$dsaRefId);
            $this->assignedSupervisor($userId,$dsaRefId,'Lead Source');
-            unset(Yii::$app->request->cookies['dsaRefId']);
+            $cookies = Yii::$app->response->cookies;
+            $cookies->remove('dsaRefId');
+            unset($cookies['dsaRefId']);
         }
     }
 
