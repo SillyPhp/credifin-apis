@@ -13,7 +13,7 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-sm-6">
                 <div class="webinar-text">
-                    <h1>The Future of Business Analyst</h1>
+                    <h1>Breaking into Data Science : How to forge your career path</h1>
                     <p>E-certificates will be provided to all the registered participants.</p>
                     <div class="date-and-time">
                         <i class="fas fa-calendar-alt"></i>
@@ -22,7 +22,7 @@ use yii\helpers\Url;
                                 DATE
                             </span>
                             <span class="large-text">
-                                March 4, 2022
+                                March 10, 2022
                             </span>
                         </div>
                         <div class="date">
@@ -30,32 +30,31 @@ use yii\helpers\Url;
                                 TIME
                             </span>
                             <span class="large-text">
-                                6PM - 7PM
+                                2PM - 3PM
                             </span>
                         </div>
                     </div>
                     <div class="register-btn">
-                        <a href="/webinar/the-future-of-business-analyst-39800" target="_blank"
+                        <a href="/webinar/breaking-into-data-science-how-to-forge-your-career-path-2172" target="_blank"
                         >Register Now<span><i class="fas fa-chevron-right" style="margin-right: -3px;"></i><i class="fas fa-chevron-right"></i></span></a>
                     </div>
                     <div class="share-bar">
-                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/the-future-of-business-analyst-39800" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/the-future-of-business-analyst-39800" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/the-future-of-business-analyst-39800" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
-                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/the-future-of-business-analyst-39800" class="share-twitter"><i class="fab fa-twitter"></i></a>
-                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/the-future-of-business-analyst-39800" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/breaking-into-data-science-how-to-forge-your-career-path-2172" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/breaking-into-data-science-how-to-forge-your-career-path-2172" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/breaking-into-data-science-how-to-forge-your-career-path-2172" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/breaking-into-data-science-how-to-forge-your-career-path-2172" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/breaking-into-data-science-how-to-forge-your-career-path-2172" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="webinar-speaker-img">
                     <div class="speaker-bg">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar-widgets/juhi.png') ?>" alt="">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar-widgets/shikha.png') ?>" alt="">
                     </div>
                     <div class="speaker-detail">
-                        <div class="name">Juhi Anand</div>
-                        <div class="desg">Business Analyst</div>
-                        <div class="com">TCS(Tata Conusltancy Services)</div>
+                        <div class="name">Shikha Verma , PH.D.</div>
+                        <div class="desg">Data Scientist</div>
                     </div>
                 </div>
             </div>
@@ -96,7 +95,7 @@ $this->registerCss('
     width: unset;
 }
 .webinar-one-speaker4 .webinar-text h1 {
-    font-size: 55px;
+    font-size: 45px;
     font-weight: 900;
     line-height: 1.1;
 }
@@ -167,6 +166,7 @@ $this->registerCss('
     margin: auto;
     width: 250px;
     height: 250px;
+    overflow: hidden;
 }
 .webinar-one-speaker4 .webinar-speaker-img .speaker-bg img {
     display: inline-block;
@@ -366,7 +366,7 @@ $this->registerCss('
 
 @media only screen and (max-width: 575px){
     .webinar-one-speaker4 .webinar-text h1 {
-        font-size: 35px;
+        font-size: 30px;
     }
     .webinar-one-speaker4 .webinar-text p {
         font-size: 18px;
