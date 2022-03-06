@@ -782,6 +782,9 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.move-popup{
+    display: none !important;
+}
 .reward-heading {
 //    text-shadow: 0px 2px 2px black, 0px 0px 8px white;
     font-family: lora;
@@ -840,7 +843,7 @@ $this->registerCss('
     max-height: 40px;
     margin-top: 5px;
     padding: 12px 12px 12px 43px;
-    z-index:999 !Important;
+   z-index:0 !Important;
 }
 .outflex {
     display: flex;
@@ -2333,28 +2336,36 @@ div.icon span {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
-    flex-direction: column; }
-    .schedule-listing .schedule-slot-time {
+    flex-direction: column; 
+}
+.schedule-listing .schedule-slot-time {
       -webkit-box-flex: 0;
       -ms-flex: 0 0 100%;
       flex: 0 0 100%;
       max-width: 100%;
-      padding: 20px 35px; }
-    .schedule-listing .schedule-slot-info {
-      padding: 35px 40px 35px 35px;
-      border-left: 1px dashed #e5e5e5; }
-      .schedule-listing .schedule-slot-info .schedule-slot-speakers {
-        display: none; }
-  .schedule-listing-btn {
-    margin-top: 40px; }
-  .ts-schedule-nav {
-    margin-bottom: 40px; }
-    .ts-schedule-nav ul li a {
-      display: inline-block;
-      padding: 20px 20px;
-      margin: 5px 0; }
-  .schedule-tabs-item .schedule-listing-item:before, .schedule-tabs-item .schedule-listing-item:after {
-    display: none; }
+      padding: 20px 35px; 
+  }
+.schedule-listing .schedule-slot-info {
+    padding: 35px 40px 35px 35px;
+    border-left: 1px dashed #e5e5e5; 
+}
+.schedule-listing .schedule-slot-info .schedule-slot-speakers {
+    display: none; 
+}
+.schedule-listing-btn {
+    margin-top: 40px; 
+}
+.ts-schedule-nav {
+    margin-bottom: 40px; 
+}
+.ts-schedule-nav ul li a {
+  display: inline-block;
+  padding: 20px 20px;
+  margin: 5px 0; 
+}
+.schedule-tabs-item .schedule-listing-item:before, .schedule-tabs-item .schedule-listing-item:after {
+    display: none;
+}
   .schedule-tabs-item .schedule-listing-item.schedule-left {
     margin-top: 0;
     padding: 0px 110px 20px 0; }
@@ -2364,6 +2375,13 @@ div.icon span {
   .schedule-tabs-item .schedule-listing-item .schedule-slot-speakers {
     top: 5px; }
 }
+
+@media (max-width: 500px){
+    .absolute, .element-percent, .title-main{
+        height: 80vh;
+    }
+}
+
 ');
 $canLogin = Yii::$app->user->identity->type->user_type;
 $script = <<<JS
