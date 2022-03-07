@@ -1623,6 +1623,9 @@ transform: rotate(100deg);
 
 .speaker-classic .ts-speaker {
     margin-bottom: 60px;
+    max-width: 255px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .speaker-classic .ts-speaker .speaker-img {
@@ -1802,7 +1805,7 @@ transform: rotate(100deg);
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-content: center;
+    align-content: flex-start;
     margin: auto;
 }
 .out-img {
@@ -1821,7 +1824,7 @@ transform: rotate(100deg);
     color: #fff;
     text-transform: capitalize;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     width: 80%;
     overflow: hidden;
