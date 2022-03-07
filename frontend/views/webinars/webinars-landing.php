@@ -1302,6 +1302,12 @@ color: #fff !important;
     transform: translate3d(0, -2px, 0);
   }
 }
+@media (min-width: 1024px) and (max-width: 1199px){
+    .reg-img{
+        width: 30px;
+        height: 30px;
+    }
+}
 @media only screen and (max-width: 1024px){
     .reg2.reg, .reg3.reg {
         margin-left: -25px;
