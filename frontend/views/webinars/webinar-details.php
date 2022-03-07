@@ -21,7 +21,7 @@ $keywords = $webinar['title'];
 $description = 'Present-day education is radically different from that of the past. The youth are unaware of and oblivious to the importance of recognizing and embracing these changes. They are also utterly lost on their career path and have no idea where their career is taking them.';
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -36,7 +36,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -1622,6 +1622,9 @@ transform: rotate(100deg);
 
 .speaker-classic .ts-speaker {
     margin-bottom: 60px;
+    max-width: 255px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .speaker-classic .ts-speaker .speaker-img {
@@ -1801,7 +1804,7 @@ transform: rotate(100deg);
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-content: center;
+    align-content: flex-start;
     margin: auto;
 }
 .out-img {
@@ -1820,7 +1823,7 @@ transform: rotate(100deg);
     color: #fff;
     text-transform: capitalize;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     width: 80%;
     overflow: hidden;
