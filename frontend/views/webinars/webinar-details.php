@@ -14,11 +14,14 @@ $interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
 $this->title = $webinar['title'];
 $image = $webinar['image'];
+if ($webinar['slug'] == 'breaking-into-data-science-how-to-forge-your-career-path-2172') {
+    $image = 'https://eycdn.ams3.digitaloceanspaces.com/images/sharing/DeBxPEjOGdjy4pmKnK1eopqANyVYw9.jpg';
+}
 $keywords = $webinar['title'];
 $description = 'Present-day education is radically different from that of the past. The youth are unaware of and oblivious to the importance of recognizing and embracing these changes. They are also utterly lost on their career path and have no idea where their career is taking them.';
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -33,7 +36,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -47,8 +50,7 @@ Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', 
 Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var registeration_status = "' . $registeration_status . '"', \yii\web\View::POS_HEAD);
 
-function finalAmount($totalPrice, $gstAmount)
-{
+function finalAmount($totalPrice, $gstAmount) {
     if ($gstAmount) {
         $gstPercent = $gstAmount;
         if ($totalPrice > 0) {
@@ -59,8 +61,7 @@ function finalAmount($totalPrice, $gstAmount)
     return (($finalPrice == 0) ? 'Free' : '₹ ' . $finalPrice);
 }
 
-function webDate($webDate)
-{
+function webDate($webDate) {
     $date = $webDate;
     $sec = strtotime($date);
     $newDate = date('d-M', $sec);
@@ -739,8 +740,7 @@ if ($upcoming) {
 </section>
 <!-- problem widget end -->
 <?php
-function color_mod($hex, $diff)
-{
+function color_mod($hex, $diff) {
     $rgb = str_split(trim($hex, '# '), 2);
     foreach ($rgb as &$hex) {
         $dec = hexdec($hex);
@@ -755,8 +755,7 @@ function color_mod($hex, $diff)
     return '#' . implode($rgb);
 }
 
-function createPalette($color, $colorCount = 4)
-{
+function createPalette($color, $colorCount = 4) {
     $colorPalette = array();
     for ($i = 1; $i <= $colorCount; $i++) {
         if ($i == 1) {

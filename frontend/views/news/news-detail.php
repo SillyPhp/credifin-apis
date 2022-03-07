@@ -11,7 +11,7 @@ breaking news updates in hindi,breaking news updates india, 24/7 latest breaking
 $image = Url::to(Yii::$app->params->upload_directories->posts->featured_image . $newsDetail->image_location . '/' . $newsDetail->image);
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -26,7 +26,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
