@@ -1,4 +1,5 @@
 <?php
+use yii\helpers\Url;
 $this->title = ucwords(str_replace("-"," ",$s)).' Usa Govt Jobs';
 $this->params['header_dark'] = true;
 Yii::$app->view->registerJs('var keyword = "' . $s . '"', \yii\web\View::POS_HEAD);

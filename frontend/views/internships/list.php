@@ -1,4 +1,5 @@
 <?php
+use yii\helpers\Url;
 if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
     $this->title = Yii::$app->request->get('keyword') . ' internship vacancies available in ' . Yii::$app->request->get('location') . ' - ' . date('M Y');
 } elseif (Yii::$app->request->get('location')) {
