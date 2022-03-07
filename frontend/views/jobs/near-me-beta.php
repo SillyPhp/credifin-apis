@@ -1,4 +1,5 @@
 <?php
+use yii\helpers\Url;
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Url::to(Yii::$app->request->url,'https'),

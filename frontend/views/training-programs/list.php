@@ -1,4 +1,5 @@
 <?php
+use yii\helpers\Url;
 $this->title = Yii::t('frontend', 'Training Programs');
 $this->params['header_dark'] = true;
 $keywords = 'Trainings,Trainings in Ludhiana,Trainings in Jalandhar,Trainings in Chandigarh,Government Trainings,IT Trainings,Top 10 Websites for Training Programs,Top lists of Trainings Program sites,Trainings Program services in india,top 50 Trainings Program portals in india,Trainings Program in india for freshers';
