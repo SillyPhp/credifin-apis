@@ -9,8 +9,8 @@ Yii::$app->view->registerJs('var getLender = "' .$getLender. '"', \yii\web\View:
 Yii::$app->view->registerJs('var userID = "' .Yii::$app->user->identity->user_enc_id. '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var default_country = "' .$india. '"', \yii\web\View::POS_HEAD);
 $cookies = Yii::$app->request->cookies;
-//$ref_id = $cookies->get('ref_loan_id');
-Yii::$app->view->registerJs('var refferal_id = "' . $ref_id . '"', \yii\web\View::POS_HEAD);
+$ref_id = $cookies->get('ref_loan_id');
+Yii::$app->view->registerJs('var refferal_id = "' . ((!empty($ref_id)) ? $ref_id : $ref_code) . '"', \yii\web\View::POS_HEAD);
 ?>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <section class="bg-blue">
