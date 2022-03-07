@@ -103,6 +103,7 @@ img + div{
 }
 .cont a {
     text-decoration: none;
+    color: #fff;
 }
 .join-btn {
 	padding: 10px 16px;
