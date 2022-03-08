@@ -332,10 +332,7 @@ if (Yii::$app->params->options->showSchema) {
                 "@type": "Place",
                 "address": {
                     "@type": "PostalAddress",
-                    "addressLocality": "<?= $location ?>",
-                    "addressRegion": "",
-                    "postalCode": "",
-                    "streetAddress": ""
+                    "addressLocality": "<?= $location ?>"
                 }
             }
         }
