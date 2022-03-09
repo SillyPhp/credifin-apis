@@ -166,15 +166,15 @@ echo $this->render('/widgets/jobs-by-tag');
         ?>
     </div>
 </section>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
-            </div>
-        </div>
-    </div>
-</section>
+<!--<section>-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12">-->
+<!--                <= $this->render('/widgets/mustache/featured-employers-carousel'); ?>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
 
 <?php
 if (Yii::$app->user->isGuest) {
@@ -288,7 +288,7 @@ $this->registerCss('
     padding:20px 0 50px;
     text-transform:capitalize;
     background:#ecf5fe;
-    margin-top:30px;
+    margin-top:0px;
 }
 .footer{
     margin-top:0px !important;
