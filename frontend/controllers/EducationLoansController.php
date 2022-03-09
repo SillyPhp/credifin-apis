@@ -99,7 +99,8 @@ class EducationLoansController extends Controller {
             return $this->render('apply-general-loan-form', [
                 'india' => $india,
                 'lead_id' => $lead_id,
-                'action_name' => $action_name
+                'action_name' => $action_name,
+                'ref_code'=> $referralData->code,
             ]);
         else:
             throw new HttpException(401, Yii::t('frontend', 'Sorry, You Are Unauthorized, This Section Can Only Be View In Candidate Login'));
