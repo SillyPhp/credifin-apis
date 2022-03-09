@@ -1,4 +1,4 @@
-<script id="webinar_one_speaker1" type="text/template">
+<script id="temp_<?=$webinar_enc_id ?>" type="text/template">
     <section class="webinar-one-speaker">
         <div class="container">
         <div class="row">
@@ -320,3 +320,8 @@ a.register-btn:hover i{
     }
 }
 ');
+$script = <<<JS
+
+    getWebinarDetails('$webinar_enc_id');
+JS;
+$this->registerJs($script);

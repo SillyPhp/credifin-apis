@@ -2,7 +2,7 @@
 
 use yii\helpers\Url;
 ?>
-<!-- <script id="webinar_one_speaker2" type="text/javascript">
+<script id="temp_<?=$webinar_enc_id ?>" type="text/javascript">
     <section class="webinar-one-speaker1">
         <div class="green-strip"></div>
         <div class="green-strip"></div>
@@ -59,60 +59,60 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-</script> -->
+</script>
 
-<section class="webinar-one-speaker1">
-    <div class="green-strip"></div>
-    <div class="green-strip"></div>
-    <div class="date-time">
-        <div class="time">
-            4PM - 5PM
-        </div>
-        <div class="date">
-            March 14, 2022
-        </div>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-5">
-                <div class="speaker-details">
-                    <div class="speaker-image">
-                        <div class="inside-div">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar-widgets/Ovais.png') ?>">
-                        </div>
-                    </div>
-                    <div class="speaker-name">
-                        <h5>Speaker:</h5>
-                        <h3>Ovais Rehman</h3>
-                        <h4>Human Resource Manager</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-7">
-                <div class="webinar-text">
-                    <h1>HR Trends For 2022 : Rethink your workplace</h1>
-                    <div class="date-time">
-                        <div class="time">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/time-icon.png') ?>">4PM - 5PM
-                        </div>
-                        <div class="date">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/calendar-icon.png') ?>">March 14, 2022
-                        </div>
-                    </div>
-                    <p>E-certificates will be provided to all the registered participants.</p>
-                    <a href="/webinar/hr-trends-for-2022-rethink-your-workplace-39828" target="_blank" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
-                    <div class="share-bar">
-                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/hr-trends-for-2022-rethink-your-workplace-39828" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/hr-trends-for-2022-rethink-your-workplace-39828" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/hr-trends-for-2022-rethink-your-workplace-39828" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
-                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/hr-trends-for-2022-rethink-your-workplace-39828" class="share-twitter"><i class="fab fa-twitter"></i></a>
-                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/hr-trends-for-2022-rethink-your-workplace-39828" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!--<section class="webinar-one-speaker1">-->
+<!--    <div class="green-strip"></div>-->
+<!--    <div class="green-strip"></div>-->
+<!--    <div class="date-time">-->
+<!--        <div class="time">-->
+<!--            4PM - 5PM-->
+<!--        </div>-->
+<!--        <div class="date">-->
+<!--            March 14, 2022-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-sm-5">-->
+<!--                <div class="speaker-details">-->
+<!--                    <div class="speaker-image">-->
+<!--                        <div class="inside-div">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/webinar-widgets/Ovais.png') ?><!--">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="speaker-name">-->
+<!--                        <h5>Speaker:</h5>-->
+<!--                        <h3>Ovais Rehman</h3>-->
+<!--                        <h4>Human Resource Manager</h4>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-sm-7">-->
+<!--                <div class="webinar-text">-->
+<!--                    <h1>HR Trends For 2022 : Rethink your workplace</h1>-->
+<!--                    <div class="date-time">-->
+<!--                        <div class="time">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/webinar/time-icon.png') ?><!--">4PM - 5PM-->
+<!--                        </div>-->
+<!--                        <div class="date">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/webinar/calendar-icon.png') ?><!--">March 14, 2022-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <p>E-certificates will be provided to all the registered participants.</p>-->
+<!--                    <a href="/webinar/hr-trends-for-2022-rethink-your-workplace-39828" target="_blank" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>-->
+<!--                    <div class="share-bar">-->
+<!--                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/hr-trends-for-2022-rethink-your-workplace-39828" class="share-fb"><i class="fab fa-facebook-f"></i></a>-->
+<!--                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/hr-trends-for-2022-rethink-your-workplace-39828" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>-->
+<!--                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/hr-trends-for-2022-rethink-your-workplace-39828" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>-->
+<!--                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/hr-trends-for-2022-rethink-your-workplace-39828" class="share-twitter"><i class="fab fa-twitter"></i></a>-->
+<!--                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/hr-trends-for-2022-rethink-your-workplace-39828" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
 <?php
 $this->registerCss('
 .webinar-one-speaker1 img{
@@ -430,3 +430,8 @@ a.register-btn:hover i{
     }
 }
 ');
+$script = <<<JS
+
+    getWebinarDetails('$webinar_enc_id');
+JS;
+$this->registerJs($script);

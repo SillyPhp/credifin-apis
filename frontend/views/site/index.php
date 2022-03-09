@@ -162,8 +162,12 @@ $this->params['header_dark'] = false;
 <?= $this->render('/widgets/product-offerings') ?>
 
 <?php
-        echo $this->render('/webinars/webinar-carousel');
-   ?>
+    if($data = Yii::$app->webinarSlides->check()) {
+        echo $this->render('/webinars/webinar-carousel', [
+                'webinars'=>$data,
+        ]);
+    }
+?>
 
 
 

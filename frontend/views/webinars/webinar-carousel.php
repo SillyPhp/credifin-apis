@@ -7,13 +7,18 @@
 
   <!-- Wrapper for slides -->
   <div class="carousel-inner" role="listbox">
-    <div class="item active">
-      <?= $this->render('/widgets/webinar-templates/webinar_one_speaker4') ?>
-    </div>
-    <div class="item">
-      <?= $this->render('/widgets/webinar-templates/webinar_one_speaker2') ?>
-    </div>
-
+      <?php
+            foreach($webinars as $webinar){
+      ?>
+        <div class="item webiItems">
+            <div id="<?= $webinar['webinar_enc_id'] ?>"></div>
+            <?= $this->render($webinar['template_path'].'/'.$webinar['template_name'],  [
+                    'webinar_enc_id'=> $webinar['webinar_enc_id'],
+            ]) ?>
+        </div>
+      <?php
+         }
+    ?>
     <!-- more slides here -->
   </div>
 
@@ -113,7 +118,30 @@ background-repeat: no-repeat;
   }
 }
 ');
+$script = <<<JS
+function getWebinarDetails(id){
+    $.ajax({
+        url: 'webinars/webinar-widget-detail',
+        method: 'POST',
+        data: {'webinar_enc_id': id},
+        success: function(response){
+            let temp = $('#temp_'+id).html()
+            $('#'+id).html(Mustache.render(temp, response.detail))
+        },
+        complete: function (){
+            let webiItems = document.querySelectorAll('.webiItems') 
+            if($(webiItems[0]).hasClass('active')){
+               return false 
+            }else{
+                $(webiItems[0]).addClass('active');
+            }
+            console.log(webiItems);
+        }   
+    })
+}
 
+JS;
+$this->registerJs($script)
 ?>
 
 
