@@ -1395,7 +1395,7 @@ button.lc-item-video-menu {
     }
     .job-single-sec .job-overview ul li {
         float: left;
-        width: 33.334%;
+        width: 33.33%;
         transition: .2s all linear;
         display: flex;
         padding: 0 0 0 10px;
