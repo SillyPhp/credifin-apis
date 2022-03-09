@@ -47,7 +47,7 @@ function webDate($webDate)
     </div>
 </section>
 
-
+<?= $this->render('/widgets/webinar-templates/webinar_two_speaker1'); ?>
 <?php
 if ($upcomingWebinar) {
 ?>

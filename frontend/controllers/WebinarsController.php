@@ -843,7 +843,7 @@ class WebinarsController extends Controller
 
         $detail = Webinar::find()
             ->alias('a')
-            ->select(['a.webinar_enc_id', 'a.title', 'a.slug'])
+            ->select(['a.webinar_enc_id', 'a.name', 'a.title', 'a.slug'])
             ->joinWith(['webinarEvents b'=>function($b) use ($date_now){
                 $b->select(['b.event_enc_id','b.webinar_enc_id',
                     "DATE_FORMAT(b.start_datetime, '%M %d, %Y') event_date",
