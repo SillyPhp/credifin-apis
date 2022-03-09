@@ -41,9 +41,10 @@ class IndividualImageForm extends Model
                 $base_path = Yii::$app->params->upload_directories->users->image . $user->image_location .'/';
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $user->image = $utilitiesModel->encrypt() . '.' . $this->image->extension;
+                $type = $this->image->type;
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFile($this->image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $user->image, "public");
+                $result = $my_space->uploadFileSources($this->image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $user->image, "public",['params' => ['ContentType' => $type]]);
                 if ($result) {
                     if ($user->validate() && $user->save()) {
                         return true;

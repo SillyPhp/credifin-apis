@@ -65,11 +65,12 @@ class CreateCompany extends Model
         $model->status = 1;
         if (!empty($this->logo)):
             $model->logo = $utilitiesModel->encrypt() . '.' . $this->logo->extension;
+            $type = $this->logo->type;
             $model->logo_location = Yii::$app->getSecurity()->generateRandomString();
             $base_path = Yii::$app->params->upload_directories->unclaimed_organizations->logo . $model->logo_location;
             $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
             $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-            $my_space->uploadFile($this->logo->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $model->logo, "public");
+            $my_space->uploadFileSources($this->logo->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $model->logo, "public",['params' => ['ContentType' => $type]]);
         endif;
         if ($model->save()) {
             $username = new Usernames();
