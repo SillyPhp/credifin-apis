@@ -309,7 +309,8 @@ $this->render('/widgets/employer_applications/top-banner', [
                         <?php
                         if (!empty($data1['applicationSkills']) || !empty($data2['applicationSkills'])):
                             echo $this->render('/widgets/employer_applications/skills', [
-                                'skills' => (($data1['applicationSkills']) ? $data1['applicationSkills'] : $data2['applicationSkills'])
+                                'skills' => (($data1['applicationSkills']) ? $data1['applicationSkills'] : $data2['applicationSkills']),
+                                'type'=>$type
                             ]);
                         endif;
                         ?>
@@ -1395,7 +1396,7 @@ button.lc-item-video-menu {
     }
     .job-single-sec .job-overview ul li {
         float: left;
-        width: 33.334%;
+        width: 33.33%;
         transition: .2s all linear;
         display: flex;
         padding: 0 0 0 10px;
@@ -1689,7 +1690,7 @@ button.lc-item-video-menu {
         padding: 10px;
         position: relative;
     }
-    .tags-bar > span {
+    .tags-bar > span, .tags-bar > .skill-chips {
         float: left;
         background: #f4f5fa;
         -webkit-border-radius: 8px;

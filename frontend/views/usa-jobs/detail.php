@@ -522,7 +522,7 @@ margin:auto;
 }
 .job-single-sec .job-overview ul li {
     float: left;
-    width: 33.334%;
+    width: 33.33%;
     padding-left: 50px;
 }
 .job-single-sec .job-overview ul li i {
