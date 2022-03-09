@@ -631,18 +631,29 @@ $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
         return bottomOfPage;
     }
 
-    function clearFilters() {
-        document.querySelector('#upcoming').checked = true;
-        document.querySelector('#all-pay').checked = true;
-        data = {...data, status: 'upcoming', payment: 'all', page: pageNo}
+    function clearFilters(customized = "") {
+        window.history.pushState('', 'Webinars', '/webinars/list');
+        if(customized == 'past'){
+            document.querySelector('#past').checked = true;
+            document.querySelector('#all-pay').checked = true;
+            data = {...data, status: 'past', payment: 'all', page: pageNo}
+        } else {
+            document.querySelector('#upcoming').checked = true;
+            document.querySelector('#all-pay').checked = true;
+            data = {...data, status: 'upcoming', payment: 'all', page: pageNo}
+        }
         pageNo = 1;
         if (loadMoreCards == false) {
             loadMoreCards = true;
         }
         getAllWebinars()
     }
-
-    clearFilters()
+    var url = new URL(window.location.href);
+    if (url.searchParams.get('past') == 'true') {
+        clearFilters('past');
+    } else{
+        clearFilters();
+    }
 
 
 </script>
