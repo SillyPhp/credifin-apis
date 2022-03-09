@@ -14,11 +14,14 @@ $interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
 $this->title = $webinar['title'];
 $image = $webinar['image'];
+if ($webinar['slug'] == 'breaking-into-data-science-how-to-forge-your-career-path-2172') {
+    $image = 'https://eycdn.ams3.digitaloceanspaces.com/images/sharing/DeBxPEjOGdjy4pmKnK1eopqANyVYw9.jpg';
+}
 $keywords = $webinar['title'];
 $description = 'Present-day education is radically different from that of the past. The youth are unaware of and oblivious to the importance of recognizing and embracing these changes. They are also utterly lost on their career path and have no idea where their career is taking them.';
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -33,7 +36,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -47,8 +50,7 @@ Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', 
 Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var registeration_status = "' . $registeration_status . '"', \yii\web\View::POS_HEAD);
 
-function finalAmount($totalPrice, $gstAmount)
-{
+function finalAmount($totalPrice, $gstAmount) {
     if ($gstAmount) {
         $gstPercent = $gstAmount;
         if ($totalPrice > 0) {
@@ -59,8 +61,7 @@ function finalAmount($totalPrice, $gstAmount)
     return (($finalPrice == 0) ? 'Free' : '₹ ' . $finalPrice);
 }
 
-function webDate($webDate)
-{
+function webDate($webDate) {
     $date = $webDate;
     $sec = strtotime($date);
     $newDate = date('d-M', $sec);
@@ -739,8 +740,7 @@ if ($upcoming) {
 </section>
 <!-- problem widget end -->
 <?php
-function color_mod($hex, $diff)
-{
+function color_mod($hex, $diff) {
     $rgb = str_split(trim($hex, '# '), 2);
     foreach ($rgb as &$hex) {
         $dec = hexdec($hex);
@@ -755,8 +755,7 @@ function color_mod($hex, $diff)
     return '#' . implode($rgb);
 }
 
-function createPalette($color, $colorCount = 4)
-{
+function createPalette($color, $colorCount = 4) {
     $colorPalette = array();
     for ($i = 1; $i <= $colorCount; $i++) {
         if ($i == 1) {
@@ -782,6 +781,9 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.move-popup{
+    display: none !important;
+}
 .reward-heading {
 //    text-shadow: 0px 2px 2px black, 0px 0px 8px white;
     font-family: lora;
@@ -840,7 +842,7 @@ $this->registerCss('
     max-height: 40px;
     margin-top: 5px;
     padding: 12px 12px 12px 43px;
-    z-index:999 !Important;
+   z-index:0 !Important;
 }
 .outflex {
     display: flex;
@@ -1620,6 +1622,9 @@ transform: rotate(100deg);
 
 .speaker-classic .ts-speaker {
     margin-bottom: 60px;
+    max-width: 255px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .speaker-classic .ts-speaker .speaker-img {
@@ -1799,7 +1804,7 @@ transform: rotate(100deg);
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-content: center;
+    align-content: flex-start;
     margin: auto;
 }
 .out-img {
@@ -1818,7 +1823,7 @@ transform: rotate(100deg);
     color: #fff;
     text-transform: capitalize;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     width: 80%;
     overflow: hidden;
@@ -2333,28 +2338,36 @@ div.icon span {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
-    flex-direction: column; }
-    .schedule-listing .schedule-slot-time {
+    flex-direction: column; 
+}
+.schedule-listing .schedule-slot-time {
       -webkit-box-flex: 0;
       -ms-flex: 0 0 100%;
       flex: 0 0 100%;
       max-width: 100%;
-      padding: 20px 35px; }
-    .schedule-listing .schedule-slot-info {
-      padding: 35px 40px 35px 35px;
-      border-left: 1px dashed #e5e5e5; }
-      .schedule-listing .schedule-slot-info .schedule-slot-speakers {
-        display: none; }
-  .schedule-listing-btn {
-    margin-top: 40px; }
-  .ts-schedule-nav {
-    margin-bottom: 40px; }
-    .ts-schedule-nav ul li a {
-      display: inline-block;
-      padding: 20px 20px;
-      margin: 5px 0; }
-  .schedule-tabs-item .schedule-listing-item:before, .schedule-tabs-item .schedule-listing-item:after {
-    display: none; }
+      padding: 20px 35px; 
+  }
+.schedule-listing .schedule-slot-info {
+    padding: 35px 40px 35px 35px;
+    border-left: 1px dashed #e5e5e5; 
+}
+.schedule-listing .schedule-slot-info .schedule-slot-speakers {
+    display: none; 
+}
+.schedule-listing-btn {
+    margin-top: 40px; 
+}
+.ts-schedule-nav {
+    margin-bottom: 40px; 
+}
+.ts-schedule-nav ul li a {
+  display: inline-block;
+  padding: 20px 20px;
+  margin: 5px 0; 
+}
+.schedule-tabs-item .schedule-listing-item:before, .schedule-tabs-item .schedule-listing-item:after {
+    display: none;
+}
   .schedule-tabs-item .schedule-listing-item.schedule-left {
     margin-top: 0;
     padding: 0px 110px 20px 0; }
@@ -2364,6 +2377,13 @@ div.icon span {
   .schedule-tabs-item .schedule-listing-item .schedule-slot-speakers {
     top: 5px; }
 }
+
+@media (max-width: 500px){
+    .absolute, .element-percent, .title-main{
+        height: 80vh;
+    }
+}
+
 ');
 $canLogin = Yii::$app->user->identity->type->user_type;
 $script = <<<JS

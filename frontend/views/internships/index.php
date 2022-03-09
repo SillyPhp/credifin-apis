@@ -186,15 +186,15 @@ echo $this->render('/widgets/internships-by-tag');
         ?>
     </div>
 </section>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
-            </div>
-        </div>
-    </div>
-</section>
+<!--<section>-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12">-->
+<!--                <= $this->render('/widgets/mustache/featured-employers-carousel'); ?>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
 
 <!--<section>-->
 <!--    <div class="container">-->
@@ -242,9 +242,9 @@ if (Yii::$app->user->isGuest) {
                 <ul class="quick-links" id="b-cities">
                     <?php foreach ($cities as $c) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name']); ?>"
+                            <a href="<?= Url::to('/internships/list?company=&keyword=&location=' . $c['name']); ?>"
                                title="Jobs in <?= $c['name']; ?>">
-                                Jobs in <?= $c['name']; ?>
+                                Internships in <?= $c['name']; ?>
                             </a>
                         </li>
                     <?php } ?>
@@ -256,7 +256,7 @@ if (Yii::$app->user->isGuest) {
                 <ul class="quick-links" id="internships">
                     <?php foreach ($internship_profiles as $ip) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name']); ?>"
+                            <a href="<?= Url::to('/internships/list?company=&location=&keyword=' . $ip['name']); ?>"
                                title="<?= $ip['name']; ?> Internships">
                                 <?= $ip['name']; ?> Internships
                             </a>
@@ -322,7 +322,7 @@ font-weight: 100;}
     padding:20px 0 50px;
     text-transform:capitalize;
     background:#ecf5fe;
-    margin-top:30px;
+    margin-top:0px;
 }
 .footer{
     margin-top:0px !important;

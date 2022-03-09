@@ -144,6 +144,11 @@ class SiteController extends Controller
             if ($dsaRefId):
                 $individualsUser->assignedDsaService(Yii::$app->user->identity->user_enc_id,$dsaRefId);
             endif;
+            $referralModel = new \common\models\crud\Referral();
+            $referralModel->user_enc_id = $referralModel->created_by = Yii::$app->user->identity->user_enc_id;
+            if (!$referralModel->create()) {
+                return false;
+            }
             return $this->render('auth-varify', ['credentialsSetup' => $credentialsSetup]);
         } else {
             $session = Yii::$app->session;
