@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 
 ?>
-<script id="webinar_two_speaker2" type="text/template">
+<script id="temp_<?=$webinar_enc_id ?>" type="text/template">
     <section class="webinar-speaker1">
         <div class="container">
             <div class="row">
@@ -311,3 +311,8 @@ color: #25D366 !important;
     }
 }
 ');
+$script = <<<JS
+
+    getWebinarDetails('$webinar_enc_id');
+JS;
+$this->registerJs($script);

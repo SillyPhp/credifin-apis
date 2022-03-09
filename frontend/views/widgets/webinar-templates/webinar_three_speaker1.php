@@ -1,4 +1,4 @@
-<script id="webinar_three_speaker1" type="text/javascript">
+<script id="temp_<?=$webinar_enc_id ?>" type="text/javascript">
     <section class="webinar-three-speaker">
     <div class="container">
         <div class="row">
@@ -328,4 +328,10 @@ color: #25D366 !important;
             height: 80px;
         }
     }
-') ?>
+');
+$script = <<<JS
+
+    getWebinarDetails('$webinar_enc_id');
+JS;
+$this->registerJs($script);
+?>
