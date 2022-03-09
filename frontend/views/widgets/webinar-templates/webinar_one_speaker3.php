@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 
 ?>
-<!-- <script id="webinar    _one_speaker3" type="text/template">
+<script id="temp_<?=$webinar_enc_id ?>" type="text/template">
 <section class="webinar-one-speaker2">
     <div class="container">
         <div class="row">
@@ -59,59 +59,59 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-</script> -->
+</script>
 
-<section class="webinar-one-speaker2">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="webinar-text">
-                    <h5>WEBINAR</h5>
-                    <h1>How to Start Your Career in Digital Marketing in 2022</h1>
-                    <p>E-certificates will be provided to all the registered participants.</p>
-                    <a href="/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" target="_blank" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
-                    <div class="share-bar">
-                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
-                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" class="share-twitter"><i class="fab fa-twitter"></i></a>
-                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                    <div class="date-time">
-                        <div class="arrows-icons">
-                            <i class="fa fa-chevron-right"></i>
-                            <i class="fa fa-chevron-right"></i>
-                            <i class="fa fa-chevron-right"></i>
-                        </div>
-                        <div class="date">
-                            <p>Date</p>
-                            <p>28 February</p>
-                        </div>
-                        <div class="time">
-                            <p>Time</p>
-                            <p>4PM - 5PM</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="webinar-img">
-                    <div class="speaker-img-frame">
-                        <div class="upper-sqr"></div>
-                        <div class="middle-sqr">
-                            <img src="<?= Url::to('@eyAssets/images/pages/webinar-widgets/surojit.png') ?>">
-                        </div>
-                        <div class="lower-sqr"></div>
-                        <div class="name-speaker">
-                            <p>Surojit Mahato</p>
-                            <p>Marketing Professional</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<!--<section class="webinar-one-speaker2">-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-sm-6">-->
+<!--                <div class="webinar-text">-->
+<!--                    <h5>WEBINAR</h5>-->
+<!--                    <h1>How to Start Your Career in Digital Marketing in 2022</h1>-->
+<!--                    <p>E-certificates will be provided to all the registered participants.</p>-->
+<!--                    <a href="/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" target="_blank" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>-->
+<!--                    <div class="share-bar">-->
+<!--                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" class="share-fb"><i class="fab fa-facebook-f"></i></a>-->
+<!--                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>-->
+<!--                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>-->
+<!--                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" class="share-twitter"><i class="fab fa-twitter"></i></a>-->
+<!--                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/how-to-start-your-career-in-digital-marketing-in-2022-82584" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>-->
+<!--                    </div>-->
+<!--                    <div class="date-time">-->
+<!--                        <div class="arrows-icons">-->
+<!--                            <i class="fa fa-chevron-right"></i>-->
+<!--                            <i class="fa fa-chevron-right"></i>-->
+<!--                            <i class="fa fa-chevron-right"></i>-->
+<!--                        </div>-->
+<!--                        <div class="date">-->
+<!--                            <p>Date</p>-->
+<!--                            <p>28 February</p>-->
+<!--                        </div>-->
+<!--                        <div class="time">-->
+<!--                            <p>Time</p>-->
+<!--                            <p>4PM - 5PM</p>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-sm-6">-->
+<!--                <div class="webinar-img">-->
+<!--                    <div class="speaker-img-frame">-->
+<!--                        <div class="upper-sqr"></div>-->
+<!--                        <div class="middle-sqr">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/webinar-widgets/surojit.png') ?><!--">-->
+<!--                        </div>-->
+<!--                        <div class="lower-sqr"></div>-->
+<!--                        <div class="name-speaker">-->
+<!--                            <p>Surojit Mahato</p>-->
+<!--                            <p>Marketing Professional</p>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
 
 
 <?php $this->registerCss('
@@ -441,4 +441,10 @@ use yii\helpers\Url;
         }
     }
 
-') ?>
+');
+$script = <<<JS
+
+    getWebinarDetails('$webinar_enc_id');
+JS;
+$this->registerJs($script);
+?>

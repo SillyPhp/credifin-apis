@@ -321,7 +321,6 @@ a.register-btn:hover i{
 }
 ');
 $script = <<<JS
-
     getWebinarDetails('$webinar_enc_id');
 JS;
 $this->registerJs($script);
