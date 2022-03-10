@@ -46,10 +46,11 @@ class ProfilePicture extends Model
             $base_path = Yii::$app->params->upload_directories->users->image . $user->image_location . '/';
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $user->image = $utilitiesModel->encrypt() . '.' . $this->profile_image->extension;
+            $type = $this->profile_image->type;
             if ($user->update()) {
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFile($this->profile_image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $user->image, "public");
+                $result = $my_space->uploadFileSources($this->profile_image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $user->image, "public",['params' => ['ContentType' => $type]]);
                 if ($result) {
                     return $user->user_enc_id;
                 } else {
@@ -79,10 +80,11 @@ class ProfilePicture extends Model
             $base_path = Yii::$app->params->upload_directories->organizations->logo . $user->logo_location . '/';
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $user->logo = $utilitiesModel->encrypt() . '.' . $this->profile_image->extension;
+            $type = $this->profile_image->type;
             if ($user->update()) {
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFile($this->profile_image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $user->logo, "public");
+                $result = $my_space->uploadFileSources($this->profile_image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $user->logo, "public",['params' => ['ContentType' => $type]]);
                 if ($result) {
                     return $user->organization_enc_id;
                 } else {
