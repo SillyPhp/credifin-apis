@@ -2,7 +2,7 @@
 
 use yii\helpers\Url;
 ?>
-<!-- <script id="temp_<?=$webinar_enc_id ?>" type="text/javascript"> -->
+<script id="temp_<?=$webinar_enc_id ?>" type="text/javascript">
     <section class="webinar-one-speaker1" id="web-one-speak2">
         <div class="green-strip"></div>
         <div class="green-strip"></div>

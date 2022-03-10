@@ -4,7 +4,7 @@ use yii\helpers\Url;
 
 ?>
 <script id="temp_<?=$webinar_enc_id ?>" type="text/template">
-    <section class="webinar-speaker1">
+    <section class="webinar-speaker1" id="web-two-speak2">
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6 web-txt">
@@ -50,11 +50,11 @@ use yii\helpers\Url;
 </script>
 <?php
 $this->registerCss('
-.two-speakers-img img
+#web-two-speak2 .two-speakers-img img
 {
 width: 100%;
 }
-.webinar-speaker1{
+#web-two-speak2{
     background: url(/assets/themes/ey/images/pages/webinar/circle.png) -6% -19%, url(/assets/themes/ey/images/pages/webinar/circle.png) 100% -11%, url(/assets/themes/ey/images/pages/webinar/circle.png) 38% 170%, url(/assets/themes/ey/images/pages/webinar/webinar-bg.png);
     min-height: 550px;
     background-repeat: no-repeat;
@@ -63,17 +63,17 @@ width: 100%;
     align-items: center;
     padding-bottom: 30px;
 }
-.web-text{
+#web-two-speak2 .web-text{
     max-width: 400px;
 }
-.web-text h1 {
+#web-two-speak2 .web-text h1 {
     color: #fff;
     font-family: Roboto;
 }
-.date-time img {
+#web-two-speak2 .date-time img {
     margin-right: 10px;
 }
-.date-time span {
+#web-two-speak2 .date-time span {
     display: block;
     line-height: 23px;
     font-family: farro;
@@ -82,14 +82,14 @@ width: 100%;
     font-size: 20px;
     font-weight: 600;
 }
-.web-text p {
+#web-two-speak2 .web-text p {
     line-height: 22px;
     color: #fff;
     font-size: 16px;
     font-family: roboto;
     margin: 22px 0 0 0;
 }
-a.register-btn {
+#web-two-speak2 a.register-btn {
     background: linear-gradient(91.16deg, #FFBB54 -43.72%, #CB650C 125.14%, #DB7E2E 125.14%);
     border-radius: 27px;
     font-size: 16px;
@@ -99,22 +99,22 @@ a.register-btn {
     color: #fff;
     transition: all linear .3s;
 }
-a.register-btn i{
+#web-two-speak2 a.register-btn i{
     transition: all linear .3s;
 }
-a.register-btn:hover{
+#web-two-speak2 a.register-btn:hover{
     color: #fff;
     transition: all linear .3s;
 }
-a.register-btn:hover i{
+#web-two-speak2 a.register-btn:hover i{
     margin-left: 15px;
     transition: all linear .3s;
 }
-.share-bar {
+#web-two-speak2 .share-bar {
     margin-top: 20px;
 }
 
-.share-bar a {
+#web-two-speak2 .share-bar a {
     display: inline-block;
     font-size: 18px;
     color: #fff;
@@ -130,69 +130,69 @@ a.register-btn:hover i{
     margin-left: 10px;
 }
 
-.share-bar .fab, .share-bar .far {
+#web-two-speak2 .share-bar .fab, #web-two-speak2 .share-bar .far {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-.share-bar a:not(.share-fb) {
+#web-two-speak2 .share-bar a:not(.share-fb) {
     margin-left: 7px;
 }
 
-.share-bar a.share-fb {
+#web-two-speak2 .share-bar a.share-fb {
     color: #3b5998;
 }
 
-.share-bar a.share-twitter {
+#web-two-speak2 .share-bar a.share-twitter {
     color: #E60023;
 }
 
-.share-bar a.share-linkedin {
+#web-two-speak2 .share-bar a.share-linkedin {
     color: #25D366;
 }
 
-.share-bar a.tg-tele {
+#web-two-speak2 .share-bar a.tg-tele {
     color: #0088cc;
     border-color: #0088cc;
 }
 
-.share-bar a:hover {
+#web-two-speak2 .share-bar a:hover {
     color: #fff;
     transition: 0.2s all ease-in;
     font-size: 12px;
     border-radius: 20px;
 }
-.share-whatsapp{
+#web-two-speak2 .share-whatsapp{
 color: #25D366 !important;
 }
-.share-bar a.share-whatsapp:hover{
+#web-two-speak2 .share-bar a.share-whatsapp:hover{
     background-color: #25D366 !important;
     color: #fff !important;
     
 }
-.share-bar a.share-fb:hover {
+#web-two-speak2 .share-bar a.share-fb:hover {
     background-color: #3b5998;
 }
 
-.share-bar a.share-twitter:hover {
+#web-two-speak2 .share-bar a.share-twitter:hover {
     background-color: #E60023;
 }
 
-.share-bar a.share-linkedin:hover {
+#web-two-speak2 .share-bar a.share-linkedin:hover {
     background-color: #25D366;
 }
 
-.share-bar a.tg-tele:hover {
+#web-two-speak2 .share-bar a.tg-tele:hover {
     background-color: #0088cc;
     border-color: #0088cc;
 }
-.two-speakers {
+#web-two-speak2 .two-speakers {
     width: 400px;
     position: relative;
 }
-.two-speakers-img {
+#web-two-speak2 .two-speakers-img {
     background: #000;
     border: 6px solid #fff;
     width: 200px;
@@ -201,7 +201,7 @@ color: #25D366 !important;
     position: relative;
     z-index: 2;
 }
-.two-speakers-text {
+#web-two-speak2 .two-speakers-text {
     z-index: 1;
     transform: translateY(-50%);
     background-color: #fff;
@@ -213,14 +213,14 @@ color: #25D366 !important;
     top: 50%;
     padding: 10px 40px;
 }
-.two-speakers-text h3 {
+#web-two-speak2 .two-speakers-text h3 {
     font-size: 18px;
     margin: 0px;
     font-family: roboto;
     font-weight: 600;
     margin-bottom: 4px;
 }
-.two-speakers-text p {
+#web-two-speak2 .two-speakers-text p {
     line-height: 16px;
     font-size: 13px;
     margin: 0px;
@@ -228,84 +228,84 @@ color: #25D366 !important;
     font-family: roboto;
     font-weight: 500;
 }
-.two-speakers:nth-child(2) .two-speakers-img {
+#web-two-speak2 .two-speakers:nth-child(2) .two-speakers-img {
     margin-left: auto;
 }
-.two-speakers:nth-child(2) .two-speakers-text {
+#web-two-speak2 .two-speakers:nth-child(2) .two-speakers-text {
     left: 0;
 }
 @media screen and (max-width: 992px) and (min-width: 768px) {
-    .two-speakers-text {
+    #web-two-speak2 .two-speakers-text {
         padding: 10px 45px;
     }
-    .two-speakers-img {
+    #web-two-speak2 .two-speakers-img {
         width: 170px;
         height: 170px;
     }
-    .two-speakers {
+    #web-two-speak2 .two-speakers {
         width: 360px;
     }
 }
 @media screen and (max-width: 767px) and (min-width: 470px) {
-    .web-txt {
+    #web-two-speak2 .web-txt {
         text-align: center;
     }
-    .two-speakers-img {
+    #web-two-speak2 .two-speakers-img {
         width: 170px;
         height: 170px;
     }
-    .two-speakers {
+    #web-two-speak2 .two-speakers {
         margin-top: 30px;
         width: 360px;
     }
-    .date-time span {
+    #web-two-speak2 .date-time span {
         font-size: 16px;
         text-align: left;
     }
-    .date-time {
+    #web-two-speak2 .date-time {
         display: inline-block;
     }
-    .webinar-speaker1 {
+    #web-two-speak2 {
         background: url(/assets/themes/ey/images/pages/webinar/circle.png) -6% -19%, url(/assets/themes/ey/images/pages/webinar/circle.png) 100% -11%, url(/assets/themes/ey/images/pages/webinar/circle.png) 38% 170%, url(/assets/themes/ey/images/pages/webinar/webinar-bg.png)16% 15%;
         background-repeat: no-repeat;
         background-size: 16%, 11%, 19%, cover;
     }
 }
 @media screen and (max-width: 469px) and (min-width: 320px) {
-    .two-speakers-text {
+    #web-two-speak2 .two-speakers-text {
         text-align: right;
     }
-    .two-speakers-text h3 {
+    #web-two-speak2 .two-speakers-text h3 {
         font-size: 15px;
     }
-    .web-txt {
+    #web-two-speak2 .web-txt {
         text-align: center;
     }
-    .two-speakers-img {
+    #web-two-speak2 .two-speakers-img {
         width: 125px;
         height: 125px;
     }
-    .two-speakers {
+    #web-two-speak2 .two-speakers {
         margin-top: 30px;
         width: 290px;
     }
-    .date-time span {
+    #web-two-speak2 .date-time span {
         font-size: 16px;
         text-align: left;
     }
-    .date-time {
+    #web-two-speak2 .date-time {
         display: inline-block;
     }
-    .webinar-speaker1 {
+    #web-two-speak2 {
         background: url(/assets/themes/ey/images/pages/webinar/circle.png) -6% -19%, url(/assets/themes/ey/images/pages/webinar/circle.png) 100% -11%, url(/assets/themes/ey/images/pages/webinar/circle.png) 38% 170%, url(/assets/themes/ey/images/pages/webinar/webinar-bg.png)16% 15%;
         background-repeat: no-repeat;
         background-size: 16%, 11%, 19%, cover;
     }
-    a.register-btn {
+    #web-two-speak2 a.register-btn {
         font-size: 14px;
         padding: 12px 24px;
     }
-    .two-speakers:nth-child(2) .two-speakers-text {
+    #web-two-speak2 .two-speakers:nth-child(2) .two-speakers-text {
         left: 0;
         text-align: left;
     }

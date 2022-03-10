@@ -1,39 +1,54 @@
 <div id="mycarousel" class="carousel slide" data-ride="carousel">
   <!-- Indicators -->
- <ol class="carousel-indicators">
-   <li data-target="#mycarousel" data-slide-to="0" class="active"></li>
-   <li data-target="#mycarousel" data-slide-to="1"></li>
- </ol>
+  <ol class="carousel-indicators">
+    <li data-target="#mycarousel" data-slide-to="0" class="active"></li>
+    <?php
+    if (count($webinars) > 1) {
+      foreach ($webinars as $x => $webinar) {
+        if ($x !== 0) {
+    ?>
+          <li data-target="#mycarousel" data-slide-to="<?= $x ?>"></li>
+
+    <?php }
+      }
+    } ?>
+  </ol>
 
   <!-- Wrapper for slides -->
   <div class="carousel-inner" role="listbox">
-      <?php
-            foreach($webinars as $webinar){
-      ?>
-        <div class="item webiItems">
-            <div id="<?= $webinar['webinar_enc_id'] ?>"></div>
-            <?= $this->render($webinar['template_path'].'/'.$webinar['template_name'],  [
-                    'webinar_enc_id'=> $webinar['webinar_enc_id'],
-            ]) ?>
-        </div>
-      <?php
-         }
+    <?php
+    foreach ($webinars as $webinar) {
+    ?>
+      <div class="item webiItems">
+        <div id="<?= $webinar['webinar_enc_id'] ?>"></div>
+        <?= $this->render($webinar['template_path'] . '/' . $webinar['template_name'],  [
+          'webinar_enc_id' => $webinar['webinar_enc_id'],
+        ]) ?>
+      </div>
+    <?php
+    }
     ?>
     <!-- more slides here -->
   </div>
 
   <!-- Controls -->
- <a class="left carousel-control" href="#mycarousel" role="button" data-slide="prev">
-   <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-   <span class="sr-only">Previous</span>
- </a>
- <a class="right carousel-control" href="#mycarousel" role="button" data-slide="next">
-   <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-   <span class="sr-only">Next</span>
- </a>
+  <a class="left carousel-control" href="#mycarousel" role="button" data-slide="prev">
+    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="right carousel-control" href="#mycarousel" role="button" data-slide="next">
+    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
 </div>
 <?php
 $this->registerCss('
+.carousel-indicators .active{
+  background-color: #333;
+}
+.carousel-indicators li{
+  border: 1px solid #333;
+}
   // #mycarousel{
   //   display: none;
   // }
