@@ -284,6 +284,12 @@ use yii\helpers\Url;
         width: 240px;
     }
 }
+@media (min-width: 576px) and (max-width: 767px){
+    #web-two-speak1 .speakers-images {
+        display: flex;
+        justify-content: center;
+    }
+}
 @media only screen and (max-width: 576px){
     #web-two-speak1 .speakers-images{
         flex-direction: column;

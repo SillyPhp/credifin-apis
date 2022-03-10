@@ -402,6 +402,12 @@ use yii\helpers\Url;
         }
     }
     
+    @media (min-width: 576px) and (max-width: 767px){
+    #web-one-speak3 .speaker-img-frame {
+        width: 290px;
+        margin-top: -61px;
+      }
+    }
     @media only screen and (max-width: 576px){
         #web-one-speak3{
             max-height: 650px;

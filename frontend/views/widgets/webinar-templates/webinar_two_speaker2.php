@@ -26,8 +26,8 @@ use yii\helpers\Url;
                     </div>
                 </div>
                 {{#webinarEvents}}
-                {{#webinarSpeakers}}
                 <div class="col-md-6 col-sm-6">
+                    {{#webinarSpeakers}}
                     <div class="speaker-image">
                         <div class="two-speakers">
                             <div class="two-speakers-img">
@@ -41,8 +41,8 @@ use yii\helpers\Url;
                             </div>
                         </div>
                     </div>
+                    {{/webinarSpeakers}}
                 </div>
-                {{/webinarSpeakers}}
                 {{/webinarEvents}}
             </div>
         </div>
@@ -72,6 +72,7 @@ width: 100%;
 }
 #web-two-speak2 .date-time img {
     margin-right: 10px;
+    width: unset;
 }
 #web-two-speak2 .date-time span {
     display: block;
@@ -146,11 +147,11 @@ width: 100%;
 }
 
 #web-two-speak2 .share-bar a.share-twitter {
-    color: #E60023;
+    color: #1DA1F2;
 }
 
 #web-two-speak2 .share-bar a.share-linkedin {
-    color: #25D366;
+    color: #0e76a8;
 }
 
 #web-two-speak2 .share-bar a.tg-tele {
@@ -177,16 +178,22 @@ color: #25D366 !important;
 }
 
 #web-two-speak2 .share-bar a.share-twitter:hover {
-    background-color: #E60023;
+    background-color: #1DA1F2;
 }
 
 #web-two-speak2 .share-bar a.share-linkedin:hover {
-    background-color: #25D366;
+    background-color: #0e76a8;
 }
 
 #web-two-speak2 .share-bar a.tg-tele:hover {
     background-color: #0088cc;
     border-color: #0088cc;
+}
+#web-two-speak2 .speaker-image{
+    margin-bottom: 5px;
+}
+#web-two-speak2 .speaker-image .two-speakers{
+    margin-left: auto;
 }
 #web-two-speak2 .two-speakers {
     width: 400px;
@@ -200,6 +207,7 @@ color: #25D366 !important;
     border-radius: 50%;
     position: relative;
     z-index: 2;
+    overflow: hidden;
 }
 #web-two-speak2 .two-speakers-text {
     z-index: 1;
@@ -251,11 +259,14 @@ color: #25D366 !important;
         text-align: center;
     }
     #web-two-speak2 .two-speakers-img {
-        width: 170px;
-        height: 170px;
+        width: 140px;
+        height: 140px;
+    }
+    #web-two-speak2 .two-speakers-text{
+        right: 10px;    
     }
     #web-two-speak2 .two-speakers {
-        margin-top: 30px;
+        // margin-top: 30px;
         width: 360px;
     }
     #web-two-speak2 .date-time span {
@@ -269,6 +280,7 @@ color: #25D366 !important;
         background: url(/assets/themes/ey/images/pages/webinar/circle.png) -6% -19%, url(/assets/themes/ey/images/pages/webinar/circle.png) 100% -11%, url(/assets/themes/ey/images/pages/webinar/circle.png) 38% 170%, url(/assets/themes/ey/images/pages/webinar/webinar-bg.png)16% 15%;
         background-repeat: no-repeat;
         background-size: 16%, 11%, 19%, cover;
+        min-height: 650px;
     }
 }
 @media screen and (max-width: 469px) and (min-width: 320px) {
@@ -300,6 +312,7 @@ color: #25D366 !important;
         background: url(/assets/themes/ey/images/pages/webinar/circle.png) -6% -19%, url(/assets/themes/ey/images/pages/webinar/circle.png) 100% -11%, url(/assets/themes/ey/images/pages/webinar/circle.png) 38% 170%, url(/assets/themes/ey/images/pages/webinar/webinar-bg.png)16% 15%;
         background-repeat: no-repeat;
         background-size: 16%, 11%, 19%, cover;
+        min-height: 650px;
     }
     #web-two-speak2 a.register-btn {
         font-size: 14px;

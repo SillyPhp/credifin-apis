@@ -44,10 +44,10 @@
 <?php
 $this->registerCss('
 .carousel-indicators .active{
-  background-color: #333;
+  background-color: #d1d1d1;
 }
 .carousel-indicators li{
-  border: 1px solid #333;
+  border: 1px solid #d1d1d1;
 }
   // #mycarousel{
   //   display: none;
@@ -125,6 +125,9 @@ background-repeat: no-repeat;
   .item > section {
     min-height: 750px;
     max-height: 750px;
+}
+.item.webiItems section {
+  min-height: 650px !important;
 }
 }
 @media (min-width: 768px) and (max-width: 991px){

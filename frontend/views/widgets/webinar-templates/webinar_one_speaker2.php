@@ -362,12 +362,18 @@ $this->registerCss('
         height: 24px;
         display: inline;
     }
+    
 }
-
+@media (min-width: 576px) and (max-width: 767px){
+    #web-two-speak1 .speaker:nth-child(1){
+        margin-left: unset;
+    }
+}
 @media only screen and (max-width: 576px){
     #web-one-speak2{
         min-height: 650px;
-        display: block;
+        display: flex;
+        align-items: center;
     }
     #web-one-speak2 .green-strip{
         display: none;

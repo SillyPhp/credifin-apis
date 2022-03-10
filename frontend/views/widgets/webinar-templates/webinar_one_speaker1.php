@@ -249,7 +249,7 @@ img {
     }
     #web-one-speak1 .webinar-speaker-img{
         right: -65px;
-        top: 30px;
+        top: -39px;
         align-items: flex-start;
     }
     #web-one-speak1 .rotate-div{

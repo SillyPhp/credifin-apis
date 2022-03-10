@@ -1,80 +1,85 @@
+<?php
+
+use yii\helpers\Url;
+?>
+
 <script id="temp_<?=$webinar_enc_id ?>" type="text/javascript">
     <section class="webinar-three-speaker" id="web-three-speak1">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="side-one">
-                    <h1>
-                        {{name}}
-                    </h1>
-                    <div class="speakers-detail">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="speaker-title">
-                                    <div class="heading">
-                                        <h6>Speakers</h6>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="side-one">
+                        <h1>
+                            {{name}}
+                        </h1>
+                        <div class="speakers-detail">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="speaker-title">
+                                        <div class="heading">
+                                            <h6>Speakers</h6>
+                                        </div>
+                                        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
                                     </div>
-                                    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
                                 </div>
-                            </div>
-                            {{#webinarEvents}}
-                            {{#webinarSpeakers}}
-                            <div class="col-xs-4">
-                                <div class="speaker-img">
-                                    {{#speaker_image}}
-                                    <img src="{{speaker_image}}">
-                                    {{/speaker_image}}
+                                {{#webinarEvents}}
+                                {{#webinarSpeakers}}
+                                <div class="col-xs-4">
+                                    <div class="speaker-img">
+                                        {{#speaker_image}}
+                                        <img src="{{speaker_image}}">
+                                        {{/speaker_image}}
+                                    </div>
+                                    <div class="speaker-name">{{speaker_name}}</div>
+                                    <div class="designation">{{designation}}</div>
                                 </div>
-                                <div class="speaker-name">{{speaker_name}}</div>
-                                <div class="designation">{{designation}}</div>
+                                {{/webinarSpeakers}}
+                                {{/webinarEvents}}
                             </div>
-                            {{/webinarSpeakers}}
-                            {{/webinarEvents}}
                         </div>
-                    </div>
-                    <div class="avail-share">
-                        <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
-                        <div class="share-bar">
-                            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/{{slug}}" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                            <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/{{slug}}" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                            <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
-                            <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-twitter"><i class="fab fa-twitter"></i></a>
-                            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/{{slug}}" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        <div class="avail-share">
+                            <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
+                            <div class="share-bar">
+                                <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/{{slug}}" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                                <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/{{slug}}" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                                <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                                <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                                <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/{{slug}}" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="side-two">
-                    <div class="side-two-upper">
-                        <div class="online-icons">
-                            <div class="icons"><i class="fas fa-microphone"></i></div>
-                            <div class="icons"><i class="fas fa-play"></i></div>
-                            <div class="icons"><i class="fas fa-comment-alt"></i></div>
-                            <div class="icons"><i class="fas fa-wifi"></i></div>
+                <div class="col-sm-6">
+                    <div class="side-two">
+                        <div class="side-two-upper">
+                            <div class="online-icons">
+                                <div class="icons"><i class="fas fa-microphone"></i></div>
+                                <div class="icons"><i class="fas fa-play"></i></div>
+                                <div class="icons"><i class="fas fa-comment-alt"></i></div>
+                                <div class="icons"><i class="fas fa-wifi"></i></div>
+                            </div>
+                            <div class="heading">
+                                ONLINE CONFERENCE
+                            </div>
+                            <div class="side-two-lines">
+                                <span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span>
+                            </div>
                         </div>
-                        <div class="heading">
-                            ONLINE CONFERENCE
-                        </div>
-                        <div class="side-two-lines">
-                            <span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span>
-                        </div>
-                    </div>
-                    <div class="date-time">
-                        <div class="date">
-                            <div class="prop">DATE</div>
-                            <div class="value">{{date}}</div>
-                        </div>
-                        <div class="time">
-                            <div class="prop">TIME</div>
-                            <div class="value">{{time}}</div>
+                        <div class="date-time">
+                            <div class="date">
+                                <div class="prop">DATE</div>
+                                <div class="value">{{date}}</div>
+                            </div>
+                            <div class="time">
+                                <div class="prop">TIME</div>
+                                <div class="value">{{time}}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 </script>
 
 <?php $this->registerCss('
@@ -89,6 +94,7 @@
     #web-three-speak1{
         background: #150050;
         overflow: hidden;
+        min-height: 550px;
     }
     #web-three-speak1 .side-one h1 {
         color: #fff;
@@ -258,7 +264,7 @@
     }
     
     #web-three-speak1 .share-bar a.share-linkedin {
-        color: #25D366;
+        color: #0e76a8;
     }
     
     #web-three-speak1 .share-bar a.tg-tele {
@@ -282,7 +288,7 @@
     }
     
     #web-three-speak1 .share-bar a.share-linkedin:hover {
-        background-color: #25D366;
+        background-color: #0e76a8;
     }
     
     #web-three-speak1 .share-bar a.tg-tele:hover {
@@ -307,6 +313,9 @@
         }
         #web-three-speak1 .designation{
             font-size: 12px;
+        }
+        #web-three-speak1{
+            min-height: 650px;
         }
     }
     @media only screen and (max-width: 425px){
