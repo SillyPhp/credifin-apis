@@ -47,7 +47,6 @@ function webDate($webDate)
     </div>
 </section>
 
-
 <?php
 if ($upcomingWebinar) {
 ?>
