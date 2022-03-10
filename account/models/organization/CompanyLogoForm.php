@@ -47,9 +47,10 @@ class CompanyLogoForm extends Model
             $organization->last_updated_by = Yii::$app->user->identity->user_enc_id;
             $file = dirname(__DIR__, 2) . '/files/temp/' . $organization->logo;
             if (file_put_contents($file, $image_base64)) {
+                $type = 'image/png';
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $organization->logo, "public");
+                $my_space->uploadFileSources($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $organization->logo, "public",['params' => ['ContentType' => $type]]);
                 if (file_exists($file)) {
                     unlink($file);
                 }
