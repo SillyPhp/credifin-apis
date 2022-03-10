@@ -988,6 +988,7 @@ usort($locations, "cmp");
                                 <tr>
                                     <th>Question</th>
                                     <th>Process Name</th>
+                                    <th class="set-width-down">Print Questionnaire</th>
                                 </tr>
                                 </thead>
                                 <tbody class="qu_data">
@@ -1001,7 +1002,11 @@ usort($locations, "cmp");
                                                target="_blank"><?= $list_que['name']; ?></a>
                                         </td>
                                         <td><?= $list_que['field_label']; ?></td>
-
+                                        <td>
+                                            <a href="javascript:;" data-toggle="tooltip" data-placement="top" title="Print" class="print-bttn" data-href="<?= Url::to($linkQ, 'https') ?>?print=true" target="_blank">
+                                                <i class="fa fa-print"></i>
+                                            </a>
+                                        </td>
                                     </tr>
                                 <?php } ?>
                                 </tbody>
@@ -1104,6 +1109,15 @@ usort($locations, "cmp");
 </div>
 <?php
 $this->registerCss('
+.set-width-down{
+    width:180px;
+    text-align:center;
+}
+.print-bttn{
+    text-align: center;
+    display: block;
+    color: #00a0e3;
+}
 .expired-ji p{
     position: absolute;
     right: 0;
@@ -3152,6 +3166,11 @@ function downloadAs(url, name) {
     });
 };
 $('#myHeader li:nth-child(2) > a').trigger('click');
+
+$(document).on('click','.print-bttn', function(e) {
+    e.preventDefault();
+    window.open($(this).attr('data-href'));
+});
 JS;
 $this->registerJs($script);
 $this->registerJsFile('/assets/themes/backend/vendor/isotope/isotope.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
