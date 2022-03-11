@@ -781,6 +781,17 @@ function createPalette($color, $colorCount = 4) {
 }
 
 $this->registerCss('
+.share-social {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+.basis{
+    margin: 10px 0 5px;
+    flex-basis: 16.4%;
+    min-width: 143px;
+}
 .move-popup{
     display: none !important;
 }
@@ -1453,6 +1464,9 @@ transform: rotate(100deg);
         max-width: 100%;
         width: 90% !important;
         min-height:50vh;
+    }
+    .share-social{
+        justify-content:center;
     }
 }
 .ask-people{
