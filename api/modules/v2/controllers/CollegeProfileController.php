@@ -2043,11 +2043,12 @@ class CollegeProfileController extends ApiBaseController
                 }
 
                 $faculty->image = $encrypted_string . '.png';
+                $type = 'image/png';
                 $file = dirname(__DIR__, 4) . '/files/temp/' . $user->image;
                 if (file_put_contents($file, $image)) {
                     $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                     $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                    $result = $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $faculty->image, "public");
+                    $result = $my_space->uploadFileSources($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $faculty->image, "public",['params' => ['ContentType' => $type]]);
                     if (file_exists($file)) {
                         unlink($file);
                     }
@@ -2409,9 +2410,10 @@ class CollegeProfileController extends ApiBaseController
                 }
 
                 $infra->icon = $encrypted_string . '.png';
+                $type = 'image/png';
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFile($icon->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $infra->icon, "public");
+                $result = $my_space->uploadFileSources($icon->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $infra->icon, "public",['params' => ['ContentType' => $type]]);
             }
             if (!$infra->save()) {
                 return $this->response(500, ['status' => 500, 'error' => $infra->getErrors()]);

@@ -44,12 +44,13 @@ class ResumeUpload extends Model
             $userResumeModel->resume = $encrypted_string . '.' . $this->resume_file->extension;
             $userResumeModel->title = $this->resume_file->baseName . '.' . $this->resume_file->extension;
             $userResumeModel->alt = $this->resume_file->baseName . '.' . $this->resume_file->extension;
+            $type = $this->resume_file->type;
             $userResumeModel->created_on = date('Y-m-d h:i:s');
             $userResumeModel->created_by = $data['user_id'];
             if ($userResumeModel->save()) {
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFile($this->resume_file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $userResumeModel->resume, "private");
+                $result = $my_space->uploadFileSources($this->resume_file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $userResumeModel->resume, "private",['params' => ['ContentType' => $type]]);
                 if ($result) {
 //                    print_r($result['ObjectURL']);
                     $transaction->commit();
