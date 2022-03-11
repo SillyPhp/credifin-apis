@@ -201,6 +201,7 @@ use yii\helpers\Url;
     width: 150px;
     height: 150px;
     border-radius: 50%;
+    overflow: hidden;
 }
 #web-two-speak1 .speaker-img img{
     width: 100%;

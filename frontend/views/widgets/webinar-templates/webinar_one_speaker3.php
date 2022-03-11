@@ -42,11 +42,11 @@ use yii\helpers\Url;
             <div class="col-sm-6">
                 <div class="webinar-img">
                     <div class="speaker-img-frame">
-                        <div class="upper-sqr"></div>
+                        <!-- <div class="upper-sqr"></div> -->
                         <div class="middle-sqr">
                             <img src="{{speaker_image}}">
                         </div>
-                        <div class="lower-sqr"></div>
+                        <!-- <div class="lower-sqr"></div> -->
                         <div class="name-speaker">
                             <p>{{speaker_name}}</p>
                             <p>{{designation}}</p>
@@ -290,21 +290,22 @@ use yii\helpers\Url;
         position: relative;
     }
     #web-one-speak3 .upper-sqr, #web-one-speak3 .lower-sqr, #web-one-speak3 .middle-sqr {
-        width: 200px;
-        height: 200px;
+        width: 300px;
+        height: 300px;
         background: linear-gradient(180deg, #2575FC 0%, #6A11CB 100%);
-        transform: translateX(-50%) rotate(45deg);
-        top: 10%;
-        position: absolute;
-        left: 50%;
-        border-radius: 10px;
+        // transform: translateX(-50%) rotate(45deg);
+        // top: 10%;
+        // position: absolute;
+        // left: 50%;
+        border-radius: 50%;
     }
     #web-one-speak3 .middle-sqr {
         background: linear-gradient(157.38deg, #50C9C3 -19.19%, #96DEDA 91.27%);
         z-index: 2;
-        top: 50%;
-        transform: translate(-50%, -50%) rotate(45deg);
+        // top: 50%;
+        // transform: translate(-50%, -50%) rotate(45deg);
         overflow: hidden;
+        border: 20px solid #6518ce;
     }
     #web-one-speak3 .lower-sqr {
         background: linear-gradient(180deg, #6A11CB 0%, #2575FC 100%);
@@ -312,9 +313,9 @@ use yii\helpers\Url;
         top: unset;
     }
     #web-one-speak3 .middle-sqr img{
-    width:100%;
-        max-width: 280px;
-        transform: rotate(-45deg) translateX(33px);
+        width:100%;
+        // max-width: 280px;
+        // transform: rotate(-45deg) translateX(33px);
     }
     #web-one-speak3 .name-speaker {
         background: linear-gradient(90.78deg, #6A11CB -3.87%, #2575FC 100%);
@@ -353,13 +354,13 @@ use yii\helpers\Url;
             font-size: 30px;
             line-height: 1.3;
         }
-        #web-one-speak3 .upper-sqr, #web-one-speak3 .lower-sqr, #web-one-speak3 .middle-sqr {
-            width: 170px;
-            height: 170px;
-        }
+        // #web-one-speak3 .upper-sqr, #web-one-speak3 .lower-sqr, #web-one-speak3 .middle-sqr {
+        //     width: 170px;
+        //     height: 170px;
+        // }
         #web-one-speak3 .middle-sqr img{
             width: 209px;
-            transform: rotate(-45deg) translateX(33px);
+            // transform: rotate(-45deg) translateX(33px);
         }
         #web-one-speak3 .arrows-icons{
             display: none;
@@ -413,12 +414,13 @@ use yii\helpers\Url;
             max-height: 650px;
         }
         #web-one-speak3 .upper-sqr, #web-one-speak3 .lower-sqr, #web-one-speak3 .middle-sqr {
-            width: 110px;
-            height: 110px;
+            width: 170px;
+            height: 170px;
+            margin: auto;
         }
         #web-one-speak3 .middle-sqr img{
             width: 140px;
-            transform: rotate(-45deg) translateX(24px);
+            // transform: rotate(-45deg) translateX(24px);
         }
         #web-one-speak3 .lower-sqr{
             bottom: 32%;
@@ -429,7 +431,7 @@ use yii\helpers\Url;
         #web-one-speak3 .name-speaker {
             left: unset;
             top: unset;
-            bottom: 100px;
+            bottom: 165px;
             margin-left: 45px;
         }
         #web-one-speak3 .speaker-img-frame {
@@ -439,7 +441,7 @@ use yii\helpers\Url;
             font-size: 14px;
         }
         #web-one-speak3 .webinar-img {
-            margin-top: -80px;
+            margin-top: 20px;
         }
     }
 

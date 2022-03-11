@@ -208,6 +208,7 @@ img {
     border-radius: 50%;
     height: 230px;
     margin-left: 10px;
+    overflow: hidden;
 }
 #web-one-speak1 .speaker-detail {
     margin-left: 20px;
