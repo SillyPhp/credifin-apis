@@ -1821,6 +1821,7 @@ transform: rotate(100deg);
     justify-content: center;
     align-content: flex-start;
     margin: auto;
+    overflow: hidden;
 }
 .out-img {
     width: 80px;
@@ -2102,7 +2103,7 @@ a:link, a:visited {
 .absolute{
     position: absolute;
     width: 100%;
-    z-index: 1;
+//    z-index: 1;
     top: 0;
     left: 0;
     max-height: 90vh;
@@ -2117,7 +2118,7 @@ a:link, a:visited {
     height: 90vh;
     display: inline-block;
     padding-top: 28vh;
-    z-index: 2;
+//    z-index: 2;
     position: relative;
 }
 .element-percent h1 {
