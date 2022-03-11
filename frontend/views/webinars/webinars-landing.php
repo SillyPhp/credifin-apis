@@ -1131,6 +1131,9 @@ color: #fff !important;
 	overflow: hidden;
 	height: 70px;
 }
+.web-des p{
+    margin:0;
+}
 .web-info{
     display: flex;
     align-items: center;

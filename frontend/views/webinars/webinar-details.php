@@ -1791,10 +1791,10 @@ transform: rotate(100deg);
 
 /*outcome*/
 .ts-intro-outcome {
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  padding: 70px;
+//  background-repeat: no-repeat;
+//  background-size: cover;
+//  background-position: center center;
+  padding-top: 30px;
 }
 
 .ts-single-outcome {
@@ -1824,8 +1824,8 @@ transform: rotate(100deg);
     overflow: hidden;
 }
 .out-img {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     margin: auto;
 }
 
@@ -2140,7 +2140,7 @@ a:link, a:visited {
 }
 
 .webinar-description p {
-    font-size: 17px;
+    font-size: 16px;
     letter-spacing: .5px;
     text-align: justify;
     line-height: 26px;
