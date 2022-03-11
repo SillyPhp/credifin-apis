@@ -275,6 +275,7 @@ $this->registerCss('
     justify-content: center;
     margin-left: auto;
     margin-right: 50px;
+    overflow: hidden;
 }
 #web-one-speak2 .inside-div {
     background: #FFFFFF;
@@ -282,6 +283,8 @@ $this->registerCss('
     width: 70%;
     height: 70%;
     border-radius: 50%;
+    overflow: hidden;
+
 }
 #web-one-speak2 .speaker-name {
     font-family: Roboto;

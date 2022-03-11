@@ -105,6 +105,7 @@ use yii\helpers\Url;
         height: 150px;
         background: #fff;
         margin: 15px 0;
+        overflow: hidden;
     }
     #web-three-speak1 .speaker-img img {
         width:100%;
