@@ -781,6 +781,17 @@ function createPalette($color, $colorCount = 4) {
 }
 
 $this->registerCss('
+.share-social {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+.basis{
+    margin: 10px 0 5px;
+    flex-basis: 16.4%;
+    min-width: 143px;
+}
 .move-popup{
     display: none !important;
 }
@@ -1433,7 +1444,7 @@ transform: rotate(100deg);
 }
 @media screen and (max-width: 768px){
     .dis-flex p{
-        flex: auto;
+        flex: 50%;
         font-size: 16px;
         font-family: roboto;
     }
@@ -1453,6 +1464,9 @@ transform: rotate(100deg);
         max-width: 100%;
         width: 90% !important;
         min-height:50vh;
+    }
+    .share-social{
+        justify-content:center;
     }
 }
 .ask-people{
@@ -1623,6 +1637,7 @@ transform: rotate(100deg);
 .speaker-classic .ts-speaker {
     margin-bottom: 60px;
     max-width: 255px;
+    width: 255px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -2191,10 +2206,14 @@ div.icon span {
     margin: 20px 0px !important;
     text-align: center;
 }
-
+.set-width-web{
+    flex-basis: 50%;
+}
 .register-action {
     display: flex;
     flex-wrap: wrap;
+    flex-basis: 50%;
+    justify-content: flex-end;
 }
 .speaker-author {
     margin-right: 15px;
@@ -2229,6 +2248,7 @@ div.icon span {
     display: flex;
     align-items: center;
     margin-left: -20px;
+    flex-wrap:wrap;
 }
 .avatars p {
     font-size: 18px;
@@ -2331,6 +2351,10 @@ div.icon span {
   background:#00008b;
 }
 @media (max-width: 767px) {
+.register-action{
+    justify-content:center;
+    padding-top:10px;
+}
 .section-list{
     padding:10px 30px;
 }
