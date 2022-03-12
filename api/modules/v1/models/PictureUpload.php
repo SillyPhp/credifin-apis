@@ -51,12 +51,13 @@ class PictureUpload extends Model
             }
 
             $user->image = $encrypted_string . '.png';
+            $type = 'image/png';
             $file = dirname(__DIR__, 4) . '/files/temp/' . $user->image;
             if ($user->update()) {
                 if (file_put_contents($file, $image)) {
                     $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                     $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                    $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $user->image, "public");
+                    $my_space->uploadFileSources($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $user->image, "public",['params' => ['ContentType' => $type]]);
                     if (file_exists($file)) {
                         unlink($file);
                     }

@@ -287,8 +287,18 @@ if ($optedWebinar) {
 <section class="past-web">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-8 col-sm-8 col-xs-12">
                 <div class="heading-style">Past Webinars</div>
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="type-1">
+                    <div>
+                        <a  href="<?= Url::to('/webinars/list?past=true') ?>" target="_blank" class="btn btn-3">
+                            <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -1301,6 +1311,12 @@ color: #fff !important;
   90% {
     transform: translate3d(0, -2px, 0);
   }
+}
+@media (min-width: 1024px) and (max-width: 1199px){
+    .reg-img{
+        width: 30px;
+        height: 30px;
+    }
 }
 @media only screen and (max-width: 1024px){
     .reg2.reg, .reg3.reg {

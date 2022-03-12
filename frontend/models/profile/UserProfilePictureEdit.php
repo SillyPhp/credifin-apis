@@ -51,11 +51,12 @@ class UserProfilePictureEdit extends Model
                 $encrypted_string = substr($encrypted_string, 0, -1);
             }
             $user->image = $encrypted_string . '.png';
+            $type = 'image/png';
             $file = dirname(__DIR__, 3) . '/files/temp/' . $user->image;
             if (file_put_contents($file, $image_base64)) {
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $user->image, "public");
+                $my_space->uploadFileSources($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $user->image, "public",['params' => ['ContentType' => $type]]);
                 if (file_exists($file)) {
                     unlink($file);
                 }
