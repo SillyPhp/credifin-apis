@@ -701,6 +701,7 @@ class WebinarsController extends ApiBaseController
                     ['c1.organization_enc_id' => $college_id],
                     ['c.for_all_colleges' => 1]
                 ])
+                ->groupBy(['a.register_enc_id'])
                 ->asArray()
                 ->all();
 
