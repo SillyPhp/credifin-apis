@@ -81,7 +81,13 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
 
 <?= $this->render('/widgets/info-stats'); ?>
 
-<?= $this->render('/webinars/webinar-carousel') ?>
+<?php
+if($data = Yii::$app->webinarSlides->check()) {
+    echo $this->render('/webinars/webinar-carousel', [
+        'webinars'=>$data,
+    ]);
+}
+?>
 
 
 <section id="trendingCompaniesSectionMain">
