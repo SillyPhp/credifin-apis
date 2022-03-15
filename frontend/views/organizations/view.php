@@ -446,13 +446,6 @@ $round_avg = round($overall_avg);
                                         <div class="col-md-3 col-sm-4 col-xs-12">
                                             <div class="benefit-box">
                                                 <div class="bb-icon">
-                                                    <?php
-                                                    if (!empty($benefits['icon'])) {
-                                                        $benefit_icon = Url::to('/assets/icons/' . $benefits['icon_location'] . DIRECTORY_SEPARATOR . $benefits['icon']);
-                                                    } else {
-                                                        $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
-                                                    }
-                                                    ?>
                                                     <img src="<?= Url::to($benefits['icon']); ?>"
                                                          alt="<?= htmlspecialchars_decode($benefits['benefit']); ?>"/>
                                                 </div>

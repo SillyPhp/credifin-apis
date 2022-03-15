@@ -19,7 +19,7 @@ if(!empty($benefits)) {
                                 <div class="p-category-view">
                                     <?php
                                     if (!empty($benefits[$next]['icon'])) {
-                                        $benefit_icon = Url::to(Yii::$app->params->upload_directories->benefits->icon . $benefits[$next]['icon_location'] . DIRECTORY_SEPARATOR . $benefits[$next]['icon']);
+                                        $benefit_icon = Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->upload_directories->benefits->icon . $benefits[$next]['icon_location'] . DIRECTORY_SEPARATOR . $benefits[$next]['icon']);
                                     } else {
                                         $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
                                     }
