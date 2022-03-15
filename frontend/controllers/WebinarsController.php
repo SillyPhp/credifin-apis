@@ -230,6 +230,42 @@ class WebinarsController extends Controller
         }
     }
 
+    public function actionGetCertificate()
+    {
+        $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+        if (strlen($name) > 35) {
+            $fontSize = 7;
+            $paddingTop = 15;
+        } elseif (strlen($name) > 24) {
+            $fontSize = 8.5;
+            $paddingTop = 5;
+        } else {
+            $fontSize = 11;
+            $paddingTop = 0;
+        }
+
+
+        $url = "https://services.empoweryouth.com/api/v1/script/create-certificate?permissionKey=F7;qD3(lX8$" . "nD0}&fontSize=" . $fontSize . "&paddingTop=" . $paddingTop . "&app_id=91812911161&name=" . urlencode($name);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        $header = [
+            'Content-Type: application/json;charset=utf-8',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $results = curl_exec($ch);
+
+        $results = json_decode($results, true);
+
+        if ($results['status'] == 200) {
+            return json_encode($results);
+        } else {
+            return false;
+        }
+    }
+
     public function actionRecordInterest()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -635,7 +671,7 @@ class WebinarsController extends Controller
             if ($price == 'paid') {
                 $webinars->andWhere(['!=', 'a.price', null]);
             } elseif ($price == 'free') {
-                $webinars->andWhere(['a.price' => [null,0]]);
+                $webinars->andWhere(['a.price' => [null, 0]]);
             }
         }
 
@@ -713,7 +749,7 @@ class WebinarsController extends Controller
                 $webinars[$key]['webinarEvents'][0]['start_datetime'] = date('d-M', strtotime($val['webinarEvents'][0]['start_datetime']));
                 $webinars[$key]['price'] = $this->getWebinarPrice($val['price'], $val['gst']);
                 $webinars[$key]['registeredImages'] = $this->getRegisteredUserImages($val['webinarRegistrations']);
-                $webinar_end_datetime = date('Y-m-d H:i:s','+'.strtotime($val['webinarEvents'][0]['duration'].' minutes', strtotime($val['webinarEvents'][0]['start_datetime'])));
+                $webinar_end_datetime = date('Y-m-d H:i:s', '+' . strtotime($val['webinarEvents'][0]['duration'] . ' minutes', strtotime($val['webinarEvents'][0]['start_datetime'])));
                 $webinars[$key]['is_expired'] = $webinar_end_datetime < $currentTime;
             }
 
@@ -825,61 +861,62 @@ class WebinarsController extends Controller
             ->asArray()
             ->one();
 
-        if($upcomingWebinar){
+        if ($upcomingWebinar) {
             return $this->renderAjax('/widgets/webinar-detail-popup', [
                 'upcomingWebinar' => $upcomingWebinar
             ]);
         }
     }
 
-    public function actionWebinarWidgetDetail(){
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $webinar_enc_id = Yii::$app->request->post('webinar_enc_id');
-        $dt = new \DateTime();
-        $tz = new \DateTimeZone('Asia/Kolkata');
-        $dt->setTimezone($tz);
-        $date_now = $dt->format('Y-m-d H:i:s');
+    public function actionWebinarWidgetDetail()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $webinar_enc_id = Yii::$app->request->post('webinar_enc_id');
+            $dt = new \DateTime();
+            $tz = new \DateTimeZone('Asia/Kolkata');
+            $dt->setTimezone($tz);
+            $date_now = $dt->format('Y-m-d H:i:s');
 
-        $detail = Webinar::find()
-            ->alias('a')
-            ->select(['a.webinar_enc_id', 'a.name', 'a.title', 'a.slug'])
-            ->joinWith(['webinarEvents b'=>function($b) use ($date_now){
-                $b->select(['b.event_enc_id','b.webinar_enc_id',
-                    "DATE_FORMAT(b.start_datetime, '%M %d, %Y') event_date",
-                    "DATE_FORMAT(b.start_datetime, '%h:%i %p') event_start_time",
-                    "DATE_FORMAT(ADDDATE(b.start_datetime, INTERVAL b.duration MINUTE), '%h:%i %p') event_end_time",
-                ]);
-                $b->joinWith(['webinarSpeakers c' => function ($c) {
-                    $c->select([
-                        'c.webinar_event_enc_id',
-                        'c.speaker_enc_id',
-                        'a3.user_enc_id',
-                        'CONCAT(a4.first_name, " ", a4.last_name) as speaker_name',
-                        'CASE WHEN a4.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", a4.image_location, "/", a4.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(a4.first_name, " ", a4.last_name), "&size=200&rounded=false&background=", REPLACE(a4.initials_color, "#", ""), "&color=ffffff") END speaker_image',
-                        'a5.designation',
+            $detail = Webinar::find()
+                ->alias('a')
+                ->select(['a.webinar_enc_id', 'a.name', 'a.title', 'a.slug'])
+                ->joinWith(['webinarEvents b' => function ($b) use ($date_now) {
+                    $b->select(['b.event_enc_id', 'b.webinar_enc_id',
+                        "DATE_FORMAT(b.start_datetime, '%M %d, %Y') event_date",
+                        "DATE_FORMAT(b.start_datetime, '%h:%i %p') event_start_time",
+                        "DATE_FORMAT(ADDDATE(b.start_datetime, INTERVAL b.duration MINUTE), '%h:%i %p') event_end_time",
                     ]);
-                    $c->joinWith(['speakerEnc a3' => function ($d1) {
-                        $d1->joinWith(['userEnc a4']);
-                        $d1->joinWith(['designationEnc a5']);
-                    }], false);
-                    $c->andWhere(['c.is_deleted' => 0]);
-                }]);
-                $b->andWhere(['in', 'b.status', [0, 1]]);
-                $b->andWhere(['>', "ADDDATE(b.start_datetime, INTERVAL b.duration MINUTE)", $date_now]);
-                $b->orderBy(['b.start_datetime' => SORT_ASC]);
-                $b->groupBy('b.event_enc_id');
-            }])
-            ->where(['a.is_deleted'=>0,'a.webinar_enc_id'=>$webinar_enc_id])
-            ->asArray()
-            ->one();
+                    $b->joinWith(['webinarSpeakers c' => function ($c) {
+                        $c->select([
+                            'c.webinar_event_enc_id',
+                            'c.speaker_enc_id',
+                            'a3.user_enc_id',
+                            'CONCAT(a4.first_name, " ", a4.last_name) as speaker_name',
+                            'CASE WHEN a4.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", a4.image_location, "/", a4.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(a4.first_name, " ", a4.last_name), "&size=200&rounded=false&background=", REPLACE(a4.initials_color, "#", ""), "&color=ffffff") END speaker_image',
+                            'a5.designation',
+                        ]);
+                        $c->joinWith(['speakerEnc a3' => function ($d1) {
+                            $d1->joinWith(['userEnc a4']);
+                            $d1->joinWith(['designationEnc a5']);
+                        }], false);
+                        $c->andWhere(['c.is_deleted' => 0]);
+                    }]);
+                    $b->andWhere(['in', 'b.status', [0, 1]]);
+                    $b->andWhere(['>', "ADDDATE(b.start_datetime, INTERVAL b.duration MINUTE)", $date_now]);
+                    $b->orderBy(['b.start_datetime' => SORT_ASC]);
+                    $b->groupBy('b.event_enc_id');
+                }])
+                ->where(['a.is_deleted' => 0, 'a.webinar_enc_id' => $webinar_enc_id])
+                ->asArray()
+                ->one();
 
-        $detail['date'] = $detail['webinarEvents'][0]['event_date'];
-        $detail['time'] = $detail['webinarEvents'][0]['event_start_time'] . ' - ' . $detail['webinarEvents'][0]['event_end_time'];
+            $detail['date'] = $detail['webinarEvents'][0]['event_date'];
+            $detail['time'] = $detail['webinarEvents'][0]['event_start_time'] . ' - ' . $detail['webinarEvents'][0]['event_end_time'];
 
-        return [
+            return [
                 'status' => 200,
-                'detail'=> $detail
+                'detail' => $detail
             ];
         }
     }
