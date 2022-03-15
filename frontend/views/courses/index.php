@@ -74,7 +74,13 @@ $this->params['seo_tags'] = [
         </div>
     </section>
 
-    <?= $this->render('/webinars/webinar-carousel')?>
+<?php
+if($data = Yii::$app->webinarSlides->check()) {
+    echo $this->render('/webinars/webinar-carousel', [
+        'webinars'=>$data,
+    ]);
+}
+?>
 
     <section class="popular-skills">
         <h3>Popular Categories</h3>

@@ -79,7 +79,13 @@ use yii\helpers\Url;
 </div>
 
 
-<?= $this->render('/webinars/webinar-carousel')?>
+<?php
+if($data = Yii::$app->webinarSlides->check()) {
+    echo $this->render('/webinars/webinar-carousel', [
+        'webinars'=>$data,
+    ]);
+}
+?>
 
 <!--dynamic categories start-->
 
