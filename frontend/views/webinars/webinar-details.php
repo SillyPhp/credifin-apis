@@ -113,7 +113,8 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                         <?php
                         if ($is_expired && $registeration_status == 1) {
                             ?>
-                            <a href="javascript:;" class="ra-btn" id="downloadCertificate">Download Certificate</a>
+                            <a href="javascript:;" class="ra-btn" id="downloadCertificate"
+                               data-id="<?= $webinar['webinar_enc_id'] ?>">Download Certificate</a>
                         <?php } else if ($is_expired) {
                             ?>
                             <a href="<?= Url::to('/webinars') ?>" class="ra-btn">Back To Home</a>
@@ -2650,8 +2651,9 @@ function _razoPay(ptoken,payment_enc_id,webinar_id){
 }
 $(document).on('click','#downloadCertificate',function (e){
     $(this).html('<i class="fas fa-spinner fa-spin"></i> Loading');
+    let webinar_id = $('#downloadCertificate').attr('data-id')
     $.ajax({
-        url : `/webinars/get-certificate`,
+        url : `/webinars/get-certificate?webinar_id=`+webinar_id,
         method : 'GET',
         success:function(res)
         {

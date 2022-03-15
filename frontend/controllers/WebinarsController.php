@@ -230,7 +230,7 @@ class WebinarsController extends Controller
         }
     }
 
-    public function actionGetCertificate()
+    public function actionGetCertificate($webinar_id)
     {
         $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
         if (strlen($name) > 35) {
@@ -244,8 +244,9 @@ class WebinarsController extends Controller
             $paddingTop = 0;
         }
 
+        $zoom_id = Webinar::findOne(['webinar_enc_id' => $webinar_id])->platform_webinar_id;
 
-        $url = "https://services.empoweryouth.com/api/v1/script/create-certificate?permissionKey=F7;qD3(lX8$" . "nD0}&fontSize=" . $fontSize . "&paddingTop=" . $paddingTop . "&app_id=91812911161&name=" . urlencode($name);
+        $url = "https://services.empoweryouth.com/api/v1/script/create-certificate?permissionKey=F7;qD3(lX8$" . "nD0}&fontSize=" . $fontSize . "&paddingTop=" . $paddingTop . "&app_id=" . $zoom_id . "&name=" . urlencode($name);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
