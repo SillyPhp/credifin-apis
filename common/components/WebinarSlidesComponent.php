@@ -20,6 +20,8 @@ class WebinarSlidesComponent extends component
                 }]);
             }], false)
             ->where(['a.is_deleted' => 0, 'b.is_deleted' => 0, 'b.session_for' => [0, 1]])
+            ->orderBy(['c.start_datetime' => SORT_ASC])
+            ->groupBy(['a.webinar_enc_id'])
             ->asArray()
             ->all();
 

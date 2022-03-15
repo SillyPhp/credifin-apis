@@ -5,6 +5,7 @@ use yii\helpers\Url;
 ?>
 <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Sansita+One" />
 
+<script id="temp_<?=$webinar_enc_id ?>" type="text/template">
 <section class="webinar-one-speaker4" id="web-one-speak4">
     <img src="<?= Url::to('@eyAssets/images/pages/webinar-widgets/one-speaker4-bg-top.png') ?>" class="bg-top" alt="">
     <img src="<?= Url::to('@eyAssets/images/pages/webinar-widgets/one-speaker4-bg-bottom.png') ?>" class="bg-bottom" alt="">
@@ -13,8 +14,8 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-sm-6">
                 <div class="webinar-text">
-                    <h1>Breaking into Data Science : How to forge your career path</h1>
-                    <p>E-certificates will be provided to all the registered participants.</p>
+                    <h1>{{name}}</h1>
+                    <p>{{description}}</p>
                     <div class="date-and-time">
                         <i class="fas fa-calendar-alt"></i>
                         <div class="date">
@@ -22,7 +23,7 @@ use yii\helpers\Url;
                                 DATE
                             </span>
                             <span class="large-text">
-                                March 10, 2022
+                            {{date}}
                             </span>
                         </div>
                         <div class="date">
@@ -30,37 +31,38 @@ use yii\helpers\Url;
                                 TIME
                             </span>
                             <span class="large-text">
-                                2PM - 3PM
+                            {{time}}
                             </span>
                         </div>
                     </div>
                     <div class="register-btn">
-                        <a href="/webinar/breaking-into-data-science-how-to-forge-your-career-path-2172" target="_blank"
+                        <a href="/webinar/{{slug}}" target="_blank"
                         >Register Now<span><i class="fas fa-chevron-right" style="margin-right: -3px;"></i><i class="fas fa-chevron-right"></i></span></a>
                     </div>
                     <div class="share-bar">
-                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/breaking-into-data-science-how-to-forge-your-career-path-2172" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/breaking-into-data-science-how-to-forge-your-career-path-2172" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/breaking-into-data-science-how-to-forge-your-career-path-2172" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
-                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/breaking-into-data-science-how-to-forge-your-career-path-2172" class="share-twitter"><i class="fab fa-twitter"></i></a>
-                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/breaking-into-data-science-how-to-forge-your-career-path-2172" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/{{slug}}" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                        <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/{{slug}}" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                        <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                        <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/{{slug}}" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="webinar-speaker-img">
                     <div class="speaker-bg">
-                        <img src="<?= Url::to('@eyAssets/images/pages/webinar-widgets/shikha.png') ?>" alt="">
+                        <img src="{{speaker_image}}" alt="">
                     </div>
                     <div class="speaker-detail">
-                        <div class="name">Shikha Verma , PH.D.</div>
-                        <div class="desg">Data Scientist</div>
+                        <div class="name">{{speaker_name}}</div>
+                        <div class="desg">{{speaker_designation}}</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+</script>
 
 <?php
 $this->registerCss('

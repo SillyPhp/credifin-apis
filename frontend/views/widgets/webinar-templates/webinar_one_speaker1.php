@@ -21,8 +21,6 @@
             </div>
         </div>
     </div>
-        {{#webinarEvents}}
-        {{#webinarSpeakers}}
     <div class="webinar-speaker-img">
         <div class="rotate-div">
             <div class="speaker-img">
@@ -31,12 +29,10 @@
             </div>
             <div class="speaker-detail">
                 <h2>{{speaker_name}}</h2>
-                <h5>{{designation}}</h5>
+                <h5>{{speaker_designation}}</h5>
             </div>
         </div>
     </div>
-        {{/webinarSpeakers}}
-        {{/webinarEvents}}
     </div>
     </section>
 </script>

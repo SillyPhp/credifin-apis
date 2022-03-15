@@ -32,10 +32,8 @@ use yii\helpers\ArrayHelper;
 use common\models\Utilities;
 use yii\web\HttpException;
 
-class WebinarsController extends Controller
-{
-    public function behaviors()
-    {
+class WebinarsController extends Controller {
+    public function behaviors() {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -51,15 +49,13 @@ class WebinarsController extends Controller
         ];
     }
 
-    public function beforeAction($action)
-    {
+    public function beforeAction($action) {
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
 
-    public function actionLive($slug)
-    {
+    public function actionLive($slug) {
         $user_id = Yii::$app->user->identity->user_enc_id;
         $webinarDetail = self::getWebianrDetail($slug, true);
 //        $webinars = self::getWebianrs($id);
@@ -76,8 +72,7 @@ class WebinarsController extends Controller
         ]);
     }
 
-    public function actionDetail($slug, $referral = null)
-    {
+    public function actionDetail($slug, $referral = null) {
         if (!empty($referral)) {
             $cookies = Yii::$app->response->cookies;
             $cookies->add(new \yii\web\Cookie([
@@ -267,8 +262,7 @@ class WebinarsController extends Controller
         }
     }
 
-    public function actionRecordInterest()
-    {
+    public function actionRecordInterest() {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $uid = Yii::$app->user->identity->user_enc_id;
@@ -306,8 +300,7 @@ class WebinarsController extends Controller
         }
     }
 
-    public function actionRegistration()
-    {
+    public function actionRegistration() {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $uid = Yii::$app->user->identity->user_enc_id;
@@ -391,8 +384,7 @@ class WebinarsController extends Controller
         }
     }
 
-    public function actionMultiHost($id)
-    {
+    public function actionMultiHost($id) {
         $data = WebinarSessions::findOne(['session_enc_id' => $id]);
         if (!$data->session_id) {
             $data = $data->webinars;
@@ -415,8 +407,7 @@ class WebinarsController extends Controller
         }
     }
 
-    public function actionAudience($id)
-    {
+    public function actionAudience($id) {
         $user_id = Yii::$app->user->identity->user_enc_id;
         $webinar_id = Webinars::findOne(['session_enc_id' => $id])['webinar_enc_id'];
         $chkRegistration = WebinarRegistrations::findOne(['created_by' => $user_id]);
@@ -429,8 +420,7 @@ class WebinarsController extends Controller
         }
     }
 
-    private function webinarRegistration($user_id, $webinar_id)
-    {
+    private function webinarRegistration($user_id, $webinar_id) {
         $model = new WebinarRegistrations();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -444,8 +434,7 @@ class WebinarsController extends Controller
         }
     }
 
-    private function getWebianrDetail($slug, $recent)
-    {
+    private function getWebianrDetail($slug, $recent) {
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
         $dt->setTimezone($tz);
@@ -522,16 +511,14 @@ class WebinarsController extends Controller
         return $webinar;
     }
 
-    public function actionAllWebinars()
-    {
+    public function actionAllWebinars() {
         $webinars = self::getWebinars();
         return $this->render('all-webinars', [
             'webinars' => $webinars,
         ]);
     }
 
-    private function getWebinars()
-    {
+    private function getWebinars() {
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
         $dt->setTimezone($tz);
@@ -592,8 +579,7 @@ class WebinarsController extends Controller
         return $webinars;
     }
 
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $upcomingWebinar = self::showWebinar($status = 'upcoming', '', true, '', $limit = 6);
         $count = $upcomingWebinar['count'];
         $upcomingWebinar = $upcomingWebinar['webinars'];
@@ -619,8 +605,7 @@ class WebinarsController extends Controller
         ]);
     }
 
-    private function showWebinar($status, $userIdd = null, $sortAsc = true, $webinar_id = null, $limit = 6, $page = 1, $price = null)
-    {
+    private function showWebinar($status, $userIdd = null, $sortAsc = true, $webinar_id = null, $limit = 6, $page = 1, $price = null) {
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
         $dt->setTimezone($tz);
@@ -692,8 +677,7 @@ class WebinarsController extends Controller
         return ['webinars' => $webinars, 'count' => $count];
     }
 
-    public function actionSearchSpeakers($q = null)
-    {
+    public function actionSearchSpeakers($q = null) {
         if (!is_null($q)) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $data = Speakers::find()
@@ -712,16 +696,14 @@ class WebinarsController extends Controller
         }
     }
 
-    public function actionWebinarExpired()
-    {
+    public function actionWebinarExpired() {
         $webinars = self::getWebinars();
         return $this->render('webinar-expired', [
             'webinars' => $webinars,
         ]);
     }
 
-    public function actionWebinarWidgetTemplate($id)
-    {
+    public function actionWebinarWidgetTemplate($id) {
         $template_name = $id;
         $this->layout = 'widget-layout';
         return $this->render('template-preview', [
@@ -730,13 +712,11 @@ class WebinarsController extends Controller
 
     }
 
-    public function actionList()
-    {
+    public function actionList() {
         return $this->render('list');
     }
 
-    public function actionGetWebinars($status = 'upcoming', $price = null, $limit = 8, $page = 1)
-    {
+    public function actionGetWebinars($status = 'upcoming', $price = null, $limit = 8, $page = 1) {
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
         $dt->setTimezone($tz);
@@ -760,15 +740,13 @@ class WebinarsController extends Controller
         }
     }
 
-    private function isRegistered($webinar_id)
-    {
+    private function isRegistered($webinar_id) {
         return WebinarRegistrations::find()
             ->where(['webinar_enc_id' => $webinar_id, 'status' => 1, 'created_by' => Yii::$app->user->identity->user_enc_id])
             ->exists();
     }
 
-    private function getWebinarPrice($price, $gstAmount)
-    {
+    private function getWebinarPrice($price, $gstAmount) {
         if ($price) {
             $gstPercent = $gstAmount;
             if ($price > 0) {
@@ -779,8 +757,7 @@ class WebinarsController extends Controller
         return ($finalPrice == 0 ? 'Free' : '₹' . $finalPrice);
     }
 
-    private function getRegisteredUserImages($webinarRegistrations)
-    {
+    private function getRegisteredUserImages($webinarRegistrations) {
         $i = 1;
         $images = [];
         foreach ($webinarRegistrations as $val) {
@@ -795,8 +772,7 @@ class WebinarsController extends Controller
         return $images;
     }
 
-    public function actionTemplateView($id)
-    {
+    public function actionTemplateView($id) {
         $this->layout = 'widget-layout';
         $webinarWidget = WebinarWidgetTemplates::find()
             ->select(['widget_enc_id', 'template_name', 'template_path'])
@@ -845,8 +821,7 @@ class WebinarsController extends Controller
         ]);
     }
 
-    public function actionUpcomingWebinarBox()
-    {
+    public function actionUpcomingWebinarBox() {
         $dt = new \DateTime();
         $tz = new \DateTimeZone('Asia/Kolkata');
         $dt->setTimezone($tz);
@@ -869,8 +844,7 @@ class WebinarsController extends Controller
         }
     }
 
-    public function actionWebinarWidgetDetail()
-    {
+    public function actionWebinarWidgetDetail() {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $webinar_enc_id = Yii::$app->request->post('webinar_enc_id');
@@ -914,6 +888,9 @@ class WebinarsController extends Controller
 
             $detail['date'] = $detail['webinarEvents'][0]['event_date'];
             $detail['time'] = $detail['webinarEvents'][0]['event_start_time'] . ' - ' . $detail['webinarEvents'][0]['event_end_time'];
+            $detail['speaker_name'] = $detail['webinarEvents'][0]['webinarSpeakers'][0]['speaker_name'];
+            $detail['speaker_image'] = $detail['webinarEvents'][0]['webinarSpeakers'][0]['speaker_image'];
+            $detail['speaker_designation'] = $detail['webinarEvents'][0]['webinarSpeakers'][0]['designation'];
 
             return [
                 'status' => 200,

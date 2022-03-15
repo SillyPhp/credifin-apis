@@ -91,7 +91,13 @@ $careerAdviceCategories = [
         </div>
     </section>
 
-<?= $this->render('/webinars/webinar-carousel') ?>
+<?php
+if($data = Yii::$app->webinarSlides->check()) {
+    echo $this->render('/webinars/webinar-carousel', [
+        'webinars'=>$data,
+    ]);
+}
+?>
 
     <section class="background-mirror blog-section-0">
         <div class="container">
