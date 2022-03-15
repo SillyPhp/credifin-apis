@@ -45,7 +45,7 @@ class BlogController extends Controller
 
         $quotes = Posts::find()
             ->alias('a')
-            ->select(['a.post_enc_id', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->select(['a.post_enc_id', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
             ->joinWith(['postCategories b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false);
             }], false)
