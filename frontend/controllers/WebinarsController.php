@@ -876,6 +876,9 @@ class WebinarsController extends Controller
 
         $detail['date'] = $detail['webinarEvents'][0]['event_date'];
         $detail['time'] = $detail['webinarEvents'][0]['event_start_time'] . ' - ' . $detail['webinarEvents'][0]['event_end_time'];
+        $detail['speaker_name'] = $detail['webinarEvents'][0]['webinarSpeakers'][0]['speaker_name'];
+        $detail['speaker_image'] = $detail['webinarEvents'][0]['webinarSpeakers'][0]['speaker_image'];
+        $detail['speaker_designation'] = $detail['webinarEvents'][0]['webinarSpeakers'][0]['designation'];
 
         return [
                 'status' => 200,
