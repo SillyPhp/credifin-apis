@@ -2659,7 +2659,7 @@ $(document).on('click','#downloadCertificate',function (e){
         {
             res = JSON.parse(res);
             if(res.status == 200){
-                window.open(res.url, '_blank');
+                window.location.replace(res.url, '_blank');
             } else {
                 alert('Something went wrong');
             }
