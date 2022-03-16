@@ -111,7 +111,7 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                             Processing <i class="fas fa-spinner fa-spin"></i>
                         </button>
                         <?php
-                        if ($is_expired && $registeration_status == 1) {
+                        if ($is_expired && $registeration_status == 1 && $webinar['platform_webinar_id'] != null) {
                             ?>
                             <a href="javascript:;" class="ra-btn" id="downloadCertificate"
                                data-id="<?= $webinar['webinar_enc_id'] ?>">Download Certificate</a>
