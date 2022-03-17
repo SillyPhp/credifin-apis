@@ -199,6 +199,9 @@ $this->registerCss('
         font-size: 28pt;
         line-height: 40px;
     }
+    .loanFlex a{
+        width: 100%;
+        }
 }
 ');
 $script = <<<JS
