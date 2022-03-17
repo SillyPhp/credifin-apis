@@ -38,7 +38,7 @@
 </script>
 <?php
 $this->registerCss('
-img {
+#web-one-speak1 img {
     width: 100%;
 }
 #web-one-speak1 {
