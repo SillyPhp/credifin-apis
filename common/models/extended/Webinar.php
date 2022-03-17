@@ -100,6 +100,7 @@ class Webinar extends \common\models\Webinar
                 'a.availability',
                 'a.webinar_conduct_on',
                 'a.other_platforms',
+                'a.platform_webinar_id',
                 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", a.image_location, "/", a.image) END image',
             ])
             ->joinWith(['assignedWebinarTos b'], false)
@@ -272,7 +273,7 @@ class Webinar extends \common\models\Webinar
             $webinar_detail['events'] = $dateEvents;
             $webinar_detail['speaker_count'] = $speaker_count;
             $webinar_detail['speakers'] = $speakers;
-            $webinar_detail['upcoming'] = $this->webinarsList($college_id, null, 'upcoming',$webinar_id);
+            $webinar_detail['upcoming'] = $this->webinarsList($college_id, null, 'upcoming', $webinar_id);
         }
 
         return $webinar_detail;
