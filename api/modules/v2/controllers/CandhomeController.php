@@ -1002,6 +1002,49 @@ class CandhomeController extends ApiBaseController
 
     }
 
+    public function actionGetCertificate()
+    {
+        if ($user = $this->isAuthorized()) {
+            $webinar_id = Yii::$app->request->post('webinar_id');
+            $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
+            $name = $user->first_name . ' ' . $user->last_name;
+            if (strlen($name) > 35) {
+                $fontSize = 7;
+                $paddingTop = 15;
+            } elseif (strlen($name) > 24) {
+                $fontSize = 8.5;
+                $paddingTop = 5;
+            } else {
+                $fontSize = 11;
+                $paddingTop = 0;
+            }
+
+            $zoom_id = Webinar::findOne(['webinar_enc_id' => $webinar_id])->platform_webinar_id;
+
+            $url = "https://services.empoweryouth.com/api/v1/script/create-certificate?permissionKey=F7;qD3(lX8$" . "nD0}&fontSize=" . $fontSize . "&paddingTop=" . $paddingTop . "&app_id=" . $zoom_id . "&name=" . urlencode($name);
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+            $header = [
+                'Content-Type: application/json;charset=utf-8',
+            ];
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+            $results = curl_exec($ch);
+
+            $results = json_decode($results, true);
+
+            if ($results['status'] == 200) {
+                return $this->response(200, $results);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
     private function userRegistered($webinar_id, $user_id)
     {
         return WebinarRegistrations::find()
