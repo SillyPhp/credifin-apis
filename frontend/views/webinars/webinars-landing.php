@@ -354,8 +354,9 @@ if ($optedWebinar) {
     </div>
 </section>
 <?= $this->render('/widgets/godaddy_offer', [
-//        'course' => 'Web Design Course',
-        'discount' => '20'
+    //    'course' => 'Web Design Course',
+        'discount' => '20',
+        'webinar' => true,
 ]); ?>
 <section class="webinar-on-device">
     <div class="container">

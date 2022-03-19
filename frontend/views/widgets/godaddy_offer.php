@@ -1,6 +1,6 @@
 <?php
 $imgArray = ['gd2.png', 'gd3.png', 'gd4.png', 'gd5.png', 'gd6.png'];
-$colorArray = ['#C7DDEF', '#FED217', '#525E7A', '#F9A18B', '#525E7A'];
+$colorArray = ['#C7DDEF', '#F9A18B', '#525E7A', '#FED217', '#525E7A'];
 $randomIndex = rand(0,4);
 ?>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -15,9 +15,13 @@ $randomIndex = rand(0,4);
     </div>
     <div class="offer">
         <div class="offer-text">
-            <span class="upper-text">Shape Your Career with GoDaddy <?= $course;?></span>
+            <span class="upper-text">Shape Your Career with GoDaddy <?= $course ? $course . ' Course' : "";?></span>
+            <?php if($webinar){ ?>
             <h1>Attend a webinar and avail <?= $discount ? $discount : '20';?>% discount on GoDaddy Academy Courses</h1>
-<!--            <a href="/">Check Out</a>-->
+            <?php } else{ ?>
+            <h1>Apply for an education loan and get <?= $discount ? $discount : '20';?>% discount on GoDaddy Academy Courses</h1>
+            <?php } ?>
+            <!--            <a href="/">Check Out</a>-->
         </div>
     </div>
     <img src="/assets/themes/ey/images/pages/webinar-widgets/godaddy5.png" class="verticle-logo-design"/>
@@ -37,6 +41,7 @@ $this->registerCss("
   background: #fff;
   position: relative;
   color:#111;
+  margin: 20px 0;
 }
 
 .bg-box{
@@ -104,21 +109,20 @@ $this->registerCss("
     left: auto;
     text-align: left;
 }
-
 @media only screen and (max-width: 991px){
   .godaddy-offer .offer{
     max-width: 450px;
   }
 }
 @media only screen and (max-width: 767px){
-    .banner-img {
-        width: 195px;
+  .banner-img {
+    width: 195px;
     }
     .bg-box{
         width: 100%;
     }
     .godaddy-offer .offer {
-        max-width: 200px;
+        max-width: 300px;
         left: 18px;
     }
     .verticle-logo-design{
@@ -126,6 +130,11 @@ $this->registerCss("
         bottom: 10px;
         left: 10px;
         right: auto;
+      }
     }
+  @media only screen and (max-width: 575px){     
+    .godaddy-offer .offer {
+      max-width: 196px;
+  }
 }
 ");
