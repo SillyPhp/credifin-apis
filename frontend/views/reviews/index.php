@@ -93,8 +93,14 @@ use yii\bootstrap\ActiveForm;
         </div>
     </section>
 
-    
-<?= $this->render('/webinars/webinar-carousel')?>
+
+<?php
+if($data = Yii::$app->webinarSlides->check()) {
+    echo $this->render('/webinars/webinar-carousel', [
+        'webinars'=>$data,
+    ]);
+}
+?>
 
 <?= $this->render('/widgets/review/quick-review'); ?>
 

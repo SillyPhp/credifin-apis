@@ -37,8 +37,6 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-            {{#webinarEvents}}
-            {{#webinarSpeakers}}
             <div class="col-sm-6">
                 <div class="webinar-img">
                     <div class="speaker-img-frame">
@@ -49,13 +47,11 @@ use yii\helpers\Url;
                         <!-- <div class="lower-sqr"></div> -->
                         <div class="name-speaker">
                             <p>{{speaker_name}}</p>
-                            <p>{{designation}}</p>
+                            <p>{{speaker_designation}}</p>
                         </div>
                     </div>
                 </div>
             </div>
-            {{/webinarSpeakers}}
-            {{/webinarEvents}}
         </div>
     </div>
 </section>

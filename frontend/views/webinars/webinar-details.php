@@ -21,7 +21,7 @@ $keywords = $webinar['title'];
 $description = 'Present-day education is radically different from that of the past. The youth are unaware of and oblivious to the importance of recognizing and embracing these changes. They are also utterly lost on their career path and have no idea where their career is taking them.';
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Url::to(Yii::$app->request->url,'https'),
+        'canonical' => Url::to(Yii::$app->request->url, 'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -36,7 +36,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Url::to(Yii::$app->request->url,'https'),
+        'og:url' => Url::to(Yii::$app->request->url, 'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -50,7 +50,8 @@ Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', 
 Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var registeration_status = "' . $registeration_status . '"', \yii\web\View::POS_HEAD);
 
-function finalAmount($totalPrice, $gstAmount) {
+function finalAmount($totalPrice, $gstAmount)
+{
     if ($gstAmount) {
         $gstPercent = $gstAmount;
         if ($totalPrice > 0) {
@@ -61,7 +62,8 @@ function finalAmount($totalPrice, $gstAmount) {
     return (($finalPrice == 0) ? 'Free' : '₹ ' . $finalPrice);
 }
 
-function webDate($webDate) {
+function webDate($webDate)
+{
     $date = $webDate;
     $sec = strtotime($date);
     $newDate = date('d-M', $sec);
@@ -109,7 +111,11 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                             Processing <i class="fas fa-spinner fa-spin"></i>
                         </button>
                         <?php
-                        if ($is_expired) {
+                        if ($is_expired && $registeration_status == 1 && $webinar['platform_webinar_id'] != null) {
+                            ?>
+                            <a href="javascript:;" class="ra-btn" id="downloadCertificate"
+                               data-id="<?= $webinar['webinar_enc_id'] ?>">Download Certificate</a>
+                        <?php } else if ($is_expired) {
                             ?>
                             <a href="<?= Url::to('/webinars') ?>" class="ra-btn">Back To Home</a>
                             <?php
@@ -740,7 +746,9 @@ if ($upcoming) {
 </section>
 <!-- problem widget end -->
 <?php
-function color_mod($hex, $diff) {
+$name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+function color_mod($hex, $diff)
+{
     $rgb = str_split(trim($hex, '# '), 2);
     foreach ($rgb as &$hex) {
         $dec = hexdec($hex);
@@ -755,7 +763,8 @@ function color_mod($hex, $diff) {
     return '#' . implode($rgb);
 }
 
-function createPalette($color, $colorCount = 4) {
+function createPalette($color, $colorCount = 4)
+{
     $colorPalette = array();
     for ($i = 1; $i <= $colorCount; $i++) {
         if ($i == 1) {
@@ -2640,6 +2649,25 @@ function _razoPay(ptoken,payment_enc_id,webinar_id){
       });
 });
 }
+$(document).on('click','#downloadCertificate',function (e){
+    $(this).html('<i class="fas fa-spinner fa-spin"></i> Loading');
+    let webinar_id = $('#downloadCertificate').attr('data-id')
+    $.ajax({
+        url : `/webinars/get-certificate?webinar_id=`+webinar_id,
+        method : 'GET',
+        success:function(res)
+        {
+            res = JSON.parse(res);
+            if(res.status == 200){
+                window.location.replace(res.url, '_blank');
+            } else {
+                alert('Something went wrong');
+            }
+            $('#downloadCertificate').html('Download Certificate');
+        }
+    })
+    
+})
 function updateStatus(payment_enc_id,payment_id=null,status,signature=null)
 {
     $.ajax({
