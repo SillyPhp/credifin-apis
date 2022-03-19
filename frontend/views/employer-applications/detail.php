@@ -267,6 +267,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                     'wage_type' => $data2['wage_type'],
                                     'gender' => $data2['preferred_gender'],
                                     'experience' => $data2['experience'],
+                                    'ctc' => $data2['ctc'],
                                     'ammount_value' => $amount,
                                     'placement_locations' => $data2['applicationPlacementLocations'],
                                 ]);

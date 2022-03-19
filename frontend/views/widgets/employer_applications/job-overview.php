@@ -47,6 +47,16 @@ if (!empty($placement_locations)) {
                 <span><?= $ammount_value; ?></span>
             </div>
         </li>
+        <?php
+        if($ctc){
+            ?>
+        <li><i class="far fa-money-bill-alt"></i>
+            <div class="for-flex">
+                <h3>CTC </h3>
+                <span><?= $ctc; ?></span>
+            </div>
+        </li>
+        <?php } ?>
         <li><i class="fas fa-mars-double"></i>
             <div class="for-flex">
                 <h3>Gender</h3><span><?php
