@@ -601,7 +601,7 @@ if ($webinar["slug"] == 'new-age-investment-strategies-10407') {
                     </div>
                     <h3>20% Off on</h3>
                     <p>
-                        Godaddy Academy Courses
+                        GoDaddy Academy Courses
                     </p>
                 </div>
             </div>
