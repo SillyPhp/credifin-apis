@@ -567,13 +567,13 @@ if ($webinar["slug"] == 'new-age-investment-strategies-10407') {
 <!-- ts speaker end-->
 
 <!--rewards start-->
-<?php if ($webinarRewards) { ?>
-    <section class="rewards-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Rewards & Prizes</div>
-                </div>
+<section class="rewards-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading-style">Rewards & Prizes</div>
+            </div>
+            <?php if ($webinarRewards) { ?>
                 <?php foreach ($webinarRewards as $reward) { ?>
                     <div class="col-md-3 col-sm-3 col-xs-6">
                         <div class="rewards-win nd-shadow">
@@ -593,10 +593,21 @@ if ($webinar["slug"] == 'new-age-investment-strategies-10407') {
                         </div>
                     </div>
                 <?php } ?>
+            <?php } ?>
+            <div class="col-md-3 col-sm-3 col-xs-6">
+                <div class="rewards-win nd-shadow">
+                    <div class="reward-img">
+                        <img style="width:140px;" src="<?= Url::to('@eyAssets/images/pages/webinar/godaddy-logo.png')?>"/>
+                    </div>
+                    <h3>20% Off on</h3>
+                    <p>
+                        GoDaddy Academy Courses
+                    </p>
+                </div>
             </div>
         </div>
-    </section>
-<?php } ?>
+    </div>
+</section>
 <!--rewards end-->
 
 <!-- ts intro start -->
