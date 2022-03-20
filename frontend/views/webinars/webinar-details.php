@@ -21,7 +21,7 @@ $keywords = $webinar['title'];
 $description = 'Present-day education is radically different from that of the past. The youth are unaware of and oblivious to the importance of recognizing and embracing these changes. They are also utterly lost on their career path and have no idea where their career is taking them.';
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Url::to(Yii::$app->request->url,'https'),
+        'canonical' => Url::to(Yii::$app->request->url, 'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -36,7 +36,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Url::to(Yii::$app->request->url,'https'),
+        'og:url' => Url::to(Yii::$app->request->url, 'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -50,7 +50,8 @@ Yii::$app->view->registerJs('var interest_status = "' . $interest_status . '"', 
 Yii::$app->view->registerJs('var refcode = "' . $refcode . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var registeration_status = "' . $registeration_status . '"', \yii\web\View::POS_HEAD);
 
-function finalAmount($totalPrice, $gstAmount) {
+function finalAmount($totalPrice, $gstAmount)
+{
     if ($gstAmount) {
         $gstPercent = $gstAmount;
         if ($totalPrice > 0) {
@@ -61,7 +62,8 @@ function finalAmount($totalPrice, $gstAmount) {
     return (($finalPrice == 0) ? 'Free' : '₹ ' . $finalPrice);
 }
 
-function webDate($webDate) {
+function webDate($webDate)
+{
     $date = $webDate;
     $sec = strtotime($date);
     $newDate = date('d-M', $sec);
@@ -561,13 +563,13 @@ if ($webinar["slug"] == 'new-age-investment-strategies-10407') {
 <!-- ts speaker end-->
 
 <!--rewards start-->
-<?php if ($webinarRewards) { ?>
-    <section class="rewards-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Rewards & Prizes</div>
-                </div>
+<section class="rewards-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading-style">Rewards & Prizes</div>
+            </div>
+            <?php if ($webinarRewards) { ?>
                 <?php foreach ($webinarRewards as $reward) { ?>
                     <div class="col-md-3 col-sm-3 col-xs-6">
                         <div class="rewards-win nd-shadow">
@@ -587,10 +589,21 @@ if ($webinar["slug"] == 'new-age-investment-strategies-10407') {
                         </div>
                     </div>
                 <?php } ?>
+            <?php } ?>
+            <div class="col-md-3 col-sm-3 col-xs-6">
+                <div class="rewards-win nd-shadow">
+                    <div class="reward-img">
+                        <img style="width:140px;" src="<?= Url::to('@eyAssets/images/pages/webinar/godaddy-logo.png')?>"/>
+                    </div>
+                    <h3>20% Off on</h3>
+                    <p>
+                        Godaddy Academy Courses
+                    </p>
+                </div>
             </div>
         </div>
-    </section>
-<?php } ?>
+    </div>
+</section>
 <!--rewards end-->
 
 <!-- ts intro start -->
@@ -740,7 +753,8 @@ if ($upcoming) {
 </section>
 <!-- problem widget end -->
 <?php
-function color_mod($hex, $diff) {
+function color_mod($hex, $diff)
+{
     $rgb = str_split(trim($hex, '# '), 2);
     foreach ($rgb as &$hex) {
         $dec = hexdec($hex);
@@ -755,7 +769,8 @@ function color_mod($hex, $diff) {
     return '#' . implode($rgb);
 }
 
-function createPalette($color, $colorCount = 4) {
+function createPalette($color, $colorCount = 4)
+{
     $colorPalette = array();
     for ($i = 1; $i <= $colorCount; $i++) {
         if ($i == 1) {
