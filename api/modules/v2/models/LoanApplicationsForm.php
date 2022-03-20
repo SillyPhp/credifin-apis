@@ -50,8 +50,9 @@ class LoanApplicationsForm extends LoanApplications
     public function add($addmission_taken = 1, $userId, $college_id, $source = 'Mec', $is_claimed = 1, $course_name = null, $pref = [], $refferal_id = null, $is_applicant = null, $getLender = null)
     {
         $loan_type = LoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
+        $country_enc_id = Countries::findOne(['name' => 'India'])->country_enc_id;
         if (empty($this->country_enc_id)) {
-            $this->country_enc_id = Countries::findOne(['name' => 'India'])->country_enc_id;
+            $this->country_enc_id = $country_enc_id;
         }
 
         $application_fee = [];
@@ -59,7 +60,7 @@ class LoanApplicationsForm extends LoanApplications
             // if user is dsa and assigned to phf then application amount to 1000
             $referralData = Referral::findOne(['code' => $refferal_id]);
             $org = AssignedSupervisor::findOne(['assigned_user_enc_id' => $referralData->user_enc_id, 'supervisor_enc_id' => 'G8nxNmgE3o4nJWr3XY1rQWVybejKkz']);
-            if ($org) {
+            if ($org && $this->country_enc_id == $country_enc_id) {
                 $application_fee['amount'] = 1000;
                 $application_fee['gst'] = 0;
             }

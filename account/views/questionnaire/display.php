@@ -135,4 +135,14 @@ label{
     border: 2px solid #c2cad8;
 }
 ');
+$script = <<<JS
+$( document ).ready(function() {
+    var url = new URL(window.location.href);
+    if (url.searchParams.get('print') == 'true') {
+        $('.sav_ques').hide();
+        window.print();
+    }
+});
+JS;
+$this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/css/components-rounded.min.css');

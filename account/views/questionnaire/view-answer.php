@@ -239,6 +239,13 @@ $script = <<< JS
           var rating = $('#rate_val').val();
           $('input:radio[name="rate"][value="'+rating+'"]').prop('checked', true);
         }
+   
+   $( document ).ready(function() {
+    var url = new URL(window.location.href);
+    if (url.searchParams.get('print') == 'true') {
+        window.print();
+    }
+});
         
 JS;
 $this->registerJs($script);

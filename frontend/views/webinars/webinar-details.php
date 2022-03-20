@@ -111,7 +111,11 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                             Processing <i class="fas fa-spinner fa-spin"></i>
                         </button>
                         <?php
-                        if ($is_expired) {
+                        if ($is_expired && $registeration_status == 1 && $webinar['platform_webinar_id'] != null) {
+                            ?>
+                            <a href="javascript:;" class="ra-btn" id="downloadCertificate"
+                               data-id="<?= $webinar['webinar_enc_id'] ?>">Download Certificate</a>
+                        <?php } else if ($is_expired) {
                             ?>
                             <a href="<?= Url::to('/webinars') ?>" class="ra-btn">Back To Home</a>
                             <?php
@@ -753,6 +757,7 @@ if ($upcoming) {
 </section>
 <!-- problem widget end -->
 <?php
+$name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
 function color_mod($hex, $diff)
 {
     $rgb = str_split(trim($hex, '# '), 2);
@@ -796,6 +801,17 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.share-social {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+.basis{
+    margin: 10px 0 5px;
+    flex-basis: 16.4%;
+    min-width: 143px;
+}
 .move-popup{
     display: none !important;
 }
@@ -1448,7 +1464,7 @@ transform: rotate(100deg);
 }
 @media screen and (max-width: 768px){
     .dis-flex p{
-        flex: auto;
+        flex: 50%;
         font-size: 16px;
         font-family: roboto;
     }
@@ -1468,6 +1484,9 @@ transform: rotate(100deg);
         max-width: 100%;
         width: 90% !important;
         min-height:50vh;
+    }
+    .share-social{
+        justify-content:center;
     }
 }
 .ask-people{
@@ -1638,6 +1657,7 @@ transform: rotate(100deg);
 .speaker-classic .ts-speaker {
     margin-bottom: 60px;
     max-width: 255px;
+    width: 255px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -1791,10 +1811,10 @@ transform: rotate(100deg);
 
 /*outcome*/
 .ts-intro-outcome {
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  padding: 70px;
+//  background-repeat: no-repeat;
+//  background-size: cover;
+//  background-position: center center;
+  padding-top: 30px;
 }
 
 .ts-single-outcome {
@@ -1821,10 +1841,11 @@ transform: rotate(100deg);
     justify-content: center;
     align-content: flex-start;
     margin: auto;
+    overflow: hidden;
 }
 .out-img {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     margin: auto;
 }
 
@@ -2102,7 +2123,7 @@ a:link, a:visited {
 .absolute{
     position: absolute;
     width: 100%;
-    z-index: 1;
+//    z-index: 1;
     top: 0;
     left: 0;
     max-height: 90vh;
@@ -2117,7 +2138,7 @@ a:link, a:visited {
     height: 90vh;
     display: inline-block;
     padding-top: 28vh;
-    z-index: 2;
+//    z-index: 2;
     position: relative;
 }
 .element-percent h1 {
@@ -2139,7 +2160,7 @@ a:link, a:visited {
 }
 
 .webinar-description p {
-    font-size: 17px;
+    font-size: 16px;
     letter-spacing: .5px;
     text-align: justify;
     line-height: 26px;
@@ -2206,10 +2227,14 @@ div.icon span {
     margin: 20px 0px !important;
     text-align: center;
 }
-
+.set-width-web{
+    flex-basis: 50%;
+}
 .register-action {
     display: flex;
     flex-wrap: wrap;
+    flex-basis: 50%;
+    justify-content: flex-end;
 }
 .speaker-author {
     margin-right: 15px;
@@ -2244,6 +2269,7 @@ div.icon span {
     display: flex;
     align-items: center;
     margin-left: -20px;
+    flex-wrap:wrap;
 }
 .avatars p {
     font-size: 18px;
@@ -2346,6 +2372,10 @@ div.icon span {
   background:#00008b;
 }
 @media (max-width: 767px) {
+.register-action{
+    justify-content:center;
+    padding-top:10px;
+}
 .section-list{
     padding:10px 30px;
 }
@@ -2630,6 +2660,25 @@ function _razoPay(ptoken,payment_enc_id,webinar_id){
       });
 });
 }
+$(document).on('click','#downloadCertificate',function (e){
+    $(this).html('<i class="fas fa-spinner fa-spin"></i> Loading');
+    let webinar_id = $('#downloadCertificate').attr('data-id')
+    $.ajax({
+        url : `/webinars/get-certificate?webinar_id=`+webinar_id,
+        method : 'GET',
+        success:function(res)
+        {
+            res = JSON.parse(res);
+            if(res.status == 200){
+                window.location.replace(res.url, '_blank');
+            } else {
+                alert('Something went wrong');
+            }
+            $('#downloadCertificate').html('Download Certificate');
+        }
+    })
+    
+})
 function updateStatus(payment_enc_id,payment_id=null,status,signature=null)
 {
     $.ajax({

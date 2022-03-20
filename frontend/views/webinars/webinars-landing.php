@@ -47,7 +47,6 @@ function webDate($webDate)
     </div>
 </section>
 
-
 <?php
 if ($upcomingWebinar) {
 ?>
@@ -1134,6 +1133,9 @@ color: #fff !important;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
 	height: 70px;
+}
+.web-des p{
+    margin:0;
 }
 .web-info{
     display: flex;

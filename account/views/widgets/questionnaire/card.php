@@ -16,6 +16,11 @@ if (!empty($total_questionnaire)) {
                     <div class="box-main-col <?= $col_width; ?>">
                         <div class="p-category">
                             <div class="rt-bttns">
+                                <a href="javascript:;" data-toggle="tooltip" data-placement="top" title="Print" id="print-form" class="print-bttn clone-bttn set-right-align print" data-href="<?= Url::to('/account/questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"] . DIRECTORY_SEPARATOR . 'view','https'); ?>?print=true" target="_blank">
+                                    <i class="fa fa-print"></i>
+                                </a>
+                            </div>
+                            <div class="rt-bttns">
                                 <a data-toggle="tooltip" data-placement="top" title="Clone" class="clone-bttn set-right-align two" href="<?= Url::toRoute('questionnaire' . DIRECTORY_SEPARATOR . $questionnaire[$next]["id"] . DIRECTORY_SEPARATOR . 'clone'); ?>" target="_blank">
                                     <i class="fa fa-clone"></i>
                                 </a>
@@ -62,6 +67,13 @@ if (!empty($total_questionnaire)) {
 <?php }
 Pjax::end();
 $this->registerCss('
+.set-right-align.print{
+    right: 65px;
+}
+.print-bttn {
+    font-size:16px;
+    color: #000;
+}
     .tab-empty{
     padding:20px;
 }
@@ -102,6 +114,10 @@ $(document).on('click','.delete_questionnaire',function(e){
             }
           });
     }
+});
+$(document).on('click','.print-bttn', function(e) {
+    e.preventDefault();
+    window.open($(this).attr('data-href'));
 });
 JS;
 $this->registerJs($script);

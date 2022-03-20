@@ -1,114 +1,121 @@
-<script id="webinar_three_speaker1" type="text/javascript">
-    <section class="webinar-three-speaker">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="side-one">
-                    <h1>
-                        {{name}}
-                    </h1>
-                    <div class="speakers-detail">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="speaker-title">
-                                    <div class="heading">
-                                        <h6>Speakers</h6>
+<?php
+
+use yii\helpers\Url;
+?>
+
+<script id="temp_<?=$webinar_enc_id ?>" type="text/javascript">
+    <section class="webinar-three-speaker" id="web-three-speak1">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="side-one">
+                        <h1>
+                            {{name}}
+                        </h1>
+                        <div class="speakers-detail">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="speaker-title">
+                                        <div class="heading">
+                                            <h6>Speakers</h6>
+                                        </div>
+                                        <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
                                     </div>
-                                    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
                                 </div>
-                            </div>
-                            {{#webinarEvents}}
-                            {{#webinarSpeakers}}
-                            <div class="col-xs-4">
-                                <div class="speaker-img">
-                                    {{#speaker_image}}
-                                    <img src="{{speaker_image}}">
-                                    {{/speaker_image}}
+                                {{#webinarEvents}}
+                                {{#webinarSpeakers}}
+                                <div class="col-xs-4">
+                                    <div class="speaker-img">
+                                        {{#speaker_image}}
+                                        <img src="{{speaker_image}}">
+                                        {{/speaker_image}}
+                                    </div>
+                                    <div class="speaker-name">{{speaker_name}}</div>
+                                    <div class="designation">{{designation}}</div>
                                 </div>
-                                <div class="speaker-name">{{speaker_name}}</div>
-                                <div class="designation">{{designation}}</div>
+                                {{/webinarSpeakers}}
+                                {{/webinarEvents}}
                             </div>
-                            {{/webinarSpeakers}}
-                            {{/webinarEvents}}
                         </div>
-                    </div>
-                    <div class="avail-share">
-                        <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
-                        <div class="share-bar">
-                            <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/{{slug}}" class="share-fb"><i class="fab fa-facebook-f"></i></a>
-                            <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/{{slug}}" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
-                            <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
-                            <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-twitter"><i class="fab fa-twitter"></i></a>
-                            <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/{{slug}}" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
+                        <div class="avail-share">
+                            <a href="/webinar/{{slug}}" class="register-btn">Register Now <i class="fas fa-angle-double-right"></i></a>
+                            <div class="share-bar">
+                                <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://www.empoweryouth.com/webinar/{{slug}}" class="share-fb"><i class="fab fa-facebook-f"></i></a>
+                                <a target="_blank" href="https://telegram.me/share/url?url=https://www.empoweryouth.com/webinar/{{slug}}" class="tg-tele"><i class="fab fa-telegram-plane"></i></a>
+                                <a target="_blank" href="https://api.whatsapp.com/send?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-whatsapp"><i class="fab fa-whatsapp"></i></a>
+                                <a target="_blank" href="https://twitter.com/intent/tweet?text=https://www.empoweryouth.com/webinar/{{slug}}" class="share-twitter"><i class="fab fa-twitter"></i></a>
+                                <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/webinar/{{slug}}" class="share-linkedin"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="side-two">
-                    <div class="side-two-upper">
-                        <div class="online-icons">
-                            <div class="icons"><i class="fas fa-microphone"></i></div>
-                            <div class="icons"><i class="fas fa-play"></i></div>
-                            <div class="icons"><i class="fas fa-comment-alt"></i></div>
-                            <div class="icons"><i class="fas fa-wifi"></i></div>
+                <div class="col-sm-6">
+                    <div class="side-two">
+                        <div class="side-two-upper">
+                            <div class="online-icons">
+                                <div class="icons"><i class="fas fa-microphone"></i></div>
+                                <div class="icons"><i class="fas fa-play"></i></div>
+                                <div class="icons"><i class="fas fa-comment-alt"></i></div>
+                                <div class="icons"><i class="fas fa-wifi"></i></div>
+                            </div>
+                            <div class="heading">
+                                ONLINE CONFERENCE
+                            </div>
+                            <div class="side-two-lines">
+                                <span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span>
+                            </div>
                         </div>
-                        <div class="heading">
-                            ONLINE CONFERENCE
-                        </div>
-                        <div class="side-two-lines">
-                            <span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span><span class="line"></span>
-                        </div>
-                    </div>
-                    <div class="date-time">
-                        <div class="date">
-                            <div class="prop">DATE</div>
-                            <div class="value">{{date}}</div>
-                        </div>
-                        <div class="time">
-                            <div class="prop">TIME</div>
-                            <div class="value">{{time}}</div>
+                        <div class="date-time">
+                            <div class="date">
+                                <div class="prop">DATE</div>
+                                <div class="value">{{date}}</div>
+                            </div>
+                            <div class="time">
+                                <div class="prop">TIME</div>
+                                <div class="value">{{time}}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 </script>
 
 <?php $this->registerCss('
-.share-whatsapp{
-color: #25D366 !important;
-}
-.share-bar a.share-whatsapp:hover{
-    background-color: #25D366 !important;
-    color: #fff !important;
-    
-}
-    .webinar-three-speaker{
+    #web-three-speak1 .share-whatsapp{
+        color: #25D366 !important;
+    }
+    #web-three-speak1 .share-bar a.share-whatsapp:hover{
+        background-color: #25D366 !important;
+        color: #fff !important;
+        
+    }
+    #web-three-speak1{
         background: #150050;
         overflow: hidden;
+        min-height: 550px;
     }
-    .side-one h1 {
+    #web-three-speak1 .side-one h1 {
         color: #fff;
         font-family: Roboto;
     }
-    .speaker-img {
+    #web-three-speak1 .speaker-img {
         width: 150px;
         height: 150px;
         background: #fff;
         margin: 15px 0;
+        overflow: hidden;
     }
-    .speaker-img img {
-    width:100%;
+    #web-three-speak1 .speaker-img img {
+        width:100%;
     }
-    .speaker-title h6 {
+    #web-three-speak1 .speaker-title h6 {
        color: #fff;
        margin: 0;
        transform: skewX(15deg);
     }
-    .speaker-title span {
+    #web-three-speak1 .speaker-title span {
         width: 8px;
         height: 23px;
         background: #ff5c58;
@@ -117,22 +124,22 @@ color: #25D366 !important;
         transform: skew(-15deg);
         margin-left: 5px;
     }
-    .speaker-title .heading {
+    #web-three-speak1 .speaker-title .heading {
         display: inline-block;
         padding: 3px 10px;
         background: #ff5c58;
         transform: skewX(-15deg);
     }
-    .designation {
+    #web-three-speak1 .designation {
         color: #afafaf;
         font-weight: 700;
     }
-    .speaker-name {
+    #web-three-speak1 .speaker-name {
         color: #fff;
         font-weight: 700;
         font-size: 16px;
     }
-    .icons {
+    #web-three-speak1 .icons {
         width: 30px;
         height: 30px;
         display: inline-flex;
@@ -143,17 +150,17 @@ color: #25D366 !important;
         align-items: center;
         margin-left: 15px;
     }
-    .online-icons{
+    #web-three-speak1 .online-icons{
         display: flex;
         justify-content: flex-end;
     }
-    .webinar-three-speaker .heading{
+    #web-three-speak1 .heading{
         color: #fff;
         font-size: 25px;
         text-align: right;
         font-weight: 700;
     }
-    span.line {
+    #web-three-speak1 span.line {
         width: 3px;
         margin-left: 5px;
         height: 75px;
@@ -161,44 +168,44 @@ color: #25D366 !important;
         display: inline-block;
         transform: skewX(-24deg);
     }
-    .side-two-lines {
+    #web-three-speak1 .side-two-lines {
         display: inline-block;
         position: absolute;
         right: -215px;
     }
-    .date-time {
+    #web-three-speak1 .date-time {
         margin-top: 100px;
         color: #fff;
         font-weight: 700;
     }
-    .date {
+    #web-three-speak1 .date {
         justify-content: flex-end;
     }
-    .date, .time {
+    #web-three-speak1 .date, #web-three-speak1 .time {
         display: flex;
         height: 65px;
         margin-bottom: 25px;
     }
-    .date-time .prop {
+    #web-three-speak1 .date-time .prop {
         color: #979797;
     }
-    .time div, .date div {
+    #web-three-speak1 .time div, #web-three-speak1 .date div {
         font-size: 25px;
         line-height: 25px;
         padding: 0 10px;
     }
-    .date-time .value {
+    #web-three-speak1 .date-time .value {
         border-left: 2px solid #fff;
     }
-    .time .value, .date .value {
+    #web-three-speak1 .time .value, #web-three-speak1 .date .value {
         align-self: stretch;
         display: flex;
         align-items: flex-end;
     }
-    .avail-share{
+    #web-three-speak1 .avail-share{
         margin-bottom: 15px;
     }
-    a.register-btn {
+    #web-three-speak1 a.register-btn {
         background: #ff5c58;
         border-radius: 27px;
         padding: 15px 30px;
@@ -207,22 +214,22 @@ color: #25D366 !important;
         color: #ffffff;
         transition: all linear .3s;
     }
-    a.register-btn i{
+    #web-three-speak1 a.register-btn i{
         transition: all linear .3s;
     }
-    a.register-btn:hover{
+    #web-three-speak1 a.register-btn:hover{
         color: #fff
         transition: all linear .3s;
     }
-    a.register-btn:hover i{
+    #web-three-speak1 a.register-btn:hover i{
         margin-left: 15px;
         transition: all linear .3s;
     }
-    .share-bar {
+    #web-three-speak1 .share-bar {
         margin-top: 20px;
     }
     
-    .share-bar a {
+    #web-three-speak1 .share-bar a {
         display: inline-block;
         font-size: 18px;
         color: #fff;
@@ -238,94 +245,103 @@ color: #25D366 !important;
         margin-left: 10px;
     }
     
-    .share-bar .fab, .share-bar .far {
+    #web-three-speak1 .share-bar .fab, #web-three-speak1 .share-bar .far {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
     }
     
-    .share-bar a:not(.share-fb) {
+    #web-three-speak1 .share-bar a:not(.share-fb) {
         margin-left: 7px;
     }
     
-    .share-bar a.share-fb {
+    #web-three-speak1 .share-bar a.share-fb {
         color: #3b5998;
     }
     
-    .share-bar a.share-twitter {
+    #web-three-speak1 .share-bar a.share-twitter {
         color: #1DA1F2;
     }
     
-    .share-bar a.share-linkedin {
-        color: #25D366;
+    #web-three-speak1 .share-bar a.share-linkedin {
+        color: #0e76a8;
     }
     
-    .share-bar a.tg-tele {
+    #web-three-speak1 .share-bar a.tg-tele {
         color: #0088cc;
         border-color: #0088cc;
     }
     
-    .share-bar a:hover {
+    #web-three-speak1 .share-bar a:hover {
         color: #fff;
         transition: 0.2s all ease-in;
         font-size: 12px;
         border-radius: 20px;
     }
     
-    .share-bar a.share-fb:hover {
+    #web-three-speak1 .share-bar a.share-fb:hover {
         background-color: #3b5998;
     }
     
-    .share-bar a.share-twitter:hover {
+    #web-three-speak1 .share-bar a.share-twitter:hover {
         background-color: #1DA1F2;
     }
     
-    .share-bar a.share-linkedin:hover {
-        background-color: #25D366;
+    #web-three-speak1 .share-bar a.share-linkedin:hover {
+        background-color: #0e76a8;
     }
     
-    .share-bar a.tg-tele:hover {
+    #web-three-speak1 .share-bar a.tg-tele:hover {
         background-color: #0088cc;
         border-color: #0088cc;
     }
     @media only screen and (max-width: 991px){
-        .speaker-img{
+        #web-three-speak1 .speaker-img{
             width: 100px;
             height: 100px;
         }
     }
     @media only screen and (max-width: 767px){
-        .side-two-upper {
+        #web-three-speak1 .side-two-upper {
             display: none;
         }
-        .date-time{
+        #web-three-speak1 .date-time{
             margin-top: 0;
         }
-        .speaker-name{
+        #web-three-speak1 .speaker-name{
             font-size: 13px;
         }
-        .designation{
+        #web-three-speak1 .designation{
             font-size: 12px;
+        }
+        #web-three-speak1{
+            min-height: 650px;
         }
     }
     @media only screen and (max-width: 425px){
-        .time div, .date div {
+        #web-three-speak1 .time div, .date div {
             font-size: 20px;
             line-height: 25px;
             padding: 0 10px;
         }
-        .date, .time {
+        #web-three-speak1 .date, #web-three-speak1 .time {
             display: flex;
             height: 25px;
             margin-bottom: 25px;
         }
-        .date {
+        #web-three-speak1 .date {
             justify-content: flex-start;
         }
-        .speaker-img{
+        #web-three-speak1 .speaker-img{
             width: 80px;
             height: 80px;
         }
     }
-') ?>
+');
+$script = <<<JS
+
+    getWebinarDetails('$webinar_enc_id');
+JS;
+$this->registerJs($script);
+?>

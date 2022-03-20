@@ -1,5 +1,5 @@
-<script id="webinar_one_speaker1" type="text/template">
-    <section class="webinar-one-speaker">
+<script id="temp_<?=$webinar_enc_id ?>" type="text/template">
+    <section class="webinar-one-speaker" id="web-one-speak1">
         <div class="container">
         <div class="row">
         <div class="col-md-12">
@@ -21,8 +21,6 @@
             </div>
         </div>
     </div>
-        {{#webinarEvents}}
-        {{#webinarSpeakers}}
     <div class="webinar-speaker-img">
         <div class="rotate-div">
             <div class="speaker-img">
@@ -31,12 +29,10 @@
             </div>
             <div class="speaker-detail">
                 <h2>{{speaker_name}}</h2>
-                <h5>{{designation}}</h5>
+                <h5>{{speaker_designation}}</h5>
             </div>
         </div>
     </div>
-        {{/webinarSpeakers}}
-        {{/webinarEvents}}
     </div>
     </section>
 </script>
@@ -45,28 +41,27 @@ $this->registerCss('
 img {
     width: 100%;
 }
-.webinar-one-speaker {
+#web-one-speak1 {
     background: url(/assets/themes/ey/images/pages/webinar/webinar-one-speaker-bg.png);
     min-height: 550px;
     overflow: hidden;
     background-repeat: no-repeat;
     background-size: cover;
 }
-.webinar-one-speaker .container {
+#web-one-speak1 .container {
     min-height: 550px;
     display: flex;
     align-items: center;
     position: relative;
-    width: 100%;
 }
-.webinar-one-speaker .row{
+#web-one-speak1 .row{
     position: relative;
     z-index: 2;
 }
-.webinar-text{
+#web-one-speak1 .webinar-text{
     max-width: 400px;
 }
-.webinar-text h1 {
+#web-one-speak1 .webinar-text h1 {
     color: #fff;
     font-family: Roboto;
     text-transform: uppercase;
@@ -74,7 +69,7 @@ img {
     line-height: 1.3;
     text-align: left;
 }
-.date-time span {
+#web-one-speak1 .date-time span {
     display: block;
     line-height: 23px;
     font-family: farro;
@@ -83,12 +78,12 @@ img {
     font-size: 20px;
     font-weight: 600;
 }
-.webinar-text p {
+#web-one-speak1 .webinar-text p {
     line-height: 17px;
     color: #c0c0c0;
     margin: 22px 0 0 0;
 }
-a.register-btn {
+#web-one-speak1 a.register-btn {
     background: linear-gradient(91.16deg, #FFBB54 -43.72%, #CB650C 125.14%, #DB7E2E 125.14%);
     border-radius: 27px;
     padding: 15px 30px;
@@ -97,22 +92,22 @@ a.register-btn {
     color: #fff;
     transition: all linear .3s;
 }
-a.register-btn i{
+#web-one-speak1 a.register-btn i{
     transition: all linear .3s;
 }
-a.register-btn:hover{
+#web-one-speak1 a.register-btn:hover{
     color: #fff;
     transition: all linear .3s;
 }
-a.register-btn:hover i{
+#web-one-speak1 a.register-btn:hover i{
     margin-left: 15px;
     transition: all linear .3s;
 }
-.share-bar {
+#web-one-speak1 .share-bar {
     margin-top: 20px;
 }
 
-.share-bar a {
+#web-one-speak1 .share-bar a {
     display: inline-block;
     font-size: 18px;
     color: #fff;
@@ -128,64 +123,64 @@ a.register-btn:hover i{
     margin-left: 10px;
 }
 
-.share-bar .fab, .share-bar .far {
+#web-one-speak1 .share-bar .fab, #web-one-speak1 .share-bar .far {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-.share-bar a:not(.share-fb) {
+#web-one-speak1 .share-bar a:not(.share-fb) {
     margin-left: 7px;
 }
 
-.share-bar a.share-fb {
+#web-one-speak1 .share-bar a.share-fb {
     color: #3b5998;
 }
 
-.share-bar a.share-twitter {
+#web-one-speak1 .share-bar a.share-twitter {
     color: #1DA1F2;
 }
 
-.share-bar a.share-whatsapp {
+#web-one-speak1 .share-bar a.share-whatsapp {
     color: #25D366;
 }
-.share-bar a.share-linkedin {
+#web-one-speak1 .share-bar a.share-linkedin {
     color: #0e76a8;
 }
 
-.share-bar a.tg-tele {
+#web-one-speak1 .share-bar a.tg-tele {
     color: #0088cc;
     border-color: #0088cc;
 }
 
-.share-bar a:hover {
+#web-one-speak1 .share-bar a:hover {
     color: #fff;
     transition: 0.2s all ease-in;
     font-size: 12px;
     border-radius: 20px;
 }
 
-.share-bar a.share-fb:hover {
+#web-one-speak1 .share-bar a.share-fb:hover {
     background-color: #3b5998;
 }
 
-.share-bar a.share-twitter:hover {
+#web-one-speak1 .share-bar a.share-twitter:hover {
     background-color: #1DA1F2;
 }
 
-.share-bar a.share-whatsapp:hover {
+#web-one-speak1 .share-bar a.share-whatsapp:hover {
     background-color: #25D366;
 }
-.share-bar a.share-linkedin:hover {
+#web-one-speak1 .share-bar a.share-linkedin:hover {
     background-color: #0e76a8;
 }
 
-.share-bar a.tg-tele:hover {
+#web-one-speak1 .share-bar a.tg-tele:hover {
     background-color: #0088cc;
     border-color: #0088cc;
 }
-.webinar-speaker-img {
+#web-one-speak1 .webinar-speaker-img {
     width: 70%;
     position: absolute;
     height: 100%;
@@ -194,7 +189,7 @@ a.register-btn:hover i{
     display: flex;
     align-items: center;
 }
-.rotate-div {
+#web-one-speak1 .rotate-div {
     width: 100%;
     height: 250px;
     background: #323e5a;
@@ -203,100 +198,104 @@ a.register-btn:hover i{
     border-radius: 140px;
     transform: rotate(-45deg) translate(30px, -120px);
 }
-.speaker-img {
+#web-one-speak1 .speaker-img {
     width: 230px;
     background: #fff;
     border-radius: 50%;
     height: 230px;
     margin-left: 10px;
+    overflow: hidden;
 }
-.speaker-detail {
+#web-one-speak1 .speaker-detail {
     margin-left: 20px;
 }
-.speaker-detail h2 {
+#web-one-speak1 .speaker-detail h2 {
     color: #fff;
     font-family: Roboto;
 }
-.speaker-detail h5 {
+#web-one-speak1 .speaker-detail h5 {
     color: #afafaf;
     margin: 0;
     font-weight: 600;
 }
-.rotate-div div {
+#web-one-speak1 .rotate-div div {
     transform: rotate(45deg);
 }
 
 @media only screen and (max-width: 992px){
-    .rotate-div{
+    #web-one-speak1 .rotate-div{
         transform: rotate(-90deg) translate(30px, -120px);
     }
-    .rotate-div div{
+    #web-one-speak1 .rotate-div div{
         transform: rotate(90deg);
     }
-    .webinar-speaker-img{
+    #web-one-speak1 .webinar-speaker-img{
         right: -260px;
     }
-    .webinar-text h1{
+    #web-one-speak1 .webinar-text h1{
         font-size: 35px;
     }
 }
 @media only screen and (max-width: 767px){
-    .webinar-one-speaker{
-        min-height: 750px;
+    #web-one-speak1{
         display: flex;
         align-items: center;
     }
-    .webinar-speaker-img{
-        right: -94px;
-        top: 30px;
+    #web-one-speak1 .container{
+        width: 100%;
+    }
+    #web-one-speak1 .webinar-speaker-img{
+        right: -65px;
+        top: -39px;
         align-items: flex-start;
     }
-    .rotate-div{
+    #web-one-speak1 .rotate-div{
         transform: none;
         height: 160px;
     }
-    .speaker-img{
+    #web-one-speak1 .speaker-img{
         width: 140px;
         height: 140px;
     }
-    .rotate-div div{
+    #web-one-speak1 .rotate-div div{
         transform: none;
+        margin-left: 8px;
     }
-    .webinar-text h1{
+    #web-one-speak1 .webinar-text h1{
         max-width: 280px;
     }
-    .speaker-detail h5{
+    #web-one-speak1 .speaker-detail h5{
         font-size: 10px;
     }
 }
 @media only screen and (max-width: 576px){
-    .webinar-speaker-img{
+    #web-one-speak1 .webinar-speaker-img{
         align-items: flex-end;
         top: 0;
         width: 110%;
     }
-    .webinar-one-speaker .container{
+    #web-one-speak1 .container{
         align-items: flex-start;
         margin-top: 30px;
     }
-    .rotate-div{
+    #web-one-speak1 .rotate-div{
         margin-bottom: 10px;
     }
-    .webinar-text h1{
+    #web-one-speak1 .webinar-text h1{
         max-width: 100%;
         font-size: 28px;
     }
-    .webinar-text{
+    #web-one-speak1 .webinar-text{
         max-width: 100%;
     }
-    .rotate-div{
+    #web-one-speak1 .rotate-div{
         height: 120px;
     }
-    .speaker-img{
+    #web-one-speak1 .speaker-img{
         width: 100px;
         height: 100px;
     }
-    .webinar-one-speaker{
+    #web-one-speak1{
         min-height: 650px;
     }
 }
@@ -305,18 +304,22 @@ a.register-btn:hover i{
         right: -60px;
         width: 108%;
     }
-    .rotate-div{
+    #web-one-speak1 .rotate-div{
         height: 140px;
     }
-    .speaker-img{
+    #web-one-speak1 .speaker-img{
         width: 120px;
         height: 120px;
     }
-    .webinar-one-speaker{
+    #web-one-speak1{
         min-height: 620px;
     }
-    .webinar-one-speaker .container{
+    #web-one-speak1 .container{
         min-height: 620px;
     }
 }
 ');
+$script = <<<JS
+    getWebinarDetails('$webinar_enc_id');
+JS;
+$this->registerJs($script);
