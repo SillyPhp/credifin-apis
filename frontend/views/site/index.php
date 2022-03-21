@@ -1330,7 +1330,6 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
         if(hcActive.length > 0){
             hcActive[0].classList.remove('hcActive');
         }
-        console.log(searchForm.values);
         if(divActive.classList.contains('hcActive')){
            return false
         }else{
@@ -1359,7 +1358,6 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
                 default:
                     searchForm.setAttribute('action', '/search');
                     searchInput.setAttribute('placeholder', 'Keyword');
-                    console.log(showDiv);
             }
            if(showDiv == 'loanHeaderContent') {
                headerContent.querySelector('.header-search-bar').style.display = 'none';
