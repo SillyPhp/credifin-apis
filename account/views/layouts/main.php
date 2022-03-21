@@ -180,13 +180,6 @@ $this->beginPage();
                 <div id="page-loading" class="page-loading">
                     <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
                 </div>
-                <!--                --><?php
-                //                if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
-                //                    echo $this->render('@frontend/views/widgets/sub-header', [
-                //                        'data' => $this->params['sub_header'],
-                //                    ]);
-                //                }
-                //                ?>
                 <?= $content; ?>
             </div>
             <p class="copyright"> <?= Yii::t('account', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('account', 'All Rights Reserved') . '.'; ?>

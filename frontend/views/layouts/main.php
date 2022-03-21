@@ -270,22 +270,9 @@ AppAssets::register($this);
             <?= (!$this->params['header_dark']) ? '</div>' : ''; ?>
         </header>
         <div class="main-content">
-            <!--        <div id="page-loading" class="page-loading">-->
-            <!--            <img src="-->
-            <? //= Url::to('@eyAssets/images/loader/loader-main.gif'); 
-            ?>
-            <!--" alt="Loading..">-->
-            <!--        </div>-->
             <div id="auth_loading_img">
             </div>
             <div class="auth_fader"></div>
-            <?php
-            //        if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
-            //            echo $this->render('/widgets/sub-header', [
-            //                'data' => $this->params['sub_header'],
-            //            ]);
-            //        }
-            ?>
             <?= $content; ?>
         </div>
         <footer id="footer" class="footer">

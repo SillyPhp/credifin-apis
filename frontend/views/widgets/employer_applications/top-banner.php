@@ -15,33 +15,31 @@ use yii\helpers\Url;
                             <img src="/assets/common/categories/profile/<?= $icon_png; ?>"/>
                         </div>
                         <h3><?= $job_title; ?></h3>
-                        <?php if($status != 'Closed'){?>
+                        <?php if ($status != 'Closed') { ?>
                             <div class="job-statistic">
-                            <?php if ($shortlist_btn_display): ?>
-                                <?php
-                                if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
-                                    if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
-                                        ?>
-                                        <span class="hover-change col_pink"><a href="#" class="shortlist_job"><i
-                                                        class="far fa-heart"></i> Shortlisted</a></span>
-                                        <?php
-                                    } else {
-                                        ?>
-                                        <span class="hover-change"><a href="#" class="shortlist_job"><i
-                                                        class="far fa-heart"></i> Shortlist</a></span>
-                                        <?php
+                                <?php if ($shortlist_btn_display): ?>
+                                    <?php
+                                    if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
+                                        if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
+                                            ?>
+                                            <span class="hover-change col_pink"><a href="#" class="shortlist_job"><i
+                                                            class="far fa-heart"></i> Shortlisted</a></span>
+                                            <?php
+                                        } else {
+                                            ?>
+                                            <span class="hover-change"><a href="#" class="shortlist_job"><i
+                                                            class="far fa-heart"></i> Shortlist</a></span>
+                                            <?php
+                                        }
                                     }
-                                }
-                                ?>
-                            <?php endif; ?>
-                        </div>
+                                    ?>
+                                <?php endif; ?>
+                            </div>
                         <?php } ?>
                     </div>
                 </div>
             </div>
         </div>
-        <!--</div>-->
-        <!--</div>-->
     </section>
 <?php
 $script = <<< JS
