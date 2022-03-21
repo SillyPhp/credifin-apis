@@ -153,7 +153,6 @@ function getWebinarDetails(id){
             }else{
                 $(webiItems[0]).addClass('active');
             }
-            console.log(webiItems);
         }   
     })
 }

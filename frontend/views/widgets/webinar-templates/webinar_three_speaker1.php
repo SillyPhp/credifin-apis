@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 ?>
 
-<script id="temp_<?=$webinar_enc_id ?>" type="text/javascript">
+<script id="temp_<?=$webinar_enc_id ?>" type="text/template">
     <section class="webinar-three-speaker" id="web-three-speak1">
         <div class="container">
             <div class="row">
