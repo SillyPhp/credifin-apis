@@ -256,6 +256,7 @@ $this->registerCss('
 .tweetLinks{
     text-align: right;
     margin-top:30px;
+    margin-bottom: 30px;
 }
 .tweetLinks a{
     font-family: "Open Sans", sans-serif;
