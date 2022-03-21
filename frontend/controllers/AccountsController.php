@@ -73,8 +73,11 @@ class AccountsController extends Controller
             $loginFormModel->load(Yii::$app->request->post());
             if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
                 $loginFormModel->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
-                if (Yii::$app->user->identity->organization)
+                $dsa_permission = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "E-Partners");
+                if($dsa_permission)
                 {
+                    return $this->redirect($dsa_permission['link']);
+                } else if (Yii::$app->user->identity->organization){
 //                    return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
                     return $this->redirect('/account/dashboard');
                 }
@@ -99,9 +102,12 @@ class AccountsController extends Controller
             if ($loginFormModel->isMaster) {
                 Yii::$app->session->set('userSessionTimeout', time() + Yii::$app->params->session->timeout);
             }
-            if (Yii::$app->user->identity->organization)
+            $dsa_permission = Yii::$app->userData->checkSelectedService(Yii::$app->user->identity->user_enc_id, "E-Partners");
+            if($dsa_permission)
             {
-//                return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
+                return $this->redirect($dsa_permission['link']);
+            } else if (Yii::$app->user->identity->organization){
+//                    return $this->redirect($loginFormModel->referer ?: '/account/dashboard');
                 return $this->redirect('/account/dashboard');
             }
             return $this->goBack($loginFormModel->referer);
@@ -158,7 +164,7 @@ class AccountsController extends Controller
 
     }
 
-    public function actionSignup($type, $loan_id_ref = null)
+    public function actionSignup($type, $loan_id_ref = null,$dsaRefId=null)
     {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
@@ -170,6 +176,17 @@ class AccountsController extends Controller
 
         if ($type == 'individual') {
             $model = new IndividualSignUpForm();
+            if (!empty($dsaRefId)) {
+                $dsaRefExist = IndividualSignUpForm::DsaOrgExist($dsaRefId);
+                if ($dsaRefExist) {
+                    $cookies = Yii::$app->response->cookies;
+                    $cookies->add(new \yii\web\Cookie([
+                        'name' => 'dsaRefId',
+                        'value' => $dsaRefId,
+                    ]));
+                }
+                $model->_dsaRefID = $dsaRefId;
+            }
             $loan_ref = LoanApplications::find()->where(['loan_app_enc_id' => $loan_id_ref, 'created_by' => null])->exists();
             if (!empty($loan_id_ref)) {
                 if ($loan_ref) {

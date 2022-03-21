@@ -101,9 +101,10 @@ class SkillsUpForm extends Model
                 $base_path = Yii::$app->params->upload_directories->skill_up->cover_image . $model->cover_image_location . '/';
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $model->cover_image = $utilitiesModel->encrypt() . '.' . $this->image->extension;
+                $type = $this->image->type;
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFile($this->image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $model->cover_image, "public");
+                $result = $my_space->uploadFileSources($this->image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $model->cover_image, "public",['params' => ['ContentType' => $type]]);
                 $this->image_url = $result['ObjectURL'];
                 if (!$result) {
                     throw new \Exception($result);

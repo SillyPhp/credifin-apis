@@ -13,7 +13,7 @@ $description = $post->excerpt;
 $image = Yii::$app->urlManager->createAbsoluteUrl(Yii::$app->params->upload_directories->posts->featured_image . $post->featured_image_location . DIRECTORY_SEPARATOR . $post->featured_image);
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -28,7 +28,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -149,7 +149,7 @@ $this->params['seo_tags'] = [
                             </div>
                             <?php
                             foreach ($similar_posts as $related) {
-                                $path = Yii::$app->params->upload_directories->posts->featured_image . $related['featured_image_location'];
+                                $path = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->upload_directories->posts->featured_image . $related['featured_image_location'];
                                 $image = $path . DIRECTORY_SEPARATOR . $related['featured_image'];
                                 if (empty($related['featured_image'])) {
                                     $image = '//placehold.it/250x200';

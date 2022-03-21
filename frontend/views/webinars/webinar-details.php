@@ -14,11 +14,14 @@ $interest_status = $userInterest['interest_status'];
 $status = $webinar['status'];
 $this->title = $webinar['title'];
 $image = $webinar['image'];
+if ($webinar['slug'] == 'breaking-into-data-science-how-to-forge-your-career-path-2172') {
+    $image = 'https://eycdn.ams3.digitaloceanspaces.com/images/sharing/DeBxPEjOGdjy4pmKnK1eopqANyVYw9.jpg';
+}
 $keywords = $webinar['title'];
 $description = 'Present-day education is radically different from that of the past. The youth are unaware of and oblivious to the importance of recognizing and embracing these changes. They are also utterly lost on their career path and have no idea where their career is taking them.';
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url, 'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -33,7 +36,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url, 'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -66,6 +69,7 @@ function webDate($webDate)
     $newDate = date('d-M', $sec);
     return $newDate;
 }
+
 $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory;
 ?>
 <?php if (Yii::$app->session->hasFlash('success')): ?>
@@ -76,14 +80,14 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script type="text/javascript" src="https://addevent.com/libs/atc/1.6.1/atc.min.js" async defer></script>
 <script type="text/javascript">
-    window.addeventasync = function(){
+    window.addeventasync = function () {
         addeventatc.settings({
-            appleical  : {show:true, text:"Apple Calendar"},
-            google     : {show:true, text:"Google <em>(online)</em>"},
-            office365  : {show:true, text:"Office 365 <em>(online)</em>"},
-            outlook    : {show:true, text:"Outlook"},
-            outlookcom : {show:true, text:"Outlook.com <em>(online)</em>"},
-            yahoo      : {show:true, text:"Yahoo <em>(online)</em>"}
+            appleical: {show: true, text: "Apple Calendar"},
+            google: {show: true, text: "Google <em>(online)</em>"},
+            office365: {show: true, text: "Office 365 <em>(online)</em>"},
+            outlook: {show: true, text: "Outlook"},
+            outlookcom: {show: true, text: "Outlook.com <em>(online)</em>"},
+            yahoo: {show: true, text: "Yahoo <em>(online)</em>"}
         });
     };
 </script>
@@ -107,11 +111,15 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                             Processing <i class="fas fa-spinner fa-spin"></i>
                         </button>
                         <?php
-                        if($is_expired){
+                        if ($is_expired && $registeration_status == 1 && $webinar['platform_webinar_id'] != null) {
                             ?>
-                            <a href="<?= Url::to('/webinars')?>" class="ra-btn">Back To Home</a>
+                            <a href="javascript:;" class="ra-btn" id="downloadCertificate"
+                               data-id="<?= $webinar['webinar_enc_id'] ?>">Download Certificate</a>
+                        <?php } else if ($is_expired) {
+                            ?>
+                            <a href="<?= Url::to('/webinars') ?>" class="ra-btn">Back To Home</a>
                             <?php
-                        } else if($registeration_status == 1) {
+                        } else if ($registeration_status == 1) {
                             ?>
                             <button class="ra-btn">Registered</button>
                             <?php
@@ -210,13 +218,14 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
 
                         <div class="copy-join-link">
                             <div class="link-descriptions" id="link-show">
-                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/zoom-logo.png')?>" alt="">
-                                <a class="copy-clip view-link" title="View link" id="link-cop" data-link="<?= $webinar_link ?>">Copy Joining Link</a>
+                                <img src="<?= Url::to('@eyAssets/images/pages/webinar/zoom-logo.png') ?>" alt="">
+                                <a class="copy-clip view-link" title="View link" id="link-cop"
+                                   data-link="<?= $webinar_link ?>">Copy Joining Link</a>
                             </div>
                         </div>
 
                     <?php } ?>
-                    
+
                 </div>
             </div>
             <div class="row">
@@ -267,11 +276,6 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                 <?php
                                 if (Yii::$app->user->isGuest && !$is_expired) {
                                     ?>
-                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
-                                       value="interested">Interested <span id="interestCount">(<?= 50 + rand(1,10) + $interestCount?>)</span></a>
-                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn"
-                                       value="not interested">Not Interested</a>
-                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="ra-btn">Attending</a>
                                     <!-- Button code -->
                                     <div title="Add to Calendar" class="addeventatc">
                                         Add to Calendar
@@ -281,11 +285,12 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                         <span class="title"><?= $webinar['title'] ?></span>
                                         <span class="description"><?= $webinar['description'] ?></span>
                                     </div>
-                                <?php } else if($registeration_status != 1 && !$is_expired) { ?>
+                                <?php } else if ($registeration_status != 1 && !$is_expired) { ?>
                                     <?php
                                     if ((int)$webinar['price']) {
                                         if ($promo) { ?>
-                                            <button class="ra-btn registerBtn" id="registerBtn2"><?= $btnName ?></button>
+                                            <button class="ra-btn registerBtn"
+                                                    id="registerBtn2"><?= $btnName ?></button>
                                         <?php } else { ?>
                                             <button class="ra-btn" id="paidRegisterBtn2"><?= $btnName ?></button>
                                         <?php }
@@ -297,18 +302,6 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                         <?php
                                     }
                                     ?>
-                                    <button class="ra-btn interestBtn <?php echo $interest_status == 1 ? 'actionColor' : '' ?>"
-                                            id="interested" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="1">Interested <span id="interestCount">(<?= 50 + rand(1,10) + $interestCount?>)</span>
-                                    </button>
-                                    <button class="ra-btn interestBtn <?php echo $interest_status == 2 ? 'actionColor' : '' ?>"
-                                            id="notInterested" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="2">Not Interested
-                                    </button>
-                                    <button class="ra-btn interestBtn <?php echo $interest_status == 3 ? 'actionColor' : '' ?>"
-                                            id="attending" data-key="<?= $webinar['webinar_enc_id'] ?>"
-                                            value="3">Attending
-                                    </button>
                                     <!-- Button code -->
                                     <div title="Add to Calendar" class="addeventatc">
                                         Add to Calendar
@@ -318,7 +311,7 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                         <span class="title"><?= $webinar['title'] ?></span>
                                         <span class="description"><?= $webinar['description'] ?></span>
                                     </div>
-                                <?php } else if(!$is_expired){
+                                <?php } else if (!$is_expired) {
                                     ?>
                                     <!-- Button code -->
                                     <div title="Add to Calendar" class="addeventatc">
@@ -329,7 +322,7 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                         <span class="title"><?= $webinar['title'] ?></span>
                                         <span class="description"><?= $webinar['description'] ?></span>
                                     </div>
-                                <?php
+                                    <?php
                                 }
                                 ?>
                             </div>
@@ -344,9 +337,9 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
 
 </section>
 <?php
-    if($webinar["slug"] == 'new-age-investment-strategies-10407'){
-        echo $this->render('/widgets/webinar-quiz-banner');
-    }
+if ($webinar["slug"] == 'new-age-investment-strategies-10407') {
+    echo $this->render('/widgets/webinar-quiz-banner');
+}
 ?>
 <!-- Schedules event section start here -->
 <section class="ts-schedule">
@@ -406,15 +399,15 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                                         <!--                                                Workshop-->
                                     </div>
                                     <div class="schedule-slot-info">
-                                            <?php
-                                            $image = Url::to('@eyAssets/images/pages/webinar/default-user.png');
-                                            $speaker_icon = $v['webinarSpeakers'][0]['image'];
-                                            $speaker_icon_path = $v['webinarSpeakers'][0]['image_location'];
-                                            if ($speaker_icon) {
-                                                $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $speaker_icon_path . DIRECTORY_SEPARATOR . $speaker_icon;
-                                            }
-                                            ?>
-                                            <img class="schedule-slot-speakers" src="<?= $image ?>" alt="">
+                                        <?php
+                                        $image = Url::to('@eyAssets/images/pages/webinar/default-user.png');
+                                        $speaker_icon = $v['webinarSpeakers'][0]['image'];
+                                        $speaker_icon_path = $v['webinarSpeakers'][0]['image_location'];
+                                        if ($speaker_icon) {
+                                            $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $speaker_icon_path . DIRECTORY_SEPARATOR . $speaker_icon;
+                                        }
+                                        ?>
+                                        <img class="schedule-slot-speakers" src="<?= $image ?>" alt="">
                                         <div class="schedule-slot-info-content">
                                             <h3 class="schedule-slot-title"><?= $v['webinarSpeakers'][0]['fullname'] ?>
                                                 <!--                                                <strong>@ Fredric Martinsson</strong>-->
@@ -439,24 +432,24 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
     </div><!-- container end-->
 </section>
 <!-- Schedules event section end here -->
-<?php if($webinar['other_details']) {?>
-<section class="other-details-web">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h2 class="section-title">Other Details</h2>
-            </div>
-            <div class="col-md-12">
-                <div class="webinar-description">
-                    <p>
-                        <?= $webinar['other_details'] ?>
-                    </p>
+<?php if ($webinar['other_details']) { ?>
+    <section class="other-details-web">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="section-title">Other Details</h2>
+                </div>
+                <div class="col-md-12">
+                    <div class="webinar-description">
+                        <p>
+                            <?= $webinar['other_details'] ?>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-<?php }?>
+    </section>
+<?php } ?>
 
 <!-- sharing widget start -->
 <div class="container">
@@ -573,6 +566,50 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
 </section>
 <!-- ts speaker end-->
 
+<!--rewards start-->
+<section class="rewards-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading-style">Rewards & Prizes</div>
+            </div>
+            <?php if ($webinarRewards) { ?>
+                <?php foreach ($webinarRewards as $reward) { ?>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                        <div class="rewards-win nd-shadow">
+                            <?php if ($reward['webinarRewardCertificates']) { ?>
+                                <div class="certificate-set">Certificate</div>
+                            <?php } ?>
+                            <div class="reward-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/prize100.png') ?>"/>
+                            </div>
+                            <h3><?= $reward['position_name'] ?></h3>
+                            <p>
+                                <?php if ($reward['price']) { ?>
+                                    <i class="fas fa-rupee-sign"></i>
+                                <?php } ?>
+                                <?= $reward['price'] ? $reward['price'] : $reward['amount'] ?>
+                            </p>
+                        </div>
+                    </div>
+                <?php } ?>
+            <?php } ?>
+            <div class="col-md-3 col-sm-3 col-xs-6">
+                <div class="rewards-win nd-shadow">
+                    <div class="reward-img">
+                        <img style="width:140px;" src="<?= Url::to('@eyAssets/images/pages/webinar/godaddy-logo.png')?>"/>
+                    </div>
+                    <h3>20% Off on</h3>
+                    <p>
+                        GoDaddy Academy Courses
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--rewards end-->
+
 <!-- ts intro start -->
 <?php if (!empty($outComes)) { ?>
     <section class="ts-intro-outcome">
@@ -603,7 +640,7 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
                             <?php } ?>
                             <?php if ($oc['icon']) { ?>
                                 <div class="out-img">
-                                    <img src="<?= Url::to($baseUrl.Yii::$app->params->upload_directories->webinars->outcome->icon . $oc['icon_location'] . DIRECTORY_SEPARATOR . $oc['icon']) ?>">
+                                    <img src="<?= Url::to($baseUrl . Yii::$app->params->upload_directories->webinars->outcome->icon . $oc['icon_location'] . DIRECTORY_SEPARATOR . $oc['icon']) ?>">
                                 </div>
                             <?php } else { ?>
                                 <div class="out-img">
@@ -621,14 +658,14 @@ $baseUrl = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digital
 <!-- ts intro end-->
 <?php
 if ($upcoming) {
-?>
-<section class="upcoming-web">
-    <div class="container">
-        <div class="row">
-            <div class="heading-style">Upcoming Webinars</div>
-        </div>
-        <div class="row">
-            <?php
+    ?>
+    <section class="upcoming-web">
+        <div class="container">
+            <div class="row">
+                <div class="heading-style">Upcoming Webinars</div>
+            </div>
+            <div class="row">
+                <?php
                 foreach ($upcoming as $web) {
                     ?>
                     <div class="col-md-4 col-sm-6">
@@ -686,7 +723,8 @@ if ($upcoming) {
                                 </div>
                                 <?php if (array_search(Yii::$app->user->identity->user_enc_id, array_column($web['webinarRegistrations'], 'created_by'))) { ?>
                                     <div class="register-btns">
-                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"> Registered</a>
+                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib">
+                                            Registered</a>
                                     </div>
                                 <?php } else { ?>
                                     <div class="register-btns">
@@ -699,11 +737,11 @@ if ($upcoming) {
                     </div>
                     <?php
                 }
-            ?>
+                ?>
+            </div>
         </div>
-    </div>
-</section>
-<?php
+    </section>
+    <?php
 }
 ?>
 <!-- problem widget start -->
@@ -719,6 +757,7 @@ if ($upcoming) {
 </section>
 <!-- problem widget end -->
 <?php
+$name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
 function color_mod($hex, $diff)
 {
     $rgb = str_split(trim($hex, '# '), 2);
@@ -762,6 +801,67 @@ function createPalette($color, $colorCount = 4)
 }
 
 $this->registerCss('
+.share-social {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+.basis{
+    margin: 10px 0 5px;
+    flex-basis: 16.4%;
+    min-width: 143px;
+}
+.move-popup{
+    display: none !important;
+}
+.reward-heading {
+//    text-shadow: 0px 2px 2px black, 0px 0px 8px white;
+    font-family: lora;
+    font-size: 32px;
+    margin: 0 0 15px 0;
+    font-weight: 600;
+}
+.rewards-win {
+    padding: 20px 20px 15px;
+    margin-bottom: 15px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.certificate-set {
+    position: absolute;
+    left: -23px;
+    top: 16px;
+    background-color: #00a0e3;
+    color: #fff;
+    font-family: "Roboto";
+    padding: 1px 22px;
+    transform: rotate(-45deg);
+    font-size: 12px;
+}
+.reward-img img {
+    width: 60px;
+}
+.rewards-win h3 {
+    font-size: 16px;
+    font-family: "Roboto";
+    font-weight: 500;
+    margin-bottom:0;
+    color:#949494;
+    text-transform: capitalize;
+    margin-top: 10px;
+}
+.rewards-win p {
+    font-family: "roboto";
+    font-weight: 500;
+    color: #00a0e3;
+    font-size: 16px;
+    margin-bottom:0;
+}
+.nd-shadow {
+    box-shadow: 0px 1px 10px 2px #eee !important;
+}
 .tab-content{
     padding: 15px 0;
 }
@@ -773,7 +873,7 @@ $this->registerCss('
     max-height: 40px;
     margin-top: 5px;
     padding: 12px 12px 12px 43px;
-    z-index:999 !Important;
+   z-index:0 !Important;
 }
 .outflex {
     display: flex;
@@ -1364,7 +1464,7 @@ transform: rotate(100deg);
 }
 @media screen and (max-width: 768px){
     .dis-flex p{
-        flex: auto;
+        flex: 50%;
         font-size: 16px;
         font-family: roboto;
     }
@@ -1384,6 +1484,9 @@ transform: rotate(100deg);
         max-width: 100%;
         width: 90% !important;
         min-height:50vh;
+    }
+    .share-social{
+        justify-content:center;
     }
 }
 .ask-people{
@@ -1553,6 +1656,10 @@ transform: rotate(100deg);
 
 .speaker-classic .ts-speaker {
     margin-bottom: 60px;
+    max-width: 255px;
+    width: 255px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .speaker-classic .ts-speaker .speaker-img {
@@ -1704,10 +1811,10 @@ transform: rotate(100deg);
 
 /*outcome*/
 .ts-intro-outcome {
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  padding: 70px;
+//  background-repeat: no-repeat;
+//  background-size: cover;
+//  background-position: center center;
+  padding-top: 30px;
 }
 
 .ts-single-outcome {
@@ -1732,12 +1839,13 @@ transform: rotate(100deg);
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-content: center;
+    align-content: flex-start;
     margin: auto;
+    overflow: hidden;
 }
 .out-img {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     margin: auto;
 }
 
@@ -1751,7 +1859,7 @@ transform: rotate(100deg);
     color: #fff;
     text-transform: capitalize;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     width: 80%;
     overflow: hidden;
@@ -1959,14 +2067,14 @@ a:link, a:visited {
 }
 .ra-btn{
     font-size: 14px;
-    height: 40px;
+    height: 41px;
     padding: 0 0;
     width: 140px;
     line-height: 40px;
     background: #00a0e3;
     color: #fff;
     border: none;
-    margin:5px 5px;
+    margin:5px 10px;
 }
 .vc-ra-btn{
     font-size: 14px;
@@ -2015,7 +2123,7 @@ a:link, a:visited {
 .absolute{
     position: absolute;
     width: 100%;
-    z-index: 1;
+//    z-index: 1;
     top: 0;
     left: 0;
     max-height: 90vh;
@@ -2030,7 +2138,7 @@ a:link, a:visited {
     height: 90vh;
     display: inline-block;
     padding-top: 28vh;
-    z-index: 2;
+//    z-index: 2;
     position: relative;
 }
 .element-percent h1 {
@@ -2052,7 +2160,7 @@ a:link, a:visited {
 }
 
 .webinar-description p {
-    font-size: 17px;
+    font-size: 16px;
     letter-spacing: .5px;
     text-align: justify;
     line-height: 26px;
@@ -2119,10 +2227,14 @@ div.icon span {
     margin: 20px 0px !important;
     text-align: center;
 }
-
+.set-width-web{
+    flex-basis: 50%;
+}
 .register-action {
     display: flex;
     flex-wrap: wrap;
+    flex-basis: 50%;
+    justify-content: flex-end;
 }
 .speaker-author {
     margin-right: 15px;
@@ -2157,6 +2269,7 @@ div.icon span {
     display: flex;
     align-items: center;
     margin-left: -20px;
+    flex-wrap:wrap;
 }
 .avatars p {
     font-size: 18px;
@@ -2259,6 +2372,10 @@ div.icon span {
   background:#00008b;
 }
 @media (max-width: 767px) {
+.register-action{
+    justify-content:center;
+    padding-top:10px;
+}
 .section-list{
     padding:10px 30px;
 }
@@ -2266,28 +2383,36 @@ div.icon span {
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
-    flex-direction: column; }
-    .schedule-listing .schedule-slot-time {
+    flex-direction: column; 
+}
+.schedule-listing .schedule-slot-time {
       -webkit-box-flex: 0;
       -ms-flex: 0 0 100%;
       flex: 0 0 100%;
       max-width: 100%;
-      padding: 20px 35px; }
-    .schedule-listing .schedule-slot-info {
-      padding: 35px 40px 35px 35px;
-      border-left: 1px dashed #e5e5e5; }
-      .schedule-listing .schedule-slot-info .schedule-slot-speakers {
-        display: none; }
-  .schedule-listing-btn {
-    margin-top: 40px; }
-  .ts-schedule-nav {
-    margin-bottom: 40px; }
-    .ts-schedule-nav ul li a {
-      display: inline-block;
-      padding: 20px 20px;
-      margin: 5px 0; }
-  .schedule-tabs-item .schedule-listing-item:before, .schedule-tabs-item .schedule-listing-item:after {
-    display: none; }
+      padding: 20px 35px; 
+  }
+.schedule-listing .schedule-slot-info {
+    padding: 35px 40px 35px 35px;
+    border-left: 1px dashed #e5e5e5; 
+}
+.schedule-listing .schedule-slot-info .schedule-slot-speakers {
+    display: none; 
+}
+.schedule-listing-btn {
+    margin-top: 40px; 
+}
+.ts-schedule-nav {
+    margin-bottom: 40px; 
+}
+.ts-schedule-nav ul li a {
+  display: inline-block;
+  padding: 20px 20px;
+  margin: 5px 0; 
+}
+.schedule-tabs-item .schedule-listing-item:before, .schedule-tabs-item .schedule-listing-item:after {
+    display: none;
+}
   .schedule-tabs-item .schedule-listing-item.schedule-left {
     margin-top: 0;
     padding: 0px 110px 20px 0; }
@@ -2297,11 +2422,19 @@ div.icon span {
   .schedule-tabs-item .schedule-listing-item .schedule-slot-speakers {
     top: 5px; }
 }
+
+@media (max-width: 500px){
+    .absolute, .element-percent, .title-main{
+        height: 80vh;
+    }
+}
+
 ');
+$canLogin = Yii::$app->user->identity->type->user_type;
 $script = <<<JS
+let canLogin = '$canLogin';
 let registeration_status = '$registeration_status';
-console.log(registeration_status);
-if(registeration_status == '1'){
+if(registeration_status == '1' && canLogin == 'Individual'){
     openUserDetailsModal();
 }
 if(localStorage.getItem('autoRegisterAfter') == "true"){
@@ -2527,6 +2660,25 @@ function _razoPay(ptoken,payment_enc_id,webinar_id){
       });
 });
 }
+$(document).on('click','#downloadCertificate',function (e){
+    $(this).html('<i class="fas fa-spinner fa-spin"></i> Loading');
+    let webinar_id = $('#downloadCertificate').attr('data-id')
+    $.ajax({
+        url : `/webinars/get-certificate?webinar_id=`+webinar_id,
+        method : 'GET',
+        success:function(res)
+        {
+            res = JSON.parse(res);
+            if(res.status == 200){
+                window.location.replace(res.url, '_blank');
+            } else {
+                alert('Something went wrong');
+            }
+            $('#downloadCertificate').html('Download Certificate');
+        }
+    })
+    
+})
 function updateStatus(payment_enc_id,payment_id=null,status,signature=null)
 {
     $.ajax({

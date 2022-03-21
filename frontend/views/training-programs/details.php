@@ -13,7 +13,7 @@ $description = 'Empower Youth is a career development platform where you can fin
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/training-sharing.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -28,7 +28,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -878,7 +878,7 @@ $this->registerCss("
     }
     .job-single-sec .job-overview ul li {
         float: left;
-        width: 33.334%;
+        width: 33.33%;
         padding-left: 50px;
     }
     .job-single-sec .job-overview ul li i {

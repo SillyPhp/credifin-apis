@@ -47,9 +47,10 @@ class JobAppliedResume extends Model
             $userResumeModel->alt = $this->resume_file->baseName . '.' . $this->resume_file->extension;
             $userResumeModel->created_on = date('Y-m-d H:i:s');
             $userResumeModel->created_by = Yii::$app->user->identity->user_enc_id;
+            $type = $this->resume_file->type;
             $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
             $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-            $result = $my_space->uploadFile($this->resume_file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $userResumeModel->resume, "private");
+            $result = $my_space->uploadFileSources($this->resume_file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $userResumeModel->resume, "private",['params' => ['ContentType' => $type]]);
             if ($result) {
                 if ($userResumeModel->validate() && $userResumeModel->save()) {
                     $appliedModel = AppliedApplications::findone(['applied_application_enc_id'=>$this->id]);

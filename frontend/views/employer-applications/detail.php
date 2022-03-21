@@ -189,7 +189,7 @@ if (empty($application_details['story_image']) || $application_details['story_im
 }
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -204,7 +204,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -267,6 +267,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                     'wage_type' => $data2['wage_type'],
                                     'gender' => $data2['preferred_gender'],
                                     'experience' => $data2['experience'],
+                                    'ctc' => $data2['ctc'],
                                     'ammount_value' => $amount,
                                     'placement_locations' => $data2['applicationPlacementLocations'],
                                 ]);
@@ -309,7 +310,8 @@ $this->render('/widgets/employer_applications/top-banner', [
                         <?php
                         if (!empty($data1['applicationSkills']) || !empty($data2['applicationSkills'])):
                             echo $this->render('/widgets/employer_applications/skills', [
-                                'skills' => (($data1['applicationSkills']) ? $data1['applicationSkills'] : $data2['applicationSkills'])
+                                'skills' => (($data1['applicationSkills']) ? $data1['applicationSkills'] : $data2['applicationSkills']),
+                                'type'=>$type
                             ]);
                         endif;
                         ?>
@@ -562,6 +564,11 @@ if (!empty($data2) && Yii::$app->params->options->showSchema) {
         array_push($onlyJd, $jd['job_description']);
     }
     $finalJobDescription = implode("<br/>", $onlyJd);
+    if(empty($finalJobDescription)){
+        $finalJobDescription = $data2['cat_name'] .(($data2['designation']) ? ',' . $data2['designation'] : "");
+    }
+    $minMaxWage = (($data2['max_wage']) ? $data2['max_wage'] : $data2['min_wage']);
+    $schema_amount = (($data2['fixed_wage']) ? $data2['fixed_wage'] : $minMaxWage);
     ?>
     <script type="application/ld+json">
         {
@@ -589,13 +596,9 @@ if (!empty($data2) && Yii::$app->params->options->showSchema) {
             "baseSalary": {
                 "@type": "MonetaryAmount",
                 "currency": "INR",
-                "value": "<?= (($data2['fixed_wage']) ? $data2['fixed_wage'] : $data2['max_wage']) ?>"
+                "value":<?= $schema_amount; ?>
             }
         }
-
-
-
-
     </script>
     <?php
 }
@@ -1394,7 +1397,7 @@ button.lc-item-video-menu {
     }
     .job-single-sec .job-overview ul li {
         float: left;
-        width: 33.334%;
+        width: 33.33%;
         transition: .2s all linear;
         display: flex;
         padding: 0 0 0 10px;
@@ -1688,7 +1691,7 @@ button.lc-item-video-menu {
         padding: 10px;
         position: relative;
     }
-    .tags-bar > span {
+    .tags-bar > span, .tags-bar > .skill-chips {
         float: left;
         background: #f4f5fa;
         -webkit-border-radius: 8px;
