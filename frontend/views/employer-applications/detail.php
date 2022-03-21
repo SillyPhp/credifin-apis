@@ -429,6 +429,7 @@ if ($settings["showNewPositionsWidget"]):
         </div>
     </section>
 <?php endif; ?>
+<?= $this->render('/widgets/godaddy_offer', ['course' => $data2['name']]); ?>
 
 <div class="container">
     <div class="row">
