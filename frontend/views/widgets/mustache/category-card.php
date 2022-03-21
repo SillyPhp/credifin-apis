@@ -1,6 +1,6 @@
 <script id="category-card" type="text/template">
     {{#.}}
-    <div class="col-md-3 col-sm-6 col-xs-6 category">
+    <div class="col-md-3 col-sm-6 col-xs-6 category item">
         <a href="{{link}}">
             <div class="grids">
                 <img class="grids-image" src="{{icon}}" alt="{{name}}">
@@ -16,10 +16,10 @@ $this->registerCss("
     font-family:Roboto;
     font-weight:300;
     }
-.category{
-    text-align: center;
-    min-height: 150px;
-    margin-bottom: 20px;
+.top-profile .category{
+    text-align: center !important;
+    min-height: 150px !important;
+    margin-bottom: 20px !important;
 }
 .image-style img{
     width: 50px;
@@ -36,9 +36,10 @@ $this->registerCss("
     -webkit-transition: all .2s ease-out;
     transition: all .2s ease-out;
 }
-.grids-image {
-    width: 65px;
-    height: 65px;
+.top-profile .category .grids-image {
+    width: 65px !important;
+    height: 65px !important;
+    display: inline-block;  
 }
 .grids::after {
     display: block;
@@ -86,13 +87,41 @@ $script = <<<JS
 function renderCategories(cards){
     var card = $('#category-card').html();
     var cardsLength = cards.length;
-    var noRows = Math.ceil(cardsLength / 4);
-    var j = 0;
-    for(var i = 1; i <= noRows; i++){
-        $(".categories").append('<div class="row">' + Mustache.render(card, cards.slice(j, j+4)) + '</div>');
-        j+=4;
-    }
+    // var noRows = Math.ceil(cardsLength / 4);
+    // var j = 0;
+    // for(var i = 1; i <= noRows; i++){
+        $(".categories").append('<div class="row top-profile" id="top-profile">' + Mustache.render(card, cards) + '</div>');
+    //     j+=4;
+    // }
+    $(document).ready(function () {
+        if ($(window).width() > 575){
+            $('.top-profile').removeAttr('id');
+        } else{
+            $('.category.item').removeClass( "col-md-3 col-sm-6 col-xs-6" );
+        }
+        $('#top-profile').owlCarousel({
+            loop:true,
+            margin:10,
+            nav:true,
+            navText: [
+                "<i class='fa fa-angle-left'></i>",
+                "<i class='fa fa-angle-right'></i>"
+              ],
+            responsive:{
+                0:{
+                    items:2
+                },
+                600:{
+                    items:3
+                },
+                1000:{
+                    items:5
+                }
+            }
+        })
+    });
 }
+
 
 function getCategories(type = "Jobs") {
     let data = {};
