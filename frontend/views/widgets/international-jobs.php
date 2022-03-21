@@ -30,8 +30,8 @@ if ($type == 'internships') {
                             </div>
                         </div>
                         <div class="cat-sec">
-                            <div class="row no-gape">
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                            <div class="row no-gape owl-carousel country-carousel" id="country-carousel">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0 fb-25 item">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'canada') ?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/canada.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
@@ -39,7 +39,7 @@ if ($type == 'internships') {
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0 fb-25 item">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'usa') ?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/usa.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
@@ -47,7 +47,7 @@ if ($type == 'internships') {
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0 fb-25 item">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'singapore') ?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/singapore.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
@@ -55,7 +55,7 @@ if ($type == 'internships') {
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0 fb-25 item">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'india') ?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/india.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
@@ -63,11 +63,7 @@ if ($type == 'internships') {
                                         </a>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="cat-sec">
-                            <div class="row no-gape">
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0 fb-25 item">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'germany') ?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/germany.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
@@ -75,7 +71,7 @@ if ($type == 'internships') {
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0 fb-25 item">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'uk') ?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/uk.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
@@ -83,7 +79,7 @@ if ($type == 'internships') {
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0 fb-25 item">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'thailand') ?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/thailand.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
@@ -91,7 +87,7 @@ if ($type == 'internships') {
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0 fb-25 item">
                                     <div class="p-category">
                                         <a href="<?= Url::to($url . 'china') ?>" title="">
                                             <img src="<?= Url::to('@eyAssets/images/pages/world-job/china.png') ?>" alt="work around the world,working around the world jobs,find jobs around the world,job opportunities around the world,jobs all around the world">
@@ -233,12 +229,21 @@ $this->registerCss('
 .row.no-gape {
     margin: 0;
     display: flex;
+    flex-wrap: wrap;
+}
+
+.row.no-gape .item{
+    margin: 0 !important;
+}
+.fb-25{
+    flex-basis: 25%;
 }
 .p-category {
     float: left;
     width: 100%;
     z-index: 1;
     position: relative;
+    transition: all 0.3s ease 0s;
 }
 .p-category > a{
     padding-bottom: 30px;
@@ -273,12 +278,13 @@ $this->registerCss('
     width:85px;
     height:85px;
 }
-.cat-sec .row > div:last-child a {
+.cat-sec .row > div:nth-child(4n) a {
     border-right-color: #ffffff;
 }
 .cat-sec:last-child a {
     border-bottom-color: #ffffff;
 }
+
 @media (max-width:500px){
     .hr_under_line:after {
         width:55%;
@@ -298,5 +304,48 @@ $this->registerCss('
     .cat-sec:last-child .col-md-3:last-child a {
         border-bottom-color: #ffffff;
     }
+    #country-carousel .item img{
+        margin: auto;
+    }
+    #country-carousel .owl-controls .owl-nav .owl-prev i, #country-carousel .owl-controls .owl-nav .owl-next i{
+        font-size: 40px !important;
+    }
+    #country-carousel .owl-controls .owl-nav .owl-prev {
+        left: -20px !important;
+    }
+    #country-carousel .owl-controls .owl-nav .owl-next {
+        right: -20px !important;
+    }
 }
 ');
+
+$script = <<<JS
+$(document).ready(function () {
+    if ($(window).width() > 500){
+        $('.country-carousel').removeAttr('id');
+    }
+    $('#country-carousel').owlCarousel({
+        loop:true,
+        margin:10,
+        nav:true,
+        navText: [
+            "<i class='fa fa-angle-left'></i>",
+            "<i class='fa fa-angle-right'></i>"
+          ],
+        responsive:{
+            0:{
+                items:2
+            },
+            600:{
+                items:3
+            },
+            1000:{
+                items:5
+            }
+        }
+    })
+});
+
+JS;
+$this->registerJs($script);
+?>

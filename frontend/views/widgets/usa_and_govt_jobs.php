@@ -7,7 +7,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="carousel-wrap">
-                    <div class="owl-carousel">
+                    <div class="owl-carousel" id="goven-carousel">
                         <div class="item">
                             <div class="gov-job">
                                 <a href="/usa-jobs">
@@ -157,7 +157,7 @@ $this->registerCss('
 ');
 $script = <<<JS
 function initOwl() {
-    $('.owl-carousel').owlCarousel({
+    $('#goven-carousel').owlCarousel({
       loop: true,
       margin: 10,
       nav: true,
