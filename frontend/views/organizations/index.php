@@ -420,7 +420,7 @@ form {
 } 
 @media only screen and (max-width: 500px) {
     .headerbg{
-    min-height:390px !important;
+    min-height: 425px !important;
     }
 }  
 @media only screen and (max-width:1200px) and (min-width: 992px){
