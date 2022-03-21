@@ -184,7 +184,7 @@ function getLocationData(city) {
           if (body.status == 200){
               $('#trendingOrgCardsMain').html(Mustache.render($('#org-cards').html(),body.organizations));
           } else{
-            //   $('#trendingCompaniesSectionMain').remove();
+              $('#trendingCompaniesSectionMain').remove();
           }
       }   
      });
