@@ -159,8 +159,17 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
+<?= $this->render('/widgets/product-offerings') ?>
 
-<?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
+<?php
+    if($data = Yii::$app->webinarSlides->check()) {
+        echo $this->render('/webinars/webinar-carousel', [
+                'webinars'=>$data,
+        ]);
+    }
+?>
+
+
 
 <div id="app-data"></div>
 <div id="sectionIsLoading" class="sectionLoad">
@@ -363,8 +372,10 @@ $this->registerCss('
     padding: 12px 40px;
     border:2px solid #00a0e3;
     border-radius:5px;
-    color:#00a0e3;
+    color:#fff;
     text-transform:uppercase;
+    background:#00a0e3; 
+    font-weight: 600;
 }
 .login-bttn, .sign-up, .sign-up:hover, .login-bttn:hover{
     -o-transition:.3s all;
@@ -375,19 +386,21 @@ $this->registerCss('
 }
 .login-bttn:hover{
     border:2px solid #00a0e3;
-    color:#fff; 
-    background:#00a0e3; 
+    color:#00a0e3; 
+    background:transparent; 
 }
 .sign-up{
     padding: 12px 40px;
     border:2px solid #ff7803;
     border-radius:5px;
-    color:#ff7803;
+    color:#fff;
     text-transform:uppercase;
+    background:#ff7803;  
+    font-weight: 600;
 }
 .sign-up:hover{
-   color:#fff; 
-    background:#ff7803;  
+   color:#ff7803; 
+   background:transparent;  
 }
 .job-field input:focus{
     -webkit-box-shadow: none !important;
@@ -1251,17 +1264,18 @@ if (!Yii::$app->user->isGuest) {
     var loadElems = [
         'getOurServices',
         'getFeaturedApplications',
-        'getStats',
-        'getProductOffering',
-        'getTopCities',
+//        'getStats',
+//        'getProductOffering',
+//        'getTopCities',
+        'getWorkFromHomeBanner',
         'getDropResume',
         'getGovernmentJobs',
         'getInternationalJobs',
         'getCompaniesWithUs',
-        'getLearningTopics',
-        'getWhatsappCommunityj',
+//        'getLearningTopics',
+//        'getWhatsappCommunity',
 //        'getTweets',
-        'getStudentLoan',
+//        'getStudentLoan',
         'getPressRelease',
         'getShortcuts'
     ];
@@ -1271,25 +1285,24 @@ if (!Yii::$app->user->isGuest) {
     var loadElems = [
         'getOurServices',
         'getFeaturedApplications',
-        'getFeaturedInternships',
-        'getStats',
-        'getProductOffering',
-        'getAiesec',
+//        'getStats',
+//        'getProductOffering',
+        'getWorkFromHomeBanner',
         'getDropResume',
-        'getTopCities',
+//        'getTopCities',
 //        'getEduAndRedbull',
         'getGovernmentJobs',
         'getInternationalJobs',
         'getCompaniesWithUs',
-        'getLearningTopics',
+//        'getLearningTopics',
 //        'getOpportunities',
 //        'getSafetySigns',
 //        'getOnlineClasses',
-        'getWhatsappCommunity',
+//        'getWhatsappCommunity',
         'getHowItWorks',
 //        'getNewsUpdate',
 //        'getTweets',
-        'getStudentLoan',
+//        'getStudentLoan',
         'getPressRelease',
         'getNewsletter',
         'getShortcuts'
@@ -1317,7 +1330,6 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
         if(hcActive.length > 0){
             hcActive[0].classList.remove('hcActive');
         }
-        console.log(searchForm.values);
         if(divActive.classList.contains('hcActive')){
            return false
         }else{
@@ -1346,7 +1358,6 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
                 default:
                     searchForm.setAttribute('action', '/search');
                     searchInput.setAttribute('placeholder', 'Keyword');
-                    console.log(showDiv);
             }
            if(showDiv == 'loanHeaderContent') {
                headerContent.querySelector('.header-search-bar').style.display = 'none';

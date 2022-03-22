@@ -216,5 +216,8 @@ $this->registercss('
     .service-txt {
         font-size: 14px;
 	}
+    .service-main{
+        min-height: 165px;
+    }
 }
 ');

@@ -41,7 +41,7 @@ class LoginForm extends Model
             ['referer', 'string'],
             [['username'], 'string', 'length' => [3, 50]],
             [['password'], 'string', 'length' => [8, 20]],
-            [['username'], 'match', 'pattern' => '/^[a-zA-Z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
+            [['username'], 'match', 'pattern' => "/^[^*|\":<>[\]{}`\\()';&$]+$/", 'message' => 'Invalid username or email'],
             [['username', 'password', 'rememberMe'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
@@ -94,9 +94,10 @@ class LoginForm extends Model
         return $this->_user;
     }
 
-    public function updateUserLogin($method='EY',$user_enc_id){
+    public function updateUserLogin($method = 'EY', $user_enc_id)
+    {
         date_default_timezone_set('Asia/Kolkata');
-        $model = Users::findOne(['user_enc_id'=>$user_enc_id]);
+        $model = Users::findOne(['user_enc_id' => $user_enc_id]);
         $model->last_visit = date('Y-m-d H:i:s');
         $model->last_visit_through = $method;
         $model->update();

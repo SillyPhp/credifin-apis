@@ -32,21 +32,21 @@ use yii\helpers\Url;
                         <?php
                     }
                     $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
-                    $image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
-                    if (!file_exists($image_path)) {
-                        $image = '//placehold.it/330x200';
-                    }
+                    $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
+//                    if (!file_exists($image_path)) {
+//                        $image = '//placehold.it/330x200';
+//                    }
                     ?>
                 <div class="col-md-3">
                     <div class="whats-new-box">
                         <div class="wn-box-icon">
                             <a href="<?= Url::to('/blog/' . $post['slug']); ?>">
-                                <img src="<?= $image; ?>" alt="<?= $post['title']; ?>"/>
+                                <img class="load-later" data-src="<?= $image; ?>" src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt="<?= $post['title']; ?>"/>
                             </a>
                         </div>
                         <div class="wn-box-details">
                             <a href="<?= Url::to('/blog/' . $post['slug']); ?>">
-                                <div class="wn-box-title">
+                                <div class="wn-box-title" style="font-weight: 600;font-size: 15px;color: #555;">
                                     <?= $post['title']; ?>
                                 </div>
                             </a>
@@ -140,3 +140,7 @@ $this->registerCss('
     }
 } 
 ');
+$script = <<<JS
+$('.load-later').Lazy();
+JS;
+$this->registerJs($script);

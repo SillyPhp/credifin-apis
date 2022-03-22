@@ -31,7 +31,7 @@ AppAssets::register($this);
         foreach ($this->params['seo_tags']['rel'] as $key => $value) {
             $this->registerLinkTag([
                 'rel' => $key,
-                'href' => $value,
+                'href' => Url::to($value,'https'),
             ]);
         }
         foreach ($this->params['seo_tags']['name'] as $key => $value) {

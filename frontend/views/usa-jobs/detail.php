@@ -10,7 +10,7 @@ $description = 'Empower Youth is a career development platform where you can fin
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -25,7 +25,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -252,7 +252,38 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="heading-style">More Jobs</div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="type-1">
+                    <div>
+                        <a href="/usa-jobs/search" class="btn btn-3">
+                            <span class="txt-cate">View all</span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!--            <div class="loader_screen">-->
+            <!--                <img src="--><?//= Url::to('@eyAssets/images/loader/91.gif'); ?><!--" class="img_load">-->
+            <!--            </div>-->
+            <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>
+            <div id="cards">
+            </div>
+            <!--            <div class="align_btn">-->
+            <!--                <button id="loader" class="btn btn-success">Load More</button>-->
+            <!--            </div>-->
+        </div>
+    </div>
+</section>
 <?php
+echo $this->render('/widgets/mustache/usa-jobs-card');
 $this->registerCss('
 .app_btn
 {
@@ -491,7 +522,7 @@ margin:auto;
 }
 .job-single-sec .job-overview ul li {
     float: left;
-    width: 33.334%;
+    width: 33.33%;
     padding-left: 50px;
 }
 .job-single-sec .job-overview ul li i {
@@ -721,6 +752,7 @@ $(window).scroll(function() {
         }
     });
 }).scroll();
+fetchLocalData(template=$('#cards'),0,5,loader=true,loader_btn=false);
 JS;
 $this->registerJs($script);
 ?>

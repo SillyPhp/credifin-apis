@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $radios_array = [1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5];
-$this->title = $org_details['name'] . ' ' . Yii::$app->params->seo_settings->title_separator . ' Reviews';
+$this->title = htmlspecialchars_decode($org_details['name']) . ' ' . Yii::$app->params->seo_settings->title_separator . ' Reviews';
 Yii::$app->view->registerJs('var slug = "' . $slug . '"', \yii\web\View::POS_HEAD);
 $overall_avg = array_sum($stats) / count($stats);
 $round_avg = round($overall_avg);
@@ -16,7 +16,7 @@ $description = 'Empower Youth is a career development platform where you can fin
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/review_share.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -31,19 +31,13 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
         'fb:app_id' => '973766889447403'
     ],
 ];
-
-echo $this->render('/widgets/drop_resume', [
-    'username' => Yii::$app->user->identity->username,
-    'type' => 'company',
-    'slug' => $slug
-]);
 ?>
 <section class="rh-header">
     <div class="container">
@@ -56,7 +50,7 @@ echo $this->render('/widgets/drop_resume', [
                 </div>
             </div>
             <div class="col-md-6 col-sm-6">
-                <div><a href="<?= Url::to('/' . $slug); ?>" class="com-name"><?= ucwords($org_details['name']); ?></a>
+                <div class="com-name-set"><a href="<?= Url::to('/' . $slug); ?>" class="com-name"><?= ucwords($org_details['name']); ?></a>
                 </div>
                 <div class="com-rating-1">
                     <?php for ($i = 1; $i <= 5; $i++) { ?>
@@ -313,10 +307,8 @@ echo $this->render('/widgets/drop_resume', [
                 <div id="organizations-cards-main" class="row">
                     <div class="heading-style">Similar Organizations</div>
                     <div class="divider"></div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div id="companies-card" class="row"></div>
-                        </div>
+                    <div class="col-md-12">
+                        <div id="companies-card" class="row"></div>
                     </div>
                 </div>
             </div>
@@ -537,8 +529,8 @@ echo $this->render('/widgets/drop_resume', [
 <input type="hidden" name="hidden_city_location" class="hidden_city_location">
 </div>
 <?php
-echo $this->render('/widgets/mustache/companies-card',[
-       'hideDropResume' => true,
+echo $this->render('/widgets/mustache/companies-card', [
+    'hideDropResume' => true,
 ]);
 echo $this->render('/widgets/mustache/application-card');
 
@@ -549,8 +541,13 @@ if ($review_type == 'claimed') {
     echo $this->render('/widgets/mustache/organization-unclaimed-reviews', [
     ]);
 }
-
+echo $this->render('/widgets/drop_resume', [
+    'username' => Yii::$app->user->identity->username,
+    'type' => 'company',
+    'slug' => $slug
+]);
 $this->registerCss('
+.footer{margin-top:0 !important;}
 .control-label{
     font-size:16px !important;
     font-family:roboto;
@@ -1275,7 +1272,8 @@ border: 2px solid #cadfe8 !important;
     }
 }
 
-@media only screen and (max-width: 767px){
+@media only screen and (max-width: 768px){
+    .com-name-set,.com-rating-1,.com-rate{text-align:left;}
     .rh-header{
         background-size:100% 520px;
         text-align:center;
@@ -1298,7 +1296,14 @@ border: 2px solid #cadfe8 !important;
         text-align: center;
         padding-top: 20px;
     }
+    .review-summary{
+        padding-left:0px;
+    }
     
+}
+@media only screen and (max-width: 767px){
+.com-name-set,.com-rating-1,.com-rate{text-align:center;}
+.share-btn{justify-content:center;}
 }
 .i-review-box *{
     font-family: "Roboto Slab";
@@ -1583,6 +1588,8 @@ document.getElementById("wr").addEventListener("click", function(e){
             popup.open();
         });
 }
+loader = false;
+addToReviewList();
 getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=$slug');
 getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=$slug');
 getCompanies();

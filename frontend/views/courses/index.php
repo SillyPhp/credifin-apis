@@ -11,7 +11,7 @@ $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-imag
 
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -26,7 +26,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -73,6 +73,14 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
+<?php
+if($data = Yii::$app->webinarSlides->check()) {
+    echo $this->render('/webinars/webinar-carousel', [
+        'webinars'=>$data,
+    ]);
+}
+?>
 
     <section class="popular-skills">
         <h3>Popular Categories</h3>
@@ -242,7 +250,7 @@ if (Yii::$app->user->isGuest) {
             <a href="/courses/courses-list?cat={{title}}">
                 <div class="newset">
                     <div class="imag">
-                        <img src="/assets/themes/ey/images/pages/learning-corner/othercategory.png" alt="{{title}}"/>
+                        <img src="/assets/themes/ey/images/pages/learning-corner/{{icon_name}}.png" alt="{{title}}"/>
                     </div>
                     <div class="txt">{{title}}</div>
                 </div>

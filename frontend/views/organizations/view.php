@@ -9,7 +9,7 @@ $description = $organization['description'];
 $image = Yii::$app->urlManager->createAbsoluteUrl((!empty($organization['cover_image']) ? Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'] : '/assets/common/logos/empower_fb.png'));
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -24,7 +24,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -256,8 +256,20 @@ $round_avg = round($overall_avg);
                                     <div class="col-md-4 col-sm-4 col-xs-12 about-box">
                                         <div class="">
                                             <div class="about-det">
-                                                <div class="det"><?= $count_opportunities ?></div>
-                                                <div class="det-heading">Opportunities</Opper></div>
+                                                <?php
+                                                $countVacancies = 0;
+                                                if (!empty($count_opportunities)) {
+                                                    foreach ($count_opportunities as $c) {
+                                                        if (!empty($c['positions'])) {
+                                                            $countVacancies += $c['positions'];
+                                                        } else if (!empty($c['positions2'])) {
+                                                            $countVacancies += $c['positions2'];
+                                                        }
+                                                    }
+                                                }
+                                                ?>
+                                                <div class="det"><?= $countVacancies ?></div>
+                                                <div class="det-heading">Opportunities</div>
                                             </div>
                                         </div>
                                     </div>
@@ -350,56 +362,77 @@ $round_avg = round($overall_avg);
                                         review</h4>
                                 </div>
                             </div>
-                            <div class="set-mar">
-                                <?=
-                                $this->render('/widgets/new-position', [
-                                    'company' => $organization['name'],]);
-                                ?>
+                        </div>
+                    </div>
+
+                    <div class="av-jobs-intern" id="grand-parent-opportunities">
+                        <div class="row">
+                            <div class="heading-style">Available Opportunities</div>
+                            <div class="divider"></div>
+                        </div>
+                        <div id="jobs-cards-main" class="row">
+                            <div class="heading-style2">Jobs
+                                <div class="pull-right">
+                                    <a href="/jobs/list?slug=<?= $organization['slug'] ?>"
+                                       class="write-review">View
+                                        All</a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="blogbox"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="internships-cards-main" class="row">
+                            <div class="internships-block">
+                                <div class="heading-style2">Internships
+                                    <div class="pull-right">
+                                        <a href="/internships/list?slug=<?= $organization['slug'] ?>"
+                                           class="write-review">View All</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="internships_main"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="av-jobs-intern">
-                        <?php if ($jobs_count > 0) {
-                            ?>
-                            <div id="jobs-cards-main" class="row">
-                                <div class="heading-style">
-                                    Available Jobs
-                                    <div class="pull-right">
-                                        <a href="/jobs/list?slug=<?= $organization['slug'] ?>"
-                                           class="write-review">View
-                                            All</a>
-                                    </div>
+
+                    <div class="past-jobs-intern" id="grand-parent-past">
+                        <div class="row">
+                            <div class="heading-style">Past Opportunities</div>
+                            <div class="divider"></div>
+                        </div>
+                        <div id="jobs-cards-past" class="row">
+                            <div class="heading-style2">Jobs</div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="pastblogbox"></div>
                                 </div>
-                                <div class="divider"></div>
+                            </div>
+                        </div>
+                        <div id="internships-cards-past" class="row">
+                            <div class="internships-block">
+                                <div class="heading-style2">Internships</div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <div class="blogbox"></div>
+                                        <div class="pastinternships_main"></div>
                                     </div>
                                 </div>
                             </div>
-                        <?php } ?>
-
-                        <?php if ($internships_count > 0) {
-                            ?>
-                            <div id="internships-cards-main" class="row">
-                                <div class="internships-block">
-                                    <div class="heading-style">
-                                        Available Internships
-                                        <div class="pull-right">
-                                            <a href="/internships/list?slug=<?= $organization['slug'] ?>"
-                                               class="write-review">View All</a>
-                                        </div>
-                                    </div>
-                                    <div class="divider"></div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="internships_main"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php } ?>
+                        </div>
                     </div>
+
+                    <div class="set-mar">
+                        <div class="row">
+                            <?= $this->render('/widgets/new-position', [
+                                'company' => $organization['name'],]); ?>
+                        </div>
+                    </div>
+
                     <?php if (!empty($benefit)) {
                         ?>
                         <div class="row">
@@ -413,13 +446,6 @@ $round_avg = round($overall_avg);
                                         <div class="col-md-3 col-sm-4 col-xs-12">
                                             <div class="benefit-box">
                                                 <div class="bb-icon">
-                                                    <?php
-                                                    if (!empty($benefits['icon'])) {
-                                                        $benefit_icon = Url::to('/assets/icons/' . $benefits['icon_location'] . DIRECTORY_SEPARATOR . $benefits['icon']);
-                                                    } else {
-                                                        $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
-                                                    }
-                                                    ?>
                                                     <img src="<?= Url::to($benefits['icon']); ?>"
                                                          alt="<?= htmlspecialchars_decode($benefits['benefit']); ?>"/>
                                                 </div>
@@ -596,7 +622,7 @@ $round_avg = round($overall_avg);
                                 <div class="head-office">
 
                                 </div>
-                                <div class="view-btn">
+                                <div class="view-btn-location">
                                     <a href="javascript:;">View All <i class="fas fa-angle-down"></i></a>
                                 </div>
                             </div>
@@ -636,6 +662,25 @@ echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
 ]);
 $this->registerCss('
+.past-jobs-intern {
+    margin-top: 30px;
+}
+.imm1 img, .imm2 img {
+    width: 55%;
+}
+.set-mar {
+    margin: 35px 0 0;
+}
+.heading-style2 {
+    font-size: 28px;
+    font-family: lobster;
+    margin: 0px 0px 20px 5px;
+//    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.footer{margin-top:0 !important;}
 .desc-image {
     text-align: center;
 }
@@ -657,17 +702,8 @@ $this->registerCss('
     font-size: 0px;
     margin-right: 8px;
 }
-.set-mar{
-    margin:20px 0;
-}
-.new-position-box{
-    min-height:250px;
-}
 .npb-pos-abso{
     top:55%;
-}
-.npb-main-heading{
-    font-size:20px;
 }
 .mv-text{
     text-align:justify;
@@ -742,9 +778,10 @@ $this->registerCss('
 	font-weight: 500;
 }
 .write-review{
-    font-family: "Open Sans", sans-serif;
+    font-family: Roboto;
     font-size: 14px;
-    padding: 13px 32px;
+    font-weight:500;
+    padding: 10px 25px;
     border-radius: 4px;
     -o-transition: .3s all;
     -ms-transition: .3s all;
@@ -1339,6 +1376,30 @@ a.twitter, .twitter:hover, a.linkedin-social, .linkedin-social:hover, a.web, .we
 .morelink:focus, .morelink:hover{
     color: #00a0e3;
 }
+.is-nope {
+    color: #d23;
+    border: 0.5rem double #d23;
+    -webkit-transform: translate(-50%,-50%) rotate(-15deg);
+    transform: translate(-50%,-50%) rotate(-15deg);
+    -webkit-mask-position: 2rem 3rem;
+    font-size: 14px;
+    position: absolute;
+    width: 100%;
+    left: 35%;
+    bottom: 0%;
+    background-color: #fff;
+    line-height: 19px;
+}
+.stamp {
+    max-width: 180px;
+    height: 55px;
+    text-align: center;
+    font-weight: 700;
+    padding: 2px;
+    text-transform: uppercase;
+    border-radius: 1rem;
+    font-family: Courier;
+}
 ');
 $script = <<<JS
 $(document).on('click','.follow',function(e){
@@ -1405,13 +1466,56 @@ $(document).ready(function() {
         return false;
     });
 });
+
+function getPastCards(type = 'Jobs',container = '.pastblogbox', url = window.location.pathname, container_id = null) {
+    let data = {};
+    page = 1;
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.append("page", page);
+    for(var pair of searchParams.entries()) {
+        data[pair[0]] = pair[1];                                                                                                                                                                                                              ; 
+    }
+    
+    data['type'] = type;
+    $.ajax({
+        method: "POST",
+        url : url,
+        data: data,
+        success: function(response) {
+            if(response.status === 200) {
+                renderCards(response.cards, container);
+                utilities.initials();
+                if(container_id){
+                    $(container_id).find('.side-description').append('<span class="stamp is-nope">Recruitment Completed</span>');
+                    $(container_id).find('.ji-apply').css('pointer-events',"none");
+                    $(container_id).find('.application-card-add').css('pointer-events',"none");
+                    $(container_id).find('.ji-apply').attr('data-app',"");
+                    $(container_id).find('.ji-apply').attr('data-org',"");
+                    
+                }
+            }else{
+                if(container_id){
+                    if($('#jobs-cards-past').hasClass('hidden') || $('#internships-cards-past').hasClass('hidden')){
+                        $('#grand-parent-past').addClass('hidden');
+                    }
+                    $(container_id).addClass('hidden');
+                }
+            }
+        }
+    })
+}
 JS;
 $this->registerJs("
-//return_message = true;
-//jobs_parent = '#jobs-cards-main';
-//internships_parent = '#internships-cards-main';
+return_message = true;
+jobs_parent = '#jobs-cards-main';
+internships_parent = '#internships-cards-main';
+grand_parent = '#grand-parent-opportunities';
+loader = false;
 getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
+getPastCards('Jobs','.pastblogbox','/organizations/organization-past-opportunities/?org=" . $organization['slug'] . "','#jobs-cards-past');
+getPastCards('Internships','.pastinternships_main','/organizations/organization-past-opportunities/?org=" . $organization['slug'] . "','#internships-cards-past');
+addToReviewList();
 ");
 $this->registerJs($script);
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\web\JqueryAsset::className()]]);

@@ -52,7 +52,8 @@ class ProfileController extends Controller
                     ]);
                 }
 
-                if ($type === 'reviews' || $type === 'loans') {
+                if ($type === 'reviews' || $type === 'loans' || $type === 'courses' || $type === 'infrastructure'
+                    || $type === 'faculty' || $type === 'placement' || $type === 'cutoff' || $type === 'scholarship') {
                     return Yii::$app->runAction('organizations/detail', [
                         'slug' => $user->username,
                         'type' => $type

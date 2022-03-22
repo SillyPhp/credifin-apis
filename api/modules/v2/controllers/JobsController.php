@@ -343,9 +343,6 @@ class JobsController extends ApiBaseController
                 'a.created_by student_id', 'a.current_round'
             ])
             ->innerJoinWith(['applicationEnc b' => function ($b) {
-                $b->innerJoinWith(['erexxEmployerApplications c' => function ($c) {
-                    $c->innerJoinWith(['collegeEnc d']);
-                }]);
                 $b->innerJoinWith(['organizationEnc e']);
                 $b->joinWith(['title ee' => function ($ee) {
                     $ee->joinWith(['categoryEnc e1']);
@@ -360,7 +357,7 @@ class JobsController extends ApiBaseController
                 }]);
                 $f->onCondition(['f.is_deleted' => 0]);
             }], false)
-            ->where(['d.organization_enc_id' => $this->getOrgId(), 'g.organization_enc_id' => $this->getOrgId(), 'b.application_enc_id' => $application_id, 'a.is_deleted' => 0, 'e.is_deleted' => 0])
+            ->where(['g.organization_enc_id' => $this->getClgId(), 'b.application_enc_id' => $application_id, 'a.is_deleted' => 0, 'e.is_deleted' => 0])
             ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0])
             ->andWhere(['not', ['a.status' => 'Blocked']])
             ->orderBy([new \yii\db\Expression("FIELD (a.status,'Hired','Accepted','Incomplete','Pending','Rejected','Cancelled')")]);
@@ -466,6 +463,10 @@ class JobsController extends ApiBaseController
                 'b.sunday_frequency',
                 'b.interview_start_date',
                 'b.interview_end_date',
+                'b.has_placement_offer',
+                'b.pre_placement_offer',
+                'b.internship_duration',
+                'b.internship_duration_type',
                 'w.organization_enc_id',
                 'REPLACE(w.name, "&amp;", "&") as organization_name',
                 'w.initials_color color',

@@ -9,6 +9,7 @@ use common\models\CandidateConsiderJobs;
 use common\models\EmployerApplications;
 use common\models\HiringProcessNotes;
 use common\models\RejectionReasons;
+use common\models\UserOtherDetails;
 use common\models\Utilities;
 use frontend\models\whatsAppShareForm;
 use Yii;
@@ -45,7 +46,7 @@ class ProcessApplicationsController extends Controller
                 $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
                 $b->distinct();
             }])
-            ->joinWith(['appliedApplications aa' => function($aa){
+            ->joinWith(['appliedApplications aa' => function ($aa) {
                 $aa->select(['aa.application_enc_id']);
             }])
             ->joinWith(['applicationOptions ao'], false)
@@ -63,15 +64,15 @@ class ProcessApplicationsController extends Controller
         $model = new SendEmailModel();
         $whatsAppmodel = new whatsAppShareForm();
         if (Yii::$app->request->post()) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-                $model->email = Yii::$app->request->post('email');
-                $model->application_id = Yii::$app->request->post('application_id');
-                return $model->sendEmails();
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->email = Yii::$app->request->post('email');
+            $model->application_id = Yii::$app->request->post('application_id');
+            return $model->sendEmails();
         }
         if (Yii::$app->user->identity->organization) {
             $application_name = EmployerApplications::find()
                 ->alias('a')
-                ->select(['c.name job_title', 'a.application_for', 'a.slug', 'a.application_enc_id', 'a.interview_process_enc_id', 'ate.name application_type', 'pe.icon',
+                ->select(['c.name job_title', 'a.application_for', 'a.application_for', 'a.slug', 'a.application_enc_id', 'a.interview_process_enc_id', 'ate.name application_type', 'pe.icon',
                     '(CASE
                 WHEN a.experience = "0" THEN "No Experience"
                 WHEN a.experience = "1" THEN "Less Than 1 Year"
@@ -87,7 +88,7 @@ class ProcessApplicationsController extends Controller
                 WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NUll THEN CONCAT("Minimum ",a.minimum_exp," Years Experience") 
                 WHEN a.minimum_exp IS NUll AND a.maximum_exp IS NOT NUll THEN CONCAT("Maximum ",a.maximum_exp," Years Experience") 
                 ELSE "No Experience" 
-                END) as experience', 'ao.wage_type', 'ao.fixed_wage', 'ao.min_wage', 'ao.max_wage', 'ao.wage_duration', 'a.application_for'])
+                END) as experience', 'ao.wage_type', 'ao.fixed_wage', 'ao.min_wage', 'ao.max_wage', 'ao.wage_duration', 'a.application_for','a.status'])
                 ->where(['a.application_enc_id' => $aidk])
                 ->andWhere(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->joinWith(['title b' => function ($b) {
@@ -122,8 +123,14 @@ class ProcessApplicationsController extends Controller
                     ->distinct()
                     ->alias('a')
                     ->where(['a.application_enc_id' => $application_id])
-                    ->select(['a.current_round', 'a.id', 'e.resume', 'b.phone', 'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, b.initials_color, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(DISTINCT(c.is_completed)) total', 'a.created_by', 'a.created_on', 'a.rejection_window'])
+                    ->select(['a.current_round', 'a.id', 'e.resume', 'b.phone', 'b4.name college_name', 'b4.slug college_slug', 'b4.initials_color college_initials',
+                        'CASE WHEN b4.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", b4.logo_location, "/", b4.logo) ELSE NULL END college_logo',
+                        'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, b.initials_color, CASE WHEN b.last_name IS NOT NULL THEN CONCAT(b.first_name, " ", b.last_name) ELSE b.first_name END name , CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(DISTINCT(c.is_completed)) total', 'a.created_by', 'a.created_on', 'a.rejection_window'])
                     ->joinWith(['resumeEnc e'], false)
+                    ->joinWith(['appliedApplicationLocations aal' => function ($aal) {
+                        $aal->select(['aal.applied_application_enc_id', 'aal.city_enc_id', 'ce.name']);
+                        $aal->joinWith(['cityEnc as ce'], false);
+                    }])
                     ->joinWith(['appliedApplicationProcesses c' => function ($c) {
                         $c->joinWith(['fieldEnc d'], false);
                         $c->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon', 'c.is_completed']);
@@ -149,6 +156,9 @@ class ProcessApplicationsController extends Controller
                             $b31->joinWith(['industryEnc b32'], false);
                             $b31->onCondition(['b31.is_deleted' => 0]);
                         }]);
+                        $b->joinWith(['userOtherDetails b3' => function ($b3) {
+                            $b3->joinWith(['organizationEnc b4']);
+                        }], false);
                     }])
                     ->joinWith(['hiringProcessNotes sh' => function ($sh) {
                         $sh->select(['sh.applied_application_enc_id', 'sh.notes_enc_id', 'sh.notes']);
@@ -165,12 +175,17 @@ class ProcessApplicationsController extends Controller
                                 }], false);
                             }]);
                         }]);
+                        $cr->joinWith(['candidateRejectionReasons cr1' => function ($cr1) {
+                            $cr1->select(['cr1.candidate_rejection_enc_id', 'cr1.rejection_reasons_enc_id', 'cr2.reason']);
+                            $cr1->joinWith(['rejectionReasonsEnc cr2'], false);
+                        }]);
                         $cr->groupBy(['cr.candidate_rejection_enc_id']);
                     }])
                     ->groupBy(['a.applied_application_enc_id'])
                     ->orderBy([new \yii\db\Expression("FIELD (a.status, 'Rejected') asc"), 'a.created_on' => SORT_DESC, 'a.id' => SORT_DESC])
                     ->asArray()
                     ->all();
+
                 $question = ApplicationInterviewQuestionnaire::find()
                     ->alias('a')
                     ->distinct()
@@ -186,6 +201,7 @@ class ProcessApplicationsController extends Controller
                     ->where(['reason_by' => 1, 'is_deleted' => 0, 'status' => 'Approved'])
                     ->asArray()
                     ->all();
+
                 return $this->render('index', [
                     'fields' => $applied_users,
                     'que' => $question,

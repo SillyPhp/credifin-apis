@@ -52,8 +52,22 @@ class Benefits extends Model
                 return $this->checkBenefit($chek['benefit_enc_id']);
             }
         } else if (!empty($this->predefind_benefit)) {
-            foreach ($this->predefind_benefit as $id) {
+            $already_saved_benefit = OrganizationEmployeeBenefits::find()
+                ->select('benefit_enc_id')
+                ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'is_deleted'=>0])
+                ->asArray()
+                ->all();
+            $already_saved_benefits = [];
+            foreach ($already_saved_benefit as $bf){
+                array_push($already_saved_benefits,$bf['benefit_enc_id']);
+            }
+            $to_be_added_location = array_diff($this->predefind_benefit, $already_saved_benefits);
+            $to_be_deleted_location = array_diff($already_saved_benefits, $this->predefind_benefit);
+            foreach ($to_be_added_location as $id) {
                 $this->checkBenefitInArray($id);
+            }
+            foreach ($to_be_deleted_location as $id) {
+                $this->removeBenefitInArray($id);
             }
             return true;
         } else {
@@ -80,7 +94,7 @@ class Benefits extends Model
     {
         $chek_benefit = OrganizationEmployeeBenefits::find()
             ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'benefit_enc_id' => $id])
-            ->andWhere(['!=','is_deleted',1])
+//            ->andWhere(['!=','is_deleted',1])
             ->asArray()
             ->one();
         if (empty($chek_benefit)) {
@@ -95,8 +109,24 @@ class Benefits extends Model
             if (!$orgBenefitsModal->save()) {
                 return false;
             }
+        } else{
+            $update = Yii::$app->db->createCommand()
+                ->update(OrganizationEmployeeBenefits::tableName(), ['is_deleted' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['benefit_enc_id' => $id])
+                ->execute();
         }
 
+    }
+
+    private function removeBenefitInArray($id)
+    {
+//        $chek_benefit = OrganizationEmployeeBenefits::find()
+//            ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'benefit_enc_id' => $id])
+//            ->andWhere(['!=','is_deleted',1])
+//            ->asArray()
+//            ->one();
+        $update = Yii::$app->db->createCommand()
+            ->update(OrganizationEmployeeBenefits::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['benefit_enc_id' => $id])
+            ->execute();
     }
 
     public function getAllBenefits()

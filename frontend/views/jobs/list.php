@@ -1,4 +1,5 @@
 <?php
+use yii\helpers\Url;
 if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
     $this->title = Yii::$app->request->get('keyword') . ' jobs vacancies available in ' . Yii::$app->request->get('location') . ' - ' . date('M Y');
 } elseif (Yii::$app->request->get('location')) {
@@ -37,7 +38,7 @@ if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -52,7 +53,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -84,6 +85,11 @@ color: #2b7cb7;
     }
     .sharing-links{padding:4px;}
 }
+@media (min-width: 768px) and (max-width: 1200px){
+    .wts-app i, .fb i, .tw i, .linkd i, .male i, .tele i, .copy-app-link i{
+        margin: 0 2px !important;
+    }
+}
 ');
 ?>
 
@@ -97,11 +103,10 @@ color: #2b7cb7;
                 ?>
             </div>
             <div class="col-md-10 col-sm-9 col-xs-12">
-                <?=
-                $this->render('/widgets/search-bar1',['type'=>'jobs']);
-                ?>
-
                 <div class=" col-md-12 col-sm-12">
+                    <?=
+                    $this->render('/widgets/search-bar1',['type'=>'jobs']);
+                    ?>
                     <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
                     <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>
                     <a href="#" id="loadMore"
@@ -146,6 +151,7 @@ color: #2b7cb7;
 
 echo $this->render('/widgets/mustache/application-card', [
     'type' => 'Jobs',
+
 ]);
 
 $script = <<<JS

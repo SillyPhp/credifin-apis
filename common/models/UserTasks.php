@@ -38,10 +38,10 @@ class UserTasks extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['task_enc_id', 'name', 'created_on', 'created_by'], 'required'],
-            [['status'], 'string'],
+            [['name', 'status'], 'string'],
             [['is_completed', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['task_enc_id', 'name', 'assigned_to', 'organization_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['task_enc_id', 'assigned_to', 'organization_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['task_enc_id'], 'unique'],
             [['assigned_to'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['assigned_to' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],

@@ -88,9 +88,7 @@ class SkillsUpForm extends Model
             $model->post_source_url = $this->source_url;
             $model->post_image_url = $this->image_url;
             $model->source_enc_id = $this->source_id;
-//            if ($this->content_type != 'Video') {
-                $model->post_description = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->description);
-//            }
+            $model->post_description = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->description);
             $model->post_short_summery = preg_replace('/[^ -\x{2122}]\s+|\s*[^ -\x{2122}]/u', '', $this->short_description);
             $utilitiesModel->variables['name'] = $model->post_title;
             $utilitiesModel->variables['table_name'] = ExternalNewsUpdate::tableName();
@@ -103,9 +101,10 @@ class SkillsUpForm extends Model
                 $base_path = Yii::$app->params->upload_directories->skill_up->cover_image . $model->cover_image_location . '/';
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $model->cover_image = $utilitiesModel->encrypt() . '.' . $this->image->extension;
+                $type = $this->image->type;
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFile($this->image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $model->cover_image, "public");
+                $result = $my_space->uploadFileSources($this->image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $model->cover_image, "public",['params' => ['ContentType' => $type]]);
                 $this->image_url = $result['ObjectURL'];
                 if (!$result) {
                     throw new \Exception($result);
@@ -438,8 +437,6 @@ class SkillsUpForm extends Model
             return ['status' => 200];
 
         } catch (\Exception $e) {
-            print_r($e->getMessage());
-            die();
             $transaction->rollBack();
             return ['status' => 500, 'message' => $e->getMessage()];
         }

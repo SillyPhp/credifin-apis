@@ -2,6 +2,8 @@
 
 namespace api\modules\v2\controllers;
 
+use api\modules\v2\models\Applied;
+use common\models\AppliedApplications;
 use common\models\AssignedCategories;
 use common\models\AssignedCollegeCourses;
 use common\models\Categories;
@@ -11,7 +13,10 @@ use common\models\Countries;
 use common\models\EmailLogs;
 use common\models\Organizations;
 use common\models\Referral;
+use common\models\Speakers;
 use common\models\States;
+use common\models\UserOtherDetails;
+use common\models\WebinarSpeakers;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
@@ -275,6 +280,76 @@ class UtilitiesController extends ApiBaseController
             ->all();
 
         return $courses;
+    }
+
+    public function actionWebinarSpeakers($keyword = null)
+    {
+        $speakers = Speakers::find()
+            ->alias('a')
+            ->select(['a.speaker_enc_id', 'a.user_enc_id', 'CONCAT(b.first_name, " ", b.last_name) full_name',])
+            ->joinWith(['userEnc b'], false)
+            ->where(['a.is_deleted' => 0]);
+        if ($keyword != null) {
+            $speakers->andFilterWhere(['like', 'CONCAT(b.first_name, " ", b.last_name)', $keyword]);
+        }
+        $speakers = $speakers->limit(10)
+            ->asArray()
+            ->all();
+
+        if ($speakers) {
+            return $this->response(200, ['status' => 200, 'speakers' => $speakers]);
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+    }
+
+    public function actionUnapprovedMail()
+    {
+        $colleges = Organizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id', 'a.name', 'COUNT(CASE WHEN b.college_actions IS NULL Then 1 END) as unapproved_count'])
+            ->joinWith(['userOtherDetails b'], false)
+            ->groupBy(['b.organization_enc_id'])
+            ->where(['b.is_deleted' => 0])
+            ->having(['>', 'unapproved_count', 10])
+            ->asArray()
+            ->all();
+
+        return $colleges;
+    }
+
+    public function actionAppliedStudents()
+    {
+
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $dt->modify('first day of previous month');
+        $currentDate = $dt->format('Y-m');
+
+        $params = Yii::$app->request->post();
+
+        if (!isset($params['college_id']) && empty($params['college_id'])) {
+            return $this->response(400, ['status' => 400, 'message' => 'missing information "college_id"']);
+        }
+
+        $signed_up_students_count = UserOtherDetails::find()
+            ->where(['organization_enc_id' => $params['college_id'], 'is_deleted' => 0, 'college_actions' => 0])
+            ->andWhere(['like', 'created_on', $currentDate])
+            ->count();
+
+        $applied_students_count = AppliedApplications::find()
+            ->alias('a')
+            ->joinWith(['createdBy b' => function ($b) {
+                $b->joinWith(['userOtherInfo b1']);
+            }], false)
+            ->where(['b1.organization_enc_id' => $params['college_id'], 'a.is_deleted' => 0, 'b1.college_actions' => 0])
+            ->andWhere(['like', 'a.created_on', $currentDate])
+            ->groupBy(['a.created_by'])
+            ->count();
+
+        return (int)$signed_up_students_count;
+
     }
 
 }

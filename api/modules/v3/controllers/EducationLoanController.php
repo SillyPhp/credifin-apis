@@ -556,6 +556,7 @@ class EducationLoanController extends ApiBaseController
         $model->updated_on = date('Y-m-d H:i:s');
         $model->gender = $params['gender'] ? $params['gender'] : $model->gender;
         $model->phone = $params['phone'] ? $params['phone'] : $model->phone;
+        $model->applicant_dob = $params['applicant_dob'] ? date('Y-m-d', strtotime($params['applicant_dob'])) : $model->applicant_dob;
         if ($model->save()) {
             return true;
         }
@@ -855,9 +856,15 @@ class EducationLoanController extends ApiBaseController
 
         $image = UploadedFile::getInstanceByName('image');
         $image_ext = $image->extension;
+        $file_type = $image->type;
+
+        if(!$image_ext){
+            $image_ext = 'pdf';
+            $file_type = 'application/pdf';
+        }
 
         $image_temp = $image->tempName;
-        if ($res = $this->upload($user_id, $params, $image_temp, $image_ext)) {
+        if ($res = $this->upload($user_id, $params, $image_temp, $image_ext,$file_type)) {
             return $this->response(200, ['status' => 200, 'id' => $res['id'], 'fileUrl' => $res['fileUrl']]);
         } else {
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
@@ -865,7 +872,7 @@ class EducationLoanController extends ApiBaseController
 
     }
 
-    private function upload($user_id, $params, $file, $image_ext)
+    private function upload($user_id, $params, $file, $image_ext,$file_type)
     {
 
         if ($params['type'] == 'co_applicant') {
@@ -890,9 +897,10 @@ class EducationLoanController extends ApiBaseController
                     $co_applicant->updated_by = $user_id;
                     $co_applicant->updated_on = date('Y-m-d H:i:s');
                     if ($co_applicant->update()) {
+                        $type = $file_type;
                         $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                        $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image, "public");
+                        $my_space->uploadFileSources($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image, "public",['params' => ['ContentType' => $type]]);
                         return ['id' => $co_applicant->loan_co_app_enc_id, 'fileUrl' => Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image];
                     } else {
                         print_r($co_applicant->getErrors());
@@ -916,9 +924,10 @@ class EducationLoanController extends ApiBaseController
                     $co_applicant->created_by = $user_id;
                     $co_applicant->created_on = date('Y-m-d H:i:s');
                     if ($co_applicant->save()) {
+                        $type = $file_type;
                         $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                        $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image, "public");
+                        $my_space->uploadFileSources($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image, "public",['params' => ['ContentType' => $type]]);
                         return ['id' => $co_applicant->loan_co_app_enc_id, 'fileUrl' => Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . $base_path . $co_applicant->image];
                     } else {
                         print_r($co_applicant->getErrors());
@@ -946,9 +955,10 @@ class EducationLoanController extends ApiBaseController
                     $proof->updated_by = $user_id;
                     $proof->updated_on = date('Y-m-d H:i:s');
                     if ($proof->update()) {
+                        $type = $file_type;
                         $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                        $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $proof->proof_image, "public");
+                        $my_space->uploadFileSources($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $proof->proof_image, "public",['params' => ['ContentType' => $type]]);
                         return ['id' => $proof->certificate_enc_id, 'fileUrl' => Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . $base_path . $proof->proof_image];
                     } else {
                         print_r($proof->getErrors());
@@ -977,9 +987,10 @@ class EducationLoanController extends ApiBaseController
                     $proof->updated_by = $user_id;
                     $proof->updated_on = date('Y-m-d H:i:s');
                     if ($proof->update()) {
+                        $type = $file_type;
                         $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                        $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $proof->proof_image, "public");
+                        $my_space->uploadFileSources($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $proof->proof_image, "public",['params' => ['ContentType' => $type]]);
                         return ['id' => $proof->loan_candidate_edu_enc_id, 'fileUrl' => Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . $base_path . $proof->proof_image];
                     } else {
                         print_r($proof->getErrors());
@@ -1005,9 +1016,10 @@ class EducationLoanController extends ApiBaseController
                 $loan_applicant->updated_by = $user_id;
                 $loan_applicant->updated_on = date('Y-m-d H:i:s');
                 if ($loan_applicant->update()) {
+                    $type = $file_type;
                     $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                     $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                    $my_space->uploadFile($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $loan_applicant->image, "public");
+                    $my_space->uploadFileSources($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $loan_applicant->image, "public",['params' => ['ContentType' => $type]]);
                     return ['id' => $loan_applicant->loan_app_enc_id, 'fileUrl' => Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . $base_path . $loan_applicant->image];
                 } else {
                     print_r($loan_applicant->getErrors());

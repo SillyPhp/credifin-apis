@@ -93,6 +93,15 @@ use yii\bootstrap\ActiveForm;
         </div>
     </section>
 
+
+<?php
+if($data = Yii::$app->webinarSlides->check()) {
+    echo $this->render('/webinars/webinar-carousel', [
+        'webinars'=>$data,
+    ]);
+}
+?>
+
 <?= $this->render('/widgets/review/quick-review'); ?>
 
     <section class="top-com">
@@ -132,6 +141,8 @@ use yii\bootstrap\ActiveForm;
         </div>
     </section>
     <!---->
+
+
     <section class="top-com">
         <div class="container">
             <h1 class="heading-style">Top Schools</h1>
@@ -141,6 +152,8 @@ use yii\bootstrap\ActiveForm;
             </div>
         </div>
     </section>
+
+
     <section>
         <div class="container">
             <h1 class="heading-style">Top Educational Institutes</h1>
@@ -170,6 +183,8 @@ use yii\bootstrap\ActiveForm;
         </div>
     </section>
 
+
+
     <!--Subscribe Widget start-->
 <?php
 if (Yii::$app->user->isGuest) {
@@ -177,6 +192,8 @@ if (Yii::$app->user->isGuest) {
 }
 ?>
     <!--Subscribe Widget ends-->
+    
+
 <?php
 echo $this->render('/widgets/mustache/review-cards');
 echo $this->render('/widgets/mustache/latest-reviews');

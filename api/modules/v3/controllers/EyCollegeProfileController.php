@@ -6,6 +6,12 @@ namespace api\modules\v3\controllers;
 
 use common\models\AssignedCollegeCourses;
 use common\models\ClaimServiceableLocations;
+use common\models\CollegeCutoff;
+use common\models\CollegeFaculty;
+use common\models\CollegeInfrastructureDetail;
+use common\models\CollegePlacementHighlights;
+use common\models\CollegeRecruitmentByCourse;
+use common\models\CollegeScholarships;
 use common\models\FollowedOrganizations;
 use common\models\NewOrganizationReviews;
 use common\models\OrganizationReviewFeedback;
@@ -50,7 +56,8 @@ class EyCollegeProfileController extends ApiBaseController
         $college_detail = Organizations::find()
             ->alias('a')
             ->select(['a.organization_enc_id', 'a.email', 'a.name', 'a.website website_link', 'b.affiliated_to', 'b1.name city_name', 'a.phone',
-                'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'
+                'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo',
+                'b.accredited_to', 'b.entrance_exam', 'b.total_programs', 'b.popular_course', 'b.top_recruiter', 'b.brochure', 'b.established_in', 'b.university_type', 'b.application_mode', 'b.fees', 'a.description'
             ])
             ->joinWith(['organizationOtherDetails b' => function ($b) {
                 $b->joinWith(['locationEnc b1']);
@@ -63,7 +70,8 @@ class EyCollegeProfileController extends ApiBaseController
             $unclaimed = UnclaimedOrganizations::find()
                 ->alias('a')
                 ->select(['a.organization_enc_id', 'a.email', 'a.name', 'a.website website_link', 'b.name city_name', 'a.phone',
-                    'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
+                    'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo'
+                ])
                 ->joinWith(['cityEnc b'], false)
                 ->where(['a.slug' => $params['slug'], 'a.status' => 1, 'a.is_deleted' => 0,])
                 ->asArray()
@@ -105,13 +113,195 @@ class EyCollegeProfileController extends ApiBaseController
         $courses = AssignedCollegeCourses::find()
             ->distinct()
             ->alias('a')
-            ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.organization_enc_id college_id', 'a.course_duration', 'a.type'])
+            ->select(['a.assigned_college_enc_id', 'c.course_name', 'a.organization_enc_id college_id', 'a.course_duration', 'a.type',
+                'd.fees', 'd.registration_fee', 'd.selection_process', 'd.eligibility_criteria', 'd.other_details', 'd.scholarship_enc_id',
+                'd1.title scholarship_title'
+            ])
             ->joinWith(['courseEnc c'], false)
+            ->joinWith(['collegeAdmissionDetails d' => function ($d) {
+                $d->joinWith(['scholarshipEnc d1'], false);
+            }], false)
             ->where(['a.organization_enc_id' => $college->organization_enc_id, 'a.is_deleted' => 0])
             ->asArray()
             ->all();
         if ($courses) {
             return $this->response(200, ['status' => 200, 'courses' => $courses]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+    }
+
+    public function actionScholarships()
+    {
+        $params = Yii::$app->request->post();
+
+        if (!isset($params['slug']) && empty($params['slug'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        $college = Organizations::find()
+            ->where(['slug' => $params['slug']])
+            ->one();
+
+        $scholarships = CollegeScholarships::find()
+            ->select(['college_scholarship_enc_id', 'title', 'amount', 'detail', 'apply_link'])
+            ->where(['college_enc_id' => $college->organization_enc_id, 'is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        if ($scholarships) {
+            return $this->response(200, ['status' => 200, 'scholarships' => $scholarships]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+    }
+
+    public function actionCutOff()
+    {
+        $params = Yii::$app->request->post();
+
+        if (!isset($params['slug']) && empty($params['slug'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        $college = Organizations::find()
+            ->where(['slug' => $params['slug']])
+            ->one();
+
+        $cutoffs = CollegeCutoff::find()
+            ->alias('a')
+            ->select(['a.college_cut_off_enc_id', 'a.assgined_course_enc_id', 'c.course_name', 'a.college_enc_id', 'a.general', 'a.obc',
+                'a.sc', 'a.st', 'a.pwd', 'a.ews', 'a.mode'])
+            ->joinWith(['assginedCourseEnc b' => function ($b) {
+                $b->joinWith(['courseEnc c']);
+            }], false)
+            ->where(['a.is_deleted' => 0, 'a.college_enc_id' => $college->organization_enc_id,])
+            ->asArray()
+            ->all();
+
+        if ($cutoffs) {
+            return $this->response(200, ['status' => 200, 'cutoff' => $cutoffs]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+    }
+
+    public function actionFaculty()
+    {
+        $params = Yii::$app->request->post();
+
+        if (!isset($params['slug']) && empty($params['slug'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        $college = Organizations::find()
+            ->where(['slug' => $params['slug']])
+            ->one();
+
+        $faculty = CollegeFaculty::find()
+            ->alias('a')
+            ->select(['a.college_faculty_enc_id', 'a.faculty_name', 'a.experience', 'b.designation', 'c.name department',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->collegeProfile->faculty_image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image'])
+            ->joinWith(['designationEnc b'], false)
+            ->joinWith(['departmentEnc c'], false)
+            ->where(['a.is_deleted' => 0, 'a.college_enc_id' => $college->organization_enc_id])
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        if ($faculty) {
+            return $this->response(200, ['status' => 200, 'faculty_list' => $faculty]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+    }
+
+    public function actionInfrastructure()
+    {
+        $params = Yii::$app->request->post();
+
+        if (!isset($params['slug']) && empty($params['slug'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        $college = Organizations::find()
+            ->where(['slug' => $params['slug']])
+            ->one();
+
+        $list = CollegeInfrastructureDetail::find()
+            ->alias('a')
+            ->select(['a.college_infrastructure_detail_enc_id', 'a.college_infrastructure_enc_id',
+                'a.description', 'b.infra_name',
+                'CASE WHEN b.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->collegeProfile->infrastructure_icon, 'https') . '", b.icon_location, "/", b.icon) ELSE NULL END icon',])
+            ->joinWith(['collegeInfrastructureEnc b'], false)
+            ->where(['a.college_enc_id' => $college->organization_enc_id, 'a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        if ($list) {
+            return $this->response(200, ['status' => 200, 'list' => $list]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+    }
+
+    public function actionPlacementHighlights()
+    {
+        $params = Yii::$app->request->post();
+
+        if (!isset($params['slug']) && empty($params['slug'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        $college = Organizations::find()
+            ->where(['slug' => $params['slug']])
+            ->one();
+
+        $highlights = CollegePlacementHighlights::find()
+            ->select(['college_placement_highlight_enc_id', 'companies_visited', 'top_recruiter', 'companies_offering_dream_packages',
+                'highest_stipend_offered', 'highest_placement_package'])
+            ->where(['college_enc_id' => $college->organization_enc_id])
+            ->asArray()
+            ->one();
+
+        if ($highlights) {
+            return $this->response(200, ['status' => 200, 'highlights' => $highlights]);
+        }
+
+        return $this->response(404, ['status' => 404, 'not found']);
+
+    }
+
+    public function actionCourseRecruitments()
+    {
+        $params = Yii::$app->request->post();
+
+        if (!isset($params['slug']) && empty($params['slug'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+        }
+
+        $college = Organizations::find()
+            ->where(['slug' => $params['slug']])
+            ->one();
+
+        $recruitments = CollegeRecruitmentByCourse::find()
+            ->alias('a')
+            ->select(['a.college_recruitment_by_course_enc_id', 'a.assigned_course_enc_id', 'a.average_package', 'a.highest_package', 'a.total_offers',
+                'a.students_placed', 'a.companies_visiting', 'b1.course_name'])
+            ->joinWith(['assignedCourseEnc b' => function ($b) {
+                $b->joinWith(['courseEnc b1'], false);
+            }], false)
+            ->where(['a.is_deleted' => 0, 'a.college_enc_id' => $college->organization_enc_id])
+            ->asArray()
+            ->all();
+
+        if ($recruitments) {
+            return $this->response(200, ['status' => 200, 'recruitments' => $recruitments]);
         }
 
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
@@ -212,7 +402,8 @@ class EyCollegeProfileController extends ApiBaseController
 
         //if parameter not empty then find data of organization claimed
         $org = Organizations::find()
-            ->select(['organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "claimed" END) as org_type', 'slug', 'initials_color', 'name', 'website', 'email', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
+            ->select(['organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "claimed" END) as org_type', 'slug', 'initials_color', 'name', 'website', 'email',
+                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=", REPLACE(initials_color, "#", ""), "&color=ffffff") END logo'])
             ->where(['organization_enc_id' => $org_enc_id, 'is_deleted' => 0])
             ->asArray()
             ->one();
@@ -220,7 +411,8 @@ class EyCollegeProfileController extends ApiBaseController
         //if parameter not empty then find data of organization un_claimed
         $unclaimed_org = UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'b.business_activity', 'a.slug', 'a.initials_color', 'a.name', 'a.website', 'a.email', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
+            ->select(['a.organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'b.business_activity', 'a.slug', 'a.initials_color', 'a.name', 'a.website', 'a.email',
+                'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->where([
                 'a.organization_enc_id' => $org_enc_id,
@@ -477,7 +669,8 @@ class EyCollegeProfileController extends ApiBaseController
 
         //if parameter not empty then find data of organization claimed
         $org = Organizations::find()
-            ->select(['organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "claimed" END) as org_type', 'slug', 'initials_color', 'name', 'website', 'email', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
+            ->select(['organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "claimed" END) as org_type', 'slug', 'initials_color', 'name', 'website', 'email',
+                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=", REPLACE(initials_color, "#", ""), "&color=ffffff") END logo'])
             ->where(['organization_enc_id' => $org_enc_id, 'is_deleted' => 0])
             ->asArray()
             ->one();
@@ -485,7 +678,8 @@ class EyCollegeProfileController extends ApiBaseController
         //if parameter not empty then find data of organization un_claimed
         $unclaimed_org = UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'b.business_activity', 'a.slug', 'a.initials_color', 'a.name', 'a.website', 'a.email', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
+            ->select(['a.organization_enc_id', '(CASE WHEN organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'b.business_activity', 'a.slug', 'a.initials_color', 'a.name', 'a.website', 'a.email',
+                'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->where([
                 'a.organization_enc_id' => $org_enc_id,

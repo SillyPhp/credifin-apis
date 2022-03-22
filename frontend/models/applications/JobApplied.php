@@ -27,14 +27,14 @@ class JobApplied extends Model
     public function rules()
     {
         return [
-            [['id', 'resume_file', 'org_id', 'status', 'check', 'resume_list', 'questionnaire_id', 'fill_question'], 'required'],
+            [['id', 'org_id', 'status', 'questionnaire_id', 'fill_question'], 'required'],
             [
                 ['location_pref'], 'required', 'when' => function ($model, $attribute) {
             }, 'whenClient' => "function (attribute, value) {
                        return $('#jobapplied-location_pref label input').length != 0;
                 }"
             ],
-            [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx,pdf,png,jpg,jpeg', 'maxSize' => 1024 * 1024 * 2],
+//            [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx,pdf,png,jpg,jpeg', 'maxSize' => 1024 * 1024 * 2],
         ];
     }
 
@@ -53,11 +53,12 @@ class JobApplied extends Model
             $userResumeModel->resume = $utilitiesModel->encrypt() . '.' . $this->resume_file->extension;
             $userResumeModel->title = $this->resume_file->baseName . '.' . $this->resume_file->extension;
             $userResumeModel->alt = $this->resume_file->baseName . '.' . $this->resume_file->extension;
+            $type = $this->resume_file->type;
             $userResumeModel->created_on = date('Y-m-d H:i:s');
             $userResumeModel->created_by = Yii::$app->user->identity->user_enc_id;
             $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
             $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-            $result = $my_space->uploadFile($this->resume_file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $userResumeModel->resume, "private");
+            $result = $my_space->uploadFileSources($this->resume_file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $userResumeModel->resume, "private",['params' => ['ContentType' => $type]]);
             if ($result) {
                 if ($userResumeModel->validate() && $userResumeModel->save()) {
                     $appliedModel = new AppliedApplications();

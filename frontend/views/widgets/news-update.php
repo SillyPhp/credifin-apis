@@ -30,8 +30,8 @@ use yii\helpers\Url;
                         <a href="<?= Url::to('/news/' . $n->slug) ?>">
                             <div class="news-bx">
                                 <div class="news-logo">
-                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $n->image_location . '/' . $n->image); ?>"
-                                         alt=""/>
+                                    <img class="load-later" data-src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $n->image_location . '/' . $n->image); ?>"
+                                         src="<?= Url::to('@eyAssets/images/loader/Circles-menu.gif') ?>" alt=""/>
                                 </div>
                                 <div class="news-name"><?= $n->title ?></div>
                             </div>
@@ -82,31 +82,39 @@ $this->registercss('
 	border: 1px dotted #fff;
 	padding: 10px;
 	transition: all .3s;
+	align-items:center;
+	height:80px;
 }
 .news-bx:hover {
 	background-color: #fff;
 }
 .news-logo {
     max-width: 70px;
-    line-height:50px;
-    height:55px;
-    overflow:hidden;
+    line-height: 50px;
+    height: 55px;
+    overflow: hidden;
+    min-width: 70px;
+}
+.news-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 .news-name {
-	padding-left: 14px;
-	font-size: 16px;
-	font-family: roboto;
-	display: block;
-	display: -webkit-box;
-	max-height: 56px;
-	min-height: 56px;
-	-webkit-line-clamp: 2;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	color: #fff;
+    padding-left: 14px;
+    font-size: 14px;
+    font-family: roboto;
+    color: #fff;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 .news-bx:hover .news-name {
 	color: #000;
 }
 ');
+$script = <<<JS
+$('.load-later').Lazy();
+JS;
+$this->registerJs($script);

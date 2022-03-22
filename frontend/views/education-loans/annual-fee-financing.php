@@ -1,34 +1,5 @@
 <?php
 use yii\helpers\Url;
-
-$this->title = 'Annual Fee Financing';
-$keywords = 'Annual Fee Financing | Empower Youth';
-$description = 'Our annual fee financing solution provides loan to parents and students on annual basis with easy monthly installments designed in a way to make it easier for the borrowers to repay.';
-$image = Url::to('@eyAssets/images/pages/education-loans/annual-fee-financing.png', 'https');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouthin',
-        'twitter:creator' => '@EmpowerYouthin',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
 
 <section class="annual-fee-header">
@@ -173,7 +144,7 @@ $this->params['seo_tags'] = [
         </div>
         <div class="row">
           <?php
-          foreach ($loan_org as $l) {
+          foreach ($loan_colleges as $l) {
             ?>
               <div class="col-md-3 col-sm-4 col-xs-12">
                   <a href="<?= Url::to('/education-loans/apply-loan/' . $l['organization_enc_id'], true) ?>"
@@ -208,7 +179,8 @@ if($blogs['blogs']){
 ?>
 
 <?= $this->render('/widgets/loan-form-detail',[
-    'model' => $model
+    'model' => $model,
+    'param' => 'Annual Fee Finance'
 ]); ?>
 
 <?= $this->render('/widgets/press-releasee',[
@@ -254,7 +226,9 @@ html{
     font-weight: 400;
     word-spacing: 2px;
 }
-
+.bgeEd{
+    background-color: #edf4fc
+}
 .header-img{
     position: relative;
     z-index: 2;

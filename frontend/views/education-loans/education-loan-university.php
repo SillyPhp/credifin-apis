@@ -10,7 +10,7 @@ use yii\helpers\Url;
                     <h1>Pay School / College fees MONTHLY at ZERO cost*</h1>
                     <p>Don't pay in advance for Education</p>
                     <div class="apply-btn">
-                        <a href="">Apply Now</a>
+                        <a href="/education-loans/apply">Apply Now</a>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -49,31 +49,31 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-md-offset-1 col-sm-4 col-xs-12">
                     <div class="loan-steps loan-line1">
                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/step1.png') ?>" alt="">
-                        <p>Fill The Loan Application Form</p>
+                        <p>Apply Online</p>
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-4 col-xs-12">
                     <div class="loan-steps marg-top loan-line2">
                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/step2.png') ?>" alt="">
-                        <p>Pay The Processing Fee</p>
+                        <p>Upload Document</p>
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-4 col-xs-12">
                     <div class="loan-steps loan-line1">
                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/step3.png') ?>" alt="">
-                        <p>Valuation Of The Documents</p>
+                        <p>Pre Sanction Verification</p>
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-4 col-xs-12">
                     <div class="loan-steps marg-top loan-line2">
                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/step4.png') ?>" alt="">
-                        <p>The Sanction/Approval Process</p>
+                        <p>Sanction Of Loan</p>
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-4 col-xs-12">
                     <div class="loan-steps">
                         <img src="<?= Url::to('@eyAssets/images/pages/education-loans/step5.png') ?>" alt="">
-                        <p>The Loan Disbursal</p>
+                        <p>Loan Disbursed</p>
                     </div>
                 </div>
             </div>

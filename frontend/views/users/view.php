@@ -3,6 +3,13 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
+function webDate($webDate)
+{
+    $date = $webDate;
+    $sec = strtotime($date);
+    $newDate = date('d-M', $sec);
+    return $newDate;
+}
 if (!empty($userApplied) && Yii::$app->user->identity->organization->organization_enc_id) {
     if (!empty($userApplied['applied_application_enc_id'])) {
         $j = 0;
@@ -24,7 +31,7 @@ if (!empty($userApplied) && Yii::$app->user->identity->organization->organizatio
         }
     }
 }
-$this->params['header_dark'] = false;
+$this->params['header_dark'] = true;
 $uId = $user['user_enc_id'];
 ?>
 
@@ -75,6 +82,60 @@ $uId = $user['user_enc_id'];
             </div>
         </div>
     </div>
+    <!--Schedule Interview Modal-->
+    <div id="schedule_interview" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" id="profiles">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="submit" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title text-center" style="font-family: roboto; font-size: 20px;">Choose
+                        Applications to Schedule Interview</h4>
+                </div>
+                <?php
+                if ($userAppliedData && Yii::$app->user->identity->organization->organization_enc_id) {
+                    ?>
+                    <div class="modal-body">
+                        <?php
+                        foreach ($userAppliedData as $arr) {
+                            foreach ($arr as $pData) {
+                                if ($pData['status'] != 'Hired' && $pData['status'] != 'Cancelled' && $pData['status'] != 'Rejected') {
+                                    ?>
+                                    <div class="row padd10">
+                                        <div class="col-md-12 text-center">
+                                            <div class="radio_questions">
+                                                <div class="inputGroup process_radio">
+                                                    <input type="radio" name="scheduleInterview"
+                                                           id="scheduleInterview<?= $pData['application_enc_id'] ?>"
+                                                           value="/account/schedular/interview?app_id=<?= $pData['application_enc_id'] . '&applied_id=' . $pData['applied_application_enc_id'] . '&current_round=' . $pData['current_round'] ?>"
+                                                           class="application_list">
+                                                    <label for="scheduleInterview<?= $pData['application_enc_id'] ?>">
+                                                        <?= $pData['title'] ?>
+                                                        <span class="<?= (($pData['type'] == 'Jobs') ? 'colorBlue' : 'colorOrange') ?>"> ( <?= substr_replace($pData['type'], "", -1) ?> ) </span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                            }
+                        }
+                        ?>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button id="scheduleInterviewSubmit" type="button" class="btn btn-primary">
+                            Schedule
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
+    </div>
 
     <section class="inner-header-page">
         <div class="container">
@@ -87,10 +148,10 @@ $uId = $user['user_enc_id'];
                             $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $user['image_location'] . DIRECTORY_SEPARATOR . $user['image'];
                         }
                         $name = $user['first_name'] . ' ' . $user['last_name'];
-                        if ($image):
+                        if ($image) :
                             ?>
                             <img src="<?= $image; ?>" alt="<?= $name; ?>" class="img-circle"/>
-                        <?php else: ?>
+                        <?php else : ?>
                             <canvas class="user-icon img-circle img-responsive" name="<?= $name; ?>"
                                     color="<?= $user['initials_color']; ?>" width="140" height="140"
                                     font="70px"></canvas>
@@ -179,7 +240,7 @@ $uId = $user['user_enc_id'];
                                 if (!empty($userApplied['applied_application_enc_id'])) {
                                     ?>
                                     <span class="detail-info">
-                                Application Status</span><?= $fieldName ?>
+                                    Application Status</span><?= $fieldName ?>
                                 <?php }
                             } ?>
                         </li>
@@ -209,10 +270,17 @@ $uId = $user['user_enc_id'];
                                 </a>
                             </li>
                         <?php }
+                        if(!empty($user['telegram'])) {?>
+                            <li class="telegram">
+                                <a href="https://t.me/<?= Html::encode($user['telegram']) ?>"
+                                   target="_blank">
+                                    <i class="fab fa-telegram"></i>
+                                </a>
+                            </li>
+                        <?php }
                         if (!empty($user['email'])) { ?>
                             <li class="mael">
-                                <a href="mailto:<?= Html::encode($user['email']) ?>"
-                                   target="_blank">
+                                <a href="mailto:<?= Html::encode($user['email']) ?>" target="_blank">
                                     <i class="far fa-envelope-open"></i>
                                 </a>
                             </li>
@@ -258,6 +326,13 @@ $uId = $user['user_enc_id'];
                         ?>
                         <div class="down-res">
                             <?php
+                            if ($userAppliedData && Yii::$app->user->identity->organization->organization_enc_id) {
+                                ?>
+                                <a href="javascript:;" title="Shortlist" data-toggle="modal" data-target="#schedule_interview">
+                                    Schedule Interview <i class="fas fa-calendar-alt"></i>
+                                </a>
+                                <?php
+                            }
                             if ($user['is_shortlisted'] == "true") {
                                 ?>
                                 <a href="javascript:;" title="Shortlist" class="shortlist-main">
@@ -275,10 +350,9 @@ $uId = $user['user_enc_id'];
                                 if (!empty($userCv['resume_location']) && !empty($userCv['resume'])) {
                                     ?>
                                     <a href="javascript:;" target="_blank" title="Download Resume"
-                                       class="download-resume"
-                                       data-key="<?= $userCv['resume_location'] ?>" data-id="<?= $userCv['resume'] ?>">Download
-                                        Resume<i
-                                                class="fas fa-download"></i></a>
+                                       class="download-resume" data-key="<?= $userCv['resume_location'] ?>"
+                                       data-id="<?= $userCv['resume'] ?>">Download
+                                        Resume<i class="fas fa-download"></i></a>
                                     <?php
                                 }
                             } ?>
@@ -355,7 +429,9 @@ $uId = $user['user_enc_id'];
                                     <div class="set">
                                         <div class="prof-p">
                                             <!--                                    <img src="-->
-                                            <?//= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?><!--"/>-->
+                                            <? //= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg')
+                                            ?>
+                                            <!--"/>-->
                                             <canvas class="user-icon" name="<?= $edu['institute'] ?>" width="80"
                                                     height="80" font="30px"
                                                     color="<?= $edu['initials_color']; ?>"></canvas>
@@ -529,6 +605,7 @@ $uId = $user['user_enc_id'];
                 </div>
                 <?php
             }
+
             if ($userAppliedData && Yii::$app->user->identity->organization->organization_enc_id) {
                 ?>
                 <div class="col-md-4">
@@ -537,33 +614,47 @@ $uId = $user['user_enc_id'];
                             <div class="portlet-title tabbable-line">
                                 <div class="caption">
                                     <?php
-                                    if ($_GET['id']) {
-                                        echo '<span class="caption-subject font-dark bold uppercase">Also Applied In</span>';
-                                    } else {
-                                        echo '<span class="caption-subject font-dark bold uppercase">Applied In</span>';
-                                    }
+                                    //                                    if ($_GET['id']) {
+                                    //                                        echo '<span class="caption-subject font-dark bold uppercase">Also Applied In</span>';
+                                    //                                    } else {
+                                    echo '<span class="caption-subject font-dark bold uppercase">Applied In</span>';
+                                    //                                    }
                                     ?>
                                 </div>
                             </div>
                             <div class="portlet-body over-scroll">
                                 <div class="mt-comments">
                                     <?php
-                                    foreach ($userAppliedData as $data) {
-                                        ?>
-                                        <a href="/<?= (($data['type'] == 'Jobs') ? 'job/' : 'internship/') . $data['slug'] ?>"
-                                           class="mt-comment">
-                                            <div class="mt-comment-img">
-                                                <img src="/assets/common/categories/<?= (($data['icon']) ? $data['icon'] : 'others.svg') ?>">
-                                            </div>
-                                            <div class="mt-comment-body">
-                                                <div class="mt-comment-info">
-                                                    <span class="mt-comment-author"><?= $data['category'] ?></span>
-                                                    <span class="mt-comment-date"><?= (($data['type'] == 'Jobs') ? 'Job' : 'Internship') ?></span>
+                                    foreach ($userAppliedData as $arr) {
+                                        foreach ($arr as $pData) {
+                                            ?>
+                                            <a href="/account/process-applications/<?= $pData['application_enc_id'] ?>"
+                                               class="mt-comment">
+                                                <div class="mt-comment-img">
+                                                    <img src="/assets/common/categories/<?= (($pData['job_icon']) ? $pData['job_icon'] : 'others.svg') ?>">
                                                 </div>
-                                                <div class="mt-comment-text"> <?= $data['parent'] ?></div>
-                                            </div>
-                                        </a>
-                                        <?php
+                                                <div class="mt-comment-body">
+                                                    <div class="mt-comment-info">
+                                                        <span class="mt-comment-author"><?= $pData['title'] ?></span>
+                                                        <span class="mt-comment-date"><?= (($pData['type'] == 'Jobs') ? 'Job' : 'Internship') ?></span>
+                                                    </div>
+                                                    <div class="mt-comment-text">
+                                                        <?php
+                                                        if ($pData['status'] == 'Hired' || $pData['status'] == 'Cancelled' || $pData['status'] == 'Rejected') {
+                                                            echo $pData['status'];
+                                                        } else {
+                                                            if ($pData['process'][$pData['active']]['field_name']) {
+                                                                echo(($pData['process'][$pData['active']]['field_name'] == 'Get Applications') ? 'New Application' : $pData['process'][$pData['active']]['field_name']);
+                                                            } else {
+                                                                echo $pData['status'];
+                                                            }
+                                                        }
+                                                        ?>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <?php
+                                        }
                                     }
                                     ?>
                                 </div>
@@ -574,10 +665,129 @@ $uId = $user['user_enc_id'];
                 <?php
             }
             ?>
+
+
+            <!-- Quiz Scores -->
+            <!-- <div class="sidebar-container" style="border-bottom: 3px solid #ff7803;">
+                <div class="prefer" style="background-color:#ff7803; color:#fff;">Quiz Played</div>
+                <div class="prefer-detail">
+                    <div class="recent-quiz">
+                        <div class="quiz-heading">
+                            <div class="date">Date</div>
+                            <div class="title">Title</div>
+                            <div class="score">Score</div>
+                            <div class="drop-down"></div>
+                        </div>
+                        <div class="quiz-row show-one">
+                            <div class="showed-con">
+                                <div class="date">Oct 21</div>
+                                <div class="title">Something</div>
+                                <div class="score">65</div>
+                                <div class="drop-down"><i class="fa fa-chevron-down"></i></div>
+                            </div>
+                            <div class="drop-con">
+                                Some data
+                            </div>
+                        </div>
+                        <div class="quiz-row show-one">
+                            <div class="showed-con">
+                                <div class="date">Oct 21</div>
+                                <div class="title">Something</div>
+                                <div class="score">65</div>
+                                <div class="drop-down"><i class="fa fa-chevron-down"></i></div>
+                            </div>
+                            <div class="drop-con">
+                                Some data
+                            </div>
+                        </div>
+                        <div class="quiz-row show-one">
+                            <div class="showed-con">
+                                <div class="date">Oct 21</div>
+                                <div class="title">Something</div>
+                                <div class="score">65</div>
+                                <div class="drop-down"><i class="fa fa-chevron-down"></i></div>
+                            </div>
+                            <div class="drop-con">
+                                Some data
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="" class="view-more-quiz">View More</a>
+                </div>
+            </div> -->
+
+
         </div>
         <!--End Sidebar-->
         <!--        </div>-->
     </section>
+
+
+    <?php 
+    if($pastWebinar && count($pastWebinar) !== 0){
+    ?>
+    <section class="webinar-attended">
+        <div class="container">
+            <div class="row">
+                <div class="heading-style">Webinars Attended</div>
+            </div>
+            <div class="row">
+                <?php
+                foreach ($pastWebinar as $pWeb) {
+                    $date = array();
+                    foreach ($pWeb['webinarEvents'] as $key => $row) {
+                        $date[$key] = $row['start_datetime'];
+                    }
+                    array_multisort($date, SORT_DESC, $pWeb['webinarEvents']);
+                    ?>
+                    <div class="col-md-3 col-sm-4 col-xs-12">
+                        <div class="web-card">
+                            <div class="web-img">
+                                <a href="<?= Url::to("/webinar/" . $pWeb['slug']) ?>">
+                                    <img src="<?= $pWeb['image'] ?>">
+                                </a>
+                                <div class="web-detail-date">
+                                    <div class="web-date">
+                                        <?php
+                                        $eventDate = webDate($pWeb['webinarEvents'][0]['start_datetime']);
+                                        echo $eventDate;
+                                        ?>
+                                    </div>
+                                    <!--<div class="web-paid">
+                                        <?php
+                                        $totalPrice = $pWeb['price'];
+                                        $gstAmount = 0;
+                                        if ($pWeb['gst']) {
+                                            $gstPercent = $pWeb['gst'];
+                                            if ($totalPrice > 0) {
+                                                $gstAmount = round($gstPercent * ($totalPrice / 100), 2);
+                                            }
+                                        }
+                                        $finalPrice = $totalPrice + $gstAmount;
+                                        ?>
+                                        <?= (($finalPrice == 0) ? 'Free' : '₹ ' . $finalPrice) ?>
+                                    </div> -->
+                                </div>
+                            </div>
+                            <div class="web-inr">
+                                <div class="web-title"><a href="<?= Url::to("/webinar/" . $pWeb['slug']); ?>">
+                                        <?= $pWeb['name'] ?></a></div>
+                                <div class="web-speaker">
+                                    <span><?= str_replace(',', ', </span><span>', trim($pWeb['speakers'])) ?></span></div>
+                                <div class="web-des"><?= $pWeb['description'] ?></div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>               
+    </section>
+
+    <?php } ?>
+
 <?php
 if (Yii::$app->user->identity->organization->organization_enc_id && !empty($userApplied)) {
     if (!empty($userApplied['applied_application_enc_id'])) {
@@ -588,6 +798,86 @@ if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user
     }
 }
 $this->registerCss('
+
+/*-----------Webinar Attended CSS Starts Here---------*/
+.web-card {
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgb(0 0 0 / 20%);
+    background-color: #fff;
+    margin-bottom: 20px;
+    min-height: 360px;
+}
+.web-img {
+    position: relative;
+}
+.web-img img {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+}
+.web-detail-date {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+}
+.web-date {
+    border-radius: 4px;
+    padding: 0px 8px;
+    text-align: center;
+    border: 2px solid #00a0e3;
+    font-weight: 500;
+    font-family: roboto;
+    background-color: #00a0e3;
+    color: #fff;
+    margin-right: 2px;
+}
+.web-paid {
+    background-color: #ff7803;
+    border: 2px solid #ff7803;
+    border-radius: 4px;
+    padding: 0px 8px;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: roboto;
+    font-weight: 500;
+    color: #fff;
+}
+.web-inr {
+    padding: 5px 10px 10px;
+}
+.web-title {
+    font-size: 22px;
+    font-family: lora;
+    font-weight: 600;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.web-title a {
+    color: #333;
+}
+.web-speaker {
+    font-size: 12px;
+    font-family: roboto;
+    color: #a49f9f;
+    font-weight: 500;
+    height: 22px;
+    overflow: hidden;
+}
+.web-des {
+    font-family: roboto;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 70px;
+}
+/*-----------Webinar Attended CSS Ends Here---------*/
+
 .over-scroll {
     position: relative;
     max-height: 550px;
@@ -648,6 +938,7 @@ $this->registerCss('
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
 }
 .social-info{
     text-align: center;
@@ -660,6 +951,7 @@ $this->registerCss('
     padding: 8px 12px;
     text-align: center;
     border-radius: 6px;
+    margin: 0px 5px;
     color: #fff;
     transition: 0.3s;
     margin-top: 5px;
@@ -675,6 +967,9 @@ $this->registerCss('
 }
 .lin a {
 	background-color: #007bb6;
+}
+.telegram a{
+    background-color: #229ED9;
 }
 .mael a {
 	background-color: #bb0000;
@@ -1464,6 +1759,93 @@ ul.status-detail li>strong {
     font-weight: 500;
     font-style: italic;
 }
+
+
+
+
+/* Quiz Score CSS*/
+.sidebar-container {
+    background: #ffffff;
+    overflow: hidden;
+    margin-bottom: 25px;
+    position: relative;
+    transition: .4s;
+    border-radius: 8px;
+    box-shadow: 0 5px 6px rgb(0 0 0 / 20%);
+}
+.quiz-heading, .showed-con {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.quiz-heading {
+    margin: 0;
+    font-weight: 600;
+    margin-bottom: -7px;
+}
+.quiz-row {
+    margin: 15px 0;
+    padding: 5px 11px;
+    line-height: 22px;
+    box-shadow: 0 0 2px 2px #eee;
+    overflow: hidden;
+    transition: all linear .2s;
+    border-radius: 4px;
+}
+.view-more-quiz {
+    display: inline-block;
+    background: #ff7803;
+    color: #fff;
+    margin: auto;
+    position: relative;
+    padding: 4px 15px;
+    left: 50%;
+    transform: translate(-50%);
+}
+.prefer-detail {
+    padding: 20px;
+}
+.title {
+    flex-basis: 55%;
+}
+.score {
+    flex-basis: 15%;
+    text-align: center;
+}
+.date {
+    flex-basis: 25%;
+    font-size: 12px;
+    font-weight: 600;
+}
+.drop-down{
+    flex-basis: 10%;
+    text-align: right;
+}
+
+.drop-down i.rotate{
+    transform: rotate(180deg);
+    transition: all linear .2s;
+}
+.drop-down i{
+    transition: all linear .2s;
+}
+.reward {
+    width: 30px;
+    height: 30px;
+    background: #FFC93C;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+.show-one{
+    height: 30px;
+}
+.show-hide{
+    height: 60px;
+}
 @media screen and (max-width: 525px){
     .header-details {
         margin-top: 0px;
@@ -1502,6 +1884,13 @@ ul.status-detail li>strong {
 }
 ');
 $script = <<< JS
+
+$('.drop-down').click(function(){
+    $(this).parent('div').parent('div').toggleClass('show-hide');
+    $(this).children('i').toggleClass('rotate');
+});
+
+
 var user_id = "$uId";
 $(document).on('click','#phone-val',function(e) {
   e.preventDefault();
@@ -1525,6 +1914,9 @@ $(document).on('click','#phone-val',function(e) {
                         );
 })
 
+$(document).on('click', '#scheduleInterviewSubmit', function() {
+    window.location.replace($('input[name="scheduleInterview"]:checked').val());
+})
 $(document).on('click','.download-resume',function (e){
     e.preventDefault();
     let btnElem = $(this);
@@ -1583,7 +1975,8 @@ $(document).on('click', '.shortlist-main', function (event) {
 		}
 	});
 });
-document.getElementById('submitData').addEventListener('click', function () {
+if(document.getElementById('submitData')){
+    document.getElementById('submitData').addEventListener('click', function () {
 	var applications = document.getElementsByName('applications');
 	var selected_value;
 	for (var i = 0; i < applications.length; i++) {
@@ -1608,6 +2001,7 @@ document.getElementById('submitData').addEventListener('click', function () {
 		}
 	});
 });
+}
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');

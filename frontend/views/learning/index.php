@@ -78,6 +78,15 @@ use yii\helpers\Url;
     </div>
 </div>
 
+
+<?php
+if($data = Yii::$app->webinarSlides->check()) {
+    echo $this->render('/webinars/webinar-carousel', [
+        'webinars'=>$data,
+    ]);
+}
+?>
+
 <!--dynamic categories start-->
 
 <div class="clearfix"></div>
@@ -928,7 +937,7 @@ $this->registerCss('
     height: 100%;
     white-space: normal;
     padding: 5px 10px;
-    margin: 15px 8px;
+    margin: 15px 8px !important;
 }
 @media (max-width: 991px) {
   #mixedSlider .MS-content .item {

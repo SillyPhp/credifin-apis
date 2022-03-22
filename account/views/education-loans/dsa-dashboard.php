@@ -10,6 +10,15 @@ $filters = [];
 if (isset($_GET['filter'])) {
     $filters = explode(',', $_GET['filter']);
 }
+
+$httpsAbsoluteHomeUrl = Url::home(true);
+$fullUrl = explode('/', $httpsAbsoluteHomeUrl);
+$baseUrl = $fullUrl[2];
+if (Yii::$app->user->identity->organization->organization_enc_id) {
+$org_id = Yii::$app->user->identity->organization->organization_enc_id;
+$org_slug = Yii::$app->user->identity->organization->slug;
+
+}
 ?>
 <div class="row">
     <?php
@@ -17,9 +26,9 @@ if (isset($_GET['filter'])) {
         'id' => 'stat-container',
     ]);
     ?>
-    <div class="col-md-9">
-        <div class="widget-row">
-            <div class="col-md-3 col-sm-6">
+    <div class="<?= $org_slug == 'phfleasing' ? 'col-md-6' : 'col-md-9'?>">
+        <div class="widget-row row">
+            <div class="col-md-6 <?= $org_slug == 'phfleasing' ? '' : 'col-lg-3 inc-height' ?>">
                 <a href="/account/education-loans/leads?filter=0" data-pjax="0">
                     <div class="box-des box1 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
@@ -28,7 +37,7 @@ if (isset($_GET['filter'])) {
                     </div>
                 </a>
             </div>
-            <div class="col-md-3 col-sm-6">
+            <div class="col-md-6 <?= $org_slug == 'phfleasing' ? '' : 'col-lg-3 inc-height' ?>">
                 <a href="/account/education-loans/leads?filter=all" data-pjax="0">
                     <div class="box-des box3 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
@@ -37,7 +46,7 @@ if (isset($_GET['filter'])) {
                     </div>
                 </a>
             </div>
-            <div class="col-md-3 col-sm-6">
+            <div class="col-md-6 <?= $org_slug == 'phfleasing' ? '' : 'col-lg-3 inc-height' ?>">
                 <a href="/account/education-loans/leads?filter=3" data-pjax="0">
                     <div class="box-des box5 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
@@ -46,7 +55,7 @@ if (isset($_GET['filter'])) {
                     </div>
                 </a>
             </div>
-            <div class="col-md-3 col-sm-6">
+            <div class="col-md-6 <?= $org_slug == 'phfleasing' ? '' : 'col-lg-3 inc-height' ?>">
                 <a href="/account/education-loans/leads?filter=4" data-pjax="0">
                     <div class="box-des box7 mt">
                         <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
@@ -78,7 +87,7 @@ if (isset($_GET['filter'])) {
         </div>
     </div>
     <div class="col-md-3">
-        <div class="effect thurio">
+        <div class="effect thurio <?= $org_slug == 'phfleasing' ? 'tr-height' : '' ?>">
             <h3 class="text-white size-set">Invite Candidate <i data-toggle="tooltip"
                                                                 title="This is your personalized invite link which is used to add referral leads direct into your account "
                                                                 class="fa fa-question-circle tooltip-text"></i></h3>
@@ -149,8 +158,24 @@ if (isset($_GET['filter'])) {
             </div>
         </div>
     </div>
+    <?php
+        if($org_slug == 'phfleasing'){
+    ?>
+    <div class="col-md-3">
+        <div class="dsa-box <?= $org_slug == 'phfleasing' ? 'tr-height' : '' ?>">
+        <h3 class="text-white size-set">Invite DSA
+            <i data-toggle="tooltip"  title="This is your personalized invite link which is used to add DSA direct into your account " class="fa fa-question-circle tooltip-text"></i></h3>
+            <input type="text" class="link line-clamp" id="dsaLink"
+                   value="https://<?= $baseUrl ?>/signup/individual?dsaRefId=<?= $org_id ?> ">
+            <a href="" class="create-btn" onclick="copyToDsaLink()">Copy Link</a>
+        </div>
+    </div>
+    <?php
+        }
+    ?>
     <?php Pjax::end(); ?>
 </div>
+<div class="row mt-5">
 <div class="col-xs-12 col-sm-12">
     <div class="portlet light ">
         <div class="portlet-title tabbable-line">
@@ -342,6 +367,7 @@ if (isset($_GET['filter'])) {
         </div>
     </div>
 </div>
+</div>
 <div id="loanDetailModal" class="modal">
     <!-- Modal content -->
     <div class="modal-content">
@@ -513,6 +539,61 @@ if (isset($_GET['filter'])) {
 </div>
 <?php
 $this->registerCss('
+.mt-5{
+    margin-top: 2.5rem;
+}
+.tr-height{
+    min-height: 194px;
+}
+.iti{
+    width: 100%;
+}
+#dsaLink{
+    pointer-events: none;
+    border-radius: 5px;
+    padding: 6px;
+    height: 39.98px;
+    margin: 4px 0;
+}
+.line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+.dsa-box {
+    background: black;
+    padding: 0 15px;
+    text-align: center;
+    border-radius: 10px;
+    max-height: 196px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.dsa-box h4 {
+    color: #fff;
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+}
+.dsa-box a.create-btn {
+    background: #ff7803;
+    color: #fff;
+    padding: 8px 20px;
+    display: inline-block;
+    margin-top: 15px;
+    border-radius: 5px;
+}
+.dsa-box p.link{
+    height: 28px;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 4px;
+    padding: 0 6px;
+    line-height: 25px;
+}
 .tooltip-text{
     cursor:pointer;
 }
@@ -572,6 +653,7 @@ $this->registerCss('
     background-color: #000;
     text-align: center;
     padding: 1px 10px;
+    border-radius:10px;
 }
 .size-set {
     font-size: 18px;
@@ -831,15 +913,17 @@ input.checkbox:checked + label:before {
 .box6{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/college.png");}
 .box7{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/g.png");}
 .box-des {
-   background-size: 100% 100%;
-   background-repeat: no-repeat;
-   position: relative;
-   height: 160px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    height: 90px;
+    border-radius: 10px;
 }
 .mt{margin-bottom:15px;}
 .box-des img{
    position: absolute;
-   max-width: 63px;
+   max-width: 34px;
    right: 25px;
    top: 15px;
 }
@@ -1029,6 +1113,22 @@ input.checkbox:checked + label:before {
 .intl-tel-input{
     width: 100% !important;
 }
+@media (min-width: 1200px) and (max-width: 1317px){
+    .inc-height .box-des{
+        height: 199px;
+    }
+}
+@media only screen and (min-width: 1318px){
+    .inc-height .box-des{
+        height: 157px;
+    }
+}
+// @media (min-width: 768px) and (max-width: 991px){
+//     .widget-row{
+//         height: 220px;
+//     }
+// }
+
 @media screen and (max-width: 992px){
     .loan-icon img{
       display: none;
@@ -1049,6 +1149,10 @@ input.checkbox:checked + label:before {
     }
     #sanctionModal .modal-content{
         height: 80vh
+    }
+    
+    .dsa-box {
+        margin-top: 10px;
     }
 }
 @media only screen and (max-width: 760px),
@@ -1420,5 +1524,12 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         document.execCommand("copy");
         toastr.success("", "Copied");
         $('#share_manually').addClass('hidden');
+    }
+
+    function copyToDsaLink(){
+        var copyLink = document.getElementById("dsaLink");
+        copyLink.select();
+        document.execCommand("copy");
+        toastr.success("", "Copied");
     }
 </script>

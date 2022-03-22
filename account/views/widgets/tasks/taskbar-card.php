@@ -25,7 +25,7 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
                 }
                 $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                 $color = Yii::$app->user->identity->initials_color;
-                $link = Url::to('/' . Yii::$app->user->identity->username . '/edit');
+                $link = Url::to('/' . Yii::$app->user->identity->username);
             }
 
             if (empty($image)) :
@@ -612,6 +612,13 @@ $script = <<< JS
     }
 JS;
 $this->registerJs($script);
+if(!empty(Yii::$app->user->identity->organization) && empty(Yii::$app->user->identity->organization->logo)){
+    $this->registerJs('
+        setTimeout(function(){
+            $(".edit-org-logo").trigger("click");
+        },1000);
+    ');
+}
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);

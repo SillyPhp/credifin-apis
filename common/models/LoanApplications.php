@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%loan_applications}}".
  *
@@ -51,7 +49,7 @@ use Yii;
  * @property string $updated_by
  * @property string $updated_on
  * @property string $lead_application_enc_id Lead application Link
- * @property int $status 0 as Pending, 1 as Approved, 2 as Rejected
+ * @property int $status 0 as Pending, 1 as Approved, 2 as Rejected, 3 as Verified
  * @property int $loan_status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Senctioned, 5 as Disbursed, 6 as Completed, 10 as Rejected
  * @property string $loan_type
  * @property string $loan_purpose
@@ -109,7 +107,7 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_app_enc_id', 'applicant_name', 'applicant_current_city', 'phone', 'email', 'amount', 'source'], 'required'],
+            [['loan_app_enc_id', 'applicant_name', 'applicant_current_city', 'phone', 'amount', 'source'], 'required'],
             [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'gender', 'ask_guarantor_info', 'status', 'loan_status', 'is_deleted', 'is_removed'], 'integer'],
             [['employement_type', 'degree', 'candidate_status', 'candidate_sub_status', 'source', 'loan_type', 'lender_reasons'], 'string'],
             [['applicant_dob', 'deadline', 'intake', 'created_on', 'updated_on'], 'safe'],

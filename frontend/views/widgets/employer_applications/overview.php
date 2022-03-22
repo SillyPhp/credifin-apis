@@ -19,11 +19,18 @@ endif;
     <h3>Job Overview</h3>
     <ul>
         <li><i class="fas fa-puzzle-piece"></i>
-            <h3>Profile</h3><span><?= $profile_name; ?></span></li>
+            <div class="for-flex">
+                <h3>Profile</h3><span><?= $profile_name; ?></span>
+            </div>
+        </li>
         <li><i class="fas fa-suitcase"></i>
-            <h3>Job Type</h3><span><?= ucwords($job_type); ?></span></li>
+            <div class="for-flex">
+                <h3>Job Type</h3><span><?= ucwords($job_type); ?></span>
+            </div>
+        </li>
         <li><i class="far fa-money-bill-alt"></i>
-            <h3>Offered <?= (($type=='Job')? 'Salary' : 'Stipend');
+            <div class="for-flex">
+                <h3>Offered <?= (($type=='Job')? 'Salary' : 'Stipend');
             if ($wage_type == 'Fixed') {
                     echo ' (Fixed)';
                 } else if ($wage_type == 'Negotiable'|| $wage_type == 'Performance Based') {
@@ -32,10 +39,12 @@ endif;
             else if ($wage_type == 'Unpaid') {
                 echo ' (Unpaid)';
             }
-            ?></h3>
-            <span><?= (($ammount_value)?$ammount_value : 'N/A'); ?></span></li>
+            ?></h3><span><?= (($ammount_value)?$ammount_value : 'N/A'); ?></span>
+            </div>
+        </li>
         <li><i class="fas fa-mars-double"></i>
-            <h3>Gender</h3><span><?php
+            <div class="for-flex">
+               <h3>Gender</h3><span><?php
                 switch ($gender) {
                     case 0:
                         echo 'No Preference';
@@ -52,18 +61,27 @@ endif;
                     default:
                         echo 'N/A';
                 }
-                ?></span></li>
+                    ?></span>
+            </div>
+        </li>
         <?php if (!empty($experience)): ?>
         <li><i class="far fa-clock"></i>
-            <h3>Experience</h3><span><?= $experience; ?></span></li>
+            <div class="for-flex">
+                <h3>Experience</h3><span><?= $experience; ?></span>
+            </div>
+        </li>
         <?php endif; ?>
         <li><i class="fas fa-map-marker-alt"></i>
-            <h3>Locations</h3>
-            <span> <?= (($str) ? rtrim($str, ',') : 'Work From Home'); ?></span></li>
+            <div class="for-flex">
+                <h3>Locations</h3><span> <?= (($str) ? rtrim($str, ',') : 'Work From Home'); ?></span>
+            </div>
+        </li>
         <?php if (!empty($positions)): ?>
         <li><i class="fas fa-chart-line"></i>
-            <h3>Total Vacancies</h3>
-            <span> <?= $positions ?></span></li>
+            <div class="for-flex">
+                <h3>Total Vacancies</h3><span> <?= $positions ?></span>
+            </div>
+        </li>
         <?php endif; ?>
     </ul>
 </div>

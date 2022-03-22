@@ -1,35 +1,6 @@
 <?php
 
 use yii\helpers\Url;
-
-$this->title = 'E-Partners';
-$keywords = 'Be our E-Partners | Empower Youth';
-$description = 'Do you have a strong network among students ? | Do you love to interact and counsel them ? | If your answer is "Yes", join Career Launcher as our official e-Partner.';
-$image = Url::to('@eyAssets/images/pages/education-loans/e-partners.png', 'https');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouthin',
-        'twitter:creator' => '@EmpowerYouthin',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
 
 <section class="ep-header">
@@ -72,7 +43,7 @@ $this->params['seo_tags'] = [
                         <img src="<?= Url::to('@eyAssets/images/pages/dsa/Personalized-Dashboard.png') ?>">
                     </div>
                     <h3>Personalized Dashboard</h3>
-                    <p>With a personalized dashboard, you will be be able to customized it as per your needs and requirements.</p>
+                    <p>With a personalized dashboard, you will be able to customize it as per your needs and requirements.</p>
                 </div>
             </div>
             <div class="col-md-4">

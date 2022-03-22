@@ -1,10 +1,10 @@
 <?php
 
-use yii\helpers\Url;
-use yii\helpers\html;
 use yii\bootstrap\ActiveForm;
+use yii\helpers\html;
+use yii\helpers\Url;
 
-$this->params['header_dark'] = false;
+$this->params['header_dark'] = true;
 
 function finalAmount($totalPrice, $gstAmount)
 {
@@ -25,57 +25,79 @@ function webDate($webDate)
     $newDate = date('d-M', $sec);
     return $newDate;
 }
+
 ?>
+
 <section class="header-web">
     <div class="container">
         <div class="row">
-            <div class="col-md-6 col-sm-6">
-                <div class="header-txt">
-                    <h1>Webinars</h1>
-                    <h2>Introducing <span class="ornge">EmpowerYouth Masterclass - A Webinar Series</span>
-                        Created To Help You Understand And Immerse Yourself In The Latest Career Options.</h2>
+            <div class="col-md-6">
+                <div class="webinar-head-text">                
+                    <h1>WEBINARS</h1>
+                    <p>Introducing Empower Youth Masterclass - A Webinar Series Created To Help You Understand And Immerse Yourself In The Latest Career Options.</p>
+                    <a href="/webinars/list" target="_blank" class="view-all-btn">View All</a>
                 </div>
             </div>
-            <div class="col-md-6 col-sm-6">
-                <div class="header-img">
-                    <img src="<?= Url::to('@eyAssets/images/pages/webinar/web.png') ?>"/>
+            <div class="col-md-6">
+                <div class="webinar-head-img">
+                    <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar-head-img.png'); ?>" alt="">
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="upcoming-web">
+<?php
+if ($upcomingWebinar) {
+?>
+<section class="upcoming-web" id="up-webinar">
     <div class="container">
         <div class="row">
-            <div class="heading-style">Upcoming Webinars</div>
+            <div class="col-md-8 col-sm-8 col-xs-12">
+                <div class="heading-style">Upcoming Webinars</div>
+            </div>
+            <?php
+            if($webinars_count > 6) {?>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="type-1">
+                    <div>
+                        <a id="course-list-btn" href="<?= Url::to('/webinars/list') ?>" target="_blank" class="btn btn-3">
+                            <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <?php }?>
         </div>
         <div class="row">
             <?php
-            if($upcomingWebinar){
                 foreach ($upcomingWebinar as $web) {
                     ?>
                     <div class="col-md-4 col-sm-6">
                         <div class="web-card">
                             <div class="web-img">
-                                <a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><img src="<?= $web['banner'] ?>"></a>
-                                <div class="web-date">
-                                    <div class="date">
+                                <a href="<?= Url::to("/webinar/" . $web['slug']) ?>">
+                                    <img src="<?= $web['image'] ?>"></a>
+                                <div class="web-detail-date">
+                                    <div class="web-date">
                                         <?php
                                         $eventDate = webDate($web['webinarEvents'][0]['start_datetime']);
                                         echo $eventDate;
                                         ?>
                                     </div>
-                                </div>
-                                <div class="web-paid">
-                                    <?php
-                                    $finalPrice = finalAmount($web['price'], $web['gst']);
-                                    echo $finalPrice;
-                                    ?>
+                                    <div class="web-paid">
+                                        <?php
+                                        $finalPrice = finalAmount($web['price'], $web['gst']);
+                                        echo $finalPrice;
+                                        ?>
+                                    </div>
                                 </div>
                             </div>
                             <div class="web-inr">
-                                <div class="web-title"><a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a></div>
+                                <div class="web-title">
+                                    <a href="<?= Url::to("/webinar/" . $web['slug']) ?>"><?= $web['name'] ?></a>
+                                </div>
                                 <div class="web-speaker">
                                     <span><?= str_replace(',', ', </span><span>', trim($web['speakers'])) ?></span>
                                 </div>
@@ -88,12 +110,14 @@ function webDate($webDate)
                                         if (count($web['webinarRegistrations']) > 0) {
                                             $reg = 1;
                                             foreach ($web['webinarRegistrations'] as $uImage) {
-                                                ?>
-                                                <span class="reg<?= $reg ?> reg">
+                                                if ($uImage['createdBy']['image']) {
+                                                    ?>
+                                                    <span class="reg<?= $reg ?> reg">
                                         <img src="<?= $uImage['createdBy']['image'] ?>">
                                     </span>
-                                                <?php
-                                                $reg++;
+                                                    <?php
+                                                    $reg++;
+                                                }
                                                 if ($reg == 4) {
                                                     break;
                                                 }
@@ -103,17 +127,75 @@ function webDate($webDate)
                                     </div>
                                     <span class="cont"> <?= count($web['webinarRegistrations']) ?> Registered</span>
                                 </div>
-                                <div class="register-btns">
-                                    <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
-                                                class="icon-drib fa fa-arrow-right"></i> Register Now</a>
-                                </div>
+                                <?php if (in_array(Yii::$app->user->identity->user_enc_id, array_column($web['webinarRegistrations'], 'created_by'))) { ?>
+                                    <div class="register-btns">
+                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib">
+                                            Registered</a>
+                                    </div>
+                                <?php } else { ?>
+                                    <div class="register-btns">
+                                        <a href="<?= Url::to("/webinar/" . $web['slug']) ?>" class="btn-drib"><i
+                                                    class="icon-drib fa fa-arrow-right"></i> Register Now</a>
+                                    </div>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
                     <?php
                 }
-            }
             ?>
+        </div>
+    </div>
+</section>
+<?php
+}
+?>
+<section class="how-it-works">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading-style">How To Join A Webinar</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 col-sm-4">
+                <div class="step">
+                    <div class="step-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icons-registration.png') ?>"/>
+                    </div>
+                    <div class="step-text">
+                        <h3>1. Register</h3>
+                        <p>Register for the webinar by simply filling all the required details and clicking on the
+                            "Request For a Webinar' button. Once registered, a mail will the join link will be sent to
+                            you.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-4">
+                <div class="step">
+                    <div class="step-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icons-join.png') ?>"/>
+                    </div>
+                    <div class="step-text">
+                        <h3>2. Join</h3>
+                        <p>At the time of the webinar, click on the join link sent in the mail. You will be redirected
+                            to the webinar detail page. Click on the 'Join Now' button and you will be in the
+                            webinar.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-4">
+                <div class="step">
+                    <div class="step-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icons-watch.png') ?>"/>
+                    </div>
+                    <div class="step-text">
+                        <h3>3. Watch</h3>
+                        <p>Once the organiser arrived, the webinar will begin. You can also interact with them before
+                            the Live Chat. Enjoy your creative learning!</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -126,68 +208,75 @@ if ($optedWebinar) {
             <div class="row">
                 <div class="heading-opted">Opted Webinars</div>
             </div>
-            <?php
-            foreach ($optedWebinar as $opWeb) {
-                ?>
-                <div class="row">
+            <div class="row">
+                <?php
+                foreach ($optedWebinar as $opWeb) {
+                    ?>
                     <div class="col-md-4 col-sm-6">
                         <div class="web-card">
                             <div class="web-img">
-                                <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"><img src="<?= $opWeb['banner'] ?>"></a>
-                                <div class="web-date">
-                                    <div class="date">
+                                <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"><img
+                                            src="<?= $opWeb['image'] ?>"></a>
+                                <div class="web-detail-date">
+                                    <div class="web-date">
                                         <?php
                                         $eventDate = webDate($opWeb['webinarEvents'][0]['start_datetime']);
                                         echo $eventDate;
                                         ?>
                                     </div>
-                                </div>
-                                <div class="web-paid">
-                                    <?php
-                                    $finalPrice = finalAmount($opWeb['price'], $opWeb['gst']);
-                                    echo $finalPrice;
-                                    ?>
+                                    <div class="web-paid">
+                                        <?php
+                                        $finalPrice = finalAmount($opWeb['price'], $opWeb['gst']);
+                                        echo $finalPrice;
+                                        ?>
+                                    </div>
                                 </div>
                             </div>
                             <div class="web-inr">
-                                <div class="web-title"><a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"> <?= $opWeb['name'] ?> </a></div>
+                                <div class="web-title"><a
+                                            href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>"> <?= $opWeb['name'] ?> </a>
+                                </div>
                                 <div class="web-speaker">
                                     <span><?= str_replace(',', ', </span><span>', trim($opWeb['speakers'])) ?></span></span>
                                 </div>
                                 <div class="web-des"><?= $opWeb['description'] ?></div>
                             </div>
                             <div class="reg-btn-count">
-                                <div class="register-count">
-                                    <div class="reg-img">
-                                        <?php
-                                        if (count($web['webinarRegistrations']) > 0) {
-                                            $reg = 1;
-                                            foreach ($web['webinarRegistrations'] as $uImage) {
-                                                ?>
-                                                <span class="reg<?= $reg ?> reg">
-                                                    <img src="<?= $uImage['createdBy']['image'] ?>">
-                                                </span>
-                                                <?php
-                                                $reg++;
-                                                if ($reg == 4) {
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        ?>
-                                    </div>
-                                    <span class="cont"><?= count($web['webinarRegistrations']) ?> Registered</span>
+                                <div class="register-btns">
+                                    <a href="<?= Url::to("/webinar/" . $opWeb['slug']) ?>" class="btn-drib"><i
+                                                class="icon-drib fa fa-arrow-right"></i>View Details</a>
                                 </div>
+                                <!-- <div class="register-count">
+                                        <div class="reg-img">
+                                            <?php
+                                if (count($opWeb['webinarRegistrations']) > 0) {
+                                    $reg = 1;
+                                    foreach ($opWeb['webinarRegistrations'] as $uImage) {
+                                        ?>
+                                                    <span class="reg<?= $reg ?> reg">
+                                                            <img src="<?= $uImage['createdBy']['image'] ?>">
+                                                        </span>
+                                                    <?php
+                                        $reg++;
+                                        if ($reg == 4) {
+                                            break;
+                                        }
+                                    }
+                                }
+                                ?>
+                                        </div>
+                                        <span class="cont"><?= count($opWeb['webinarRegistrations']) ?> Registered</span>
+                                    </div> -->
                                 <!--                        <div class="register-btns">-->
                                 <!--                            <a class="btn-drib"><i class="icon-drib fa fa-arrow-right"></i> Register Now</a>-->
                                 <!--                        </div>-->
                             </div>
                         </div>
                     </div>
-                </div>
-                <?php
-            }
-            ?>
+                    <?php
+                }
+                ?>
+            </div>
         </div>
     </section>
     <?php
@@ -197,14 +286,25 @@ if ($optedWebinar) {
 <section class="past-web">
     <div class="container">
         <div class="row">
-            <div class="heading-style">Past Webinars</div>
+            <div class="col-md-8 col-sm-8 col-xs-12">
+                <div class="heading-style">Past Webinars</div>
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="type-1">
+                    <div>
+                        <a  href="<?= Url::to('/webinars/list?past=true') ?>" target="_blank" class="btn btn-3">
+                            <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row">
             <?php
             foreach ($pastWebinar as $pWeb) {
                 $date = array();
-                foreach ($pWeb['webinarEvents'] as $key => $row)
-                {
+                foreach ($pWeb['webinarEvents'] as $key => $row) {
                     $date[$key] = $row['start_datetime'];
                 }
                 array_multisort($date, SORT_DESC, $pWeb['webinarEvents']);
@@ -213,33 +313,33 @@ if ($optedWebinar) {
                     <div class="web-card">
                         <div class="web-img">
                             <a href="<?= Url::to("/webinar/" . $pWeb['slug']) ?>">
-                                <img src="<?= $pWeb['banner'] ?>">
+                                <img src="<?= $pWeb['image'] ?>">
                             </a>
-                            <div class="web-date">
-                                <div class="date">
+                            <div class="web-detail-date">
+                                <div class="web-date">
                                     <?php
                                     $eventDate = webDate($pWeb['webinarEvents'][0]['start_datetime']);
                                     echo $eventDate;
                                     ?>
                                 </div>
-                            </div>
-                            <div class="web-paid">
-                                <?php
-                                $totalPrice = $pWeb['price'];
-                                $gstAmount = 0;
-                                if ($pWeb['gst']) {
-                                    $gstPercent = $pWeb['gst'];
-                                    if ($totalPrice > 0) {
-                                        $gstAmount = round($gstPercent * ($totalPrice / 100), 2);
+                                <div class="web-paid">
+                                    <?php
+                                    $totalPrice = $pWeb['price'];
+                                    $gstAmount = 0;
+                                    if ($pWeb['gst']) {
+                                        $gstPercent = $pWeb['gst'];
+                                        if ($totalPrice > 0) {
+                                            $gstAmount = round($gstPercent * ($totalPrice / 100), 2);
+                                        }
                                     }
-                                }
-                                $finalPrice = $totalPrice + $gstAmount;
-                                ?>
-                                <?= (($finalPrice == 0) ? 'Free' : '₹ ' . $finalPrice) ?>
+                                    $finalPrice = $totalPrice + $gstAmount;
+                                    ?>
+                                    <?= (($finalPrice == 0) ? 'Free' : '₹ ' . $finalPrice) ?>
+                                </div>
                             </div>
                         </div>
                         <div class="web-inr">
-                            <div class="web-title"><a href="<?= Url::to("/webinar/" . $pWeb['slug']) ?>">
+                            <div class="web-title"><a href="<?= Url::to("/webinar/" . $pWeb['slug']); ?>">
                                     <?= $pWeb['name'] ?></a></div>
                             <div class="web-speaker">
                                 <span><?= str_replace(',', ', </span><span>', trim($pWeb['speakers'])) ?></span></div>
@@ -253,11 +353,55 @@ if ($optedWebinar) {
         </div>
     </div>
 </section>
+<?= $this->render('/widgets/godaddy_offer', [
+    //    'course' => 'Web Design Course',
+        'discount' => '20',
+        'webinar' => true,
+]); ?>
+<section class="webinar-on-device">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                    <div class="heading-style">Engage from anywhere on any device</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="engage-left">
+                <div class="col-sm-4">
+                    <div class="icon">
+                        <div class="icon-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-computer.png'); ?>">
+                        </div>
+                        On your Desktop
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="icon">
+                        <div class="icon-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-tablet.png'); ?>">
+                        </div>
+                        On your Tablet
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                <div class="icon">
+                    <div class="icon-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/webinar/icon-smartphone.png'); ?>">
+                    </div>
+                    On your Smartphone
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <section class="speakers">
     <div class="container">
         <div class="row">
-            <div class="heading-style">Webinars Speaker</div>
+            <div class="col-md-12">
+                <div class="heading-style">Webinars Speaker</div>
+            </div>
         </div>
         <div class="row">
             <div class="loader_screen">
@@ -278,13 +422,13 @@ if ($optedWebinar) {
         <div class="col-md-5 col-sm-12 req-web">
             <div class="req">
                 <h1>Request For A Webinar</h1>
-                <h2>- <span>For Enriching</span> Your Organization's Online Content.<br>
-                    - Establishing <span>Authority</span>.<br>
-                    - Enhanced <span> Branding Value</span>.<br>
-                    - Building <span>Trust</span>. <br>
-                    - Building <span>Stronger, Lasting Business Relationships</span>.<br>
-                    - Accessing The <span>Global Audience</span>.<br>
-                    - <span>Sharing Information</span> with the Audience.</h2>
+                <p>- For Enriching Your Organization's Online Content.</p>
+                <p>- Establishing Authority.</p>
+                <p>- Enhanced Branding Value.</p>
+                <p>- Building Trust.</p>
+                <p>- Building Stronger, Lasting Business Relationships.</p>
+                <p>- Accessing The Global Audience.</p>
+                <p>- Sharing Information with the Audience.</p>
             </div>
             <div class="req-icon">
                 <img src="<?= Url::to('@eyAssets/images/pages/webinar/r-webi.png') ?>"/>
@@ -292,26 +436,26 @@ if ($optedWebinar) {
         </div>
         <div class="col-md-7 col-sm-12 col-xs-12" style="background-color: #fff;padding: 30px 20px;">
             <?php $form = ActiveForm::begin([
-                'id'=>'requestWebForm'
+                'id' => 'requestWebForm'
             ])
             ?>
             <div class="row">
                 <div class="col-md-12">
                     <div class="web-form">
                         <label for="title">Topic</label>
-                        <?= $form->field($model,'topic')->textInput(['class' => 'form-control', 'id' => 'topic', 'placeholder' => ''])->label(false)?>
+                        <?= $form->field($model, 'topic')->textInput(['class' => 'form-control', 'id' => 'topic', 'placeholder' => ''])->label(false) ?>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="web-form">
                         <label for="date">Date</label>
-                        <?= $form->field($model,'date')->textInput(['class' => 'form-control datepicker', 'id' => 'date', 'placeholder' => ''])->label(false)?>
+                        <?= $form->field($model, 'date')->textInput(['class' => 'form-control datepicker', 'id' => 'date', 'placeholder' => ''])->label(false) ?>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="web-form">
                         <label for="seats">Seats</label>
-                       <?= $form->field($model,'seats')->textInput(['class' => 'form-control', 'id' => 'seats', 'placeholder' => ''])->label(false)?>
+                        <?= $form->field($model, 'seats')->textInput(['class' => 'form-control', 'id' => 'seats', 'placeholder' => ''])->label(false) ?>
                     </div>
                 </div>
                 <div class="col-md-12">
@@ -320,7 +464,7 @@ if ($optedWebinar) {
                         <div class="load-suggestions">
                             <span></span><span></span><span></span>
                         </div>
-                        <?= $form->field($model,'speakers[]',['template' => '{input}{error}'])->textInput(['class' => 'form-control typeahead', 'id' => 'speakers', 'placeholder' => ''])->label(false)?>
+                        <?= $form->field($model, 'speakers[]', ['template' => '{input}{error}'])->textInput(['class' => 'form-control typeahead', 'id' => 'speakers', 'placeholder' => ''])->label(false) ?>
                         <div class="pf-field no-margin">
                             <ul class="tags languages_tag_list">
                                 <li class="tagAdd taglist"></li>
@@ -331,7 +475,7 @@ if ($optedWebinar) {
                 <div class="col-md-12 mt10">
                     <div class="web-form">
                         <label for="objectives">Objectives</label><br>
-                       <?= $form->field($model,'objective')->textArea(['rows'=> 6, 'cols'=> 20,'class' => 'form-control', 'id' => 'objective', 'placeholder' => ''])->label(false)?>
+                        <?= $form->field($model, 'objective')->textArea(['rows' => 6, 'cols' => 20, 'class' => 'form-control', 'id' => 'objective', 'placeholder' => ''])->label(false) ?>
                     </div>
                 </div>
                 <div class="col-md-12 text-center">
@@ -345,13 +489,170 @@ if ($optedWebinar) {
 <?php
 echo $this->render('/widgets/mustache/speakers-card');
 $this->registerCss("
-.sub-btn{
+.type-1 div a:focus{
+    color:#fff;
+}
+html {
+    scroll-behavior: smooth;
+  }
+/*=====WEBINAR HEADER=====*/
+.header-web{
+    min-height: 450px;
+    background: linear-gradient(96.87deg, #0E0624 8.52%, #2F2451 50.75%, #0E0624 92.34%);
+    display: flex;
+    align-items: center;
+}
+.webinar-head-text h1 {
+    font-size: 55px;
+    font-weight: 900;
+    color: #fff;
+    font-family: 'Roboto';
+    line-height: 1;
+    margin-bottom: 0;
+}
+.webinar-head-text p {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.5;
+    max-width: 420px;
+    letter-spacing: 1px;
+}
+.header-web .row {
+    display: flex;
+    align-items: center;
+}
+.webinar-head-img {
+    width: 301px;
+    display: block;
+    margin: auto;
+}
+header-web {
+    padding-top: 0 !important;
+}
+a.view-all-btn {
+    display: inline-block;
+    border: 2px solid #ef5281;
+    padding: 5px 30px;
+    margin-top: 20px;
+    border-radius: 6px;
+    color: #ef5281;
+    position: relative;
+    z-index: 2;
+    transition: all linear .2s;
+    font-weight: 700;
+}
+a.view-all-btn::before{
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 100%;
+    background: #ef5281;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    transition: all linear .2s;
+}
+a.view-all-btn:hover{
+    color: #fff;
+}
+a.view-all-btn:hover::before{
+    width: 100%;
+    transition: all linear .2s;
+}
+
+.how-it-works .step {
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    transition: 0.3s ease-in;
+}
+.how-it-works{
+    margin-bottom: 20px;
+}
+.how-it-works .step-text h3 {
+    font-size: 20px;
+    font-family: lora;
+    font-weight: 600;
+    color: #000;
+    letter-spacing: 0.3px;
+    margin: 20px 0;
+}
+.how-it-works .step-text p {
+    font-size: 16px;
+    font-family: roboto;
+    color: #717171;
+    letter-spacing: 0.3px;
+    line-height: 24px;
+}
+.how-it-works .step:hover {
+    box-shadow: 0 2px 12px rgb(0 0 0 / 20%);
+}
+.step-img img{
+    width: 60px;
+}
+.icon-img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    margin-bottom: 10px;
+}
+.icon-img img {
+    width: 30px;
+}
+.icon {
+    color: #494949;
+    font-weight: 600;
+    width: fit-content;
+    margin: auto;
+    font-size: 18px;
+}
+.steps{
+    margin: 50px 0;
+}
+.step{
+    min-height: 300px;
+    margin-bottom: 10px;
+}
+.webinar-on-device .icon{
+    box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.25);
+    padding: 40px 0;
+    text-align: center;
+    border-top: 5px solid #00a0e3;
+    margin-bottom: 20px;
+    width: 100%;
+    width: 100%;
+}
+
+.how-it-works{
+    background:#fcfcfc;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+}
+.flex-set{
+    display:flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.header-txt {
+    padding-left: 35px;
+}
+.sub-btn {
     background: #00a0e3;
     color: #fff;
     padding: 10px 15px;
-    border: 1px solid #00a0e3; 
+    border: 1px solid #00a0e3;
     font-size: 14px;
     text-transform: uppercase;
+    transition: all .3s;
+    font-family:roboto;
+    font-weight: 500;
+    border-radius: 4px;
 }
 .sub-btn:hover{
     background: #fff;
@@ -653,8 +954,9 @@ color: #fff !important;
 .footer{
     margin-top: 0px !important;
 }
-.ornge{
-    color: #fff;
+.ornge {
+    color: #000;
+    font-weight:500;
 }
 .speakers{
     padding-bottom: 50px; 
@@ -681,48 +983,25 @@ color: #fff !important;
 	transform: translateY(-3px);
 	transition: all .2s;
 }
-.header-web{
-    background-color: #3e8cf9;
-    padding-top: 60px;
-}
-.header-txt h1 {
-	font-size: 60px;
-	font-family: lobster;
-	font-weight: 500;
-	margin-top: 80px;
-	color: #fff;
-	margin-bottom: 0;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-}
-.header-txt h2 {
-	font-size: 20px;
-	font-family: roboto;
-	margin: 0 0 0 8px;
-	color: #000;
-	font-weight: 500;
-    text-transform: capitalize;
-    letter-spacing:.5px; 
-}
 .header-img {
-	width: 450px;
-	margin: auto;
-	margin-bottom:20px;
+    width: 350px;
+    margin: auto;
 }
 .web-form{
     margin: -9px 0px 0px 2px;
 }
 .web-form label{
     font-size: 18px;
-    font-family: lora;
+    font-family: roboto;
+    font-weight: 400;
     color: #333;
-    margin-bottom: 0px;
+    margin-bottom: 6px;
 }
 .web-form input,
 .web-form textarea{
      border: 1px solid #d4caca;
-     padding: 7px;
-     border-radius: 3px;
+     padding: 6px;
+     border-radius: 4px;
      width: 100%;
      height:40px;
      line-height:22px !important;
@@ -730,7 +1009,7 @@ color: #fff !important;
 }
 .web-form textarea{
     margin-bottom: 10px;
-    height: 75px;
+    height: 100px;
 }
 .web-button{
     text-align:center;  
@@ -760,25 +1039,23 @@ color: #fff !important;
     justify-content: space-between;
 }
 .req h1{
-    font-size: 45px;
+    font-size: 36px;
     text-align: center;
     font-family: lobster;
-//    background-color: #00a0e3;
-    padding: 20px 10px 20px 10px;
+    padding: 20px  0 10px;
     color: #fff;
 }
-.req h2{
-    font-size: 20px;
+.req p{
+    font-size: 16px;
     color: #fff;
     text-align: center;
-    font-family: lora;
-}
-.req h2 span{
-    font-weight: bold;
-    color: #fff;
+    font-family: roboto;
+    font-weight: 400;
+    margin:0 0 5px 0;
 }
 .req-icon {
-    text-align: bottom;
+    max-width: 350px;
+    margin: 0 auto;
 }
 .web-card {
 	border-radius: 6px;
@@ -786,40 +1063,44 @@ color: #fff !important;
 	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 	background-color:#fff;
 	margin-bottom:20px;
+    min-height: 390px;
 }
 .web-img {
 	position: relative;
 }
 .web-img img{
 	height: 200px;
-	object-fit: cover;
+	object-fit: fill;
 	width: 100%;
 }
-.web-date {
-	position: absolute;
-	top: 5px;
-	right: 10px;
-	background-color: #fff;
-	border-radius: 8px;
-	padding:4px 6px;
-	text-align: center;
-	border: 2px solid #00a0e3;
-	font-weight: 500;
-	font-family: roboto;
-	line-height: 18px;
+.web-detail-date {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    display:flex;
+    align-items: center;
 }
-.web-paid {
-	position: absolute;
-	bottom: 5px;
-	right: 10px;
-	background-color: #fff;
-	border: 2px solid #ff7803;
-	border-radius: 7px;
-	padding: 0px 8px;
-	text-align: center;
-	text-transform: uppercase;
-	font-family: roboto;
-	font-weight: 500;
+.web-date {
+    border-radius: 4px;
+    padding: 0px 8px;
+    text-align: center;
+    border: 2px solid #00a0e3;
+    font-weight: 500;
+    font-family: roboto;
+    background-color: #00a0e3;
+    color: #fff;
+    margin-right: 2px;
+}
+.web-paid{
+    background-color: #ff7803;
+    border: 2px solid #ff7803;
+    border-radius: 4px;
+    padding: 0px 8px;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: roboto;
+    font-weight: 500;
+    color: #fff;
 }
 .web-inr {
 	padding: 5px 10px 10px;
@@ -852,11 +1133,24 @@ color: #fff !important;
 	-webkit-line-clamp: 3;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
-	min-height: 80px;
+	height: 70px;
+}
+.web-des p{
+    margin:0;
+}
+.web-info{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-top: 10px;
+}
+.web-info img{
+    margin-right: 6px;
 }
 .opted-web {
-	background-image: url(' . Url::to('@eyAssets/images/pages/webinar/wb2.png') . '); 
-	margin: 30px 0 0;
+	background-image: url(" . Url::to('@eyAssets/images/pages/webinar/wb2.png') . "); 
+	margin: 0px 0 0;
 	padding: 0 0 50px;
 	background-position: center;
     background-size: cover;
@@ -868,7 +1162,7 @@ color: #fff !important;
 	top: 0;
 	content: \'\';
 	right: 0;
-	background-image: url(' . Url::to('@eyAssets/images/pages/webinar/title.png') . ');
+	background-image: url(" . Url::to('@eyAssets/images/pages/webinar/title.png') . ");
 	background-repeat: no-repeat;
 	background-size: center center;
 	background-position: contain;
@@ -888,6 +1182,11 @@ color: #fff !important;
 	margin-bottom: 35px;
 	position: relative;
 }
+.web-card .price{
+    color: #FF5C58;
+    font-family: roboto;
+    font-weight: 800;
+}
 .reg-btn-count {
 	display: flex;
 	align-items: center;
@@ -904,7 +1203,7 @@ color: #fff !important;
 .reg img {
     width: 35px;
     border-radius: 81px;
-    height: 30px;
+    height: 35px;
     object-fit: cover;
     border: 2px solid #fff;
 }
@@ -1019,15 +1318,64 @@ color: #fff !important;
     transform: translate3d(0, -2px, 0);
   }
 }
+@media (min-width: 1024px) and (max-width: 1199px){
+    .reg-img{
+        width: 30px;
+        height: 30px;
+    }
+}
+@media only screen and (max-width: 1024px){
+    .reg2.reg, .reg3.reg {
+        margin-left: -25px;
+    }
+    .btn-drib {
+        font-size: 12px;
+    }
+}
+@media only screen and (min-width: 992px){
+    .webinar-on-device .icon{
+        min-width: 250px;
+    }
+}
+@media (min-width: 768px) and (max-width: 991px){
+    .webinar-on-device .icon{
+        min-width: 200px;
+    }
+}
+
 @media only screen and (max-width: 991px) {
     .header-txt h1{margin-top:40px;}
     .header-txt h2{font-size:18px;}
     .header-img{width:300px;}
+    
+    
+    .webinar-head-img{
+        width: 200px;
+    }
+    .header-web{
+        justify-content: space-between;
+        min-height: 400px;
+    }
+    .webinar-head-text p{
+        font-size: 14px;
+    }
+    .webinar-head-text h1{
+        font-size: 45px;
+    }
 }
-@media only screen and (max-width: 768px) and (min-width: 320px){
+@media only screen and (max-width: 767px){
+    .header-web {
+        padding-top: 80px;
+        display: block;
+    }
+    .header-web .row{
+        display: block;
+    }
+}
+@media only screen and (max-width: 767px) and (min-width: 300px){
     .header-txt h1{
-        font-size: 35px;
-        margin-bottom: 10px;
+        font-size: 25px;
+        margin-bottom: 0px;
     }
     .header-txt h2{
         font-size: 16px;
@@ -1035,6 +1383,22 @@ color: #fff !important;
     }
     .header-img{
         width: 200px;
+        padding-top: 20px;
+    }
+    .header-txt {
+        padding-left: 0px;
+        padding-bottom:30px;
+    }
+    .back-shadow{
+        background: linear-gradient(91.87deg, #00A0E3 30.09%, rgba(67, 137, 162, 0.53) 166.58%);
+    }
+    
+    .webinar-head-img {
+        position: absolute;
+        width: 145px;
+        right: 46px;
+        bottom: -74px;
+        opacity: .2;
     }
 }
 ");
@@ -1182,3 +1546,4 @@ $this->registerJS($script);
 
 ?>
 <script></script>
+

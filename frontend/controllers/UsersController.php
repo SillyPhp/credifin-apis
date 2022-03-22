@@ -2,11 +2,16 @@
 
 namespace frontend\controllers;
 
+use common\models\ApplicationTypes;
+use common\models\AppliedApplicationProcess;
 use common\models\AppliedApplications;
 use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Cities;
+use common\models\EmailLogs;
 use common\models\EmployerApplications;
+use common\models\InterviewProcessFields;
+use common\models\Organizations;
 use common\models\ShortlistedApplicants;
 use common\models\States;
 use common\models\UserAchievements;
@@ -16,11 +21,13 @@ use common\models\UserInterests;
 use common\models\UserPreferences;
 use common\models\Users;
 use common\models\UserWorkExperience;
+use common\models\Webinar;
 use frontend\models\profile\UserProfileBasicEdit;
 use frontend\models\profile\UserProfilePictureEdit;
 use frontend\models\profile\UserProfileSocialEdit;
 use frontend\models\UserTaskForm;
 use Yii;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\HttpException;
 use yii\web\Response;
@@ -147,6 +154,7 @@ class UsersController extends Controller
                 'ROUND(DATEDIFF(CURDATE(),
                  a.dob)/ 365.25) as age',
                 'b.name as city',
+                'b.state_enc_id',
                 'c.name as job_profile',
                 'IF(d.candidate_enc_id != "", "true", "false") as is_shortlisted'
             ])
@@ -193,8 +201,14 @@ class UsersController extends Controller
         if (isset($id) && !empty($id)) {
             $userApplied = AppliedApplications::find()
                 ->alias('z')
-                ->select(['z.*', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 're.resume', 're.resume_location'])
-                ->joinWith(['applicationEnc ae'], false)
+                ->select(['z.*', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 're.resume', 're.resume_location', 'aee.name as app_name', 'aec.name as app_type'])
+                ->joinWith(['applicationEnc ae' => function($ae){
+                    $ae->joinWith(['applicationTypeEnc aec']);
+                    $ae->joinWith(['title aed' => function ($aec) {
+                        $aec->joinWith(['categoryEnc aee']);
+//                        $aec->joinWith(['parentEnc aef']);
+                    }]);
+                }], false)
                 ->joinWith(['appliedApplicationProcesses c' => function ($c) {
                     $c->joinWith(['fieldEnc d'], false);
                     $c->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
@@ -204,34 +218,32 @@ class UsersController extends Controller
                 ->andWhere(['z.applied_application_enc_id' => $id, 'z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'ae.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->asArray()
                 ->one();
-            $userAppliedData = AppliedApplications::find()
-                ->alias('z')
-                ->select(['z.*','ag.name as category', 'af.name as parent', 'bb.slug', 'aa.name as type', 'af.icon'])
-                ->joinWith(['applicationEnc bb' => function ($bb) {
-                    $bb->joinWith(['applicationTypeEnc aa'], false);
-                    $bb->joinWith(['title ac' => function ($ac) {
-                        $ac->joinWith(['categoryEnc ag']);
-                        $ac->joinWith(['parentEnc af']);
-                    }], false);
-                }], false)
-                ->andWhere(['z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'bb.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-                ->andWhere(['not', ['z.applied_application_enc_id' => $id]])
+        }
+
+
+        $apps = AppliedApplications::find()
+            ->alias('a')
+            ->select(['a.applied_application_enc_id', 'a.current_round','a.application_enc_id','j.name type', 'c.slug', 'a.status','h.icon as job_icon', 'f.name as title', 'a.applied_application_enc_id app_id', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active'])
+            ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
+            ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
+            ->innerJoin(AssignedCategories::tableName() . 'as e', 'e.assigned_category_enc_id = c.title')
+            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = e.category_enc_id')
+            ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
+            ->andWhere(['a.created_by' => $user['user_enc_id'], 'a.is_deleted' => 0])
+            ->andWhere(['c.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'c.is_deleted' =>0, 'c.status' => 'Active'])
+            ->groupBy('a.applied_application_enc_id')
+            ->asArray()
+            ->all();
+
+        foreach ($apps as $processField) {
+            $process_fields = InterviewProcessFields::find()
+                ->select(['field_name', 'field_enc_id', 'icon'])
+                ->where(['interview_process_enc_id' => $processField['interview_process_enc_id']])
                 ->asArray()
                 ->all();
-        } else{
-            $userAppliedData = AppliedApplications::find()
-                ->alias('z')
-                ->select(['z.*','ag.name as category', 'af.name as parent', 'bb.slug', 'aa.name as type', 'af.icon'])
-                ->joinWith(['applicationEnc bb' => function ($bb) {
-                    $bb->joinWith(['applicationTypeEnc aa']);
-                    $bb->joinWith(['title ac' => function ($ac) {
-                        $ac->joinWith(['categoryEnc ag']);
-                        $ac->joinWith(['parentEnc af']);
-                    }]);
-                }], false)
-                ->andWhere(['z.is_deleted' => 0, 'z.created_by' => $user['user_enc_id'], 'bb.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-                ->asArray()
-                ->all();
+            $processField['process'] = $process_fields;
+            $userAppliedData['fields'][] = $processField;
         }
         $education = UserEducation::find()
             ->where(['user_enc_id' => $user['user_enc_id']])
@@ -241,7 +253,7 @@ class UsersController extends Controller
 
         $experience = UserWorkExperience::find()
             ->alias('a')
-            ->select(['a.user_enc_id', 'a.is_current', 'a.city_enc_id', 'a.company', 'a.title', 'a.from_date', 'a.to_date', 'b.name city_name'])
+            ->select(['a.user_enc_id', 'a.experience_enc_id', 'a.is_current', 'a.city_enc_id', 'a.company', 'a.title', 'a.from_date', 'a.to_date', 'b.name city_name', 'a.description'])
             ->where(['a.user_enc_id' => $user['user_enc_id']])
             ->innerJoin(Cities::tableName() . 'as b', 'b.city_enc_id = a.city_enc_id')
             ->orderBy(['created_on' => SORT_DESC])
@@ -268,6 +280,7 @@ class UsersController extends Controller
 
         $job_preference = self::getPreference('Jobs', $user['user_enc_id']);
         $internship_preference = self::getPreference('Internships', $user['user_enc_id']);
+        $pastWebinar = self::showWebinar($user['user_enc_id']);
 
         $dataProvider = [
             'user' => $user,
@@ -286,23 +299,145 @@ class UsersController extends Controller
             'slug' => $slug,
             'profileProcess' => $profileProcess,
             'available_applications' => $this->getApplications(),
+            'pastWebinar' => $pastWebinar,
         ];
-
         if (Yii::$app->user->isGuest) {
             $page = 'guest-view';
         } else {
             $orgId = Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id])['organization_enc_id'];
             if ($orgId != null || $orgId != "") {
+                $this->sendOpenedProfileEmail($user['email'], $user['username'], $userApplied ? $userApplied['app_name']: '', $userApplied ? $userApplied['app_type'] : '');
                 $page = 'view';
             } else {
                 if (Yii::$app->user->identity->user_enc_id == $user['user_enc_id']) {
-                    $page = 'view';
+                    $page = 'user-view';
                 } else {
                     $page = 'guest-view';
                 }
             }
         }
         return $this->render($page, $dataProvider);
+    }
+
+    
+    private function showWebinar($userIdd = null, $sortAsc = true)
+    {
+        $dt = new \DateTime();
+        $tz = new \DateTimeZone('Asia/Kolkata');
+        $dt->setTimezone($tz);
+        $currentTime = $dt->format('Y-m-d H:i:s');
+        $webinars = Webinar::find()
+            ->alias('a')
+            ->select(['a.name', 'a.description', 'a.webinar_enc_id', 'a.slug',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->webinars->banner->image, 'https') . '", a.image_location, "/", a.image) END image',
+                'GROUP_CONCAT(DISTINCT(CONCAT(f.first_name, " " ,f.last_name)) SEPARATOR ",") speakers'])
+            ->joinWith(['webinarEvents b' => function ($b) use ($status, $currentTime) {
+                $b->distinct();
+                $b->select(['b.start_datetime', 'b.webinar_enc_id', 'b.status', 'b.event_enc_id']);
+                $b->groupBy(['b.webinar_enc_id']);
+                $b->joinWith(['webinarSpeakers d' => function ($d) {
+                    $d->select(['d.speaker_enc_id', 'd.webinar_event_enc_id']);
+                    $d->joinWith(['speakerEnc e' => function ($e) {
+                        $e->select(['e.speaker_enc_id', 'e.user_enc_id']);
+                        $e->joinWith(['userEnc f' => function ($f) {
+                            $f->select(['f.user_enc_id', 'f.first_name', 'f.last_name']);
+                        }]);
+                    }]);
+                }], false);
+            }])
+            ->joinWith(['webinarRegistrations c' => function ($c) use ($status, $userIdd) {
+                $c->where(['c.created_by' => $userIdd,'c.status' => 1, 'c.is_deleted' => 0]);
+            }])
+            ->andWhere(['a.is_deleted' => 0])
+            ->groupBy(['a.webinar_enc_id'])
+            ->orderBy(['b.start_datetime' => $sortAsc ? SORT_ASC : SORT_DESC])
+            ->limit(8);
+            $webinars = $webinars->asArray()
+            ->all();
+        return $webinars;
+    } 
+    
+    private function sendOpenedProfileEmail($receiver_email, $receiver_username, $title, $type){
+        $is_sent = EmailLogs::find()
+            ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+            ->andWhere(['receiver_email' => $receiver_email])
+            ->andWhere(['email_type' => 1])
+            ->andWhere(['>=','created_on',date("Y-m-d")])
+            ->exists();
+        if(!$is_sent){
+            $data['org_name'] = Yii::$app->user->identity->organization->name;
+            $data['name'] = $title;
+            $data['username'] = $receiver_username;
+            $data['type'] = $type;
+
+            $subject = "Your Profile Viewed by ".$data['org_name'];
+            if(!empty($title)) {
+                $template = 'profile-viewed-with-job-by-company';
+            } else {
+                $template = 'profile-viewed-by-company';
+            }
+
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $email = filter_var($receiver_email, FILTER_SANITIZE_EMAIL);
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    Yii::$app->mailer->htmlLayout = 'layouts/email';
+                    $mail = Yii::$app->mailer->compose(
+                        ['html' => $template],['data'=>$data]
+                    )
+                        ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+                        ->setTo([$email])
+                        ->setSubject($subject);
+                    if (!$mail->send()) {
+                        return [
+                            'status' => 201,
+                            'title' => 'Saving Error',
+                            'message' => "Model not saved in database",
+                        ];
+                    }
+                    $mail_logs = new EmailLogs();
+                    $utilitesModel = new \common\models\Utilities();
+                    $utilitesModel->variables['string'] = time() . rand(100, 100000);
+                    $mail_logs->email_log_enc_id = $utilitesModel->encrypt();
+                    $mail_logs->email_type = 1;
+                    $mail_logs->user_enc_id = Yii::$app->user->identity->user_enc_id;
+                    $mail_logs->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+                    $mail_logs->receiver_email = $email;
+                    $mail_logs->subject = $subject;
+                    $mail_logs->template = $template;
+                    $mail_logs->is_sent = 1;
+                    if (!$mail_logs->save()) {
+                        $transaction->rollBack();
+                        return [
+                            'status' => 201,
+                            'title' => 'Saving Error',
+                            'message' => "Model not saved in database",
+                        ];
+                    }
+                } else {
+                    return [
+                        'status' => 201,
+                        'title' => 'Email',
+                        'message' => "Email not validated",
+                    ];
+                }
+
+                $transaction->commit();
+                return [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Email Sent Successfully..'
+                ];
+            } catch (yii\db\Exception $exception) {
+                $transaction->rollBack();
+                return [
+                    'status' => 201,
+                    'title' => 'DB Exceptions',
+                    'message' => $exception
+                ];
+            }
+        }
+        return true;
     }
 
     public function actionEdit()
@@ -338,7 +473,6 @@ class UsersController extends Controller
         }
     }
 
-
     private function getApplications()
     {
         if(Yii::$app->user->identity->organization->organization_enc_id) {
@@ -362,6 +496,7 @@ class UsersController extends Controller
     public function actionUpdateBasicDetail()
     {
         $basicDetails = new UserProfileBasicEdit();
+
         if ($basicDetails->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             if ($basicDetails->update(Yii::$app->request->post())) {
@@ -447,15 +582,15 @@ class UsersController extends Controller
                     'cv_link' => $cv,
                     'message' => 'success'
                 ];
-
             } catch (\Exception $e) {
                 return [
                     'status' => 500,
-                    'message' => 'an error occurred'
+                    'message' => $e->getMessage()
                 ];
             }
         }
     }
+
     public function actionUpdateUser()
     {
         if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
@@ -463,9 +598,7 @@ class UsersController extends Controller
             $params = Yii::$app->request->post();
             $user = Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
             if (isset($params['skills']) && !empty($params['skills'])) {
-
             } elseif (isset($params['languages']) && !empty($params['languages'])) {
-
             } elseif (isset($params['job_title']) && !empty($params['job_title'])) {
                 $category_execute = Categories::find()
                     ->alias('a')
@@ -539,5 +672,4 @@ class UsersController extends Controller
             return false;
         }
     }
-
 }

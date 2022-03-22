@@ -45,7 +45,7 @@ if (empty($get['story_image'])||$get['story_image']==1){
 }
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -60,7 +60,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -501,7 +501,7 @@ margin:auto;
 }
 .job-single-sec .job-overview ul li {
     float: left;
-    width: 33.334%;
+    width: 33.33%;
     padding-left: 50px;
 }
 .job-single-sec .job-overview ul li i {

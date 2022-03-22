@@ -10,7 +10,7 @@ $description = 'Everyone deserves access To Education, EmpowerYouth believes in 
 $image = Url::to('@eyAssets/images/pages/education-loans/education-loan-s.png', 'https');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -25,7 +25,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -36,14 +36,10 @@ $this->params['seo_tags'] = [
     <!--<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">-->
     <!--<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet"/>-->
     <section class="backgrounds">
-        <div class="container">
-            <div class="col-md-6">
-
-            </div>
-            <div class="col-md-6">
-                <div class="logo">
-                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/loan-logo.png') ?>"/>
-                </div>
+        <div class="col-md-6"></div>
+        <div class="col-md-6">
+            <div class="logo">
+                <img src="<?= Url::to('@eyAssets/images/pages/education-loans/loan-logo.png') ?>"/>
             </div>
         </div>
     </section>
@@ -334,12 +330,9 @@ $this->registerCss('
     box-shadow: 3px 3px 8px 0px #cecdcd;
 }
 .backgrounds{
-    background-size: 100% 550px;
-    background-image: url(' . Url::to('@eyAssets/images/pages/education-loans/main-bg.png') . ');
-    background-position: right top;
-    background-repeat: no-repeat;
     min-height: 550px;
     padding-top: 110px;
+    background: linear-gradient(#eee 0%, #eee 30%, #eee 60%, #fff);
 }
 .bg2{
     background-size: 95% 450px;

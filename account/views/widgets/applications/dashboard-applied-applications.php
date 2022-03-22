@@ -2,17 +2,6 @@
 
 use yii\helpers\Url;
 ?>
-<?php
-if($loan && empty($loan['loanApplications'])) {
-    ?>
-    <div class="row">
-        <?= $this->render('/widgets/loan-applied', [
-            'loan' => $loan
-        ]) ?>
-    </div>
-    <?php
-}
-?>
     <div class="portlet applied_app light portlet-fit nd-shadow">
         <div class="portlet-title">
             <div class="caption">
@@ -330,7 +319,7 @@ $this->registerCss("
 }
 .m-widget4 .m-widget4__item .m-widget4__img.m-widget4__img--pic img {
     width: 4rem;
-    border-radius: 50%;
+//    border-radius: 50%;
 }
 .m-widget4 .m-widget4__item .m-widget4__info {
     display: block;
@@ -489,17 +478,17 @@ $this->registerCss("
 
 ");
 $script = <<< JS
-$(window).on('load',function() {
-  var can_else_length = $('.can-else').length;
-  var can_hide_length = $('.can-hide').length;
-  if(can_hide_length <= 0){
-      $('.show-btn-more').css('display','none');
-  }
-  if(can_else_length <= 0){
-      $('.cand_status').removeClass('can-hide');
-      $('.show-btn-more').css('display','none');
-  }
-})
+
+var can_else_length = $('.can-else').length;
+var can_hide_length = $('.can-hide').length;
+if(can_hide_length <= 0){
+  $('.show-btn-more').css('display','none');
+}
+if(can_else_length <= 0){
+  $('.cand_status').removeClass('can-hide');
+  $('.show-btn-more').css('display','none');
+}
+
 $(document).on('click','.cancel-app',function(e)
        {
           e.preventDefault();

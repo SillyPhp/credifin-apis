@@ -137,7 +137,18 @@ class SiteController extends Controller
         $credentialsSetup = new CredentialsSetup();
         $login = new LoginForm();
         $login->updateUserLogin('EY',Yii::$app->user->identity->user_enc_id);
+        $cookies_request = Yii::$app->request->cookies;
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->is_credential_change === 1) {
+            $dsaRefId = $cookies_request->get('dsaRefId');
+            $individualsUser = new IndividualSignUpForm();
+            if ($dsaRefId):
+                $individualsUser->assignedDsaService(Yii::$app->user->identity->user_enc_id,$dsaRefId);
+            endif;
+            $referralModel = new \common\models\crud\Referral();
+            $referralModel->user_enc_id = $referralModel->created_by = Yii::$app->user->identity->user_enc_id;
+            if (!$referralModel->create()) {
+                return false;
+            }
             return $this->render('auth-varify', ['credentialsSetup' => $credentialsSetup]);
         } else {
             $session = Yii::$app->session;
@@ -157,6 +168,10 @@ class SiteController extends Controller
             if ($credentialsSetup->save()) {
                 $session = Yii::$app->session;
                 $o = $session->get('current_url');
+                $dsaRefExist = IndividualSignUpForm::DsaUserExist(Yii::$app->user->identity->user_enc_id);
+                if ($dsaRefExist):
+                    return $this->redirect('/account/education-loans/leads');
+                    endif;
                 if ($o):
                     return $this->redirect($o);
                 else :
@@ -1059,6 +1074,9 @@ class SiteController extends Controller
             case 'getDropResume':
                 return $this->renderAjax('/widgets/drop-resume-section');
                 break;
+            case 'getWorkFromHomeBanner':
+                return $this->renderAjax('/widgets/work-from-home-banner', ['btnText' => 'home']);
+                break;
             case 'getShortcuts':
                 $job_profiles = AssignedCategories::find()
                     ->alias('a')
@@ -1366,14 +1384,16 @@ class SiteController extends Controller
     public function actionEnigma21(){
         return $this->render('aiesec-main');
     }
-  public function actionLinkInBio(){
+    public function actionLinkInBio(){
       $this->layout = 'widget-layout';
     return $this->render('instagram-ey');
   }
+
     public function actionLinkDetail(){
         return $this->render('insta-detail');
     }
-  public function actionGetInstagram(){
+
+    public function actionGetInstagram(){
       if (Yii::$app->request->isAjax) {
           Yii::$app->response->format = Response::FORMAT_JSON;
           $limit = Yii::$app->request->post('limit');
@@ -1400,4 +1420,13 @@ class SiteController extends Controller
           throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
       }
   }
+
+    public function actionPreferenceTesting(){
+        return $this->render('preference-testing');
+    }
+
+    public function actionHowToCreateCareerPageLink()
+    {
+        return $this->render('how-to-create-career-page-link');
+    }
 }

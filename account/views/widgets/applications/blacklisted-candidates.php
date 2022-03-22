@@ -27,7 +27,7 @@ foreach ($blacklistedApplicants['data'] as $s) { ?>
                             ?>
                             <a href="javascript:;" data-href="<?= Url::to('/' . $s['username']) ?>"
                                class="blue open-link-new" target="_blank">
-                                <canvas class="user-icon img-circle" name="<?= $s['name'] ?>"
+                                <canvas class="user-icon" name="<?= $s['name'] ?>"
                                         color="<?= $s['initials_color'] ?>" width="60" height="60" font="25px"></canvas>
                             </a>
                         <?php }

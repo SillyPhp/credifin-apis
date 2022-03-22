@@ -1,5 +1,7 @@
 <?php
+
 use yii\helpers\Url;
+
 $this->title = $quiz['title'];
 
 $keywords = $quiz['keywords'];
@@ -16,7 +18,7 @@ $image = Url::to(Yii::$app->params->upload_directories->quiz->sharing->image . $
 
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -31,7 +33,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -48,15 +50,16 @@ if ($result == Null) {
             <h3><?= $quiz['name'] ?></h3>
             <hr/>
             <div class="detail-body">
-                <h4>Before you begin</h4>
-                <p>Quiz must be completed in one session, make sure that you have a stable internet connection & you must
+                <h4 style="color:red;font-style: italic;">Before you begin</h4>
+                <p>Quiz must be completed in one session, make sure that you have a stable internet connection & you
+                    must
                     finish the quiz.</p>
                 <p>Your results will be displayed at the end of the quiz.</p>
-                <p><i class="fa fa-clock-o"></i> Quiz must be completed in <?= $quiz["duration"];?> minutes.</p>
+                <p><i class="fa fa-clock-o"></i> Quiz must be completed in <?= $quiz["duration"]; ?> minutes.</p>
             </div>
             <hr/>
             <div class='m-actions'>
-                <?php if (!Yii::$app->user->isGuest): ?>
+                <?php if (!Yii::$app->user->isGuest || $user_id): ?>
                     <a href='javascript:;' class='close-m-mo'>Start Quiz</a>
                 <?php else: ?>
                     <a href='/login' target="_blank">Please login to play this quiz.</a>
@@ -69,8 +72,8 @@ if ($result == Null) {
 ?>
     <section class="container">
         <div class="col-md-3">
-<!--            <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"-->
-<!--                 data-ad-client="ca-pub-2186770765824304" data-ad-slot="first"></ins>-->
+            <!--            <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"-->
+            <!--                 data-ad-client="ca-pub-2186770765824304" data-ad-slot="first"></ins>-->
         </div>
         <div class="col-md-6">
             <div class="questionBox">
@@ -108,7 +111,7 @@ if ($result == Null) {
                                     </div>
                                 </div>
                                 <div class="loading-question">
-                                    <img src="<?= Url::to('/assets/themes/quiz/loading.gif');?>"/>
+                                    <img src="<?= Url::to('/assets/themes/quiz/loading.gif'); ?>"/>
                                 </div>
                             </div>
                         </form>
@@ -122,17 +125,22 @@ if ($result == Null) {
                                     <i class="fa fa-check-circle-o is-active"></i>
                                 </span>
                                     <h2 class="title">You have already taken this quiz!</h2>
-                                    <p class="subtitle">Total score: <?= $result; ?> / <?= $noOfQuestion['num_of_ques'];?></p>
+                                    <p class="subtitle">Your score: <?= $result; ?>
+                                        / <?= $noOfQuestion['num_of_ques']; ?></p>
                                 </div>
                             </div>
                         </div>
                         <div class="effect jaques text-center">
                             <h4>Share this Quiz</h4>
                             <div class="buttons">
-                                <a href="#" id="elem-button-share-quiz" class="fb" target="_blank" title="Join us on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                                <a href="#" id="elem-button-share-quiz-twitter" class="tw" target="_blank" title="Share on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                                <a href="#" id="elem-button-share-quiz-wa" class="whats" target="_blank" title="Share on Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
-                                <a href="#" id="elem-button-share-quiz-wa-mob" class="whats" target="_blank" title="Share on Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                                <a href="#" id="elem-button-share-quiz" class="fb" target="_blank"
+                                   title="Join us on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                                <a href="#" id="elem-button-share-quiz-twitter" class="tw" target="_blank"
+                                   title="Share on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                                <a href="#" id="elem-button-share-quiz-wa" class="whats" target="_blank"
+                                   title="Share on Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                                <a href="#" id="elem-button-share-quiz-wa-mob" class="whats" target="_blank"
+                                   title="Share on Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
                             </div>
                         </div>
                         <?php
@@ -142,8 +150,8 @@ if ($result == Null) {
             </div>
         </div>
         <div class="col-md-3">
-<!--            <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"-->
-<!--                 data-ad-client="ca-pub-2186770765824304" data-ad-slot="second"></ins>-->
+            <!--            <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"-->
+            <!--                 data-ad-client="ca-pub-2186770765824304" data-ad-slot="second"></ins>-->
         </div>
     </section>
     <script id="c-quiz-options" type="text/template">
@@ -509,7 +517,7 @@ body {
 ');
 $noOfQuestion = $quiz["num_of_ques"];
 $duration = $quiz["duration"];
-if($duration == Null){
+if ($duration == Null) {
     $duration = 20;
 }
 $script = <<<JS
@@ -531,7 +539,7 @@ function startInterval() {
         document.getElementById("timer").innerHTML = "Time Up";
         $('.loading-question').fadeIn(500);
         var path = window.location.pathname.split('/');
-        var link = '/quizzes/get-result?slug=' + path[2];
+        var link = '/quizzes/get-result?userId="$user_id"&slug=' + path[2];
         $.ajax({
             type: 'POST',
             url: link,
@@ -551,7 +559,6 @@ var c_time = 0
 function c_interval(){
     ct = setInterval(function() {
       c_time += 1;
-      console.log(c_time);
     }, 1000);
 }
 $(".close-m-mo").on("click", function() {

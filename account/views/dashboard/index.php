@@ -2,10 +2,10 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+use kartik\widgets\DatePicker;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
 
-//echo $this->render('/widgets/header/secondary-header', [
-//    'for' => 'Dashboard',
-//]);
 $is_email_verified = true;
 if (Yii::$app->user->identity->organization->organization_enc_id) :
     if (!Yii::$app->user->identity->organization->is_email_verified) :
@@ -23,12 +23,31 @@ endif;
     <div class="col-md-3">
         <?= $this->render('/widgets/tasks/taskbar-card', ['viewed' => $viewed]); ?>
 
-        <?=
+
+        <!--=====Active Module=====-->
+        <!-- <?=
             $this->render('/widgets/services-selection/edit-services', [
                 'model' => $model,
                 'services' => $services,
             ]);
-        ?>
+        ?> -->
+
+        <!-- <section class="company-ques">
+            <div class="upper-half">
+                <h4 style="transform: translate(0, 31%);margin: 0 30px;">Are you offering Tech Roles in your company?</h4>
+                <h4>Are you offering Tech Roles in your company?</h4>
+            </div>
+            <div class="ans">
+                <span>YES</span>
+                <span>NO</span>
+            </div>
+        </section> -->
+
+        <?php if (Yii::$app->user->identity->organization->organization_enc_id) { ?>
+            <?= $this->render('@common/widgets/career-page-section') ?>    
+        <?php } ?>
+        
+        
         <?php if (Yii::$app->user->identity->organization->organization_enc_id) { ?>
             <?= $this->render('/widgets/safety-widgets', ['scriptModel' => $scriptModel]) ?>
         <?php } ?>
@@ -124,39 +143,40 @@ endif;
                     </div>
                 </div>
             </div>
+
             <?php
-            if ($loanApplication && Yii::$app->user->identity->type->user_type == 'Individual') {
-                echo $this->render('/widgets/education-loan/loan-detail-individual-dashboard', [
-                    'loanApplication' => $loanApplication,
-                ]);
-            }
+                if($webinar) {
+                    echo $this->render('/widgets/dashboard-webinar-widget', [
+                           'webinar' => $webinar,
+                    ]);
+                }
+            ?>
+
+            <?php
+                if($registeredQuizzes){
+                    echo $this->render('/widgets/user-registered-quiz', [
+                            'registeredQuizzes' => $registeredQuizzes,
+                    ]);
+                }
             ?>
             <?=
-            $this->render('/widgets/applications/dashboard-applied-applications', [
-                'applied' => $applied,
-                'question_list' => $question_list,
-                'shortlist_org' => $shortlist_org,
-                'viewed' => $viewed,
-                'loan' => $loan,
-            ]); ?>
-            <?= $this->render('/widgets/applications/reminder-applications', [
-                'app_reminder' => $app_reminder,
-                'app_reminder_form' => $app_reminder_form,
-            ]); ?>
-            <?php
-            if ($userValues['is_complete'] == 0) {
-                echo $this->render('@common/widgets/complete-profile-modal', [
-                    'userData' => $userValues['userVal']
+                $this->render('/widgets/applications/dashboard-applied-applications', [
+                    'applied' => $applied,
+                    'question_list' => $question_list,
+                    'shortlist_org' => $shortlist_org,
+                    'viewed' => $viewed,
                 ]);
-            }
             ?>
-            <?php
-            if ($userValues['is_complete'] == 1 && $userPref['is_complete'] == 0) {
-                echo $this->render('@common/widgets/preference-and-location-modal', [
-                    'userPref' => $userPref['userPref']
+
+            <?=
+                $this->render('/widgets/applications/reminder-applications', [
+                    'app_reminder' => $app_reminder,
+                    'app_reminder_form' => $app_reminder_form,
                 ]);
-            }
             ?>
+
+
+
         <?php elseif (Yii::$app->user->identity->organization) : ?>
             <div class="row marg">
                 <div class="col-md-4 col-sm-6">
@@ -222,8 +242,7 @@ endif;
                                     </div>
                                     <div class="how-heading">Create a Job</div>
                                     <div class="how-text">
-                                        <p>Create a Job, get applications, let candidates fill
-                                            Questionnaire.</p>
+                                        <p>Create a Job, get applications, let candidates fill Questionnaire.</p>
                                         <p class="pera">Ask them what's relevant to your organization.</p>
                                     </div>
                                 </div>
@@ -234,9 +253,7 @@ endif;
                                     </div>
                                     <div class="how-heading">Invite Candidates</div>
                                     <div class="how-text">
-                                        <p>Share application with candidates that you have found
-                                            by
-                                            any other means.</p>
+                                        <p>Share application with candidates that you have found by any other means.</p>
                                     </div>
                                 </div>
                             </div>
@@ -257,8 +274,7 @@ endif;
                                     </div>
                                     <div class="how-heading">Process Applications</div>
                                     <div class="how-text">Finalize the candidates that you would like to interview
-                                        and
-                                        schedule seamlessly.
+                                        and schedule seamlessly.
                                     </div>
                                 </div>
                             </div>
@@ -273,7 +289,7 @@ endif;
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?><span data-toggle="tooltip" title="Here you will find all your active jobs"><i class="fa fa-info-circle"></i></span></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Open Jobs'); ?><span data-toggle="tooltip" title="Here you will find all your active jobs"><i class="fa fa-info-circle"></i></span></span>
                     </div>
                     <div class="actions">
                         <div class="set-im">
@@ -303,6 +319,7 @@ endif;
                         echo $this->render('/widgets/applications/card', [
                             'applications' => $applications['jobs']['data'],
                             'per_row' => 3,
+                            'type' => 'Job',
                             'col_width' => 'col-lg-4 col-md-4 col-sm-6',
                         ]);
                     } else {
@@ -325,7 +342,7 @@ endif;
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?><span data-toggle="tooltip" title="Here you will find all your active internships"><i class="fa fa-info-circle"></i></span></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Open Internships'); ?><span data-toggle="tooltip" title="Here you will find all your active internships"><i class="fa fa-info-circle"></i></span></span>
                     </div>
                     <div class="actions">
                         <div class="set-im">
@@ -359,6 +376,7 @@ endif;
                         echo $this->render('/widgets/applications/card', [
                             'applications' => $applications['internships']['data'],
                             'per_row' => 3,
+                            'type' => 'Internship',
                             'col_width' => 'col-lg-4 col-md-4 col-sm-6',
                         ]);
                     } else {
@@ -376,8 +394,44 @@ endif;
                     ?>
                 </div>
             </div>
+            
+            <?= $this->render('/dashboard/calendar') ?>
 
-            <?= $this->render('@common/widgets/career-page-section') ?>
+            <?= $this->render('@common/widgets/resume-bank-widget') ?>
+            
+            <div id="form_modal2" class="modal fade in" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">Re-Open The Application</h4>
+                        </div>
+                        <div class="modal-body">
+                            <?php
+                            $extendModelform = ActiveForm::begin([
+                                'id'=>'extends_job',
+                                'action'=>'/account/jobs/extends-date',
+                            ]);
+                            echo $extendModelform->field($extendModel, 'date')->widget(DatePicker::classname(), [
+                                'options' => ['placeholder' => 'Last Date To Apply'],
+                                'readonly' => true,
+                                'pluginOptions' => [
+                                    'autoclose' => true,
+                                    'format' => 'dd-M-yyyy',
+                                    'name' => 'date',
+                                    'todayHighlight' => true,
+                                    'startDate' => '+0d',
+                                ]])->label(false);
+                            echo $extendModelform->field($extendModel, 'application_enc_id', ['template' => '{input}'])->hiddenInput(['id' => 'application_enc_id'])->label(false);
+                            ?>
+                            <div class="modal-footer">
+                                <?= Html::submitButton('Save',['class'=>'btn btn-c-save']) ?>
+                            </div>
+                        </div>
+                        <?php ActiveForm::end(); ?>
+                    </div>
+                </div>
+            </div>
 
         <?php endif; ?>
         <!--            <div class="portlet light portlet-fit nd-shadow">-->
@@ -761,17 +815,100 @@ p{
 .quick-review-img{
     text-align: center;
 }
+.modal {
+  text-align: center;
+}
+@media screen and (min-width: 768px) { 
+  .modal:before {
+    display: inline-block;
+    vertical-align: middle;
+    content: '';
+    height: 100%;
+  }
+}
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+.datepicker > div {
+    display: block;
+}
 
 
- 
+/* =====Dashboard Questions CSS======*/
+.company-ques {
+    padding: 20px 10px;
+    margin-top: 20px;
+    box-shadow: 0 0 5px 2px rgb(0 0 0 / 18%);
+    position: relative;
+    min-height: 225px;
+}
+.upper-half {
+    background-image: linear-gradient(to top, #30cfd0 0%, #330867 165%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 50%;
+    width: 100%;
+} 
+.company-ques h4 {
+    font-size: 16px;
+    text-align: center;
+    margin: 15px 0;
+    font-weight: 500;
+    font-family: 'Roboto';
+    line-height: 1.3;
+    background: #fff;
+    margin: 0 18px;
+    display: block;
+    position: absolute;
+    bottom: 0;
+    transform: translate(0, 25%);
+    padding: 18px;
+    box-shadow: 0px 5px 9px 1px rgb(0 0 0 / 25%);
+    border-radius: 5px;
+}
+.company-ques > span {
+    font-size: 14px;
+    font-family: 'Roboto';
+    display: block;
+    text-align: center;
+    font-weight: 500;
+    color: #505050;
+}
+.ans {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    position: absolute;
+    bottom: 25px;
+    width: 100%;
+}
+.ans span {
+    padding: 5px 0;
+    margin: 0 10px;
+    font-weight: 700;
+    width: 73px;
+    border: 2px solid #ff7803;
+    text-align: center;
+}
+.ans span:first-child{
+    border-color: #00a0e3;
+}
 ");
-    $script = <<< JS
-$(document).ready(function(){
-  $('[data-toggle="tooltip"]').tooltip();   
-});
+$script = <<< JS
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();   
+    });
+    $(document).on('click','.datepicker_opn',function(e) {
+        e.preventDefault();
+        $('#application_enc_id').val($(this).attr('data-id'));
+        $('#form_modal2').modal('show');
+    });
 JS;
-    $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
-    $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-    $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.min.css');
-    $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-    $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.min.css');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJs($script);

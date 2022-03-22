@@ -3,14 +3,18 @@
 namespace account\controllers;
 
 use account\models\applications\ApplicationReminderForm;
+use account\models\applications\ExtendsJob;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationReminder;
 use common\models\CandidateRejection;
 use common\models\CandidateRejectionReasons;
 use common\models\DropResumeApplications;
+use common\models\EducationLoanPayments;
 use common\models\Interviewers;
 use common\models\LoanApplications;
 use common\models\OrganizationAssignedCategories;
+use common\models\QuizRegistration;
+use common\models\QuizRewards;
 use common\models\RejectionReasons;
 use common\models\ReviewedApplications;
 use common\models\ShortlistedApplicants;
@@ -23,6 +27,7 @@ use common\models\InterviewProcessFields;
 use common\models\ScheduledInterview;
 use common\models\UserPreferences;
 use common\models\UserSkills;
+use common\models\WebinarRegistrations;
 use frontend\models\script\scriptModel;
 use Yii;
 use yii\web\Controller;
@@ -90,6 +95,7 @@ class DashboardController extends Controller
         }
 
         if (Yii::$app->user->identity->organization) {
+            $extendModel = new ExtendsJob();
             $scriptModel = new scriptModel();
             $viewed = $this->hasViewed();
             $this->_condition = ['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id];
@@ -106,7 +112,8 @@ class DashboardController extends Controller
         if (empty(Yii::$app->user->identity->organization)) {
             $applied_app = EmployerApplications::find()
                 ->alias('a')
-                ->select(['a.application_enc_id application_id', 'e.rejection_type', 'rr.reason', 'i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id applied_id', 'f.status', 'd.icon', 'g.name as org_name', 'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total', 'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
+                ->select(['a.application_enc_id application_id', 'e.rejection_type', 'GROUP_CONCAT(DISTINCT(rr.reason) SEPARATOR ", ") reason',
+                    'i.name type', 'c.name as title', 'b.assigned_category_enc_id', 'f.applied_application_enc_id applied_id', 'f.status', 'd.icon', 'g.name as org_name', 'COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) as active', 'COUNT(h.is_completed) as total', 'ROUND((COUNT(CASE WHEN h.is_completed = 1 THEN 1 END) / COUNT(h.is_completed)) * 100, 0) AS per'])
                 ->innerJoin(ApplicationTypes::tableName() . 'as i', 'i.application_type_enc_id = a.application_type_enc_id')
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
                 ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
@@ -277,16 +284,16 @@ class DashboardController extends Controller
                         WHEN e1.course_name IS NOT NULL THEN e1.course_name
                         ELSE d.course_name
                         END) as course_name',
-                    ])
-                ->joinWith(['loanApplications b' => function($b){
+                ])
+                ->joinWith(['loanApplications b' => function ($b) {
                     $b->select(['b.loan_app_enc_id', 'b.parent_application_enc_id']);
                 }])
-                ->joinWith(['pathToClaimOrgLoanApplications c' => function($c){
+                ->joinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
                     $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
                         $cc->joinWith(['courseEnc c1']);
                     }], false);
                 }], false)
-                ->joinWith(['pathToUnclaimOrgLoanApplications e' => function($e){
+                ->joinWith(['pathToUnclaimOrgLoanApplications e' => function ($e) {
                     $e->joinWith(['assignedCourseEnc ee' => function ($ee) {
                         $ee->joinWith(['courseEnc e1']);
                     }], false);
@@ -294,8 +301,8 @@ class DashboardController extends Controller
                 ->joinWith(['pathToOpenLeads d'], false)
                 ->joinWith(['assignedLoanProviders f'], false)
                 ->where([
-                    'a.created_by'=>Yii::$app->user->identity->user_enc_id,
-                    'f.status'=>11,
+                    'a.created_by' => Yii::$app->user->identity->user_enc_id,
+                    'f.status' => 11,
                     'a.parent_application_enc_id' => null,
                     'a.is_deleted' => 0,
                 ])
@@ -307,6 +314,34 @@ class DashboardController extends Controller
                 ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'is_deleted' => 0])
                 ->asArray()
                 ->all();
+
+            $dt = new \DateTime();
+            $tz = new \DateTimeZone('Asia/Kolkata');
+            $dt->setTimezone($tz);
+            $date_now = $dt->format('Y-m-d H:i:s');
+
+            $webinar = WebinarRegistrations::find()
+                ->alias('a')
+                ->select(['a.webinar_enc_id', 'b.title', 'CONCAT(b4.first_name, " " ,b4.last_name) as speaker_name',
+                    'CASE WHEN b4.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b4.image_location, "/", b4.image) END speaker_image',
+                    'a.unique_access_link', 'b1.start_datetime', 'b1.duration', 'b.webinar_conduct_on', 'b.slug'
+                ])
+                ->joinWith(['webinarEnc b' => function ($b) use ($date_now) {
+                    $b->joinWith(['webinarEvents b1' => function ($b1) use ($date_now) {
+                        $b1->joinWith(['webinarSpeakers b2' => function ($b2) {
+                            $b2->joinWith(['speakerEnc b3' => function ($b3) {
+                                $b3->joinWith(['userEnc b4']);
+                            }]);
+                        }]);
+                        $b1->onCondition(['>=', 'b1.start_datetime', $date_now]);
+                    }]);
+                    $b->andWhere(['b1.status' => [0, 1]]);
+                }], false)
+                ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                ->orderBy(['b1.start_datetime' => SORT_ASC])
+                ->asArray()
+                ->one();
+
         } else {
             $childs = OrganizationAssignedCategories::find()
                 ->select(['assigned_category_enc_id'])
@@ -353,8 +388,52 @@ class DashboardController extends Controller
                 ->asArray()
                 ->one();
         }
+        $loanLoginFee = LoanApplications::find()
+            ->alias('a')
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+            ->select(['a.loan_app_enc_id', 'applicant_name', 'amount',
+                '(count(CASE WHEN b.payment_status IN ("captured","created","withdrawn","refund initiated") THEN "1" ELSE NULL END)) as total_payment',
+            ])
+            ->joinWith(['educationLoanPayments b'], false, 'LEFT JOIN')
+            ->andWhere(['a.is_deleted' => 0])
+            ->having(['total_payment' => 0])
+            ->groupBy(['a.loan_app_enc_id'])
+            ->asArray()
+            ->all();
+
+        $registeredQuizzes = QuizRegistration::find()
+            ->distinct()
+            ->alias('a')
+            ->select(['b.name', 'b.quiz_enc_id', 'b.slug', 'b.num_of_ques', 'b.quiz_start_datetime', 'b.duration',
+                'CASE WHEN b.banner_sharing_img IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", b.banner_sharing_img_location, "/", b.banner_sharing_img) ELSE NULL END banner_sharing_image',
+                "CASE 
+                    WHEN b.quiz_end_datetime IS NULL THEN NULL
+                    WHEN TIMESTAMPDIFF(SECOND, CONVERT_TZ(Now(),@@session.time_zone,'+05:30'),b.quiz_end_datetime) < 0 THEN 'true'
+                 ELSE 'false' END is_expired",
+            ])
+            ->joinWith(['quizEnc b' => function($b){
+                $b->select(['b.quiz_enc_id',]);
+                $b->joinWith(['quizRewards d' => function($d){
+                    $d->select(['d.quiz_reward_enc_id', 'd.quiz_enc_id', 'd.position_enc_id', 'd1.name position_name', 'd.price', 'd.amount']);
+                    $d->joinWith(['positionEnc d1'], false);
+                    $d->joinWith(['quizRewardCertificates d2' => function ($d2) {
+                        $d2->select(['d2.reward_certificate_enc_id', 'd2.quiz_reward_enc_id', 'd2.name']);
+                        $d2->onCondition(['d2.is_deleted' => 0]);
+                    }]);
+                    $d->onCondition(['d.is_deleted' => 0]);
+                    $d->groupBy(['d.quiz_reward_enc_id']);
+                }]);
+            }])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+            ->having(['or',
+                ['is_expired' => 'false'],
+                ['is_expired' => null],
+            ])
+            ->asArray()
+            ->all();
 
         return $this->render('index', [
+            'loanLoginFee' => $loanLoginFee,
             'loanApplication' => $loanApplication,
             'applied' => $applied_app,
             'services' => $services,
@@ -378,6 +457,9 @@ class DashboardController extends Controller
             'userValues' => $this->_CompleteProfile(),
             'userPref' => $this->_CompletePreference(),
             'loan' => $loan,
+            'extendModel' => $extendModel,
+            'webinar' => $webinar,
+            'registeredQuizzes' => $registeredQuizzes
         ]);
     }
 
@@ -766,7 +848,7 @@ class DashboardController extends Controller
         if (!Yii::$app->user->identity->organization->organization_enc_id) {
             return $this->render('scheduled-interviews');
         } else {
-            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+            return $this->render('calendar');
         }
 
     }
@@ -1317,6 +1399,69 @@ class DashboardController extends Controller
     {
         return $this->render('safety-posters');
     }
+
+    public function actionLoanDetails()
+    {
+        $loanLoginFee = LoanApplications::find()
+            ->alias('a')
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+            ->select(['a.loan_app_enc_id', 'applicant_name', 'amount',
+                '(count(CASE WHEN b.payment_status IN ("captured","created","withdrawn","refund initiated") THEN "1" ELSE NULL END)) as total_payment',
+            ])
+            ->joinWith(['educationLoanPayments b'], false, 'LEFT JOIN')
+            ->andWhere(['a.is_deleted' => 0])
+            ->having(['total_payment' => 0])
+            ->groupBy(['a.loan_app_enc_id'])
+            ->asArray()
+            ->all();
+        $loanApplication = Yii::$app->userData->loanApplicationObj();
+        if ($loanApplication) {
+            $loanApplication = $loanApplication
+                ->andWhere(['not', ['alp.status' => 10]])
+                ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+                ->orderBy(['a.created_on' => SORT_DESC])
+                ->asArray()
+                ->one();
+        }
+        $loan = LoanApplications::find()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id', 'a.loan_status', 'a.applicant_name', 'a.years', 'a.semesters',
+                'a.amount',
+                '(CASE
+                        WHEN c1.course_name IS NOT NULL THEN c1.course_name
+                        WHEN e1.course_name IS NOT NULL THEN e1.course_name
+                        ELSE d.course_name
+                        END) as course_name',
+            ])
+            ->joinWith(['loanApplications b' => function ($b) {
+                $b->select(['b.loan_app_enc_id', 'b.parent_application_enc_id']);
+            }])
+            ->joinWith(['pathToClaimOrgLoanApplications c' => function ($c) {
+                $c->joinWith(['assignedCourseEnc cc' => function ($cc) {
+                    $cc->joinWith(['courseEnc c1']);
+                }], false);
+            }], false)
+            ->joinWith(['pathToUnclaimOrgLoanApplications e' => function ($e) {
+                $e->joinWith(['assignedCourseEnc ee' => function ($ee) {
+                    $ee->joinWith(['courseEnc e1']);
+                }], false);
+            }], false)
+            ->joinWith(['pathToOpenLeads d'], false)
+            ->joinWith(['assignedLoanProviders f'], false)
+            ->where([
+                'a.created_by' => Yii::$app->user->identity->user_enc_id,
+                'f.status' => 11,
+                'a.parent_application_enc_id' => null,
+                'a.is_deleted' => 0,
+            ])
+            ->asArray()
+            ->one();
+        return $this->render('loan-details',[
+            'loanLoginFee' => $loanLoginFee,
+            'loanApplication' => $loanApplication,
+            'loan' => $loan,
+            ]);
+    }
 //    public function actionError(){
 //        $error = Yii::$app->errorHandler->exception;
 //        return $this->render('error',[
@@ -1324,4 +1469,60 @@ class DashboardController extends Controller
 //        ]);
 //    }
 
+    public function actionGetApplicationEvents()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $applications = EmployerApplications::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'b.name application_type', 'a.application_for',
+                    'c1.name category', 'c2.name parent_category', 'a.last_date'])
+                ->joinWith(['applicationTypeEnc b'], false)
+                ->joinWith(['title c' => function ($b) {
+                    $b->joinWith(['categoryEnc c1']);
+                    $b->joinWith(['parentEnc c2']);
+                }], false)
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0, 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+                ->asArray()
+                ->all();
+
+            if ($applications) {
+                return ['status' => 200, 'message' => 'success', 'data' => $applications];
+            } else {
+                return ['status' => 404, 'message' => 'not found'];
+            }
+
+        }
+    }
+
+    public function actionCompleteCompanyProfile(){
+        $industries = \common\models\Industries::find()
+            ->select(['industry_enc_id value', 'industry text'])
+            ->orderBy(['industry' => SORT_ASC])
+            ->asArray()
+            ->all();
+
+        $companyInfo = Organizations::find()
+            ->select(['organization_enc_id','logo', 'logo_location', 'tag_line', 'description', 'mission',
+                'vision', 'website', 'industry_enc_id','facebook','twitter','instagram','linkedin','slug',
+                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
+            ->where([ 'organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
+            ->asArray()
+            ->one();
+        $ci_complete = 1;
+        foreach($companyInfo as $ci){
+            if($ci == '' || $ci == null){
+                $ci_complete = 0;
+            }
+        }
+
+        if($ci_complete == 1){
+            return false;
+        }
+        return $this->renderAjax('@common/widgets/complete-profile-company',[
+                'industries'=>$industries,
+                'companyInfo'=>$companyInfo
+        ]);
+    }
 }

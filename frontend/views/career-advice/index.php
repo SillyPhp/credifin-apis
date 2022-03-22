@@ -2,6 +2,7 @@
 $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
+
 $this->registerCssFile('@eyAssets/css/blog-main.css');
 $careerAdviceCategories = [
     [
@@ -89,72 +90,81 @@ $careerAdviceCategories = [
             </div>
         </div>
     </section>
+
+<?php
+if($data = Yii::$app->webinarSlides->check()) {
+    echo $this->render('/webinars/webinar-carousel', [
+        'webinars'=>$data,
+    ]);
+}
+?>
+
     <section class="background-mirror blog-section-0">
         <div class="container">
-                <div class="row">
-                    <div class="col-md-9 col-xs-9">
-                        <h1 class="heading-style"><?= Yii::t('frontend', 'Informative Blogs to Read'); ?></h1>
-                    </div>
-                    <div class="col-md-3 col-xs-3">
-                        <!-- Controls -->
-                        <div class="controls pull-right">
-                            <a class="left fas fa-chevron-left bttn-left" href="#carousel-example"
-                               data-slide="prev"></a>
-                            <a class="right fas fa-chevron-right bttn-right" href="#carousel-example"
-                               data-slide="next"></a>
-                        </div>
+            <div class="row">
+                <div class="col-md-9 col-xs-9">
+                    <h1 class="heading-style"><?= Yii::t('frontend', 'Informative Blogs to Read'); ?></h1>
+                </div>
+                <div class="col-md-3 col-xs-3">
+                    <!-- Controls -->
+                    <div class="controls pull-right">
+                        <a class="left fas fa-chevron-left bttn-left" href="#carousel-example"
+                           data-slide="prev"></a>
+                        <a class="right fas fa-chevron-right bttn-right" href="#carousel-example"
+                           data-slide="next"></a>
                     </div>
                 </div>
-                <div id="carousel-example" class="carousel slide" data-ride="carousel">
-                    <!-- Wrapper for slides -->
-                    <div class="carousel-inner">
-                        <?php
-                        $rows = ceil(count($posts) / 4);
-                        $next = 0;
-                        for ($i = 0; $i < $rows; $i++) {
-                            ?>
-                            <div class="item <?php echo $next == 0 ? 'active' : '' ?>">
-                                <div class="row">
-                                    <?php
-                                    for ($j = 0; $j < 4; $j++) {
-                                        $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $posts[$next]['featured_image_location'] . DIRECTORY_SEPARATOR . $posts[$next]['featured_image'];
-                                        $image = Yii::$app->params->upload_directories->posts->featured_image . $posts[$next]['featured_image_location'] . DIRECTORY_SEPARATOR . $posts[$next]['featured_image'];
-                                        if (!file_exists($image_path)) {
-                                            $image = '//placehold.it/570x390';
-                                        }
-                                        ?>
-                                        <div class="col-sm-3">
-                                            <a href="<?= Url::to('/blog/' . $posts[$next]['slug']); ?>">
-                                                <div class="col-item">
-                                                    <div class="photo">
-                                                        <img src="<?= $image; ?>" class=""
-                                                             alt="<?= $posts[$next]['featured_image_alt']; ?>"
-                                                             title="<?= $posts[$next]['featured_image_title']; ?>"/>
-                                                    </div>
-                                                    <div class="info">
-                                                        <div class="row">
-                                                            <div class="price col-md-12">
-                                                                <h5> <?= $posts[$next]['title']; ?></h5>
-                                                            </div>
-                                                        </div>
-                                                        <div class="clearfix">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                        <?php
-                                        $next++;
+            </div>
+            <div id="carousel-example" class="carousel slide" data-ride="carousel">
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner">
+                    <?php
+                    $rows = ceil(count($posts) / 4);
+                    $next = 0;
+                    for ($i = 0; $i < $rows; $i++) {
+                        ?>
+                        <div class="item <?php echo $next == 0 ? 'active' : '' ?>">
+                            <div class="row">
+                                <?php
+                                for ($j = 0; $j < 4; $j++) {
+                                    $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $posts[$next]['featured_image_location'] . DIRECTORY_SEPARATOR . $posts[$next]['featured_image'];
+                                    $image = Yii::$app->params->upload_directories->posts->featured_image . $posts[$next]['featured_image_location'] . DIRECTORY_SEPARATOR . $posts[$next]['featured_image'];
+                                    if (!file_exists($image_path)) {
+                                        $image = '//placehold.it/570x390';
                                     }
                                     ?>
-                                </div>
-
+                                    <div class="col-sm-3">
+                                        <a href="<?= Url::to('/blog/' . $posts[$next]['slug']); ?>">
+                                            <div class="col-item">
+                                                <div class="photo">
+                                                    <img src="<?= $image; ?>" class=""
+                                                         alt="<?= $posts[$next]['featured_image_alt']; ?>"
+                                                         title="<?= $posts[$next]['featured_image_title']; ?>"/>
+                                                </div>
+                                                <div class="info">
+                                                    <div class="row">
+                                                        <div class="price col-md-12">
+                                                            <h5> <?= $posts[$next]['title']; ?></h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class="clearfix">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <?php
+                                    $next++;
+                                }
+                                ?>
                             </div>
-                            <?php
-                        }
-                        ?>
-                    </div>
+
+                        </div>
+                        <?php
+                    }
+                    ?>
                 </div>
+            </div>
             <div class="row">
                 <div class="view-all-articles">
                     <a href="<?= Url::to('/blog/category/articles'); ?>" class="artic">view all</a>
@@ -188,86 +198,13 @@ $careerAdviceCategories = [
                 </div>
             </div>
             <div class="col-md-3 col-sm-12">
-                <div>
-                    <div class="">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="trending-heading">Trending Posts</div>
-                            </div>
-                        </div>
-                        <div id="trending-post">
-
-                        </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="trending-heading">Trending Posts</div>
                     </div>
                 </div>
-<!--                <div class="col-md-12 row">-->
-<!--                    <div class="infographics">-->
-<!--                        <div class="row">-->
-<!--                            <div class="col-md-12">-->
-<!--                                <div class="info-head">-->
-<!--                                    Infographics-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="row">-->
-<!--                            <div class="info-g">-->
-<!--                                --><?php
-//                                $i = 1;
-//                                if ($infographicsPosts) {
-//                                    foreach ($infographicsPosts as $post) {
-//                                        $new_row = ($i % 4 == 0) ? true : false;
-//                                        if ($new_row) {
-//                                            ?>
-<!--                                            <div class="row">-->
-<!--                                            --><?php
-//                                        }
-//                                        $image_path = Yii::$app->params->upload_directories->posts->featured_image_path . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
-//                                        $image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
-//                                        if (!file_exists($image_path)) {
-//                                            $image = '//placehold.it/330x200';
-//                                        }
-//                                        ?>
-<!--                                        <div class="col-md-12">-->
-<!--                                            <div class="whats-new-box">-->
-<!--                                                <div class="wn-box-icon">-->
-<!--                                                    <a href="--><?//= Url::to('/blog/' . $post['slug']); ?><!--">-->
-<!--                                                        <img src="--><?//= $image; ?><!--" alt="--><?//= $post['title']; ?><!--"/>-->
-<!--                                                    </a>-->
-<!--                                                </div>-->
-<!--                                                <div class="wn-box-details">-->
-<!--                                                    <a href="--><?//= Url::to('/blog/' . $post['slug']); ?><!--">-->
-<!--                                                        <div class="wn-box-title">-->
-<!--                                                            --><?//= $post['title']; ?>
-<!--                                                        </div>-->
-<!--                                                    </a>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                        --><?php
-//                                        if ($new_row) {
-//                                            ?>
-<!--                                            </div>-->
-<!--                                            --><?php
-//                                        }
-//                                        $i++;
-//                                    }
-//                                }
-//                                ?>
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="row">-->
-<!--                            <div class="col-md-12">-->
-<!--                                <div class="info-btn">-->
-<!--                                    <a href="--><?//= Url::to('/blog/category/infographics'); ?><!--" target="_blank">-->
-<!--                                        View All-->
-<!--                                    </a>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-                <div>
-                    <div class="articles">
+                <div id="trending-post"></div>
+                <div class="articles">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="articles-head">
@@ -330,48 +267,47 @@ $careerAdviceCategories = [
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+            </div>
             </div>
         </div>
     </section>
 
-<div class="pdbm10">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <div class="mar-top-20">
-                    <h1 class="heading-style">Career Advice</h1>
+    <div class="pdbm10">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="mar-top-20">
+                        <h1 class="heading-style">Career Advice</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="gallery-view">
+                    <?php foreach ($careerAdviceCategories as $category): ?>
+                        <div class="col-md-4 col-sm-6 card-box">
+                            <a href="<?= Url::to("/career-advice/" . $category["slug"]); ?>">
+                                <div class="card">
+                                    <div class="card__block card__block--main">
+                                        <h3 class="card__title">
+                                            <?= $category["name"]; ?>
+                                        </h3>
+                                        <div class='card__element card__element--user-img'>
+                                            <div class="pos-rel">
+                                                <img src="<?= $category["icon"]; ?>" alt="<?= $category["name"]; ?>"/>
+                                            </div>
+                                        </div>
+                                        <div class="view-btn <?= $category["buttonColor"]; ?>">
+                                            <span>View</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="gallery-view">
-                <?php foreach ($careerAdviceCategories as $category): ?>
-                    <div class="col-md-4 col-sm-6 card-box">
-                        <a href="<?= Url::to("/career-advice/" . $category["slug"]); ?>">
-                            <div class="card">
-                                <div class="card__block card__block--main">
-                                    <h3 class="card__title">
-                                        <?= $category["name"]; ?>
-                                    </h3>
-                                    <div class='card__element card__element--user-img'>
-                                        <div class="pos-rel">
-                                            <img src="<?= $category["icon"]; ?>" alt="<?= $category["name"]; ?>"/>
-                                        </div>
-                                    </div>
-                                    <div class="view-btn <?= $category["buttonColor"]; ?>">
-                                        <span>View</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
     </div>
-</div>
 <?= $this->render('/widgets/news-update') ?>
     <!--    <section class="ca-coming-soon-sec">-->
     <!--        <div class="row">-->
@@ -428,8 +364,8 @@ $careerAdviceCategories = [
                                                          height="133" alt="<?= $post['featured_image_alt']; ?>"
                                                          title="<?= $post['featured_image_title']; ?>"
                                                          url="<?= Yii::$app->urlManager->createAbsoluteUrl('/blog/' . $post['slug']); ?>">
-<!--                                                    <a
--->
+                                                    <!--                                                    <a
+                                                    -->
                                                 </div>
                                                 <?php
                                             }
@@ -697,6 +633,7 @@ $this->registerCss('
 }
 .blog-mirror {
     background: linear-gradient(180deg, #2b2d32 60%, #fff 40%);
+    overflow:hidden;
 }
 .whats-block-heading, .whats-popular-heading, .trending-heading, .articles-head{
     position: relative;
@@ -735,7 +672,7 @@ $this->registerCss('
     min-height: 370px;
     display: flex;
     justify-content: flex-start;
-    align-items: flex-end;
+    align-items: center;
     color: #000;
 }
 .ca-comming-soon-icon{
@@ -759,9 +696,8 @@ $this->registerCss('
     background-position: left;
     background-repeat: no-repeat;
 }
-body {
+.main-content {
   background-color:#fefefe;
-  font-family: var(--font-family-primary);
   font-size: 16px;
   line-height: 1.425;
 }
@@ -879,14 +815,19 @@ body {
     .card{
         margin: 0 auto;
     }
+    .career-advice-header {
+        background-position: -200px 0;
+    }
 } 
-@media only screen and (max-width: 992px){
+@media only screen and (max-width: 991px){
     .career-advice-header{
-        min-height:300px;
+        min-height:450px;
+        background-position: -170px 0;
     }
     .career-txt h1{
     font-size: 35px;
     min-height: 260px;
+    align-items: flex-end;
     }
 }
 .card:hover::before{
@@ -1029,7 +970,7 @@ body {
 @media only screen and (max-width: 600px) and (min-width:320px){
 .career-txt h1 {
     font-size: 30px;
-    min-height:190px;
+    min-height:240px;
     }
 }
 @media only screen and (max-width: 1200px) and (min-width: 992px){
@@ -1100,6 +1041,11 @@ a.button:hover span:after {
         padding-left: 26px;
     }
 }
+@media only screen and (min-width: 768px){
+    .view-btn{
+        bottom: 5px;
+    }
+}
 @media screen and (max-width: 768px){   
 .tp-heading{
     margin: 10px 0;
@@ -1134,6 +1080,9 @@ a.button:hover span:after {
     display:block;
 }
 @media screen and (max-width: 768px){
+    .col-item{
+        margin-bottom: 10px;
+    }
     .imgmain-div{
         width: 70%;
         height: 275px;
@@ -1258,6 +1207,7 @@ $('.owl-carousel-4col').owlCarousel({
         }
     }
 });
+$('.load-later').Lazy();
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

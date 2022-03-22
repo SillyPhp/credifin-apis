@@ -12,7 +12,9 @@ use yii\helpers\Url;
                         <li>
                             <a class="faqs" data-toggle="collapse" data-target="#documents">1. What is a Teacher's Personal Loan basically?
                                 <div class="collaspe-trigger">
-                                    <span class="collaspe-icon"></span>
+                                    <span class="collaspe-icon">
+                                        <i class="fa fa-chevron-down"></i>
+                                    </span>
                                 </div>
                             </a>
                             <div id="documents" class="collapse using-pd">
@@ -24,7 +26,9 @@ use yii\helpers\Url;
                         <li>
                             <a class="faqs" data-toggle="collapse" data-target="#abroad">2. How to apply for the loan?
                                 <div class="collaspe-trigger">
-                                    <span class="collaspe-icon"></span>
+                                    <span class="collaspe-icon">
+                                         <i class="fa fa-chevron-down"></i>
+                                    </span>
                                 </div>
                             </a>
                             <div id="abroad" class="collapse using-pd">
@@ -35,7 +39,9 @@ use yii\helpers\Url;
                         <li>
                             <a class="faqs" data-toggle="collapse" data-target="#repay">3. What is the eligibility criteria of applying for the Teacher's loan?
                                 <div class="collaspe-trigger">
-                                    <span class="collaspe-icon"></span>
+                                    <span class="collaspe-icon">
+                                         <i class="fa fa-chevron-down"></i>
+                                    </span>
                                 </div>
                             </a>
                             <div id="repay" class="collapse using-pd">
@@ -49,7 +55,9 @@ use yii\helpers\Url;
                         <li>
                             <a class="faqs" data-toggle="collapse" data-target="#expenses">4. What are the uses of Teacher's Personal Loan?
                                 <div class="collaspe-trigger">
-                                    <span class="collaspe-icon"></span>
+                                    <span class="collaspe-icon">
+                                         <i class="fa fa-chevron-down"></i>
+                                    </span>
                                 </div>
                             </a>
                             <div id="expenses" class="collapse using-pd">
@@ -64,7 +72,9 @@ use yii\helpers\Url;
                         <li>
                             <a class="faqs" data-toggle="collapse" data-target="#collateral">5. How much loan amount can a person take for Teacher's Personal Loan?
                                 <div class="collaspe-trigger">
-                                    <span class="collaspe-icon"></span>
+                                    <span class="collaspe-icon">
+                                         <i class="fa fa-chevron-down"></i>
+                                    </span>
                                 </div>
                             </a>
                             <div id="collateral" class="collapse using-pd">
@@ -128,55 +138,52 @@ $this->registerCSS('
 }
 .collaspe-trigger {
     position: absolute;
-    top: 18px;
+    top: 0px;
     right: 10px;
     cursor: pointer;
+    transition: 0.3s ease-in all;
 }
 .collaspe-icon {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    bottom: auto;
-    right: auto;
-    -webkit-transform: translateX(-50%) translateY(-50%);
-    transform: translateX(-50%) translateY(-50%);
-    display: inline-block;
-    width: 14px;
+    font-size: 16px;
+    width: 9px;
     height: 2px;
 }
-.collaspe-icon::before, .collaspe-icon:after {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #bfbdbd;
-    -webkit-transition: -webkit-transform .3s;
-    transition: transform .3s;
-    content: "";
+.collaspe-trigger.close{
+    transform: rotate(180deg);
 }
-.collaspe-icon::before {
-    -webkit-transform: translateY(-5px) rotate(-130deg);
-    transform: translateY(-5px) rotate(-130deg);
-    content: "";
-}
-.collaspe-icon::after {
-    -webkit-transform: translateY(-5px) translateX(8px) rotate(-50deg);
-    transform: translateY(-5px) translateX(8px) rotate(-50deg);
-    content: "";
-}
-
-/* when drawer close */
-.collaspe-trigger.close .collaspe-icon::before {
-    -webkit-transform: translateY(-5px) translateX(0px) rotate(-50deg);
-    transform: translateY(-5px) translateX(0px) rotate(-50deg);
-    content: "";
-}
-.collaspe-trigger.close .collaspe-icon::after {
-    -webkit-transform: translateY(-5px) translateX(8px) rotate(-130deg);
-    transform: translateY(-5px) translateX(8px) rotate(-130deg);
-    content: "";
-}
+//.collaspe-icon::before, .collaspe-icon:after {
+//    position: absolute;
+//    top: 0;
+//    right: 0;
+//    width: 100%;
+//    height: 100%;
+//    background-color: #bfbdbd;
+//    -webkit-transition: -webkit-transform .3s;
+//    transition: transform .3s;
+//    content: "";
+//}
+//.collaspe-icon::before {
+//    -webkit-transform: translateY(-5px) rotate(-130deg);
+//    transform: translateY(-5px) rotate(-130deg);
+//    content: "";
+//}
+//.collaspe-icon::after {
+//    -webkit-transform: translateY(-5px) translateX(8px) rotate(-50deg);
+//    transform: translateY(-5px) translateX(5px) rotate(-50deg);
+//    content: "";
+//}
+//
+///* when drawer close */
+//.collaspe-trigger.close .collaspe-icon::before {
+//    -webkit-transform: translateY(-5px) translateX(0px) rotate(-50deg);
+//    transform: translateY(-5px) translateX(0px) rotate(-50deg);
+//    content: "";
+//}
+//.collaspe-trigger.close .collaspe-icon::after {
+//    -webkit-transform: translateY(-5px) translateX(8px) rotate(-130deg);
+//    transform: translateY(-5px) translateX(8px) rotate(-130deg);
+//    content: "";
+//}
 ');
 $script = <<<JS
 $('.faqs').click(function () {

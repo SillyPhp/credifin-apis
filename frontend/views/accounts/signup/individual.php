@@ -91,6 +91,7 @@ $form = ActiveForm::begin([
             <?= $form->field($model, 'confirm_password')->passwordInput(['autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('Confirm_Password')]); ?>
         </div>
     </div>
+    <?= $form->field($model, 'referer',['template'=>'{input}'])->hiddenInput(['value' => Yii::$app->request->referrer])->label(false) ?>
     <div class="row">
         <div class="col-md-12">
             <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary btn-lg btn-block mt-15 main-blue-btn', 'name' => 'register-button']); ?>
@@ -99,8 +100,8 @@ $form = ActiveForm::begin([
 <?=$form->field($model,'loan_id_ref',['template'=>'{input}'])->hiddenInput(['id'=>'loan_id_ref','value'=>(($loan_id)?$loan_id:null)]) ?>
 <?php ActiveForm::end(); ?>
 <div class="col-md-12">
-    <div class="separator pb-10">
-        <span><?= Yii::t('frontend', 'Login With Social Accounts'); ?></span>
+    <div class="separator pb-10 text-black">
+        <span><?= Yii::t('frontend', 'Login/Register With Social Accounts'); ?></span>
     </div>
     <div class="form-group mt-10">
         <?=

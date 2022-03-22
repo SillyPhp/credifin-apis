@@ -1,34 +1,5 @@
 <?php
 use yii\helpers\Url;
-
-$this->title = 'School Fee Finance';
-$keywords = 'School Fee Finance | Empower Youth';
-$description = 'A Good Education Is Foundation For A Better Future Lay Your Child Career Path Right From School.';
-$image = Url::to('@eyAssets/images/pages/education-loans/School-Fee-Finance.png', 'https');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouthin',
-        'twitter:creator' => '@EmpowerYouthin',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
 <section class="school-fee-finance">
     <section class="school-fee-header">
@@ -74,6 +45,42 @@ $this->params['seo_tags'] = [
 </section>
 
 <?= $this->render('/widgets/benefits-for-parents')?>
+
+<?php
+    if($loan_colleges){
+?>
+<section class="partner-college">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h5 class="heading-style"><?= Yii::t('frontend', 'Partner Schools'); ?></h5>
+            </div>
+        </div>
+        <div class="row">
+            <?php
+            foreach ($loan_colleges as $l) {
+                ?>
+                <div class="col-md-3 col-sm-4 col-xs-12">
+                    <a href="<?= Url::to('/education-loans/apply-loan/' . $l['organization_enc_id'], true) ?>"
+                       target="_blank">
+                        <div class="college-card-partner">
+                            <div class="college-img-partner">
+                                <img src="<?= $l['org_logo'] ?>" alt="org-logo">
+                            </div>
+                            <div class="img-back-partner"></div>
+                            <p><?= $l['name'] ?></p>
+                        </div>
+                    </a>
+                </div>
+                <?php
+            }
+            ?>
+        </div>
+    </div>
+</section>
+<?php
+    }
+?>
 <?= $this->render('/widgets/Our-lending-partners');?>
 <section class="bg-blue">
     <?= $this->render('/widgets/choose-education-loan') ?>
@@ -88,7 +95,8 @@ if($blogs['blogs']){
 };
 ?>
 <?= $this->render('/widgets/loan-form-detail',[
-    'model' => $model
+    'model' => $model,
+    'param' => 'School Fee Finance'
 ]); ?>
 <?= $this->render('/widgets/press-releasee',[
     'data'=>$data,
@@ -97,6 +105,33 @@ if($blogs['blogs']){
 <?= $this->render('/widgets/loan-strip') ?>
 <?php
 $this->registerCss('
+.college-card-partner {
+    position: relative;
+    box-shadow: 0 0 10px rgb(0 0 0 / 10%);
+    text-align: center;
+    padding: 1rem;
+    overflow: hidden;
+    transition: 300ms all linear;
+    margin-bottom: 30px;
+    background-color:#fff;
+}
+.college-img-partner {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 3px 6px;
+    background-color: #fff;
+    z-index: 2;
+}
+.college-card-partner img {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
 .footer{
     margin-top: 0 !important;
 }

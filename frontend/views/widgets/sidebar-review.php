@@ -65,7 +65,7 @@ $c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
 .sidebar-logo-main{
     padding:0 !important;
-    box-shadow:0px 0px 10px -2px rgba(0,0,0,0.2);
+//    box-shadow:0px 0px 10px -2px rgba(0,0,0,0.2);
     margin:auto;
     overflow:hidden;
 }
@@ -184,7 +184,7 @@ li.draggable-item.ui-sortable-placeholder {
 .sidebar-logo-main > canvas{
     margin-left: 0px;
     margin-top: 0px;
-    border-radius: 50%;
+//    border-radius: 50%;
 }
 .secondary-top-header{display:none !important;}
 .review-list-hint, .review-list-toggler{display:none;}
@@ -320,6 +320,7 @@ function reviewlists(response){
     
         var review = $('#review-cards').html();
         $("#ilist").append(Mustache.render(review, response.cards));
+        check_list()
 }
 
 

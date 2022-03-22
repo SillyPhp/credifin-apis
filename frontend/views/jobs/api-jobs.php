@@ -6,13 +6,18 @@ use frontend\models\script\ImageScript;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 
+$date = new DateTime($get['created_at']);
+$now = new DateTime();
+$diff = date_diff($now, $date);
+$diff = $date->diff($now)->format("%d");
+
+if($diff > 30){
+    $get['last_date'] = Date('d:m:y', strtotime('+30 days'));
+}
+
+
 $type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
-echo $this->render('/widgets/drop_resume', [
-    'username' => Yii::$app->user->identity->username,
-    'type' => 'application',
-    'slug' => ''
-]);
 if (!isset($get['company_logo']) || empty($get['company_logo'])) {
     $org = \common\models\UnclaimedOrganizations::find()
         ->select(['logo', 'logo_location'])
@@ -63,7 +68,7 @@ if (empty($app['story_image']) || $app['story_image'] == 1) {
 }
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -78,7 +83,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -243,15 +248,21 @@ if (!Yii::$app->user->isGuest) {
                             </div>
                         </div>
                     </div>
-                    <div class="down-img">
-                        <h3>Download Sharing Image</h3>
-                        <a href="<?= $image; ?>" download target="_blank"><i class="fa fa-download"></i> Regular Size
-                            (1250*650)</a>
-                        <a href="<?= $Instaimage; ?>" download target="_blank"><i class="fa fa-download"></i> Square
-                            Size (800*800)</a>
-                        <a href="<?= $Storyimage; ?>" download target="_blank"><i class="fa fa-download"></i> Story
-                            Size (Default)</a>
+                </div>
+                <div class="down-img">
+                    <div class="show-img">
+                        <img src="<?= Url::to($Instaimage); ?>" alt=""/>
                     </div>
+                    <h3>Download Sharing Image</h3>
+                    <a href="<?= $image; ?>" download target="_blank" title="Banner Image" class="img-down">
+                        <img src="<?= Url::to('@eyAssets/images/pages/employers/poster.png'); ?>" alt=""/>
+                    </a>
+                    <a href="<?= $Storyimage; ?>" download target="_blank" title="Story Image" class="img-down">
+                        <img src="<?= Url::to('@eyAssets/images/pages/employers/story.png'); ?>" alt=""/>
+                    </a>
+                    <a href="<?= $Instaimage; ?>" download target="_blank" title="Post Image" class="img-down">
+                        <img src="<?= Url::to('@eyAssets/images/pages/employers/square.png'); ?>" alt=""/>
+                    </a>
                 </div>
                 <!--  org details-->
                 <?php
@@ -281,6 +292,14 @@ if (!Yii::$app->user->isGuest) {
         <?php endif; ?>
     </div>
 </section>
+
+<?php
+echo $this->render('/widgets/drop_resume', [
+    'username' => Yii::$app->user->identity->username,
+    'type' => 'application',
+    'slug' => ''
+]);
+?>
 <?php
 if ($settings["showNewPositionsWidget"]):
     ?>
@@ -301,6 +320,7 @@ if (Yii::$app->params->options->showSchema) {
             "title" : "<?= $get['title']; ?>",
             "description" : "<?= str_replace('"', "" ,str_replace("'","",$get['description'])) ?>",
             "datePosted" : "<?= $get['created_at'] ?>",
+            "validThrough" : "<?= $get['last_date'] ?>",
             "employmentType" : "<?= $get['type'] ?>",
             "hiringOrganization" : {
                 "@type" : "Organization",
@@ -320,6 +340,7 @@ if (Yii::$app->params->options->showSchema) {
     </script>
     <?php
 }
+
 ?>
 <script>
     function copyToClipboard() {
@@ -332,6 +353,37 @@ if (Yii::$app->params->options->showSchema) {
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.down-img {
+    background: #4ECDC4;
+    background: -webkit-linear-gradient(to right, #556270, #4ECDC4);
+    background: linear-gradient(to right, #556270, #333a44);
+    width: 80%;
+    margin: 15px auto;
+    text-align:center;
+    padding:20px 0;
+}
+.down-img h3 {  
+	color: #fff;
+	font-size: 16px;
+	font-family: roboto;
+	margin: 0px 0 15px;
+}
+.down-img a {
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 0px 2px;
+    width: 38px;
+    height: 36px;
+}
+.show-img img {
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+    margin-bottom: 15px;
+}
+.footer{margin-top:0 !important;}
 .job-location {
     width: 40%;
     display: block;
@@ -339,7 +391,6 @@ $this->registerCss('
     margin: 0 auto;
 }
 .job-thumb canvas {
-    border-radius: 50%;
     width: 125px;
     height: 125px;
 }
@@ -354,24 +405,6 @@ $this->registerCss('
 	right: 28px;
 	font-size: 22px;
 	cursor:pointer;
-}
-.down-img h3 {  
-	color: #fff;
-	font-size: 15px;
-	font-family: roboto;
-	margin: 10px 0 15px;
-}
-.down-img a {
-	color: #fff;
-	border: 2px solid #fff;
-	padding: 8px 25px;
-	font-size: 14px;
-	font-family: roboto;
-	font-weight: 500;
-	border-radius:6px;
-	display: inline-block;
-    margin: 5px 0px;
-    width:230px;
 }
 .form-group.field-whatsappshareform-phone, .field-whatsappshareform-phone > .form-group{
     margin-bottom:0;
@@ -463,7 +496,6 @@ border: 1px solid #eee;
     overflow: hidden;
     line-height: 125px;
     margin: auto;
-    border-radius: 50%;
 }
 .job-thumb img{
     max-width: 100px !Important;
@@ -1077,7 +1109,7 @@ $this->registerCss("
     }
     .job-single-sec .job-overview ul li {
         float: left;
-        width: 33.334%;
+        width: 33.33%;
         padding-left: 50px;
     }
     .job-single-sec .job-overview ul li i {
@@ -1450,21 +1482,10 @@ $this->registerCss("
         padding: 7px;
     }
     }
-    @media only screen and (max-width: 649px) {
-      .btn-parent{
-            left: 28px;
-            transform: unset;
-            border-radius: 0px 10px 0 0;
-      }
-    }
     @media only screen and (max-width: 430px) {
     .btn-parent{
-        position: fixed;
-        }
-    }
-     @media only screen and (max-width: 380px) {
-    .btn-parent{
-        left:0px;
+        left:30%;
+        padding:0;
         }
     }
     @media only screen and (max-width: 575px) {
@@ -1658,7 +1679,9 @@ $(document).on('keypress','.wts-txt',function(e) {
              window.open('https://api.whatsapp.com/send?phone='+val+'&text=' + location);
         }
         $('.wts-txt').val('');
-});      
+});
+loader = false;
+addToReviewList();
 getCards('" . $type . 's' . "','.blogbox','/organizations/organization-related-titles?title=" . $get['title'] . "');    
 ");
 ?>

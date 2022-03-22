@@ -817,7 +817,6 @@ display:none;
 }
 
 .large-container{
-    max-width: 1400px !important;
     padding-left: 15px;
     padding-right: 15px;
     margin:auto;
@@ -1322,9 +1321,9 @@ float:right;}
 
 .checkbox-text{
     margin-bottom:8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+//    white-space: nowrap;
+//    overflow: hidden;
+//    text-overflow: ellipsis;
 }
 
 .checkbox-text .form-group.form-md-line-input {
@@ -1756,13 +1755,13 @@ function genrate_session_token() {
     }
 }
 genrate_session_token();
-if(doc_type=='Jobs'||doc_type=="Internships"||doc_type=='Clone_Jobs'||doc_type=='Clone_Internships')
-    {
-$("#primaryfield").prop("disabled", false);          
-$("#title").prop("disabled", false);   
-$("#designations").prop("disabled", false);   
-$("#industry").prop("disabled", false);   
-    }
+// if(doc_type=='Jobs'||doc_type=="Internships"||doc_type=='Clone_Jobs'||doc_type=='Clone_Internships')
+//     {
+// $("#primaryfield").prop("disabled", false);          
+// $("#title").prop("disabled", false);   
+// $("#designations").prop("disabled", false);   
+// $("#industry").prop("disabled", false);   
+//     }
 var data_before = null;
 var checked = null;
 var array = [];
@@ -1770,7 +1769,10 @@ var prime_id = null;
 $('#primaryfield').on('change',function()
     {
       prime_id = $(this).val();
-      $('#title').val('');
+      let edit = window.location.pathname.split('/').pop()
+      if(edit != 'edit'){
+        $('#title').val('');
+      }
       $('#title').typeahead('destroy');
       load_job_titles(prime_id);
    });
@@ -1883,24 +1885,28 @@ function work_from_home(job_type_str) {
                          $('.button-submit').prop('disabled','disabled');
                        },
                    success: function(res) {
-                   if(res['status'] == 200) {
-                        $('.fader').css('display','block');    
-                        $('#loading_img').addClass('show');
-                        $('#app_id_main').val(res['app_id']);
-                        // setTimeout(function() {
-                        //     $('.m-modal, .m-cover').removeClass("hidden");
-                        //     $('.m-modal').addClass("zoom");
-                        // }, 500);
-                    function explode(){
-                     window.location.replace(redirect_url); 
-                     }
-                       setTimeout(explode, 2000);
-                     } else {
-                         $('#loading_img').removeClass('show');
+                    if(res['status'] == 200) {
+                        swal({
+                        title: "",
+                        text: "Your Application Has Been Created Successfully",
+                        type:'success',
+                        showCancelButton: false,  
+                        confirmButtonClass: "btn-primary",
+                        confirmButtonText: "Dashboard",
+                        closeOnConfirm: false, 
+                        closeOnCancel: false
+                         },
+                            function (isConfirm) { 
+                             window.location.replace(redirect_url);
+                         }
+                        );
+                      }else{
+                        swal({
+                            title:"Error",
+                            text: res['message'],
+                            });
                          $('.button-submit').prop('disabled','');
-                         $('.fader').css('display','none');
-                         toastr.error('Opps Something went wrong', 'Server Error');
-                     }
+                      }
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
                        toastr.error('Some Internal Server Error re-submit the application by clicking submit', 'Connection Error');
@@ -1989,8 +1995,7 @@ function init() {
                        required:true
                     },
                     'industry': {
-                      
-                       required:true
+                        required:true
                     },
                     'gender': {
                        required:true
@@ -2494,8 +2499,18 @@ function get_preview(session_tok) {
                        }
                     }); 
             }
+window.onbeforeunload = function() {
+return "Do you really want to leave ?";
+};
+            
+$(document).on('click', '.modal-load-class', function(e) {
+    e.preventDefault();
+    $('#modal').modal('show').find('.modal-body').load($(this).attr('value'));   
+});
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('//maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);

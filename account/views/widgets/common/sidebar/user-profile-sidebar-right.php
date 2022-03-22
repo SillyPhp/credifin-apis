@@ -47,11 +47,6 @@ use yii\helpers\Url;
 
                     </li>
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username; ?>/edit" title="" class="tree-toggler"><i
-                                    class="fa fa-pencil-square-o"></i>Edit Profile</a>
-
-                    </li>
-                    <li class="inner-child">
                         <a href="/account/jobs/saved" title="" class="tree-toggler"><i class="fa fa-money"></i>Saved
                             Jobs</a>
 

@@ -5,6 +5,34 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 $this->params['header_dark'] = false;
+$keywords = 'Search your question & find best answers';
+$image = 'https://eycdn.ams3.digitaloceanspaces.com/images/common/facebook-sharing/question-ans.png';
+$description = 'Search your question & find best answers';
+$this->title = 'Search your question & find best answers';
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
     <section class="bg-imgg">
         <div class="container">
@@ -587,7 +615,7 @@ var searchable_question = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('question'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
    remote: {
-    url:'/categories-list/question-data?q=%QUERY',
+    url:'/questions/question-data?q=%QUERY',
     wildcard: '%QUERY',    
     cache: true,    
   },

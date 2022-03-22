@@ -2,29 +2,29 @@
 $separator = Yii::$app->params->seo_settings->title_separator;
 
 if ($data['wage_type'] == 'Fixed') {
-    if($data['wage_duration'] == 'Monthly'){
+    if ($data['wage_duration'] == 'Monthly') {
         $wage = $data['fixed_wage'] * 12;
-    } elseif ($data['wage_duration'] == 'Hourly'){
+    } elseif ($data['wage_duration'] == 'Hourly') {
         $wage = $data['fixed_wage'] * 40 * 52;
-    } elseif ($data['wage_duration'] == 'Weekly'){
+    } elseif ($data['wage_duration'] == 'Weekly') {
         $wage = $data['fixed_wage'] * 52;
-    } else{
+    } else {
         $wage = $data['fixed_wage'];
     }
     $amount = $wage;
     setlocale(LC_MONETARY, 'en_IN');
     $amount = '₹ ' . utf8_encode(money_format('%!.0n', $amount)) . 'p.a.';
 } else if ($data['wage_type'] == 'Negotiable') {
-    if($data['wage_duration'] == 'Monthly'){
+    if ($data['wage_duration'] == 'Monthly') {
         $wage = $data['min_wage'] * 12;
         $wage2 = $data['max_wage'] * 12;
-    } elseif ($data['wage_duration'] == 'Hourly'){
+    } elseif ($data['wage_duration'] == 'Hourly') {
         $wage = $data['min_wage'] * 40 * 52;
         $wage2 = $data['max_wage'] * 40 * 52;
-    } elseif ($data['wage_duration'] == 'Weekly'){
+    } elseif ($data['wage_duration'] == 'Weekly') {
         $wage = $data['min_wage'] * 52;
         $wage2 = $data['max_wage'] * 52;
-    } else{
+    } else {
         $wage = $data['min_wage'];
         $wage2 = $data['max_wage'];
     }
@@ -56,7 +56,7 @@ $description = 'Empower Youth is a career development platform where you can fin
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
 $this->params['seo_tags'] = [
     'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl("https"),
+        'canonical' => Url::to(Yii::$app->request->url,'https'),
     ],
     'name' => [
         'keywords' => $keywords,
@@ -71,7 +71,7 @@ $this->params['seo_tags'] = [
         'og:locale' => 'en',
         'og:type' => 'website',
         'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl("https"),
+        'og:url' => Url::to(Yii::$app->request->url,'https'),
         'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
         'og:description' => $description,
         'og:image' => $image,
@@ -176,13 +176,13 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                                     <li><i class="fa fa-money"></i>
                                         <h3>Offered Salary <?php if ($data['wage_type'] == 'Fixed') {
                                                 echo '(Fixed)';
-                                                if($data['wage_duration'] == 'Monthly'){
+                                                if ($data['wage_duration'] == 'Monthly') {
                                                     $wage = $data['fixed_wage'] * 12;
-                                                } elseif ($data['wage_duration'] == 'Hourly'){
+                                                } elseif ($data['wage_duration'] == 'Hourly') {
                                                     $wage = $data['fixed_wage'] * 40 * 52;
-                                                } elseif ($data['wage_duration'] == 'Weekly'){
+                                                } elseif ($data['wage_duration'] == 'Weekly') {
                                                     $wage = $data['fixed_wage'] * 52;
-                                                } else{
+                                                } else {
                                                     $wage = $data['fixed_wage'];
                                                 }
                                                 $amount = $wage;
@@ -192,16 +192,16 @@ $logo_image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digi
                                                 if (!empty($data['min_wage']) || !empty($data['max_wage'])) {
                                                     echo '(Negotiable)';
                                                 }
-                                                if($data['wage_duration'] == 'Monthly'){
+                                                if ($data['wage_duration'] == 'Monthly') {
                                                     $wage = $data['min_wage'] * 12;
                                                     $wage2 = $data['max_wage'] * 12;
-                                                } elseif ($data['wage_duration'] == 'Hourly'){
+                                                } elseif ($data['wage_duration'] == 'Hourly') {
                                                     $wage = $data['min_wage'] * 40 * 52;
                                                     $wage2 = $data['max_wage'] * 40 * 52;
-                                                } elseif ($data['wage_duration'] == 'Weekly'){
+                                                } elseif ($data['wage_duration'] == 'Weekly') {
                                                     $wage = $data['min_wage'] * 52;
                                                     $wage2 = $data['max_wage'] * 52;
-                                                } else{
+                                                } else {
                                                     $wage = $data['min_wage'];
                                                     $wage2 = $data['max_wage'];
                                                 }
@@ -974,7 +974,7 @@ section.overlape {
     }
     .job-single-sec .job-overview ul li {
         float: left;
-        width: 33.334%;
+        width: 33.33%;
         padding-left: 50px;
     }
     .job-single-sec .job-overview ul li i {
@@ -1459,33 +1459,31 @@ section.overlape {
     ");
 
 $script = <<< JS
-$(document).on('click','.shortlist_job',function(e)
-    {
-         e.preventDefault();
-         var app_id = $('#application_id').val();
-         $.ajax({
-                    url:'/account/jobs/shortlist-job',
-                    data: {app_id:app_id},                         
-                    method: 'post',
-                 beforeSend:function()
-                 {
-                  $('.shortlist_job').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-                 },     
-                 success:function(data)
-                 {  
-                    if(data=='short'){
-                    $('.shortlist_job').html('<i class="fa fa-heart-o"></i> Shortlisted');
-                    $('.hover-change').addClass('col_pink');
-                    }
-                      
-                    else if(data=='unshort'){
-                    $('.shortlist_job').html('<i class="fa fa-heart-o"></i> Shortlist');
-                    $('.hover-change').removeClass('col_pink');
-                    }
-                 }
-                    
-                    });        
-    })        
+$(document).on('click','.shortlist_job',function(e){
+    e.preventDefault();
+    var app_id = $('#application_id').val();
+    $.ajax({
+        url:'/jobs/item-id',
+        data: {'itemid':app_id},                         
+        method: 'post',
+        beforeSend:function(){
+            $('.shortlist_job').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+        },     
+        success:function(data){  
+            if(data.status === 200 || data.status === 'short'){
+                $('.shortlist_job').html('<i class="fa fa-heart-o"></i> Shortlisted');
+                $('.hover-change').addClass('col_pink');
+            } else if(data.status === 'unshort'){
+                $('.shortlist_job').html('<i class="fa fa-heart-o"></i> Shortlist');
+                $('.hover-change').removeClass('col_pink');
+            } else if (data === 'error') {
+                alert('Please Login first..');
+            } else if(data.status === 201) {
+                alert('Error occurred: ' + data.message);
+            }
+        }
+    });        
+})        
    
         $(document).on('click','.apply-btn',function(e)
             {

@@ -8,7 +8,7 @@ use yii\helpers\Url;
                     <div class="college-fee-headings">
                         <h1>Don't Pay in Advance</h1>
                         <p>Pay your College Fees Monthly<br> at zero cost*</p>
-                        <a href="" class="col-apply-btn">APPLY NOW</a>
+                        <a href="/education-loans/apply" class="col-apply-btn">APPLY NOW</a>
                     </div>
                 </div>
                 <div class="col-md-5 col-sm-5">

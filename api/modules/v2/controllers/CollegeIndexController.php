@@ -993,6 +993,7 @@ class CollegeIndexController extends ApiBaseController
                 'a.applied_application_enc_id',
                 'a.application_enc_id',
                 'a.current_round',
+                'a.status application_status',
                 'g.name application_type',
                 'b.slug',
                 'b.status',
@@ -1432,11 +1433,21 @@ class CollegeIndexController extends ApiBaseController
                 }
             }
 
-            $candidates = $candidates->orderBy(
-                [
-                    new \yii\db\Expression('college_actions IS NULL DESC,college_actions ASC')
-                ]
-            )->asArray()
+            if (isset($data['order']) && isset($data['order_type']) && !empty($data['order'])) {
+                if ($data['order_type'] == 'asc') {
+                    $candidates->orderBy([$data['order'] => SORT_ASC]);
+                } else {
+                    $candidates->orderBy([$data['order'] => SORT_DESC]);
+                }
+            } else {
+
+                $candidates = $candidates->orderBy(
+                    [
+                        new \yii\db\Expression('college_actions IS NULL DESC,college_actions ASC')
+                    ]
+                );
+            }
+            $candidates = $candidates->asArray()
                 ->all();
 
             $i = 0;

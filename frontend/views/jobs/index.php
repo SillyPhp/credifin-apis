@@ -2,6 +2,7 @@
 $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
+
 Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
@@ -52,6 +53,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
     </div>
 </section>
 
+
 <section>
     <div class="container">
         <div class="row mt-20">
@@ -75,11 +77,46 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
     </div>
 </section>
 
+<?= $this->render('/widgets/work-from-home-banner', ['btnText' => 'Jobs']) ?>
+
+<?= $this->render('/widgets/info-stats'); ?>
 
 <?php
-echo $this->render('/widgets/info-stats');
+if($data = Yii::$app->webinarSlides->check()) {
+    echo $this->render('/webinars/webinar-carousel', [
+        'webinars'=>$data,
+    ]);
+}
+?>
 
-echo $this->render('/widgets/top-cities', [
+
+<section id="trendingCompaniesSectionMain">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-8 col-xs-12">
+                <h3 class="heading-style" id="trending-companies-by-location">Trending Companies in <span
+                            id="trendingCityName"></span></h3>
+            </div>
+            <div class="col-md-6 col-sm-4 col-xs-12">
+                <div class="type-1">
+                    <div>
+                        <a href="/organizations" id="location-btn" class="btn btn-3">
+                            <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" id="trendingOrgCardsMain">
+            </div>
+            <?= $this->render('/widgets/trending-companies-in-cities') ?>
+        </div>
+    </div>
+</section>
+
+<?= $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'jobs'
 ]);
@@ -114,6 +151,7 @@ echo $this->render('/widgets/jobs-by-tag');
 
 <?= $this->render('/widgets/international-jobs'); ?>
 
+
 <section class="j-tweets">
     <div class="container">
         <div class="row">
@@ -134,31 +172,16 @@ echo $this->render('/widgets/jobs-by-tag');
         ?>
     </div>
 </section>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
-            </div>
-        </div>
-    </div>
-</section>
 <!--<section>-->
 <!--    <div class="container">-->
 <!--        <div class="row">-->
-<!--            <div class="col-md-12 col-sm-12">-->
-<!--                <div class="row">-->
-<!--                    <div class="col-md-12">-->
-<!--                        <div class="heading-style">Blogs</div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div id="whats-new" class="row">-->
-<!--                </div>-->
+<!--            <div class="col-md-12">-->
+<!--                <= $this->render('/widgets/mustache/featured-employers-carousel'); ?>-->
 <!--            </div>-->
 <!--        </div>-->
 <!--    </div>-->
 <!--</section>-->
-<!--Subscribe Widget start-->
+
 <?php
 if (Yii::$app->user->isGuest) {
     echo $this->render('/widgets/subscribe-section');
@@ -233,6 +256,7 @@ $this->registerCss('
 .tweetLinks{
     text-align: right;
     margin-top:30px;
+    margin-bottom: 30px;
 }
 .tweetLinks a{
     font-family: "Open Sans", sans-serif;
@@ -271,7 +295,7 @@ $this->registerCss('
     padding:20px 0 50px;
     text-transform:capitalize;
     background:#ecf5fe;
-    margin-top:30px;
+    margin-top:0px;
 }
 .footer{
     margin-top:0px !important;
@@ -951,7 +975,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             k += 1;
         }
     }
-
 
 
     function showMoreEvent() {

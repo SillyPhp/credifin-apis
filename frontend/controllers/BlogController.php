@@ -45,7 +45,7 @@ class BlogController extends Controller
 
         $quotes = Posts::find()
             ->alias('a')
-            ->select(['a.post_enc_id', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->select(['a.post_enc_id', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
             ->joinWith(['postCategories b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false);
             }], false)
@@ -172,8 +172,10 @@ class BlogController extends Controller
         $tags = ArrayHelper::getColumn($post->postTags, 'tagEnc.name');
         if ($post) {
             $post_categories = PostCategories::find()
-                ->select(['category_enc_id'])
-                ->where(['post_enc_id' => $post->post_enc_id])
+                ->alias('a')
+                ->select(['a.category_enc_id', 'b.name category'])
+                ->joinWith(['categoryEnc b'])
+                ->where(['a.post_enc_id' => $post->post_enc_id])
                 ->asArray()
                 ->all();
             $categories = [];
@@ -201,6 +203,7 @@ class BlogController extends Controller
 
             return $this->render('detail', [
                 'post' => $post,
+                'catagory' => $post_categories,
                 'similar_posts' => $similar_posts,
             ]);
         } else {

@@ -180,13 +180,6 @@ $this->beginPage();
                 <div id="page-loading" class="page-loading">
                     <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
                 </div>
-                <!--                --><?php
-                //                if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
-                //                    echo $this->render('@frontend/views/widgets/sub-header', [
-                //                        'data' => $this->params['sub_header'],
-                //                    ]);
-                //                }
-                //                ?>
                 <?= $content; ?>
             </div>
             <p class="copyright"> <?= Yii::t('account', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('account', 'All Rights Reserved') . '.'; ?>
@@ -396,6 +389,44 @@ $this->beginPage();
                 }
             }
         ');
+    if(!Yii::$app->user->isGuest && Yii::$app->user->identity->organization){
+        $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+        $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.min.css');
+        $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+        $this->registerJs("
+            function getCookie(name){
+              var re = new RegExp(name + '=([^;]+)');
+              var value = re.exec(document.cookie);
+              return (value != null) ? unescape(value[1]) : null;
+            }   
+            function completeCompanyProfile(){
+                let cookieVal = getCookie('CompanyProfile'); 
+                if(cookieVal == 'CompanyProfile'){
+                    let date = new Date();
+                    date.setTime(date.getTime() + (1 * 24 * 60 * 60 * 1000));
+                    let jdate = date.toUTCString()
+                    const expires = 'expires=' + date.toUTCString();
+                    document.cookie='CompanyProfile='+jdate+'; expires='+expires+'; path=/'
+                }
+                
+                if (document.cookie.indexOf('CompanyProfile') != -1) {
+                    return false; 
+                }    
+                
+                $.ajax({
+                    url: '/account/dashboard/complete-company-profile',
+                    method: 'POST',
+                    data: {'". Yii::$app->request->csrfParam."':'". Yii::$app->request->csrfToken."'},
+                    success: function(response){
+                        $('body').append(response);
+                        $('#complete-company-profile').modal('show');
+                    }
+                })
+            }
+            
+            completeCompanyProfile()
+        ");
+    }
     $script = <<<JS
         // var thispageurl = window.location.pathname;
         // $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
@@ -428,9 +459,12 @@ $this->beginPage();
             "hideMethod": "fadeOut"
         };
         $(".page-loading").fadeOut();
+        
+        
 JS;
     $this->registerJs($script);
     $this->registerJsFile('@eyAssets/js/functions.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+//    $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
     $this->endBody();
     ?>
     </body>
