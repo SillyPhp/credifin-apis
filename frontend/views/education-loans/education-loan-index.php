@@ -495,12 +495,12 @@ $this->registerCss('
     font-family: roboto;
     border-radius: 4px;
     cursor: pointer;
+    position:relative;
 }
 .questions-faq li a {
     color: #333;
     display: block;
     font-size: 15px;
-    position:relative;
     font-weight:500;
 }
 .questions-faq li .collapse {
@@ -508,8 +508,8 @@ $this->registerCss('
 }
 .collaspe-trigger {
     position: absolute;
-    top: 0px;
-    right: 10px;
+    top: 8px;
+    right: 8px;
     cursor: pointer;
     transition: 0.3s ease-in all;
 }
