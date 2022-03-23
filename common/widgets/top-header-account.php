@@ -679,7 +679,7 @@ $this->registerCss('
     -ms-flex: 1 0 100%;
     flex: 1 0 100%;
     max-width: 100%;
-    padding: 30px;
+    padding: 30px 15px;
     padding-top:50px;
 }
 
