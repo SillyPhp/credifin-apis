@@ -1012,6 +1012,7 @@ $this->registerCss('
     text-transform: uppercase;
     font-weight: bold;
     text-align: justify;
+    margin-bottom: 10px;
 }
 .mt20{
     margin-top: 20px;
@@ -1164,6 +1165,12 @@ $this->registerCss('
    }
    .tele-btn a{
     padding: 10px 7px;
+   }
+   .edu-des .edu-hw-title{
+       font-size: 16px;
+   }
+   .edu-des edu-hw-description{
+       font-size: 14px;
    }
 }
 @media screen and (max-width: 590px) and (min-width:320px) {
