@@ -54,11 +54,11 @@ $companies = $companies->all();
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row featcam-carousel owl-carousel" id="featcam-carousel">
                 <?php
                 foreach ($companies as $c) {
                     ?>
-                    <div class="col-md-2 col-sm-4 col-xs-6">
+                    <div class="col-md-2 col-sm-4 col-xs-6 item">
                         <a href="/<?= $c->slug ?>" title="<?= $c->name ?>">
                             <div class="cmp-main">
                                 <div class="cmp-log">
@@ -139,8 +139,43 @@ $this->registercss('
   -webkit-box-orient: vertical;  
   overflow: hidden;
 }
+#featcam-carousel .owl-nav > button{
+    top: 0;
+    height: 140px;
+}
 ');
 $script = <<<JS
 $('.load-later').Lazy();
+
+$(document).ready(function () {
+    if ($(window).width() > 575){
+        $('.featcam-carousel').removeAttr('id');
+        $('.featcam-carousel').removeClass( "owl-carousel" );
+    }else{
+        $('.featcam-carousel').removeClass( "row" );
+        $('.featcam-carousel .item').removeClass( "col-md-2 col-sm-4 col-xs-6" );
+    }
+    $('#featcam-carousel').owlCarousel({
+        loop:true,
+        margin:10,
+        nav:true,
+        navText: [
+            "<i class='fa fa-angle-left'></i>",
+            "<i class='fa fa-angle-right'></i>"
+          ],
+        responsive:{
+            0:{
+                items:2
+            },
+            600:{
+                items:3
+            },
+            1000:{
+                items:5
+            }
+        }
+    })
+});
+
 JS;
 $this->registerJs($script);
