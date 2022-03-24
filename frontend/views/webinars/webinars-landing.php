@@ -358,7 +358,7 @@ if ($optedWebinar) {
         'discount' => '20',
         'webinar' => true,
 ]); ?>
-<section class="webinar-on-device">
+<!-- <section class="webinar-on-device">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -394,7 +394,7 @@ if ($optedWebinar) {
             </div>
         </div>
     </div>
-</section>
+</section> -->  
 
 <section class="speakers">
     <div class="container">
