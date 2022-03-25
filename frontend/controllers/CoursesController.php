@@ -142,4 +142,9 @@ class CoursesController extends Controller
             return $result;
         }
     }
+
+    public function actionGodaddyAcademy()
+    {
+        return $this->render('godaddy-academy');
+    }
 }
