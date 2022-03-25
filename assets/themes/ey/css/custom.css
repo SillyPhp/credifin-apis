@@ -201,7 +201,7 @@ button, input, optgroup, select, textarea {
 }
 @media screen and (max-width: 400px){
     .heading-style {
-        font-size: 21pt;
+        font-size: 21pt !important;
     }
 }
 /* Headings css ends*/

@@ -55,6 +55,9 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.press-bg .heading-style{
+    margin: 0;
+}
 .btn-3 {
     background-color: #424242;
 }

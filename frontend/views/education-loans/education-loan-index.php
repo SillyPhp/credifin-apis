@@ -495,12 +495,12 @@ $this->registerCss('
     font-family: roboto;
     border-radius: 4px;
     cursor: pointer;
+    position:relative;
 }
 .questions-faq li a {
     color: #333;
     display: block;
     font-size: 15px;
-    position:relative;
     font-weight:500;
 }
 .questions-faq li .collapse {
@@ -508,8 +508,8 @@ $this->registerCss('
 }
 .collaspe-trigger {
     position: absolute;
-    top: 0px;
-    right: 10px;
+    top: 8px;
+    right: 8px;
     cursor: pointer;
     transition: 0.3s ease-in all;
 }
@@ -1012,6 +1012,7 @@ $this->registerCss('
     text-transform: uppercase;
     font-weight: bold;
     text-align: justify;
+    margin-bottom: 10px;
 }
 .mt20{
     margin-top: 20px;
@@ -1164,6 +1165,12 @@ $this->registerCss('
    }
    .tele-btn a{
     padding: 10px 7px;
+   }
+   .edu-des .edu-hw-title{
+       font-size: 16px;
+   }
+   .edu-des edu-hw-description{
+       font-size: 14px;
    }
 }
 @media screen and (max-width: 590px) and (min-width:320px) {

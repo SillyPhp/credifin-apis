@@ -407,6 +407,9 @@ a.application-card-open {
 .comps-name-1{
     padding-left: 15px;
 }
+.application-card-description{
+    min-height:135px;
+}
 .skill a{
     color: black;
     font-size: 18px;
