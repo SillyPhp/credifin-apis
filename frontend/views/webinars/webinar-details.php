@@ -406,6 +406,7 @@ if ($webinar["slug"] == 'new-age-investment-strategies-10407') {
                                         $speaker_icon_path = $v['webinarSpeakers'][0]['image_location'];
                                         $speaker_org_name = $v['webinarSpeakers'][0]['org_name'];
                                         $speaker_org_logo = $v['webinarSpeakers'][0]['logo'];
+                                        $speaker_org_slug = $v['webinarSpeakers'][0]['slug'];
                                         if ($speaker_icon) {
                                             $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $speaker_icon_path . DIRECTORY_SEPARATOR . $speaker_icon;
                                         }
@@ -420,10 +421,10 @@ if ($webinar["slug"] == 'new-age-investment-strategies-10407') {
                                             <?php
                                             if(!empty($speaker_org_logo)){
                                                 ?>
-                                                    <div class="schedule-slot-org-details">
+                                                    <a href="/<?= $speaker_org_slug ?>" target="_blank" class="schedule-slot-org-details">
                                                         <img src="<?= $speaker_org_logo ?>"/>
                                                         <h5><?= $speaker_org_name?></h5>
-                                                    </div>
+                                                    </a>
                                             <?php
                                             }
                                             ?>

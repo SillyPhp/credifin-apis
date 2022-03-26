@@ -480,6 +480,7 @@ class WebinarsController extends Controller {
                         'a4.image',
                         'a4.image_location',
                         'a5.designation',
+                        'a6.slug',
                         'CASE WHEN a6.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", a6.logo_location, "/", a6.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a6.name, "&size=200&rounded=false&background=", REPLACE(a6.initials_color, "#", ""), "&color=ffffff") END logo',
                         'REPLACE(a6.name, "&amp;", "&") as org_name'
                     ]);

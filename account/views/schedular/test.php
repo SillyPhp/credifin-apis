@@ -39,26 +39,26 @@ use yii\helpers\Url;
                                     <li><a href="#details" data-toggle="tab">Add Another Detail</a></li>
                                 </ul>
                             </div>
-                            <div class="tab-content">
-                                <div class="tab-pane" id="captain">
+<!--                            <div class="tab-content">-->
+<!--                                <div class="tab-pane" id="captain">-->
                                     <?php
                                     echo $this->render('/widgets/scheduler/interview_type')
                                     ?>
-                                </div>
+<!--                                </div>-->
 
-                                <div class="tab-pane" id="description">
+<!--                                <div class="tab-pane" id="description">-->
                                     <?php
                                     echo $this->render('/widgets/scheduler/interview_details')
                                     ?>
-                                </div>
+<!--                                </div>-->
 
-                                <div class="tab-pane" id="details">
+<!--                                <div class="tab-pane" id="details">-->
                                     <?php
                                     echo $this->render('/widgets/scheduler/interviewer_details')
                                     ?>
-                                </div>
+<!--                                </div>-->
 
-                            </div>
+<!--                            </div>-->
                             <div class="wizard-footer">
                                 <div class="pull-right">
                                     <input type='button' class='btn btn-next btn-fill btn-danger btn-wd' name='next'
