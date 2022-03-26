@@ -398,11 +398,15 @@ if ($webinar["slug"] == 'new-age-investment-strategies-10407') {
                                         <span><?= date('h:i A', strtotime($v['event_time'])) ?> - <?= date('h:i A', strtotime($v['endtime'])) ?></span>
                                         <!--                                                Workshop-->
                                     </div>
-                                    <div class="schedule-slot-info">
+                                    <div style="flex: 0 0 82%;max-width: 82%;">
+                                        <div class="schedule-slot-info">
                                         <?php
                                         $image = Url::to('@eyAssets/images/pages/webinar/default-user.png');
                                         $speaker_icon = $v['webinarSpeakers'][0]['image'];
                                         $speaker_icon_path = $v['webinarSpeakers'][0]['image_location'];
+                                        $speaker_org_name = $v['webinarSpeakers'][0]['org_name'];
+                                        $speaker_org_logo = $v['webinarSpeakers'][0]['logo'];
+                                        $speaker_org_slug = $v['webinarSpeakers'][0]['slug'];
                                         if ($speaker_icon) {
                                             $image = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $speaker_icon_path . DIRECTORY_SEPARATOR . $speaker_icon;
                                         }
@@ -414,8 +418,19 @@ if ($webinar["slug"] == 'new-age-investment-strategies-10407') {
                                             </h3>
                                             <p><?= ucwords($v['webinarSpeakers'][0]['designation']) ?></p>
                                         </div>
+                                            <?php
+                                            if(!empty($speaker_org_logo)){
+                                                ?>
+                                                    <a href="/<?= $speaker_org_slug ?>" target="_blank" class="schedule-slot-org-details">
+                                                        <img src="<?= $speaker_org_logo ?>"/>
+                                                        <h5><?= $speaker_org_name?></h5>
+                                                    </a>
+                                            <?php
+                                            }
+                                            ?>
                                         <!--Info content end -->
                                     </div><!-- Slot info end -->
+                                    </div>
                                 </div>
                                 <?php
                             }
@@ -476,10 +491,9 @@ if ($webinar["slug"] == 'new-age-investment-strategies-10407') {
             </div><!-- col end-->
         </div><!-- row end-->
         <div class="row d-flex">
-            <?php if (!empty($assignSpeaker)) {
-            foreach ($assignSpeaker
-
-            as $as) {
+            <?php
+            if (!empty($assignSpeaker)) {
+            foreach ($assignSpeaker as $as) {
             $designation = ucwords($designation);
             ?>
             <div class="col-lg-3 col-md-6">
@@ -524,10 +538,10 @@ if ($webinar["slug"] == 'new-age-investment-strategies-10407') {
                                     <?php if ($designation) { ?>
                                         <span class="speakder-designation"><?= $designation ?></span>
                                     <?php }
-                                    if ($as['org_image']) {
+                                    if ($as['logo']) {
                                         ?>
                                         <img class="company-logo"
-                                             src="<?= $as['org_image'] ?>">
+                                             src="<?= $as['logo'] ?>">
                                     <?php }
                                     if ($as['org_name']) { ?>
                                         <span class="speakder-designation"><?= $as['org_name'] ?></span>
@@ -623,9 +637,7 @@ if ($webinar["slug"] == 'new-age-investment-strategies-10407') {
                 </div>
             </div><!-- row end-->
             <div class="row outflex">
-                <?php foreach ($outComes
-
-                as $oc){ ?>
+                <?php foreach ($outComes as $oc){ ?>
                 <div class="col-lg-3 col-md-6 outcome-item">
                     <?php if ($oc['bg_colour']) {
                     $color_code = '#' . $oc['bg_colour'];
@@ -1067,8 +1079,24 @@ p.show-l {
   border: 1px dashed #e5e5e5;
   border-left: none;
   width: 100%;
+  min-height: 175px;
+  display:flex;
+  justify-content:space-between;
 }
-
+.schedule-slot-info-content{
+    width: 100%;
+}
+.schedule-slot-org-details{
+    text-align: center;
+}
+.schedule-slot-org-details img{
+    max-width: 65px;
+}
+.schedule-slot-org-details h5{
+    text-align: center;
+    margin: 0;
+    margin-top: 8px;
+}
 .schedule-listing .schedule-slot-info .schedule-slot-speakers {
   position: absolute;
   left: 40px;
