@@ -124,8 +124,8 @@ class WebinarsController extends Controller {
                     'f.image', 'f.image_location',
                     'f.description',
                     'f.facebook', 'f.twitter', 'f.instagram', 'f.linkedin',
-                    'c.logo org_logo', 'c.logo_location org_logo_location',
-                    'c.name org_name'
+                    'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", c.logo_location, "/", c.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", c.name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END logo',
+                        'REPLACE(c.name, "&amp;", "&") as org_name'
                 ])
                 ->joinWith(['speakerEnc a' => function ($a) {
                     $a->andWhere(['a.is_deleted' => 0]);
@@ -480,10 +480,13 @@ class WebinarsController extends Controller {
                         'a4.image',
                         'a4.image_location',
                         'a5.designation',
+                        'CASE WHEN a6.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", a6.logo_location, "/", a6.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a6.name, "&size=200&rounded=false&background=", REPLACE(a6.initials_color, "#", ""), "&color=ffffff") END logo',
+                        'REPLACE(a6.name, "&amp;", "&") as org_name'
                     ]);
                     $d->joinWith(['speakerEnc a3' => function ($d1) {
                         $d1->joinWith(['userEnc a4']);
                         $d1->joinWith(['designationEnc a5']);
+                        $d1->joinWith(['unclaimedOrg a6']);
                     }], false);
                     $d->andWhere(['a2.is_deleted' => 0]);
                 }]);
