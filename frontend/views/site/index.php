@@ -169,6 +169,10 @@ $this->params['header_dark'] = false;
     }
 ?>
 
+<!-- Godaddy Offer start -->
+<?= $this->render('/widgets/godaddy_offer', ['webinar' => true]); ?>
+<!-- Godaddy Offer end -->
+
 
 
 <div id="app-data"></div>
