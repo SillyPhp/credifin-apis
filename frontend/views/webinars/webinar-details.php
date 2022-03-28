@@ -624,6 +624,10 @@ if ($webinar["slug"] == 'new-age-investment-strategies-10407') {
 </section>
 <!--rewards end-->
 
+<!-- Godaddy Offer start -->
+<?= $this->render('/widgets/godaddy_offer', ['webinar' => true]); ?>
+<!-- Godaddy Offer end -->
+
 <!-- ts intro start -->
 <?php if (!empty($outComes)) { ?>
     <section class="ts-intro-outcome">
