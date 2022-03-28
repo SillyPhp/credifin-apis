@@ -445,6 +445,7 @@ border: 1px solid #eee;
     box-shadow: 0 0 10px 0px #eee;
     clear: both;
     width: 100%;
+    word-break: break-all;
 }
 .d-head {
     font-size: 18px;
