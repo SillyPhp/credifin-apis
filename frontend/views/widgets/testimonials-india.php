@@ -121,6 +121,7 @@ $this->registerCss('
     font-family: lora;
     color: #fff;
     font-size: 30px;
+    font-weight: 600;
     letter-spacing: 0.3px;
 }
 .text p {
