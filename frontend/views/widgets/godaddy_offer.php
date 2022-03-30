@@ -15,11 +15,11 @@ $randomIndex = rand(0,4);
     </div>
     <div class="offer">
         <div class="offer-text">
-            <span class="upper-text">Shape Your Career with GoDaddy <?= $course ? $course . ' Course' : "";?></span>
+            <span class="upper-text" style="color: <?= ($colorArray[$randomIndex] == '#525E7A') ? '#fff;' : ''; ?>">Shape Your Career with GoDaddy <?= $course ? $course . ' Course' : "";?></span>
             <?php if($webinar){ ?>
-            <h1>Attend a webinar and avail <?= $discount ? $discount : '20';?>% discount on GoDaddy Academy Courses</h1>
+            <h1 style="color: <?= ($colorArray[$randomIndex] == '#525E7A') ? '#fff;' : ''; ?>">Attend a webinar and avail <?= $discount ? $discount : '20';?>% discount on GoDaddy Academy Courses</h1>
             <?php } else{ ?>
-            <h1>Apply for an education loan and get <?= $discount ? $discount : '20';?>% discount on GoDaddy Academy Courses</h1>
+            <h1 style="color: <?= ($colorArray[$randomIndex] == '#525E7A') ? '#fff;' : ''; ?>">Apply for an education loan and get <?= $discount ? $discount : '20';?>% discount on GoDaddy Academy Courses</h1>
             <?php } ?>
             <!--            <a href="/">Check Out</a>-->
         </div>
@@ -136,5 +136,11 @@ $this->registerCss("
     .godaddy-offer .offer {
       max-width: 196px;
   }
+  .godaddy-offer .banner-img {
+    width: 130px;
+    }
+    .godaddy-offer{
+      height: 370px;
+    }
 }
 ");
