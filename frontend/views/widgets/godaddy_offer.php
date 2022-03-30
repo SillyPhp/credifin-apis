@@ -21,7 +21,7 @@ $randomIndex = rand(0,4);
             <?php } else{ ?>
             <h1>Apply for an education loan and get <?= $discount ? $discount : '20';?>% discount on GoDaddy Academy Courses</h1>
             <?php } ?>
-            <!--            <a href="/">Check Out</a>-->
+            <a href="/courses/godaddy-academy">Check Out</a>
         </div>
     </div>
     <img src="/assets/themes/ey/images/pages/webinar-widgets/godaddy5.png" class="verticle-logo-design"/>
