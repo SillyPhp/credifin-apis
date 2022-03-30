@@ -6,7 +6,7 @@ use yii\helpers\Url;
 ?>
 
 <section>
-        <div class="row">
+        <div class="row" style="width: 100%;">
             <div class="col-md-2 col-sm-3">
             <?=
             $this->render('/widgets/sidebar-review', [
@@ -17,7 +17,7 @@ use yii\helpers\Url;
         </div>
 
 
-            <div class="col-md-10 col-sm-9">
+            <div class="col-md-10 col-sm-9" style="overflow: scroll;">
                 <table>
                     <tr>
                         <td width="10%" class="boldfont"> Choose Jobs you want to compare</td>

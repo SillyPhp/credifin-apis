@@ -653,9 +653,11 @@ body{
 .head-bg{
     background:url('" . Url::to('@eyAssets/images/pages/jobs/usa-jobs-bg.png') . "');
     background-repeat: no-repeat;
-    background-size: 100% 100%;
-    padding: 105px 0px;
-    height: 400px;
+    background-size: cover;
+    min-height: 400px;display: flex;
+    align-items: flex-end;
+    background-position: right top;
+    min-height: 400px;
 }
 .search-box{
     width: 100%;
