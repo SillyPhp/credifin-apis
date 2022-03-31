@@ -585,7 +585,7 @@ class WebinarsController extends Controller {
     }
 
     public function actionIndex() {
-        $upcomingWebinar = self::showWebinar($status = 'upcoming', '', true, '', $limit = 6);
+        $upcomingWebinar = self::showWebinar($status = 'upcoming', '', true, '', $limit = 15);
         $count = $upcomingWebinar['count'];
         $upcomingWebinar = $upcomingWebinar['webinars'];
         $pastWebinar = self::showWebinar($status = 'past', '', false)['webinars'];
