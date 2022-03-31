@@ -741,7 +741,7 @@ $uId = $user['user_enc_id'];
                     }
                     array_multisort($date, SORT_DESC, $pWeb['webinarEvents']);
                     ?>
-                    <div class="col-md-3 col-sm-4 col-xs-12">
+                    <div class="col-md-4 col-sm-6 col-xs-12">
                         <div class="web-card">
                             <div class="web-img">
                                 <a href="<?= Url::to("/webinar/" . $pWeb['slug']) ?>">
@@ -813,7 +813,7 @@ $this->registerCss('
 }
 .web-img img {
     height: 200px;
-    object-fit: cover;
+    object-fit: fill;
     width: 100%;
 }
 .web-detail-date {
