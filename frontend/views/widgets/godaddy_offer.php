@@ -34,6 +34,7 @@ $this->registerCss("
     transform: rotate(-90deg);
     right: -50px;
     bottom: 100px;
+    opacity: .1;
 }
 .godaddy-offer{
   width: 100%;
