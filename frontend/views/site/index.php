@@ -1,3 +1,4 @@
+
 <?php
 
 use yii\helpers\Url;
@@ -18,7 +19,7 @@ $this->params['header_dark'] = false;
                             </li>
                         </ul>
                         <div class="job-search-sec headerContent">
-                            <div class="job-search style2" >
+                            <div class="job-search style2" >.job-search-sec
                                 <div class="hcHidden hcActive">
                                     <h1>The World's First Integrated Career Platform</h1>
                                     <h2>The Easiest Way to Build Your Career</h2>
