@@ -262,6 +262,7 @@ body{
 #form-search .search-bar input{
     border: 0px;
     border-radius: 18px;
+    width: 245px;
 }
 .input-group-btn{
     border-radius: 18px;
@@ -513,6 +514,8 @@ float:right;
 .twitter-tweet {
     max-width: 272px !important;
     justify-content:center;
+    margin-left: auto !important;
+    margin-right: auto !important;
 }
 //.container blockquote  {
 //    display: none;

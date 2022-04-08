@@ -6,6 +6,8 @@ use yii\helpers\Url;
     <?= $this->render('/widgets/homepage_components/edu-loan-new') ?>
     <div class="clearfix"></div>
     <?= $this->render('/widgets/loan-products') ?>
+    
+    <?= $this->render('/widgets/godaddy_offer'); ?>
     <?= $this->render('/widgets/loan-why-empower-youth') ?>
     <?= $this->render('/widgets/testimonials') ?>
     <?= $this->render('/widgets/education-loan-internship') ?>

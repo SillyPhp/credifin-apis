@@ -1,3 +1,4 @@
+
 <?php
 
 use yii\helpers\Url;
@@ -168,6 +169,10 @@ $this->params['header_dark'] = false;
         ]);
     }
 ?>
+
+<!-- Godaddy Offer start -->
+<?= $this->render('/widgets/godaddy_offer', ['webinar' => true]); ?>
+<!-- Godaddy Offer end -->
 
 
 
@@ -713,6 +718,12 @@ how-icon{
     padding:9px 20px;
     background:none;
   }
+
+@media only screen and (max-width: 1199px) {
+    .job-search-sec {
+        transform: translateY(-38%) translateX(-50%);
+    }
+}
 
 @media screen and (max-width: 767px){
     .how-icon{

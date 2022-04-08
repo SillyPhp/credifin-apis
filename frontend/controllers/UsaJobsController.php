@@ -173,7 +173,7 @@ class UsaJobsController extends Controller
                         ->asArray()
                         ->one();
                     if (!empty($data['image']) && !empty($data['image_location'])) {
-                        $get[$i]['logo'] = Yii::$app->params->upload_directories->usa_jobs->departments->image . $data['image_location'] . DIRECTORY_SEPARATOR . $data['image'];
+                        $get[$i]['logo'] = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->usa_jobs->departments->image . $data['image_location'] . DIRECTORY_SEPARATOR . $data['image'];
                     } else {
                         $get[$i]['logo'] = null;
                     }
@@ -271,7 +271,7 @@ class UsaJobsController extends Controller
             $limit = Yii::$app->request->post('limit');
             $offset = Yii::$app->request->post('offset');
             $d = UsaDepartments::find()
-                ->select(['Value','slug','total_applications', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
+                ->select(['Value','slug','total_applications', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->usa_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
                 ->asArray()
                 ->orderBy(['total_applications' => SORT_DESC])
                 ->limit($limit)

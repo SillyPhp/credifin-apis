@@ -142,50 +142,63 @@ class TestCacheController extends Controller
     }
     public function actionMoveTitles($limit=50, $offset=0){
         $_flag = false;
-        $model = OpenTitles::find()
-            ->select(['title_enc_id','name'])
-            ->where(['is_deleted' => 0])
-            ->limit($limit)
-            ->offset($offset)
-            ->orderBy(['created_on' => SORT_DESC])
-            ->all();
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        if($model) {
-            foreach ($model as $m) {
-                $category = Categories::find()
-                    ->where(['name' => $m->name])
-                    ->asArray()
-                    ->one();
-                if (empty($category)) {
-                    $category = new Categories();
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $category->category_enc_id = $m->title_enc_id;
-                    $category->name = $m->name;
-                    $utilitiesModel->variables['name'] = $category->name;
-                    $utilitiesModel->variables['table_name'] = Categories::tableName();
-                    $utilitiesModel->variables['field_name'] = 'slug';
-                    $category->slug = $utilitiesModel->create_slug();
-                    $category->source = 1;
-                    $category->created_on = date('Y-m-d H:i:s');
-                    $category->created_by = Yii::$app->user->identity->user_enc_id;
-                    if ($category->save()) {
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $model = OpenTitles::find()
+                ->select(['title_enc_id','name'])
+                ->where(['is_deleted' => 0])
+                ->limit($limit)
+                ->offset($offset)
+                ->orderBy(['created_on' => SORT_DESC])
+                ->all();
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if($model) {
+                foreach ($model as $m) {
+                    $category = Categories::find()
+                        ->where(['name' => $m->name])
+                        ->asArray()
+                        ->one();
+                    if (empty($category)) {
+                        $category = new Categories();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $category->category_enc_id = $m->title_enc_id;
+                        $category->name = $m->name;
+                        $utilitiesModel->variables['name'] = $category->name;
+                        $utilitiesModel->variables['table_name'] = Categories::tableName();
+                        $utilitiesModel->variables['field_name'] = 'slug';
+                        $category->slug = $utilitiesModel->create_slug();
+                        $category->source = 1;
+                        $category->created_on = date('Y-m-d H:i:s');
+                        $category->created_by = Yii::$app->user->identity->user_enc_id;
+                        if ($category->save()) {
+                            $_flag = true;
+                        } else {
+                            $_flag = false;
+                            $transaction->rollBack();
+                        }
+                    }
+                    $titleModel = OpenTitles::findOne(['title_enc_id' => $m->title_enc_id]);
+                    $titleModel->is_deleted = 1;
+                    $titleModel->last_updated_by = Yii::$app->user->identity->user_enc_id;
+                    $titleModel->last_updated_on = date('Y-m-d H:i:s');
+                    if ($titleModel->save()) {
                         $_flag = true;
                     } else {
                         $_flag = false;
+                        $transaction->rollBack();
                     }
                 }
-                $titleModel = OpenTitles::findOne(['title_enc_id' => $m->title_enc_id]);
-                $titleModel->is_deleted = 1;
-                $titleModel->last_updated_by = Yii::$app->user->identity->user_enc_id;
-                $titleModel->last_updated_on = date('Y-m-d H:i:s');
-                if($titleModel->save()){
-                    $_flag = true;
-                } else {
-                    $_flag = false;
-                }
+            } else {
+                return [
+                    'status' => 201,
+                    'title' => 'Oops!!',
+                    'message' => 'Data Not Found'
+                ];
             }
             if($_flag){
+                $transaction->commit();
                 return [
                     'status' => 200,
                     'title' => 'Success',
@@ -198,11 +211,13 @@ class TestCacheController extends Controller
                     'message' => 'Something went wrong...'
                 ];
             }
-        } else {
+
+        } catch (Exception $e) {
+            $transaction->rollBack();
             return [
                 'status' => 201,
                 'title' => 'Oops!!',
-                'message' => 'Data Not Found'
+                'message' => $e->getMessage()
             ];
         }
     }

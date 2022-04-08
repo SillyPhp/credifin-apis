@@ -15,25 +15,26 @@ $randomIndex = rand(0,4);
     </div>
     <div class="offer">
         <div class="offer-text">
-            <span class="upper-text">Shape Your Career with GoDaddy <?= $course ? $course . ' Course' : "";?></span>
+            <span class="upper-text" style="color: <?= ($colorArray[$randomIndex] == '#525E7A') ? '#fff;' : ''; ?>">Shape Your Career with GoDaddy <?= $course ? $course . ' Course' : "";?></span>
             <?php if($webinar){ ?>
-            <h1>Attend a webinar and avail <?= $discount ? $discount : '20';?>% discount on GoDaddy Academy Courses</h1>
+            <h1 style="color: <?= ($colorArray[$randomIndex] == '#525E7A') ? '#fff;' : ''; ?>">Attend a webinar and avail <?= $discount ? $discount : '20';?>% discount on GoDaddy Academy Courses</h1>
             <?php } else{ ?>
-            <h1>Apply for an education loan and get <?= $discount ? $discount : '20';?>% discount on GoDaddy Academy Courses</h1>
+            <h1 style="color: <?= ($colorArray[$randomIndex] == '#525E7A') ? '#fff;' : ''; ?>">Apply for an education loan and get <?= $discount ? $discount : '20';?>% discount on GoDaddy Academy Courses</h1>
             <?php } ?>
-            <!--            <a href="/">Check Out</a>-->
+            <a href="/courses/godaddy-academy">Check Out</a>
         </div>
     </div>
     <img src="/assets/themes/ey/images/pages/webinar-widgets/godaddy5.png" class="verticle-logo-design"/>
 </div>
 <?php
 $this->registerCss("
-.verticle-logo-design{
+.godaddy-offer .verticle-logo-design{
     position: absolute;
     width: 265px;
     transform: rotate(-90deg);
     right: -50px;
     bottom: 100px;
+    opacity: .1;
 }
 .godaddy-offer{
   width: 100%;
@@ -44,22 +45,22 @@ $this->registerCss("
   margin: 20px 0;
 }
 
-.bg-box{
+.godaddy-offer .bg-box{
   background: #FED217;
   width: 80%;
   height: 100%;
 }
-.logo img,.banner-img img{
+.godaddy-offer .logo img, .godaddy-offer .banner-img img{
   width: 100%;
 }
-.banner-img{
+.godaddy-offer .banner-img{
   width: 250px;
   position: absolute;
   top: 50%;
   left: 80%;
   transform: translate(-50%, -50%);
 }
-.logo{
+.godaddy-offer .logo{
   position: absolute;
   top: 10px;
   left: 10px;
@@ -76,19 +77,19 @@ $this->registerCss("
   left: 80px;
   font-family: 'Playfair Display', serif;
 }
-.upper-text{
+.godaddy-offer .upper-text{
     font-weight: 600;
     font-family: monospace;
     color: #222;
     font-size:18px;
 }
-.offer h1{
+.godaddy-offer .offer h1{
   font-weight: 800;
   font-size: 2.5rem;
   margin:0px;
   color:#111;
 }
-.offer a{
+.godaddy-offer .offer a{
   text-decoration: none;
   background: #fff;
   padding: 10px 20px;
@@ -115,17 +116,17 @@ $this->registerCss("
   }
 }
 @media only screen and (max-width: 767px){
-  .banner-img {
+  .godaddy-offer .banner-img {
     width: 195px;
     }
-    .bg-box{
+    .godaddy-offer .bg-box{
         width: 100%;
     }
     .godaddy-offer .offer {
         max-width: 300px;
         left: 18px;
     }
-    .verticle-logo-design{
+    .godaddy-offer .verticle-logo-design{
         transform: rotate(0deg);
         bottom: 10px;
         left: 10px;
@@ -136,5 +137,11 @@ $this->registerCss("
     .godaddy-offer .offer {
       max-width: 196px;
   }
+  .godaddy-offer .banner-img {
+    width: 130px;
+    }
+    .godaddy-offer{
+      height: 370px;
+    }
 }
 ");
