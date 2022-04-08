@@ -691,7 +691,7 @@ $this->registerCss('
 .ey-mobile-menu .ey-mob-menu-main-items {
     list-style: none;
     margin: 0 0 20px;
-    padding: 0;
+    padding: 20px 0 0 0;
     max-height: 90vh;
     overflow: scroll;
 }
