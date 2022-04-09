@@ -16,6 +16,7 @@ use Yii;
  * @property string $address applicant address
  * @property string $city_enc_id
  * @property string $state_enc_id
+ * @property string $postal_code Postal code
  * @property string $created_by
  * @property string $created_on
  * @property string $updated_by
@@ -46,10 +47,11 @@ class LoanApplicantResidentialInfo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_app_res_info_enc_id', 'created_by'], 'required'],
+            [['loan_app_res_info_enc_id'], 'required'],
             [['residential_type', 'type', 'is_sane_cur_addr', 'is_deleted'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
             [['loan_app_res_info_enc_id', 'loan_app_enc_id', 'loan_co_app_enc_id', 'address', 'city_enc_id', 'state_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['postal_code'], 'string', 'max' => 20],
             [['loan_app_res_info_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['loan_co_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanCoApplicants::className(), 'targetAttribute' => ['loan_co_app_enc_id' => 'loan_co_app_enc_id']],
