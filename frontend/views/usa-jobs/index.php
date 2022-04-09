@@ -942,6 +942,29 @@ display:none;
 @media only screen and ( max-width:834px){
   .card-box{min-height: 24em;}
 }
+
+@media only screen and (max-width: 571px){
+    .head-bg{
+        align-items: center;
+    }
+}
+@media only screen and (max-width: 991px){
+    .card-box{
+        min-height: 24em;
+    }
+    .card-box .icon{
+        display: block;
+        width: fit-content;
+        margin: auto;
+    }
+    .card-box .text{
+        text-align: center;
+    }
+    .card-box .usa-read{
+        right: 50%;
+        transform: translateX(50%);
+    }
+}
 ");
 echo $this->render('/widgets/mustache/usa-jobs-card');
 echo $this->render('/widgets/mustache/departments_usa');

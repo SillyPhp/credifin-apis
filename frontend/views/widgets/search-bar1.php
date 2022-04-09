@@ -7,7 +7,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
             <form class="form-inline" action="/" method="GET" id="search_bar_form">
                 <div class="set-scroll-fixed">
                     <div class="row content-search">
-                        <div class="col-md-5 col-xs-12 col-sm-6">
+                        <div class="col-md-5 col-xs-12 col-sm-6 pm-0">
                             <div class="input-group">
                                 <span style="width: 40px;" class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                                 <?php
@@ -19,7 +19,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
                                         <?php }?>
                             </div>
                         </div>
-                        <div class="col-md-5 col-xs-12 col-sm-6">
+                        <div class="col-md-5 col-xs-12 col-sm-6 pm-0">
                             <div class="input-group display-flex">
                                 <span class="input-group-addon set-heights"><i class="fas fa-map-marker-alt fa-lg"></i></span>
                                 <?php
@@ -32,7 +32,7 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
                                 <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                             </div>
                         </div>
-                        <div class="col-md-2 col-xs-12 col-sm-6 text-center">
+                        <div class="col-md-2 col-xs-12 col-sm-6 pm-0 text-center">
                             <input type="submit" class="form-control submit-next hvr-float search-button" id="form_control_1" value="Search">
                         </div>
                     </div>
@@ -209,6 +209,9 @@ $this->registerCss('
     }
     .set-heights {
         padding-right: 30px;
+    }
+    .pm-0{
+        padding: 0;
     }
 }
 //@media screen and (max-width: 1160px) and (min-width: 992px) {

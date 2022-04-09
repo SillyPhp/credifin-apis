@@ -103,7 +103,8 @@ color: #2b7cb7;
                 ?>
             </div>
             <div class="col-md-10 col-sm-9 col-xs-12">
-                <div class=" col-md-12 col-sm-12">
+                <div class="row">
+                    <div class=" col-md-12 col-sm-12">
                     <?=
                     $this->render('/widgets/search-bar1',['type'=>'jobs']);
                     ?>
@@ -141,6 +142,7 @@ color: #2b7cb7;
                             </g>
                         </svg>
                     </a>
+                </div>
                 </div>
             </div>
         </div>
