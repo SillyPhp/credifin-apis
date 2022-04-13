@@ -207,6 +207,7 @@ $this->params['seo_tags'] = [
                                 Privacy Policy and the terms of use of these service providers can be accessed on their
                                 respective websites.
                             </li>
+                            <li>If you want to delete the account from our website, just write us an email on info@empoweryouth.com stating the reason to delete the account.</li>
                         </ul>
 
                         <div class="point1 point-head">5. THIRD-PARTY Website and Contents Thereof</div>
