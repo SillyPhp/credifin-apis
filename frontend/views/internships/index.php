@@ -364,6 +364,8 @@ font-weight: 100;}
     background-repeat: no-repeat;
     min-height: 570px;
     padding-top: 135px;
+    display: flex;
+    align-items: center;
 }
 .wn-box-details{
     min-height:100px !important;

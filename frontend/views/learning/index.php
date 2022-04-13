@@ -5,7 +5,7 @@ $this->params['header_dark'] = false;
 use yii\helpers\Url;
 
 ?>
-<section style="background: #242937; overflow: hidden;">
+<section style="background: #242937; overflow: hidden; padding-bottom: 20px !important;">
     <div class="container headsec">
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-12 pull-right">
@@ -947,13 +947,13 @@ $this->registerCss('
 @media (max-width: 768px) {
   #mixedSlider .MS-content .item {
     width: 49%;
-    margin:0px;
+    margin:0px !important;
   }
 }
 @media (max-width: 550px) {
   #mixedSlider .MS-content .item {
     width: 100%;
-    margin:0px;
+    margin:0px !important;
   }
 }
 #mixedSlider .MS-content .item .imgTitle a {
@@ -1533,7 +1533,33 @@ button.lc-item-video-menu {
         margin: 00px 0 0 0;
     }
 }
-
+@media only screen and (max-width: 475px){
+    .collaborators-main{
+        justify-content: space-between; 
+        align-items: center;
+    }
+    .collaborators-main .c-detail{
+        flex-basis: 50%;
+    }
+    .collaborators-main .thumb{
+        width: 135px;
+        height: 135px;
+    }
+    .collaborators-main .c-detail .social-icon:after {
+        transform: translateX(0);
+        width: 50px;
+    }
+    .collaborators-main:hover .c-detail .social-icon:after {
+        transform: translateX(0);
+        width: 100%;
+    }
+    .title{
+        margin-top: 30px;
+    }
+    .collaborators-main .c-detail .title{
+        font-size: 16px;
+    }
+}
 ');
 
 $script = <<< JS
