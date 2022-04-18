@@ -2,6 +2,8 @@
 
 namespace api\modules\v4\models;
 
+use Razorpay\Api\Api;
+use common\models\extended\Payments;
 use common\models\EducationLoanPayments;
 use common\models\extended\PaymentsModule;
 use common\models\LoanApplicantResidentialInfo;
@@ -120,39 +122,55 @@ class LoanApplication extends Model
                 }
             }
 
-            $userId = Yii::$app->user->identity->user_enc_id;
-            $total_amount = $amount = 500;
-            $gst = 0;
-            $args = [];
-            $args['amount'] = $this->floatPaisa($total_amount);
-            $args['currency'] = "INR";
-            $args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
-            $response = PaymentsModule::_authPayToken($args);
-            if (isset($response['status']) && $response['status'] == 'created') {
-                $token = $response['id'];
-                $loan_payment = new EducationLoanPayments();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $loan_payment->education_loan_payment_enc_id = $utilitiesModel->encrypt();
-                $loan_payment->loan_app_enc_id = $model->loan_app_enc_id;
-                $loan_payment->payment_token = $token;
-                $loan_payment->payment_amount = $amount;
-                $loan_payment->payment_gst = $gst;
-                $loan_payment->created_by = (($userId) ? $userId : null);
-                $loan_payment->created_on = date('Y-m-d H:i:s');
-                if (!$loan_payment->save()) {
-                    $transaction->rollBack();
-                    return false;
-                } else {
-                    $transaction->commit();
-                    $data = [];
-                    $data['loan_app_enc_id'] = $model->loan_app_enc_id;
-                    $data['payment_enc_id'] = $loan_payment->education_loan_payment_enc_id;
-                    $data['payment_id'] = $loan_payment->payment_token;
+//            $userId = Yii::$app->user->identity->user_enc_id;
+//            $total_amount = $amount = 500;
+//            $gst = 0;
+//            $args = [];
+//            $args['amount'] = $this->floatPaisa($total_amount);
+//            $args['currency'] = "INR";
+//            $args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
+//            $response = PaymentsModule::_authPayToken($args);
+//            if (isset($response['status']) && $response['status'] == 'created') {
+//                $token = $response['id'];
+//                $loan_payment = new EducationLoanPayments();
+//                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//                $loan_payment->education_loan_payment_enc_id = $utilitiesModel->encrypt();
+//                $loan_payment->loan_app_enc_id = $model->loan_app_enc_id;
+//                $loan_payment->payment_token = $token;
+//                $loan_payment->payment_amount = $amount;
+//                $loan_payment->payment_gst = $gst;
+//                $loan_payment->created_by = (($userId) ? $userId : null);
+//                $loan_payment->created_on = date('Y-m-d H:i:s');
+//                if (!$loan_payment->save()) {
+//                    $transaction->rollBack();
+//                    return false;
+//                } else {
+//                    $transaction->commit();
+//                    $data = [];
+//                    $data['loan_app_enc_id'] = $model->loan_app_enc_id;
+//                    $data['payment_enc_id'] = $loan_payment->education_loan_payment_enc_id;
+//                    $data['payment_id'] = $loan_payment->payment_token;
+//                    return [
+//                        'status' => true,
+//                        'data' => $data
+//                    ];
+//                }
+//            }
+            $transaction->commit();
+
+            $options['loan_app_id'] = $model->loan_app_enc_id;
+            $options['name'] = $model->applicant_name;
+            $options['phone'] = $model->phone;
+            $options['email'] = $model->email;
+            $paymentUrl = $this->createUrl($options);
+            if ($paymentUrl['status'] == 200) {
+                $data = [];
+                $data['loan_app_enc_id'] = $model->loan_app_enc_id;
+                $data['payment_url'] = $paymentUrl['surl'];
                     return [
                         'status' => true,
                         'data' => $data
                     ];
-                }
             } else {
                 $transaction->rollBack();
                 return false;
@@ -169,4 +187,91 @@ class LoanApplication extends Model
         $c = $amount * 100;
         return (int)$c;
     }
+
+    private function createUrl($params)
+    {
+        $model = new Payments();
+        $api_key = Yii::$app->params->razorPay->prod->apiKey;
+        $api_secret = Yii::$app->params->razorPay->prod->apiSecret;
+        $api = new Api($api_key, $api_secret);
+        $secret_reciept_code = $this->stringGenerate(8);
+        $options = [];
+        $id = $params['loan_app_id'];
+        $email = $params['email'];
+        $phone = $params['phone'];
+        $name = $params['name'];
+        $d = EducationLoanPayments::find()
+            ->select(['payment_short_url surl'])
+            ->where(['loan_app_enc_id' => $id])
+            ->andWhere([
+                'or',
+                ['!=', 'payment_short_url', null],
+                ['!=', 'payment_short_url', '']
+            ])
+            ->andWhere([
+                'or',
+                ['!=', 'payment_status', 'created'],
+                ['!=', 'payment_status', 'captured'],
+                ['payment_status' => ''],
+                ['payment_status' => null],
+            ])
+            ->asArray()
+            ->one();
+        if ($d):
+            return [
+                'surl' => $d['surl'],
+                'status' => 200
+            ];
+        endif;
+        $options['amount'] = 500;
+        $options['loan_enc_id'] = $id;
+        $options['currency'] = "INR";
+        $options['gst'] = 0;
+        $options['name'] = $name;
+        $options['email'] = $email;
+        $options['contact'] = $phone;
+        $total_amount = 500;
+        $options['total'] = $this->floatPaisa($total_amount);
+        $link = $api->invoice->create([
+                'type' => 'link',
+                'amount' => $options['total'],
+                'currency' => $options['currency'],
+                'description' => 'Application Fee',
+                'receipt' => $secret_reciept_code,
+                'customer' => [
+                    'name' => $options['name'],
+                    'email' => $options['email'],
+                    'contact' => $options['contact'],
+                ],
+                "callback_url" => "https://empoweryouth.com/payment/transections",
+                "callback_method" => "get",
+                'options' => [
+                    "checkout" => [
+                        "name" => "Empower Youth"
+                    ]
+                ]
+            ]
+        );
+        if ($link->short_url) {
+            $options['surl'] = $link->short_url;
+            $options['token'] = $secret_reciept_code;
+            if ($model->createUrl($options)) {
+                return [
+                    'surl' => $link->short_url,
+                    'status' => 200
+                ];
+            } else {
+                return [
+                    'status' => 400,
+                    'message' => 'Unable To Save Information'
+                ];
+            }
+        } else {
+            return [
+                'status' => 201,
+                'message' => 'Unable Create Url'
+            ];
+        }
+    }
+
 }
