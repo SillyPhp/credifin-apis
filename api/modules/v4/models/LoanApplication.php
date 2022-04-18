@@ -178,6 +178,7 @@ class LoanApplication extends Model
 
         } catch (\Exception $exception) {
             $transaction->rollBack();
+            print_r($exception);
             return false;
         }
     }
@@ -272,6 +273,18 @@ class LoanApplication extends Model
                 'message' => 'Unable Create Url'
             ];
         }
+    }
+
+    private function stringGenerate($n=8){
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+
+        for ($i = 0; $i < $n; $i++) {
+            $index = rand(0, strlen($characters) - 1);
+            $randomString .= $characters[$index];
+        }
+
+        return 'Ey_'.$randomString;
     }
 
 }
