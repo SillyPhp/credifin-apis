@@ -520,6 +520,16 @@ float:right;
 //.container blockquote  {
 //    display: none;
 //}
+@media only screen and (max-width: 1199px){
+    .masonry{
+        column-count: 3;
+    }
+}
+@media only screen and (max-width: 991px){
+    .masonry{
+        column-count: 2;
+    }
+}
 @media only screen and (max-width: 550px){
     .overlay-image {
         max-width: 115px;
