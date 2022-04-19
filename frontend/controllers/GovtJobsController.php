@@ -1,6 +1,7 @@
 <?php
 
 namespace frontend\controllers;
+
 use common\models\IndianGovtDepartments;
 use common\models\IndianGovtJobs;
 use common\models\Utilities;
@@ -23,12 +24,14 @@ class GovtJobsController extends Controller
 
     public function actionIndex()
     {
-      return $this->render('index');
+        return $this->render('index');
     }
-    public function actionSearch($s=null)
+
+    public function actionSearch($s = null)
     {
-        return $this->render('search-index',['s'=>str_replace("-", " ", $s)]);
+        return $this->render('search-index', ['s' => str_replace("-", " ", $s)]);
     }
+
     public function actionIndDepartmentDetail()
     {
         return $this->render('ind-department-detail');
@@ -37,23 +40,22 @@ class GovtJobsController extends Controller
     public function actionDetail($id)
     {
         $get = IndianGovtJobs::find()
-                ->alias('a')
-                ->select(['a.job_enc_id','a.slug','a.image','a.square_image','story_image','a.image_location','Organizations','CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image,
-                        'https') . '", c.image_location, "/", c.image) ELSE NULL END logo','Location','Position','Eligibility','Last_date','Pdf_link','Data'])
-                ->where(['a.slug'=>$id])
-                ->asArray()
-                ->indexBy('job_enc_id')
-            ->joinWith(['assignedIndianJobs b'=>function($b)
-            {
-                $b->joinWith(['deptEnc c'],false);
-            }],false,'LEFT JOIN')
-                ->one();
-        if (empty($get))
-        {
+            ->alias('a')
+            ->select(['a.job_enc_id', 'a.slug', 'a.image', 'a.square_image', 'story_image', 'a.image_location', 'Organizations', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image,
+                    'https') . '", c.image_location, "/", c.image) ELSE NULL END logo', 'Location', 'Position', 'Eligibility', 'Last_date', 'Pdf_link', 'Data'])
+            ->where(['a.slug' => $id])
+            ->asArray()
+            ->indexBy('job_enc_id')
+            ->joinWith(['assignedIndianJobs b' => function ($b) {
+                $b->joinWith(['deptEnc c'], false);
+            }], false, 'LEFT JOIN')
+            ->one();
+        if (empty($get)) {
             return 'Application Has Either Moved Or Deleted';
         }
-        return $this->render('detail',['get'=>$get]);
+        return $this->render('detail', ['get' => $get]);
     }
+
     public function actionGetData()
     {
         if (Yii::$app->request->isAjax) {
@@ -61,45 +63,46 @@ class GovtJobsController extends Controller
             $limit = Yii::$app->request->post('limit');
             $offset = Yii::$app->request->post('offset');
             $keywords = Yii::$app->request->post('keywords');
-            $search = trim($keywords, " "); 
+            $search = trim($keywords, " ");
             $search_pattern = ApplicationCards::makeSQL_search_pattern($search);
             $d = IndianGovtJobs::find()
-                    ->alias('a')
-                    ->select(['a.job_id id','c.slug company_slug','CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", c.image_location, "/", c.image) ELSE NULL END logo','a.slug','a.Organizations','a.Location','a.Position','a.Eligibility','a.Last_date'])
-                    ->andWhere(['a.is_deleted'=>0])
-                    ->andFilterWhere([
+                ->alias('a')
+                ->select(['a.job_id id', 'c.slug company_slug', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", c.image_location, "/", c.image) ELSE NULL END logo', 'a.slug', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
+                ->andWhere(['a.is_deleted' => 0])
+                ->andFilterWhere([
                     'or',
                     ['REGEXP', 'a.Organizations', $search_pattern],
                     ['REGEXP', 'a.Location', $search_pattern],
                     ['REGEXP', 'a.Position', $search_pattern],
                     ['REGEXP', 'a.Eligibility', $search_pattern],
-                    ])
-                ->joinWith(['assignedIndianJobs b'=>function($b)
-                {
-                    $b->joinWith(['deptEnc c'],false);
-                }],false,'LEFT JOIN');
+                ])
+                ->joinWith(['assignedIndianJobs b' => function ($b) {
+                    $b->joinWith(['deptEnc c'], false);
+                }], false, 'LEFT JOIN');
 
-                  $data =  $d->limit($limit)
-                    ->offset($offset)
-                    ->orderBy(['job_id'=>SORT_DESC])
-                    ->asArray()
-                    ->all();
+            $data = $d->limit($limit)
+                ->offset($offset)
+                ->orderBy(['job_id' => SORT_DESC])
+                ->asArray()
+                ->all();
             return [
-                'status'=>200,
-                'cards'=>$data,
-                'total'=>$d->count(),
-                'count'=>sizeof($data)
+                'status' => 200,
+                'cards' => $data,
+                'total' => $d->count(),
+                'count' => sizeof($data)
             ];
         }
     }
-    private  function utf8ize($mixed) {
-    if (is_array($mixed)) {
-        foreach ($mixed as $key => $value) {
-            $mixed[$key] = $this->utf8ize($value);
-        }
+
+    private function utf8ize($mixed)
+    {
+        if (is_array($mixed)) {
+            foreach ($mixed as $key => $value) {
+                $mixed[$key] = $this->utf8ize($value);
+            }
         } elseif (is_string($mixed)) {
-        return mb_convert_encoding($mixed, "UTF-8", "UTF-8");
-    }
+            return mb_convert_encoding($mixed, "UTF-8", "UTF-8");
+        }
         return $mixed;
     }
 
@@ -110,18 +113,18 @@ class GovtJobsController extends Controller
             $limit = Yii::$app->request->post('limit');
             $offset = Yii::$app->request->post('offset');
             $d = IndianGovtDepartments::find()
-                ->select(['Value','total_applications','slug','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
+                ->select(['Value', 'total_applications', 'slug', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
                 ->asArray()
                 ->orderBy(['total_applications' => SORT_DESC]);
 
-                $data =$d->limit($limit)
+            $data = $d->limit($limit)
                 ->offset($offset)
                 ->all();
             return [
-                'status'=>200,
-                'cards'=>$data,
-                'total'=>$d->count(),
-                'count'=>sizeof($data)
+                'status' => 200,
+                'cards' => $data,
+                'total' => $d->count(),
+                'count' => sizeof($data)
             ];
         }
     }
@@ -132,24 +135,22 @@ class GovtJobsController extends Controller
             ->select(['job_enc_id'])
             ->andWhere(['is_deleted' => 0])
             ->asArray()
-            ->all() ;
-        return $this->render('departments',[
+            ->all();
+        return $this->render('departments', [
             'all_govt_jobs' => $all_govt_jobs,
         ]);
     }
 
     public function actionDept($slug)
     {
-        if ($slug!=null) {
+        if ($slug != null) {
             $data = IndianGovtDepartments::find()
-                ->select(['dept_enc_id','Value','total_applications','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
+                ->select(['dept_enc_id', 'Value', 'total_applications', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
                 ->where(['slug' => $slug])
                 ->asArray()->one();
-            if ($data)
-            {
-                return $this->render('ind-department-detail',['data'=>$data]);
-            }
-            else {
+            if ($data) {
+                return $this->render('ind-department-detail', ['data' => $data]);
+            } else {
                 throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
             }
         }
@@ -164,24 +165,23 @@ class GovtJobsController extends Controller
             $dept_id = Yii::$app->request->post('dept_id');
             $d = IndianGovtJobs::find()
                 ->alias('a')
-                ->select(['a.job_enc_id id','a.slug','CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", c.image_location, "/", c.image) ELSE NULL END logo','c.Value Organizations','Location','Position','Eligibility','Last_date'])
-                ->joinWith(['assignedIndianJobs b'=>function($b) use($dept_id)
-                {
-                    $b->joinWith(['deptEnc c'],false);
-                    $b->andWhere(['b.dept_enc_id'=>$dept_id]);
-                }],false,'LEFT JOIN');
+                ->select(['a.job_enc_id id', 'a.slug', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", c.image_location, "/", c.image) ELSE NULL END logo', 'c.Value Organizations', 'Location', 'Position', 'Eligibility', 'Last_date'])
+                ->joinWith(['assignedIndianJobs b' => function ($b) use ($dept_id) {
+                    $b->joinWith(['deptEnc c'], false);
+                    $b->andWhere(['b.dept_enc_id' => $dept_id]);
+                }], false, 'LEFT JOIN');
 
             $data = $d->limit($limit)
-                ->orderBy(['a.created_on'=>SORT_DESC])
+                ->orderBy(['a.created_on' => SORT_DESC])
                 ->offset($offset)
                 ->asArray()
                 ->all();
 
             return [
-                'status'=>200,
-                'cards'=>$data,
-                'total'=>$d->count(),
-                'count'=>sizeof($data)
+                'status' => 200,
+                'cards' => $data,
+                'total' => $d->count(),
+                'count' => sizeof($data)
             ];
         }
     }
