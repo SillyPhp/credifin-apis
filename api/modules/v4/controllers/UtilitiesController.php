@@ -18,10 +18,10 @@ class UtilitiesController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-                'simple-application' => ['POST'],
-                'update-payment-status' => ['POST'],
                 'organization-types' => ['GET'],
                 'designations' => ['GET'],
+                'states' => ['GET'],
+                'cities' => ['GET'],
             ]
         ];
         return $behaviors;
