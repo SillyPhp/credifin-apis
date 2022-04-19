@@ -14,7 +14,7 @@ use yii\helpers\Url;
                         </div>
 
                         <div class="l-help-txt">Get an answer on the spot. We're online 8am - 7pm Mon to Fri and
-                            9am - 3pm on Sat and Sun.
+                            9am - 3pm on Sat and Sun.ss
                         </div>
                     </div>
                 </div>
@@ -51,7 +51,7 @@ $this->registerCSS('
 }
 .l-help-block1{
     box-shadow: 0 0 10px rgb(0,0,0,.2);
-    padding: 22px 20px;
+    padding: 22px 15px;
     margin-bottom:20px;
     background:#fff;
     min-height: 180px;
@@ -83,8 +83,9 @@ $this->registerCSS('
     font-family: roboto;
 }
 .chat {
-    padding: 30px;
-    display: -webkit-inline-box;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
 }
 .whats-btn {
     padding: 10px 0px 8px 0px;
@@ -101,6 +102,7 @@ $this->registerCSS('
     padding: 10px 20px;
     color: #fff;
     background: #43d854;
+    display: inline-block;
 }
 .whats-btn a:hover{
     color: #43d854;
@@ -114,6 +116,7 @@ $this->registerCSS('
     padding: 10px 22px;
     color: #fff;
     background: #00405d;
+    display: inline-block;
 }
 .tele-btn a:hover {
     color: #00405d;

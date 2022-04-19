@@ -401,6 +401,7 @@ $this->registerCss('
     padding: 10px 20px;
     color: #fff;
     background: #43d854;
+    display: inline-block;
 }
 .whats-btn a:hover{
     color: #43d854;
@@ -414,6 +415,7 @@ $this->registerCss('
     padding: 10px 22px;
     color: #fff;
     background: #00405d;
+    display: inline-block;
 }
 .tele-btn a:hover {
     color: #00405d;
@@ -422,8 +424,9 @@ $this->registerCss('
     transition: .3s ease-in-out;
 }
 .chat {
-    padding: 30px;
-    display: -webkit-inline-box;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
 }
 .bgeEd {
     background-color: #edf4fc;
@@ -1122,7 +1125,7 @@ $this->registerCss('
 
 .l-help-block1{
     box-shadow: 0 0 10px rgb(0,0,0,.2);
-    padding: 22px 20px;
+    padding: 22px 15px;
     margin-bottom:20px;
     background:#fff;
     min-height: 180px;
@@ -1162,12 +1165,6 @@ $this->registerCss('
      }
 }
 @media only screen and (max-width: 375px) {
-   .whats-btn a{
-    padding: 10px 7px;
-   }
-   .tele-btn a{
-    padding: 10px 7px;
-   }
    .edu-des .edu-hw-title{
        font-size: 16px;
    }
