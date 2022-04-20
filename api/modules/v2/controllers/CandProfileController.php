@@ -847,7 +847,7 @@ class CandProfileController extends ApiBaseController
                 }])
                 ->andWhere(['a.is_deleted' => 0])
                 ->offset($offset)
-                ->limit(500)
+                ->limit($limit)
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
                 ->all();
