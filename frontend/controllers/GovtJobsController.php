@@ -67,7 +67,7 @@ class GovtJobsController extends Controller
             $search_pattern = ApplicationCards::makeSQL_search_pattern($search);
             $d = IndianGovtJobs::find()
                 ->alias('a')
-                ->select(['a.job_id id', 'c.slug company_slug', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", c.image_location, "/", c.image) ELSE NULL END logo', 'a.slug', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
+                ->select(['a.job_id id', 'c.slug company_slug', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", c.image_location, "/", c.image) ELSE NULL END logo', 'a.slug', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
                 ->andWhere(['a.is_deleted' => 0])
                 ->andFilterWhere([
                     'or',
