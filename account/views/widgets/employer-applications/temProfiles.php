@@ -424,7 +424,7 @@ $script = <<< JS
     BTskip.hide();
  }); 
  
-  $(document).on('click','.tab_key_continue',function(e) {
+$(document).on('click','.tab_key_continue',function(e) {
    e.preventDefault();
      if ($('input[name="tRadio"]').length!=0){
          if ($('input[name="tRadio"]:checked').length==0){
@@ -437,7 +437,7 @@ $script = <<< JS
 $(document).on('click','#tab_key_skip',function(e) {
    e.preventDefault();
    skipable();
-   })
+})
 
  function skipable() {
    swal({
@@ -476,7 +476,7 @@ $(document).on('click','#tab_key_skip',function(e) {
        if (res.response.status==200){
             $('#choose_temp').show();
             $('.load-suggestions').hide();
-            $('#tab2_content').html(Mustache.render($('#temp-card').html(), res.response.data));
+            $('#tab2_content').html(Mustache.render($('#temp-card').html(), [res.response.data, type]));
             Btback.show();
             BtContinue.show();
             BTskip.show();
