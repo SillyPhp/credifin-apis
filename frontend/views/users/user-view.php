@@ -258,7 +258,7 @@ $states = ArrayHelper::map($statesModel->find()->alias('z')->select(['z.state_en
                         </li>
                     <?php }
 
-                    if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user['phone']) && !empty($userApplied)) { ?>
+                    if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user['phone'])) { ?>
                         <li class="whatsapp">
                             <a href="<?= "https://api.whatsapp.com/send?phone=" . $user['phone'] ?>"
                                target="_blank">
