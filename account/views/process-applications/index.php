@@ -427,12 +427,12 @@ usort($locations, "cmp");
             <?php
             $k = 0;
             foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
-                $tooltipTitle = ($p['field_name'] == 'Get Applications') ? 'New Application' : $p['field_name'];
+//                $tooltipTitle = ($p['field_name'] == 'Get Applications') ? 'New Application' : $p['field_name'];
                 ?>
                 <li id="<?= 'nav' . $p['field_enc_id'] ?>"
                     style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 3; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
-                       title="" onclick="roundClick()" data-original-title="<?= $tooltipTitle ?>" href="#">
+                       title="" onclick="roundClick()" data-original-title="<?= $p['field_name'] ?>" href="#">
                         <i class="<?= $p['icon'] ?>"
                            aria-hidden="true"></i><span><?= $user_pCount[$p['field_name']] ?></span>
                     </a>
@@ -938,7 +938,7 @@ usort($locations, "cmp");
                                             <?php
                                             $isHighlight = true;
                                             foreach ($arr['appliedApplicationProcesses'] as $p) {
-                                                $roundName = trim($p['field_name']) == 'Get Applications' ? 'New Applications' : $p['field_name'];
+//                                                $roundName = trim($p['field_name']) == 'Get Applications' ? 'New Applications' : $p['field_name'];
                                                 ?>
                                                 <div data-id="<?= $p['field_enc_id'] ?>">
                                                     <a href="#"
@@ -949,7 +949,7 @@ usort($locations, "cmp");
                                                            }
                                                        } ?>" value="<?= $p['applied_application_enc_id']; ?>">
                                                         <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
-                                                        <?= $roundName ?>
+                                                        <?= $p['field_name'] ?>
                                                     </a>
                                                 </div>
                                                 <?php
