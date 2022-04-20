@@ -129,7 +129,7 @@ class SchedularController extends Controller
         if ($round != null) {
             $rounds->andWhere(['sequence' => $round]);
         } else {
-            $rounds->andWhere(['<>', 'field_name', 'Get Applications']);
+            $rounds->andWhere(['<>', 'field_name', 'New Applications']);
         }
         $rounds = $rounds->asArray()
             ->all();

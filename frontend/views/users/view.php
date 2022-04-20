@@ -644,7 +644,7 @@ $uId = $user['user_enc_id'];
                                                             echo $pData['status'];
                                                         } else {
                                                             if ($pData['process'][$pData['active']]['field_name']) {
-                                                                echo(($pData['process'][$pData['active']]['field_name'] == 'Get Applications') ? 'New Application' : $pData['process'][$pData['active']]['field_name']);
+                                                                echo($pData['process'][$pData['active']]['field_name']);
                                                             } else {
                                                                 echo $pData['status'];
                                                             }

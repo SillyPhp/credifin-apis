@@ -218,6 +218,9 @@ $this->registerCss('
     }
 }
 @media only screen and (max-width: 766px) and (min-width: 320px) {
+    .test-flex{
+        display: block;
+    }
     .testimonial-bg{
         width: 100%;
     }
