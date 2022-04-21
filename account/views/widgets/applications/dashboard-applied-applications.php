@@ -99,7 +99,7 @@ use yii\helpers\Url;
         </div>
     </div>
 
-    <div class="portlet light view_applications nd-shadow">
+    <div class="portlet light view_applications nd-shadow questionnaire">
         <div class="portlet-title tabbable-line">
             <div class="caption">
                 <i class=" icon-social-twitter font-dark hide"></i>

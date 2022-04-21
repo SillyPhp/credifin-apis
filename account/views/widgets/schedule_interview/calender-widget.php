@@ -5,6 +5,11 @@
 </div>
 <?php
 $this->registerCss('
+#eventListToggler{
+    transition: all .3s ease;
+    right: 0;
+    transform: translateX(0);
+}
 .evo-calendar{
     z-index: 0 !important;
 }
@@ -42,7 +47,10 @@ button.icon-button>span.bars{
         padding: 80px 30px;
     }
 }
-@media screen and (max-width: 1375px) {
+@media screen and (max-width: 1375px) {    
+    .sidebar-hide .calendar-inner {
+        max-width: calc(100% - 300px);
+    }
     tr.calendar-header .calendar-header-day {
         font-size:15px;
     }
