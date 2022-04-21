@@ -1898,7 +1898,7 @@ class JobsController extends Controller
                     ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
                     ->where(['a.application_enc_id' => $app_id])
                     ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
-                    ->andWhere(['b.field_name' => 'Get Applications'])
+                    ->andWhere(['b.field_name' => 'New Applications'])
                     ->exists();
             }
 

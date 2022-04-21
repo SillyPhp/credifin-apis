@@ -452,7 +452,7 @@ $this->registerCss('
                     <ul>
                         <li>
                             <div class="round1"><img src="<?= Url::to('/assets/themes/email/candidate-applied/icon5.png', 'https');?>"></div>
-                            <div class="round1text">Get Applications</div>
+                            <div class="round1text">New Applications</div>
                             <div class="liner">
                                 <div class="line">
                                     <img src="<?= Url::to('/assets/themes/email/candidate-applied/line.png', 'https');?>">

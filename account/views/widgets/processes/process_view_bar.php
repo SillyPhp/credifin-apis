@@ -3,7 +3,7 @@ use yii\helpers\Html;
 ?>
 <div class="col-md-8">
     <div class="box">
-        <li class="fixed"><i class="fa fa-sitemap" aria-hidden="true"></i> Get Applications</li>
+        <li class="fixed"><i class="fa fa-sitemap" aria-hidden="true"></i> New Applications</li>
         <ul class="connected-sortable draggable-right">
             <h1 class="drag_placeholder"><i class="fa fa-cloud-download" aria-hidden="true"></i> Drag And Drop Processes Here</h1>
             <?php if (!empty($process)):

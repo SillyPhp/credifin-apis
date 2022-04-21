@@ -1,7 +1,13 @@
 <?php
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-Yii::$app->view->registerJs('var doc_type = "'. $type.'"; var elements_total_count = "'.count($process['interviewProcessFields']).'";',  \yii\web\View::POS_HEAD);
+
+if($type=='edit'){
+    Yii::$app->view->registerJs('var doc_type = "'. $type.'"; var elements_total_count = "'.count($process['interviewProcessFields']).'";',  \yii\web\View::POS_HEAD);
+}else{
+    Yii::$app->view->registerJs('var doc_type = "'. $type.'";',  \yii\web\View::POS_HEAD);
+}
+
 ?>
     <div class="row">
         <div class="col-md-4">
@@ -548,8 +554,8 @@ if (doc_type=='clone'||doc_type=='edit')
         var el = $('.draggable-right .form_output');
         var result = [];
         var obj2 = {
-            'label': 'Get Applications',
-            'name': 'Get Applications',
+            'label': 'New Applications',
+            'name': 'New Applications',
             'icon': 'fa fa-sitemap',
             'help_text': ''
         };

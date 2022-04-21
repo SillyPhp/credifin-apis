@@ -293,7 +293,7 @@ $uId = $user['user_enc_id'];
                             </li>
                         <?php }
 
-                        if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user['phone']) && !empty($userApplied)) { ?>
+                        if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user['phone'])) { ?>
                             <li class="whatsapp">
                                 <a href="<?= "https://api.whatsapp.com/send?phone=" . $user['phone'] ?>"
                                    target="_blank">
@@ -644,7 +644,7 @@ $uId = $user['user_enc_id'];
                                                             echo $pData['status'];
                                                         } else {
                                                             if ($pData['process'][$pData['active']]['field_name']) {
-                                                                echo(($pData['process'][$pData['active']]['field_name'] == 'Get Applications') ? 'New Application' : $pData['process'][$pData['active']]['field_name']);
+                                                                echo($pData['process'][$pData['active']]['field_name']);
                                                             } else {
                                                                 echo $pData['status'];
                                                             }

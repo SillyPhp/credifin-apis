@@ -14,6 +14,7 @@ use common\models\Industries;
 use common\models\Skills;
 use common\models\User;
 use common\models\UserAccessTokens;
+use common\models\UserEducation;
 use common\models\UserOtherDetails;
 use common\models\UserPreferences;
 use common\models\UserPreferredIndustries;
@@ -21,6 +22,9 @@ use common\models\UserPreferredJobProfile;
 use common\models\UserPreferredLocations;
 use common\models\UserPreferredSkills;
 use common\models\Users;
+use common\models\UserSkills;
+use common\models\UserSpokenLanguages;
+use common\models\UserTypes;
 use Yii;
 use yii\helpers\Url;
 use common\models\Utilities;
@@ -29,6 +33,7 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\web\Response;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\filters\ContentNegotiator;
 
@@ -52,6 +57,8 @@ class CandProfileController extends ApiBaseController
                 'profile-picture' => ['POST', 'OPTIONS'],
                 'profiles' => ['POST', 'OPTIONS'],
                 'upload-resume' => ['POST', 'OPTIONS'],
+                'uncompleted-profile-users' => ['GET', 'OPTIONS'],
+                'get-uncompleted-profile-users' => ['GET', 'OPTIONS'],
             ]
         ];
 
@@ -745,5 +752,165 @@ class CandProfileController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    public function actionUncompletedProfileUsers($page = null, $limit = null, $permissionKey)
+    {
+        if($permissionKey == Yii::$app->params->EmpowerYouth->permissionKey) {
+            if (!$page) {
+                $page = 1;
+            }
+            if (!$limit) {
+                $limit = 10;
+            }
+            $offset = ($page - 1) * $limit;
+            $users = Users::find()
+                ->alias('a')
+                ->distinct()
+                ->select(['a.user_enc_id', 'a.email', 'CONCAT(a.first_name, " ", a.last_name) name', 'a.username', 'a.gender', 'a.description', 'a.image', 'a.city_enc_id', 'a.dob', 'a.experience', 'a.job_function', 'a.created_on'])
+                ->joinWith(['userTypeEnc b'])
+                ->joinWith(['userEducations c' => function ($c) {
+                    $c->addSelect(['c.user_enc_id', 'c.education_enc_id']);
+                }])
+                ->joinWith(['userSkills d' => function ($d) {
+                    $d->addSelect(['d.created_by', 'd.user_skill_enc_id']);
+                }])
+                ->joinWith(['userSpokenLanguages e' => function ($e) {
+                    $e->addSelect(['e.created_by', 'e.user_language_enc_id']);
+                }])
+                ->andWhere(['a.is_deleted' => 0])
+                ->offset($offset)
+                ->limit($limit)
+                ->orderBy(['a.created_on' => SORT_DESC])
+                ->asArray()
+                ->all();
+            if ($users) {
+                $postData = [];
+                foreach ($users as $user) {
+                    if ($user['gender'] == '' || $user['description'] == '' || $user['image'] == '' || $user['city_enc_id'] == '' || $user['dob'] == '' || $user['experience'] == '' || $user['job_function'] == '' || empty($user['userEducations']) || empty($user['userSkills']) || empty($user['userSpokenLanguages'])) {
+                        $percentage = self::getProfileCompleted($user['user_enc_id']);
+                        $postDataArray = [
+                            "permissionKey" => Yii::$app->params->EmpowerYouth->permissionKey,
+                            "user_enc_id" => $user['user_enc_id'],
+                            "name" => $user['name'],
+                            "username" => $user['username'],
+                            "profile_percentage" => $percentage,
+                            "email" => $user['email'],
+                            "date_time" => date('Y-m-d H:i:s'),
+                        ];
+                        array_push($postData, $postDataArray);
+
+                    }
+                }
+                $postData = http_build_query($postData);
+                $url = 'https://services.empoweryouth.com/api/v1/user/complete-user-profile';
+                $cURL = curl_init();
+                curl_setopt($cURL, CURLOPT_URL, $url);
+                curl_setopt($cURL, CURLOPT_POSTFIELDS, $postData);
+                curl_setopt($cURL, CURLOPT_HEADER, false);
+                curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($cURL, CURLOPT_POST, true);
+                $response = curl_exec($cURL);
+                curl_close($cURL);
+                return $this->response(200, ['status' => 200, 'message' => $response]);
+            } else {
+                return $this->response(201, ['status' => 201, 'message' => 'Data Not Found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetUncompletedProfileUsers($page = null, $limit = null, $permissionKey)
+    {
+        if ($permissionKey == Yii::$app->params->EmpowerYouth->permissionKey) {
+            if (!$page) {
+                $page = 1;
+            }
+            if (!$limit) {
+                $limit = 10;
+            }
+            $offset = ($page - 1) * $limit;
+            $users = Users::find()
+                ->alias('a')
+                ->distinct()
+                ->select(['a.user_enc_id', 'a.email', 'CONCAT(a.first_name, " ", a.last_name) name', 'a.username', 'a.created_on'])
+                ->joinWith(['userTypeEnc b'])
+                ->joinWith(['userEducations c' => function ($c) {
+                    $c->addSelect(['c.user_enc_id', 'c.education_enc_id']);
+                }])
+                ->joinWith(['userSkills d' => function ($d) {
+                    $d->addSelect(['d.created_by', 'd.user_skill_enc_id']);
+                }])
+                ->joinWith(['userSpokenLanguages e' => function ($e) {
+                    $e->addSelect(['e.created_by', 'e.user_language_enc_id']);
+                }])
+                ->andWhere(['a.is_deleted' => 0])
+                ->offset($offset)
+                ->limit($limit)
+                ->orderBy(['a.created_on' => SORT_DESC])
+                ->asArray()
+                ->all();
+            if ($users) {
+                for ($i = 0; $i < count($users); $i++) {
+                    if ($users[$i]['gender'] == '' || $users[$i]['description'] == '' || $users[$i]['image'] == '' || $users[$i]['city_enc_id'] == '' || $users[$i]['dob'] == '' || $users[$i]['experience'] == '' || $users[$i]['job_function'] == '' || empty($users[$i]['userEducations']) || empty($users[$i]['userSkills']) || empty($users[$i]['userSpokenLanguages'])) {
+                        $percentage = self::getProfileCompleted($users[$i]['user_enc_id']);
+                        $users[$i] += ['profile_percentage' => $percentage];
+                    }
+                }
+                return $this->response(200, ['status' => 200, 'data' => $users]);
+            } else {
+                return $this->response(201, ['status' => 201, 'message' => 'Data Not Found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function getProfileCompleted($key)
+    {
+        $d = (new Query())
+            ->from(['a' => \common\models\Users::tableName()])
+            ->select(['a.user_enc_id', 'a.email', 'CONCAT(a.first_name, " ", a.last_name) name', 'a.username', 'a.gender', 'a.description', 'a.image', 'a.city_enc_id', 'a.dob', 'a.experience', 'a.job_function', 'e.user_language_enc_id', 'd.user_skill_enc_id', 'c.education_enc_id'])
+            ->leftJoin(UserTypes::tableName() . 'as b', 'b.user_type_enc_id = a.user_type_enc_id')
+            ->leftJoin(UserEducation::tableName() . 'as c', 'c.user_enc_id = a.user_enc_id')
+            ->leftJoin(UserSkills::tableName() . 'as d', 'd.created_by = a.user_enc_id')
+            ->leftJoin(UserSpokenLanguages::tableName() . 'as e', 'e.created_by = a.user_enc_id')
+            ->andWhere(['a.user_enc_id' => $key])
+            ->one();
+        $per = 0;
+        $total = 10;
+        $t = 100 / $total;
+        if ($d['user_language_enc_id']) {
+            $per += $t;
+        }
+        if ($d['user_skill_enc_id']) {
+            $per += $t;
+        }
+        if ($d['education_enc_id']) {
+            $per += $t;
+        }
+        if ($d['experience']) {
+            $per += $t;
+        }
+        if ($d['image']) {
+            $per += $t;
+        }
+        if ($d['job_function']) {
+            $per += $t;
+        }
+        if ($d['description']) {
+            $per += $t;
+        }
+        if ($d['gender']) {
+            $per += $t;
+        }
+        if ($d['city_enc_id']) {
+            $per += $t;
+        }
+        if ($d['dob']) {
+            $per += $t;
+        }
+        return $per;
     }
 }
