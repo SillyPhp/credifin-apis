@@ -138,7 +138,7 @@ $this->registerCss('
 }
 .org-colr {
     color: #ff7803;
-    font-size: 60px;
+    font-size: 50px;
     font-family: lora;
 }
 .bg-white{
@@ -206,6 +206,7 @@ $this->registerCss('
 	border-radius: 4px;
 	display: inline-block;
 	width: 150px;
+    margin: 5px 0;
 }
 .btn-orange{
     background: #ff7803 !important;

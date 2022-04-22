@@ -396,7 +396,7 @@ $this->registerCss('
 }
 .l-help-block1{
     box-shadow: 0 0 10px rgb(0,0,0,.2);
-    padding: 22px 20px;
+    padding: 22px 15px;
     margin-bottom:20px;
     background:#fff;
     min-height: 180px;
@@ -438,8 +438,9 @@ $this->registerCss('
     color: #1b4145;
 }
 .chat {
-    padding: 30px;
-    display: -webkit-inline-box;
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
 }
 .whats-btn {
     padding: 0px 0px 8px 0px;
@@ -452,6 +453,7 @@ $this->registerCss('
     padding: 10px 20px;
     color: #fff;
     background: #43d854;
+    display: inline-block;
 }
 .whats-btn a:hover {
     color: #43d854;
@@ -465,6 +467,7 @@ $this->registerCss('
     padding: 10px 22px;
     color: #fff;
     background: #00405d;
+    display: inline-block;
 }
 .tele-btn a:hover {
     color: #00405d;
@@ -481,10 +484,14 @@ $this->registerCss('
         line-height: 30px;
         }
     .ep-vector img {
-        max-width: 350px;
+        max-width: 250px;
     }
     .ep-header {
         min-height: 520px;
+    }
+    .ep-header .row{
+        display: flex; 
+        align-items: center;
     }
 }
 @media screen and (max-width: 767px) and (min-width:320px) {
@@ -496,7 +503,7 @@ $this->registerCss('
         line-height: 24px;
         }
     .ep-vector img {
-        max-width: 250px;
+        max-width: 150px;
     }
     .ep-text {
         margin-top: 0px;

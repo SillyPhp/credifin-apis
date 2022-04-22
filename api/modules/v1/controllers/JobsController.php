@@ -266,7 +266,7 @@ class JobsController extends ApiBaseController
                 ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
                 ->where(['a.application_enc_id' => $application_details->application_enc_id])
                 ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
-                ->andWhere(['b.field_name' => 'Get Applications'])
+                ->andWhere(['b.field_name' => 'New Applications'])
                 ->exists();
 
             $result['hasQuestionnaire'] = $application_questionnaire;
@@ -459,7 +459,7 @@ class JobsController extends ApiBaseController
                     ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
                     ->where(['a.application_enc_id' => $reqParams['job_id']])
                     ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
-                    ->andWhere(['b.field_name' => 'Get Applications'])
+                    ->andWhere(['b.field_name' => 'New Applications'])
                     ->exists();
 
                 $model->id = $reqParams['job_id'];
@@ -767,7 +767,7 @@ class JobsController extends ApiBaseController
                 ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
                 ->where(['a.application_enc_id' => $data['application_enc_id']])
                 ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
-                ->andWhere(['b.field_name' => 'Get Applications'])
+                ->andWhere(['b.field_name' => 'New Applications'])
                 ->exists();
 
             $i = 0;
