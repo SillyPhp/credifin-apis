@@ -35,7 +35,6 @@ class LoanApplication extends Model
     public $loan_type;
     public $current_city;
     public $annual_income;
-    public $is_simple;
     public $occupation;
     public $vehicle_type;
 
@@ -85,7 +84,7 @@ class LoanApplication extends Model
             }
 
             // saving other options
-            if (!$this->is_simple && ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Vehicle Loan')) {
+            if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Vehicle Loan') {
                 $loan_options = new LoanApplicationOptions();
                 $loan_options->option_enc_id = $utilitiesModel->encrypt();
                 $loan_options->loan_app_enc_id = $model->loan_app_enc_id;
@@ -106,7 +105,7 @@ class LoanApplication extends Model
             }
 
             // saving address
-            if (!$this->is_simple && ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Loan Against Property' || $this->loan_type == 'Vehicle Loan')) {
+            if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Loan Against Property' || $this->loan_type == 'Vehicle Loan') {
                 $loan_address = new LoanApplicantResidentialInfo();
                 $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
                 $loan_address->loan_app_enc_id = $model->loan_app_enc_id;

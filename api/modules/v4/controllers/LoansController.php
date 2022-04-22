@@ -3,11 +3,15 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\BusinessLoanApplication;
+use common\models\LeadsApplications;
+use common\models\Utilities;
 use api\modules\v4\models\LoanApplication;
 use common\models\EducationLoanPayments;
 use common\models\LoanApplications;
 use yii\filters\VerbFilter;
 use Yii;
+use yii\filters\Cors;
+use yii\filters\ContentNegotiator;
 
 class LoansController extends ApiBaseController
 {
@@ -18,10 +22,22 @@ class LoansController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-                'loan-application' => ['POST'],
-                'update-payment-status' => ['POST'],
+                'loan-application' => ['POST', 'OPTIONS'],
+                'update-payment-status' => ['POST', 'OPTIONS'],
+                'contact-us' => ['POST', 'OPTIONS'],
             ]
         ];
+
+        $behaviors['corsFilter'] = [
+            'class' => Cors::className(),
+            'cors' => [
+                'Origin' => ['http://localhost:3000'],
+                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                'Access-Control-Max-Age' => 86400,
+                'Access-Control-Expose-Headers' => [],
+            ],
+        ];
+
         return $behaviors;
     }
 
@@ -84,6 +100,28 @@ class LoansController extends ApiBaseController
             $loan_payments->update();
         }
         return $this->response(200, ['status' => 200, 'message' => 'success']);
+    }
+
+    public function actionContactUs()
+    {
+        $params = Yii::$app->request->post();
+
+        $model = new LeadsApplications();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $model->application_enc_id = $enc_id = $utilitiesModel->encrypt();
+        $model->application_number = date('ymd') . time();
+        $model->first_name = $params['first_name'];
+        $model->last_name = $params['last_name'];
+        $model->student_email = $params['email'];
+        $model->student_mobile_number = $params['phone'];
+        $model->message = $params['message'];
+        if (!$model->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'Some Internal Server Error']);
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
     }
 
 }
