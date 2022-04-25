@@ -10,6 +10,7 @@ use Yii;
  * @property int $id auto increament id
  * @property string $telegram_enc_id table encripted id
  * @property string $name name of the telegram group
+ * @property string $username
  * @property string $group_id telegram group id for which message set
  * @property string $created_on
  * @property string $created_by
@@ -36,15 +37,23 @@ class TelegramGroups extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['telegram_enc_id', 'name', 'group_id', 'created_by', 'is_deleted'], 'required'],
+            [['telegram_enc_id', 'name', 'username', 'group_id', 'created_by', 'is_deleted'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['telegram_enc_id', 'name', 'group_id'], 'string', 'max' => 200],
+            [['telegram_enc_id', 'name', 'username', 'group_id'], 'string', 'max' => 200],
             [['created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['telegram_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignTelegramGroups()
+    {
+        return $this->hasMany(AssignTelegramGroups::className(), ['group_enc_id' => 'telegram_enc_id']);
     }
 
     /**
