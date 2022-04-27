@@ -31,7 +31,7 @@ class LoansController extends ApiBaseController
         $behaviors['corsFilter'] = [
             'class' => Cors::className(),
             'cors' => [
-                'Origin' => ['http://localhost:3000'],
+                'Origin' => ['https://www.empowerloans.in/'],
                 'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
                 'Access-Control-Max-Age' => 86400,
                 'Access-Control-Expose-Headers' => [],
