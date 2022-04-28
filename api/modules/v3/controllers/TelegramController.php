@@ -2,6 +2,7 @@
 
 namespace api\modules\v3\controllers;
 
+use common\models\IndianGovtJobs;
 use common\models\TelegramBots;
 use common\models\TelegramGroups;
 use common\models\Webinar;
@@ -23,6 +24,7 @@ class TelegramController extends ApiBaseController
                 'get-groups' => ['GET', 'OPTIONS'],
                 'get-bots' => ['GET', 'OPTIONS'],
                 'get-webinars' => ['GET', 'OPTIONS'],
+                'get-blogs' => ['GET', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -99,8 +101,8 @@ class TelegramController extends ApiBaseController
             $group_ids = [];
             if ($bots['response']['status'] == 200) {
                 if ($groups['response']['status'] == 200) {
-                    foreach ($groups['response']['data'] as $d){
-                        array_push($group_ids , $d['group_id']);
+                    foreach ($groups['response']['data'] as $d) {
+                        array_push($group_ids, $d['group_id']);
                     }
                     $eventModel = WebinarEvents::find()
                         ->alias('a')
@@ -161,4 +163,68 @@ class TelegramController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
+    public function actionGetGovtJobs($permissionKey, $page = null, $limit = null)
+    {
+        if ($permissionKey == Yii::$app->params->EmpowerYouth->permissionKey) {
+        $today = date('Y-m-d H:i:s');
+        $num_days = date('d') - 1;
+        $past = date_create($today)->modify('midnight -' . $num_days . 'days -1 minute')->format('Y-m-d H:i:s');
+        if (!$page) {
+            $page = 1;
+        }
+        if (!$limit) {
+            $limit = 1;
+        }
+        $offset = ($page - 1) * $limit;
+        $bots = self::actionGetBots(Yii::$app->params->EmpowerYouth->permissionKey, 'eywebinarbot');
+        $groups = self::actionGetGroups(Yii::$app->params->EmpowerYouth->permissionKey, '', 'govt-jobs');
+        $group_ids = [];
+        $jobs = IndianGovtJobs::find()
+            ->select(['job_enc_id', 'Location', 'Position', 'Eligibility', 'slug', 'created_on'])
+            ->where(['is_deleted' => 0])
+            ->orderBy(['created_on' => SORT_DESC])
+            ->andWhere(['between', 'created_on', $past, $today])
+            ->offset($offset)
+            ->limit($limit)
+            ->asArray()
+            ->one();
+        $url = 'https://www.empoweryouth.com/govt-jobs/detail/' . $jobs['slug'];
+        if ($bots['response']['status'] == 200) {
+            if ($groups['response']['status'] == 200) {
+                foreach ($groups['response']['data'] as $d) {
+                    array_push($group_ids, $d['group_id']);
+                }
+                if ($jobs) {
+                    $jobYear = date('Y', strtotime($jobs['created_on']));
+                    $content = "<b>GOVT. JOB  " . $jobYear . chr(10) . chr(10) . "</b><b>" . chr(10) . chr(10) . "</b>\xE2\x9C\x85 <b>" . 'Location: ' . $jobs['Location'] . chr(10) . chr(10) . "</b>\xE2\x9C\x85 <b>" . 'Position: ' . $jobs['Position'] . "</b>";
+                    if ($jobs['Eligibility']) {
+                        $content .=   chr(10) . chr(10) . "\xE2\x9C\x85 <b>" . 'Eligibility: ' . $jobs['Eligibility'] . "</b>";
+                    }
+                    $content .= chr(10) . chr(10) . $url;
+                    $postData = [
+                        "permissionKey" => Yii::$app->params->EmpowerYouth->permissionKey,
+                        "job_enc_id" => $jobs['job_enc_id'],
+                        "url" => $url,
+                        "group_id" => $group_ids,
+                        "api_key" => $bots['response']['data'][0]['api_key'],
+                        "button_text" => "Apply",
+                        "button_url" => $url,
+                        "content" => $content,
+                    ];
+                    return $this->response(200, ['status' => 200, 'data' => $postData]);
+                } else {
+                    return $this->response(201, ['status' => 201, 'message' => 'Data Not Found']);
+                }
+            } else {
+                return $this->response(204, ['status' => 204, 'message' => 'Groups Not Found']);
+            }
+        } else {
+            return $this->response(202, ['status' => 202, 'message' => 'Bots Not Found']);
+        }
+    }  else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
 }
