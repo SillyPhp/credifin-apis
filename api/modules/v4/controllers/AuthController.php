@@ -2,16 +2,20 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\ProfilePicture;
 use api\modules\v4\models\Candidates;
 use api\modules\v4\models\LoginForm;
 use api\modules\v4\models\IndividualSignup;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
+use common\models\Utilities;
+use yii\web\UploadedFile;
 use Yii;
 use yii\helpers\Url;
 use yii\filters\Cors;
 use yii\filters\auth\HttpBearerAuth;
+
 
 class AuthController extends ApiBaseController
 {
@@ -22,7 +26,8 @@ class AuthController extends ApiBaseController
             'except' => [
                 'signup',
                 'validate',
-                'login'
+                'login',
+                'upload-profile-picture'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -32,6 +37,7 @@ class AuthController extends ApiBaseController
                 'signup' => ['POST', 'OPTIONS'],
                 'validate' => ['POST', 'OPTIONS'],
                 'login' => ['POST', 'OPTIONS'],
+                'upload-profile-picture' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -130,6 +136,14 @@ class AuthController extends ApiBaseController
         $data['phone'] = $user->phone;
         $data['email'] = $user->email;
         $data['access_token'] = $token->access_token;
+        $data['refresh_token'] = $token->refresh_token;
+        $data['access_token_expiry_time'] = $token->access_token_expiration;
+        $data['refresh_token_expiry_time'] = $token->refresh_token_expiration;
+        $data['image'] = '';
+
+        if ($user->image) {
+            $data['image'] = Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $user->image_location . DIRECTORY_SEPARATOR . $user->image, 'https');
+        }
 
         return $data;
     }
@@ -185,5 +199,28 @@ class AuthController extends ApiBaseController
             'user_enc_id' => $user->user_enc_id,
             'source' => $source
         ]);
+    }
+
+    public function actionUploadProfilePicture()
+    {
+        if ($user = $this->isAuthorized()) {
+            $pictureModel = new ProfilePicture();
+            $pictureModel->profile_image = UploadedFile::getInstanceByName('profile_image');
+            if ($pictureModel->profile_image && $pictureModel->validate()) {
+                if ($user_id = $pictureModel->update($user->user_enc_id)) {
+                    $user_image = Users::find()
+                        ->select(['CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", image_location, "/", image) ELSE NULL END image'])
+                        ->where(['user_enc_id' => $user_id])
+                        ->asArray()
+                        ->one();
+                    return $this->response(200, ['status' => 200, 'image' => $user_image['image']]);
+                }
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            } else {
+                return $this->response(409, ['status' => 409, 'message' => 'conflict']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 }
