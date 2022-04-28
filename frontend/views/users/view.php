@@ -293,7 +293,7 @@ $uId = $user['user_enc_id'];
                             </li>
                         <?php }
 
-                        if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user['phone']) && !empty($userApplied)) { ?>
+                        if (Yii::$app->user->identity->organization->organization_enc_id && !empty($user['phone'])) { ?>
                             <li class="whatsapp">
                                 <a href="<?= "https://api.whatsapp.com/send?phone=" . $user['phone'] ?>"
                                    target="_blank">
