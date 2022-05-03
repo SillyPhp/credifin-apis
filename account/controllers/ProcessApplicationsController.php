@@ -27,8 +27,7 @@ class ProcessApplicationsController extends Controller
         return parent::beforeAction($action);
     }
 
-    private function GetJobsOfCompany($appType, $app_id, $appFor)
-    {
+    private function GetJobsOfCompany($appType, $app_id, $appFor){
         $all_application = EmployerApplications::find()
             ->distinct()
             ->alias('a')
@@ -72,7 +71,8 @@ class ProcessApplicationsController extends Controller
         if (Yii::$app->user->identity->organization) {
             $application_name = EmployerApplications::find()
                 ->alias('a')
-                ->select(['c.name job_title', 'a.application_for', 'a.application_for', 'a.slug', 'a.application_enc_id', 'a.interview_process_enc_id', 'ate.name application_type', 'pe.icon',
+                ->select(['c.name job_title', 'a.application_for', 'a.application_for', 'a.slug',
+                    'a.application_enc_id', 'a.interview_process_enc_id', 'ate.name application_type', 'pe.icon',
                     '(CASE
                 WHEN a.experience = "0" THEN "No Experience"
                 WHEN a.experience = "1" THEN "Less Than 1 Year"
@@ -88,7 +88,8 @@ class ProcessApplicationsController extends Controller
                 WHEN a.minimum_exp IS NOT NUll AND a.maximum_exp IS NUll THEN CONCAT("Minimum ",a.minimum_exp," Years Experience") 
                 WHEN a.minimum_exp IS NUll AND a.maximum_exp IS NOT NUll THEN CONCAT("Maximum ",a.maximum_exp," Years Experience") 
                 ELSE "No Experience" 
-                END) as experience', 'ao.wage_type', 'ao.fixed_wage', 'ao.min_wage', 'ao.max_wage', 'ao.wage_duration', 'a.application_for','a.status'])
+                END) as experience', 'ao.wage_type', 'ao.fixed_wage', 'ao.min_wage', 'ao.max_wage',
+                    'ao.wage_duration', 'a.application_for','a.status'])
                 ->where(['a.application_enc_id' => $aidk])
                 ->andWhere(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->joinWith(['title b' => function ($b) {
@@ -125,7 +126,8 @@ class ProcessApplicationsController extends Controller
                     ->where(['a.application_enc_id' => $application_id])
                     ->select(['a.current_round', 'a.id', 'e.resume', 'b.phone', 'b4.name college_name', 'b4.slug college_slug', 'b4.initials_color college_initials',
                         'CASE WHEN b4.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo) . '", b4.logo_location, "/", b4.logo) ELSE NULL END college_logo',
-                        'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, b.initials_color, CASE WHEN b.last_name IS NOT NULL THEN CONCAT(b.first_name, " ", b.last_name) ELSE b.first_name END name , CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(DISTINCT(c.is_completed)) total', 'a.created_by', 'a.created_on', 'a.rejection_window'])
+                        'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, b.initials_color, CASE WHEN b.last_name IS NOT NULL THEN CONCAT(b.first_name, " ", b.last_name) ELSE b.first_name END name ,
+                         CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(DISTINCT(c.is_completed)) total', 'a.created_by', 'a.created_on', 'a.rejection_window'])
                     ->joinWith(['resumeEnc e'], false)
                     ->joinWith(['appliedApplicationLocations aal' => function ($aal) {
                         $aal->select(['aal.applied_application_enc_id', 'aal.city_enc_id', 'ce.name']);

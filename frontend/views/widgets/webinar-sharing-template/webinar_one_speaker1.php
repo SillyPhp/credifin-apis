@@ -1,4 +1,4 @@
-<script id="webinar_one_speaker1" type="text/template">
+<script id="webinar_one_speaker1" type="template/javascript">
     <section class="webinar-one-speaker1">
     <div class="container">
         <div class="row">
