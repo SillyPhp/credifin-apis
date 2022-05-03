@@ -5,6 +5,7 @@ use common\models\EducationLoanPayments;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
+use Razorpay\Api\Api;
 
 class PaymentsController extends  ApiBaseController
 {

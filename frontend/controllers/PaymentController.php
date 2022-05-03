@@ -78,26 +78,22 @@ class PaymentController extends Controller
      ]);
  }
 
- public function actionTransections(){
-     if (Yii::$app->request->get()){
+ public function actionTransactions(){
          $api_key = Yii::$app->params->razorPay->prod->apiKey;
          $api_secret = Yii::$app->params->razorPay->prod->apiSecret;
          $api = new Api($api_key,$api_secret);
-         if (Yii::$app->request->get('razorpay_payment_id')){
-             $payment = $api->payment->fetch(Yii::$app->request->get('razorpay_payment_id'));
-             if ($payment){
-                 if ($payment->captured==1){
-                     return $this->renderAjax('handleRequest',['get'=>Yii::$app->request->get()]);
-                 }else{
+         if (Yii::$app->request->get('razorpay_payment_link_id')){
+             $payment = $api->paymentLink->fetch(Yii::$app->request->get('razorpay_payment_link_id'));
+             if ($payment) {
+                 return $this->renderAjax('handleRequest', ['get' => Yii::$app->request->get(),'payment'=>$payment]);
+             }else{
                      throw new HttpException(404, Yii::t('frontend', 'Payment Status Not Found, Please Contact The Support Team..'));
                  }
              }
              else{
                  throw new HttpException(404, Yii::t('frontend', 'Page Not Found'));
              }
-         }
      }
- }
     public function actionInstituteTransections(){
         if (Yii::$app->request->get()){
             $api_key = Yii::$app->params->razorPay->prod->apiKey;
