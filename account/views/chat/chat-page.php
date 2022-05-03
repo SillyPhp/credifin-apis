@@ -505,7 +505,7 @@ $('.filtertype').click(function (e){
 
 function getApplications(type){
     $.ajax({
-        url: "/account/chat/get-all-applications",
+        url: "/account/messages/get-all-applications",
         method: "POST",
         data: {type: type},
         beforeSend:function(){
@@ -531,7 +531,7 @@ $(document).on('click', '.jobsBoxes', function(e){
 
 function getApplicants(job_id){
     $.ajax({
-        url:'/account/chat/get-applied-candidates',
+        url:'/account/messages/get-applied-candidates',
         method: 'POST',
         data: {job_id: job_id},
         beforeSend:function(){
@@ -594,7 +594,7 @@ function sendMes(t){
          
          $.ajax({
             type: 'POST',
-            url: '/account/chat/save-sender',
+            url: '/account/messages/save-sender',
             data: data
          });
          
@@ -767,7 +767,7 @@ function chatUser(e) {
                 
                 $.ajax({
                     type: 'POST',
-                    url: '/account/chat/save-receiver',
+                    url: '/account/messages/save-receiver',
                     data: udata
                  });
                 
