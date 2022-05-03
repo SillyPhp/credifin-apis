@@ -17,7 +17,7 @@ use common\models\Utilities;
 use yii\helpers\Html;
 use yii\web\Response;
 
-class ChatController extends Controller{
+class MessagesController extends Controller{
 
     public function actionSearchUser(){
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
