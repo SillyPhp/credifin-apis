@@ -19,15 +19,15 @@ use yii\helpers\Url;
                 <div class="sec2">
                     <div class="user-list-heading">
                         <div class="row">
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <div id="fill-heading">
                                     Jobs
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="text-right">
                                     <div class="dropdown text-left">
-                                        <button class="dropbtn">Filters</button>
+                                        <button class="dropbtn">Filters <i class="fa fa-chevron-down" aria-hidden="true"></i></button>
                                         <div class="dropdown-content" id="dc-btn">
                                             <div class="dc-btn filtertype" data-value="jobs" data-id="fil-jobs">Jobs</div>
                                             <div class="dc-btn filtertype" data-value="internships" data-id="fil-int">Internships</div>
@@ -170,7 +170,10 @@ use yii\helpers\Url;
             <div class="col-md-6 col-sm-6 padd-left-0">
                 <div class="chat-section">
                     <div class="chatEmpty">
-                        <p>Click on applicant to chat </p>
+                        <div>
+                        <img src="<?= Url::to('@eyAssets/images/chatempty_1.png')?>" alt="">
+                        <p>Message Alert! Click on the Applicant to Start the Chat.</p>
+                        </div>
                     </div>
                     <div class="chatFull">
                         <div class="chating-user">
@@ -190,8 +193,8 @@ use yii\helpers\Url;
                         </div>
                         <div class="chat-form-bttm">
                         <div class="chat-input-cs" data-id="" data-value="">
-                            <input type="text" placeholder="Type Message" class="msginput" id="chatMsg">
-                            <button type="button" id="sendmsg">Send</button>
+                            <input type="text" placeholder="Type a message..." class="msginput" id="chatMsg">
+                            <button type="button" id="sendmsg"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
                         </div>
                     </div>
                     </div>
@@ -212,7 +215,24 @@ $this->registerCss('
     margin-top: 0px !important;
 }
 .chatEmpty p{
-    margin-top:0px;
+    margin-top: 0px;
+    font-size: 16px;
+    text-align: center;
+    font-weight: 700;
+    color: #333;
+}
+.chatEmpty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+
+.chatEmpty img {
+    width: 300px;
+    margin: auto;
+    display: block;
 }
 .chatFull{
     display: none
@@ -235,11 +255,17 @@ $this->registerCss('
     display: none;
 }
 .dropbtn {
-  color: #000;
-  font-size: 16px;
-  border: none;
+    font-size: 16px;
+    border: none;
+    border-radius: 3px;
+    padding: 1px 10px;
+    background: #00a0e315;
+    color: #00a0e3;
+    font-weight: 500;
 }
-
+.dropbtn i {
+    font-size: 13px;
+}
 .dropdown {
   position: relative;
   display: inline-block;
@@ -268,12 +294,14 @@ $this->registerCss('
 .dropdown:hover .dropbtn {
     background-color: #f1f1f1;
 }
-.user-list-heading{
-    padding:10px 10px;
-    background: #f2f2f2;
+.user-list-heading {
+    padding: 10px 10px;
+    background: #fff;
     font-family: roboto;
-    font-size:18px;
-    font-weight:bold;
+    font-size: 18px;
+    font-weight: bold;
+    border: 1px solid #eee;
+    font-weight: 500;
 }
 #chat-icon{
     display:none;
@@ -281,7 +309,7 @@ $this->registerCss('
 /*----chat section----*/
 .chat-cont{
     position:relative;
-    height:calc(100vh - 195px);   
+    height:calc(100vh - 195px); 
 }
 .chating-user{
     background:#f2f2f2;
@@ -290,20 +318,24 @@ $this->registerCss('
     margin: 0px !important
 }
 .chat-container {
-  border: 2px solid #dedede;
-  background-color: #f1f1f1;
-  border-radius: 5px;
+  background-color: #00a0e3;
+  border-radius: 10px;
   padding: 10px;
   margin: 5px;
   max-width: 80%;
   float:left;
   word-break: break-all;
+  color: #fff;
+  border-bottom-left-radius: 0;
 }
 
 .darker {
   border-color: #ccc;
   background-color: #ddd;
   float:right;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 10px;
+  color: #333;
 }
 
 .chat-container::after {
@@ -328,24 +360,38 @@ $this->registerCss('
 
 .time-right {
   float: right;
-  color: #aaa;
+  color: #eee;
+  font-weight: 800;
+}
+.darker .time-left {
+    float: left;
+    color: #333;
+    font-weight: 800;
 }
 
 .time-left {
   float: left;
-  color: #999;
+  color: #eee;
+  font-weight: 800;
 }
 
 .chat-input-cs{
        display: flex;
     width: 100%;
 }
-.chat-input-cs button{
-    width:20%;
+.chat-input-cs button {
+    width: 45px;
+    border-radius: 50%;
+    border: none;
+    background: #00a0e3;
+    color: #fff;
 }
-.chat-input-cs input{
-    padding:10px 5px;
-    width:100%; 
+.chat-input-cs input {
+    padding: 10px 15px;
+    width: 100%;
+    border-radius: 45px;
+    margin-right: 8px;
+    border: none;
 }
 .chat-form-bttm{
     width:100%;
@@ -361,7 +407,7 @@ $this->registerCss('
 }
 .chat-section{
     position:relative;
-    background:#e4dcd3;
+    background:#00a0e315;
     height:100vh;
     width:100%;
 }
@@ -400,8 +446,8 @@ $this->registerCss('
   height: calc(100vh - 60px); 
 }
 .job-icon{
-    min-width:50px;
-    min-height:50px;
+    min-width:40px;
+    min-height:40px;
 }
 .job-icon img{
     max-width:100%;
@@ -420,8 +466,8 @@ $this->registerCss('
     padding-left:15px;
 }
 .user-name{
-    font-size: 16px;
-    font-weight:bold;
+    font-size: 13px;
+    font-weight:500;
     color:#000;
     font-family: roboto;
     text-transform: capitalize;
@@ -430,9 +476,11 @@ $this->registerCss('
     display:flex;
     padding:15px 10px;
     border-bottom:1px solid #eee;
+    transition: .2s all linear;
 }
 .user-box:hover{
     box-shadow:0 0 10px rgba(0,0,0,.3);
+    transition: .2s all linear;
 }
 .active{
     display:block !important;
@@ -454,6 +502,9 @@ $this->registerCss('
 .user-com i{
     padding-top: 4px;
     padding-right: 5px;
+}
+.user-detail .user-com {
+    font-size: 11px;
 }
 .disFlex{
     display: flex;
@@ -702,7 +753,7 @@ function chatUser(e) {
                 var messageli = ' <div class="row m0">'+
                                     '<div class="col-md-12">'+
                                         '<div class="chat-container darker">'+
-                                        '<p class="cc-name">You</p>'+
+                                        // '<p class="cc-name">You</p>'+
                                         '<p class="cc-p">'+msgfinal+'</p>'+
                                         '<span class="time-left">'+msgtime+'</span>'+
                                         '</div>'+
@@ -738,7 +789,7 @@ function chatUser(e) {
                 var messageli = ' <div class="row m0">'+
                                     '<div class="col-md-12">'+
                                         '<div class="chat-container ">'+
-                                        '<p class="cc-name">'+msgSender+'</p>'+
+                                        // '<p class="cc-name">'+msgSender+'</p>'+
                                         '<p class="cc-p">'+msgfinal+'</p>'+
                                         '<span class="time-left">'+msgtime+'</span>'+
                                     '</div>'+

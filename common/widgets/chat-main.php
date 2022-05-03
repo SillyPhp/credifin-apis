@@ -288,10 +288,10 @@ $this->registerCss("
 }
 .messagedate span{
     min-width: 80px;
-    background-color: #ddd;
+    background-color: #fffcf0;
     margin: auto;
     padding: 5px 20px;
-    border-radius: 20px;
+    border-radius: 5px;
 }
 .name span{color:#666;font-size:11px;}
 #chat-box.low-device{
