@@ -35,7 +35,6 @@ class LoanApplication extends Model
     public $loan_type;
     public $current_city;
     public $annual_income;
-    public $is_simple;
     public $occupation;
     public $vehicle_type;
 
@@ -49,7 +48,7 @@ class LoanApplication extends Model
         return [
             [['first_name', 'last_name', 'loan_type', 'phone_no', 'loan_amount', 'email'], 'required'],
             [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises',
-                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'is_simple', 'occupation', 'vehicle_type'], 'safe'],
+                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type'], 'safe'],
             [['first_name', 'last_name', 'loan_purpose', 'email', 'loan_purpose'], 'trim'],
             [['first_name', 'last_name'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],
@@ -85,7 +84,7 @@ class LoanApplication extends Model
             }
 
             // saving other options
-            if (!$this->is_simple && ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Vehicle Loan')) {
+            if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Vehicle Loan') {
                 $loan_options = new LoanApplicationOptions();
                 $loan_options->option_enc_id = $utilitiesModel->encrypt();
                 $loan_options->loan_app_enc_id = $model->loan_app_enc_id;
@@ -106,7 +105,7 @@ class LoanApplication extends Model
             }
 
             // saving address
-            if (!$this->is_simple && ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Loan Against Property' || $this->loan_type == 'Vehicle Loan')) {
+            if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Loan Against Property' || $this->loan_type == 'Vehicle Loan') {
                 $loan_address = new LoanApplicantResidentialInfo();
                 $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
                 $loan_address->loan_app_enc_id = $model->loan_app_enc_id;
@@ -233,29 +232,34 @@ class LoanApplication extends Model
         $options['contact'] = $phone;
         $total_amount = 500;
         $options['total'] = $this->floatPaisa($total_amount);
-        $link = $api->invoice->create([
-                'type' => 'link',
-                'amount' => $options['total'],
-                'currency' => $options['currency'],
-                'description' => 'Application Fee',
-                'receipt' => $secret_reciept_code,
-                'customer' => [
-                    'name' => $options['name'],
-                    'email' => $options['email'],
-                    'contact' => $options['contact'],
-                ],
-                "callback_url" => "https://empoweryouth.com/payment/transections",
-                "callback_method" => "get",
-                'options' => [
-                    "checkout" => [
-                        "name" => "Empower Youth"
-                    ]
+        $options['callback_url'] = "https://www.empowerloans.in/payment/transaction";
+        $options['brand'] = "Empower Loans";
+        $link = $api->paymentLink->create([
+            'amount'=>$options['total'],
+            'currency'=>$options['currency'],
+            'accept_partial'=>false,
+            'description' => 'Application Login Fee',
+            'customer' => [
+                'name'=>$options['name'],
+                'email' => $options['email'],
+                'contact'=>$options['contact']
+            ],
+            'notify'=>[
+                'sms'=>true,
+                'email'=>true
+            ] ,
+            'reminder_enable'=>true,
+            'callback_url' => $options['callback_url'],
+            'callback_method'=>'get',
+            'options'=>[
+                "checkout"=>[
+                    "name" => $options['brand']
                 ]
             ]
-        );
+        ]);
         if ($link->short_url) {
             $options['surl'] = $link->short_url;
-            $options['token'] = $secret_reciept_code;
+            $options['token'] = $link->id;
             if ($model->createUrl($options)) {
                 return [
                     'surl' => $link->short_url,

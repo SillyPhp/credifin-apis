@@ -3,11 +3,16 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\BusinessLoanApplication;
+use common\models\LeadsApplications;
+use common\models\Utilities;
 use api\modules\v4\models\LoanApplication;
 use common\models\EducationLoanPayments;
 use common\models\LoanApplications;
 use yii\filters\VerbFilter;
+use Razorpay\Api\Api;
 use Yii;
+use yii\filters\Cors;
+use yii\filters\ContentNegotiator;
 
 class LoansController extends ApiBaseController
 {
@@ -18,10 +23,23 @@ class LoansController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-                'loan-application' => ['POST'],
-                'update-payment-status' => ['POST'],
+                'loan-application' => ['POST', 'OPTIONS'],
+                'update-payment-status' => ['POST', 'OPTIONS'],
+                'update-payment-link-status' => ['POST', 'OPTIONS'],
+                'contact-us' => ['POST', 'OPTIONS'],
             ]
         ];
+
+        $behaviors['corsFilter'] = [
+            'class' => Cors::className(),
+            'cors' => [
+                'Origin' => ['https://www.empowerloans.in/'],
+                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                'Access-Control-Max-Age' => 86400,
+                'Access-Control-Expose-Headers' => [],
+            ],
+        ];
+
         return $behaviors;
     }
 
@@ -84,6 +102,76 @@ class LoansController extends ApiBaseController
             $loan_payments->update();
         }
         return $this->response(200, ['status' => 200, 'message' => 'success']);
+    }
+
+    public function actionContactUs()
+    {
+        $params = Yii::$app->request->post();
+
+        $model = new LeadsApplications();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $model->application_enc_id = $enc_id = $utilitiesModel->encrypt();
+        $model->application_number = date('ymd') . time();
+        $model->first_name = $params['first_name'];
+        $model->last_name = $params['last_name'];
+        $model->student_email = $params['email'];
+        $model->student_mobile_number = $params['phone'];
+        $model->message = $params['message'];
+        if (!$model->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'Some Internal Server Error']);
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+    }
+
+    public function actionUpdatePaymentLinkStatus()
+    {
+        $params = Yii::$app->request->post();
+
+        $razorpay_payment_id = $params['razorpay_payment_id'];
+        $razorpay_payment_link_id = $params['razorpay_payment_link_id'];
+        $razorpay_signature = $params['razorpay_signature'];
+
+        $api_key = Yii::$app->params->razorPay->prod->apiKey;
+        $api_secret = Yii::$app->params->razorPay->prod->apiSecret;
+
+        $api = new Api($api_key, $api_secret);
+
+        if ($razorpay_payment_id) {
+
+            $payment = $api->payment->fetch($razorpay_payment_id);
+
+            if ($payment) {
+                if ($payment->captured == 1) {
+                    if ($this->savePaymentStatus($razorpay_payment_id, $payment->status, $razorpay_payment_link_id, $razorpay_signature)) {
+                        return $this->response(200, ['status' => 200, 'message' => 'payment successfully captured']);
+                    }else{
+                        return $this->response(500,['status'=>500,'message'=>'an error occurred, Please Contact The Support Team..']);
+                    }
+                } else {
+                    return $this->response(404, ['status' => 404, 'message' => 'Payment Status Not Found, Please Contact The Support Team..']);
+                }
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'Payment Status Not Found, Please Contact The Support Team..']);
+            }
+        }
+
+        return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+    }
+
+    private function savePaymentStatus($payment_id, $status, $plink_id, $signature)
+    {
+        $loan_payment = EducationLoanPayments::findOne(['payment_token' => $plink_id]);
+        $loan_payment->payment_status = $status;
+        $loan_payment->payment_id = $payment_id;
+        $loan_payment->payment_signature = $signature;
+        if ($loan_payment->save()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
