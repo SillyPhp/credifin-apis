@@ -79,7 +79,6 @@ class PaymentController extends Controller
  }
 
  public function actionTransactions(){
-     if (Yii::$app->request->get()){
          $api_key = Yii::$app->params->razorPay->prod->apiKey;
          $api_secret = Yii::$app->params->razorPay->prod->apiSecret;
          $api = new Api($api_key,$api_secret);
@@ -94,7 +93,6 @@ class PaymentController extends Controller
              else{
                  throw new HttpException(404, Yii::t('frontend', 'Page Not Found'));
              }
-         }
      }
     public function actionInstituteTransections(){
         if (Yii::$app->request->get()){
