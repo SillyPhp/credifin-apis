@@ -31,7 +31,7 @@ display: inline-block;
 $script = <<< JS
 function paymentAccept(status,payment_id,signature,invoice_id){
  $.ajax({
-'url':'/api/v3/payments/update-transections',
+'url':'/api/v3/payments/update-transactions',
 'method':'POST',
 'data':{
     'status':status,
