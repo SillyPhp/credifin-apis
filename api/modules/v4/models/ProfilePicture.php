@@ -1,0 +1,59 @@
+<?php
+
+namespace api\modules\v4\models;
+
+use api\modules\v1\models\Candidates;
+use common\models\Organizations;
+use common\models\spaces\Spaces;
+use common\models\UserAccessTokens;
+use Yii;
+use yii\base\Model;
+use yii\web\UploadedFile;
+use common\models\Utilities;
+use common\models\Users;
+
+class ProfilePicture extends Model
+{
+    public $profile_image;
+
+    public function formName()
+    {
+        return '';
+    }
+
+    public function rules()
+    {
+        return [
+            [['profile_image'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg'],
+        ];
+    }
+
+    public function update($userId)
+    {
+        $utilitiesModel = new Utilities();
+        $usersModel = new Users();
+        $user = $usersModel->find()
+            ->where(['user_enc_id' => $userId])
+            ->one();
+
+        if ($user) {
+            $user->image_location = \Yii::$app->getSecurity()->generateRandomString();
+            $base_path = Yii::$app->params->upload_directories->users->image . $user->image_location . '/';
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $user->image = $utilitiesModel->encrypt() . '.' . $this->profile_image->extension;
+            $type = $this->profile_image->type;
+            if ($user->update()) {
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $result = $my_space->uploadFileSources($this->profile_image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $user->image, "public", ['params' => ['ContentType' => $type]]);
+                if ($result) {
+                    return $user->user_enc_id;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+    }
+}

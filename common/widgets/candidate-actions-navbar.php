@@ -3,13 +3,16 @@ use yii\helpers\Url;
 ?>
 <div class="wizard-navigation">
     <ul class="nav nav-pills">
-        <li><a href="<?= Url::to('/' . Yii::$app->user->identity->username . '/edit'); ?>">Edit Profile</a></li>
-        <li><a href="<?= Url::to('/account/resume-builder'); ?>">Resume Builder</a></li>
-        <li><a href="<?= Url::to('/account/preferences'); ?>">Candidate Preferences</a></li>
+        <li><a href="<?= Url::to('/' . Yii::$app->user->identity->username . '/edit'); ?>">Edit <br class="break-hide">Profile</a></li>
+        <li><a href="<?= Url::to('/account/resume-builder'); ?>">Resume <br class="break-hide">Builder</a></li>
+        <li><a href="<?= Url::to('/account/preferences'); ?>">Candidate <br class="break-hide">Preferences</a></li>
     </ul>
 </div>
 <?php
 $this->registerCss('
+br.break-hide{
+    display: none;
+}
 /* wizard-navigation css starts */
 .wizard-navigation {
     position: relative;
@@ -61,13 +64,35 @@ $this->registerCss('
     text-transform: uppercase;
     -webkit-font-smoothing: subpixel-antialiased;
     top: -4px;
-    left: 0px;
+    left: 8px;
     border-radius: 4px;
     color: #FFFFFF;
     cursor: pointer;
     font-weight: 500;
     transform: translate3d(-8px, 0px, 0px);
     transition: transform 0s ease 0s;
+}
+@media only screen and (max-width: 640px){
+    .wizard-navigation > .nav.nav-pills > li a{
+        // max-width: 100px;
+        // text-align: center;
+        // margin: auto;
+    }
+    .wizard-navigation ul li{
+        width: 32.7%;
+    }
+    br.break-hide{
+        display: block;
+    }
+    .page-content {
+        padding: 30px 10px;
+    }
+    .portlet.light{
+        padding: 12px 10px 15px;
+    }    
+    .nav>li>a{
+        padding: 10px;
+    }
 }
 /* wizard-navigation css ends */
 ');
