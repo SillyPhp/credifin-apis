@@ -5,6 +5,7 @@ use common\models\EducationLoanPayments;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
+use Razorpay\Api\Api;
 
 class PaymentsController extends  ApiBaseController
 {
@@ -17,8 +18,8 @@ class PaymentsController extends  ApiBaseController
             'actions' => [
                 'get-status' => ['GET'],
                 'retry-payment' => ['POST', 'OPTIONS'],
-                'update-transection' => ['POST', 'OPTIONS'],
-                'institute-update-transection' => ['POST', 'OPTIONS'],
+                'update-transactions' => ['POST', 'OPTIONS'],
+                'institute-update-transactions' => ['POST', 'OPTIONS'],
                 'webhook' => ['POST'],
             ]
         ];
@@ -84,7 +85,7 @@ class PaymentsController extends  ApiBaseController
         }
     }
 
-    public function actionUpdateTransections()
+    public function actionUpdateTransactions()
     {
         date_default_timezone_set('Asia/Kolkata');
         $options = Yii::$app->request->post();
@@ -100,7 +101,7 @@ class PaymentsController extends  ApiBaseController
         }
 
     }
-    public function actionInstituteUpdateTransections()
+    public function actionInstituteUpdateTransactions()
     {
         date_default_timezone_set('Asia/Kolkata');
         $options = Yii::$app->request->post();
