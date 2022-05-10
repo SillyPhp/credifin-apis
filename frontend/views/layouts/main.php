@@ -71,16 +71,31 @@ AppAssets::register($this);
             }
         }
 
+
+
+
         </script>
         <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
         <script>
             window.OneSignal = window.OneSignal || [];
-            OneSignal.push(function() {
+            OneSignal.push(function () {
                 OneSignal.init({
                     appId: "a76531b8-a3c8-442b-a571-907e3e112de4",
                 });
             });
+            OneSignal.push(function () {
+                <?php
+                if(!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization){
+                $user_ens_id = Yii::$app->user->identity->user_enc_id;
+                ?>
+                    OneSignal.setExternalUserId('<?= $user_ens_id ?>');
+                <?php
+                }
+                ?>
+            });
         </script>
+<!--        <script>-->
+<!--        </script>-->
     </head>
 
     <body class="fullwidth-page">
