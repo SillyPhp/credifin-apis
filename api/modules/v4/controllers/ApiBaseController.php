@@ -79,7 +79,7 @@ class ApiBaseController extends Controller
         $access_token = UserAccessTokens::findOne(['access_token' => $token]);
         if(!empty($access_token) && $source == $access_token->source){
             if(strtotime($access_token->access_token_expiration) > strtotime("now")) {
-                $time_now = date('Y-m-d H:i:s', time('now'));
+                $time_now = date('Y-m-d H:i:s');
                 $access_token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
                 $access_token->refresh_token_expiration = date('Y-m-d H:i:s', strtotime("+11520 minute", strtotime($time_now)));
                 return Candidates::findOne(['user_enc_id' => $access_token->user_enc_id]);

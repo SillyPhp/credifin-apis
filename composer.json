@@ -29,7 +29,7 @@
         "yiisoft/yii2-authclient": "^2.2",
         "sendgrid/sendgrid": "^7.8",
         "sociallydev/spaces-api": "v2",
-        "razorpay/razorpay": "^2.5"
+        "razorpay/razorpay": "2.*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
@@ -42,6 +42,9 @@
         "process-timeout": 1800,
         "fxp-asset": {
             "enabled": false
+        },
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
         }
     },
     "repositories": [

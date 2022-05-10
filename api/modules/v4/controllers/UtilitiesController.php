@@ -8,6 +8,8 @@ use common\models\OrganizationTypes;
 use common\models\States;
 use yii\filters\VerbFilter;
 use Yii;
+use yii\filters\Cors;
+use yii\filters\ContentNegotiator;
 
 class UtilitiesController extends ApiBaseController
 {
@@ -18,12 +20,23 @@ class UtilitiesController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-                'organization-types' => ['GET'],
-                'designations' => ['GET'],
-                'states' => ['GET'],
-                'cities' => ['GET'],
+                'organization-types' => ['GET', 'OPTIONS'],
+                'designations' => ['GET', 'OPTIONS'],
+                'states' => ['GET', 'OPTIONS'],
+                'cities' => ['GET', 'OPTIONS'],
             ]
         ];
+
+        $behaviors['corsFilter'] = [
+            'class' => Cors::className(),
+            'cors' => [
+                'Origin' => ['https://www.empowerloans.in/'],
+                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                'Access-Control-Max-Age' => 86400,
+                'Access-Control-Expose-Headers' => [],
+            ],
+        ];
+
         return $behaviors;
     }
 
@@ -40,14 +53,15 @@ class UtilitiesController extends ApiBaseController
     public function actionDesignations($keyword)
     {
         $designations = Designations::find()
-            ->select(['designation_enc_id', 'designation',])
+            ->select(['designation_enc_id', 'designation', 'designation_enc_id id', 'designation name'])
             ->where(['is_deleted' => 0])
             ->andFilterWhere(['like', 'designation', $keyword])
             ->limit(20)
             ->asArray()
             ->all();
 
-        return $this->response(200, ['designations' => $designations]);
+        // remove designations after deploy on react
+        return $this->response(200, ['status' => 200, 'list' => $designations, 'designations' => $designations]);
     }
 
     public function actionStates()
@@ -58,10 +72,10 @@ class UtilitiesController extends ApiBaseController
             ->asArray()
             ->all();
 
-        return $this->response(200, ['states' => $states]);
+        return $this->response(200, ['status' => 200, 'states' => $states]);
     }
 
-    public function actionCities($state_id='OVlINEg0MGxyRzMydlFrblNTSWExQT09')
+    public function actionCities($state_id = 'OVlINEg0MGxyRzMydlFrblNTSWExQT09')
     {
         $cities = Cities::find()
             ->select(['city_enc_id', 'name'])
@@ -69,6 +83,6 @@ class UtilitiesController extends ApiBaseController
             ->asArray()
             ->all();
 
-        return $this->response(200, ['cities' => $cities]);
+        return $this->response(200, ['status' => 200, 'cities' => $cities]);
     }
 }

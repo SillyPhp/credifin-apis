@@ -489,6 +489,9 @@ if ($optedWebinar) {
 <?php
 echo $this->render('/widgets/mustache/speakers-card');
 $this->registerCss("
+.type-1{
+    margin-bottom: 15px;
+}
 .type-1 div a:focus{
     color:#fff;
 }
