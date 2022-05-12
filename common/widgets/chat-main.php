@@ -288,10 +288,10 @@ $this->registerCss("
 }
 .messagedate span{
     min-width: 80px;
-    background-color: #ddd;
+    background-color: #fffcf0;
     margin: auto;
     padding: 5px 20px;
-    border-radius: 20px;
+    border-radius: 5px;
 }
 .name span{color:#666;font-size:11px;}
 #chat-box.low-device{
@@ -352,7 +352,7 @@ $script = <<<JS
      function random_users(){
         $.ajax({
             type: 'POST',
-            url: '/account/chat/get-random-values',
+            url: '/account/messages/get-random-values',
             success: function(response) {
                 
                 response = JSON.parse(response);
@@ -369,7 +369,7 @@ $script = <<<JS
         var final_users = {};
         $.ajax({
             type: 'POST',
-            url: '/account/chat/get-recent-users',
+            url: '/account/messages/get-recent-users',
             success: function(response) {
                 response = JSON.parse(response);
                
@@ -441,7 +441,7 @@ $script = <<<JS
              
              $.ajax({
                 type: 'POST',
-                url: '/account/chat/save-sender',
+                url: '/account/messages/save-sender',
                 data: data
              });
              
@@ -517,7 +517,7 @@ $script = <<<JS
             if(data["user"]){
                 $.ajax({
                     type: 'POST',
-                    url: '/account/chat/search-user',
+                    url: '/account/messages/search-user',
                     data: data,
                     success: function(response) {
                        
@@ -668,7 +668,7 @@ $script = <<<JS
                     
                     $.ajax({
                         type: 'POST',
-                        url: '/account/chat/save-receiver',
+                        url: '/account/messages/save-receiver',
                         data: udata
                      });
                     
@@ -796,7 +796,7 @@ $script = <<<JS
                     
                     $.ajax({
                         type: 'POST',
-                        url: '/account/chat/save-receiver',
+                        url: '/account/messages/save-receiver',
                         data: udata
                      });
                     
@@ -861,7 +861,7 @@ $script = <<<JS
         $.ajax({
                 type: 'POST',
                 async: false,
-                url: '/account/chat/get-name',
+                url: '/account/messages/get-name',
                 data: sender,
                 success: function(response) {
                     response = JSON.parse(response);

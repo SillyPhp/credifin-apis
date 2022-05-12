@@ -140,6 +140,11 @@
 
 <?php
 $this->registerCss('
+.event-indicator{
+    transform: translate(-50%, 0);
+    top: unset;
+    bottom: -15px;
+}
  #calendar {
     max-width: 900px;
     margin: 40px auto;
