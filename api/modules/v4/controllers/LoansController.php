@@ -140,15 +140,18 @@ class LoansController extends ApiBaseController
         $api = new Api($api_key, $api_secret);
 
         if ($razorpay_payment_id) {
-
-            $payment = $api->payment->fetch($razorpay_payment_id);
+            try {
+                $payment = $api->payment->fetch($razorpay_payment_id);
+            } catch (Exception $e) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred, Please Contact The Support Team..']);
+            }
 
             if ($payment) {
                 if ($payment->captured == 1) {
                     if ($this->savePaymentStatus($razorpay_payment_id, $payment->status, $razorpay_payment_link_id, $razorpay_signature)) {
                         return $this->response(200, ['status' => 200, 'message' => 'payment successfully captured']);
-                    }else{
-                        return $this->response(500,['status'=>500,'message'=>'an error occurred, Please Contact The Support Team..']);
+                    } else {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred, Please Contact The Support Team..']);
                     }
                 } else {
                     return $this->response(404, ['status' => 404, 'message' => 'Payment Status Not Found, Please Contact The Support Team..']);
@@ -159,6 +162,7 @@ class LoansController extends ApiBaseController
         }
 
         return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+
     }
 
     private function savePaymentStatus($payment_id, $status, $plink_id, $signature)

@@ -98,9 +98,16 @@ class IndividualSignup extends Model
             $data['phone'] = $user->phone;
             $data['email'] = $user->email;
             $data['access_token'] = '';
+            $data['refresh_token'] = '';
+            $data['access_token_expiry_time'] = '';
+            $data['refresh_token_expiry_time'] = '';
+            $data['image'] = '';
 
             if ($token = $this->newToken($user->user_enc_id, $this->source)) {
-                $data['access_token'] = $token;
+                $data['access_token'] = $token->access_token;
+                $data['refresh_token'] = $token->refresh_token;
+                $data['access_token_expiry_time'] = $token->access_token_expiration;
+                $data['refresh_token_expiry_time'] = $token->refresh_token_expiration;
             }
 
             return $data;
@@ -152,7 +159,7 @@ class IndividualSignup extends Model
         $token->refresh_token_expiration = date('Y-m-d H:i:s', strtotime("+11520 minute", strtotime($time_now)));
         $token->source = $source;
         if ($token->save()) {
-            return $token->access_token;
+            return $token;
         }
         return false;
     }

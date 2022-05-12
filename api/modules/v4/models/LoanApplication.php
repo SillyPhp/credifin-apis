@@ -232,7 +232,8 @@ class LoanApplication extends Model
         $options['contact'] = $phone;
         $total_amount = 500;
         $options['total'] = $this->floatPaisa($total_amount);
-        $options['callback_url'] = "https://www.empowerloans.in/payment/transaction";
+//        $options['callback_url'] = "https://www.empowerloans.in/payment/transaction";
+        $options['callback_url'] = "http://192.168.29.6:3000/payment/transaction";
         $options['brand'] = "Empower Loans";
         $link = $api->paymentLink->create([
             'amount'=>$options['total'],
