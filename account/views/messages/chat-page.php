@@ -364,12 +364,14 @@ $this->registerCss('
   font-weight: 800;
 }
 .darker .time-left {
-    float: left;
+    float: right;
     color: #333;
     font-weight: 800;
+    margin-top: 6px;
 }
 
 .time-left {
+    font-size: 10px;
   float: left;
   color: #eee;
   font-weight: 800;

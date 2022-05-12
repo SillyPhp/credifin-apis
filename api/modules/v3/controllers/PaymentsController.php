@@ -121,6 +121,9 @@ class PaymentsController extends  ApiBaseController
             $data = Yii::$app->request->post();
             if (isset($data['event'])) {
                 $order_id = $data['payload']['payment']['entity']['order_id'];
+                if ($data['contains'][0]=='payment_link'){
+                    $order_id = $data['payload']['payment_link']['entity']['id'];
+                }
                 $payment_id = $data['payload']['payment']['entity']['id'];
                 $status = $data['payload']['payment']['entity']['status'];
                 $model = EducationLoanPayments::findOne(['payment_token'=>$order_id]);
