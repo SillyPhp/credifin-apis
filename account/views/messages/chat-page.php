@@ -474,6 +474,14 @@ $this->registerCss('
     font-family: roboto;
     text-transform: capitalize;
 }
+.user-name a{
+    color: #000;
+    text-decoration: none;
+}
+.user-name a:hover{
+    color: #00a0e3;
+    transition: .3s ease;
+}
 .user-box{
     display:flex;
     padding:15px 10px;
@@ -539,6 +547,9 @@ $this->registerCss('
     margin-left: 0px !important;
     margin-right: 0px !important;
 }
+.boxActive{
+    background: #eaf7fd;
+}
 ');
 $script = <<<JS
 var ps = new PerfectScrollbar('#chatSectionScroll');
@@ -572,12 +583,19 @@ function getApplications(type){
                 $('.job-card').html(appRender);
                 let job_id = response['allApplication'][0]['application_enc_id'];
                 getApplicants(job_id)
+                document.getElementById(job_id).classList.add('boxActive');
             }
         }
     })
 }
 $(document).on('click', '.jobsBoxes', function(e){
     let job_id = e.currentTarget.getAttribute('data-id');
+    let parElem = e.currentTarget.parentElement;
+    let boxActive = parElem.querySelector('.boxActive');
+    if(boxActive){
+        boxActive.classList.remove('boxActive');
+    }
+    e.currentTarget.classList.add('boxActive');
     getApplicants(job_id);
     
 })
@@ -591,14 +609,13 @@ function getApplicants(job_id){
              $('#userSectionScroll').html('<div class="spinLoader"><i class="fas fa-circle-notch fa-spin"></i></div>');
         },
         success: function (response){
-             console.log(response);
             if(response.status == 200){
                 if(response['applied_users'].length){
                     let user_card = $('#userCard').html();
                     let user_render = Mustache.render(user_card, response['applied_users']);
                     $('#userSectionScroll').html(user_render);
                 }else {
-                    $('#userSectionScroll').html('<p class="userError"> No candidates have applied on this job </p>');
+                    $('#userSectionScroll').html('<p class="userError"> No candidates have applied on this  </p>');
                 }
             }
         }
@@ -696,15 +713,22 @@ var current_user_name = $('#current-name').val(); // name of current user
     );
  };
  
-$(document).on('click', '.chat-user', function(){   
-  chatUser(this);
-  $('.chatFull').show()
-  $('.chatEmpty').hide()
+$(document).on('click', '.chat-user', function(){  
+    let parElem = this.parentElement;
+    let boxActive = parElem.querySelector('.boxActive');
+    if(boxActive){
+        boxActive.classList.remove('boxActive');
+    }
+    this.classList.add('boxActive');
+    chatUser(this);
+    $('.chatFull').show()
+    $('.chatEmpty').hide()
 });
 
 function chatUser(e) {
     $('#chatSectionScroll').html('');
     var single_user_id = $(e).attr('id');
+    var single_user_username = $(e).attr('data-name');
     var single_user_name = $(e).find('.user-name').text();
     var single_user_city = $(e).find('.user-com').text();
     var single_user_image = $(e).find('.user_img').attr('src');
@@ -714,9 +738,13 @@ function chatUser(e) {
         name: single_user_name
     };
     
-    $('#chat_window_name').html(single_user_name);
+    $('#chat_window_name').html('<a href="/'+single_user_username+'">'+single_user_name+'</a>');
     $('#chat_window_location').html(single_user_city);
-    $('#chat_window_image').attr('src', single_user_image);
+    if(single_user_image){
+        $('#chat_window_image').attr('src', single_user_image);
+    }else {
+        $('#chat_window_image').attr('src', 'https://ui-avatars.com/api/?name='+single_user_name+'&background=77a4dd&color=fff&size=50&font-size=0.55');
+    }
     $('.chat-input-cs').attr('data-id', single_user_id);
     $('.chat-input-cs').attr('data-value', single_user_name);
     
@@ -878,9 +906,16 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 </script>
 <script id="userCard" type="template/javascript">
     {{#.}}
-    <div class="user-box chat-user" id="{{created_by}}" data-value="{{name}}">
+    <div class="user-box chat-user" id="{{created_by}}" data-name="{{username}}" data-value="{{name}}">
         <div class="user-icon">
+            {{#image}}
             <img src="{{image}}" class="user_img" alt="">
+            {{/image}}
+            {{^image}}
+            <div class="ch-icon"><img
+                        src="https://ui-avatars.com/api/?name={{name}}&background=77a4dd&color=fff&size=50&font-size=0.55">
+            </div>
+            {{/image}}
         </div>
         <div class="user-detail">
             <div class="user-name">{{name}}</div>
@@ -892,7 +927,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 
 <script id="applicationCard" type="template/javascript">
     {{#.}}
-    <div class="user-box jobsBoxes" data-id="{{application_enc_id}}">
+    <div class="user-box jobsBoxes" id="{{application_enc_id}}" data-id="{{application_enc_id}}">
         <div class="job-icon">
             <img src="<?= Url::to('@commonAssets/categories/{{icon}}') ?>" alt="">
         </div>

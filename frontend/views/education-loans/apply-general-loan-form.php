@@ -1703,10 +1703,10 @@ function ajaxSubmit(){
     var obj = {};
     if (applicantRadio==0){
         obj['name'] = $.trim($('input[name="co-name[1]"]').not(':hidden').val());
-    obj['relation'] = $('input[name="co-relation[1]"]:checked').not(':hidden').val();
-    obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').not(':hidden').val();
-    obj['annual_income'] = $('input[name="co-anualincome[1]"]').not(':hidden').val(); 
-    co_applicants.push(obj);
+        obj['relation'] = $('input[name="co-relation[1]"]:checked').not(':hidden').val();
+        obj['employment_type'] = $('input[name="co-emptype[1]"]:checked').not(':hidden').val();
+        obj['annual_income'] = $('input[name="co-anualincome[1]"]').not(':hidden').val(); 
+        co_applicants.push(obj);
     if ($('input[name="co-name[2]"]').length>0){
         if ($.trim($('input[name="co-name[2]"]').val()).length!=0)
         {
