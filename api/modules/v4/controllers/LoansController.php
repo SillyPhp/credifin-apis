@@ -118,6 +118,7 @@ class LoansController extends ApiBaseController
         $model->student_email = $params['email'];
         $model->student_mobile_number = $params['phone'];
         $model->message = $params['message'];
+        $model->source = 'Empower Loans';
         if (!$model->save()) {
             return $this->response(500, ['status' => 500, 'message' => 'Some Internal Server Error']);
         }
