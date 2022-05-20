@@ -19,8 +19,8 @@ class CompanyDashboardController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-                'lead-stats' => ['GET', 'OPTIONS'],
-                'loan-applications' => ['GET', 'OPTIONS'],
+                'lead-stats' => ['POST', 'OPTIONS'],
+                'loan-applications' => ['POST', 'OPTIONS'],
             ]
         ];
 

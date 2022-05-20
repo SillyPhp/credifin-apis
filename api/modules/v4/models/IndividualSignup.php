@@ -2,15 +2,9 @@
 
 namespace api\modules\v4\models;
 
-use api\modules\v4\models\Candidates;
-use common\models\CollegeSettings;
-use common\models\crud\Referral;
-use common\models\Departments;
 use common\models\EmailLogs;
-use common\models\ReferralSignUpTracking;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
-use common\models\UserOtherDetails;
 use common\models\UserTypes;
 use common\models\RandomColors;
 use Yii;
@@ -88,6 +82,11 @@ class IndividualSignup extends Model
                 return false;
             }
 
+            if (!$this->addRef($user->user_enc_id)) {
+                $transaction->rollback();
+                return false;
+            }
+
             $transaction->commit();
 
             $data['username'] = $user->username;
@@ -99,6 +98,7 @@ class IndividualSignup extends Model
             $data['email'] = $user->email;
             $data['user_type'] = 'Individual';
             $data['access_token'] = '';
+            $data['source'] = '';
             $data['refresh_token'] = '';
             $data['access_token_expiry_time'] = '';
             $data['refresh_token_expiry_time'] = '';
@@ -106,6 +106,7 @@ class IndividualSignup extends Model
 
             if ($token = $this->newToken($user->user_enc_id, $this->source)) {
                 $data['access_token'] = $token->access_token;
+                $data['source'] = $token->source;
                 $data['refresh_token'] = $token->refresh_token;
                 $data['access_token_expiry_time'] = $token->access_token_expiration;
                 $data['refresh_token_expiry_time'] = $token->refresh_token_expiration;
@@ -117,6 +118,35 @@ class IndividualSignup extends Model
             $transaction->rollback();
             return false;
         }
+    }
+
+    private function addRef($user_id)
+    {
+        $ref = new \common\models\Referral();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+        $ref->referral_enc_id = $utilitiesModel->encrypt();
+        $ref->code = $ref->referral_link = $this->_getReferralCode();
+        $ref->user_enc_id = $user_id;
+        $ref->created_by = $user_id;
+        $ref->created_on = date('Y-m-d H:i:s');
+        if ($ref->save()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function _getReferralCode($n = 10)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+
+        for ($i = 0; $i < $n; $i++) {
+            $index = rand(0, strlen($characters) - 1);
+            $randomString .= $characters[$index];
+        }
+        return $randomString;
     }
 
     private function sendMail($userId)

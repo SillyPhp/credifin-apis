@@ -4,14 +4,13 @@ namespace api\modules\v4\models;
 
 use common\models\EmailLogs;
 use common\models\Organizations;
+use common\models\Referral;
 use common\models\SelectedServices;
 use common\models\Services;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
-use common\models\Users;
 use common\models\UserTypes;
 use common\models\RandomColors;
-use frontend\models\referral\Referral;
 use Yii;
 use yii\base\Model;
 use common\models\Utilities;
@@ -125,6 +124,16 @@ class OrganizationSignup extends Model
                 return false;
             }
 
+            if (!$this->addRef($organizationsModel->organization_enc_id, $usersModel->user_enc_id)) {
+                $transaction->rollback();
+                return false;
+            }
+
+            if (!$this->addService($organizationsModel->organization_enc_id, $usersModel->user_enc_id)) {
+                $transaction->rollback();
+                return false;
+            }
+
             $transaction->commit();
 
             $data['username'] = $usersModel->username;
@@ -139,6 +148,7 @@ class OrganizationSignup extends Model
             $data['organization_enc_id'] = $organizationsModel->organization_enc_id;
             $data['user_type'] = 'Organization Admin';
             $data['access_token'] = '';
+            $data['source'] = '';
             $data['refresh_token'] = '';
             $data['access_token_expiry_time'] = '';
             $data['refresh_token_expiry_time'] = '';
@@ -146,6 +156,7 @@ class OrganizationSignup extends Model
 
             if ($token = $this->newToken($usersModel->user_enc_id, $this->source)) {
                 $data['access_token'] = $token->access_token;
+                $data['source'] = $token->source;
                 $data['refresh_token'] = $token->refresh_token;
                 $data['access_token_expiry_time'] = $token->access_token_expiration;
                 $data['refresh_token_expiry_time'] = $token->refresh_token_expiration;
@@ -157,6 +168,35 @@ class OrganizationSignup extends Model
             $transaction->rollBack();
             return false;
         }
+    }
+
+    private function addRef($organization_id, $user_id)
+    {
+        $ref = new Referral();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+        $ref->referral_enc_id = $utilitiesModel->encrypt();
+        $ref->code = $ref->referral_link = $this->_getReferralCode();
+        $ref->organization_enc_id = $organization_id;
+        $ref->created_by = $user_id;
+        $ref->created_on = date('Y-m-d H:i:s');
+        if ($ref->save()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function _getReferralCode($n = 10)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+
+        for ($i = 0; $i < $n; $i++) {
+            $index = rand(0, strlen($characters) - 1);
+            $randomString .= $characters[$index];
+        }
+        return $randomString;
     }
 
     private function addService($organization_id, $user_id)
@@ -171,7 +211,7 @@ class OrganizationSignup extends Model
         $service->organization_enc_id = $organization_id;
         $service->created_on = date('Y-m-d H:i:s');
         $service->created_by = $user_id;
-        if(!$service->save()){
+        if (!$service->save()) {
             return false;
         }
 
@@ -224,6 +264,5 @@ class OrganizationSignup extends Model
             $mail_logs->is_sent = 1;
             $mail_logs->save();
         }
-        Referral::widget(['user_org_id' => $organizationsModel->organization_enc_id]);
     }
 }

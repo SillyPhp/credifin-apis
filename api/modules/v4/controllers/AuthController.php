@@ -160,6 +160,7 @@ class AuthController extends ApiBaseController
         $data['email'] = $user->email;
         $data['user_type'] = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
         $data['access_token'] = $token->access_token;
+        $data['source'] = $token->source;
         $data['refresh_token'] = $token->refresh_token;
         $data['access_token_expiry_time'] = $token->access_token_expiration;
         $data['refresh_token_expiry_time'] = $token->refresh_token_expiration;
