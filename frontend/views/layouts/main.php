@@ -71,16 +71,11 @@ AppAssets::register($this);
             }
         }
 
+
+
+
         </script>
-        <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
-        <script>
-            window.OneSignal = window.OneSignal || [];
-            OneSignal.push(function() {
-                OneSignal.init({
-                    appId: "a76531b8-a3c8-442b-a571-907e3e112de4",
-                });
-            });
-        </script>
+
     </head>
 
     <body class="fullwidth-page">
