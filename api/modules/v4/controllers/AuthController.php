@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\OrganizationSignup;
 use api\modules\v4\models\ProfilePicture;
 use api\modules\v4\models\Candidates;
 use api\modules\v4\models\LoginForm;
@@ -9,6 +10,7 @@ use api\modules\v4\models\IndividualSignup;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
+use common\models\UserTypes;
 use common\models\Utilities;
 use yii\web\UploadedFile;
 use Yii;
@@ -25,6 +27,7 @@ class AuthController extends ApiBaseController
         $behaviors['authenticator'] = [
             'except' => [
                 'signup',
+                'org-signup',
                 'validate',
                 'login',
                 'upload-profile-picture'
@@ -35,6 +38,7 @@ class AuthController extends ApiBaseController
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
                 'signup' => ['POST', 'OPTIONS'],
+                'org-signup' => ['POST', 'OPTIONS'],
                 'validate' => ['POST', 'OPTIONS'],
                 'login' => ['POST', 'OPTIONS'],
                 'upload-profile-picture' => ['POST', 'OPTIONS'],
@@ -61,6 +65,25 @@ class AuthController extends ApiBaseController
             }
             if ($model->validate()) {
                 if ($data = $model->saveUser()) {
+                    return $this->response(201, ['status' => 201, 'data' => $data]);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            }
+            return $this->response(409, ['status' => 409, 'error' => $model->getErrors()]);
+        }
+        return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+    }
+
+    public function actionOrgSignup()
+    {
+        $model = new OrganizationSignup();
+        if ($model->load(Yii::$app->request->post(), '')) {
+            if (!$model->source) {
+                $model->source = Yii::$app->getRequest()->getUserIP();
+            }
+            if ($model->validate()) {
+                if ($data = $model->add()) {
                     return $this->response(201, ['status' => 201, 'data' => $data]);
                 } else {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
@@ -135,6 +158,7 @@ class AuthController extends ApiBaseController
         $data['initials_color'] = $user->initials_color;
         $data['phone'] = $user->phone;
         $data['email'] = $user->email;
+        $data['user_type'] = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
         $data['access_token'] = $token->access_token;
         $data['refresh_token'] = $token->refresh_token;
         $data['access_token_expiry_time'] = $token->access_token_expiration;

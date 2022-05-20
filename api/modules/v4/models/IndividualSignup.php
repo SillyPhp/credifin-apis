@@ -97,6 +97,7 @@ class IndividualSignup extends Model
             $data['initials_color'] = $user->initials_color;
             $data['phone'] = $user->phone;
             $data['email'] = $user->email;
+            $data['user_type'] = 'Individual';
             $data['access_token'] = '';
             $data['refresh_token'] = '';
             $data['access_token_expiry_time'] = '';
