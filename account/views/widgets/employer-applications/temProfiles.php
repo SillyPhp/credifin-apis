@@ -476,7 +476,7 @@ function ajaxFunction(id, noTemp) {
        if (res.response.status==200){
             $('#choose_temp').show();
             $('.load-suggestions').hide();
-            $('#tab2_content').html(Mustache.render($('#temp-card').html(), [res.response.data, type]));
+            $('#tab2_content').html(Mustache.render($('#temp-card').html(), [res.response.data]));
             Btback.show();
             BtContinue.show();
             BTskip.show();
