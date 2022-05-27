@@ -124,7 +124,8 @@ class OrganizationSignup extends Model
                 return false;
             }
 
-            if (!$this->addRef($organizationsModel->organization_enc_id, $usersModel->user_enc_id)) {
+            $ref_code = $this->addRef($organizationsModel->organization_enc_id, $usersModel->user_enc_id);
+            if (!$ref_code) {
                 $transaction->rollback();
                 return false;
             }
@@ -143,6 +144,7 @@ class OrganizationSignup extends Model
             $data['initials_color'] = $usersModel->initials_color;
             $data['phone'] = $usersModel->phone;
             $data['email'] = $usersModel->email;
+            $data['referral_code'] = $ref_code;
             $data['organization_name'] = $organizationsModel->name;
             $data['organization_slug'] = $organizationsModel->slug;
             $data['organization_enc_id'] = $organizationsModel->organization_enc_id;
@@ -181,7 +183,7 @@ class OrganizationSignup extends Model
         $ref->created_by = $user_id;
         $ref->created_on = date('Y-m-d H:i:s');
         if ($ref->save()) {
-            return true;
+            return $ref->code;
         }
 
         return false;

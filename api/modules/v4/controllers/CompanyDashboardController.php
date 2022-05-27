@@ -62,7 +62,7 @@ class CompanyDashboardController extends ApiBaseController
                     ]);
                     $i->andWhere(['in', 'i.status', [0, 3, 4, 10]]);
                 }], false)
-                ->andWhere(['a.status' => 1, 'a.lead_by' => $user->user_enc_id])
+                ->andWhere(['a.lead_by' => $user->user_enc_id])
                 ->asArray()
                 ->one();
 
@@ -102,6 +102,7 @@ class CompanyDashboardController extends ApiBaseController
                     WHEN i.status = "11" THEN "Disbursed"
                     ELSE "N/A"
                 END) as loan_status',
+                    'CONCAT(k.first_name, " ", k.last_name) employee_name',
                     'a.applicant_name',
                     'a.amount',
                     'a.amount_received',
@@ -141,6 +142,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['assignedLoanProviders i' => function ($i) {
                     $i->joinWith(['providerEnc j']);
                 }])
+                ->joinWith(['managedBy k'], false)
                 ->andWhere(['a.lead_by' => $user->user_enc_id]);
 
             if ($filter) {

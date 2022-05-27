@@ -5,8 +5,10 @@ namespace api\modules\v4\models;
 use common\models\EmailLogs;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
+use common\models\Users;
 use common\models\UserTypes;
 use common\models\RandomColors;
+use frontend\models\referral\Referral;
 use Yii;
 use yii\base\Model;
 use common\models\Utilities;
@@ -82,7 +84,8 @@ class IndividualSignup extends Model
                 return false;
             }
 
-            if (!$this->addRef($user->user_enc_id)) {
+            $ref_code = $this->addRef($user->user_enc_id);
+            if (!$ref_code) {
                 $transaction->rollback();
                 return false;
             }
@@ -96,6 +99,7 @@ class IndividualSignup extends Model
             $data['initials_color'] = $user->initials_color;
             $data['phone'] = $user->phone;
             $data['email'] = $user->email;
+            $data['referral_code'] = $ref_code;
             $data['user_type'] = 'Individual';
             $data['access_token'] = '';
             $data['source'] = '';
@@ -131,7 +135,7 @@ class IndividualSignup extends Model
         $ref->created_by = $user_id;
         $ref->created_on = date('Y-m-d H:i:s');
         if ($ref->save()) {
-            return true;
+            return $ref->code;
         }
 
         return false;
