@@ -142,7 +142,7 @@ use yii\helpers\Url;
 												if(Yii::$app->user->isGuest){
 													?>
 											
-											<a href="/signup/organization" class="learn-btn">Learn More</a>
+											<a href="/how-to-create-career-page-link" class="learn-btn">Learn More</a>
 											
 											<?php
 												}else{
