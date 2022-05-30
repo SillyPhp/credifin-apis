@@ -303,7 +303,7 @@ class OrganizationsController extends Controller
                 ->one();
             $benefit = OrganizationEmployeeBenefits::find()
                 ->alias('a')
-                ->select(['a.organization_enc_id', 'a.organization_benefit_enc_id', 'b.benefit', 'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg') . '" ELSE CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Url::to(Yii::$app->params->upload_directories->benefits->icon) . '", b.icon_location, "/", b.icon) END icon'])
+                ->select(['a.organization_enc_id', 'a.organization_benefit_enc_id', 'b.benefit', 'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg') . '" ELSE CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->benefits->icon) . '", b.icon_location, "/", b.icon) END icon'])
                 ->innerJoin(EmployeeBenefits::tableName() . 'as b', 'b.benefit_enc_id = a.benefit_enc_id')
                 ->where(['a.organization_enc_id' => $organization['organization_enc_id'], 'a.is_deleted' => 0])
                 ->asArray()

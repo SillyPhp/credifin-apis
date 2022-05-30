@@ -85,6 +85,7 @@ if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'
         $.each($model->clone_desc,function(i,v) {
             drop_options(id="",v);
         });
+        job_desc_update('$model->title_id');
     }
 function drop_options(id,questions)
         {
