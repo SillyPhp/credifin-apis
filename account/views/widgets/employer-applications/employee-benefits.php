@@ -158,7 +158,7 @@ function employee_benefits(data)
          $.each(obj,function()
          { 
              var checked = '';
-             if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'||doc_type=='Edit_Internships')
+             if (doc_type=='Edit_Jobs'||doc_type=='Edit_Internships')
                  {
                      checked = (this.is_checked == 1 ? 'checked' : '');
                  } else {
