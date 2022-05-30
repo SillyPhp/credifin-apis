@@ -95,6 +95,7 @@ if (doc_type=='Clone_Jobs'||doc_type=='Clone_Internships'||doc_type=='Edit_Jobs'
         $.each($model->clone_edu,function(i,v) {
             drop_edu(id="",v);
         });
+        educational_update('$model->title_id');
     }
 $(document).on('click','.quali_drop_options span a', function(event){
 		event.preventDefault();
