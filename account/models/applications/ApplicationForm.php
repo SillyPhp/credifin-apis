@@ -41,6 +41,7 @@ class ApplicationForm extends Model
 
     public $questionnaire;
     public $title;
+    public $title_id;
     public $type;
     public $workfromhome;
     public $pre_placement_offer;
@@ -178,7 +179,7 @@ class ApplicationForm extends Model
                 'placement_locations',
                 'fill_quesio_on',
                 'fixed_wage', 'weekoptsat', 'custom_job_title', 'weekoptsund', 'title', 'type', 'interviewdate', 'interviewcity', 'description', 'ctc', 'interradio', 'quesradio'], 'required'],
-                [['vacancy'],'safe'],
+                [['vacancy','title_id'],'safe'],
         ];
     }
 

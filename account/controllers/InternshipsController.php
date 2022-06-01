@@ -285,6 +285,7 @@ class InternshipsController extends Controller
             ->one();
         if (Yii::$app->user->identity->organization && $application) {
             $model = new ApplicationForm();
+            $model->benefit_selection = 1;
             $type = 'Clone_Internships';
             $primary_cat = $model->getPrimaryFields();
             $questionnaire = $model->getQuestionnnaireList();
