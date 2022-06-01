@@ -7,6 +7,8 @@ use api\modules\v4\models\ProfilePicture;
 use api\modules\v4\models\Candidates;
 use api\modules\v4\models\LoginForm;
 use api\modules\v4\models\IndividualSignup;
+use common\models\Organizations;
+use common\models\Referral;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
@@ -59,10 +61,19 @@ class AuthController extends ApiBaseController
     public function actionSignup()
     {
         $model = new IndividualSignup();
+
         if ($model->load(Yii::$app->request->post(), '')) {
+
             if (!$model->source) {
                 $model->source = Yii::$app->getRequest()->getUserIP();
             }
+
+            if ($model->dsaRefId) {
+                if (!$this->DsaOrgExist($model->dsaRefId)) {
+                    return $this->response(404, ['status' => 404, 'message' => 'no organization found with this ref id']);
+                }
+            }
+
             if ($model->validate()) {
                 if ($data = $model->saveUser()) {
                     return $this->response(201, ['status' => 201, 'data' => $data]);
@@ -73,6 +84,20 @@ class AuthController extends ApiBaseController
             return $this->response(409, ['status' => 409, 'error' => $model->getErrors()]);
         }
         return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+    }
+
+    private function DsaOrgExist($dsaRefId)
+    {
+        return Organizations::find()
+            ->alias('a')
+            ->where(['a.organization_enc_id' => $dsaRefId])
+            ->joinWith(['selectedServices b' => function ($x) {
+                $x->andWhere(['b.is_selected' => 1]);
+                $x->joinWith(['serviceEnc c' => function ($b) {
+                    $b->andWhere(['c.name' => 'E-Partners']);
+                }], 'INNER JOIN');
+            }], 'INNER JOIN')
+            ->exists();
     }
 
     public function actionOrgSignup()
@@ -151,6 +176,17 @@ class AuthController extends ApiBaseController
 
     private function returnData($user, $token)
     {
+        if ($user->organization_enc_id) {
+            $data['referral_code'] = Referral::findOne(['organization_enc_id' => $user->organization_enc_id])->code;
+
+            $org = Organizations::findOne(['organization_enc_id' => $user->organization_enc_id]);
+            $data['organization_name'] = $org->name;
+            $data['organization_slug'] = $org->slug;
+            $data['organization_enc_id'] = $org->organization_enc_id;
+        } else {
+            $data['referral_code'] = Referral::findOne(['user_enc_id' => $user->user_enc_id])->code;
+        }
+
         $data['username'] = $user->username;
         $data['user_enc_id'] = $user->user_enc_id;
         $data['first_name'] = $user->first_name;

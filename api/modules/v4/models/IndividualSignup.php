@@ -2,7 +2,11 @@
 
 namespace api\modules\v4\models;
 
+use common\models\AssignedSupervisor;
 use common\models\EmailLogs;
+use common\models\Organizations;
+use common\models\SelectedServices;
+use common\models\Services;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
@@ -23,6 +27,7 @@ class IndividualSignup extends Model
     public $username;
     public $password;
     public $source;
+    public $dsaRefId;
 
 
     public function rules()
@@ -43,7 +48,8 @@ class IndividualSignup extends Model
             ['password', 'required'],
             [['password'], 'string', 'length' => [8, 20]],
 
-            ['source', 'required']
+            ['source', 'required'],
+            ['dsaRefId', 'safe']
         ];
     }
 
@@ -88,6 +94,10 @@ class IndividualSignup extends Model
             if (!$ref_code) {
                 $transaction->rollback();
                 return false;
+            }
+
+            if ($this->dsaRefId) {
+                $this->assignedDsaService($user->user_enc_id, $this->dsaRefId);
             }
 
             $transaction->commit();
@@ -197,6 +207,47 @@ class IndividualSignup extends Model
             return $token;
         }
         return false;
+    }
+
+    public function assignedDsaService($userId, $dsaRefId)
+    {
+        $id = Services::findOne(['name' => 'E-Partners'])->service_enc_id;
+        $model = new SelectedServices();
+        $model->selected_service_enc_id = Yii::$app->security->generateRandomString(32);
+        $model->service_enc_id = $id;
+        $model->is_selected = 1;
+        $model->created_by = $userId;
+        $model->created_on = date('Y-m-d H:i:s');
+        if ($model->save()) {
+            if(!$this->assignedSupervisor($userId, $dsaRefId)){
+                return false;
+            }
+
+            if(!$this->assignedSupervisor($userId, $dsaRefId, 'Lead Source')){
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function assignedSupervisor($userId, $dsaRefId, $role = 'Manager')
+    {
+        $assignedSuper = new AssignedSupervisor();
+        $assignedSuper->assigned_enc_id = Yii::$app->security->generateRandomString(32);
+        $assignedSuper->supervisor_enc_id = Organizations::findOne(['organization_enc_id' => $dsaRefId])->created_by;
+        $assignedSuper->assigned_user_enc_id = $userId;
+        $assignedSuper->is_supervising = 1;
+        $assignedSuper->supervisor_role = $role;
+        $assignedSuper->created_on = date('Y-m-d H:i:s');
+        $assignedSuper->created_by = $userId;
+        if (!$assignedSuper->save()) {
+            return false;
+        }
+
+        return true;
     }
 
 }
