@@ -40,8 +40,8 @@ class CompanyDashboardController extends ApiBaseController
     public function actionLeadStats()
     {
         if ($user = $this->isAuthorized()) {
+
             $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
-            $referral_code = $user->getReferrals0()->one()->code;
 
             $stats = LoanApplications::find()
                 ->alias('a')
@@ -66,7 +66,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            return $this->response(200, ['status' => 200, 'stats' => $stats, 'referral_code' => $referral_code]);
+            return $this->response(200, ['status' => 200, 'stats' => $stats]);
 
 
         } else {

@@ -3,6 +3,7 @@
 namespace api\modules\v4\models;
 
 use common\models\EmailLogs;
+use common\models\Referral;
 use common\models\Usernames;
 use common\models\Users;
 use common\models\UserTypes;
@@ -42,6 +43,7 @@ class LoanApplication extends Model
     public $annual_income;
     public $occupation;
     public $vehicle_type;
+    public $ref_id;
 
     public function formName()
     {
@@ -53,7 +55,7 @@ class LoanApplication extends Model
         return [
             [['first_name', 'last_name', 'loan_type', 'phone_no', 'loan_amount', 'email'], 'required'],
             [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises',
-                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type'], 'safe'],
+                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'ref_id'], 'safe'],
             [['first_name', 'last_name', 'loan_purpose', 'email', 'loan_purpose'], 'trim'],
             [['first_name', 'last_name'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],
@@ -83,6 +85,19 @@ class LoanApplication extends Model
             $model->yearly_income = $this->annual_income;
             $model->created_on = date('Y-m-d H:i:s');
             $model->created_by = ((Yii::$app->user->identity->user_enc_id) ? Yii::$app->user->identity->user_enc_id : NULL);
+
+            if ($this->ref_id) {
+                $referralData = Referral::findOne(['code' => $this->ref_id]);
+                if ($referralData) {
+                    if ($referralData->user_enc_id):
+                        $model->lead_by = $referralData->user_enc_id;
+                    endif;
+                    if ($referralData->organization_enc_id):
+                        $model->lead_by = Users::findOne(['organization_enc_id' => $referralData->organization_enc_id])->user_enc_id;
+                    endif;
+                }
+            }
+
             if (!$model->save()) {
                 $transaction->rollback();
                 return false;
@@ -369,7 +384,7 @@ class LoanApplication extends Model
             }
 
             $utilitiesModel = new Utilities();
-            $usersModel = new Candidates() ;
+            $usersModel = new Candidates();
             $usersModel->username = strtolower($username);
             $usersModel->first_name = ucfirst(strtolower($first_name));
             $usersModel->last_name = ucfirst(strtolower($last_name));

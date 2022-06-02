@@ -9,6 +9,7 @@ use api\modules\v4\models\LoginForm;
 use api\modules\v4\models\IndividualSignup;
 use common\models\Organizations;
 use common\models\Referral;
+use common\models\SelectedServices;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
@@ -150,6 +151,12 @@ class AuthController extends ApiBaseController
                 }
                 $user = $this->findUser($model);
 
+                if ($user->organization_enc_id) {
+                    if (!$this->isEPartner($user)) {
+                        return $this->response(409, ['status' => 409, 'message' => 'organization must be e-partner']);
+                    }
+                }
+
                 $user->last_visit = date('Y-m-d H:i:s');
                 $user->last_visit_through = 'EL';
                 if (!$user->update()) {
@@ -172,6 +179,15 @@ class AuthController extends ApiBaseController
             return $this->response(409, ['status' => 409, 'data' => $model->getErrors()]);
         }
         return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+    }
+
+    private function isEPartner($user)
+    {
+        return SelectedServices::find()
+            ->alias('a')
+            ->joinWith(['serviceEnc b'])
+            ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'E-Partners'])
+            ->exists();
     }
 
     private function returnData($user, $token)
