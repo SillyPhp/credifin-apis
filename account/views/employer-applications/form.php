@@ -1843,6 +1843,7 @@ function validateSelection() {
    var data =  job_titles[i].id;
    skils_update(data); 
    educational_update(data);
+   employee_benefits(data);
    job_desc_update(data);
    make_removable_jd();
    make_removable_edu();

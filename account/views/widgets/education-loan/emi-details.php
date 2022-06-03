@@ -56,7 +56,7 @@ $emi_structures = $data['loanSanctionReports'][0]['loanEmiStructures'];
                         </div>
                     </div>
                     <?php
-                    if (count($emi_structures) >= 1) {
+                    if ($emi_structures && count($emi_structures) >= 1) {
                         ?>
                         <div class="row">
                             <div class="col-md-12">

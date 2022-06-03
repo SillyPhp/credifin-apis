@@ -41,6 +41,7 @@ class ApplicationForm extends Model
 
     public $questionnaire;
     public $title;
+    public $title_id;
     public $type;
     public $workfromhome;
     public $pre_placement_offer;
@@ -178,7 +179,7 @@ class ApplicationForm extends Model
                 'placement_locations',
                 'fill_quesio_on',
                 'fixed_wage', 'weekoptsat', 'custom_job_title', 'weekoptsund', 'title', 'type', 'interviewdate', 'interviewcity', 'description', 'ctc', 'interradio', 'quesradio'], 'required'],
-                [['vacancy'],'safe'],
+                [['vacancy','title_id'],'safe'],
         ];
     }
 
@@ -1033,7 +1034,7 @@ class ApplicationForm extends Model
     {
         $benefit = OrganizationEmployeeBenefits::find()
             ->alias('a')
-            ->select(['a.benefit_enc_id', 'b.benefit', 'CASE WHEN b.icon IS NULL OR b.icon = ""  THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg') . '" ELSE CONCAT("' . Yii::$app->params->upload_directories->benefits->icon . '",b.icon_location, "/", b.icon) END icon'])
+            ->select(['a.benefit_enc_id', 'b.benefit', 'CASE WHEN b.icon IS NULL OR b.icon = ""  THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg') . '" ELSE CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->benefits->icon . '",b.icon_location, "/", b.icon) END icon'])
             ->joinWith(['benefitEnc b'], false)
             ->where([
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,

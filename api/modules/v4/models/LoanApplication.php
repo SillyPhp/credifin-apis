@@ -2,6 +2,11 @@
 
 namespace api\modules\v4\models;
 
+use common\models\EmailLogs;
+use common\models\Referral;
+use common\models\Usernames;
+use common\models\Users;
+use common\models\UserTypes;
 use Razorpay\Api\Api;
 use common\models\extended\Payments;
 use common\models\EducationLoanPayments;
@@ -9,6 +14,7 @@ use common\models\extended\PaymentsModule;
 use common\models\LoanApplicantResidentialInfo;
 use common\models\LoanApplicationOptions;
 use common\models\LoanApplications;
+use common\models\RandomColors;
 use Yii;
 use yii\base\Model;
 use common\models\Utilities;
@@ -37,6 +43,7 @@ class LoanApplication extends Model
     public $annual_income;
     public $occupation;
     public $vehicle_type;
+    public $ref_id;
 
     public function formName()
     {
@@ -48,7 +55,7 @@ class LoanApplication extends Model
         return [
             [['first_name', 'last_name', 'loan_type', 'phone_no', 'loan_amount', 'email'], 'required'],
             [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises',
-                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type'], 'safe'],
+                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'ref_id'], 'safe'],
             [['first_name', 'last_name', 'loan_purpose', 'email', 'loan_purpose'], 'trim'],
             [['first_name', 'last_name'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],
@@ -78,6 +85,19 @@ class LoanApplication extends Model
             $model->yearly_income = $this->annual_income;
             $model->created_on = date('Y-m-d H:i:s');
             $model->created_by = ((Yii::$app->user->identity->user_enc_id) ? Yii::$app->user->identity->user_enc_id : NULL);
+
+            if ($this->ref_id) {
+                $referralData = Referral::findOne(['code' => $this->ref_id]);
+                if ($referralData) {
+                    if ($referralData->user_enc_id):
+                        $model->lead_by = $referralData->user_enc_id;
+                    endif;
+                    if ($referralData->organization_enc_id):
+                        $model->lead_by = Users::findOne(['organization_enc_id' => $referralData->organization_enc_id])->user_enc_id;
+                    endif;
+                }
+            }
+
             if (!$model->save()) {
                 $transaction->rollback();
                 return false;
@@ -155,21 +175,28 @@ class LoanApplication extends Model
 //                    ];
 //                }
 //            }
-            $transaction->commit();
 
             $options['loan_app_id'] = $model->loan_app_enc_id;
             $options['name'] = $model->applicant_name;
             $options['phone'] = $model->phone;
             $options['email'] = $model->email;
+
+            if (!$this->SignUp($options)) {
+                $transaction->rollback();
+                return false;
+            }
+
+            $transaction->commit();
+
             $paymentUrl = $this->createUrl($options);
             if ($paymentUrl['status'] == 200) {
                 $data = [];
                 $data['loan_app_enc_id'] = $model->loan_app_enc_id;
                 $data['payment_url'] = $paymentUrl['surl'];
-                    return [
-                        'status' => true,
-                        'data' => $data
-                    ];
+                return [
+                    'status' => true,
+                    'data' => $data
+                ];
             } else {
                 $transaction->rollBack();
                 return false;
@@ -235,24 +262,24 @@ class LoanApplication extends Model
         $options['callback_url'] = "https://www.empowerloans.in/payment/transaction";
         $options['brand'] = "Empower Loans";
         $link = $api->paymentLink->create([
-            'amount'=>$options['total'],
-            'currency'=>$options['currency'],
-            'accept_partial'=>false,
+            'amount' => $options['total'],
+            'currency' => $options['currency'],
+            'accept_partial' => false,
             'description' => 'Application Login Fee',
             'customer' => [
-                'name'=>$options['name'],
+                'name' => $options['name'],
                 'email' => $options['email'],
-                'contact'=>$options['contact']
+                'contact' => $options['contact']
             ],
-            'notify'=>[
-                'sms'=>true,
-                'email'=>true
-            ] ,
-            'reminder_enable'=>true,
+            'notify' => [
+                'sms' => true,
+                'email' => true
+            ],
+            'reminder_enable' => true,
             'callback_url' => $options['callback_url'],
-            'callback_method'=>'get',
-            'options'=>[
-                "checkout"=>[
+            'callback_method' => 'get',
+            'options' => [
+                "checkout" => [
                     "name" => $options['brand']
                 ]
             ]
@@ -279,7 +306,8 @@ class LoanApplication extends Model
         }
     }
 
-    private function stringGenerate($n=8){
+    private function stringGenerate($n = 8)
+    {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $randomString = '';
 
@@ -288,7 +316,179 @@ class LoanApplication extends Model
             $randomString .= $characters[$index];
         }
 
-        return 'Ey_'.$randomString;
+        return 'Ey_' . $randomString;
+    }
+
+    public function SignUp($data)
+    {
+        $id = Users::find()
+            ->where([
+                'or',
+                ['phone' => $data['phone']],
+                ['email' => $data['email']],
+            ])->one();
+        if ($id) {
+            $get = LoanApplications::findOne(['loan_app_enc_id' => $data['loan_app_id']]);
+            $get->created_by = $id->user_enc_id;
+            if ($get->save()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            $params = [];
+            $params['id'] = $data['loan_app_enc_id'];
+            $params['name'] = $data['name'];
+            $params['email'] = $data['email'];
+            $params['phone'] = str_replace('+', '', $data['phone']);
+            $id = $this->userAutoSignUp($params);
+            if ($id) {
+                $get = LoanApplications::findOne(['loan_app_enc_id' => $data['loan_app_id']]);
+                $get->created_by = $id['id'];
+                if ($get->save()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+
+    public function userAutoSignUp($params)
+    {
+        $user_type = UserTypes::findOne([
+            'user_type' => 'Individual',
+        ]);
+
+        if (!$user_type) {
+            return false;
+        }
+
+        $username = $this->generate_username($params['name']);
+        $password = $params['phone'];
+        $arr = explode(' ', $params['name']);
+        $first_name = $arr[0];
+        $last_name = $arr[1] . ' ' . (($arr[2]) ? $arr[2] : '');
+        if (empty($last_name)):
+            $last_name = null;
+        endif;
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $usernamesModel = new Usernames();
+            $usernamesModel->username = strtolower($username);
+            $usernamesModel->assigned_to = 1;
+            if (!$usernamesModel->validate() || !$usernamesModel->save()) {
+                $transaction->rollBack();
+                return false;
+            }
+
+            $utilitiesModel = new Utilities();
+            $usersModel = new Candidates();
+            $usersModel->username = strtolower($username);
+            $usersModel->first_name = ucfirst(strtolower($first_name));
+            $usersModel->last_name = ucfirst(strtolower($last_name));
+            $usersModel->email = strtolower($params['email']);
+            $usersModel->phone = $params['phone'];
+            $usersModel->initials_color = RandomColors::one();
+            $usersModel->user_type_enc_id = $user_type->user_type_enc_id;
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $usersModel->user_enc_id = $utilitiesModel->encrypt();
+            $usersModel->status = 'Active';
+            $usersModel->last_visit = date('Y-m-d H:i:s');
+            $usersModel->last_visit_through = 'EL';
+            $usersModel->signed_up_through = 'EL';
+            $usersModel->setPassword($password);
+            $usersModel->generateAuthKey();
+            if (!$usersModel->validate() || !$usersModel->save()) {
+                $transaction->rollBack();
+                return false;
+                //throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($usersModel->errors, 0, false)));
+            }
+
+            $ref = $this->addRef($usersModel->user_enc_id);
+            if (!$ref) {
+                $transaction->rollBack();
+                return false;
+            }
+
+//            $this->autoSignupEmail($username, $password, $usersModel);
+
+            $transaction->commit();
+            return ['id' => $usersModel->user_enc_id];
+
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            return false;
+        }
+    }
+
+    private function autoSignupEmail($username, $password, $usersModel)
+    {
+        $params['username'] = $username;
+        $params['password'] = $password;
+        Yii::$app->mailer->htmlLayout = 'layouts/email';
+        $mail = Yii::$app->mailer->compose(
+            ['html' => 'default-user-password'], ['data' => $params]
+        )
+            ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
+            ->setTo([$params['email'] => $params['name']])
+            ->setSubject('Your Empower Youth\'s Default Username Password Is Here');
+        if ($mail->send()) {
+            $mail_logs = new EmailLogs();
+            $mail_logs->email_log_enc_id = Yii::$app->security->generateRandomString(15);
+            $mail_logs->email_type = 5;
+            $mail_logs->user_enc_id = $usersModel->user_enc_id;
+            $mail_logs->receiver_name = $usersModel->first_name . " " . $usersModel->last_name;
+            $mail_logs->receiver_email = $usersModel->email;
+            $mail_logs->receiver_phone = $usersModel->phone;
+            $mail_logs->subject = "Your Empower Youth's Default Username Password Is Here";
+            $mail_logs->template = 'dafault-user-password';
+            $mail_logs->is_sent = 1;
+            $mail_logs->save();
+        }
+    }
+
+    private function generate_username($string_name = null, $rand_no = 200)
+    {
+        $username_parts = array_filter(explode(" ", strtolower($string_name))); //explode and lowercase name
+        $username_parts = array_slice($username_parts, 0, 2); //return only first two arry part
+
+        $part1 = (!empty($username_parts[0])) ? substr($username_parts[0], 0, 8) : ""; //cut first name to 8 letters
+        $part2 = (!empty($username_parts[1])) ? substr($username_parts[1], 0, 5) : ""; //cut second name to 5 letters
+        $part3 = ($rand_no) ? rand(0, $rand_no) : "";
+
+        $username = $part1 . str_shuffle($part2) . $part3; //str_shuffle to randomly shuffle all characters
+        return $username;
+    }
+
+    private function addRef($user_id)
+    {
+        $ref = new \common\models\Referral();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+        $ref->referral_enc_id = $utilitiesModel->encrypt();
+        $ref->code = $ref->referral_link = $this->_getReferralCode();
+        $ref->user_enc_id = $user_id;
+        $ref->created_by = $user_id;
+        $ref->created_on = date('Y-m-d H:i:s');
+        if ($ref->save()) {
+            return $ref->code;
+        }
+
+        return false;
+    }
+
+    private function _getReferralCode($n = 10)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+
+        for ($i = 0; $i < $n; $i++) {
+            $index = rand(0, strlen($characters) - 1);
+            $randomString .= $characters[$index];
+        }
+        return $randomString;
     }
 
 }

@@ -2,17 +2,17 @@
 
 namespace api\modules\v4\models;
 
-use api\modules\v4\models\Candidates;
-use common\models\CollegeSettings;
-use common\models\crud\Referral;
-use common\models\Departments;
+use common\models\AssignedSupervisor;
 use common\models\EmailLogs;
-use common\models\ReferralSignUpTracking;
+use common\models\Organizations;
+use common\models\SelectedServices;
+use common\models\Services;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
-use common\models\UserOtherDetails;
+use common\models\Users;
 use common\models\UserTypes;
 use common\models\RandomColors;
+use frontend\models\referral\Referral;
 use Yii;
 use yii\base\Model;
 use common\models\Utilities;
@@ -27,6 +27,7 @@ class IndividualSignup extends Model
     public $username;
     public $password;
     public $source;
+    public $dsaRefId;
 
 
     public function rules()
@@ -47,7 +48,8 @@ class IndividualSignup extends Model
             ['password', 'required'],
             [['password'], 'string', 'length' => [8, 20]],
 
-            ['source', 'required']
+            ['source', 'required'],
+            ['dsaRefId', 'safe']
         ];
     }
 
@@ -88,6 +90,16 @@ class IndividualSignup extends Model
                 return false;
             }
 
+            $ref_code = $this->addRef($user->user_enc_id);
+            if (!$ref_code) {
+                $transaction->rollback();
+                return false;
+            }
+
+            if ($this->dsaRefId) {
+                $this->assignedDsaService($user->user_enc_id, $this->dsaRefId);
+            }
+
             $transaction->commit();
 
             $data['username'] = $user->username;
@@ -97,7 +109,10 @@ class IndividualSignup extends Model
             $data['initials_color'] = $user->initials_color;
             $data['phone'] = $user->phone;
             $data['email'] = $user->email;
+            $data['referral_code'] = $ref_code;
+            $data['user_type'] = 'Individual';
             $data['access_token'] = '';
+            $data['source'] = '';
             $data['refresh_token'] = '';
             $data['access_token_expiry_time'] = '';
             $data['refresh_token_expiry_time'] = '';
@@ -105,6 +120,7 @@ class IndividualSignup extends Model
 
             if ($token = $this->newToken($user->user_enc_id, $this->source)) {
                 $data['access_token'] = $token->access_token;
+                $data['source'] = $token->source;
                 $data['refresh_token'] = $token->refresh_token;
                 $data['access_token_expiry_time'] = $token->access_token_expiration;
                 $data['refresh_token_expiry_time'] = $token->refresh_token_expiration;
@@ -116,6 +132,35 @@ class IndividualSignup extends Model
             $transaction->rollback();
             return false;
         }
+    }
+
+    private function addRef($user_id)
+    {
+        $ref = new \common\models\Referral();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+        $ref->referral_enc_id = $utilitiesModel->encrypt();
+        $ref->code = $ref->referral_link = $this->_getReferralCode();
+        $ref->user_enc_id = $user_id;
+        $ref->created_by = $user_id;
+        $ref->created_on = date('Y-m-d H:i:s');
+        if ($ref->save()) {
+            return $ref->code;
+        }
+
+        return false;
+    }
+
+    private function _getReferralCode($n = 10)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+
+        for ($i = 0; $i < $n; $i++) {
+            $index = rand(0, strlen($characters) - 1);
+            $randomString .= $characters[$index];
+        }
+        return $randomString;
     }
 
     private function sendMail($userId)
@@ -162,6 +207,47 @@ class IndividualSignup extends Model
             return $token;
         }
         return false;
+    }
+
+    public function assignedDsaService($userId, $dsaRefId)
+    {
+        $id = Services::findOne(['name' => 'E-Partners'])->service_enc_id;
+        $model = new SelectedServices();
+        $model->selected_service_enc_id = Yii::$app->security->generateRandomString(32);
+        $model->service_enc_id = $id;
+        $model->is_selected = 1;
+        $model->created_by = $userId;
+        $model->created_on = date('Y-m-d H:i:s');
+        if ($model->save()) {
+            if(!$this->assignedSupervisor($userId, $dsaRefId)){
+                return false;
+            }
+
+            if(!$this->assignedSupervisor($userId, $dsaRefId, 'Lead Source')){
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function assignedSupervisor($userId, $dsaRefId, $role = 'Manager')
+    {
+        $assignedSuper = new AssignedSupervisor();
+        $assignedSuper->assigned_enc_id = Yii::$app->security->generateRandomString(32);
+        $assignedSuper->supervisor_enc_id = Organizations::findOne(['organization_enc_id' => $dsaRefId])->created_by;
+        $assignedSuper->assigned_user_enc_id = $userId;
+        $assignedSuper->is_supervising = 1;
+        $assignedSuper->supervisor_role = $role;
+        $assignedSuper->created_on = date('Y-m-d H:i:s');
+        $assignedSuper->created_by = $userId;
+        if (!$assignedSuper->save()) {
+            return false;
+        }
+
+        return true;
     }
 
 }
