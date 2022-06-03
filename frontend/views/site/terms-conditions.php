@@ -356,6 +356,8 @@ $this->params['seo_tags'] = [
                                 with respect to any other form of currency with respect to the purchases made on
                                 Website.
                             </li>
+                            <li>10.3 All payments made against the services on the website are non-refundable.
+                            </li>
                         </ul>
 
                         <div class="point11 point-head">11. Privacy policy</div>
