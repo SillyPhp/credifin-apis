@@ -42,7 +42,7 @@ $this->registerCss("
   background: #fff;
   position: relative;
   color:#111;
-  margin: 20px 0;
+//  margin: 20px 0;
 }
 
 .godaddy-offer .bg-box{
