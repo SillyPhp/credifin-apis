@@ -108,22 +108,40 @@ class LoansController extends ApiBaseController
     {
         $params = Yii::$app->request->post();
 
-        $model = new LeadsApplications();
-        $utilitiesModel = new Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $model->application_enc_id = $enc_id = $utilitiesModel->encrypt();
-        $model->application_number = date('ymd') . time();
-        $model->first_name = $params['first_name'];
-        $model->last_name = $params['last_name'];
-        $model->student_email = $params['email'];
-        $model->student_mobile_number = $params['phone'];
-        $model->message = $params['message'];
-        $model->source = 'Empower Loans';
-        if (!$model->save()) {
-            return $this->response(500, ['status' => 500, 'message' => 'Some Internal Server Error']);
+        $key = $params['field'];
+        if ($key == 'email') {
+            $key = 'student_email';
+        } elseif ($key == 'phone') {
+            $key = 'student_mobile_number';
         }
 
-        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+        if (isset($params['id']) && !empty($params['id'])) {
+
+            $model = LeadsApplications::findOne(['application_enc_id' => $params['id']]);
+
+            if ($model) {
+                $model->$key = $params['value'];
+                if (!$model->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'Some Internal Server Error']);
+                }
+            }
+
+        } else {
+
+            $model = new LeadsApplications();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->application_enc_id = $enc_id = $utilitiesModel->encrypt();
+            $model->application_number = date('ymd') . time();
+            $model->source = 'Empower Loans';
+            $model->$key = $params['value'];
+            if (!$model->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'Some Internal Server Error']);
+            }
+
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'successfully saved', 'id' => $model->application_enc_id]);
 
     }
 
