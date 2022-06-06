@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
+use common\models\AssignedSupervisor;
 use common\models\LoanApplications;
 use common\models\Users;
 use common\models\Utilities;
@@ -43,6 +44,20 @@ class CompanyDashboardController extends ApiBaseController
 
             $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
 
+            if ($user->organization_enc_id) {
+
+                $leads = $this->getDsa($user->user_enc_id);
+
+                $dsa = [];
+                if ($leads) {
+                    foreach ($leads as $val) {
+                        array_push($dsa, $val['assigned_user_enc_id']);
+                    }
+                }
+
+                $dsa[] = $user->user_enc_id;
+            }
+
             $stats = LoanApplications::find()
                 ->alias('a')
                 ->select([
@@ -61,9 +76,15 @@ class CompanyDashboardController extends ApiBaseController
                         ['not', ['i.provider_enc_id' => '']]
                     ]);
                     $i->andWhere(['in', 'i.status', [0, 3, 4, 10]]);
-                }], false)
-                ->andWhere(['a.lead_by' => $user->user_enc_id])
-                ->asArray()
+                }], false);
+
+            if ($user->organization_enc_id) {
+                $stats->andWhere(['a.lead_by' => $dsa]);
+            } else {
+                $stats->andWhere(['a.lead_by' => $user->user_enc_id]);
+            }
+
+            $stats->asArray()
                 ->one();
 
             return $this->response(200, ['status' => 200, 'stats' => $stats]);
@@ -77,6 +98,22 @@ class CompanyDashboardController extends ApiBaseController
     public function actionLoanApplications()
     {
         if ($user = $this->isAuthorized()) {
+
+            $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
+
+            if ($user->organization_enc_id) {
+
+                $leads = $this->getDsa($user->user_enc_id);
+
+                $dsa = [];
+                if ($leads) {
+                    foreach ($leads as $val) {
+                        array_push($dsa, $val['assigned_user_enc_id']);
+                    }
+                }
+
+                $dsa[] = $user->user_enc_id;
+            }
 
             $params = Yii::$app->request->post();
 
@@ -142,8 +179,14 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['assignedLoanProviders i' => function ($i) {
                     $i->joinWith(['providerEnc j']);
                 }])
-                ->joinWith(['managedBy k'], false)
-                ->andWhere(['a.lead_by' => $user->user_enc_id]);
+                ->joinWith(['managedBy k'], false);
+
+            if ($user->organization_enc_id) {
+                $loans->andWhere(['a.lead_by' => $dsa]);
+            } else {
+                $loans->andWhere(['a.lead_by' => $user->user_enc_id]);
+            }
+
 
             if ($filter) {
                 $loans->andWhere(['in', 'i.status', $filter]);
@@ -156,5 +199,15 @@ class CompanyDashboardController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    private function getDsa($user_id)
+    {
+        return AssignedSupervisor::find()
+            ->select(['assigned_user_enc_id'])
+            ->where(['supervisor_enc_id' => $user_id, 'supervisor_role' => 'Lead Source', 'is_supervising' => 1])
+            ->groupBy(['assigned_user_enc_id'])
+            ->asArray()
+            ->all();
     }
 }
