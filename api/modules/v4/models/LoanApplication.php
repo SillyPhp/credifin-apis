@@ -43,6 +43,7 @@ class LoanApplication extends Model
     public $annual_income;
     public $occupation;
     public $vehicle_type;
+    public $vehicle_option;
     public $ref_id;
 
     public function formName()
@@ -55,7 +56,7 @@ class LoanApplication extends Model
         return [
             [['first_name', 'last_name', 'loan_type', 'phone_no', 'loan_amount', 'email'], 'required'],
             [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises',
-                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'ref_id'], 'safe'],
+                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id'], 'safe'],
             [['first_name', 'last_name', 'loan_purpose', 'email', 'loan_purpose'], 'trim'],
             [['first_name', 'last_name'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],
@@ -116,6 +117,7 @@ class LoanApplication extends Model
                 $loan_options->designation = $this->designation;
                 $loan_options->occupation = $this->occupation;
                 $loan_options->vehicle_type = $this->vehicle_type;
+                $loan_options->vehicle_option = $this->vehicle_option;
                 $loan_options->created_on = date('Y-m-d H:i:s');
                 $loan_options->created_by = ((Yii::$app->user->identity->user_enc_id) ? Yii::$app->user->identity->user_enc_id : NULL);
                 if (!$loan_options->save()) {
