@@ -284,5 +284,8 @@ $this->registerCss('
     .drop-image {
         display: none;
     }
+    .dr-how-text h3 {
+        font-size: 22px;    
+    }
 }
 ');

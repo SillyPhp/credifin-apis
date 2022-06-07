@@ -203,6 +203,17 @@ $this->registerCss('
         width: 100%;
         }
 }
+@media screen and (max-width: 500px) and (min-width: 320px) {
+    .loan-vector-txt h2 {
+        font-size: 22pt;
+    }
+    .loan-vector-txt {
+        padding-top: 10px;
+    }
+    .loan-vector-txt p {
+        font-size: 18px;
+    }
+}
 ');
 $script = <<<JS
 $('.load-later').Lazy();
