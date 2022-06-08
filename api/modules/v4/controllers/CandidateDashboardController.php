@@ -5,6 +5,7 @@ namespace api\modules\v4\controllers;
 use common\models\AssignedLoanProvider;
 use common\models\EducationLoanPayments;
 use common\models\LoanApplications;
+use common\models\LoanSanctionReports;
 use common\models\Utilities;
 use yii\filters\VerbFilter;
 use Yii;
@@ -50,7 +51,7 @@ class CandidateDashboardController extends ApiBaseController
                     $b->onCondition(['b.payment_status' => ['captured', 'created', 'waived off']]);
                 }])
                 ->joinWith(['assignedLoanProviders c' => function ($c) {
-                    $c->select(['c.assigned_loan_provider_enc_id', 'c.loan_application_enc_id', 'c.status', 'c1.name', '(CASE
+                    $c->select(['c.assigned_loan_provider_enc_id', 'c.provider_enc_id', 'c.loan_application_enc_id', 'c.status', 'c1.name', '(CASE
                 WHEN c1.logo IS NULL OR c1.logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", c1.name, "&size=50&rounded=false&background=", REPLACE(c1.initials_color, "#", ""), "&color=ffffff") ELSE
                 CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '", c1.logo_location, "/", c1.logo) END
@@ -60,12 +61,6 @@ class CandidateDashboardController extends ApiBaseController
                 }])
                 ->joinWith(['loanApplicationNotifications e' => function ($e) {
                     $e->select(['e.message', 'e.loan_application_enc_id', 'e.created_on']);
-                }])
-                ->joinWith(['loanSanctionReports d' => function ($d) {
-                    $d->select(['d.report_enc_id', 'd.loan_app_enc_id', 'd.loan_amount', 'd.processing_fee', 'd.rate_of_interest']);
-                    $d->joinWith(['loanEmiStructures d1' => function ($d1) {
-                        $d1->select(['d1.loan_structure_enc_id', 'd1.sanction_report_enc_id', 'd1.due_date', 'd1.amount', 'd1.is_advance']);
-                    }]);
                 }])
                 ->where(['a.is_deleted' => 0, 'a.created_by' => $user->user_enc_id])
                 ->groupBy(['a.loan_app_enc_id'])
@@ -83,10 +78,16 @@ class CandidateDashboardController extends ApiBaseController
 
             if ($loan_application) {
                 foreach ($loan_application as $key => $val) {
+
                     if (!$loan_application['educationLoanPayments']) {
                         $get_amount = EducationLoanPayments::find()->where(['loan_app_enc_id' => $val['loan_app_enc_id']])->one();
                         $loan_application[$key]['payment_token'] = $get_amount->payment_token;
                         $loan_application[$key]['amount'] = $get_amount->payment_amount;
+                    }
+
+                    $loan_application[$key]['loanSanctionReports'] = [];
+                    if ($val['assignedLoanProviders'][0]['status'] == 5) {
+                        $loan_application[$key]['loanSanctionReports'] = $this->__loanSanctionReports($val['loan_app_enc_id'], $val['assignedLoanProviders'][0]['provider_enc_id']);
                     }
                 }
             }
@@ -96,6 +97,20 @@ class CandidateDashboardController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    private function __loanSanctionReports($loan_app_id, $provider_id)
+    {
+        return LoanSanctionReports::find()
+            ->alias('d')
+            ->select(['d.report_enc_id', 'd.loan_app_enc_id', 'd.loan_amount', 'd.processing_fee', 'd.rate_of_interest'])
+            ->joinWith(['loanEmiStructures d1' => function ($d1) {
+                $d1->select(['d1.loan_structure_enc_id', 'd1.sanction_report_enc_id', 'd1.due_date', 'd1.amount', 'd1.is_advance']);
+            }])
+            ->where(['d.loan_app_enc_id' => $loan_app_id, 'd.loan_provider_id' => $provider_id])
+            ->groupBy(['d.report_enc_id'])
+            ->asArray()
+            ->all();
     }
 
     public function actionLoanProviderDetail()
