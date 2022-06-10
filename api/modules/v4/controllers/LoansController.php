@@ -5,6 +5,7 @@ namespace api\modules\v4\controllers;
 use api\modules\v4\models\BusinessLoanApplication;
 use common\models\LeadsApplications;
 use common\models\Utilities;
+use yii\web\UploadedFile;
 use api\modules\v4\models\LoanApplication;
 use common\models\EducationLoanPayments;
 use common\models\LoanApplications;
@@ -47,6 +48,7 @@ class LoansController extends ApiBaseController
     {
         $model = new LoanApplication();
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            $model->file = UploadedFile::getInstanceByName('bill');
             if ($model->validate()) {
                 $resposne = $model->save();
                 if ($resposne['status']) {
