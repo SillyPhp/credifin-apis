@@ -84,7 +84,7 @@ class CompanyDashboardController extends ApiBaseController
                 $stats->andWhere(['a.lead_by' => $user->user_enc_id]);
             }
 
-            $stats->asArray()
+            $stats = $stats->asArray()
                 ->one();
 
             return $this->response(200, ['status' => 200, 'stats' => $stats]);
