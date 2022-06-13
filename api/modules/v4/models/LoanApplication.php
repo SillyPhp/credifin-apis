@@ -528,7 +528,7 @@ class LoanApplication extends Model
         if ($bill->save()) {
             $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
             $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-            $result = $my_space->uploadFileSources($this->file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $bill->file, "public", ['params' => ['ContentType' => $type]]);
+            $result = $my_space->uploadFileSources($this->file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $bill->file, "private", ['params' => ['ContentType' => $type]]);
             if ($result) {
                 return true;
             } else {
