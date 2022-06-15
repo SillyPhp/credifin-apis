@@ -203,6 +203,19 @@ class AuthController extends ApiBaseController
             $data['referral_code'] = Referral::findOne(['user_enc_id' => $user->user_enc_id])->code;
         }
 
+        $is_dsa = SelectedServices::find()
+            ->alias('a')
+            ->joinWith(['serviceEnc b'])
+            ->where(['a.is_selected' => 1, 'a.created_by' => $user->user_enc_id, 'b.name' => 'E-Partners', 'a.organization_enc_id' => Null])
+            ->exists();
+
+
+        if ($is_dsa) {
+            $data['user_type'] = "DSA";
+        } else {
+            $data['user_type'] = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
+        }
+
         $data['username'] = $user->username;
         $data['user_enc_id'] = $user->user_enc_id;
         $data['first_name'] = $user->first_name;
@@ -210,7 +223,7 @@ class AuthController extends ApiBaseController
         $data['initials_color'] = $user->initials_color;
         $data['phone'] = $user->phone;
         $data['email'] = $user->email;
-        $data['user_type'] = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
+//        $data['user_type'] = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
         $data['access_token'] = $token->access_token;
         $data['source'] = $token->source;
         $data['refresh_token'] = $token->refresh_token;
