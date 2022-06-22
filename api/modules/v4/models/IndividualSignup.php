@@ -40,7 +40,8 @@ class IndividualSignup extends Model
 
             [['username'], 'string', 'length' => [3, 20]],
             [['username'], 'match', 'pattern' => '/^([A-Za-z]+[0-9]|[0-9]+[A-Za-z]|[a-zA-Z])[A-Za-z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
-            ['username', 'unique', 'targetClass' => 'api\modules\v4\models\Candidates', 'message' => 'username already taken'],
+//            ['username', 'unique', 'targetClass' => 'api\modules\v4\models\Candidates', 'message' => 'username already taken'],
+            ['username', 'unique', 'targetClass' => Usernames::className(), 'targetAttribute' => ['username' => 'username'], 'message' => 'username already taken'],
 
             ['email', 'email'],
             ['email', 'unique', 'targetClass' => 'api\modules\v4\models\Candidates', 'message' => 'email already taken'],
@@ -117,6 +118,19 @@ class IndividualSignup extends Model
             $data['access_token_expiry_time'] = '';
             $data['refresh_token_expiry_time'] = '';
             $data['image'] = '';
+
+            $is_dsa = SelectedServices::find()
+                ->alias('a')
+                ->joinWith(['serviceEnc b'])
+                ->where(['a.is_selected' => 1, 'a.created_by' => $user->user_enc_id, 'b.name' => 'E-Partners', 'a.organization_enc_id' => Null])
+                ->exists();
+
+
+            if ($is_dsa) {
+                $data['user_type'] = "DSA";
+            } else {
+                $data['user_type'] = 'Individual';
+            }
 
             if ($token = $this->newToken($user->user_enc_id, $this->source)) {
                 $data['access_token'] = $token->access_token;

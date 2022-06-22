@@ -2,8 +2,10 @@
 
 namespace api\modules\v4\models;
 
+use common\models\BillDetails;
 use common\models\EmailLogs;
 use common\models\Referral;
+use common\models\spaces\Spaces;
 use common\models\Usernames;
 use common\models\Users;
 use common\models\UserTypes;
@@ -43,7 +45,9 @@ class LoanApplication extends Model
     public $annual_income;
     public $occupation;
     public $vehicle_type;
+    public $vehicle_option;
     public $ref_id;
+    public $file;
 
     public function formName()
     {
@@ -53,9 +57,9 @@ class LoanApplication extends Model
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'loan_type', 'phone_no', 'loan_amount', 'email'], 'required'],
+            [['first_name', 'last_name', 'loan_type', 'phone_no', 'email'], 'required'],
             [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises',
-                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'ref_id'], 'safe'],
+                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount'], 'safe'],
             [['first_name', 'last_name', 'loan_purpose', 'email', 'loan_purpose'], 'trim'],
             [['first_name', 'last_name'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],
@@ -116,6 +120,7 @@ class LoanApplication extends Model
                 $loan_options->designation = $this->designation;
                 $loan_options->occupation = $this->occupation;
                 $loan_options->vehicle_type = $this->vehicle_type;
+                $loan_options->vehicle_option = $this->vehicle_option;
                 $loan_options->created_on = date('Y-m-d H:i:s');
                 $loan_options->created_by = ((Yii::$app->user->identity->user_enc_id) ? Yii::$app->user->identity->user_enc_id : NULL);
                 if (!$loan_options->save()) {
@@ -136,6 +141,13 @@ class LoanApplication extends Model
                 $loan_address->created_on = date('Y-m-d H:i:s');
                 $loan_address->created_by = ((Yii::$app->user->identity->user_enc_id) ? Yii::$app->user->identity->user_enc_id : NULL);
                 if (!$loan_address->save()) {
+                    $transaction->rollback();
+                    return false;
+                }
+            }
+
+            if ($this->file && ($this->loan_type == 'Medical Loan')) {
+                if (!$this->uploadFile($model->loan_app_enc_id)) {
                     $transaction->rollback();
                     return false;
                 }
@@ -250,14 +262,25 @@ class LoanApplication extends Model
                 'status' => 200
             ];
         endif;
+
         $options['amount'] = 500;
+        $total_amount = 500;
+        if ($this->loan_type == 'Medical Loan') {
+            $options['amount'] = 600;
+            $total_amount = 600;
+        }
+
+        if ($this->loan_type == 'Hospi Shield') {
+            $options['amount'] = 170;
+            $total_amount = 170;
+        }
+
         $options['loan_enc_id'] = $id;
         $options['currency'] = "INR";
         $options['gst'] = 0;
         $options['name'] = $name;
         $options['email'] = $email;
         $options['contact'] = $phone;
-        $total_amount = 500;
         $options['total'] = $this->floatPaisa($total_amount);
         $options['callback_url'] = "https://www.empowerloans.in/payment/transaction";
         $options['brand'] = "Empower Loans";
@@ -489,6 +512,31 @@ class LoanApplication extends Model
             $randomString .= $characters[$index];
         }
         return $randomString;
+    }
+
+    public function uploadFile($loan_id)
+    {
+        $utilitiesModel = new Utilities();
+        $bill = new BillDetails();
+        $bill->bill_detail_enc_id = \Yii::$app->getSecurity()->generateRandomString();
+        $bill->loan_app_enc_id = $loan_id;
+        $bill->file_location = \Yii::$app->getSecurity()->generateRandomString();
+        $base_path = Yii::$app->params->upload_directories->loans->bill . $bill->file_location . '/';
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $bill->file = $utilitiesModel->encrypt() . '.' . 'pdf';
+        $type = $this->file->type;
+        if ($bill->save()) {
+            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+            $result = $my_space->uploadFileSources($this->file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $bill->file, "private", ['params' => ['ContentType' => $type]]);
+            if ($result) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
 }

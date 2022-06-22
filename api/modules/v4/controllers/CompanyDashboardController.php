@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use common\models\AssignedSupervisor;
+use common\models\EducationLoanPayments;
 use common\models\LoanApplications;
 use common\models\Users;
 use common\models\Utilities;
@@ -84,7 +85,7 @@ class CompanyDashboardController extends ApiBaseController
                 $stats->andWhere(['a.lead_by' => $user->user_enc_id]);
             }
 
-            $stats->asArray()
+            $stats = $stats->asArray()
                 ->one();
 
             return $this->response(200, ['status' => 200, 'stats' => $stats]);
@@ -146,6 +147,7 @@ class CompanyDashboardController extends ApiBaseController
                     'a.amount_due',
                     'a.scholarship',
                     'a.degree',
+                    'a.loan_type',
                     'f.course_name',
                     'REPLACE(g.name, "&amp;", "&") as org_name',
                     'a.semesters',
@@ -179,7 +181,11 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['assignedLoanProviders i' => function ($i) {
                     $i->joinWith(['providerEnc j']);
                 }])
-                ->joinWith(['managedBy k'], false);
+                ->joinWith(['managedBy k'], false)
+                ->joinWith(['educationLoanPayments l' => function ($l) {
+                    $l->select(['l.loan_app_enc_id', 'l.payment_status']);
+                    $l->onCondition(['l.payment_status' => ['captured', 'created', 'waived off']]);
+                }]);
 
             if ($user->organization_enc_id) {
                 $loans->andWhere(['a.lead_by' => $dsa]);
@@ -193,6 +199,18 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             $loans = $loans->asArray()->all();
+
+            if ($loans) {
+                foreach ($loans as $key => $val) {
+                    if (!$loans['educationLoanPayments']) {
+                        $get_amount = EducationLoanPayments::find()->where(['loan_app_enc_id' => $val['loan_app_enc_id']])->one();
+                        $loans[$key]['payment_status'] = $get_amount->payment_status;
+                    }else{
+                        $loans[$key]['payment_status'] = $val[0]['payment_status'];
+                    }
+                    unset($loans[$key]['educationLoanPayments']);
+                }
+            }
 
             return $this->response(200, ['status' => 200, 'loans' => $loans]);
 

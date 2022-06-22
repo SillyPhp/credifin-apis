@@ -64,6 +64,7 @@ use Yii;
  * @property FollowedOrganizations[] $followedOrganizations
  * @property Users[] $userEncs
  * @property JobDescription[] $jobDescriptions
+ * @property LoanSanctionReports[] $loanSanctionReports
  * @property OrganizationAssignedCategories[] $organizationAssignedCategories
  * @property OrganizationBlogInformation[] $organizationBlogInformations
  * @property OrganizationEmployeeBenefits[] $organizationEmployeeBenefits
@@ -241,6 +242,14 @@ class Organizations extends \yii\db\ActiveRecord
     public function getJobDescriptions()
     {
         return $this->hasMany(JobDescription::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanSanctionReports()
+    {
+        return $this->hasMany(LoanSanctionReports::className(), ['loan_provider_id' => 'organization_enc_id']);
     }
 
     /**

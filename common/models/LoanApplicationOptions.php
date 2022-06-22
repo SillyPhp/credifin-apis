@@ -32,6 +32,7 @@ use Yii;
  * @property string $business_premises Business premises
  * @property string $occupation
  * @property string $vehicle_type
+ * @property string $vehicle_option
  * @property string $created_on On which date  information was added to database
  * @property string $created_by Foreign Key to Users Table
  * @property string $last_updated_on On which date  information was updated
@@ -66,7 +67,7 @@ class LoanApplicationOptions extends \yii\db\ActiveRecord
             [['total_loan_amount', 'monthly_emi', 'perposed_emi', 'annual_turnover'], 'number'],
             [['property_requirement', 'current_status', 'current_status_comments', 'comment', 'business_premises'], 'string'],
             [['follow_up_on', 'created_on', 'last_updated_on'], 'safe'],
-            [['option_enc_id', 'loan_app_enc_id', 'follow_up_by', 'loan_option', 'type_of_company', 'designation', 'vehicle_type', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['option_enc_id', 'loan_app_enc_id', 'follow_up_by', 'loan_option', 'type_of_company', 'designation', 'vehicle_type', 'vehicle_option', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['name_of_company', 'nature_of_business'], 'string', 'max' => 256],
             [['occupation'], 'string', 'max' => 250],
             [['option_enc_id'], 'unique'],
