@@ -317,11 +317,11 @@ class LoanApplicationsForm extends LoanApplications
             $args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
             $args['currency'] = "INR";
             $args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
-            $response = PaymentsModule::_authPayToken($args);
+            //$response = PaymentsModule::_authPayToken($args);
             $education_loan_payment_id = [];
             $loan_id = [];
-            if (isset($response['status']) && $response['status'] == 'created') {
-                $token = $response['id'];
+           // if (isset($response['status']) && $response['status'] == 'created') {
+                //$token = $response['id'];
                 if (!empty($params['child_information'])) {
                     foreach ($params['child_information'] as $information) {
                         $this->loan_app_enc_id = Yii::$app->security->generateRandomString(8);
@@ -397,7 +397,7 @@ class LoanApplicationsForm extends LoanApplications
                             $loan_payment = new EducationLoanPayments();
                             $loan_payment->education_loan_payment_enc_id = Yii::$app->security->generateRandomString(8);
                             $loan_payment->loan_app_enc_id = $this->loan_app_enc_id;
-                            $loan_payment->payment_token = $token;
+                            $loan_payment->payment_token = Yii::$app->security->generateRandomString(5);
                             $loan_payment->payment_amount = $total_amount / $total_student;
                             $loan_payment->payment_gst = $gst;
                             $loan_payment->created_by = (($userId) ? $userId : null);
@@ -438,7 +438,7 @@ class LoanApplicationsForm extends LoanApplications
                     $this->_flag = false;
                     throw new \Exception ("Child Information is Empty");
                 }
-            }
+            //}
             if ($this->_flag) {
                 $transaction->commit();
                 $data = [];
