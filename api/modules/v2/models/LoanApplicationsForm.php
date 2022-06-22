@@ -206,14 +206,15 @@ class LoanApplicationsForm extends LoanApplications
             $args['amount'] = $this->floatPaisa($total_amount); //for inr float to paisa format for razor pay payments
             $args['currency'] = "INR";
             $args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
-            $response = PaymentsModule::_authPayToken($args);
-            if (isset($response['status']) && $response['status'] == 'created') {
-                $token = $response['id'];
+            //$response = PaymentsModule::_authPayToken($args);
+            //if (isset($response['status']) && $response['status'] == 'created') {
+                //$token = $response['id'];
                 $loan_payment = new EducationLoanPayments();
                 $loan_payment->education_loan_payment_enc_id = Yii::$app->security->generateRandomString(15);
                 $loan_payment->college_enc_id = $college_id;
                 $loan_payment->loan_app_enc_id = $this->loan_app_enc_id;
-                $loan_payment->payment_token = $token;
+                //$loan_payment->payment_token = $token;
+                $loan_payment->payment_token = Yii::$app->security->generateRandomString(5);
                 $loan_payment->payment_amount = $amount;
                 $loan_payment->payment_gst = $gst;
                 $loan_payment->created_by = (($userId) ? $userId : null);
@@ -225,7 +226,7 @@ class LoanApplicationsForm extends LoanApplications
                 } else {
                     $this->_flag = true;
                 }
-            }
+           // }
 
             if ($this->_flag) {
                 $loanOptions = new LoanApplicationOptions();
