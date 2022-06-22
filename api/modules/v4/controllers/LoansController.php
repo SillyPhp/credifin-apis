@@ -50,9 +50,13 @@ class LoansController extends ApiBaseController
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
             $model->file = UploadedFile::getInstanceByName('bill');
             if ($model->validate()) {
-                $resposne = $model->save();
+                $user_id = $this->isAuthorized()->user_enc_id;
+                if (!$user_id) {
+                    $user_id = NULL;
+                }
+                $resposne = $model->save($user_id);
                 if ($resposne['status']) {
-                    return $this->response(201, ['status' => 201, 'data' => $resposne['data']]);
+                    return $this->response(200, ['status' => 200 , 'data' => $resposne['data']]);
                 } else {
                     return $this->response(500, ['status' => 500, 'message' => 'Some Internal Server Error']);
                 }

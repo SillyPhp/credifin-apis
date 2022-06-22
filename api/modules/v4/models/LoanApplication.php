@@ -23,11 +23,12 @@ use common\models\Utilities;
 
 class LoanApplication extends Model
 {
+    public $applicant_name;
+    public $phone_no;
+    public $loan_amount;
     public $first_name;
     public $last_name;
     public $email;
-    public $phone_no;
-    public $loan_amount;
     public $loan_purpose;
     public $desired_tenure;
     public $company;
@@ -57,18 +58,18 @@ class LoanApplication extends Model
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'loan_type', 'phone_no', 'email'], 'required'],
+            [['applicant_name', 'loan_type', 'phone_no', 'email'], 'required'],
             [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises',
                 'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount'], 'safe'],
-            [['first_name', 'last_name', 'loan_purpose', 'email', 'loan_purpose'], 'trim'],
-            [['first_name', 'last_name'], 'string', 'max' => 200],
+            [['applicant_name', 'loan_purpose', 'email'], 'trim'],
+            [['applicant_name'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],
             [['phone_no'], 'string', 'length' => [10, 10]],
             [['email'], 'email'],
         ];
     }
 
-    public function save()
+    public function save($user_id)
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
@@ -78,7 +79,7 @@ class LoanApplication extends Model
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $model->loan_app_enc_id = $utilitiesModel->encrypt();
             $model->had_taken_addmission = 0;
-            $model->applicant_name = $this->first_name . ' ' . $this->last_name;
+            $model->applicant_name = $this->applicant_name;
             $model->applicant_current_city = $this->current_city;
             $model->phone = $this->phone_no;
             $model->email = $this->email;
@@ -88,7 +89,7 @@ class LoanApplication extends Model
             $model->loan_purpose = $this->loan_purpose;
             $model->yearly_income = $this->annual_income;
             $model->created_on = date('Y-m-d H:i:s');
-            $model->created_by = ((Yii::$app->user->identity->user_enc_id) ? Yii::$app->user->identity->user_enc_id : NULL);
+            $model->created_by = $user_id;
 
             if ($this->ref_id) {
                 $referralData = Referral::findOne(['code' => $this->ref_id]);
@@ -122,7 +123,7 @@ class LoanApplication extends Model
                 $loan_options->vehicle_type = $this->vehicle_type;
                 $loan_options->vehicle_option = $this->vehicle_option;
                 $loan_options->created_on = date('Y-m-d H:i:s');
-                $loan_options->created_by = ((Yii::$app->user->identity->user_enc_id) ? Yii::$app->user->identity->user_enc_id : NULL);
+                $loan_options->created_by = $user_id;
                 if (!$loan_options->save()) {
                     $transaction->rollback();
                     return false;
@@ -139,7 +140,7 @@ class LoanApplication extends Model
                 $loan_address->state_enc_id = $this->state;
                 $loan_address->postal_code = $this->zip;
                 $loan_address->created_on = date('Y-m-d H:i:s');
-                $loan_address->created_by = ((Yii::$app->user->identity->user_enc_id) ? Yii::$app->user->identity->user_enc_id : NULL);
+                $loan_address->created_by = $user_id;
                 if (!$loan_address->save()) {
                     $transaction->rollback();
                     return false;
@@ -198,21 +199,44 @@ class LoanApplication extends Model
                 return false;
             }
 
-            $transaction->commit();
-
-            $paymentUrl = $this->createUrl($options);
-            if ($paymentUrl['status'] == 200) {
-                $data = [];
-                $data['loan_app_enc_id'] = $model->loan_app_enc_id;
-                $data['payment_url'] = $paymentUrl['surl'];
-                return [
-                    'status' => true,
-                    'data' => $data
-                ];
-            } else {
-                $transaction->rollBack();
+            $payment_model = new EducationLoanPayments();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $payment_model->education_loan_payment_enc_id = $utilitiesModel->encrypt();
+            $payment_model->loan_app_enc_id = $model->loan_app_enc_id;
+            $payment_model->payment_amount = 500;
+            $payment_model->payment_gst = 0;
+            $payment_model->payment_token = Yii::$app->getSecurity()->generateRandomString();
+            $payment_model->payment_status = 'waived off';
+            $payment_model->created_by = $user_id;
+            $payment_model->created_on = date('Y-m-d H:i:s');
+            if (!$payment_model->save()) {
                 return false;
             }
+
+            $transaction->commit();
+
+            $data = [];
+            $data['loan_app_enc_id'] = $model->loan_app_enc_id;
+            $data['payment_url'] = null;
+            return [
+                'status' => true,
+                'data' => $data
+            ];
+
+//            $paymentUrl = $this->createUrl($options);
+//            if ($paymentUrl['status'] == 200) {
+//                $data = [];
+//                $data['loan_app_enc_id'] = $model->loan_app_enc_id;
+//                $data['payment_url'] = $paymentUrl['surl'];
+//                return [
+//                    'status' => true,
+//                    'data' => $data
+//                ];
+//            } else {
+//                $transaction->rollBack();
+//                return false;
+//            }
 
         } catch (\Exception $exception) {
             $transaction->rollBack();
