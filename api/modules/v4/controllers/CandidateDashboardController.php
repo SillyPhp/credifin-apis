@@ -45,7 +45,7 @@ class CandidateDashboardController extends ApiBaseController
 
             $loan_application = LoanApplications::find()
                 ->alias('a')
-                ->select(['a.loan_app_enc_id', 'a.applicant_name', 'a.amount loan_amount', 'a.loan_type', 'b.payment_token', 'b.education_loan_payment_enc_id', 'a.email', 'a.phone', 'b.payment_amount amount'])
+                ->select(['a.id', 'a.loan_app_enc_id', 'a.applicant_name', 'a.amount loan_amount', 'a.loan_type', 'b.payment_token', 'b.education_loan_payment_enc_id', 'a.email', 'a.phone', 'b.payment_amount amount'])
                 ->joinWith(['educationLoanPayments b' => function ($b) {
                     $b->select(['b.loan_app_enc_id', 'b.payment_status']);
                     $b->onCondition(['b.payment_status' => ['captured', 'created', 'waived off']]);
