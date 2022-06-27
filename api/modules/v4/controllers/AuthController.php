@@ -206,7 +206,8 @@ class AuthController extends ApiBaseController
         $is_dsa = SelectedServices::find()
             ->alias('a')
             ->joinWith(['serviceEnc b'])
-            ->where(['a.is_selected' => 1, 'a.created_by' => $user->user_enc_id, 'b.name' => 'E-Partners', 'a.organization_enc_id' => Null])
+            ->where(['a.is_selected' => 1, 'b.name' => 'E-Partners'])
+            ->andWhere(['or', ['organization_enc_id' => $user->organization_enc_id], ['a.created_by' => $user->user_enc_id]])
             ->exists();
 
 
