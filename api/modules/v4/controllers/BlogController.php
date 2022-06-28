@@ -66,12 +66,14 @@ class BlogController extends ApiBaseController
                 'CASE WHEN a.featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) END featured_image'])
             ->joinWith(['postTags b' => function ($b) {
                 $b->joinWith(['tagEnc c']);
+                $b->onCondition(['b.is_deleted' => 0]);
             }], false)
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0, 'a.is_visible' => 1])
             ->andWhere(['c.name' => $keyword])
             ->orderBy(['a.created_on' => SORT_ASC])
             ->limit($limit)
             ->offset(($page - 1) * $limit)
+            ->groupBy(['a.post_enc_id'])
             ->asArray()
             ->all();
 
