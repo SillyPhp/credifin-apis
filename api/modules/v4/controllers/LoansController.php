@@ -238,4 +238,48 @@ class LoansController extends ApiBaseController
         }
     }
 
+    public function actionUpdate()
+    {
+        $params = Yii::$app->request->post();
+
+        if (empty($params['loan_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+        }
+
+        $loan_app = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id'], 'is_deleted' => 0]);
+
+        if ($loan_app) {
+
+            $model = new LoanApplication();
+
+            $model->applicant_name = $loan_app->applicant_name;
+            $model->phone_no = $loan_app->phone;
+            $model->loan_type = $loan_app->loan_type;
+
+            if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+
+                if ($model->validate()) {
+
+                    $user_id = $this->isAuthorized()->user_enc_id;
+                    if (!$user_id) {
+                        $user_id = NULL;
+                    }
+                    $resposne = $model->update($params['loan_id'], $user_id);
+                    if ($resposne['status']) {
+                        return $this->response(200, ['status' => 200, 'data' => $resposne['data']]);
+                    } else {
+                        return $this->response(500, ['status' => 500, 'message' => 'Some Internal Server Error']);
+                    }
+                } else {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information', 'error' => $model->getErrors()]);
+                }
+            } else {
+                return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+            }
+
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'loan application not found']);
+    }
+
 }

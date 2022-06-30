@@ -49,6 +49,9 @@ class LoanApplication extends Model
     public $vehicle_option;
     public $ref_id;
     public $file;
+    public $pan_number;
+    public $loan_lender;
+    public $aadhar_number;
 
     public function formName()
     {
@@ -59,7 +62,7 @@ class LoanApplication extends Model
     {
         return [
             [['applicant_name', 'loan_type', 'phone_no'], 'required'],
-            [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email',
+            [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'loan_lender',
                 'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount'], 'safe'],
             [['applicant_name', 'loan_purpose', 'email'], 'trim'],
             [['applicant_name'], 'string', 'max' => 200],
@@ -237,6 +240,96 @@ class LoanApplication extends Model
 //                $transaction->rollBack();
 //                return false;
 //            }
+
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            print_r($exception);
+            return false;
+        }
+    }
+
+    public function update($loan_id, $user_id)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+
+            $utilitiesModel = new Utilities();
+            $model = LoanApplications::findOne(['loan_app_enc_id' => $loan_id]);
+            $model->applicant_current_city = $this->current_city;
+            $model->email = $this->email ? $this->email : $model->email;
+            $model->loan_purpose = $this->loan_purpose ? $this->loan_purpose : $model->loan_purpose;
+            $model->yearly_income = $this->annual_income ? $this->annual_income : $model->yearly_income;
+            $model->updated_on = date('Y-m-d H:i:s');
+            $model->updated_by = $user_id;
+
+            if (!$model->save()) {
+                $transaction->rollback();
+                return false;
+            }
+
+            // saving other options
+            if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Vehicle Loan') {
+                $loan_options = LoanApplicationOptions::findOne(['loan_app_enc_id' => $loan_id, 'is_deleted' => 0]);
+                if (!$loan_options) {
+                    $loan_options = new LoanApplicationOptions();
+                    $loan_options->option_enc_id = $utilitiesModel->encrypt();
+                    $loan_options->loan_app_enc_id = $model->loan_app_enc_id;
+                    $loan_options->created_on = date('Y-m-d H:i:s');
+                    $loan_options->created_by = $user_id;
+                }
+
+                $loan_options->name_of_company = $this->company ? $this->company : $loan_options->name_of_company;
+                $loan_options->type_of_company = $this->company_type ? $this->company_type : $loan_options->type_of_company;
+                $loan_options->nature_of_business = $this->business ? $this->business : $loan_options->nature_of_business;
+                $loan_options->annual_turnover = $this->annual_turnover ? $this->annual_turnover : $loan_options->annual_turnover;
+                $loan_options->business_premises = $this->business_premises ? $this->business_premises : $loan_options->business_premises;
+                $loan_options->designation = $this->designation ? $this->designation : $loan_options->designation;
+                $loan_options->occupation = $this->occupation ? $this->occupation : $loan_options->occupation;
+                $loan_options->vehicle_type = $this->vehicle_type ? $this->vehicle_type : $loan_options->vehicle_type;
+                $loan_options->vehicle_option = $this->vehicle_option ? $this->vehicle_option : $loan_options->vehicle_option;
+                $loan_options->last_updated_on = date('Y-m-d H:i:s');
+                $loan_options->last_updated_by = $user_id;
+                if (!$loan_options->save()) {
+                    $transaction->rollback();
+                    return false;
+                }
+            }
+
+            // saving address
+            if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Loan Against Property' || $this->loan_type == 'Vehicle Loan') {
+                $loan_address = LoanApplicantResidentialInfo::findOne(['loan_app_enc_id' => $loan_id, 'is_deleted' => 0]);
+
+                if (!$loan_address) {
+                    $loan_address = new LoanApplicantResidentialInfo();
+                    $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
+                    $loan_address->loan_app_enc_id = $model->loan_app_enc_id;
+                    $loan_address->created_on = date('Y-m-d H:i:s');
+                    $loan_address->created_by = $user_id;
+                }
+
+
+                $loan_address->address = $this->address ? $this->address : $loan_address->address;
+                $loan_address->city_enc_id = $this->city ? $this->city : $loan_address->city_enc_id;
+                $loan_address->state_enc_id = $this->state ? $this->state : $loan_address->state_enc_id;
+                $loan_address->postal_code = $this->zip ? $this->zip : $loan_address->postal_code;
+                $loan_address->updated_on = date('Y-m-d H:i:s');
+                $loan_address->updated_by = $user_id;
+
+                if (!$loan_address->save()) {
+                    $transaction->rollback();
+                    return false;
+                }
+            }
+
+            $transaction->commit();
+
+            $data = [];
+            $data['loan_app_enc_id'] = $model->loan_app_enc_id;
+            $data['payment_url'] = null;
+            return [
+                'status' => true,
+                'data' => $data
+            ];
 
         } catch (\Exception $exception) {
             $transaction->rollBack();

@@ -28,6 +28,7 @@ class IndividualSignup extends Model
     public $password;
     public $source;
     public $dsaRefId;
+    public $is_connector;
 
 
     public function rules()
@@ -50,7 +51,7 @@ class IndividualSignup extends Model
             [['password'], 'string', 'length' => [8, 20]],
 
             ['source', 'required'],
-            ['dsaRefId', 'safe']
+            [['dsaRefId', 'is_connector'], 'safe']
         ];
     }
 
@@ -128,6 +129,8 @@ class IndividualSignup extends Model
 
             if ($is_dsa) {
                 $data['user_type'] = "DSA";
+            } else if ($this->is_connector) {
+                $data['user_type'] = 'Connector';
             } else {
                 $data['user_type'] = 'Individual';
             }
@@ -225,20 +228,37 @@ class IndividualSignup extends Model
 
     public function assignedDsaService($userId, $dsaRefId)
     {
-        $id = Services::findOne(['name' => 'E-Partners'])->service_enc_id;
+        $assigned_id = null;
+        if ($this->is_connector) {
+            $id = Services::findOne(['name' => 'Connector'])->service_enc_id;
+            $referralData = \common\models\Referral::findOne(['code' => $this->dsaRefId]);
+            if ($referralData) {
+                if ($referralData->user_enc_id):
+                    $assigned_id = $referralData->user_enc_id;
+                endif;
+                if ($referralData->organization_enc_id):
+                    $assigned_id = Users::findOne(['organization_enc_id' => $referralData->organization_enc_id])->user_enc_id;
+                endif;
+            }
+        } else {
+            $id = Services::findOne(['name' => 'E-Partners'])->service_enc_id;
+        }
         $model = new SelectedServices();
         $model->selected_service_enc_id = Yii::$app->security->generateRandomString(32);
         $model->service_enc_id = $id;
         $model->is_selected = 1;
+        $model->assigned_user = $assigned_id;
         $model->created_by = $userId;
         $model->created_on = date('Y-m-d H:i:s');
         if ($model->save()) {
-            if(!$this->assignedSupervisor($userId, $dsaRefId)){
-                return false;
-            }
+            if (!$this->is_connector) {
+                if (!$this->assignedSupervisor($userId, $dsaRefId)) {
+                    return false;
+                }
 
-            if(!$this->assignedSupervisor($userId, $dsaRefId, 'Lead Source')){
-                return false;
+                if (!$this->assignedSupervisor($userId, $dsaRefId, 'Lead Source')) {
+                    return false;
+                }
             }
 
             return true;
