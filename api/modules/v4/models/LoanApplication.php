@@ -197,9 +197,11 @@ class LoanApplication extends Model
             $options['phone'] = $model->phone;
             $options['email'] = $model->email;
 
-            if (!$this->SignUp($options)) {
-                $transaction->rollback();
-                return false;
+            if($this->email) {
+                if (!$this->SignUp($options)) {
+                    $transaction->rollback();
+                    return false;
+                }
             }
 
             $payment_model = new EducationLoanPayments();
