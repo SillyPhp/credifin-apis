@@ -148,7 +148,7 @@ class OrganizationSignup extends Model
             $data['organization_name'] = $organizationsModel->name;
             $data['organization_slug'] = $organizationsModel->slug;
             $data['organization_enc_id'] = $organizationsModel->organization_enc_id;
-            $data['user_type'] = 'Organization Admin';
+            $data['user_type'] = 'DSA';
             $data['access_token'] = '';
             $data['source'] = '';
             $data['refresh_token'] = '';

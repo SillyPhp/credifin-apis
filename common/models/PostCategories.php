@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%post_categories}}".
  *
@@ -9,20 +11,23 @@ namespace common\models;
  * @property string $post_category_enc_id Post Category Encrypted ID
  * @property string $post_enc_id Foreign Key to Posts Table
  * @property string $category_enc_id Foreign Key to Categories Table
+ * @property string $assigned_category_enc_id Foreign key for AssignedCategory table
  * @property string $created_on On which date Post Category information was added to database
  * @property string $created_by By which User Post Category information was added
  * @property string $last_updated_on On which date Post Category information was updated
  * @property string $last_updated_by By which User Post Category information was updated
+ * @property int $is_deleted is_deleted for deleting values
  *
  * @property Posts $postEnc
  * @property Categories $categoryEnc
+ * @property AssignedCategories $assignedCategoryEnc
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  */
 class PostCategories extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -30,17 +35,19 @@ class PostCategories extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['post_category_enc_id', 'post_enc_id', 'category_enc_id', 'created_by'], 'required'],
+            [['post_category_enc_id', 'post_enc_id', 'created_by'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['post_category_enc_id', 'post_enc_id', 'category_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['is_deleted'], 'integer'],
+            [['post_category_enc_id', 'post_enc_id', 'category_enc_id', 'assigned_category_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['post_category_enc_id'], 'unique'],
             [['post_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Posts::className(), 'targetAttribute' => ['post_enc_id' => 'post_enc_id']],
             [['category_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['category_enc_id' => 'category_enc_id']],
+            [['assigned_category_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedCategories::className(), 'targetAttribute' => ['assigned_category_enc_id' => 'assigned_category_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
@@ -60,6 +67,14 @@ class PostCategories extends \yii\db\ActiveRecord
     public function getCategoryEnc()
     {
         return $this->hasOne(Categories::className(), ['category_enc_id' => 'category_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedCategoryEnc()
+    {
+        return $this->hasOne(AssignedCategories::className(), ['assigned_category_enc_id' => 'assigned_category_enc_id']);
     }
 
     /**

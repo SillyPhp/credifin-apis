@@ -69,7 +69,7 @@ class AuthController extends ApiBaseController
                 $model->source = Yii::$app->getRequest()->getUserIP();
             }
 
-            if ($model->dsaRefId) {
+            if ($model->dsaRefId && !$model->is_connector) {
                 if (!$this->DsaOrgExist($model->dsaRefId)) {
                     return $this->response(404, ['status' => 404, 'message' => 'no organization found with this ref id']);
                 }
@@ -203,6 +203,27 @@ class AuthController extends ApiBaseController
             $data['referral_code'] = Referral::findOne(['user_enc_id' => $user->user_enc_id])->code;
         }
 
+        $service = SelectedServices::find()
+            ->alias('a')
+            ->select(['b.name'])
+            ->joinWith(['serviceEnc b'], false)
+            ->where(['a.is_selected' => 1])
+//            ->andWhere(['or', ['a.created_by' => $user->user_enc_id], ['organization_enc_id' => $user->organization_enc_id]]);
+            ->andWhere(['or', ['a.created_by' => $user->user_enc_id]]);
+        if ($user->organization_enc_id) {
+            $service->andWhere(['or', ['organization_enc_id' => $user->organization_enc_id]]);
+        }
+        $service = $service->asArray()
+            ->one();
+
+        if ($service['name'] == 'E-Partners') {
+            $data['user_type'] = "DSA";
+        } else if ($service['name'] == 'Connector') {
+            $data['user_type'] = "Connector";
+        } else {
+            $data['user_type'] = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
+        }
+
         $data['username'] = $user->username;
         $data['user_enc_id'] = $user->user_enc_id;
         $data['first_name'] = $user->first_name;
@@ -210,7 +231,7 @@ class AuthController extends ApiBaseController
         $data['initials_color'] = $user->initials_color;
         $data['phone'] = $user->phone;
         $data['email'] = $user->email;
-        $data['user_type'] = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
+//        $data['user_type'] = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
         $data['access_token'] = $token->access_token;
         $data['source'] = $token->source;
         $data['refresh_token'] = $token->refresh_token;

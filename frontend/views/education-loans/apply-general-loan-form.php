@@ -1,7 +1,5 @@
 <?php
-
 use yii\helpers\Url;
-
 $userDetail = \common\models\Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id]);
 $this->params['header_dark'] = true;
 Yii::$app->view->registerJs('var access_key = "' .Yii::$app->params->razorPay->prod->apiKey. '"', \yii\web\View::POS_HEAD);
@@ -1863,33 +1861,35 @@ function ajaxSubmit(){
     }
     
 function _razoPay(ptoken,loan_id,education_loan_id){
-    var options = {
-    "key": access_key, 
-    "name": "Empower Youth",
-    "description": "Application Login Fee",
-    "image": "/assets/common/logos/logo.svg",
-    "order_id": ptoken, 
-    "handler": function (response){
-        updateStatus(education_loan_id,loan_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
-    },
-    "prefill": {
-        "name": $('#applicant_name').val(),
-        "email": $('#email').val(),
-        "contact": $('#mobile').val()
-    },
-    "theme": {
-        "color": "#ff7803"
-    }
-};
-     var rzp1 = new Razorpay(options);
-     rzp1.open();
-     rzp1.on('payment.failed', function (response){
-         updateStatus(education_loan_id,loan_id,null,"failed");
-      swal({
-      title:"Error",
-      text: response.error.description,
-      });
-});
+//    var options = {
+//    "key": access_key, 
+//    "name": "Empower Youth",
+//    "description": "Application Login Fee",
+//    "image": "/assets/common/logos/logo.svg",
+//    "order_id": ptoken, 
+//    "handler": function (response){
+//        updateStatus(education_loan_id,loan_id,response.razorpay_payment_id,"captured",response.razorpay_signature);
+//    },
+//    "prefill": {
+//        "name": $('#applicant_name').val(),
+//        "email": $('#email').val(),
+//        "contact": $('#mobile').val()
+//    },
+//    "theme": {
+//        "color": "#ff7803"
+//    }
+//};
+//     var rzp1 = new Razorpay(options);
+//     rzp1.open();
+//     rzp1.on('payment.failed', function (response){
+//         updateStatus(education_loan_id,loan_id,null,"failed");
+//      swal({
+//      title:"Error",
+//      text: response.error.description,
+//      });
+//});
+
+updateStatus(education_loan_id,loan_id,null,"waived off",null);
 }        
 function processPayment(ptoken,loan_id,education_loan_id){
     Layer.checkout({ 
@@ -1951,7 +1951,60 @@ function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,s
             },
             success:function(e)
             {
-                if (status=="captured"){
+                
+//                if (status=="captured"){
+//                    if (e.response.status=='200'){
+//                         if (userID==''){
+//                          swal({
+//                            title: "",
+//                            text: "Your Application Is Submitted Successfully Please Sign Up To Track and Process Your Application Further, You Can Then Check Status Of Your Application On Dashboard",
+//                            type:'success',
+//                            showCancelButton: false,  
+//                            confirmButtonClass: "btn-primary",
+//                            confirmButtonText: "Proceed To Sign Up",
+//                            closeOnConfirm: false, 
+//                        },
+//                            function (isConfirm) { 
+//                                 if (isConfirm==true){
+//                                     window.location.replace('/signup/individual?loan_id_ref='+loan_app_enc_id);
+//                                 }
+//                            }
+//                        );
+//                        } else {
+//                        timer(
+//                         8000, // milliseconds
+//                         function(timeleft) { // called every step to update the visible countdown
+//                         document.getElementById('timer').innerHTML = "<b style='color:#00A0E3 !important'>"+timeleft+"</b> second(s)";
+//                        },
+//                        function() { // what to do after
+//                     window.location.replace('/account/education-loans/candidate-dashboard/'+loan_app_enc_id);
+//                    }
+//                        );     
+//                          swal({
+//                                title: "",
+//                                html: true,  
+//                                text: "Your Application Is Submitted Successfully, You Will Redirected To Dashboard in <span id='timer'></span> For Document and Information Processing on Further Stage, Don't Close The Page",
+//                                type:'success',
+//                                showCancelButton: false,  
+//                                confirmButtonClass: "btn-primary",
+//                                confirmButtonText: "Proceed To Dashboard",
+//                                closeOnConfirm: false, 
+//                            },
+//                                function (isConfirm) { 
+//                                  if (isConfirm==true){
+//                                     window.location.replace('/account/education-loans/candidate-dashboard/'+loan_app_enc_id);
+//                                    }
+//                                  }
+//                            );
+//                        }
+//                    } else {
+//                        swal({
+//                         title:"Payment Error",
+//                         text: 'Your Payment Status Will Be Update In 1-2 Business Day',
+//                      });
+//                    }
+//                }
+
                     if (e.response.status=='200'){
                          if (userID==''){
                           swal({
@@ -2002,10 +2055,9 @@ function updateStatus(education_loan_id,loan_app_enc_id,payment_id=null,status,s
                          text: 'Your Payment Status Will Be Update In 1-2 Business Day',
                       });
                     }
-                }
-                $('#subBtn').show();     
-                $('#prevBtn').show();     
-                $('#loadBtn').hide();
+               $('#subBtn').show();     
+               $('#prevBtn').show();     
+               $('#loadBtn').hide();
             }
     })
 }
