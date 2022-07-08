@@ -2,8 +2,12 @@
 
 namespace api\modules\v4\models;
 
+use common\models\AssignedLoanProvider;
 use common\models\BillDetails;
+use common\models\CertificateTypes;
 use common\models\EmailLogs;
+use common\models\LoanCertificates;
+use common\models\Organizations;
 use common\models\Referral;
 use common\models\spaces\Spaces;
 use common\models\Usernames;
@@ -62,7 +66,7 @@ class LoanApplication extends Model
     {
         return [
             [['applicant_name', 'loan_type', 'phone_no'], 'required'],
-            [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'loan_lender',
+            [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhar_number', 'loan_lender',
                 'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount'], 'safe'],
             [['applicant_name', 'loan_purpose', 'email'], 'trim'],
             [['applicant_name'], 'string', 'max' => 200],
@@ -134,21 +138,44 @@ class LoanApplication extends Model
             }
 
             // saving address
-            if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Loan Against Property' || $this->loan_type == 'Vehicle Loan') {
-                $loan_address = new LoanApplicantResidentialInfo();
-                $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
-                $loan_address->loan_app_enc_id = $model->loan_app_enc_id;
-                $loan_address->address = $this->address;
-                $loan_address->city_enc_id = $this->city;
-                $loan_address->state_enc_id = $this->state;
-                $loan_address->postal_code = $this->zip;
-                $loan_address->created_on = date('Y-m-d H:i:s');
-                $loan_address->created_by = $user_id;
-                if (!$loan_address->save()) {
+            $loan_address = new LoanApplicantResidentialInfo();
+            $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
+            $loan_address->loan_app_enc_id = $model->loan_app_enc_id;
+            $loan_address->address = $this->address;
+            $loan_address->city_enc_id = $this->city;
+            $loan_address->state_enc_id = $this->state;
+            $loan_address->postal_code = $this->zip;
+            $loan_address->created_on = date('Y-m-d H:i:s');
+            $loan_address->created_by = $user_id;
+            if (!$loan_address->save()) {
+                $transaction->rollback();
+                return false;
+            }
+
+            // saving pan
+            if ($this->pan_number) {
+                if (!$this->saveCertificate($model->loan_app_enc_id, 'PAN', $this->pan_number, $user_id)) {
                     $transaction->rollback();
                     return false;
                 }
             }
+
+            // saving aadhar
+            if ($this->aadhar_number) {
+                if (!$this->saveCertificate($model->loan_app_enc_id, 'Aadhar Card', $this->aadhar_number, $user_id)) {
+                    $transaction->rollback();
+                    return false;
+                }
+            }
+
+            // saving lender
+            if ($this->loan_lender) {
+                if (!$this->saveLender($model->loan_app_enc_id, $this->loan_lender, $user_id)) {
+                    $transaction->rollback();
+                    return false;
+                }
+            }
+
 
             if ($this->file && ($this->loan_type == 'Medical Loan')) {
                 if (!$this->uploadFile($model->loan_app_enc_id)) {
@@ -197,7 +224,7 @@ class LoanApplication extends Model
             $options['phone'] = $model->phone;
             $options['email'] = $model->email;
 
-            if($this->email) {
+            if ($this->email) {
                 if (!$this->SignUp($options)) {
                     $transaction->rollback();
                     return false;
@@ -248,6 +275,60 @@ class LoanApplication extends Model
             print_r($exception);
             return false;
         }
+    }
+
+    private function saveCertificate($loan_id, $key, $val, $user_id = null)
+    {
+        $utilitiesModel = new Utilities();
+        $certificate_type = CertificateTypes::findOne(['name' => $key]);
+
+        if (!$certificate_type) {
+            $certificate_type = new CertificateTypes();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $certificate_type->certificate_type_enc_id = $utilitiesModel->encrypt();
+            $certificate_type->name = $key;
+            if (!$certificate_type->save()) {
+                return false;
+            }
+        }
+
+
+        $loanCertificate = new LoanCertificates();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $loanCertificate->certificate_enc_id = $utilitiesModel->encrypt();
+        $loanCertificate->loan_app_enc_id = $loan_id;
+        $loanCertificate->certificate_type_enc_id = $certificate_type->certificate_type_enc_id;
+        $loanCertificate->number = $val;
+        $loanCertificate->created_by = $user_id;
+        $loanCertificate->created_on = date('Y-m-d H:i:s');
+        if (!$loanCertificate->save()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function saveLender($loan_id, $lender_slug, $user_id = null)
+    {
+        $organization = Organizations::findOne(['slug' => $lender_slug]);
+
+        if (!$organization) {
+            return false;
+        }
+
+        $loan_provider = new AssignedLoanProvider();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $loan_provider->assigned_loan_provider_enc_id = $utilitiesModel->encrypt();
+        $loan_provider->loan_application_enc_id = $loan_id;
+        $loan_provider->provider_enc_id = $organization->organization_enc_id;
+        $loan_provider->created_by = $user_id;
+        $loan_provider->created_on = date('Y-m-d H:i:s');
+        if (!$loan_provider->save()) {
+            return false;
+        }
+
+        return true;
     }
 
     public function update($loan_id, $user_id)
