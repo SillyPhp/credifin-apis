@@ -37,7 +37,7 @@ class AssignedLoanProvider extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['assigned_loan_provider_enc_id', 'loan_application_enc_id', 'provider_enc_id', 'created_by'], 'required'],
+            [['assigned_loan_provider_enc_id', 'loan_application_enc_id', 'provider_enc_id'], 'required'],
             [['status', 'is_deleted'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
             [['assigned_loan_provider_enc_id', 'loan_application_enc_id', 'provider_enc_id', 'scheme_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
