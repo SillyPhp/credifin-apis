@@ -2,6 +2,7 @@
 
 namespace api\modules\v3\controllers;
 
+use common\models\EmailTemplates;
 use yii\db\Query;
 use common\models\UserEducation;
 use common\models\Users;
@@ -41,7 +42,8 @@ class UserController extends ApiBaseController
         ];
         return $behaviors;
     }
-    public function actionGetUncompletedProfileUsers($page = null, $limit = null, $permissionKey)
+
+    public function actionGetUncompletedProfileUsers($page = null, $limit = null, $permissionKey, $temp = false, $allUser = null)
     {
         if ($permissionKey == Yii::$app->params->EmpowerYouth->permissionKey) {
             if (!$page) {
@@ -66,16 +68,29 @@ class UserController extends ApiBaseController
                     $e->addSelect(['e.created_by', 'e.user_language_enc_id']);
                 }])
                 ->andWhere(['a.is_deleted' => 0])
-                ->offset($offset)
-                ->limit($limit)
-                ->orderBy(['a.created_on' => SORT_DESC])
-                ->asArray()
-                ->all();
+                ->orderBy(['a.created_on' => SORT_DESC]);
+            if ($allUser) {
+                $users = $users
+                    ->asArray()
+                    ->count();
+            } else {
+                $users = $users->limit($limit)
+                    ->offset($offset)
+                    ->asArray()
+                    ->all();
+            }
+            $template = ($temp) ? EmailTemplates::findOne(['template_name' => 'Profile-completion updated'])['content'] : '';
+
             if ($users) {
-                for ($i = 0; $i < count($users); $i++) {
-                    if ($users[$i]['gender'] == '' || $users[$i]['description'] == '' || $users[$i]['image'] == '' || $users[$i]['city_enc_id'] == '' || $users[$i]['dob'] == '' || $users[$i]['experience'] == '' || $users[$i]['job_function'] == '' || empty($users[$i]['userEducations']) || empty($users[$i]['userSkills']) || empty($users[$i]['userSpokenLanguages'])) {
-                        $percentage = self::getProfileCompleted($users[$i]['user_enc_id']);
-                        $users[$i] += ['profile_percentage' => $percentage];
+                if(!$allUser){
+                    for ($i = 0; $i < count($users); $i++) {
+                        if ($users[$i]['gender'] == '' || $users[$i]['description'] == '' || $users[$i]['image'] == '' || $users[$i]['city_enc_id'] == '' || $users[$i]['dob'] == '' || $users[$i]['experience'] == '' || $users[$i]['job_function'] == '' || empty($users[$i]['userEducations']) || empty($users[$i]['userSkills']) || empty($users[$i]['userSpokenLanguages'])) {
+                            $percentage = self::getProfileCompleted($users[$i]['user_enc_id']);
+                            $users[$i] += ['profile_percentage' => $percentage];
+                            if (!empty($template)) {
+                                $users[$i] += ['template' => $template];
+                            }
+                        }
                     }
                 }
                 return $this->response(200, ['status' => 200, 'data' => $users]);
@@ -86,6 +101,7 @@ class UserController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
     private function getProfileCompleted($key)
     {
         $d = (new Query())

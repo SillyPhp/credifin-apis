@@ -11,6 +11,7 @@ namespace common\models;
  * @property string $tag_enc_id Foreign Key to Tags Table
  * @property string $created_on On which date Post Tag information was added to database
  * @property string $created_by By which User Post Tag information was added
+ * @property int $is_deleted is_deleted
  * @property string $last_updated_on On which date Post Tag information was updated
  * @property string $last_updated_by By which User Post Tag information was updated
  *
@@ -37,6 +38,7 @@ class PostTags extends \yii\db\ActiveRecord
         return [
             [['post_tag_enc_id', 'post_enc_id', 'tag_enc_id', 'created_by'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
+            [['is_deleted'], 'integer'],
             [['post_tag_enc_id', 'post_enc_id', 'tag_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['post_tag_enc_id'], 'unique'],
             [['post_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Posts::className(), 'targetAttribute' => ['post_enc_id' => 'post_enc_id']],
