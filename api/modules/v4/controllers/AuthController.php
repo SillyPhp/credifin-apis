@@ -151,11 +151,11 @@ class AuthController extends ApiBaseController
                 }
                 $user = $this->findUser($model);
 
-                if ($user->organization_enc_id) {
-                    if (!$this->isEPartner($user)) {
-                        return $this->response(409, ['status' => 409, 'message' => 'organization must be e-partner']);
-                    }
-                }
+//                if ($user->organization_enc_id) {
+//                    if (!$this->isEPartner($user)) {
+//                        return $this->response(409, ['status' => 409, 'message' => 'organization must be e-partner']);
+//                    }
+//                }
 
                 $user->last_visit = date('Y-m-d H:i:s');
                 $user->last_visit_through = 'EL';
@@ -220,6 +220,8 @@ class AuthController extends ApiBaseController
             $data['user_type'] = "DSA";
         } else if ($service['name'] == 'Connector') {
             $data['user_type'] = "Connector";
+        } else if ($service['name'] == 'Loans') {
+            $data['user_type'] = "Financer";
         } else {
             $data['user_type'] = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
         }

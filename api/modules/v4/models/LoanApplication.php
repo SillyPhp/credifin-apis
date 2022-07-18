@@ -224,11 +224,9 @@ class LoanApplication extends Model
             $options['phone'] = $model->phone;
             $options['email'] = $model->email;
 
-            if ($this->email) {
-                if (!$this->SignUp($options)) {
-                    $transaction->rollback();
-                    return false;
-                }
+            if (!$this->SignUp($options)) {
+                $transaction->rollback();
+                return false;
             }
 
             $payment_model = new EducationLoanPayments();
@@ -611,7 +609,9 @@ class LoanApplication extends Model
             $usersModel->username = strtolower($username);
             $usersModel->first_name = ucfirst(strtolower($first_name));
             $usersModel->last_name = ucfirst(strtolower($last_name));
-            $usersModel->email = strtolower($params['email']);
+            if ($params['email']) {
+                $usersModel->email = strtolower($params['email']);
+            }
             $usersModel->phone = $params['phone'];
             $usersModel->initials_color = RandomColors::one();
             $usersModel->user_type_enc_id = $user_type->user_type_enc_id;
