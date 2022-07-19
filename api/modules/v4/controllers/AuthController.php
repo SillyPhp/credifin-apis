@@ -207,12 +207,14 @@ class AuthController extends ApiBaseController
             ->alias('a')
             ->select(['b.name'])
             ->joinWith(['serviceEnc b'], false)
-            ->where(['a.is_selected' => 1])
+            ->where(['a.is_selected' => 1]);
 //            ->andWhere(['or', ['a.created_by' => $user->user_enc_id], ['organization_enc_id' => $user->organization_enc_id]]);
-            ->andWhere(['or', ['a.created_by' => $user->user_enc_id]]);
         if ($user->organization_enc_id) {
             $service->andWhere(['or', ['organization_enc_id' => $user->organization_enc_id]]);
+        } else {
+            $service->andWhere(['or', ['a.created_by' => $user->user_enc_id]]);
         }
+
         $service = $service->asArray()
             ->one();
 

@@ -542,12 +542,18 @@ class LoanApplication extends Model
 
     public function SignUp($data)
     {
-        $id = Users::find()
-            ->where([
+        $id = Users::find();
+        if ($data['email']) {
+            $id->where([
                 'or',
                 ['phone' => $data['phone']],
                 ['email' => $data['email']],
-            ])->one();
+            ]);
+        } else {
+            $id->where(['phone' => [$data['phone'], '+91' . $data['phone']]]);
+        }
+        $id = $id->one();
+
         if ($id) {
             $get = LoanApplications::findOne(['loan_app_enc_id' => $data['loan_app_id']]);
             $get->created_by = $id->user_enc_id;
