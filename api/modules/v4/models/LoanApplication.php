@@ -10,6 +10,7 @@ use common\models\LoanCertificates;
 use common\models\Organizations;
 use common\models\Referral;
 use common\models\spaces\Spaces;
+use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
 use common\models\UserTypes;
@@ -219,14 +220,26 @@ class LoanApplication extends Model
 //                }
 //            }
 
+            $data = [];
             $options['loan_app_id'] = $model->loan_app_enc_id;
             $options['name'] = $model->applicant_name;
             $options['phone'] = $model->phone;
             $options['email'] = $model->email;
 
-            if (!$this->SignUp($options)) {
-                $transaction->rollback();
-                return false;
+            if ($user_id == null) {
+                $signup = $this->SignUp($options);
+                if (!$signup) {
+                    $transaction->rollback();
+                    return false;
+                }
+
+                $access_token = $this->newToken($signup['user_id']);
+                $data['access_token'] = $access_token->access_token;
+                $data['source'] = $access_token->source;
+                $data['user_id'] = $access_token->user_enc_id;
+                $data['name'] = $model->applicant_name;
+                $data['phone'] = $model->phone;
+                $data['user_type'] = 'Individual';
             }
 
             $payment_model = new EducationLoanPayments();
@@ -246,7 +259,6 @@ class LoanApplication extends Model
 
             $transaction->commit();
 
-            $data = [];
             $data['loan_app_enc_id'] = $model->loan_app_enc_id;
             $data['payment_url'] = null;
             return [
@@ -558,7 +570,7 @@ class LoanApplication extends Model
             $get = LoanApplications::findOne(['loan_app_enc_id' => $data['loan_app_id']]);
             $get->created_by = $id->user_enc_id;
             if ($get->save()) {
-                return true;
+                return ['user_id' => $id->user_enc_id];
             } else {
                 return false;
             }
@@ -573,7 +585,7 @@ class LoanApplication extends Model
                 $get = LoanApplications::findOne(['loan_app_enc_id' => $data['loan_app_id']]);
                 $get->created_by = $id['id'];
                 if ($get->save()) {
-                    return true;
+                    return ['user_id' => $id['id']];
                 } else {
                     return false;
                 }
@@ -743,6 +755,26 @@ class LoanApplication extends Model
         } else {
             return false;
         }
+    }
+
+    private function newToken($user_id)
+    {
+        $source = Yii::$app->getRequest()->getUserIP();
+        $token = new UserAccessTokens();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $time_now = date('Y-m-d H:i:s', time());
+        $token->access_token_enc_id = $utilitiesModel->encrypt();
+        $token->user_enc_id = $user_id;
+        $token->access_token = \Yii::$app->security->generateRandomString(32);
+        $token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
+        $token->refresh_token = \Yii::$app->security->generateRandomString(32);
+        $token->refresh_token_expiration = date('Y-m-d H:i:s', strtotime("+11520 minute", strtotime($time_now)));
+        $token->source = $source;
+        if ($token->save()) {
+            return $token;
+        }
+        return false;
     }
 
 }

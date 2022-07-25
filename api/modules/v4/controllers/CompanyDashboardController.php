@@ -269,6 +269,10 @@ class CompanyDashboardController extends ApiBaseController
                     $c->joinWith(['certificateTypeEnc c1'], false);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
+                ->joinWith(['loanCoApplicants d' => function ($d) {
+                    $d->select(['d.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone',
+                        'd.relation', 'd.employment_type', 'd.annual_income','d.co_applicant_dob','d.occupation']);
+                }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
