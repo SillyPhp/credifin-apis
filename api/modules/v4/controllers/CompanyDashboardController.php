@@ -5,6 +5,7 @@ namespace api\modules\v4\controllers;
 use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
 use common\models\EducationLoanPayments;
+use common\models\EsignOrganizationTracking;
 use common\models\LoanApplications;
 use common\models\LoanSanctionReports;
 use common\models\SelectedServices;
@@ -29,6 +30,7 @@ class CompanyDashboardController extends ApiBaseController
                 'loan-applications' => ['POST', 'OPTIONS'],
                 'loan-detail' => ['POST', 'OPTIONS'],
                 'update-provider-status' => ['POST', 'OPTIONS'],
+                'save-organization-tracking' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -131,9 +133,19 @@ class CompanyDashboardController extends ApiBaseController
             $params = Yii::$app->request->post();
 
             $filter = null;
+            $limit = 10;
+            $page = 1;
 
             if (isset($params['filter']) && !empty($params['filter'])) {
                 $filter = $params['filter'];
+            }
+
+            if (isset($params['limit']) && !empty($params['limit'])) {
+                $limit = $params['limit'];
+            }
+
+            if (isset($params['page']) && !empty($params['page'])) {
+                $page = $params['page'];
             }
 
             $loans = LoanApplications::find()
@@ -213,7 +225,21 @@ class CompanyDashboardController extends ApiBaseController
                 $loans->andWhere(['in', 'i.status', $filter]);
             }
 
-            $loans = $loans->asArray()->all();
+            if (!empty($params['search_keyword'])) {
+                $loans->andWhere([
+                    'or',
+                    ['like', 'a.applicant_name', $params['search_keyword']],
+                    ['like', 'a.loan_type', $params['search_keyword']],
+                    ['like', 'a.amount', $params['search_keyword']],
+                    ['like', 'a.created_on', $params['search_keyword']]
+                ]);
+            }
+
+            $loans = $loans
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->asArray()
+                ->all();
 
             if ($loans) {
                 foreach ($loans as $key => $val) {
@@ -271,7 +297,7 @@ class CompanyDashboardController extends ApiBaseController
                 }])
                 ->joinWith(['loanCoApplicants d' => function ($d) {
                     $d->select(['d.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone',
-                        'd.relation', 'd.employment_type', 'd.annual_income','d.co_applicant_dob','d.occupation']);
+                        'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation']);
                 }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
@@ -334,4 +360,30 @@ class CompanyDashboardController extends ApiBaseController
 
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
+
+    public function actionSaveOrganizationTracking()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            $model = new EsignOrganizationTracking();
+            $model->esign_tracking_enc_id = Yii::$app->getSecurity()->generateRandomString();
+            $model->organization_enc_id = $user->organization_enc_id;
+            $model->legality_document_id = $params['legality_document_id'];
+            $model->empower_loans_tracking_id = $params['empower_loans_tracking_id'];
+            $model->created_by = $user->user_enc_id;
+            $model->created_on = date('Y-m-d H:i:s');
+            if (!$model->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+
 }

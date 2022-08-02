@@ -2,10 +2,13 @@
 
 namespace api\modules\v4\controllers;
 
+use common\models\BillDetails;
 use common\models\Cities;
 use common\models\Designations;
 use common\models\OrganizationTypes;
+use common\models\spaces\Spaces;
 use common\models\States;
+use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use Yii;
 use yii\filters\Cors;
@@ -24,6 +27,7 @@ class UtilitiesController extends ApiBaseController
                 'designations' => ['GET', 'OPTIONS'],
                 'states' => ['GET', 'OPTIONS'],
                 'cities' => ['GET', 'OPTIONS'],
+                'file-upload' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -84,5 +88,26 @@ class UtilitiesController extends ApiBaseController
             ->all();
 
         return $this->response(200, ['status' => 200, 'cities' => $cities]);
+    }
+
+    public function actionFileUpload()
+    {
+        if ($this->isAuthorized()) {
+            $image = UploadedFile::getInstanceByName('image');
+
+            $base_path = Yii::$app->params->upload_directories->loans->e_sign . Yii::$app->getSecurity()->generateRandomString() . '/';
+            $type = $image->type;
+
+            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+            $result = $my_space->uploadFileSources($image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $image->name, "private", ['params' => ['ContentType' => $type]]);
+            if ($result['ObjectURL']) {
+                return $this->response(200, ['status' => 200, 'path' => Yii::$app->params->digitalOcean->rootDirectory . $base_path . $image->name]);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 }
