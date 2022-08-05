@@ -209,30 +209,23 @@ class AuthController extends ApiBaseController
             ->joinWith(['serviceEnc b'], false)
             ->where(['a.is_selected' => 1]);
 //            ->andWhere(['or', ['a.created_by' => $user->user_enc_id], ['organization_enc_id' => $user->organization_enc_id]]);
-//        if ($user->organization_enc_id) {
-//            $service->andWhere(['or', ['a.organization_enc_id' => $user->organization_enc_id]]);
-//        } else {
-//            $service->andWhere(['or', ['a.created_by' => $user->user_enc_id]]);
-//        }
         if ($user->organization_enc_id) {
-            $service->andWhere(['a.organization_enc_id' => $user->organization_enc_id]);
+            $service->andWhere(['or', ['a.organization_enc_id' => $user->organization_enc_id]]);
         } else {
-            $service->andWhere(['a.created_by' => $user->user_enc_id]);
-            $service->andWhere(['or',
-                ['a.organization_enc_id' => NULL],
-                ['a.organization_enc_id' => '']
-            ]);
+            $service->andWhere(['or', ['a.created_by' => $user->user_enc_id]]);
         }
 
         $service = $service->asArray()
-            ->one();
+            ->all();
 
-        if ($service['name'] == 'E-Partners') {
-            $data['user_type'] = "DSA";
-        } else if ($service['name'] == 'Connector') {
-            $data['user_type'] = "Connector";
-        } else if ($service['name'] == 'Loans') {
+        $serviceArr = array_column($service, 'name');
+
+        if (in_array('Loans', $serviceArr)) {
             $data['user_type'] = "Financer";
+        } else if (in_array('E-Partners', $serviceArr)) {
+            $data['user_type'] = "DSA";
+        } else if (in_array('Connector', $serviceArr)) {
+            $data['user_type'] = "Connector";
         } else {
             $data['user_type'] = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
         }
