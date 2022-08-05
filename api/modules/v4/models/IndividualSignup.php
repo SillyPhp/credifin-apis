@@ -29,6 +29,7 @@ class IndividualSignup extends Model
     public $source;
     public $dsaRefId;
     public $is_connector;
+    public $user_type;
 
 
     public function rules()
@@ -51,12 +52,17 @@ class IndividualSignup extends Model
             [['password'], 'string', 'length' => [8, 20]],
 
             ['source', 'required'],
-            [['dsaRefId', 'is_connector'], 'safe']
+            [['dsaRefId', 'is_connector', 'user_type'], 'safe']
         ];
     }
 
     public function saveUser()
     {
+        $user_type = $this->user_type == 'Employee' ? 'Employee' : 'Individual';
+
+        if ($this->user_type == 'Connector') {
+            $this->is_connector = true;
+        }
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
@@ -78,7 +84,7 @@ class IndividualSignup extends Model
             $user->phone = preg_replace("/\s+/", "", $this->phone);
             $user->email = $this->email;
             $user->user_enc_id = $utilitiesModel->encrypt();
-            $user->user_type_enc_id = UserTypes::findOne(['user_type' => 'Individual'])->user_type_enc_id;
+            $user->user_type_enc_id = UserTypes::findOne(['user_type' => $user_type])->user_type_enc_id;
             $user->initials_color = RandomColors::one();
             $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
             $user->status = 'Active';
@@ -98,7 +104,7 @@ class IndividualSignup extends Model
                 return false;
             }
 
-            if ($this->dsaRefId) {
+            if ($this->dsaRefId && $user_type != 'Employee') {
                 $this->assignedDsaService($user->user_enc_id, $this->dsaRefId);
             }
 
@@ -112,7 +118,7 @@ class IndividualSignup extends Model
             $data['phone'] = $user->phone;
             $data['email'] = $user->email;
             $data['referral_code'] = $ref_code;
-            $data['user_type'] = 'Individual';
+            $data['user_type'] = $user_type;
             $data['access_token'] = '';
             $data['source'] = '';
             $data['refresh_token'] = '';
@@ -131,8 +137,6 @@ class IndividualSignup extends Model
                 $data['user_type'] = "DSA";
             } else if ($this->is_connector) {
                 $data['user_type'] = 'Connector';
-            } else {
-                $data['user_type'] = 'Individual';
             }
 
             if ($token = $this->newToken($user->user_enc_id, $this->source)) {
