@@ -200,6 +200,7 @@ class AuthController extends ApiBaseController
             $data['organization_name'] = $org->name;
             $data['organization_slug'] = $org->slug;
             $data['organization_enc_id'] = $org->organization_enc_id;
+            $data['organization_username'] = Users::findOne(['organization_enc_id'=>$org->organization_enc_id])->username;
         } else {
             $data['referral_code'] = Referral::findOne(['user_enc_id' => $user->user_enc_id])->code;
         }
@@ -255,10 +256,17 @@ class AuthController extends ApiBaseController
             $org_id = Referral::findOne(['referral_enc_id' => $ref_enc_id])->organization_enc_id;
 
             if ($org_id) {
-                $org = Organizations::findOne(['organization_enc_id' => $org_id]);
-                $data['organization_name'] = $org->name;
-                $data['organization_slug'] = $org->slug;
-                $data['organization_enc_id'] = $org->organization_enc_id;
+                $organization = Organizations::find()
+                    ->alias('a')
+                    ->select(['a.organization_enc_id','a.name','a.slug','b.username'])
+                    ->joinWith(['createdBy b'], false)
+                    ->where(['a.organization_enc_id' => $org_id])
+                    ->asArray()
+                    ->one();
+                $data['organization_name'] = $organization['name'];
+                $data['organization_slug'] = $organization['slug'];
+                $data['organization_username'] = $organization['username'];
+                $data['organization_enc_id'] = $organization['organization_enc_id'];
             }
         }
 

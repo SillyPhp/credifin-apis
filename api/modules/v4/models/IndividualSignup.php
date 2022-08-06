@@ -144,10 +144,17 @@ class IndividualSignup extends Model
             if ($this->dsaRefId && $this->user_type == 'Employee') {
                 $org_id = \common\models\Referral::findOne(['code' => $this->dsaRefId])->organization_enc_id;
                 if ($org_id) {
-                    $organization = Organizations::findOne(['organization_enc_id' => $org_id]);
-                    $data['organization_name'] = $organization->name;
-                    $data['organization_slug'] = $organization->slug;
-                    $data['organization_enc_id'] = $organization->organization_enc_id;
+                    $organization = Organizations::find()
+                        ->alias('a')
+                        ->select(['a.organization_enc_id','a.name','a.slug','b.username'])
+                        ->joinWith(['createdBy b'], false)
+                        ->where(['a.organization_enc_id' => $org_id])
+                        ->asArray()
+                        ->one();
+                    $data['organization_name'] = $organization['name'];
+                    $data['organization_slug'] = $organization['slug'];
+                    $data['organization_username'] = $organization['username'];
+                    $data['organization_enc_id'] = $organization['organization_enc_id'];
                 }
             }
 
