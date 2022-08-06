@@ -9,6 +9,7 @@ use api\modules\v4\models\LoginForm;
 use api\modules\v4\models\IndividualSignup;
 use common\models\Organizations;
 use common\models\Referral;
+use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
@@ -69,7 +70,7 @@ class AuthController extends ApiBaseController
                 $model->source = Yii::$app->getRequest()->getUserIP();
             }
 
-            if ($model->dsaRefId && !$model->is_connector) {
+            if ($model->dsaRefId && !$model->is_connector && $model->user_type != 'Employee') {
                 if (!$this->DsaOrgExist($model->dsaRefId)) {
                     return $this->response(404, ['status' => 404, 'message' => 'no organization found with this ref id']);
                 }
@@ -95,7 +96,7 @@ class AuthController extends ApiBaseController
             ->joinWith(['selectedServices b' => function ($x) {
                 $x->andWhere(['b.is_selected' => 1]);
                 $x->joinWith(['serviceEnc c' => function ($b) {
-                    $b->andWhere(['c.name' => 'E-Partners']);
+                    $b->andWhere(['c.name' => ['E-Partners', 'Loans']]);
                 }], 'INNER JOIN');
             }], 'INNER JOIN')
             ->exists();
@@ -247,6 +248,18 @@ class AuthController extends ApiBaseController
 
         if ($user->image) {
             $data['image'] = Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $user->image_location . DIRECTORY_SEPARATOR . $user->image, 'https');
+        }
+
+        if ($data['user_type'] == 'Employee') {
+            $ref_enc_id = ReferralSignUpTracking::findOne(['sign_up_user_enc_id' => $user->user_enc_id])->referral_enc_id;
+            $org_id = Referral::findOne(['referral_enc_id' => $ref_enc_id])->organization_enc_id;
+
+            if ($org_id) {
+                $org = Organizations::findOne(['organization_enc_id' => $org_id]);
+                $data['organization_name'] = $org->name;
+                $data['organization_slug'] = $org->slug;
+                $data['organization_enc_id'] = $org->organization_enc_id;
+            }
         }
 
         return $data;

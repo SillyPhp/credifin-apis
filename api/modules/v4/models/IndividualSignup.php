@@ -2,9 +2,11 @@
 
 namespace api\modules\v4\models;
 
+use account\models\applications\TrainingApplications;
 use common\models\AssignedSupervisor;
 use common\models\EmailLogs;
 use common\models\Organizations;
+use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
 use common\models\Services;
 use common\models\UserAccessTokens;
@@ -104,8 +106,18 @@ class IndividualSignup extends Model
                 return false;
             }
 
+            if ($this->dsaRefId && ($this->user_type == 'Employee' || $this->is_connector)) {
+                if (!$this->signupTracking($user->user_enc_id)) {
+                    $transaction->rollback();
+                    return false;
+                }
+            }
+
             if ($this->dsaRefId && $user_type != 'Employee') {
-                $this->assignedDsaService($user->user_enc_id, $this->dsaRefId);
+                if (!$this->assignedDsaService($user->user_enc_id, $this->dsaRefId)) {
+                    $transaction->rollback();
+                    return false;
+                }
             }
 
             $transaction->commit();
@@ -125,6 +137,19 @@ class IndividualSignup extends Model
             $data['access_token_expiry_time'] = '';
             $data['refresh_token_expiry_time'] = '';
             $data['image'] = '';
+            $data['organization_enc_id'] = '';
+            $data['organization_name'] = '';
+            $data['organization_slug'] = '';
+
+            if ($this->dsaRefId && $this->user_type == 'Employee') {
+                $org_id = \common\models\Referral::findOne(['code' => $this->dsaRefId])->organization_enc_id;
+                if ($org_id) {
+                    $organization = Organizations::findOne(['organization_enc_id' => $org_id]);
+                    $data['organization_name'] = $organization->name;
+                    $data['organization_slug'] = $organization->slug;
+                    $data['organization_enc_id'] = $organization->organization_enc_id;
+                }
+            }
 
             $is_dsa = SelectedServices::find()
                 ->alias('a')
@@ -169,6 +194,23 @@ class IndividualSignup extends Model
             return $ref->code;
         }
 
+        return false;
+    }
+
+    private function signupTracking($user_id)
+    {
+        $referralData = \common\models\Referral::findOne(['code' => $this->dsaRefId]);
+
+        $tracking = new ReferralSignUpTracking();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+        $tracking->tracking_signup_enc_id = $utilitiesModel->encrypt();
+        $tracking->referral_enc_id = $referralData->referral_enc_id;
+        $tracking->sign_up_user_enc_id = $user_id;
+        $tracking->created_on = date('Y-m-d H:i:s');
+        if ($tracking->save()) {
+            return true;
+        }
         return false;
     }
 
