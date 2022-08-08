@@ -102,6 +102,70 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                 </div>
                 <div class="row">
                     <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="radio-heading input-group-text">
+                                <strong>LOANS</strong>
+                            </div>
+                            <ul class="relationList">
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_loan_type" value="Education Loan" id="education_loan" name="loan_type">
+                                    <label for="education_loan">Education Loan</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_loan_type" id="car_loan" value="Car Loan" name="loan_type">
+                                    <label for="car_loan">Car Loan</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_loan_type" id="persoal_loan" value="Personal Loan" name="loan_type">
+                                    <label for="persoal_loan">Personal Loan</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_loan_type" id="home_loan" value="Home Loan" name="loan_type">
+                                    <label for="home_loan">Home Loan</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_loan_type" id="two_wheeler_loan" value="Two Wheeler Loan" name="loan_type">
+                                    <label for="two_wheeler_loan">Two Wheeler Loan</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_loan_type" id="e_vehicle_loan" value="E-Vehicle Loan" name="loan_type">
+                                    <label for="e_vehicle_loan">E-Vehicle Loan</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_loan_type" id="business_loan" value="Business Loan" name="loan_type">
+                                    <label for="business_loan">Business Loan</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_loan_type" id="loan_against_property" value="Loan Against Property" name="loan_type">
+                                    <label for="loan_against_property">Loan Against Property</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_loan_type" id="medical_loan" value="Medical Loan" name="loan_type">
+                                    <label for="medical_loan">Medical Loan</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_loan_type" id="micro_loan" value="Micro Loan" name="loan_type">
+                                    <label for="micro_loan">Micro Loan</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_loan_type" id="solar_panel_loan" value="Solar Panel Loan" name="loan_type">
+                                    <label for="solar_panel_loan">Solar Panel Loan</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_loan_type" id="marriage_loan" value="Marriage Loan" name="loan_type">
+                                    <label for="marriage_loan">Marriage Loan</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_loan_type" id="consumar_durable_loan" value="Consumar Durable Loan" name="loan_type">
+                                    <label for="consumar_durable_loan">Consumar Durable Loan</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
                         <div><label class="p_label">Parent Information (Optional, You Can Add Multiple)</label></div>
                         <div class="form-group"><input type="text" name="parent_name[]"
                                                        class="form-control text-capitalize" placeholder="Name"
@@ -353,8 +417,10 @@ $(document).on('submit','#leads_form',function(event) {
       if ($(this).val() == '')
         $(this).prop("disabled", true);
     });
+  var loan_type = $('.input_radio_loan_type:checked').val();
   var formData = new FormData(this);
   formData.append('parentElem',$('#parentElem').val());
+  formData.append('loan_type',loan_type);
       $.ajax({
         url: "/education-loans/leads",
         method: "POST",
