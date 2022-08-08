@@ -22,6 +22,7 @@ class LeadsForm extends Model
    public $parent_relation = [];
    public $parent_mobile_number = [];
    public $parent_annual_income = [];
+   public $loan_type;
 
    public function formName()
    {
@@ -33,7 +34,7 @@ class LeadsForm extends Model
        return [
            [['first_name','last_name','student_mobile_number','parentElem'],'required'],
            [['first_name', 'last_name', 'student_email','student_mobile_number','university_name','course_name'], 'trim'],
-           [['university_name','student_email','course_name','course_fee_annual','parent_name','parent_relation','parent_mobile_number','parent_annual_income'],'safe'],
+           [['university_name','student_email','course_name','course_fee_annual','parent_name','parent_relation','parent_mobile_number','parent_annual_income', 'loan_type'],'safe'],
            [['first_name','last_name', 'university_name','course_name','student_email'], 'string', 'max' => 255],
            [['first_name', 'last_name'], 'match','pattern' => '/^([A-Z a-z])+$/', 'message' => 'Name can only contain alphabets'],
            [['student_mobile_number'], 'string','length'=>[10,10]],
@@ -59,6 +60,7 @@ class LeadsForm extends Model
            $model->course_name = $this->course_name;
            $model->course_fee_annual = $this->course_fee_annual;
            $model->filled_by = 1;
+           $model->loan_type = $this->loan_type;
            $userID = Yii::$app->user->identity->user_enc_id;
            if($userID){
                $user = Users::find()

@@ -46,6 +46,7 @@ use Yii;
  * @property string $managed_by
  * @property string $care_by
  * @property string $lead_by
+ * @property string $loan_type
  * @property int $loan_for 1 for College/University, 2 for School, 3 for other institute
  * @property int $admission_taken 1 as true, 0 as false
  * @property string $created_on
@@ -89,7 +90,7 @@ class LeadsApplications extends \yii\db\ActiveRecord
     {
         return [
             [['application_enc_id', 'application_number'], 'required'],
-            [['gender', 'status', 'comments', 'message', 'address'], 'string'],
+            [['gender', 'status', 'comments', 'message', 'address', 'loan_type'], 'string'],
             [['dob', 'created_on', 'last_updated_on', 'assign_date', 'calling_date'], 'safe'],
             [['has_taken_addmission', 'application_fee_recieved', 'filled_by', 'is_number_verified', 'loan_for', 'admission_taken', 'priority', 'is_deleted', 'phone_status', 'email_status', 'signup_status'], 'integer'],
             [['loan_amount', 'course_fee_annual'], 'number'],
