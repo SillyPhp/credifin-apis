@@ -133,8 +133,10 @@ $this->params['seo_tags'] = [
                                     <?php
                                     $postTags = $post->postTags;
                                     foreach ($postTags as $tags) {
-                                        $tag = $tags->tagEnc;
-                                        echo '<li><a href="/blog/tag/' . $tag->slug . '">' . $tag->name . '</a></li>';
+                                        if($tags->is_deleted == 0){
+                                            $tag = $tags->tagEnc;
+                                            echo '<li><a href="/blog/tag/' . $tag->slug . '">' . $tag->name . '</a></li>';
+                                        }
                                     }
                                     ?>
                                 </ul>

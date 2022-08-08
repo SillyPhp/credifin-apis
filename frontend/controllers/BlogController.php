@@ -37,7 +37,7 @@ class BlogController extends Controller
             }], false)
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['not', ['c.category_enc_id' => null]])
-            ->andWhere(['a.is_visible'=>1])
+            ->andWhere(['a.is_visible' => 1])
             ->orderby(['a.created_on' => SORT_ASC])
             ->limit(8)
             ->asArray()
@@ -100,7 +100,7 @@ class BlogController extends Controller
                 ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
                 ->andWhere(['not', ['c.name' => 'Infographics']])
                 ->andWhere(['not', ['c.name' => 'Quotes']])
-                ->andWhere(['a.is_visible'=>1])
+                ->andWhere(['a.is_visible' => 1])
                 ->groupBy(['a.post_enc_id'])
                 ->orderby(new Expression('rand()'))
                 ->limit(4)
@@ -123,7 +123,7 @@ class BlogController extends Controller
                 ->andWhere(['a.status' => 'Active', 'a.is_deleted' => 0])
                 ->andWhere(['not', ['c.name' => 'Infographics']])
                 ->andWhere(['not', ['c.name' => 'Quotes']])
-                ->andWhere(['a.is_visible'=>1])
+                ->andWhere(['a.is_visible' => 1])
                 ->groupBy(['a.post_enc_id'])
                 ->orderby(new Expression('rand()'))
                 ->limit(6)
@@ -144,7 +144,7 @@ class BlogController extends Controller
                 ->andWhere(['a.status' => 'Active', 'a.is_deleted' => 0])
                 ->andWhere(['not', ['c.name' => 'Infographics']])
                 ->andWhere(['not', ['c.name' => 'Quotes']])
-                ->andWhere(['a.is_visible'=>1])
+                ->andWhere(['a.is_visible' => 1])
                 ->groupBy(['a.post_enc_id'])
                 ->orderby(new Expression('rand()'))
                 ->limit(12)
@@ -168,8 +168,24 @@ class BlogController extends Controller
 
     private function _getPostDetails($slug, $is_crawled = 1)
     {
-        $post = Posts::findOne(['is_deleted' => 0, 'slug' => $slug, 'status' => 'Active', 'is_crawled' => $is_crawled,'is_visible'=>1]);
-        $tags = ArrayHelper::getColumn($post->postTags, 'tagEnc.name');
+        $post = Posts::findOne(['is_deleted' => 0, 'slug' => $slug, 'status' => 'Active', 'is_crawled' => $is_crawled, 'is_visible' => 1]);
+
+        $post_tags = PostTags::find()
+            ->alias('a')
+            ->select(['a.post_tag_enc_id', 'a.post_enc_id', 'a.tag_enc_id', 'b.name'])
+            ->joinWith(['tagEnc b'], false)
+            ->where(['a.post_enc_id' => $post->post_enc_id, 'a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        $tags = [];
+
+        if($post_tags) {
+            foreach ($post_tags as $val) {
+                array_push($tags, $val['name']);
+            }
+        }
+
         if ($post) {
             $post_categories = PostCategories::find()
                 ->alias('a')
@@ -194,7 +210,7 @@ class BlogController extends Controller
                 ->andWhere(['!=', 'z.post_enc_id', $post->post_enc_id])
                 ->andWhere(['z.status' => 'Active', 'z.is_deleted' => 0])
 //                ->andFilterWhere(['like', 'b.category_enc_id', $categories])
-                ->andWhere(['z.is_visible'=>1])
+                ->andWhere(['z.is_visible' => 1])
                 ->andWhere(['b.category_enc_id' => $categories])
                 ->orderBy(new Expression('rand()'))
                 ->asArray()
@@ -247,7 +263,7 @@ class BlogController extends Controller
             ->innerJoin(PostTags::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
             ->innerJoin(Tags::tableName() . 'as c', 'c.tag_enc_id = b.tag_enc_id')
             ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
-            ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0,'is_visible'=>1])
+            ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0, 'is_visible' => 1])
             ->orderby(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
@@ -280,7 +296,7 @@ class BlogController extends Controller
                 ->innerJoin(PostTags::tableName() . 'as d', 'd.post_enc_id = a.post_enc_id')
                 ->innerJoin(Tags::tableName() . 'as e', 'e.tag_enc_id = d.tag_enc_id')
                 ->innerJoin(Users::tableName() . 'as f', 'f.user_enc_id = a.author_enc_id')
-                ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0,'is_visible'=>1])
+                ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0, 'is_visible' => 1])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->limit(5)
                 ->asArray()

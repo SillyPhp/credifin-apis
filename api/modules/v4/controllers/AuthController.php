@@ -9,6 +9,7 @@ use api\modules\v4\models\LoginForm;
 use api\modules\v4\models\IndividualSignup;
 use common\models\Organizations;
 use common\models\Referral;
+use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
@@ -69,7 +70,7 @@ class AuthController extends ApiBaseController
                 $model->source = Yii::$app->getRequest()->getUserIP();
             }
 
-            if ($model->dsaRefId && !$model->is_connector) {
+            if ($model->dsaRefId && !$model->is_connector && $model->user_type != 'Employee') {
                 if (!$this->DsaOrgExist($model->dsaRefId)) {
                     return $this->response(404, ['status' => 404, 'message' => 'no organization found with this ref id']);
                 }
@@ -95,7 +96,7 @@ class AuthController extends ApiBaseController
             ->joinWith(['selectedServices b' => function ($x) {
                 $x->andWhere(['b.is_selected' => 1]);
                 $x->joinWith(['serviceEnc c' => function ($b) {
-                    $b->andWhere(['c.name' => 'E-Partners']);
+                    $b->andWhere(['c.name' => ['E-Partners', 'Loans']]);
                 }], 'INNER JOIN');
             }], 'INNER JOIN')
             ->exists();
@@ -151,11 +152,11 @@ class AuthController extends ApiBaseController
                 }
                 $user = $this->findUser($model);
 
-                if ($user->organization_enc_id) {
-                    if (!$this->isEPartner($user)) {
-                        return $this->response(409, ['status' => 409, 'message' => 'organization must be e-partner']);
-                    }
-                }
+//                if ($user->organization_enc_id) {
+//                    if (!$this->isEPartner($user)) {
+//                        return $this->response(409, ['status' => 409, 'message' => 'organization must be e-partner']);
+//                    }
+//                }
 
                 $user->last_visit = date('Y-m-d H:i:s');
                 $user->last_visit_through = 'EL';
@@ -199,6 +200,7 @@ class AuthController extends ApiBaseController
             $data['organization_name'] = $org->name;
             $data['organization_slug'] = $org->slug;
             $data['organization_enc_id'] = $org->organization_enc_id;
+            $data['organization_username'] = Users::findOne(['organization_enc_id'=>$org->organization_enc_id])->username;
         } else {
             $data['referral_code'] = Referral::findOne(['user_enc_id' => $user->user_enc_id])->code;
         }
@@ -207,18 +209,24 @@ class AuthController extends ApiBaseController
             ->alias('a')
             ->select(['b.name'])
             ->joinWith(['serviceEnc b'], false)
-            ->where(['a.is_selected' => 1])
+            ->where(['a.is_selected' => 1]);
 //            ->andWhere(['or', ['a.created_by' => $user->user_enc_id], ['organization_enc_id' => $user->organization_enc_id]]);
-            ->andWhere(['or', ['a.created_by' => $user->user_enc_id]]);
         if ($user->organization_enc_id) {
-            $service->andWhere(['or', ['organization_enc_id' => $user->organization_enc_id]]);
+            $service->andWhere(['or', ['a.organization_enc_id' => $user->organization_enc_id]]);
+        } else {
+            $service->andWhere(['or', ['a.created_by' => $user->user_enc_id]]);
         }
-        $service = $service->asArray()
-            ->one();
 
-        if ($service['name'] == 'E-Partners') {
+        $service = $service->asArray()
+            ->all();
+
+        $serviceArr = array_column($service, 'name');
+
+        if (in_array('Loans', $serviceArr)) {
+            $data['user_type'] = "Financer";
+        } else if (in_array('E-Partners', $serviceArr)) {
             $data['user_type'] = "DSA";
-        } else if ($service['name'] == 'Connector') {
+        } else if (in_array('Connector', $serviceArr)) {
             $data['user_type'] = "Connector";
         } else {
             $data['user_type'] = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
@@ -241,6 +249,25 @@ class AuthController extends ApiBaseController
 
         if ($user->image) {
             $data['image'] = Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $user->image_location . DIRECTORY_SEPARATOR . $user->image, 'https');
+        }
+
+        if ($data['user_type'] == 'Employee') {
+            $ref_enc_id = ReferralSignUpTracking::findOne(['sign_up_user_enc_id' => $user->user_enc_id])->referral_enc_id;
+            $org_id = Referral::findOne(['referral_enc_id' => $ref_enc_id])->organization_enc_id;
+
+            if ($org_id) {
+                $organization = Organizations::find()
+                    ->alias('a')
+                    ->select(['a.organization_enc_id','a.name','a.slug','b.username'])
+                    ->joinWith(['createdBy b'], false)
+                    ->where(['a.organization_enc_id' => $org_id])
+                    ->asArray()
+                    ->one();
+                $data['organization_name'] = $organization['name'];
+                $data['organization_slug'] = $organization['slug'];
+                $data['organization_username'] = $organization['username'];
+                $data['organization_enc_id'] = $organization['organization_enc_id'];
+            }
         }
 
         return $data;
