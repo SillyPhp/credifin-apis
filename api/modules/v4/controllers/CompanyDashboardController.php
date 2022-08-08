@@ -90,7 +90,8 @@ class CompanyDashboardController extends ApiBaseController
             if ($user->organization_enc_id) {
                 $stats->andWhere(['a.lead_by' => $dsa]);
             } else {
-                $stats->andWhere(['a.lead_by' => $user->user_enc_id]);
+//                $stats->andWhere(['a.lead_by' => $user->user_enc_id]);
+                $stats->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
             }
 
             $stats = $stats->asArray()
@@ -217,7 +218,8 @@ class CompanyDashboardController extends ApiBaseController
                     $loans->andWhere(['a.lead_by' => $dsa]);
                 }
             } else {
-                $loans->andWhere(['a.lead_by' => $user->user_enc_id]);
+//                $loans->andWhere(['a.lead_by' => $user->user_enc_id]);
+                $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
             }
 
 

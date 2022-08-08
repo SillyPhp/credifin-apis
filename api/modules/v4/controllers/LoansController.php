@@ -4,6 +4,8 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\BusinessLoanApplication;
 use common\models\LeadsApplications;
+use common\models\Referral;
+use common\models\ReferralSignUpTracking;
 use common\models\Utilities;
 use yii\web\UploadedFile;
 use api\modules\v4\models\LoanApplication;
@@ -29,6 +31,7 @@ class LoansController extends ApiBaseController
                 'update-payment-link-status' => ['POST', 'OPTIONS'],
                 'contact-us' => ['POST', 'OPTIONS'],
                 'detail' => ['POST', 'OPTIONS'],
+                'authorize-esign' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -280,6 +283,31 @@ class LoansController extends ApiBaseController
         }
 
         return $this->response(404, ['status' => 404, 'message' => 'loan application not found']);
+    }
+
+    public function actionAuthorizeEsign()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            if ($user->organization_enc_id) {
+                return $this->response(200, ['status' => '200', 'organization_enc_id' => $user->organization_enc_id]);
+            }
+
+            $ref_enc_id = ReferralSignUpTracking::findOne(['sign_up_user_enc_id' => $user->user_enc_id])->referral_enc_id;
+
+            if ($ref_enc_id) {
+
+                $org_id = Referral::findOne(['referral_enc_id' => $ref_enc_id])->organization_enc_id;
+
+                if ($org_id) {
+                    return $this->response(200, ['status' => '200', 'organization_enc_id' => $org_id]);
+                }
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
 }
