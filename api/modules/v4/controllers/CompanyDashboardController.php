@@ -8,6 +8,8 @@ use common\models\EducationLoanPayments;
 use common\models\EsignOrganizationTracking;
 use common\models\LoanApplications;
 use common\models\LoanSanctionReports;
+use common\models\Referral;
+use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
 use common\models\Users;
 use common\models\Utilities;
@@ -365,13 +367,24 @@ class CompanyDashboardController extends ApiBaseController
 
     public function actionSaveOrganizationTracking()
     {
+        Yii::$app->cache->flush();
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
 
+            $org_id = $user->organization_enc_id;
+
+            if (!$org_id) {
+                $ref_enc_id = ReferralSignUpTracking::findOne(['sign_up_user_enc_id' => $user->user_enc_id])->referral_enc_id;
+                if($ref_enc_id) {
+                    $org_id = Referral::findOne(['referral_enc_id' => $ref_enc_id])->organization_enc_id;
+                }
+            }
+
             $model = new EsignOrganizationTracking();
             $model->esign_tracking_enc_id = Yii::$app->getSecurity()->generateRandomString();
-            $model->organization_enc_id = $user->organization_enc_id;
+            $model->organization_enc_id = $org_id;
+            $model->employee_id = $user->user_enc_id;
             $model->legality_document_id = $params['legality_document_id'];
             $model->empower_loans_tracking_id = $params['empower_loans_tracking_id'];
             $model->created_by = $user->user_enc_id;
