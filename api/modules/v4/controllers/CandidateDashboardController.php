@@ -23,6 +23,7 @@ class CandidateDashboardController extends ApiBaseController
             'actions' => [
                 'loan-details' => ['POST', 'OPTIONS'],
                 'loan-provider-detail' => ['POST', 'OPTIONS'],
+                'pro-benefits-access' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -138,5 +139,22 @@ class CandidateDashboardController extends ApiBaseController
 
         return $this->response(200, ['status' => 200, 'assigned_loan_provider' => $assigned_loan_provider]);
 
+    }
+
+    public function actionProBenefitsAccess()
+    {
+        if ($user = $this->isAuthorized()) {
+            $loan = LoanApplications::find()
+                ->alias('a')
+                ->select(['a.loan_app_enc_id'])
+                ->joinWith(['assignedLoanProviders b'], false)
+                ->where(['a.created_by' => $user->user_enc_id, 'a.is_deleted' => 0, 'b.status' => 4, 'b.is_deleted' => 0])
+                ->asArray()
+                ->exists();
+
+            return $this->response(200, ['status' => 200, 'application_exists' => $loan]);
+        }
+
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 }
