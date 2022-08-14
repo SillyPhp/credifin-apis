@@ -47,6 +47,7 @@ use Yii;
  * @property string $care_by
  * @property string $lead_by
  * @property string $loan_type
+ * @property string $loan_purpose Add Loan Purpose
  * @property int $loan_for 1 for College/University, 2 for School, 3 for other institute
  * @property int $admission_taken 1 as true, 0 as false
  * @property string $created_on
@@ -71,6 +72,7 @@ use Yii;
  * @property LeadsApplicationsCallingLogs[] $leadsApplicationsCallingLogs
  * @property LeadsCollegePreference[] $leadsCollegePreferences
  * @property LeadsParentInformation[] $leadsParentInformations
+ * @property LeadsVehicleDetails[] $leadsVehicleDetails
  * @property LoanApplications[] $loanApplications
  */
 class LeadsApplications extends \yii\db\ActiveRecord
@@ -89,14 +91,14 @@ class LeadsApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['application_enc_id', 'application_number'], 'required'],
+            [['application_enc_id', 'application_number', 'loan_type'], 'required'],
             [['gender', 'status', 'comments', 'message', 'address', 'loan_type'], 'string'],
             [['dob', 'created_on', 'last_updated_on', 'assign_date', 'calling_date'], 'safe'],
             [['has_taken_addmission', 'application_fee_recieved', 'filled_by', 'is_number_verified', 'loan_for', 'admission_taken', 'priority', 'is_deleted', 'phone_status', 'email_status', 'signup_status'], 'integer'],
             [['loan_amount', 'course_fee_annual'], 'number'],
             [['application_enc_id', 'application_number', 'first_name', 'last_name', 'student_email', 'email_2', 'email_3', 'voter_id', 'state', 'city', 'pin_zip_code', 'cast_category', 'managed_by', 'care_by', 'lead_by', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['student_mobile_number', 'contact_2', 'contact_3', 'status_date'], 'string', 'max' => 50],
-            [['college_institute_name', 'course_name', 'source', 'purpose', 'module', 'user_type'], 'string', 'max' => 200],
+            [['college_institute_name', 'course_name', 'source', 'purpose', 'module', 'user_type', 'loan_purpose'], 'string', 'max' => 200],
             [['tags'], 'string', 'max' => 500],
             [['application_enc_id'], 'unique'],
             [['application_number'], 'unique'],
@@ -186,6 +188,14 @@ class LeadsApplications extends \yii\db\ActiveRecord
     public function getLeadsParentInformations()
     {
         return $this->hasMany(LeadsParentInformation::className(), ['application_enc_id' => 'application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLeadsVehicleDetails()
+    {
+        return $this->hasMany(LeadsVehicleDetails::className(), ['application_enc_id' => 'application_enc_id']);
     }
 
     /**

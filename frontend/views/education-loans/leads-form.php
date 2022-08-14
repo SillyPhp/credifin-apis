@@ -1,9 +1,9 @@
 <?php
 
+use frontend\widgets\login;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use frontend\widgets\login;
 
 $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector-form-job.png';
 Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createAbsoluteUrl('/education-loans/apply') . '"', \yii\web\View::POS_HEAD);
@@ -73,7 +73,7 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <?= $form->field($model, 'student_mobile_number')->textInput(['placeholder' => 'Mobile Number (WhatsApp Number)','pattern'=>'[0-9]*', 'type'=>'tel','maxLength'=>10,'minLength'=>10])->label(false); ?>
+                        <?= $form->field($model, 'student_mobile_number')->textInput(['placeholder' => 'Mobile Number (WhatsApp Number)', 'pattern' => '[0-9]*', 'type' => 'tel', 'maxLength' => 10, 'minLength' => 10])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
@@ -81,82 +81,93 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                         <?= $form->field($model, 'student_email')->textInput(['placeholder' => 'Student Email', 'class' => 'form-control'])->label(false); ?>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div id="the-basics-college">
-                            <?= $form->field($model, 'university_name')->textInput(['placeholder' => 'College / University Name', 'class' => 'form-control text-capitalize typeahead'])->label(false); ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div id="the-basics">
-                            <?= $form->field($model, 'course_name')->textInput(['placeholder' => 'Course Name', 'class' => 'form-control text-capitalize typeahead'])->label(false); ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <?= $form->field($model, 'course_fee_annual')->textInput(['placeholder' => 'Annual Course Fee', 'maxLength' => 20])->label(false); ?>
-                    </div>
-                </div>
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
                             <div class="radio-heading input-group-text">
                                 <strong>LOANS</strong>
                             </div>
+                            <p class="help-block help-block-error loan-type-err"></p>
                             <ul class="relationList">
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_loan_type" value="Education Loan" id="education_loan" name="loan_type">
+                                    <input type="radio" class="input_radio_loan_type loan_type" aria-required="true"
+                                           value="Education Loan"
+                                           id="education_loan" name="loan_type">
                                     <label for="education_loan">Education Loan</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_loan_type" id="car_loan" value="Car Loan" name="loan_type">
+                                    <input type="radio" class="input_radio_loan_type loan_type" aria-required="true"
+                                           id="car_loan"
+                                           value="Car Loan"
+                                           name="loan_type">
                                     <label for="car_loan">Car Loan</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_loan_type" id="persoal_loan" value="Personal Loan" name="loan_type">
+                                    <input type="radio" class="input_radio_loan_type loan_type" aria-required="true"
+                                           id="persoal_loan"
+                                           value="Personal Loan" name="loan_type">
                                     <label for="persoal_loan">Personal Loan</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_loan_type" id="home_loan" value="Home Loan" name="loan_type">
+                                    <input type="radio" class="input_radio_loan_type loan_type" aria-required="true"
+                                           id="home_loan"
+                                           value="Home Loan"
+                                           name="loan_type">
                                     <label for="home_loan">Home Loan</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_loan_type" id="two_wheeler_loan" value="Two Wheeler Loan" name="loan_type">
+                                    <input type="radio" class="input_radio_loan_type loan_type" aria-required="true"
+                                           id="two_wheeler_loan"
+                                           value="Two Wheeler Loan" name="loan_type">
                                     <label for="two_wheeler_loan">Two Wheeler Loan</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_loan_type" id="e_vehicle_loan" value="E-Vehicle Loan" name="loan_type">
+                                    <input type="radio" class="input_radio_loan_type loan_type" aria-required="true"
+                                           id="e_vehicle_loan"
+                                           value="E-Vehicle Loan" name="loan_type">
                                     <label for="e_vehicle_loan">E-Vehicle Loan</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_loan_type" id="business_loan" value="Business Loan" name="loan_type">
+                                    <input type="radio" class="input_radio_loan_type loan_type" aria-required="true"
+                                           id="business_loan"
+                                           value="Business Loan" name="loan_type">
                                     <label for="business_loan">Business Loan</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_loan_type" id="loan_against_property" value="Loan Against Property" name="loan_type">
+                                    <input type="radio" class="input_radio_loan_type loan_type"
+                                           id="loan_against_property" aria-required="true"
+                                           value="Loan Against Property" name="loan_type">
                                     <label for="loan_against_property">Loan Against Property</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_loan_type" id="medical_loan" value="Medical Loan" name="loan_type">
+                                    <input type="radio" class="input_radio_loan_type loan_type" id="medical_loan"
+                                           value="Medical Loan" aria-required="true" name="loan_type">
                                     <label for="medical_loan">Medical Loan</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_loan_type" id="micro_loan" value="Micro Loan" name="loan_type">
+                                    <input type="radio" class="input_radio_loan_type loan_type" aria-required="true"
+                                           id="micro_loan"
+                                           value="Micro Loan"
+                                           name="loan_type">
                                     <label for="micro_loan">Micro Loan</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_loan_type" id="solar_panel_loan" value="Solar Panel Loan" name="loan_type">
+                                    <input type="radio" class="input_radio_loan_type loan_type" aria-required="true"
+                                           id="solar_panel_loan"
+                                           value="Solar Panel Loan" name="loan_type">
                                     <label for="solar_panel_loan">Solar Panel Loan</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_loan_type" id="marriage_loan" value="Marriage Loan" name="loan_type">
+                                    <input type="radio" class="input_radio_loan_type loan_type" aria-required="true"
+                                           id="marriage_loan"
+                                           value="Marriage Loan" name="loan_type">
                                     <label for="marriage_loan">Marriage Loan</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_loan_type" id="consumar_durable_loan" value="Consumar Durable Loan" name="loan_type">
+                                    <input type="radio" class="input_radio_loan_type loan_type" aria-required="true"
+                                           id="consumar_durable_loan"
+                                           value="Consumar Durable Loan" name="loan_type">
                                     <label for="consumar_durable_loan">Consumar Durable Loan</label>
                                 </li>
                             </ul>
@@ -164,9 +175,171 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                     </div>
                 </div>
 
+                <div class="row loan_purpose">
+                    <div class="col-md-12">
+                        <div class="radio-heading input-group-text">
+                            <label class="p_label">Loan Purpose</label>
+                        </div>
+                        <?= $form->field($model, 'loan_purpose')->dropDownList([
+                            'Travel' => 'Travel',
+                            "Credit Card EMI's" => "Credit Card EMI's",
+                            "Personal Emergencies" => "Personal Emergencies",
+                        ], ['prompt' => 'Select Loan Purposes'])->label(false) ?>
+                    </div>
+                </div>
+
+                <div class="row edu-show">
+                    <div class="col-md-12">
+                        <div id="the-basics-college">
+                            <?= $form->field($model, 'university_name')->textInput(['placeholder' => 'College / University Name', 'class' => 'form-control text-capitalize typeahead'])->label(false); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="row edu-show">
+                    <div class="col-md-12">
+                        <div id="the-basics">
+                            <?= $form->field($model, 'course_name')->textInput(['placeholder' => 'Course Name', 'class' => 'form-control text-capitalize typeahead'])->label(false); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="row edu-show">
+                    <div class="col-md-12">
+                        <?= $form->field($model, 'course_fee_annual')->textInput(['placeholder' => 'Annual Course Fee', 'maxLength' => 20])->label(false); ?>
+                    </div>
+                </div>
+
+                <div class="row type-show">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="radio-heading input-group-text">
+                                <strong>Vehicle Type</strong>
+                            </div>
+                            <ul class="relationList">
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_vehicle_type vehicle_type" value="New"
+                                           id="vehicle_new" name="condition">
+                                    <label for="vehicle_new">New</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_vehicle_type vehicle_type" value="Old"
+                                           id="vehicle_old" name="condition">
+                                    <label for="vehicle_old">Old</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6 e_type">
+                        <div class="form-group">
+                            <div class="radio-heading input-group-text">
+                                <strong>E-Vehicle Type</strong>
+                            </div>
+                            <ul class="relationList">
+                                <li class="service-list list-width">
+                                    <input type="radio" class="input_radio_e_type" value="1"
+                                           id="two" name="e_type">
+                                    <label for="two">2 Wheeler</label>
+                                </li>
+                                <li class="service-list list-width">
+                                    <input type="radio" class="input_radio_e_type" value="2"
+                                           id="three" name="e_type">
+                                    <label for="three">3 Wheeler</label>
+                                </li>
+                                <li class="service-list list-width">
+                                    <input type="radio" class="input_radio_e_type" value="3"
+                                           id="four" name="e_type">
+                                    <label for="four">4 Wheeler</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row type-option">
+                    <div class="col-md-6 old-options">
+                        <div class="form-group">
+                            <div class="radio-heading input-group-text">
+                                <label class="p_label">Vehicle Type Options</label>
+                            </div>
+                            <ul class="relationList">
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_purchase change-options" value="Purchase"
+                                           id="vehicle_purchase" name="vehicle_type_options">
+                                    <label for="vehicle_purchase">Purchase</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_purchase change-options" value="Pre-Owned"
+                                           id="vehicle_owned" name="vehicle_type_options">
+                                    <label for="vehicle_owned">Pre-Owned</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="radio-heading input-group-text">
+                                <label class="p_label">Make</label>
+                            </div>
+                            <ul class="relationList">
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_make change-options" value="Hero"
+                                           id="hero" name="vehicle_type_make">
+                                    <label for="hero">Hero</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_make change-options" value="Bjaj"
+                                           id="bjaj" name="vehicle_type_make">
+                                    <label for="bjaj">Bjaj</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_make change-options" value="Honda"
+                                           id="honda" name="vehicle_type_make">
+                                    <label for="honda">Honda</label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_make change-options" value="Others"
+                                           id="others" name="vehicle_type_make">
+                                    <label for="others">Others</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6 new-options">
+                        <div class="form-group">
+                            <div class="radio-heading input-group-text">
+                                <label class="p_label">Manufactured Year</label>
+                            </div>
+                            <ul class="relationList">
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_manufactured_year change-options"
+                                           value="<?= date('Y', strtotime("-1 year")) ?>"
+                                           id="previous_year" name="manufactured_year">
+                                    <label for="previous_year"><?= date('Y', strtotime("-1 year")) ?></label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="radio" class="input_radio_manufactured_year change-options"
+                                           value="<?= date('Y') ?>"
+                                           id="next_year" name="manufactured_year">
+                                    <label for="next_year"><?= date('Y') ?></label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="radio-heading input-group-text">
+                            <label class="p_label">Vehicle Model</label>
+                        </div>
+                        <?= $form->field($model, 'vehicle_model')->textInput(['placeholder' => 'Enter Model Name', 'class' => 'form-control text-capitalize'])->label(false); ?>
+                    </div>
+                    <div class="col-md-6 old-options">
+                        <div class="radio-heading input-group-text">
+                            <label class="p_label">Manufactured Year</label>
+                        </div>
+                        <?= $form->field($model, 'manufactured_year')->textInput(['placeholder' => 'Enter Manufactured Year', 'class' => 'form-control text-capitalize'])->label(false); ?>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <div><label class="p_label">Parent Information (Optional, You Can Add Multiple)</label></div>
+                        <div><label class="p_label">Parent Information (Optional, You Can Add Multiple)</label>
+                        </div>
                         <div class="form-group"><input type="text" name="parent_name[]"
                                                        class="form-control text-capitalize" placeholder="Name"
                                                        id="parent_name[]"></div>
@@ -176,23 +349,29 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                             </div>
                             <ul class="relationList">
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_relation" value="Father" id="reFather" name="parent_relation[0]">
+                                    <input type="radio" class="input_radio_relation" value="Father" id="reFather"
+                                           name="parent_relation[0]">
                                     <label for="reFather">Father</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_relation" id="reMother" value="Mother" name="parent_relation[0]">
+                                    <input type="radio" class="input_radio_relation" id="reMother" value="Mother"
+                                           name="parent_relation[0]">
                                     <label for="reMother">Mother</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_relation" id="reBrother" value="Brother" name="parent_relation[0]">
+                                    <input type="radio" class="input_radio_relation" id="reBrother" value="Brother"
+                                           name="parent_relation[0]">
                                     <label for="reBrother">Brother</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_relation" id="reSister" value="Sister" name="parent_relation[0]">
+                                    <input type="radio" class="input_radio_relation" id="reSister" value="Sister"
+                                           name="parent_relation[0]">
                                     <label for="reSister">Sister</label>
                                 </li>
                                 <li class="service-list">
-                                    <input type="radio" class="input_radio_relation" id="reGuardian" value="Guardian" name="parent_relation[0]">
+                                    <input type="radio" class="input_radio_relation" id="reGuardian"
+                                           value="Guardian"
+                                           name="parent_relation[0]">
                                     <label for="reGuardian">Guardian</label>
                                 </li>
                             </ul>
@@ -203,7 +382,8 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                                                        maxlength="10" minlength="10"></div>
                         <div class="form-group"><input type="text" name="parent_annual_income[]"
                                                        class="form-control parent_annual_income"
-                                                       placeholder="Annual Income" id="parent_annual_income[]"></div>
+                                                       placeholder="Annual Income" id="parent_annual_income[]">
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -211,7 +391,8 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <button id="add_parent_info" class="addAnotherCo"><i class="fas fa-plus"></i> Add More</button>
+                        <button id="add_parent_info" class="addAnotherCo"><i class="fas fa-plus"></i> Add More
+                        </button>
                     </div>
                 </div>
                 <div class="row">
@@ -234,14 +415,71 @@ Yii::$app->view->registerJs('var link_form = "' . Yii::$app->urlManager->createA
         ths.closest('.parent_inforamtion').remove();
         counElement();
     }
-    function counElement()
-    {
+
+    function counElement() {
         var count = $('input[name="parent_name[]"]').length;
         $('#parentElem').val(count);
     }
 </script>
 <?php
 $script = <<< JS
+$(document).on('change','.loan_type',function(e) {
+  e.preventDefault();
+  var value = $(this).val();
+  var education_show = $('.edu-show');
+  var vehicle_type = $('.type-show');
+  $('.loan-type-err').text('');
+  $('.loan-type-err').removeClass('has-error');
+  $('.type-option').hide();
+  $('.e_type').hide();
+  vehicle_type.hide();
+      education_show.hide();
+      $('.loan_purpose').hide();
+    if ($(this).is(':checked') && value === 'Education Loan'){
+        education_show.show();
+    } else{
+        $('input:radio').prop('checked',false);
+        $(this).prop('checked',true);
+    }
+    if ($(this).is(':checked') && value === 'Personal Loan'){
+        $('.loan_purpose').show();
+    } else{
+        $('input:radio').prop('checked',false);
+        $(this).prop('checked',true);
+    }
+    if ($(this).is(':checked') && (value === 'E-Vehicle Loan'|| value === 'Car Loan' || value === 'Two Wheeler Loan')){
+        vehicle_type.show();
+        if($(this).is(':checked') && value === 'E-Vehicle Loan'){
+            $('.e_type').show();
+        } else {
+            $('.e_type').hide();
+        }
+    } else{
+        $('input:radio').prop('checked',false);
+        $(this).prop('checked',true);
+    }
+});
+$(document).on('change','.vehicle_type',function(e) {
+  e.preventDefault();
+  var value = $(this).val();
+  var vehicle_type = $('.type-show');
+  var type_options = $('.type-option');
+  var old_options = $('.old-options');
+  vehicle_type.hide();
+  old_options.hide();
+  $('.new-options').hide();
+  $('.change-options').prop('checked',false);
+  if ($(this).is(':checked') && (value === 'Old' || value === 'New')){
+        vehicle_type.show();
+      type_options.show();
+    }
+  if (value === 'New'){
+      $('.new-options').show();
+  }
+  if (value === 'Old'){
+      old_options.show();
+  }
+});
 $('#student_mobile_number').mask("#", {reverse: true});
 $('.parent_mobile_number').mask("#", {reverse: true}); 
 $('.parent_annual_income').mask("#", {reverse: true});
@@ -413,14 +651,44 @@ $(document).on('submit','#leads_form',function(event) {
               j++;
           }
   });
-    $("#leads_form *").filter(":input").each(function(){
+    
+  var loan_type = $('.input_radio_loan_type:checked').val();
+  var manufactured_year = $('.input_radio_manufactured_year:checked').val();
+  var make = $('.input_radio_make:checked').val();
+  var type_options = $('.input_radio_purchase:checked').val();
+  var vehicle_type = $('.input_radio_vehicle_type:checked').val();
+  var e_type = $('.input_radio_e_type:checked').val();
+  var formData = new FormData(this);
+  formData.append('parentElem',$('#parentElem').val());
+  var type_len = $('.input_radio_loan_type:checked').length;
+  if (type_len == 0){
+      $('.loan-type-err').text('You have to Select at least One Loan type');
+      $('.loan-type-err').addClass('has-error');
+      return; 
+  }
+  $("#leads_form *").filter(":input").each(function(){
       if ($(this).val() == '')
         $(this).prop("disabled", true);
     });
-  var loan_type = $('.input_radio_loan_type:checked').val();
-  var formData = new FormData(this);
-  formData.append('parentElem',$('#parentElem').val());
-  formData.append('loan_type',loan_type);
+  if (loan_type !== undefined){
+    formData.append('loan_type',loan_type);
+  } 
+   
+  if (type_options !== undefined){
+    formData.append('vehicle_type_options',type_options);
+  }
+  if (e_type !== undefined){
+    formData.append('vehicle_type',e_type);
+  }
+  if (manufactured_year !== undefined){
+    formData.append('manufactured_year',manufactured_year);
+  }
+  if (make !== undefined){
+    formData.append('maker',make);
+  }
+  if (vehicle_type !== undefined){
+    formData.append('vehicle_condition',vehicle_type);
+  }
       $.ajax({
         url: "/education-loans/leads",
         method: "POST",
@@ -452,6 +720,15 @@ $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/fonts/fontawesome-5/css/all.css');
 $this->registerCss("
+.edu-show,.type-option,.type-show,.old-options,.new-options,.loan_purpose,.e_type{
+    display:none;
+}
+.has-error{
+color:red;
+}
+.list-width{
+min-width:70px;
+}
 .l_tag{
 margin: 0 0 0 10px;
 font-family: 'Roboto', sans-serif;
