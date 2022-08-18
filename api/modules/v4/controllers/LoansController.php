@@ -3,6 +3,8 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\BusinessLoanApplication;
+use common\models\EsignAgreementDetails;
+use common\models\EsignDocuments;
 use common\models\LeadsApplications;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
@@ -32,6 +34,8 @@ class LoansController extends ApiBaseController
                 'contact-us' => ['POST', 'OPTIONS'],
                 'detail' => ['POST', 'OPTIONS'],
                 'authorize-esign' => ['POST', 'OPTIONS'],
+                'get-esign-applications' => ['POST', 'OPTIONS'],
+                'get-documents' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -285,12 +289,12 @@ class LoansController extends ApiBaseController
         return $this->response(404, ['status' => 404, 'message' => 'loan application not found']);
     }
 
-    public function actionAuthorizeEsign()
+    private function authorizeEsign()
     {
         if ($user = $this->isAuthorized()) {
 
             if ($user->organization_enc_id) {
-                return $this->response(200, ['status' => '200', 'organization_enc_id' => $user->organization_enc_id]);
+                return ['status' => 200, 'org_id' => $user->organization_enc_id];
             }
 
             $ref_enc_id = ReferralSignUpTracking::findOne(['sign_up_user_enc_id' => $user->user_enc_id])->referral_enc_id;
@@ -300,14 +304,73 @@ class LoansController extends ApiBaseController
                 $org_id = Referral::findOne(['referral_enc_id' => $ref_enc_id])->organization_enc_id;
 
                 if ($org_id) {
-                    return $this->response(200, ['status' => '200', 'organization_enc_id' => $org_id]);
+                    return ['status' => 200, 'org_id' => $org_id];
                 }
             }
 
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            return ['status' => 404];
         }
 
-        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        return ['status' => 401];
+    }
+
+    public function actionGetEsignApplications()
+    {
+        $data = $this->authorizeEsign();
+
+        if ($data['status'] == 200) {
+
+            $params = Yii::$app->request->post();
+
+            $model = EsignAgreementDetails::find()
+                ->alias('z')
+                ->select(['z.*'])
+                ->joinWith(['esignVehicleLoanDetails a'])
+                ->joinWith(['esignBorrowerDetails b']);
+            ($params['agreement_id']) ? $model->andWhere(['z.agreement_id' => $params['agreement_id']]) : '';
+            ($params['loan_type']) ? $model->andWhere(['z.loan_type' => $params['loan_type']]) : '';
+            ($params['phone']) ? $model->andWhere(['z.phone' => $params['phone']]) : '';
+            ($params['aadhaar_number']) ? $model->andWhere(['z.aadhaar_number' => $params['aadhaar_number']]) : '';
+            ($params['case_no']) ? $model->andWhere(['z.case_no' => $params['case_no']]) : '';
+            ($params['employee_id']) ? $model->andWhere(['z.employee_enc_id' => $params['employee_id']]) : '';
+            ($params['mode']) ? $model->andWhere(['z.mode' => $params['mode']]) : '';
+            $model = $model->andWhere(['z.organization_id' => $data['org_id']])
+                ->orderBy(['z.date_created' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            if ($model) {
+                return $this->response(200, ['status' => 200, 'data' => $model]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetDocuments()
+    {
+        $data = $this->authorizeEsign();
+
+        if ($data['status'] == 200) {
+
+            $params = Yii::$app->request->post();
+
+            $docs = EsignDocuments::find()
+                ->select(['doc_id', 'name', 'file_url']);
+            ($params['doc_id']) ? $docs->andWhere(['doc_id' => $params['doc_id']]) : '';
+            ($params['name']) ? $docs->andWhere(['name' => $params['name']]) : '';
+            $docs = $docs->asArray()
+                ->all();
+            if ($docs) {
+                return $this->response(200, ['status' => 200, 'data' => $docs]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 
 }
