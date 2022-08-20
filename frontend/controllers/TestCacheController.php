@@ -2,7 +2,8 @@
 
 namespace frontend\controllers;
 use common\models\Categories;
-use common\models\EducationLoanPayments;
+use common\models\extended\PaymentsModule;
+use kartik\mpdf\Pdf;
 use common\models\extended\EducationLoanPaymentsExtends;
 use common\models\OpenTitles;
 use common\models\Usernames;
@@ -218,5 +219,87 @@ class TestCacheController extends Controller
                 'message' => $e->getMessage()
             ];
         }
+    }
+
+    public function actionPdf(){
+      $content = $this->renderPartial('/pdf/_reportView');
+      $pdf = new Pdf([
+            // set to use core fonts only
+            'mode' => Pdf::MODE_CORE,
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4,
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER,
+            // your html content input
+            'content' => $content,
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+            // any css to be embedded if required
+            'cssInline' => '.kv-heading-1{font-size:18px}',
+            // set mPDF properties on the fly
+            //'options' => ['title' => 'Krajee Report Title'],
+            // call mPDF methods on the fly
+            'methods' => [
+                'SetHeader'=>['Krajee Report Header'],
+                'SetFooter'=>['{PAGENO}'],
+            ]
+        ]);
+
+        // return the pdf output as per the destination setting
+        return $pdf->render();
+    }
+
+    public function actionImageTest(){
+
+       $content =  [
+                 "job_title" => "testing title 12",
+                 "company_name" => "Ravinder Singh",
+                 "bg_icon" => "crm.png",
+                  "canvas" => "",
+                  "logo" => "https://eycdn.ams3.digitaloceanspaces.com/test/images/organizations/logo/n06X3CGtUPP9UI64ABAK/1kHrE2mb2zTZ04v0AOABalgtssHN59sK/ZWx2ejZEclRRMldwYyt2T0VmckFqZz09.jpg",
+                  "initial_color" => "#ef7087",
+                  "location" => "Work From Home",
+                  "app_id" => rand(2000,30000000),
+                  "permissionKey" => "F7;qD3(lX8$" . "nD0}"
+                ];
+            $image = \frontend\models\script\ImageScript::widget(['content' => $content]);
+            print_r($image);
+    }
+
+    public function actionEnach(){
+        $api_key = 'rzp_test_u7o3cSsdYJ533e';
+        $api_secret = 'yL9hy3o8D0ukcFekYjvYC4zF';
+        $api = new Api($api_key,$api_secret);
+        $link = $api->paymentLink->create([
+            'amount'=>5000,
+            'currency'=>'INR',
+            'accept_partial'=>false,
+            'description' => 'Application Login Fee',
+            'customer' => [
+                'name'=>'Sneh Kant',
+                'email' => 'snehkant93@gmail.com',
+                'contact'=>'9592868808'
+            ],
+            'notify'=>[
+                'sms'=>true,
+                'email'=>true
+            ] ,
+            'reminder_enable'=>true,
+            'callback_method'=>'get',
+            'options'=>[
+                "checkout"=>[
+                    "name" => 'Empower Youth'
+                ]
+            ]
+        ]);
+        print_r($link);
+    }
+    private function floatPaisa($amount)
+    {
+        $c = $amount * 100;
+        return (int)$c;
     }
 }
