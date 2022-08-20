@@ -692,7 +692,7 @@ class ApplicationForm extends Model
                 $name = strtoupper(Yii::$app->user->identity->organization->name);
                 $color = ltrim(Yii::$app->user->identity->organization->initials_color, '#');
                 $params['org_logo'] = (Yii::$app->user->identity->organization->logo)?Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo:"https://dummyimage.com/150x150/{$color}/fafafa&text={$name}";;
-                Yii::$app->notificationEmails->newJobEmail($params);
+                //Yii::$app->notificationEmails->newJobEmail($params);
                 return [
                     'message'=>'Saved',
                     'status'=>true,
