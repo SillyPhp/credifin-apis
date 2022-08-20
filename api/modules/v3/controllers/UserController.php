@@ -2,6 +2,8 @@
 
 namespace api\modules\v3\controllers;
 
+use common\models\EmailSchedule;
+use common\models\EmailTemplates;
 use yii\db\Query;
 use common\models\UserEducation;
 use common\models\Users;
@@ -41,7 +43,8 @@ class UserController extends ApiBaseController
         ];
         return $behaviors;
     }
-    public function actionGetUncompletedProfileUsers($page = null, $limit = null, $permissionKey)
+
+    public function actionGetUncompletedProfileUsers($page = null, $limit = null, $permissionKey, $temp = false, $allUser = null)
     {
         if ($permissionKey == Yii::$app->params->EmpowerYouth->permissionKey) {
             if (!$page) {
@@ -66,16 +69,29 @@ class UserController extends ApiBaseController
                     $e->addSelect(['e.created_by', 'e.user_language_enc_id']);
                 }])
                 ->andWhere(['a.is_deleted' => 0])
-                ->offset($offset)
-                ->limit($limit)
-                ->orderBy(['a.created_on' => SORT_DESC])
-                ->asArray()
-                ->all();
+                ->orderBy(['a.created_on' => SORT_DESC]);
+            if ($allUser) {
+                $users = $users
+                    ->asArray()
+                    ->count();
+            } else {
+                $users = $users->limit($limit)
+                    ->offset($offset)
+                    ->asArray()
+                    ->all();
+            }
+            $template = ($temp) ? EmailTemplates::findOne(['template_name' => 'Profile-completion updated'])['content'] : '';
+
             if ($users) {
-                for ($i = 0; $i < count($users); $i++) {
-                    if ($users[$i]['gender'] == '' || $users[$i]['description'] == '' || $users[$i]['image'] == '' || $users[$i]['city_enc_id'] == '' || $users[$i]['dob'] == '' || $users[$i]['experience'] == '' || $users[$i]['job_function'] == '' || empty($users[$i]['userEducations']) || empty($users[$i]['userSkills']) || empty($users[$i]['userSpokenLanguages'])) {
-                        $percentage = self::getProfileCompleted($users[$i]['user_enc_id']);
-                        $users[$i] += ['profile_percentage' => $percentage];
+                if(!$allUser){
+                    for ($i = 0; $i < count($users); $i++) {
+                        if ($users[$i]['gender'] == '' || $users[$i]['description'] == '' || $users[$i]['image'] == '' || $users[$i]['city_enc_id'] == '' || $users[$i]['dob'] == '' || $users[$i]['experience'] == '' || $users[$i]['job_function'] == '' || empty($users[$i]['userEducations']) || empty($users[$i]['userSkills']) || empty($users[$i]['userSpokenLanguages'])) {
+                            $percentage = self::getProfileCompleted($users[$i]['user_enc_id']);
+                            $users[$i] += ['profile_percentage' => $percentage];
+                            if (!empty($template)) {
+                                $users[$i] += ['template' => $template];
+                            }
+                        }
                     }
                 }
                 return $this->response(200, ['status' => 200, 'data' => $users]);
@@ -86,6 +102,7 @@ class UserController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
     private function getProfileCompleted($key)
     {
         $d = (new Query())
@@ -131,5 +148,61 @@ class UserController extends ApiBaseController
             $per += $t;
         }
         return $per;
+    }
+
+    public function actionUsers($page = null, $limit = null, $permissionKey = null, $userType = null, $email_name = null, $allUser = null){
+
+        if ($permissionKey == Yii::$app->params->EmpowerYouth->permissionKey) {
+            if (!$page) {
+                $page = 1;
+            }
+            if (!$limit) {
+                $limit = 10;
+            }
+            $offset = ($page - 1) * $limit;
+            $users = Users::find()
+                ->alias('a')
+                ->distinct()
+                ->select(['a.user_enc_id', 'a.email', 'CONCAT(a.first_name, " ", a.last_name) name', 'a.username', 'a.created_on'])
+                ->joinWith(['userTypeEnc b'])
+                ->andWhere(['a.is_deleted' => 0])
+                ->andWhere(['not',['a.email' => null]])
+                ->orderBy(['a.created_on' => SORT_DESC])
+                ->groupBy(['a.email']);
+            if($userType){
+                $users = $users->andWhere(['b.user_type' => $userType]);
+            }
+            if ($allUser) {
+                $users = $users
+                    ->asArray()
+                    ->count();
+            } else {
+                $users = $users->limit($limit)
+                    ->offset($offset)
+                    ->asArray()
+                    ->all();
+            }
+            if($email_name){
+               $template_id = EmailSchedule::findOne(['email_name' => $email_name])->template_enc_id;
+                $template = ($email_name) ? EmailTemplates::findOne(['template_enc_id' => $template_id])['content'] : '';
+            }
+
+            if ($users) {
+                if(!$allUser){
+                    for ($i = 0; $i < count($users); $i++) {
+                        if (!empty($template)) {
+                            $users[$i] += ['template_enc_id' => $template_id];
+                            $users[$i] += ['template_subject' => $template->subject];
+                            $users[$i] += ['template' => $template];
+                        }
+                    }
+                }
+                return $this->response(200, ['status' => 200, 'data' => $users]);
+            } else {
+                return $this->response(201, ['status' => 201, 'message' => 'Data Not Found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 }

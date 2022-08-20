@@ -22,6 +22,7 @@ class BlogController extends ApiBaseController
             'class' => VerbFilter::className(),
             'actions' => [
                 'list' => ['POST', 'OPTIONS'],
+                'detail' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -65,12 +66,14 @@ class BlogController extends ApiBaseController
                 'CASE WHEN a.featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) END featured_image'])
             ->joinWith(['postTags b' => function ($b) {
                 $b->joinWith(['tagEnc c']);
+                $b->onCondition(['b.is_deleted' => 0]);
             }], false)
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0, 'a.is_visible' => 1])
             ->andWhere(['c.name' => $keyword])
             ->orderBy(['a.created_on' => SORT_ASC])
             ->limit($limit)
             ->offset(($page - 1) * $limit)
+            ->groupBy(['a.post_enc_id'])
             ->asArray()
             ->all();
 
@@ -83,6 +86,11 @@ class BlogController extends ApiBaseController
 
         if (empty($params['slug'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "slug"']);
+        }
+
+        $keyword = 'loan';
+        if (isset($params['keyword']) && !empty($params['keyword'])) {
+            $keyword = $params['keyword'];
         }
 
         $post = Posts::find()
@@ -100,13 +108,8 @@ class BlogController extends ApiBaseController
             ->asArray()
             ->one();
 
-        $tags = [];
         $categories = [];
         if ($post) {
-
-            foreach ($post['postTags'] as $val) {
-                array_push($tags, $val['name']);
-            }
 
             $post_categories = PostCategories::find()
                 ->alias('a')
@@ -125,9 +128,9 @@ class BlogController extends ApiBaseController
             ->alias('z')
             ->select(['z.post_enc_id', 'z.featured_image_alt', 'z.featured_image_title', 'z.title', 'z.slug', 'z.excerpt',
                 'CASE WHEN z.featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", z.featured_image_location, "/", z.featured_image) END featured_image'])
-            ->joinWith(['postTags a' => function ($a) use ($tags) {
-                $a->joinWith(['tagEnc a1' => function ($a1) use ($tags) {
-                    $a1->where(['in', 'a1.name', $tags]);
+            ->joinWith(['postTags a' => function ($a) use ($keyword) {
+                $a->joinWith(['tagEnc a1' => function ($a1) use ($keyword) {
+                    $a1->where(['a1.name' => $keyword]);
                 }]);
             }], false)
             ->joinWith(['postCategories b'], false)

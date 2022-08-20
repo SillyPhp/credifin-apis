@@ -23,6 +23,7 @@ class CandidateDashboardController extends ApiBaseController
             'actions' => [
                 'loan-details' => ['POST', 'OPTIONS'],
                 'loan-provider-detail' => ['POST', 'OPTIONS'],
+                'pro-benefits-access' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -45,7 +46,7 @@ class CandidateDashboardController extends ApiBaseController
 
             $loan_application = LoanApplications::find()
                 ->alias('a')
-                ->select(['a.loan_app_enc_id', 'a.applicant_name', 'a.amount loan_amount', 'a.loan_type', 'b.payment_token', 'b.education_loan_payment_enc_id', 'a.email', 'a.phone', 'b.payment_amount amount'])
+                ->select(['a.id', 'a.loan_app_enc_id', 'a.applicant_name', 'a.amount loan_amount', 'a.loan_type', 'b.payment_token', 'b.education_loan_payment_enc_id', 'a.email', 'a.phone', 'b.payment_amount amount'])
                 ->joinWith(['educationLoanPayments b' => function ($b) {
                     $b->select(['b.loan_app_enc_id', 'b.payment_status']);
                     $b->onCondition(['b.payment_status' => ['captured', 'created', 'waived off']]);
@@ -138,5 +139,22 @@ class CandidateDashboardController extends ApiBaseController
 
         return $this->response(200, ['status' => 200, 'assigned_loan_provider' => $assigned_loan_provider]);
 
+    }
+
+    public function actionProBenefitsAccess()
+    {
+        if ($user = $this->isAuthorized()) {
+            $loan = LoanApplications::find()
+                ->alias('a')
+                ->select(['a.loan_app_enc_id'])
+                ->joinWith(['assignedLoanProviders b'], false)
+                ->where(['a.created_by' => $user->user_enc_id, 'a.is_deleted' => 0, 'b.status' => 4, 'b.is_deleted' => 0])
+                ->asArray()
+                ->exists();
+
+            return $this->response(200, ['status' => 200, 'application_exists' => $loan]);
+        }
+
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 }

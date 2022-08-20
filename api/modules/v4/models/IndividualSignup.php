@@ -2,9 +2,11 @@
 
 namespace api\modules\v4\models;
 
+use account\models\applications\TrainingApplications;
 use common\models\AssignedSupervisor;
 use common\models\EmailLogs;
 use common\models\Organizations;
+use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
 use common\models\Services;
 use common\models\UserAccessTokens;
@@ -28,6 +30,8 @@ class IndividualSignup extends Model
     public $password;
     public $source;
     public $dsaRefId;
+    public $is_connector;
+    public $user_type;
 
 
     public function rules()
@@ -50,12 +54,17 @@ class IndividualSignup extends Model
             [['password'], 'string', 'length' => [8, 20]],
 
             ['source', 'required'],
-            ['dsaRefId', 'safe']
+            [['dsaRefId', 'is_connector', 'user_type'], 'safe']
         ];
     }
 
     public function saveUser()
     {
+        $user_type = $this->user_type == 'Employee' ? 'Employee' : 'Individual';
+
+        if ($this->user_type == 'Connector') {
+            $this->is_connector = true;
+        }
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
@@ -77,7 +86,7 @@ class IndividualSignup extends Model
             $user->phone = preg_replace("/\s+/", "", $this->phone);
             $user->email = $this->email;
             $user->user_enc_id = $utilitiesModel->encrypt();
-            $user->user_type_enc_id = UserTypes::findOne(['user_type' => 'Individual'])->user_type_enc_id;
+            $user->user_type_enc_id = UserTypes::findOne(['user_type' => $user_type])->user_type_enc_id;
             $user->initials_color = RandomColors::one();
             $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
             $user->status = 'Active';
@@ -97,8 +106,18 @@ class IndividualSignup extends Model
                 return false;
             }
 
-            if ($this->dsaRefId) {
-                $this->assignedDsaService($user->user_enc_id, $this->dsaRefId);
+            if ($this->dsaRefId && ($this->user_type == 'Employee' || $this->is_connector)) {
+                if (!$this->signupTracking($user->user_enc_id)) {
+                    $transaction->rollback();
+                    return false;
+                }
+            }
+
+            if ($this->dsaRefId && $user_type != 'Employee') {
+                if (!$this->assignedDsaService($user->user_enc_id, $this->dsaRefId)) {
+                    $transaction->rollback();
+                    return false;
+                }
             }
 
             $transaction->commit();
@@ -111,13 +130,33 @@ class IndividualSignup extends Model
             $data['phone'] = $user->phone;
             $data['email'] = $user->email;
             $data['referral_code'] = $ref_code;
-            $data['user_type'] = 'Individual';
+            $data['user_type'] = $user_type;
             $data['access_token'] = '';
             $data['source'] = '';
             $data['refresh_token'] = '';
             $data['access_token_expiry_time'] = '';
             $data['refresh_token_expiry_time'] = '';
             $data['image'] = '';
+            $data['organization_enc_id'] = '';
+            $data['organization_name'] = '';
+            $data['organization_slug'] = '';
+
+            if ($this->dsaRefId && $this->user_type == 'Employee') {
+                $org_id = \common\models\Referral::findOne(['code' => $this->dsaRefId])->organization_enc_id;
+                if ($org_id) {
+                    $organization = Organizations::find()
+                        ->alias('a')
+                        ->select(['a.organization_enc_id','a.name','a.slug','b.username'])
+                        ->joinWith(['createdBy b'], false)
+                        ->where(['a.organization_enc_id' => $org_id])
+                        ->asArray()
+                        ->one();
+                    $data['organization_name'] = $organization['name'];
+                    $data['organization_slug'] = $organization['slug'];
+                    $data['organization_username'] = $organization['username'];
+                    $data['organization_enc_id'] = $organization['organization_enc_id'];
+                }
+            }
 
             $is_dsa = SelectedServices::find()
                 ->alias('a')
@@ -128,8 +167,8 @@ class IndividualSignup extends Model
 
             if ($is_dsa) {
                 $data['user_type'] = "DSA";
-            } else {
-                $data['user_type'] = 'Individual';
+            } else if ($this->is_connector) {
+                $data['user_type'] = 'Connector';
             }
 
             if ($token = $this->newToken($user->user_enc_id, $this->source)) {
@@ -162,6 +201,23 @@ class IndividualSignup extends Model
             return $ref->code;
         }
 
+        return false;
+    }
+
+    private function signupTracking($user_id)
+    {
+        $referralData = \common\models\Referral::findOne(['code' => $this->dsaRefId]);
+
+        $tracking = new ReferralSignUpTracking();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+        $tracking->tracking_signup_enc_id = $utilitiesModel->encrypt();
+        $tracking->referral_enc_id = $referralData->referral_enc_id;
+        $tracking->sign_up_user_enc_id = $user_id;
+        $tracking->created_on = date('Y-m-d H:i:s');
+        if ($tracking->save()) {
+            return true;
+        }
         return false;
     }
 
@@ -225,20 +281,37 @@ class IndividualSignup extends Model
 
     public function assignedDsaService($userId, $dsaRefId)
     {
-        $id = Services::findOne(['name' => 'E-Partners'])->service_enc_id;
+        $assigned_id = null;
+        if ($this->is_connector) {
+            $id = Services::findOne(['name' => 'Connector'])->service_enc_id;
+            $referralData = \common\models\Referral::findOne(['code' => $this->dsaRefId]);
+            if ($referralData) {
+                if ($referralData->user_enc_id):
+                    $assigned_id = $referralData->user_enc_id;
+                endif;
+                if ($referralData->organization_enc_id):
+                    $assigned_id = Users::findOne(['organization_enc_id' => $referralData->organization_enc_id])->user_enc_id;
+                endif;
+            }
+        } else {
+            $id = Services::findOne(['name' => 'E-Partners'])->service_enc_id;
+        }
         $model = new SelectedServices();
         $model->selected_service_enc_id = Yii::$app->security->generateRandomString(32);
         $model->service_enc_id = $id;
         $model->is_selected = 1;
+        $model->assigned_user = $assigned_id;
         $model->created_by = $userId;
         $model->created_on = date('Y-m-d H:i:s');
         if ($model->save()) {
-            if(!$this->assignedSupervisor($userId, $dsaRefId)){
-                return false;
-            }
+            if (!$this->is_connector) {
+                if (!$this->assignedSupervisor($userId, $dsaRefId)) {
+                    return false;
+                }
 
-            if(!$this->assignedSupervisor($userId, $dsaRefId, 'Lead Source')){
-                return false;
+                if (!$this->assignedSupervisor($userId, $dsaRefId, 'Lead Source')) {
+                    return false;
+                }
             }
 
             return true;
