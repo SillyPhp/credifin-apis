@@ -35,9 +35,14 @@ class BlogController extends Controller
             ->joinWith(['postCategories b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false);
             }], false)
+            ->joinWith(['postTags d' => function ($d) {
+                $d->joinWith(['tagEnc d1']);
+                $d->onCondition(['d.is_deleted' => 0]);
+            }], false)
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['not', ['c.category_enc_id' => null]])
             ->andWhere(['a.is_visible' => 1])
+            ->andWhere(['not', ['d1.name' => 'Empowerloans']])
             ->orderby(['a.created_on' => SORT_ASC])
             ->limit(8)
             ->asArray()
@@ -49,8 +54,13 @@ class BlogController extends Controller
             ->joinWith(['postCategories b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false);
             }], false)
+            ->joinWith(['postTags d' => function ($d) {
+                $d->joinWith(['tagEnc d1']);
+                $d->onCondition(['d.is_deleted' => 0]);
+            }], false)
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['c.name' => null])
+            ->andWhere(['not', ['d1.name' => 'Empowerloans']])
             ->groupBy(['a.post_enc_id'])
             ->orderby(new Expression('rand()'))
             ->limit(6)
@@ -66,7 +76,12 @@ class BlogController extends Controller
                 ->joinWith(['postCategories b' => function ($b) {
                     $b->joinWith(['categoryEnc c'], false);
                 }], false)
-                ->where(['a.status' => 'Active', 'a.is_deleted' => 0]);
+                ->joinWith(['postTags d' => function ($d) {
+                    $d->joinWith(['tagEnc d1']);
+                    $d->onCondition(['d.is_deleted' => 0]);
+                }], false)
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+                ->andWhere(['not', ['d1.name' => 'Empowerloans']]);
             if (isset($params['category']) && !empty($params['category'])) {
                 $popular_posts->andFilterWhere(['like', 'c.name', $params['category']]);
             }
@@ -180,7 +195,7 @@ class BlogController extends Controller
 
         $tags = [];
 
-        if($post_tags) {
+        if ($post_tags) {
             foreach ($post_tags as $val) {
                 array_push($tags, $val['name']);
             }
@@ -235,7 +250,12 @@ class BlogController extends Controller
             ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
+            ->joinWith(['postTags e' => function ($d) {
+                $d->joinWith(['tagEnc e1']);
+                $d->onCondition(['e.is_deleted' => 0]);
+            }], false)
             ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['not', ['e1.name' => 'Empowerloans']])
             ->orderby(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();

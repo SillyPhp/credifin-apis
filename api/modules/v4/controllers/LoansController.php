@@ -5,6 +5,7 @@ namespace api\modules\v4\controllers;
 use api\modules\v4\models\BusinessLoanApplication;
 use common\models\EsignAgreementDetails;
 use common\models\EsignDocuments;
+use common\models\EsignRequestedAgreements;
 use common\models\LeadsApplications;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
@@ -322,24 +323,51 @@ class LoansController extends ApiBaseController
 
             $params = Yii::$app->request->post();
 
+            $page = 1;
+            $limit = 10;
+
+            if (!empty($params['limit'])) {
+                $limit = $params['limit'];
+            }
+
+            if (!empty($params['page'])) {
+                $page = $params['page'];
+            }
+
             $model = EsignAgreementDetails::find()
                 ->alias('z')
                 ->select(['z.*'])
                 ->joinWith(['esignVehicleLoanDetails a'])
                 ->joinWith(['esignBorrowerDetails b']);
-            ($params['agreement_id']) ? $model->andWhere(['z.agreement_id' => $params['agreement_id']]) : '';
-            ($params['loan_type']) ? $model->andWhere(['z.loan_type' => $params['loan_type']]) : '';
-            ($params['phone']) ? $model->andWhere(['z.phone' => $params['phone']]) : '';
-            ($params['aadhaar_number']) ? $model->andWhere(['z.aadhaar_number' => $params['aadhaar_number']]) : '';
-            ($params['case_no']) ? $model->andWhere(['z.case_no' => $params['case_no']]) : '';
-            ($params['employee_id']) ? $model->andWhere(['z.employee_enc_id' => $params['employee_id']]) : '';
-            ($params['mode']) ? $model->andWhere(['z.mode' => $params['mode']]) : '';
+
+            if (!empty($params['search_keyword'])) {
+                $model->andWhere([
+                    'or',
+                    ['like', 'z.agreement_id', $params['search_keyword']],
+                    ['like', 'z.loan_type', $params['search_keyword']],
+                    ['like', 'z.phone', $params['search_keyword']],
+                    ['like', 'z.aadhaar_number', $params['search_keyword']],
+                    ['like', 'z.case_no', $params['search_keyword']],
+                    ['like', 'z.employee_enc_id', $params['search_keyword']],
+                    ['like', 'z.data_mode', $params['search_keyword']],
+                    ['like', 'z.date_created', $params['search_keyword']]
+                ]);
+            }
+
             $model = $model->andWhere(['z.organization_id' => $data['org_id']])
                 ->orderBy(['z.date_created' => SORT_DESC])
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
 
             if ($model) {
+
+                foreach ($model as $key => $val) {
+                    $model[$key]['doc_files'] = $this->getDocuments();
+                    $model[$key]['agreements'] = $this->getRequestAgreement($val['agreement_id']);
+                }
+
                 return $this->response(200, ['status' => 200, 'data' => $model]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
@@ -349,28 +377,30 @@ class LoansController extends ApiBaseController
         }
     }
 
-    public function actionGetDocuments()
+    private function getDocuments()
     {
-        $data = $this->authorizeEsign();
+        $docs = EsignDocuments::find()
+            ->select(['doc_id', 'name', 'file_url'])
+            ->asArray()
+            ->all();
 
-        if ($data['status'] == 200) {
+        return $docs;
+    }
 
-            $params = Yii::$app->request->post();
+    private function getRequestAgreement($agreement_id)
+    {
+        $agreements = EsignRequestedAgreements::find()
+            ->alias('a')
+            ->select(['a.request_id', 'a.agreement_id'])
+            ->joinWith(['esignRequestedAgreementsDetails b' => function ($b) {
+                $b->select(['b.signer_id', 'b.request_id', 'b.name', 'b.phone', 'b.active', 'b.private_url', 'b.auth_type', 'b.auth_method', 'b.is_signed', 'b.expiryDate']);
+            }])
+            ->where(['a.agreement_id' => $agreement_id])
+            ->groupBy(['a.agreement_id'])
+            ->asArray()
+            ->all();
 
-            $docs = EsignDocuments::find()
-                ->select(['doc_id', 'name', 'file_url']);
-            ($params['doc_id']) ? $docs->andWhere(['doc_id' => $params['doc_id']]) : '';
-            ($params['name']) ? $docs->andWhere(['name' => $params['name']]) : '';
-            $docs = $docs->asArray()
-                ->all();
-            if ($docs) {
-                return $this->response(200, ['status' => 200, 'data' => $docs]);
-            } else {
-                return $this->response(404, ['status' => 404, 'message' => 'not found']);
-            }
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
+        return $agreements;
     }
 
 }
