@@ -13,6 +13,7 @@ use yii\filters\VerbFilter;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\ContentNegotiator;
+use common\models\Utilities;
 
 class UtilitiesController extends ApiBaseController
 {
@@ -93,16 +94,17 @@ class UtilitiesController extends ApiBaseController
     public function actionFileUpload()
     {
         if ($this->isAuthorized()) {
-            $image = UploadedFile::getInstanceByName('image');
+            $file = UploadedFile::getInstanceByName('file');
 
             $base_path = Yii::$app->params->upload_directories->loans->e_sign . Yii::$app->getSecurity()->generateRandomString() . '/';
-            $type = $image->type;
+            $type = $file->type;
+            $file = Yii::$app->getSecurity()->generateRandomString() . '.' . 'pdf';
 
             $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
             $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-            $result = $my_space->uploadFileSources($image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $image->name, "private", ['params' => ['ContentType' => $type]]);
+            $result = $my_space->uploadFileSources($file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $file, "private", ['params' => ['ContentType' => $type]]);
             if ($result['ObjectURL']) {
-                return $this->response(200, ['status' => 200, 'path' => Yii::$app->params->digitalOcean->rootDirectory . $base_path . $image->name]);
+                return $this->response(200, ['status' => 200, 'path' => Yii::$app->params->digitalOcean->rootDirectory . $base_path . $file]);
             } else {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
