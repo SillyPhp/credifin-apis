@@ -45,10 +45,10 @@ class NotificationsController extends ApiBaseController
         $push_notifications = new PushNotifications();
         $push_notifications->push_notification_enc_id = Yii::$app->getSecurity()->generateRandomString();
         $push_notifications->token = $params['token'];
-        $push_notifications->title = $params['title'];
-        $push_notifications->description = $params['description'];
-        $push_notifications->link = $params['link'];
-        $push_notifications->device_id = $params['device_id'];
+//        $push_notifications->title = $params['title'];
+//        $push_notifications->description = $params['description'];
+//        $push_notifications->link = $params['link'];
+//        $push_notifications->device_id = $params['device_id'];
         $push_notifications->created_on = date('Y-m-d H:i:s');
         if (!$push_notifications->save()) {
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);

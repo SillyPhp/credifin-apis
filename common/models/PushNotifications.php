@@ -36,7 +36,7 @@ class PushNotifications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['push_notification_enc_id', 'token', 'title', 'description', 'link', 'device_id', 'created_on'], 'required'],
+            [['push_notification_enc_id', 'token', 'created_on'], 'required'],
             [['created_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['push_notification_enc_id', 'user_enc_id', 'device_id'], 'string', 'max' => 100],
@@ -53,13 +53,5 @@ class PushNotifications extends \yii\db\ActiveRecord
     public function getUserEnc()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'user_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCreatedBy()
-    {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
 }
