@@ -33,6 +33,9 @@ class CompanyDashboardController extends ApiBaseController
                 'loan-detail' => ['POST', 'OPTIONS'],
                 'update-provider-status' => ['POST', 'OPTIONS'],
                 'save-organization-tracking' => ['POST', 'OPTIONS'],
+                'employees' => ['POST', 'OPTIONS'],
+                'change-status' => ['POST', 'OPTIONS'],
+                'update-employee-info' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -376,7 +379,7 @@ class CompanyDashboardController extends ApiBaseController
 
             if (!$org_id) {
                 $ref_enc_id = ReferralSignUpTracking::findOne(['sign_up_user_enc_id' => $user->user_enc_id])->referral_enc_id;
-                if($ref_enc_id) {
+                if ($ref_enc_id) {
                     $org_id = Referral::findOne(['referral_enc_id' => $ref_enc_id])->organization_enc_id;
                 }
             }
@@ -394,6 +397,186 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionEmployees()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            if ($user->organization_enc_id) {
+
+                $params = Yii::$app->request->post();
+
+
+                $employee = $this->employeesList($user->organization_enc_id, $params);
+                $dsa = $this->dsaList($user->user_enc_id, $params);
+
+                $dsa_id = [];
+                if ($dsa) {
+                    foreach ($dsa as $d) {
+                        array_push($dsa_id, $d['user_enc_id']);
+                    }
+                }
+
+                $dsa_id[] = $user->user_enc_id;
+
+                $connector = $this->connectorsList($dsa_id, $params);
+
+                return $this->response(200, ['status' => 200, 'employees' => $employee, 'dsa' => $dsa, 'connector' => $connector]);
+            } else {
+                return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function employeesList($org_id, $params = null)
+    {
+        $employee = ReferralSignUpTracking::find()
+            ->alias('a')
+            ->select(['a.sign_up_user_enc_id user_enc_id', 'c.username', 'c.email', 'c.phone', 'c.first_name', 'c.last_name', 'c.status'])
+            ->joinWith(['referralEnc b'], false)
+            ->joinWith(['signUpUserEnc c'], false)
+            ->where(['b.organization_enc_id' => $org_id, 'c.is_deleted' => 0, 'a.is_deleted' => 0]);
+
+        if ($params != null && !empty($params['employee_search'])) {
+            $employee->andWhere([
+                'or',
+                ['like', 'CONCAT(c.first_name," ", c.last_name)', $params['employee_search']],
+                ['like', 'c.username', $params['employee_search']],
+                ['like', 'c.email', $params['employee_search']],
+                ['like', 'c.phone', $params['employee_search']],
+            ]);
+        }
+
+        return $employee->asArray()
+            ->all();
+    }
+
+    private function dsaList($user_id, $params = null)
+    {
+        $dsa = AssignedSupervisor::find()
+            ->alias('a')
+            ->select(['a.assigned_user_enc_id user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status'])
+            ->joinWith(['assignedUserEnc b'], false)
+            ->where(['a.supervisor_enc_id' => $user_id, 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
+
+        if ($params != null && !empty($params['dsa_search'])) {
+            $dsa->andWhere([
+                'or',
+                ['like', 'CONCAT(b.first_name," ", b.last_name)', $params['dsa_search']],
+                ['like', 'b.username', $params['dsa_search']],
+                ['like', 'b.email', $params['dsa_search']],
+                ['like', 'b.phone', $params['dsa_search']],
+            ]);
+        }
+
+        return $dsa->asArray()
+            ->all();
+    }
+
+    private function connectorsList($user_id, $params = null)
+    {
+        $connector = SelectedServices::find()
+            ->alias('a')
+            ->select(['a.created_by user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status'])
+            ->joinWith(['createdBy b'], false)
+            ->joinWith(['serviceEnc c'], false)
+            ->where(['a.assigned_user' => $user_id, 'c.name' => 'Connector', 'b.is_deleted' => 0]);
+
+        if ($params != null && !empty($params['connector_search'])) {
+            $connector->andWhere([
+                'or',
+                ['like', 'CONCAT(b.first_name," ", b.last_name)', $params['connector_search']],
+                ['like', 'b.username', $params['connector_search']],
+                ['like', 'b.email', $params['connector_search']],
+                ['like', 'b.phone', $params['connector_search']],
+            ]);
+        }
+
+        return $connector->asArray()
+            ->all();
+    }
+
+    public function actionChangeStatus()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            if ($user->organization_enc_id) {
+
+                $params = Yii::$app->request->post();
+
+                if (empty($params['status'])) {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
+                }
+
+                if (empty($params['user_id'])) {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information "user_id"']);
+                }
+
+                $user = Users::findOne(['user_enc_id' => $params['user_id']]);
+
+                if (!$user) {
+                    return $this->response(404, ['status' => 404, 'message' => 'user not found']);
+                }
+
+                $user->status = $params['status'];
+                $user->last_updated_on = date('Y-m-d H:i:s');
+                if (!$user->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'status updated']);
+
+
+            } else {
+                return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionUpdateEmployeeInfo()
+    {
+        if ($user = $this->isAuthorized()) {
+            if ($user->organization_enc_id) {
+
+                $params = Yii::$app->request->post();
+
+                if (empty($params['user_id'])) {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information "user_id"']);
+                }
+
+                $user = Users::findOne(['user_enc_id' => $params['user_id']]);
+
+                if (!$user) {
+                    return $this->response(404, ['status' => 404, 'message' => 'user not found']);
+                }
+
+                (!empty($params['first_name'])) ? ($user->first_name = $params['first_name']) : '';
+                (!empty($params['last_name'])) ? ($user->last_name = $params['last_name']) : '';
+                (!empty($params['email'])) ? ($user->email = $params['email']) : '';
+                (!empty($params['phone'])) ? ($user->phone = $params['phone']) : '';
+
+                $user->last_updated_on = date('Y-m-d H:i:s');
+
+                if (!$user->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $user->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+            } else {
+                return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
+            }
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
