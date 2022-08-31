@@ -509,7 +509,7 @@ class CompanyDashboardController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
 
-            if ($user->organization_enc_id) {
+//            if ($user->organization_enc_id) {
 
                 $params = Yii::$app->request->post();
 
@@ -536,9 +536,9 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(200, ['status' => 200, 'message' => 'status updated']);
 
 
-            } else {
-                return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
-            }
+//            } else {
+//                return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
+//            }
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
