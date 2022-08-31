@@ -36,6 +36,7 @@ class CompanyDashboardController extends ApiBaseController
                 'employees' => ['POST', 'OPTIONS'],
                 'change-status' => ['POST', 'OPTIONS'],
                 'update-employee-info' => ['POST', 'OPTIONS'],
+                'dsa-connectors' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -577,6 +578,21 @@ class CompanyDashboardController extends ApiBaseController
             } else {
                 return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
             }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionDsaConnectors()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            $connector = $this->connectorsList($user->user_enc_id, $params);
+
+            return $this->response(200, ['status' => 200, 'connector' => $connector]);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
