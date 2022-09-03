@@ -6,9 +6,11 @@ use api\modules\v4\models\BusinessLoanApplication;
 use common\models\EsignAgreementDetails;
 use common\models\EsignDocuments;
 use common\models\EsignRequestedAgreements;
+use common\models\EsignVehicleLoanDetails;
 use common\models\LeadsApplications;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
+use common\models\spaces\Spaces;
 use common\models\Utilities;
 use yii\web\UploadedFile;
 use api\modules\v4\models\LoanApplication;
@@ -37,6 +39,7 @@ class LoansController extends ApiBaseController
                 'authorize-esign' => ['POST', 'OPTIONS'],
                 'get-esign-applications' => ['POST', 'OPTIONS'],
                 'get-documents' => ['POST', 'OPTIONS'],
+                'get-document-url' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -401,6 +404,33 @@ class LoansController extends ApiBaseController
             ->all();
 
         return $agreements;
+    }
+
+    public function actionGetDocumentUrl()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['vehicle_loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "vehicle_loan_id"']);
+            }
+
+            $doc = EsignVehicleLoanDetails::findOne(['vehicle_loan_id' => $params['vehicle_loan_id']]);
+
+            if ($doc->driving_image_url) {
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $driving_url = $my_space->signedURL($doc->driving_image_url, "15 minutes");
+
+                return $this->response(200, ['status' => 200, 'url' => $driving_url]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'file not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 
 }
