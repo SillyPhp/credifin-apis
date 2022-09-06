@@ -165,7 +165,7 @@ class GovtJobsController extends Controller
             $dept_id = Yii::$app->request->post('dept_id');
             $d = IndianGovtJobs::find()
                 ->alias('a')
-                ->select(['a.job_enc_id id', 'a.slug', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", c.image_location, "/", c.image) ELSE NULL END logo', 'c.Value Organizations', 'Location', 'Position', 'Eligibility', 'Last_date'])
+                ->select(['a.job_enc_id id', 'a.slug', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", c.image_location, "/", c.image) ELSE NULL END logo', 'c.Value Organizations', 'Location', 'Position', 'Eligibility', 'Last_date'])
                 ->joinWith(['assignedIndianJobs b' => function ($b) use ($dept_id) {
                     $b->joinWith(['deptEnc c'], false);
                     $b->andWhere(['b.dept_enc_id' => $dept_id]);
