@@ -5,6 +5,7 @@ namespace api\modules\v4\controllers;
 use common\models\BillDetails;
 use common\models\Cities;
 use common\models\Designations;
+use common\models\GodaddyCourses;
 use common\models\OrganizationTypes;
 use common\models\spaces\Spaces;
 use common\models\States;
@@ -111,5 +112,31 @@ class UtilitiesController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    public function actionSaveCourse()
+    {
+        $params = Yii::$app->request->post();
+
+        $course = new GodaddyCourses();
+        $course->course_enc_id = Yii::$app->getSecurity()->generateRandomString();
+        $course->name = $params['name'];
+        $course->phone = $params['phone'];
+        $course->email = $params['email'];
+        $course->course_name = $params['course_name'];
+        $course->created_on = date('Y-m-d H:i:s');
+        if (!empty($params['course_price'])) {
+            $course->price = $params['course_price'];
+        }
+
+        if ($user = $this->isAuthorized()) {
+            $course->created_by = $user->user_enc_id;
+        }
+
+        if (!$course->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $course->getErrors()]);
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
     }
 }
