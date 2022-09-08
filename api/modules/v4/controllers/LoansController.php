@@ -416,14 +416,24 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "vehicle_loan_id"']);
             }
 
+            if (empty($params['type'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "type"']);
+            }
+
             $doc = EsignVehicleLoanDetails::findOne(['vehicle_loan_id' => $params['vehicle_loan_id']]);
 
-            if ($doc->driving_image_url) {
-                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $driving_url = $my_space->signedURL($doc->driving_image_url, "15 minutes");
+            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
 
-                return $this->response(200, ['status' => 200, 'url' => $driving_url]);
+            $url = '';
+            if ($params['type'] == 'license' && $doc->driving_image_url) {
+                $url = $my_space->signedURL($doc->driving_image_url, "15 minutes");
+            } elseif ($params['type'] == 'chassi' && $doc->chassis_image_url) {
+                $url = $my_space->signedURL($doc->chassis_image_url, "15 minutes");
+            }
+
+            if ($url) {
+                return $this->response(200, ['status' => 200, 'url' => $url]);
             }
 
             return $this->response(404, ['status' => 404, 'message' => 'file not found']);
