@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%godaddy_courses}}".
+ * This is the model class for table "{{%sponsored_courses}}".
  *
  * @property int $id
  * @property string $course_enc_id
@@ -14,19 +14,20 @@ use Yii;
  * @property string $email email of person
  * @property string $course_name course name
  * @property double $price course price
+ * @property string $sponser_name
  * @property string $created_by
  * @property string $created_on
  *
  * @property Users $createdBy
  */
-class GodaddyCourses extends \yii\db\ActiveRecord
+class SponsoredCourses extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return '{{%godaddy_courses}}';
+        return '{{%sponsored_courses}}';
     }
 
     /**
@@ -35,8 +36,9 @@ class GodaddyCourses extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['course_enc_id', 'name', 'phone', 'email', 'course_name', 'created_on'], 'required'],
+            [['course_enc_id', 'name', 'phone', 'email', 'course_name'], 'required'],
             [['price'], 'number'],
+            [['sponser_name'], 'string'],
             [['created_on'], 'safe'],
             [['course_enc_id', 'name', 'email', 'course_name', 'created_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],

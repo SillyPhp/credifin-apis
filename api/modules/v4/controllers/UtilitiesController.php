@@ -5,9 +5,9 @@ namespace api\modules\v4\controllers;
 use common\models\BillDetails;
 use common\models\Cities;
 use common\models\Designations;
-use common\models\GodaddyCourses;
 use common\models\OrganizationTypes;
 use common\models\spaces\Spaces;
+use common\models\SponsoredCourses;
 use common\models\States;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
@@ -118,7 +118,7 @@ class UtilitiesController extends ApiBaseController
     {
         $params = Yii::$app->request->post();
 
-        $course = new GodaddyCourses();
+        $course = new SponsoredCourses();
         $course->course_enc_id = Yii::$app->getSecurity()->generateRandomString();
         $course->name = $params['name'];
         $course->phone = $params['phone'];
