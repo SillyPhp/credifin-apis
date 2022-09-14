@@ -89,7 +89,11 @@ class IndividualSignup extends Model
             $user->user_type_enc_id = UserTypes::findOne(['user_type' => $user_type])->user_type_enc_id;
             $user->initials_color = RandomColors::one();
             $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
-            $user->status = 'Active';
+            if ($this->user_type == 'Employee') {
+                $user->status = 'Pending';
+            } else {
+                $user->status = 'Active';
+            }
             $user->last_visit = date('Y-m-d H:i:s');
             $user->last_visit_through = 'EL';
             $user->signed_up_through = 'EL';
@@ -146,7 +150,7 @@ class IndividualSignup extends Model
                 if ($org_id) {
                     $organization = Organizations::find()
                         ->alias('a')
-                        ->select(['a.organization_enc_id','a.name','a.slug','b.username'])
+                        ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'b.username'])
                         ->joinWith(['createdBy b'], false)
                         ->where(['a.organization_enc_id' => $org_id])
                         ->asArray()
