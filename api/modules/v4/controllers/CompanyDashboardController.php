@@ -489,7 +489,7 @@ class CompanyDashboardController extends ApiBaseController
             ->select(['a.created_by user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status'])
             ->joinWith(['createdBy b'], false)
             ->joinWith(['serviceEnc c'], false)
-            ->where(['a.assigned_user' => $user_id, 'c.name' => 'Connector', 'b.is_deleted' => 0]);
+            ->where(['a.assigned_user' => $user_id, 'c.name' => 'Connector', 'b.is_deleted' => 0, 'a.is_selected' => 1]);
 
         if ($params != null && !empty($params['connector_search'])) {
             $connector->andWhere([
@@ -511,29 +511,29 @@ class CompanyDashboardController extends ApiBaseController
 
 //            if ($user->organization_enc_id) {
 
-                $params = Yii::$app->request->post();
+            $params = Yii::$app->request->post();
 
-                if (empty($params['status'])) {
-                    return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
-                }
+            if (empty($params['status'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
+            }
 
-                if (empty($params['user_id'])) {
-                    return $this->response(422, ['status' => 422, 'message' => 'missing information "user_id"']);
-                }
+            if (empty($params['user_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "user_id"']);
+            }
 
-                $user = Users::findOne(['user_enc_id' => $params['user_id']]);
+            $user = Users::findOne(['user_enc_id' => $params['user_id']]);
 
-                if (!$user) {
-                    return $this->response(404, ['status' => 404, 'message' => 'user not found']);
-                }
+            if (!$user) {
+                return $this->response(404, ['status' => 404, 'message' => 'user not found']);
+            }
 
-                $user->status = $params['status'];
-                $user->last_updated_on = date('Y-m-d H:i:s');
-                if (!$user->update()) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
-                }
+            $user->status = $params['status'];
+            $user->last_updated_on = date('Y-m-d H:i:s');
+            if (!$user->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
 
-                return $this->response(200, ['status' => 200, 'message' => 'status updated']);
+            return $this->response(200, ['status' => 200, 'message' => 'status updated']);
 
 
 //            } else {
