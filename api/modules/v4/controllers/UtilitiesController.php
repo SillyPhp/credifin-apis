@@ -99,11 +99,11 @@ class UtilitiesController extends ApiBaseController
 
             $base_path = Yii::$app->params->upload_directories->loans->e_sign . Yii::$app->getSecurity()->generateRandomString() . '/';
             $type = $file->type;
-            $file = Yii::$app->getSecurity()->generateRandomString() . '.' . 'pdf';
+            $file_name = Yii::$app->getSecurity()->generateRandomString() . '.' . 'pdf';
 
             $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
             $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-            $result = $my_space->uploadFileSources($file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $file, "private", ['params' => ['ContentType' => $type]]);
+            $result = $my_space->uploadFileSources($file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $file_name, "private", ['params' => ['ContentType' => $type]]);
             if ($result['ObjectURL']) {
                 return $this->response(200, ['status' => 200, 'path' => Yii::$app->params->digitalOcean->rootDirectory . $base_path . $file]);
             } else {
