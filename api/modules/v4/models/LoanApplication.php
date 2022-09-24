@@ -72,7 +72,7 @@ class LoanApplication extends Model
             [['applicant_name', 'loan_purpose', 'email'], 'trim'],
             [['applicant_name'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],
-            [['phone_no'], 'string', 'length' => [10, 10]],
+            [['phone_no'], 'string', 'length' => [10, 15]],
             [['email'], 'email'],
         ];
     }

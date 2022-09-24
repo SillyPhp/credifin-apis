@@ -33,6 +33,9 @@ class OrganizationAppsController extends ApiBaseController
                 'get-file' => ['POST', 'OPTIONS'],
                 'list' => ['POST', 'OPTIONS'],
                 'detail' => ['POST', 'OPTIONS'],
+                'update' => ['POST', 'OPTIONS'],
+                'remove-element' => ['POST', 'OPTIONS'],
+                'remove-app' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -154,10 +157,12 @@ class OrganizationAppsController extends ApiBaseController
                 ->alias('a')
                 ->select(['a.app_enc_id', 'a.app_name', 'a.app_description', 'a.assigned_to'])
                 ->joinWith(['organizationAppFields b' => function ($b) {
-                    $b->select(['b.field_enc_id', 'b.app_enc_id', 'b.field_title', 'b.field_description', 'b.field_value', 'b.field_type',
+                    $b->select(['b.field_enc_id', 'b.app_enc_id', 'b.field_title name', 'b.field_description', 'b.field_value', 'b.field_type',
                         'b.link', 'b.sequence']);
+                    $b->orderBy(['b.sequence' => SORT_ASC]);
+                    $b->onCondition(['b.is_deleted' => 0]);
                 }])
-                ->where(['a.app_enc_id' => $params['app_id'], 'a.is_deleted' => 0, 'b.is_deleted' => 0])
+                ->where(['a.app_enc_id' => $params['app_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
 
@@ -243,5 +248,169 @@ class OrganizationAppsController extends ApiBaseController
         }
 
         return false;
+    }
+
+    public function actionUpdate()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            $logo = UploadedFile::getInstanceByName('logo');
+
+            if (empty($params['app_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing parameter "app_id"']);
+            }
+
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $app = OrganizationApps::findOne(['app_enc_id' => $params['app_id']]);
+
+                if (!$app) {
+                    return $this->response(404, ['status' => 404, 'message' => 'not found']);
+                }
+
+                if ($app->organization_enc_id != $user->organization_enc_id) {
+                    return $this->response(403, ['status' => 403, 'message' => 'forbidden']);
+                }
+
+                (!empty($params['app_name'])) ? $app->app_name = $params['app_name'] : "";
+                (!empty($params['app_description'])) ? $app->app_description = $params['app_description'] : "";
+                (!empty($params['assigned_to'])) ? $app->assigned_to = $params['assigned_to'] : "";
+
+                if ($logo) {
+                    $app->app_icon = Yii::$app->getSecurity()->generateRandomString() . '.' . $logo->extension;
+                    $app->app_icon_location = Yii::$app->getSecurity()->generateRandomString() . '/';
+                    if (!$this->fileUpload($app->app_icon, $app->app_icon_location, $logo)) {
+                        $transaction->rollBack();
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
+                }
+
+                if (!empty($params['elements'])) {
+                    $elements = json_decode($params['elements'], true);
+//                    $elements = $params['elements'];
+                    foreach ($elements as $key => $val) {
+                        $field = OrganizationAppFields::findOne(['field_enc_id' => $val['field_enc_id'], 'is_deleted' => 0]);
+                        if ($field) {
+                            $field->sequence = $key;
+                            $field->field_title = $val['name'];
+                            $field->link = $val['link'];
+                            $field->field_type = $val['field_type'];
+                            $field->updated_by = $user->user_enc_id;
+                            $field->updated_on = date('Y-m-d H:i:s');
+                            if (!$field->update()) {
+                                $transaction->rollBack();
+                                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                            }
+                        } else {
+                            $app_fields = new OrganizationAppFields();
+                            $app_fields->field_enc_id = Yii::$app->getSecurity()->generateRandomString();
+                            $app_fields->app_enc_id = $params['app_id'];
+                            $app_fields->field_title = $val['name'];
+                            $app_fields->sequence = $key;
+                            $app_fields->link = $val['link'];
+                            $app_fields->field_type = $val['field_type'];
+                            $app_fields->created_by = $user->user_enc_id;
+                            $app_fields->created_on = date('Y-m-d H:i:s');
+                            if (!$app_fields->save()) {
+                                $transaction->rollBack();
+                                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                            }
+                        }
+                    }
+                }
+
+                $app->updated_by = $user->user_enc_id;
+                $app->updated_on = date('Y-m-d H:i:s');
+                if (!$app->update()) {
+                    $transaction->rollBack();
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+
+                $transaction->commit();
+                return $this->response(201, ['status' => 201, 'message' => 'successfully updated']);
+
+            } catch (\Exception $exception) {
+                $transaction->rollBack();
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function fileUpload($icon, $icon_location, $logo)
+    {
+
+        $base_path = Yii::$app->params->upload_directories->form_apps->logo . $icon_location;
+        $type = $logo->type;
+
+        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        $result = $my_space->uploadFileSources($logo->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $icon, "private", ['params' => ['ContentType' => $type]]);
+        if (!$result) {
+            return false;
+        }
+        return true;
+    }
+
+    public function actionRemoveElement()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['field_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing parameter "field_id"']);
+            }
+
+            $field = OrganizationAppFields::findOne(['field_enc_id' => $params['field_id']]);
+
+            if (!$field) {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+            $field->is_deleted = 1;
+            $field->updated_by = $user->user_enc_id;
+            $field->updated_on = date('Y-m-d H:i:s');
+            if (!$field->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionRemoveApp()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['app_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing parameter "app_id"']);
+            }
+
+            $app = OrganizationApps::findOne(['app_enc_id' => $params['app_id']]);
+
+            if ($app->organization_enc_id != $user->organization_enc_id) {
+                return $this->response(403, ['status' => 403, 'message' => 'forbidden']);
+            }
+
+            $app->is_deleted = 1;
+            $app->updated_by = $user->user_enc_id;
+            $app->updated_on = date('Y-m-d H:i:s');
+            if (!$app->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 }
