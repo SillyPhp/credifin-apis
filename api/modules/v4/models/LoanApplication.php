@@ -233,12 +233,21 @@ class LoanApplication extends Model
                     return false;
                 }
 
+                $user = Users::findOne(['user_enc_id' => $signup['user_id']]);
                 $access_token = $this->newToken($signup['user_id']);
                 $data['access_token'] = $access_token->access_token;
                 $data['source'] = $access_token->source;
-                $data['user_id'] = $access_token->user_enc_id;
-                $data['name'] = $model->applicant_name;
-                $data['phone'] = $model->phone;
+                $data['username'] = $user->username;
+                $data['user_enc_id'] = $access_token->user_enc_id;
+                $data['first_name'] = $user->first_name;
+                $data['last_name'] = $user->last_name;
+                $data['initials_color'] = $user->initials_color;
+                $data['email'] = $user->email;
+                $data['phone'] = $user->phone;
+                $data['refresh_token'] = $access_token->refresh_token;
+                $data['access_token_expiry_time'] = $access_token->access_token_expiration;
+                $data['refresh_token_expiry_time'] = $access_token->refresh_token_expiration;
+                $data['image'] = '';
                 $data['user_type'] = 'Individual';
             }
 
