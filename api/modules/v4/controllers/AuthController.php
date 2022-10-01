@@ -34,7 +34,8 @@ class AuthController extends ApiBaseController
                 'org-signup',
                 'validate',
                 'login',
-                'upload-profile-picture'
+                'upload-profile-picture',
+                'verify-phone'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -46,6 +47,7 @@ class AuthController extends ApiBaseController
                 'validate' => ['POST', 'OPTIONS'],
                 'login' => ['POST', 'OPTIONS'],
                 'upload-profile-picture' => ['POST', 'OPTIONS'],
+                'verify-phone' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -200,7 +202,7 @@ class AuthController extends ApiBaseController
             $data['organization_name'] = $org->name;
             $data['organization_slug'] = $org->slug;
             $data['organization_enc_id'] = $org->organization_enc_id;
-            $data['organization_username'] = Users::findOne(['organization_enc_id'=>$org->organization_enc_id])->username;
+            $data['organization_username'] = Users::findOne(['organization_enc_id' => $org->organization_enc_id])->username;
         } else {
             $data['referral_code'] = Referral::findOne(['user_enc_id' => $user->user_enc_id])->code;
         }
@@ -258,7 +260,7 @@ class AuthController extends ApiBaseController
             if ($org_id) {
                 $organization = Organizations::find()
                     ->alias('a')
-                    ->select(['a.organization_enc_id','a.name','a.slug','b.username'])
+                    ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'b.username'])
                     ->joinWith(['createdBy b'], false)
                     ->where(['a.organization_enc_id' => $org_id])
                     ->asArray()
@@ -347,5 +349,27 @@ class AuthController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    public function actionVerifyPhone()
+    {
+        $params = Yii::$app->request->post();
+
+        if (empty($params['phone'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "phone"']);
+        }
+
+        $user = Users::find()
+            ->where([
+                'or',
+                ['phone' => [$params['phone'], '+91' . $params['phone']]],
+                ['phone' => $params['phone']],
+            ])->one();
+
+        if ($user) {
+            return $this->response(200, ['status' => 200, 'verified' => True]);
+        }
+
+        return $this->response(404,['status'=>404,'message'=>'user not found']);
     }
 }

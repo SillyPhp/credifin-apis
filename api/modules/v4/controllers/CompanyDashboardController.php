@@ -12,6 +12,7 @@ use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
 use common\models\Users;
+use yii\db\Expression;
 use common\models\Utilities;
 use yii\filters\VerbFilter;
 use Yii;
@@ -34,6 +35,7 @@ class CompanyDashboardController extends ApiBaseController
                 'update-provider-status' => ['POST', 'OPTIONS'],
                 'save-organization-tracking' => ['POST', 'OPTIONS'],
                 'employees' => ['POST', 'OPTIONS'],
+                'all-employees' => ['POST', 'OPTIONS'],
                 'change-status' => ['POST', 'OPTIONS'],
                 'update-employee-info' => ['POST', 'OPTIONS'],
                 'dsa-connectors' => ['POST', 'OPTIONS'],
@@ -441,7 +443,7 @@ class CompanyDashboardController extends ApiBaseController
     {
         $employee = ReferralSignUpTracking::find()
             ->alias('a')
-            ->select(['a.sign_up_user_enc_id user_enc_id', 'c.username', 'c.email', 'c.phone', 'c.first_name', 'c.last_name', 'c.status'])
+            ->select(['a.sign_up_user_enc_id user_enc_id', 'c.username', 'c.email', 'c.phone', 'c.first_name', 'c.last_name', 'c.status', new Expression('"Employee" as user_type')])
             ->joinWith(['referralEnc b'], false)
             ->joinWith(['signUpUserEnc c'], false)
             ->where(['b.organization_enc_id' => $org_id, 'c.is_deleted' => 0, 'a.is_deleted' => 0]);
@@ -464,7 +466,7 @@ class CompanyDashboardController extends ApiBaseController
     {
         $dsa = AssignedSupervisor::find()
             ->alias('a')
-            ->select(['a.assigned_user_enc_id user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status'])
+            ->select(['a.assigned_user_enc_id user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', new Expression('"DSA" as user_type')])
             ->joinWith(['assignedUserEnc b'], false)
             ->where(['a.supervisor_enc_id' => $user_id, 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
 
@@ -486,7 +488,7 @@ class CompanyDashboardController extends ApiBaseController
     {
         $connector = SelectedServices::find()
             ->alias('a')
-            ->select(['a.created_by user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status'])
+            ->select(['a.created_by user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', new Expression('"Connector" as user_type')])
             ->joinWith(['createdBy b'], false)
             ->joinWith(['serviceEnc c'], false)
             ->where(['a.assigned_user' => $user_id, 'c.name' => 'Connector', 'b.is_deleted' => 0, 'a.is_selected' => 1]);
@@ -593,6 +595,68 @@ class CompanyDashboardController extends ApiBaseController
             $connector = $this->connectorsList($user->user_enc_id, $params);
 
             return $this->response(200, ['status' => 200, 'connector' => $connector]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAllEmployees()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            if ($user->organization_enc_id) {
+
+                $params = Yii::$app->request->post();
+
+
+                $employee = $this->employeesList($user->organization_enc_id, $params);
+                $dsa = $this->dsaList($user->user_enc_id, $params);
+
+                $dsa_id = [];
+                if ($dsa) {
+                    foreach ($dsa as $d) {
+                        array_push($dsa_id, $d['user_enc_id']);
+                    }
+                }
+
+                $dsa_id[] = $user->user_enc_id;
+
+                $connector = $this->connectorsList($dsa_id, $params);
+
+                $all = [];
+
+                // extracting employee
+                foreach ($employee as $val) {
+                    $data = [];
+                    $data['value'] = $val['user_enc_id'];
+                    $data['label'] = $val['first_name'].' '.$val['last_name'];
+                    $data['user_type'] = $val['user_type'];
+                    $all[] = $data;
+                }
+
+                // extracting dsa
+                foreach ($dsa as $val) {
+                    $data = [];
+                    $data['value'] = $val['user_enc_id'];
+                    $data['label'] = $val['first_name'].' '.$val['last_name'];
+                    $data['user_type'] = $val['user_type'];
+                    $all[] = $data;
+                }
+
+                // extracting dsa
+                foreach ($connector as $val) {
+                    $data = [];
+                    $data['value'] = $val['user_enc_id'];
+                    $data['label'] = $val['first_name'].' '.$val['last_name'];
+                    $data['user_type'] = $val['user_type'];
+                    $all[] = $data;
+                }
+
+                return $this->response(200, ['status' => 200, 'all_employees' => $all]);
+            } else {
+                return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
+            }
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
