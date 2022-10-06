@@ -294,4 +294,12 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
         return $this->hasMany(NewOrganizationReviews::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmployerApplications()
+    {
+        return $this->hasMany(EmployerApplications::className(), ['unclaimed_organization_enc_id' => 'organization_enc_id']);
+    }
+
 }
