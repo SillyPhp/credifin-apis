@@ -742,6 +742,7 @@ function updateValue(t){
         data['type'] = t.attr('data-type');
         data['value'] = t.val();
         data['lead_app_id'] = localStorage.getItem('lead_app_id');
+        data['loan_type'] = 'Education Loan';
         if (data['type'] == 'leadCollegePreference') {
             data['sequence'] = sequence;
         }

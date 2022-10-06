@@ -91,7 +91,7 @@ class LeadsApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['application_enc_id', 'application_number', 'loan_type'], 'required'],
+            [['application_enc_id', 'application_number'], 'required'],
             [['gender', 'status', 'comments', 'message', 'address', 'loan_type'], 'string'],
             [['dob', 'created_on', 'last_updated_on', 'assign_date', 'calling_date'], 'safe'],
             [['has_taken_addmission', 'application_fee_recieved', 'filled_by', 'is_number_verified', 'loan_for', 'admission_taken', 'priority', 'is_deleted', 'phone_status', 'email_status', 'signup_status'], 'integer'],

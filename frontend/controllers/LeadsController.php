@@ -24,6 +24,7 @@ class LeadsController extends Controller
                 $key = $params['lead_app_id'];
                 $seq = $params['sequence'];
                 $lead_app_id = $params['lead_app_id'];
+                $loan_type = $params['loan_type'];
                 $utilitiesModel = new Utilities();
                 if ($lead_app_id) {
                     if ($type == 'leadCollegePreference') {
@@ -57,6 +58,7 @@ class LeadsController extends Controller
                         $field_name = 'college_institute_name';
                     }
                 }
+                $model->loan_type = $loan_type;
                 $model->$field_name = $value;
                 if ($model->save()) {
                     return [
