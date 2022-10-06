@@ -101,6 +101,7 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
             [['organization_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => BusinessActivities::className(), 'targetAttribute' => ['organization_type_enc_id' => 'business_activity_enc_id']],
         ];
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -284,4 +285,13 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return $this->hasMany(WebinarSponsors::className(), ['unclaimed_org_enc_id' => 'organization_enc_id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNewOrganizationReviews()
+    {
+        return $this->hasMany(NewOrganizationReviews::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
 }
