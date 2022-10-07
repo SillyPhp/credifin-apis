@@ -68,7 +68,7 @@ class DealsController extends ApiBaseController
 
             $detail['organization'] = UnclaimedOrganizations::find()
                 ->alias('a')
-                ->select(['a.organization_enc_id', 'a.name', 'a.slug',
+                ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'a.facebook_username', 'a.twitter_username', 'a.linkedin_username', 'a.instagram_username',
                     'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=true&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo',])
                 ->joinWith(['unclaimOrganizationImages b' => function ($b) {
                     $b->select(['b.image_enc_id', 'b.unclaim_organization_enc_id', 'b.title', 'b.alt',
