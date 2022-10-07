@@ -47,12 +47,12 @@ class DealsController extends ApiBaseController
 
         $detail = AssignedDeals::find()
             ->alias('a')
-            ->select(['a.deal_enc_id', 'a.deal_type', 'a.coupon_type', 'a.coupon_code', 'a.name', 'a.title',
+            ->select(['a.deal_enc_id', 'a.organization_enc_id', 'a.deal_type', 'a.coupon_type', 'a.coupon_code', 'a.slug', 'a.name', 'a.title',
                 'a.type', 'a.discount_type', 'a.expiry_date', 'a.is_popular', 'a.how_to_apply', 'a.terms_and_conditions',
             ])
             ->joinWith(['assignedDealsLocations b' => function ($b) {
                 $b->select(['b.assign_deal_enc_id', 'b.deal_enc_id', 'b.location_enc_id', 'c.latitude', 'c.longitude',
-                    'c.city_enc_id', 'c.postal_code', 'c.address', 'd.name city', 'e.name state', 'c.unclaim_organization_enc_id']);
+                    'c.city_enc_id', 'c.postal_code', 'c.address', 'd.name city', 'e.name state']);
                 $b->joinWith(['locationEnc c' => function ($c) {
                     $c->joinWith(['cityEnc d' => function ($d) {
                         $d->joinWith(['stateEnc e']);
@@ -60,7 +60,7 @@ class DealsController extends ApiBaseController
                 }], false);
                 $b->onCondition(['b.is_deleted' => 0]);
             }])
-            ->where(['a.name' => $params['name'], 'a.is_deleted' => 0, 'a.status' => 'Active'])
+            ->where(['a.slug' => $params['slug'], 'a.is_deleted' => 0, 'a.status' => 'Active'])
             ->asArray()
             ->one();
 
@@ -76,7 +76,7 @@ class DealsController extends ApiBaseController
                     ]);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
-                ->where(['organization_enc_id' => $detail['assignedDealsLocations'][0]['unclaim_organization_enc_id']])
+                ->where(['organization_enc_id' => $detail['organization_enc_id']])
                 ->asArray()
                 ->one();
 

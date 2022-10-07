@@ -9,6 +9,8 @@ use Yii;
  *
  * @property int $id
  * @property string $deal_enc_id
+ * @property string $organization_enc_id
+ * @property string $slug
  * @property string $deal_type
  * @property int $coupon_type 1 as generated , 2 as entered
  * @property string $coupon_code
@@ -30,6 +32,7 @@ use Yii;
  *
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
+ * @property UnclaimedOrganizations $organizationEnc
  * @property AssignedDealsLocations[] $assignedDealsLocations
  */
 class AssignedDeals extends \yii\db\ActiveRecord
@@ -48,17 +51,19 @@ class AssignedDeals extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['deal_enc_id', 'deal_type', 'title', 'value', 'type', 'discount_type', 'created_by'], 'required'],
+            [['deal_enc_id', 'organization_enc_id', 'slug', 'deal_type', 'title', 'value', 'type', 'discount_type', 'created_by'], 'required'],
             [['deal_type', 'type', 'discount_type', 'how_to_apply', 'terms_and_conditions', 'status'], 'string'],
             [['coupon_type', 'value', 'is_popular', 'is_deleted'], 'integer'],
             [['expiry_date', 'created_on', 'last_updated_on'], 'safe'],
-            [['deal_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['deal_enc_id', 'organization_enc_id', 'slug', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['coupon_code', 'name'], 'string', 'max' => 50],
             [['title'], 'string', 'max' => 255],
             [['deal_enc_id'], 'unique'],
+            [['slug'], 'unique'],
             [['coupon_code'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
+            [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => UnclaimedOrganizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
         ];
     }
 
@@ -76,6 +81,14 @@ class AssignedDeals extends \yii\db\ActiveRecord
     public function getLastUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationEnc()
+    {
+        return $this->hasOne(UnclaimedOrganizations::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
