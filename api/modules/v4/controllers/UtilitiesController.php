@@ -105,7 +105,7 @@ class UtilitiesController extends ApiBaseController
             $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
             $result = $my_space->uploadFileSources($file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $file_name, "private", ['params' => ['ContentType' => $type]]);
             if ($result['ObjectURL']) {
-                return $this->response(200, ['status' => 200, 'path' => Yii::$app->params->digitalOcean->rootDirectory . $base_path . $file]);
+                return $this->response(200, ['status' => 200, 'path' => Yii::$app->params->digitalOcean->rootDirectory . $base_path . $file_name]);
             } else {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }

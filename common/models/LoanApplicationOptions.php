@@ -31,8 +31,14 @@ use Yii;
  * @property string $designation Designation
  * @property string $business_premises Business premises
  * @property string $occupation
- * @property string $vehicle_type
- * @property string $vehicle_option
+ * @property string $vehicle_type vehicle type
+ * @property string $vehicle_option vehicle option
+ * @property string $vehicle_brand vehicle brand
+ * @property string $vehicle_model vehicle model
+ * @property string $vehicle_making_year vehicle making year
+ * @property string $lead_type lead type
+ * @property string $dealer_name dealer name
+ * @property string $disbursement_date disbursement date
  * @property string $created_on On which date  information was added to database
  * @property string $created_by Foreign Key to Users Table
  * @property string $last_updated_on On which date  information was updated
@@ -66,10 +72,13 @@ class LoanApplicationOptions extends \yii\db\ActiveRecord
             [['application_by', 'number_of_loans', 'loan_option_value', 'desired_tenure', 'is_deleted'], 'integer'],
             [['total_loan_amount', 'monthly_emi', 'perposed_emi', 'annual_turnover'], 'number'],
             [['property_requirement', 'current_status', 'current_status_comments', 'comment', 'business_premises'], 'string'],
-            [['follow_up_on', 'created_on', 'last_updated_on'], 'safe'],
-            [['option_enc_id', 'loan_app_enc_id', 'follow_up_by', 'loan_option', 'type_of_company', 'designation', 'vehicle_type', 'vehicle_option', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['follow_up_on', 'disbursement_date', 'created_on', 'last_updated_on'], 'safe'],
+            [['option_enc_id', 'loan_app_enc_id', 'follow_up_by', 'loan_option', 'type_of_company', 'designation', 'vehicle_type', 'vehicle_option', 'vehicle_brand', 'vehicle_model', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['name_of_company', 'nature_of_business'], 'string', 'max' => 256],
             [['occupation'], 'string', 'max' => 250],
+            [['vehicle_making_year'], 'string', 'max' => 10],
+            [['lead_type'], 'string', 'max' => 20],
+            [['dealer_name'], 'string', 'max' => 50],
             [['option_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],

@@ -57,6 +57,12 @@ class LoanApplication extends Model
     public $pan_number;
     public $loan_lender;
     public $aadhar_number;
+    public $vehicle_brand;
+    public $vehicle_model;
+    public $vehicle_making_year;
+    public $lead_type;
+    public $dealer_name;
+    public $disbursement_date;
 
     public function formName()
     {
@@ -68,7 +74,8 @@ class LoanApplication extends Model
         return [
             [['applicant_name', 'loan_type', 'phone_no'], 'required'],
             [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhar_number', 'loan_lender',
-                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount'], 'safe'],
+                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount',
+                'vehicle_brand', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date'], 'safe'],
             [['applicant_name', 'loan_purpose', 'email'], 'trim'],
             [['applicant_name'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],
@@ -81,6 +88,12 @@ class LoanApplication extends Model
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
+
+            $user_type = null;
+            if ($user_id) {
+                $user = Users::findOne(['user_enc_id' => $user_id]);
+                $user_type = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
+            }
 
             $model = new LoanApplications();
             $utilitiesModel = new Utilities();
@@ -111,6 +124,10 @@ class LoanApplication extends Model
                 }
             }
 
+            if ($user_type == 'Employee') {
+                $model->lead_by = $user_id;
+            }
+
             if (!$model->save()) {
                 $transaction->rollback();
                 return false;
@@ -130,6 +147,12 @@ class LoanApplication extends Model
                 $loan_options->occupation = $this->occupation;
                 $loan_options->vehicle_type = $this->vehicle_type;
                 $loan_options->vehicle_option = $this->vehicle_option;
+                $loan_options->vehicle_brand = $this->vehicle_brand;
+                $loan_options->vehicle_model = $this->vehicle_model;
+                $loan_options->vehicle_making_year = $this->vehicle_making_year;
+                $loan_options->lead_type = $this->lead_type;
+                $loan_options->dealer_name = $this->dealer_name;
+                $loan_options->disbursement_date = $this->disbursement_date;
                 $loan_options->created_on = date('Y-m-d H:i:s');
                 $loan_options->created_by = $user_id;
                 if (!$loan_options->save()) {
@@ -249,6 +272,14 @@ class LoanApplication extends Model
                 $data['refresh_token_expiry_time'] = $access_token->refresh_token_expiration;
                 $data['image'] = '';
                 $data['user_type'] = 'Individual';
+            }
+
+            if ($user_type == 'Employee' && $user_id != null) {
+                $signup = $this->SignUp($options);
+                if (!$signup) {
+                    $transaction->rollback();
+                    return false;
+                }
             }
 
             $payment_model = new EducationLoanPayments();
