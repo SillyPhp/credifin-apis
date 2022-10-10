@@ -45,6 +45,7 @@ class LeadsController extends Controller
                             $field_name = 'college_institute_name';
                         }
                         $enc_id = $key;
+                        $model->loan_type = $loan_type;
                     }
                 } else {
                     $model = new LeadsApplications();
@@ -58,7 +59,6 @@ class LeadsController extends Controller
                         $field_name = 'college_institute_name';
                     }
                 }
-                $model->loan_type = $loan_type;
                 $model->$field_name = $value;
                 if ($model->save()) {
                     return [
