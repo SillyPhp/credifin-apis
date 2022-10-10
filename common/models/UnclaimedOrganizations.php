@@ -40,6 +40,7 @@ use Yii;
  * @property int $is_popular 0 as false 1 as true
  * @property int $is_moved 0 as false, 1 as true
  *
+ * @property AssignedDeals[] $assignedDeals
  * @property AssignedUnclaimAffiliation[] $assignedUnclaimAffiliations
  * @property AssignedUnclaimAffiliation[] $assignedUnclaimAffiliations0
  * @property AssignedUnclaimCollegeCourses[] $assignedUnclaimCollegeCourses
@@ -287,5 +288,13 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord {
      */
     public function getWebinarSponsors() {
         return $this->hasMany(WebinarSponsors::className(), ['unclaimed_org_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedDeals()
+    {
+        return $this->hasMany(AssignedDeals::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 }
