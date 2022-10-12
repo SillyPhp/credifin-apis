@@ -301,6 +301,7 @@ class LoanApplication extends Model
 
             $data['loan_app_enc_id'] = $model->loan_app_enc_id;
             $data['payment_url'] = null;
+            $data['user_id'] = Users::findOne(['phone' => [$model->phone, '+91' . $model->phone]])->user_enc_id;
             return [
                 'status' => true,
                 'data' => $data

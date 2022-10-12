@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\ForgotPassword;
 use api\modules\v4\models\OrganizationSignup;
 use api\modules\v4\models\ProfilePicture;
 use api\modules\v4\models\Candidates;
@@ -16,6 +17,7 @@ use common\models\Usernames;
 use common\models\Users;
 use common\models\UserTypes;
 use common\models\Utilities;
+use frontend\models\accounts\ResetPasswordForm;
 use yii\web\UploadedFile;
 use Yii;
 use yii\helpers\Url;
@@ -35,7 +37,10 @@ class AuthController extends ApiBaseController
                 'validate',
                 'login',
                 'upload-profile-picture',
-                'verify-phone'
+                'otp-login',
+                'forgot-password',
+                'reset-password',
+                'user-phone',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -47,7 +52,10 @@ class AuthController extends ApiBaseController
                 'validate' => ['POST', 'OPTIONS'],
                 'login' => ['POST', 'OPTIONS'],
                 'upload-profile-picture' => ['POST', 'OPTIONS'],
-                'verify-phone' => ['POST', 'OPTIONS'],
+                'otp-login' => ['POST', 'OPTIONS'],
+                'forgot-password' => ['POST', 'OPTIONS'],
+                'reset-password' => ['POST', 'OPTIONS'],
+                'user-phone' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -351,7 +359,7 @@ class AuthController extends ApiBaseController
         }
     }
 
-    public function actionVerifyPhone()
+    public function actionOtpLogin()
     {
         $params = Yii::$app->request->post();
 
@@ -359,17 +367,128 @@ class AuthController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "phone"']);
         }
 
+        $phone = $this->decode($params['phone']);
+//        $phone = $params['phone'];
+
         $user = Users::find()
             ->where([
                 'or',
-                ['phone' => [$params['phone'], '+91' . $params['phone']]],
-                ['phone' => $params['phone']],
-            ])->one();
+                ['phone' => [$phone, '+91' . $phone]],
+                ['phone' => $phone],
+            ])
+            ->one();
 
         if ($user) {
-            return $this->response(200, ['status' => 200, 'verified' => True]);
+
+            $user->last_visit = date('Y-m-d H:i:s');
+            $user->last_visit_through = 'EL';
+            if (!$user->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
+            $source = Yii::$app->getRequest()->getUserIP();
+            $token = $this->findToken($user, $source);
+
+            if (empty($token)) {
+                if ($token = $this->newToken($user->user_enc_id, $source)) {
+                    $data = $this->returnData($user, $token);
+                    return $this->response(200, ['status' => 200, 'data' => $data]);
+                }
+            } else {
+                if ($token = $this->onlyTokens($token)) {
+                    $data = $this->returnData($user, $token);
+                    return $this->response(200, ['status' => 200, 'data' => $data]);
+                }
+            }
         }
 
-        return $this->response(404,['status'=>404,'message'=>'user not found']);
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionUserPhone()
+    {
+        $params = Yii::$app->request->post();
+
+        if (empty($params['id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "id"']);
+        }
+
+        $user = Users::find()
+            ->select(['user_enc_id', 'phone'])
+            ->where(['user_enc_id' => $params['id']])
+            ->asArray()
+            ->one();
+
+        if ($user) {
+            $phone = preg_replace('/^\+?91|\|1|\D/', '', ($user['phone']));
+            return $this->response(200, ['status' => 200, 'phone' => $phone]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    private function decode($encoded)
+    {
+        $encoded = base64_decode($encoded);
+        $decoded = "";
+        for ($i = 0; $i < strlen($encoded); $i++) {
+            $b = ord($encoded[$i]);
+            $a = $b ^ 10;
+            $decoded .= chr($a);
+        }
+        return base64_decode(base64_decode($decoded));
+    }
+
+    public function actionForgotPassword()
+    {
+        $params = Yii::$app->request->post();
+
+        if (empty($params['username'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "username"']);
+        }
+
+        $user = Users::find()
+            ->where([
+                'or',
+                ['username' => $params['username']],
+                ['email' => $params['username']],
+            ])
+            ->one();
+
+        if ($user) {
+            $form = new ForgotPassword();
+            if ($form->forgotPassword($user)) {
+                return $this->response(200, ['status' => 200, 'message' => 'reset password mail sent to your email please check.']);
+            }
+            return $this->response(500, ['status' => 500, 'message' => 'something went wrong']);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'user not found']);
+    }
+
+    public function actionResetPassword()
+    {
+
+        $params = Yii::$app->request->post();
+
+        if (empty($params['token'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "token"']);
+        }
+
+        if (empty($params['new_password'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "new_password"']);
+        }
+
+        try {
+            $user_id = Yii::$app->forgotPassword->verify($params['token']);
+        } catch (InvalidParamException $e) {
+            return $this->response(500, ['status' => 500, 'message' => $e->getMessage()]);
+        }
+
+        if (Yii::$app->forgotPassword->change($user_id, $params['new_password'])) {
+            return $this->response(200, ['status' => 200, 'message' => 'password changed successfully']);
+        }
+
+        return $this->response(500, ['status' => 500, 'message' => 'something went wrong']);
     }
 }

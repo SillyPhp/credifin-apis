@@ -162,6 +162,11 @@ class OrganizationAppsController extends ApiBaseController
                     $b->orderBy(['b.sequence' => SORT_ASC]);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
+                ->joinWith(['organizationAppUsers c' => function ($c) {
+                    $c->select(['c.assigned_user_enc_id', 'c.app_enc_id', 'c.user_enc_id value', 'CONCAT(c1.first_name," ",c1.last_name) label']);
+                    $c->joinWith(['userEnc c1'], false);
+                    $c->onCondition(['c.is_deleted' => 0]);
+                }])
                 ->where(['a.app_enc_id' => $params['app_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();

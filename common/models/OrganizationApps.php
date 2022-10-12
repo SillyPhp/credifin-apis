@@ -22,6 +22,7 @@ use Yii;
  * @property int $is_deleted 0 false, 1 true
  *
  * @property OrganizationAppFields[] $organizationAppFields
+ * @property OrganizationAppUsers[] $organizationAppUsers
  * @property Organizations $organizationEnc
  * @property Users $createdBy
  * @property Users $updatedBy
@@ -62,6 +63,14 @@ class OrganizationApps extends \yii\db\ActiveRecord
     public function getOrganizationAppFields()
     {
         return $this->hasMany(OrganizationAppFields::className(), ['app_enc_id' => 'app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationAppUsers()
+    {
+        return $this->hasMany(OrganizationAppUsers::className(), ['app_enc_id' => 'app_enc_id']);
     }
 
     /**

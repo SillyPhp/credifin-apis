@@ -4,6 +4,7 @@ namespace api\modules\v4\models;
 
 use common\models\OrganizationAppFields;
 use common\models\OrganizationApps;
+use common\models\OrganizationAppUsers;
 use common\models\RandomColors;
 use common\models\spaces\Spaces;
 use Yii;
@@ -17,6 +18,7 @@ class Apps extends Model
     public $logo;
     public $elements;
     public $assigned_to;
+    public $assigned_users;
 
     public function formName()
     {
@@ -27,7 +29,7 @@ class Apps extends Model
     {
         return [
             [['app_name', 'elements', 'assigned_to'], 'required'],
-            [['app_description', 'logo'], 'safe'],
+            [['app_description', 'logo', 'assigned_users'], 'safe'],
             [['app_name', 'app_description'], 'trim'],
             [['app_name'], 'string', 'max' => 150],
         ];
@@ -61,7 +63,25 @@ class Apps extends Model
                 return false;
             }
 
+            $assigned_users = json_decode($this->assigned_users, true);
+//            $assigned_users = $this->assigned_users;
+            if ($assigned_users) {
+                foreach ($assigned_users as $val) {
+                    $assigned_user = new OrganizationAppUsers();
+                    $assigned_user->assigned_user_enc_id = Yii::$app->getSecurity()->generateRandomString();
+                    $assigned_user->app_enc_id = $model->app_enc_id;
+                    $assigned_user->user_enc_id = $val;
+                    $assigned_user->created_by = $user->user_enc_id;
+                    $assigned_user->created_on = date('Y-m-d H:i:s');
+                    if (!$assigned_user->save()) {
+                        $transaction->rollBack();
+                        return false;
+                    }
+                }
+            }
+
             $elems = json_decode($this->elements, true);
+//            $elems = $this->elements;
             if ($elems) {
                 foreach ($elems as $key => $arr) {
                     $app_fields = new OrganizationAppFields();
@@ -85,7 +105,6 @@ class Apps extends Model
 
 
         } catch (\Exception $exception) {
-            print_r($exception);
             $transaction->rollBack();
             return false;
         }

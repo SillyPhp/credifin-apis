@@ -24,6 +24,7 @@ class CandidateDashboardController extends ApiBaseController
                 'loan-details' => ['POST', 'OPTIONS'],
                 'loan-provider-detail' => ['POST', 'OPTIONS'],
                 'pro-benefits-access' => ['POST', 'OPTIONS'],
+                'scratch-cards' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -153,6 +154,42 @@ class CandidateDashboardController extends ApiBaseController
                 ->exists();
 
             return $this->response(200, ['status' => 200, 'application_exists' => $loan]);
+        }
+
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    public function actionScratchCards()
+    {
+        $date = new \DateTime('now');
+        $date->modify('-3 month'); // or you can use '-90 day' for deduct
+        $date = $date->format('Y-m-d');
+
+        if ($user = $this->isAuthorized()) {
+            $loans = LoanApplications::find()
+                ->alias('a')
+                ->select(['a.loan_app_enc_id'])
+                ->joinWith(['assignedLoanProviders b' => function ($b) {
+                    $b->joinWith(['providerEnc b1']);
+                }], false)
+                ->joinWith(['loanApplicationOptions c'], false)
+                ->joinWith(['loanDisbursementSchedules d'], false)
+                ->where(['a.created_by' => $user->user_enc_id, 'a.is_deleted' => 0, 'a.loan_type' => 'Vehicle Loan', 'a.source' => 'EmpowerFintech'])
+                ->andWhere(['b1.slug' => 'rav1', 'b.status' => 5])
+                ->andWhere(['>=', "d.disbursed_date", $date])
+                ->andWhere([
+                    'or',
+                    ['c.vehicle_type' => 'Two Wheeler'],
+                    ['c.vehicle_option' => 'E-Rickshaw']
+                ])
+                ->asArray()
+                ->count();
+
+            if ($loans) {
+                return $this->response(200, ['status' => 200, 'count' => $loans]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
 
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
