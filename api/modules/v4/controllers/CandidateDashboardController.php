@@ -175,7 +175,7 @@ class CandidateDashboardController extends ApiBaseController
                 ->joinWith(['loanApplicationOptions c'], false)
                 ->joinWith(['loanDisbursementSchedules d'], false)
                 ->where(['a.created_by' => $user->user_enc_id, 'a.is_deleted' => 0, 'a.loan_type' => 'Vehicle Loan', 'a.source' => 'EmpowerFintech'])
-                ->andWhere(['b1.slug' => 'rav1', 'b.status' => 5])
+                ->andWhere(['b1.slug' => 'phfleasing', 'b.status' => 5])
                 ->andWhere(['>=', "d.disbursed_date", $date])
                 ->andWhere([
                     'or',
