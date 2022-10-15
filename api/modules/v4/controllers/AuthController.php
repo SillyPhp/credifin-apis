@@ -41,6 +41,7 @@ class AuthController extends ApiBaseController
                 'forgot-password',
                 'reset-password',
                 'user-phone',
+                'find-user',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -56,6 +57,7 @@ class AuthController extends ApiBaseController
                 'forgot-password' => ['POST', 'OPTIONS'],
                 'reset-password' => ['POST', 'OPTIONS'],
                 'user-phone' => ['POST', 'OPTIONS'],
+                'find-user' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -490,5 +492,36 @@ class AuthController extends ApiBaseController
         }
 
         return $this->response(500, ['status' => 500, 'message' => 'something went wrong']);
+    }
+
+    public function actionFindUser()
+    {
+        $access_token = Yii::$app->request->post('access_token');
+        $source = Yii::$app->request->post('source');
+
+        $token = UserAccessTokens::findOne(['access_token' => $access_token, 'source' => $source]);
+
+        $today_date = new \DateTime();
+        $today_date = $today_date->format('Y-m-d H:i:s');
+
+        if ($today_date > $token->access_token_expiration) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+
+        $user = Users::findOne(['user_enc_id' => $token->user_enc_id]);
+
+        $data = $this->returnData($user, $token);
+
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['password'] = $user->phone;
+        $pass = $utilitiesModel->encrypt_pass();
+        if ($pass === $user['password']) {
+            $data['weak_password'] = true;
+        }else{
+            $data['weak_password'] = false;
+        }
+
+        return $this->response(200, ['status' => 200, 'data' => $data]);
+
     }
 }

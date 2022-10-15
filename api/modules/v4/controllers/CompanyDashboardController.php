@@ -246,6 +246,8 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             $loans = $loans
+                ->andWhere(['!=', 'a.form_type', 'diwali-dhamaka'])
+                ->orderBy(['a.created_on' => SORT_DESC])
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->asArray()
@@ -630,7 +632,7 @@ class CompanyDashboardController extends ApiBaseController
                 foreach ($employee as $val) {
                     $data = [];
                     $data['value'] = $val['user_enc_id'];
-                    $data['label'] = $val['first_name'].' '.$val['last_name'];
+                    $data['label'] = $val['first_name'] . ' ' . $val['last_name'];
                     $data['user_type'] = $val['user_type'];
                     $all[] = $data;
                 }
@@ -639,7 +641,7 @@ class CompanyDashboardController extends ApiBaseController
                 foreach ($dsa as $val) {
                     $data = [];
                     $data['value'] = $val['user_enc_id'];
-                    $data['label'] = $val['first_name'].' '.$val['last_name'];
+                    $data['label'] = $val['first_name'] . ' ' . $val['last_name'];
                     $data['user_type'] = $val['user_type'];
                     $all[] = $data;
                 }
@@ -648,7 +650,7 @@ class CompanyDashboardController extends ApiBaseController
                 foreach ($connector as $val) {
                     $data = [];
                     $data['value'] = $val['user_enc_id'];
-                    $data['label'] = $val['first_name'].' '.$val['last_name'];
+                    $data['label'] = $val['first_name'] . ' ' . $val['last_name'];
                     $data['user_type'] = $val['user_type'];
                     $all[] = $data;
                 }

@@ -52,6 +52,7 @@ namespace common\models;
  * @property int $status 0 as Pending, 1 as Approved, 2 as Rejected, 3 as Verified
  * @property int $loan_status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Senctioned, 5 as Disbursed, 6 as Completed, 10 as Rejected
  * @property string $loan_type
+ * @property string $form_type
  * @property string $loan_purpose
  * @property string $lender_reasons
  * @property int $is_deleted 0 as False, 1 as True
@@ -109,7 +110,7 @@ class LoanApplications extends \yii\db\ActiveRecord
         return [
             [['loan_app_enc_id', 'applicant_name', 'phone', 'source'], 'required'],
             [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'gender', 'ask_guarantor_info', 'status', 'loan_status', 'is_deleted', 'is_removed'], 'integer'],
-            [['employement_type', 'degree', 'candidate_status', 'candidate_sub_status', 'source', 'loan_type', 'lender_reasons'], 'string'],
+            [['employement_type', 'degree', 'candidate_status', 'candidate_sub_status', 'source', 'loan_type', 'form_type', 'lender_reasons'], 'string'],
             [['applicant_dob', 'deadline', 'intake', 'created_on', 'updated_on'], 'safe'],
             [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship'], 'number'],
             [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'created_by', 'updated_by', 'lead_application_enc_id'], 'string', 'max' => 100],

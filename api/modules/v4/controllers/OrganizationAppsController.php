@@ -12,6 +12,7 @@ use common\models\SelectedServices;
 use common\models\spaces\Spaces;
 use common\models\User;
 use common\models\Users;
+use common\models\UserTypes;
 use common\models\Utilities;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
@@ -172,6 +173,13 @@ class OrganizationAppsController extends ApiBaseController
                 ->one();
 
             if ($detail) {
+
+                if ($detail['organizationAppUsers']) {
+                    foreach ($detail['organizationAppUsers'] as $key => $val) {
+                        $detail['organizationAppUsers'][$key]['user_type'] = $this->getType($val['value']);
+                    }
+                }
+
                 $detail['logo'] = $this->getFile($params['app_id']);
                 $detail['assigned_to'] = json_decode($detail['assigned_to']);
                 return $this->response(200, ['status' => 200, 'detail' => $detail]);
@@ -182,6 +190,36 @@ class OrganizationAppsController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    private function getType($user_id)
+    {
+        $user = Users::findOne(['user_enc_id' => $user_id]);
+
+        $service = SelectedServices::find()
+            ->alias('a')
+            ->select(['b.name'])
+            ->joinWith(['serviceEnc b'], false)
+            ->where(['a.is_selected' => 1]);
+        if ($user->organization_enc_id) {
+            $service->andWhere(['or', ['a.organization_enc_id' => $user->organization_enc_id]]);
+        } else {
+            $service->andWhere(['or', ['a.created_by' => $user->user_enc_id]]);
+        }
+
+        $service = $service->asArray()
+            ->all();
+
+        $serviceArr = array_column($service, 'name');
+
+        if (in_array('E-Partners', $serviceArr)) {
+            return "DSA";
+        } else if (in_array('Connector', $serviceArr)) {
+            return "Connector";
+        } else {
+            return UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
+        }
+
     }
 
     private function authorize($app_id)

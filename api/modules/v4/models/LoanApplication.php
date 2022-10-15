@@ -63,6 +63,7 @@ class LoanApplication extends Model
     public $lead_type;
     public $dealer_name;
     public $disbursement_date;
+    public $form_type;
 
     public function formName()
     {
@@ -75,7 +76,7 @@ class LoanApplication extends Model
             [['applicant_name', 'loan_type', 'phone_no'], 'required'],
             [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhar_number', 'loan_lender',
                 'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount',
-                'vehicle_brand', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date'], 'safe'],
+                'vehicle_brand', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type'], 'safe'],
             [['applicant_name', 'loan_purpose', 'email'], 'trim'],
             [['applicant_name'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],
@@ -106,6 +107,9 @@ class LoanApplication extends Model
             $model->email = $this->email;
             $model->amount = str_replace(',', '', $this->loan_amount);
             $model->source = 'EmpowerFintech';
+            if ($this->form_type == 'diwali-dhamaka') {
+                $model->form_type = $this->form_type;
+            }
             $model->loan_type = $this->loan_type;
             $model->loan_purpose = $this->loan_purpose;
             $model->yearly_income = $this->annual_income;
