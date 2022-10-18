@@ -42,6 +42,7 @@ class AuthController extends ApiBaseController
                 'reset-password',
                 'user-phone',
                 'find-user',
+                'change-password',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -523,5 +524,31 @@ class AuthController extends ApiBaseController
 
         return $this->response(200, ['status' => 200, 'data' => $data]);
 
+    }
+
+    public function actionChangePassword()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['new_password'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "new_password"']);
+            }
+
+            $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
+
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['password'] = $params['new_password'];
+            $user->password = $utilitiesModel->encrypt_pass();
+            $user->last_updated_on = date('Y-m-d H:i:s');
+            if (!$user->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 }

@@ -6,6 +6,7 @@ use api\modules\v4\models\Apps;
 use common\models\AssignedSupervisor;
 use common\models\OrganizationAppFields;
 use common\models\OrganizationApps;
+use common\models\OrganizationAppUsers;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
@@ -230,6 +231,7 @@ class OrganizationAppsController extends ApiBaseController
 
             $assigned_to = json_decode($app->assigned_to);
 
+            // adding e-partners if dsa is added in assigned to for service condition
             if ($assigned_to && array_search('DSA', $assigned_to)) {
                 $assigned_to[] = 'E-Partners';
             }
@@ -266,7 +268,7 @@ class OrganizationAppsController extends ApiBaseController
             $service = $service->asArray()
                 ->one();
 
-            // checking for DSA
+            // checking for DSA or E-Partners
             if ($service['name'] == 'E-Partners') {
                 $supervisor_id = AssignedSupervisor::findOne(['assigned_user_enc_id' => $service['created_by']])->supervisor_enc_id;
                 if ($supervisor_id && (Users::findOne(['user_enc_id' => $supervisor_id])->organization_enc_id == $app->organization_enc_id)) {
@@ -358,6 +360,53 @@ class OrganizationAppsController extends ApiBaseController
                                 $transaction->rollBack();
                                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                             }
+                        }
+                    }
+                }
+
+                // updating users
+                if (!empty($params['assigned_users'])) {
+
+                    $assigned_users = json_decode($params['assigned_users'], true);
+//                    $assigned_users = $params['assigned_users'];
+
+                    $a_users = OrganizationAppUsers::find()
+                        ->select(['assigned_user_enc_id', 'user_enc_id'])
+                        ->where(['app_enc_id' => $params['app_id'], 'is_deleted' => 0])
+                        ->asArray()
+                        ->all();
+
+                    $already_assigned_users = [];
+                    foreach ($a_users as $val) {
+                        $already_assigned_users[] = $val['user_enc_id'];
+                    }
+
+                    $to_be_added_users = array_diff($assigned_users, $already_assigned_users);
+                    $to_be_deleted_users = array_diff($already_assigned_users, $assigned_users);
+
+                    // to be added users
+                    foreach ($to_be_added_users as $val) {
+                        $assigned_user = new OrganizationAppUsers();
+                        $assigned_user->assigned_user_enc_id = Yii::$app->getSecurity()->generateRandomString();
+                        $assigned_user->app_enc_id = $params['app_id'];
+                        $assigned_user->user_enc_id = $val;
+                        $assigned_user->created_by = $user->user_enc_id;
+                        $assigned_user->created_on = date('Y-m-d H:i:s');
+                        if (!$assigned_user->save()) {
+                            $transaction->rollBack();
+                            return false;
+                        }
+                    }
+
+                    // to be deleted users
+                    foreach ($to_be_deleted_users as $val) {
+                        $assigned_user_del = OrganizationAppUsers::findOne(['app_enc_id' => $params['app_id'], 'user_enc_id' => $val]);
+                        $assigned_user_del->is_deleted = 1;
+                        $assigned_user_del->updated_by = $user->user_enc_id;
+                        $assigned_user_del->updated_on = date('Y-m-d H:i:s');
+                        if(!$assigned_user_del->update()){
+                            $transaction->rollBack();
+                            return false;
                         }
                     }
                 }
