@@ -42,7 +42,6 @@ class AuthController extends ApiBaseController
                 'reset-password',
                 'user-phone',
                 'find-user',
-                'change-password',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -59,7 +58,6 @@ class AuthController extends ApiBaseController
                 'reset-password' => ['POST', 'OPTIONS'],
                 'user-phone' => ['POST', 'OPTIONS'],
                 'find-user' => ['POST', 'OPTIONS'],
-                'change-password' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -519,65 +517,11 @@ class AuthController extends ApiBaseController
         $pass = $utilitiesModel->encrypt_pass();
         if ($pass === $user['password']) {
             $data['weak_password'] = true;
-        } else {
+        }else{
             $data['weak_password'] = false;
         }
 
         return $this->response(200, ['status' => 200, 'data' => $data]);
 
-    }
-
-    public function actionChangePassword()
-    {
-        if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
-
-            if (empty($params['new_password'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "new_password"']);
-            }
-
-            $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
-
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['password'] = $params['new_password'];
-            $user->password = $utilitiesModel->encrypt_pass();
-            $user->last_updated_on = date('Y-m-d H:i:s');
-            if (!$user->update()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
-            }
-
-            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-    }
-
-    public function actionOtpSignup()
-    {
-        $model = new IndividualSignup();
-
-        if ($model->load(Yii::$app->request->post(), '')) {
-
-            if (!$model->source) {
-                $model->source = Yii::$app->getRequest()->getUserIP();
-            }
-
-            if ($model->dsaRefId && !$model->is_connector && $model->user_type != 'Employee') {
-                if (!$this->DsaOrgExist($model->dsaRefId)) {
-                    return $this->response(404, ['status' => 404, 'message' => 'no organization found with this ref id']);
-                }
-            }
-
-            if ($model->validate()) {
-                if ($data = $model->saveUser()) {
-                    return $this->response(201, ['status' => 201, 'data' => $data]);
-                } else {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
-                }
-            }
-            return $this->response(409, ['status' => 409, 'error' => $model->getErrors()]);
-        }
-        return $this->response(400, ['status' => 400, 'message' => 'bad request']);
     }
 }
