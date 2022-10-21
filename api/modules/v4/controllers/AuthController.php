@@ -43,6 +43,7 @@ class AuthController extends ApiBaseController
                 'user-phone',
                 'find-user',
                 'change-password',
+                'otp-change-password',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -59,6 +60,8 @@ class AuthController extends ApiBaseController
                 'reset-password' => ['POST', 'OPTIONS'],
                 'user-phone' => ['POST', 'OPTIONS'],
                 'find-user' => ['POST', 'OPTIONS'],
+                'change-password' => ['POST', 'OPTIONS'],
+                'otp-change-password' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -550,5 +553,44 @@ class AuthController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    public function actionOtpChangePassword()
+    {
+        $params = Yii::$app->request->post();
+
+        if (empty($params['phone'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "phone"']);
+        }
+
+        if (empty($params['new_password'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "new_password"']);
+        }
+
+        $phone = $this->decode($params['phone']);
+//        $phone = $params['phone'];
+
+        $user = Users::find()
+            ->where([
+                'or',
+                ['phone' => [$phone, '+91' . $phone]],
+                ['phone' => $phone],
+            ])
+            ->one();
+
+        if ($user) {
+
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['password'] = $params['new_password'];
+            $user->password = $utilitiesModel->encrypt_pass();
+            $user->last_updated_on = date('Y-m-d H:i:s');
+            if (!$user->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
 }
