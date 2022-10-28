@@ -245,8 +245,13 @@ class CompanyDashboardController extends ApiBaseController
                 ]);
             }
 
+            if (!empty($params['form_type']) && $params['form_type'] == 'diwali-dhamaka') {
+                $loans->andWhere(['a.form_type' => 'diwali-dhamaka']);
+            } else {
+                $loans->andWhere(['!=', 'a.form_type', 'diwali-dhamaka']);
+            }
+
             $loans = $loans
-                ->andWhere(['!=', 'a.form_type', 'diwali-dhamaka'])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
