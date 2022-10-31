@@ -2,12 +2,14 @@
 
 namespace api\modules\v4\controllers;
 
+use common\models\AssignedFinancerLoanType;
 use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
 use common\models\EducationLoanPayments;
 use common\models\EsignOrganizationTracking;
 use common\models\LoanApplications;
 use common\models\LoanSanctionReports;
+use common\models\Organizations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
@@ -39,6 +41,7 @@ class CompanyDashboardController extends ApiBaseController
                 'change-status' => ['POST', 'OPTIONS'],
                 'update-employee-info' => ['POST', 'OPTIONS'],
                 'dsa-connectors' => ['POST', 'OPTIONS'],
+                'financer-detail' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -664,6 +667,59 @@ class CompanyDashboardController extends ApiBaseController
             } else {
                 return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
             }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionFinancerDetail()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $service = SelectedServices::find()->alias('a')->joinWith(['serviceEnc b'], false)->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])->exists();
+
+            if (!$service) {
+                return $this->response(403, ['status' => 403, 'message' => 'forbidden']);
+            }
+
+            $detail = Organizations::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'a.email', 'a.phone',
+                    'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo', 'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, 'https') . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image'
+                ])
+                ->joinWith(['organizationLocations b' => function ($b) {
+                    $b->select(['b.location_enc_id', 'b.organization_enc_id', 'b.location_name', 'b.location_for', 'b.email', 'b.description',
+                        'b.website', 'b.phone', 'b.address', 'b.postal_code', 'b.latitude', 'b.longitude', 'b.sequence', 'b1.name city_name', 'b2.name state_name']);
+                    $b->joinWith(['cityEnc b1'=>function($b1){
+                        $b1->joinWith(['stateEnc b2'],false);
+                    }], false);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }])
+                ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_deleted' => 0])
+                ->asArray()
+                ->one();
+
+            if ($detail) {
+
+                $detail['assignedFinancerLoanTypes'] = AssignedFinancerLoanType::find()
+                    ->alias('a')
+                    ->select(['a.assigned_financer_enc_id', 'a.financer_enc_id', 'a.loan_type_enc_id', 'a.type', 'b.name loan_type'])
+                    ->joinWith(['loanTypeEnc b'], false)
+                    ->joinWith(['assignedFinancerLoanPartners c' => function ($c) {
+                        $c->select(['c.assigned_loan_partner_enc_id', 'c.assigned_financer_enc_id', 'c.loan_partner_enc_id',
+                            'c.ltv', 'concat(c1.first_name," ",c1.last_name) partner_name']);
+                        $c->joinWith(['loanPartnerEnc c1'], false);
+                        $c->onCondition(['c.is_deleted' => 0]);
+                    }])
+                    ->where(['a.is_deleted' => 0, 'a.financer_enc_id' => $user->user_enc_id])
+                    ->asArray()
+                    ->all();
+
+                return $this->response(200, ['status' => 200, 'detail' => $detail]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);

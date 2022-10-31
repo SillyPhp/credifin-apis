@@ -85,6 +85,12 @@ namespace common\models;
  * @property AssignedCollegeCourses[] $assignedCollegeCourses0
  * @property AssignedEducationalRequirements[] $assignedEducationalRequirements
  * @property AssignedEducationalRequirements[] $assignedEducationalRequirements0
+ * @property AssignedFinancerLoanPartners[] $assignedFinancerLoanPartners
+ * @property AssignedFinancerLoanPartners[] $assignedFinancerLoanPartners0
+ * @property AssignedFinancerLoanPartners[] $assignedFinancerLoanPartners1
+ * @property AssignedFinancerLoanType[] $assignedFinancerLoanTypes
+ * @property AssignedFinancerLoanType[] $assignedFinancerLoanTypes0
+ * @property AssignedFinancerLoanType[] $assignedFinancerLoanTypes1
  * @property AssignedIndianJobs[] $assignedIndianJobs
  * @property AssignedIndianJobs[] $assignedIndianJobs0
  * @property AssignedIndustries[] $assignedIndustries
@@ -4225,5 +4231,53 @@ class Users extends \yii\db\ActiveRecord
     public function getSkillsUpPosts0()
     {
         return $this->hasMany(SkillsUpPosts::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanPartners()
+    {
+        return $this->hasMany(AssignedFinancerLoanPartners::className(), ['loan_partner_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanPartners0()
+    {
+        return $this->hasMany(AssignedFinancerLoanPartners::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanPartners1()
+    {
+        return $this->hasMany(AssignedFinancerLoanPartners::className(), ['updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanTypes()
+    {
+        return $this->hasMany(AssignedFinancerLoanType::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanTypes0()
+    {
+        return $this->hasMany(AssignedFinancerLoanType::className(), ['updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanTypes1()
+    {
+        return $this->hasMany(AssignedFinancerLoanType::className(), ['financer_enc_id' => 'user_enc_id']);
     }
 }
