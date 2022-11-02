@@ -12,6 +12,7 @@ use Yii;
  * @property string $financer_enc_id
  * @property string $loan_type_enc_id
  * @property string $type
+ * @property int $status 0 no, 1 yes
  * @property string $created_on
  * @property string $created_by
  * @property string $updated_by
@@ -42,8 +43,8 @@ class AssignedFinancerLoanType extends \yii\db\ActiveRecord
         return [
             [['assigned_financer_enc_id', 'financer_enc_id', 'loan_type_enc_id', 'type', 'created_by'], 'required'],
             [['type'], 'string'],
+            [['status', 'is_deleted'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
-            [['is_deleted'], 'integer'],
             [['assigned_financer_enc_id', 'financer_enc_id', 'loan_type_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['assigned_financer_enc_id'], 'unique'],
             [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanType::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],

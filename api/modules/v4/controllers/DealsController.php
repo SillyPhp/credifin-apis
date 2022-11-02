@@ -24,7 +24,8 @@ class DealsController extends ApiBaseController
             'class' => VerbFilter::className(),
             'actions' => [
                 'detail' => ['POST', 'OPTIONS'],
-                'claim' => ['POST', 'OPTIONS']
+                'claim' => ['POST', 'OPTIONS'],
+                'get-claimed' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -168,5 +169,26 @@ class DealsController extends ApiBaseController
             $randomString .= $characters[$index];
         }
         return $randomString;
+    }
+
+    public function actionGetClaimed()
+    {
+        if ($user = $this->isAuthorized()) {
+            $claimed = ClaimedDeals::find()
+                ->alias('a')
+                ->select(['a.claimed_deal_enc_id', 'a.deal_enc_id', 'a.claimed_coupon_code', 'a.expiry_date', 'b.deal_type', 'b.name', 'b.title', 'b.value', 'b.type', 'b.discount_type'])
+                ->joinWith(['dealEnc b'], false)
+                ->where(['a.user_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            if ($claimed) {
+                return $this->response(200, ['status' => 200, 'claimed_deals' => $claimed]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 }

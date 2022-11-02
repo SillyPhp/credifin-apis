@@ -684,7 +684,7 @@ class CompanyDashboardController extends ApiBaseController
 
         $detail = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'a.email', 'a.phone',
+            ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'a.email', 'a.phone', 'a.description', 'a.facebook', 'a.google', 'a.twitter', 'a.instagram', 'a.linkedin',
                 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo', 'CASE WHEN a.cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, 'https') . '", a.cover_image_location, "/", a.cover_image) ELSE NULL END cover_image'
             ])
             ->joinWith(['organizationLocations b' => function ($b) {
@@ -717,7 +717,7 @@ class CompanyDashboardController extends ApiBaseController
                     $c->joinWith(['loanPartnerEnc c1'], false);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
-                ->where(['a.is_deleted' => 0, 'a.financer_enc_id' => $user->user_enc_id])
+                ->where(['a.is_deleted' => 0, 'a.status' => 1, 'a.financer_enc_id' => Users::findOne(['organization_enc_id' => $detail['organization_enc_id']])->user_enc_id])
                 ->asArray()
                 ->all();
 
