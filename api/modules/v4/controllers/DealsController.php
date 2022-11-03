@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use common\models\AssignedDeals;
+use common\models\AssignedFinancerLoanType;
 use common\models\ClaimedDeals;
 use common\models\UnclaimedOrganizations;
 use yii\helpers\Url;
@@ -176,8 +177,11 @@ class DealsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $claimed = ClaimedDeals::find()
                 ->alias('a')
-                ->select(['a.claimed_deal_enc_id', 'a.deal_enc_id', 'a.claimed_coupon_code', 'a.expiry_date', 'b.deal_type', 'b.name', 'b.title', 'b.value', 'b.type', 'b.discount_type'])
-                ->joinWith(['dealEnc b'], false)
+                ->select(['a.claimed_deal_enc_id', 'a.deal_enc_id', 'a.claimed_coupon_code', 'a.expiry_date', 'b.deal_type', 'b.name', 'b.title', 'b.value', 'b.type', 'b.discount_type',
+                    'CASE WHEN b1.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",b1.logo_location, "/", b1.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b1.name, "&size=200&rounded=true&background=", REPLACE(b1.initials_color, "#", ""), "&color=ffffff") END logo'])
+                ->joinWith(['dealEnc b' => function ($b) {
+                    $b->joinWith(['organizationEnc b1'], false);
+                }], false)
                 ->where(['a.user_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
                 ->asArray()
                 ->all();
