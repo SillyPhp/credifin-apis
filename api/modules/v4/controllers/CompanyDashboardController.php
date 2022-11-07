@@ -222,7 +222,8 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['educationLoanPayments l' => function ($l) {
                     $l->select(['l.loan_app_enc_id', 'l.payment_status']);
                     $l->onCondition(['l.payment_status' => ['captured', 'created', 'waived off']]);
-                }]);
+                }])
+                ->andWhere(['a.is_deleted' => 0]);
 
             if ($user->organization_enc_id) {
                 if (!$service) {
