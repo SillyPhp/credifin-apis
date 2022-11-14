@@ -719,6 +719,7 @@ class CompanyDashboardController extends ApiBaseController
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
                 ->where(['a.is_deleted' => 0, 'a.status' => 1, 'a.financer_enc_id' => Users::findOne(['organization_enc_id' => $detail['organization_enc_id']])->user_enc_id])
+                ->andWhere(['<>', 'b.name', 'Vehicle Loan'])
                 ->asArray()
                 ->all();
 

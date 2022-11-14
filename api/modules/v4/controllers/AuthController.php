@@ -16,6 +16,7 @@ use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
 use common\models\UserTypes;
+use common\models\UserVerificationTokens;
 use common\models\Utilities;
 use frontend\models\accounts\ResetPasswordForm;
 use yii\web\UploadedFile;
@@ -521,7 +522,7 @@ class AuthController extends ApiBaseController
         $pass = $utilitiesModel->encrypt_pass();
         if ($pass === $user['password']) {
             $data['weak_password'] = true;
-        }else{
+        } else {
             $data['weak_password'] = false;
         }
 
@@ -563,10 +564,6 @@ class AuthController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "phone"']);
         }
 
-        if (empty($params['new_password'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing information "new_password"']);
-        }
-
         $phone = $this->decode($params['phone']);
 //        $phone = $params['phone'];
 
@@ -580,15 +577,29 @@ class AuthController extends ApiBaseController
 
         if ($user) {
 
+            UserVerificationTokens::updateAll([
+                'last_updated_on' => date('Y-m-d H:i:s'),
+                'last_updated_by' => $user->user_enc_id,
+                'is_deleted' => 1
+            ], ['and',
+                ['verification_type' => 1],
+                ['created_by' => $user->user_enc_id],
+                ['status' => 'Pending'],
+                ['is_deleted' => 0]
+            ]);
+
             $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['password'] = $params['new_password'];
-            $user->password = $utilitiesModel->encrypt_pass();
-            $user->last_updated_on = date('Y-m-d H:i:s');
-            if (!$user->update()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            $userVerificationModel = new UserVerificationTokens();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $userVerificationModel->token_enc_id = $utilitiesModel->encrypt();
+            $userVerificationModel->token = Yii::$app->security->generateRandomString();
+            $userVerificationModel->verification_type = 1;
+            $userVerificationModel->created_by = $user->user_enc_id;
+            if (!$userVerificationModel->save()) {
+                return $this->response(500, ['statud' => 500, 'message' => 'an error occurred', 'error' => $userVerificationModel->getErrors()]);
             }
 
-            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+            return $this->response(200, ['status' => 200, 'token' => $userVerificationModel->token]);
         }
 
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
