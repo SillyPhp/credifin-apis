@@ -45,6 +45,7 @@ class AuthController extends ApiBaseController
                 'find-user',
                 'change-password',
                 'otp-change-password',
+                'verify-phone'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -554,6 +555,32 @@ class AuthController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    public function actionVerifyPhone()
+    {
+        $params = Yii::$app->request->post();
+
+        if (empty($params['phone'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "phone"']);
+        }
+
+        $phone = $this->decode($params['phone']);
+//        $phone = $params['phone'];
+
+        $user = Users::find()
+            ->where([
+                'or',
+                ['phone' => [$phone, '+91' . $phone]],
+                ['phone' => $phone],
+            ])
+            ->one();
+
+        if ($user) {
+            return $this->response(200, ['status' => 200, 'user_exists' => true]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found', 'user_exists' => false]);
     }
 
     public function actionOtpChangePassword()
