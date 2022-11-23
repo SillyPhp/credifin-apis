@@ -96,7 +96,8 @@ class CompanyDashboardController extends ApiBaseController
                         ['not', ['i.provider_enc_id' => '']]
                     ]);
                     $i->andWhere(['in', 'i.status', [0, 3, 4, 10]]);
-                }], false);
+                }], false)
+                ->andWhere(['a.is_deleted' => 0]);
 
             if ($user->organization_enc_id) {
                 $stats->andWhere(['a.lead_by' => $dsa]);
