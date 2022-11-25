@@ -7,6 +7,8 @@ use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
 use common\models\EducationLoanPayments;
 use common\models\EsignOrganizationTracking;
+use common\models\LoanApplicationComments;
+use common\models\LoanApplicationNotifications;
 use common\models\LoanApplications;
 use common\models\LoanSanctionReports;
 use common\models\Organizations;
@@ -42,6 +44,8 @@ class CompanyDashboardController extends ApiBaseController
                 'update-employee-info' => ['POST', 'OPTIONS'],
                 'dsa-connectors' => ['POST', 'OPTIONS'],
                 'financer-detail' => ['POST', 'OPTIONS'],
+                'save-notification' => ['POST', 'OPTIONS'],
+                'save-comment' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -320,6 +324,14 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanCoApplicants d' => function ($d) {
                     $d->select(['d.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone',
                         'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation']);
+                }])
+                ->joinWith(['loanApplicationNotifications e' => function ($e) {
+                    $e->select(['e.notification_enc_id', 'e.message', 'e.loan_application_enc_id', 'e.created_on']);
+                    $e->onCondition(['e.is_deleted' => 0]);
+                }])
+                ->joinWith(['loanApplicationComments f' => function ($f) {
+                    $f->select(['f.comment_enc_id', 'f.comment', 'f.loan_application_enc_id', 'f.created_on']);
+                    $f->onCondition(['f.is_deleted' => 0]);
                 }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
@@ -729,6 +741,66 @@ class CompanyDashboardController extends ApiBaseController
 
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
 
+    }
+
+    public function actionSaveNotification()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            if (empty($params['message'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "message"']);
+            }
+
+            $notification = new LoanApplicationNotifications();
+            $notification->notification_enc_id = Yii::$app->getSecurity()->generateRandomString();
+            $notification->loan_application_enc_id = $params['loan_id'];
+            $notification->message = $params['message'];
+            $notification->created_by = $user->user_enc_id;
+            $notification->created_on = date('Y-m-d H:i:s');
+            if (!$notification->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $notification->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionSaveComment()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            if (empty($params['comment'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "comment"']);
+            }
+
+            $comment = new LoanApplicationComments();
+            $comment->comment_enc_id = Yii::$app->getSecurity()->generateRandomString();
+            $comment->loan_application_enc_id = $params['loan_id'];
+            $comment->comment = $params['comment'];
+            $comment->created_by = $user->user_enc_id;
+            $comment->created_on = date('Y-m-d H:i:s');
+            if (!$comment->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $notification->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 
 
