@@ -15,6 +15,7 @@ use common\models\Organizations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
+use common\models\SharedLoanApplications;
 use common\models\Users;
 use yii\db\Expression;
 use common\models\Utilities;
@@ -46,6 +47,9 @@ class CompanyDashboardController extends ApiBaseController
                 'financer-detail' => ['POST', 'OPTIONS'],
                 'save-notification' => ['POST', 'OPTIONS'],
                 'save-comment' => ['POST', 'OPTIONS'],
+                'share-application' => ['POST', 'OPTIONS'],
+                'update-shared-application' => ['POST', 'OPTIONS'],
+                'employee-search' => ['GET', 'OPTIONS'],
             ]
         ];
 
@@ -147,6 +151,8 @@ class CompanyDashboardController extends ApiBaseController
                 $dsa[] = $user->user_enc_id;
             }
 
+            $shared_apps = $this->sharedApps($user->user_enc_id);
+
             $params = Yii::$app->request->post();
 
             $filter = null;
@@ -201,6 +207,8 @@ class CompanyDashboardController extends ApiBaseController
                 END) as gender',
                     'a.applicant_dob as dob',
                     'a.created_by',
+                    'a.lead_by',
+                    'a.managed_by'
                 ])
                 ->joinWith(['collegeCourseEnc f'], false)
                 ->joinWith(['collegeEnc g'], false)
@@ -239,6 +247,9 @@ class CompanyDashboardController extends ApiBaseController
                 $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
             }
 
+            if ($shared_apps['app_ids']) {
+                $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
+            }
 
             if ($filter) {
                 $loans->andWhere(['in', 'i.status', $filter]);
@@ -276,6 +287,29 @@ class CompanyDashboardController extends ApiBaseController
                         $loans[$key]['payment_status'] = $val[0]['payment_status'];
                     }
                     unset($loans[$key]['educationLoanPayments']);
+
+                    $loans[$key]['sharedTo'] = SharedLoanApplications::find()
+                        ->alias('a')
+                        ->select(['a.shared_loan_app_enc_id', 'a.loan_app_enc_id', 'a.access', 'a.status', 'concat(b.first_name," ",b.last_name) name', 'b.phone',
+                            'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
+                        ])
+                        ->joinWith(['sharedTo b'], false)
+                        ->where(['a.is_deleted' => 0, 'a.shared_by' => $user->user_enc_id, 'a.loan_app_enc_id' => $val['loan_app_enc_id']])
+                        ->asArray()
+                        ->all();
+
+                    $loans[$key]['access'] = null;
+                    $loans[$key]['shared_by'] = null;
+                    $loans[$key]['is_shared'] = false;
+                    if ($shared_apps['app_ids']) {
+                        foreach ($shared_apps['shared'] as $s) {
+                            if ($val['loan_app_enc_id'] == $s['loan_app_enc_id']) {
+                                $loans[$key]['access'] = $s['access'];
+                                $loans[$key]['shared_by'] = $s['shared_by'];
+                                $loans[$key]['is_shared'] = true;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -284,6 +318,26 @@ class CompanyDashboardController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    private function sharedApps($user_id)
+    {
+        $shared = SharedLoanApplications::find()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id', 'a.access', 'concat(b.first_name," ",b.last_name) shared_by'])
+            ->joinWith(['sharedBy b'], false)
+            ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.shared_to' => $user_id])
+            ->asArray()
+            ->all();
+
+        $loan_app_ids = [];
+        if ($shared) {
+            foreach ($shared as $s) {
+                array_push($loan_app_ids, $s['loan_app_enc_id']);
+            }
+        }
+
+        return ['app_ids' => $loan_app_ids, 'shared' => $shared];
     }
 
     private function getDsa($user_id)
@@ -326,11 +380,13 @@ class CompanyDashboardController extends ApiBaseController
                         'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation']);
                 }])
                 ->joinWith(['loanApplicationNotifications e' => function ($e) {
-                    $e->select(['e.notification_enc_id', 'e.message', 'e.loan_application_enc_id', 'e.created_on']);
+                    $e->select(['e.notification_enc_id', 'e.message', 'e.loan_application_enc_id', 'e.created_on', 'concat(e1.first_name," ",e1.last_name) created_by']);
+                    $e->joinWith(['createdBy e1'], false);
                     $e->onCondition(['e.is_deleted' => 0]);
                 }])
                 ->joinWith(['loanApplicationComments f' => function ($f) {
-                    $f->select(['f.comment_enc_id', 'f.comment', 'f.loan_application_enc_id', 'f.created_on']);
+                    $f->select(['f.comment_enc_id', 'f.comment', 'f.loan_application_enc_id', 'f.created_on', 'concat(f1.first_name," ",f1.last_name) created_by']);
+                    $f->joinWith(['createdBy f1'], false);
                     $f->onCondition(['f.is_deleted' => 0]);
                 }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
@@ -482,6 +538,10 @@ class CompanyDashboardController extends ApiBaseController
             ]);
         }
 
+        if ($params != null && !empty($params['alreadyExists'])) {
+            $employee->andWhere(['not', ['a.sign_up_user_enc_id' => $params['alreadyExists']]]);
+        }
+
         return $employee->asArray()
             ->all();
     }
@@ -529,6 +589,75 @@ class CompanyDashboardController extends ApiBaseController
 
         return $connector->asArray()
             ->all();
+    }
+
+    public function actionEmployeeSearch($employee_search, $type, $loan_id)
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+//            if (empty($params['employee_search'])) {
+//                return $this->response(422, ['status' => 422, 'message' => 'missing information "employee_search"']);
+//            }
+//
+//            if (empty($params['type'])) {
+//                return $this->response(422, ['status' => 422, 'message' => 'missing information "type"']);
+//            }
+//
+//            if (empty($params['loan_id'])) {
+//                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+//            }
+
+            $params['employee_search'] = $employee_search;
+            $params['type'] = $type;
+            $params['loan_id'] = $loan_id;
+
+            if (!$user->organization_enc_id) {
+                return $this->response(403, ['status' => 403, 'message' => 'forbidden']);
+            }
+
+            $already_exists = SharedLoanApplications::find()
+                ->select(['a.shared_to'])
+                ->where(['a.is_deleted' => 0, 'a.loan_app_enc_id' => $loan_id])
+                ->asArray()
+                ->all();
+
+            $already_exists_ids = [];
+            if ($already_exists) {
+                foreach ($already_exists as $e) {
+                    array_push($already_exists_ids, $e['shared_to']);
+                }
+            }
+
+            $params['alreadyExists'] = $already_exists_ids;
+
+            if ($params['type'] == 'employees') {
+                $employees = $this->employeesList($user->organization_enc_id, $params);
+                if ($employees) {
+                    foreach ($employees as $key => $val) {
+                        $employees[$key]['lead_by'] = false;
+                        $employees[$key]['managed_by'] = false;
+                        if ($val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->lead_by) {
+                            $employees[$key]['lead_by'] = true;
+                        }
+
+                        if ($val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->managed_by) {
+                            $employees[$key]['managed_by'] = true;
+                        }
+
+                        $employees[$key]['id'] = $val['user_enc_id'];
+                        $employees[$key]['name'] = $val['first_name'] . ' ' . $val['last_name'];
+
+                    }
+                }
+            }
+
+            return $this->response(200, ['status' => 200, 'list' => $employees]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 
     public function actionChangeStatus()
@@ -794,10 +923,87 @@ class CompanyDashboardController extends ApiBaseController
             $comment->created_by = $user->user_enc_id;
             $comment->created_on = date('Y-m-d H:i:s');
             if (!$comment->save()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $notification->getErrors()]);
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $comment->getErrors()]);
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionShareApplication()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            if (empty($params['shared_to'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "shared_to"']);
+            }
+
+            if (empty($params['access'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "access"']);
+            }
+
+            $exists = SharedLoanApplications::findOne(['loan_app_enc_id' => $params['loan_id'], 'shared_to' => $params['shared_to'], 'is_deleted' => 0]);
+
+            if ($exists) {
+                return $this->response(409, ['status' => 409, 'message' => 'Application already shared with this user']);
+            }
+
+            $shared = new SharedLoanApplications();
+            $shared->shared_loan_app_enc_id = Yii::$app->getSecurity()->generateRandomString();
+            $shared->loan_app_enc_id = $params['loan_id'];
+            $shared->shared_by = $user->user_enc_id;
+            $shared->shared_to = $params['shared_to'];
+            $shared->access = $params['access'];
+            $shared->created_by = $user->user_enc_id;
+            $shared->created_on = date('Y-m-d H:i:s');
+            if (!$shared->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $shared->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionUpdateSharedApplication()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['shared_loan_app_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "shared_loan_app_id"']);
+            }
+
+            $shared = SharedLoanApplications::findOne(['shared_loan_app_enc_id' => $params['shared_loan_app_id'], 'is_deleted' => 0]);
+
+            if (!$shared) {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+            (!empty($params['access'])) ? $shared->access = $params['access'] : "";
+            (!empty($params['status'])) ? $shared->status = $params['status'] : "";
+
+            if (!empty($params['delete']) && $params['delete'] == true) {
+                $shared->is_deleted = 1;
+            }
+
+            $shared->updated_by = $user->user_enc_id;
+            $shared->updated_on = date('Y-m-d H:i:s');
+            if (!$shared->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $shared->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }

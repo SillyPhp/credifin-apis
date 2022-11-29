@@ -410,6 +410,7 @@ namespace common\models;
  * @property WebinarSessions[] $webinarSessions
  * @property WebinarSpeakers[] $webinarSpeakers
  * @property WebinarSpeakers[] $webinarSpeakers0
+ * @property SharedLoanApplications[] $sharedLoanApplications
  */
 class Users extends \yii\db\ActiveRecord
 {
@@ -4279,5 +4280,13 @@ class Users extends \yii\db\ActiveRecord
     public function getAssignedFinancerLoanTypes1()
     {
         return $this->hasMany(AssignedFinancerLoanType::className(), ['financer_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSharedLoanApplications()
+    {
+        return $this->hasMany(SharedLoanApplications::className(), ['shared_by' => 'user_enc_id']);
     }
 }

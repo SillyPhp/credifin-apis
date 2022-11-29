@@ -91,6 +91,7 @@ namespace common\models;
  * @property PathToOpenLeads[] $pathToOpenLeads
  * @property PathToUnclaimOrgLoanApplication[] $pathToUnclaimOrgLoanApplications
  * @property ReferralLoanApplicationTracking[] $referralLoanApplicationTrackings
+ * @property SharedLoanApplications[] $sharedLoanApplications
  */
 class LoanApplications extends \yii\db\ActiveRecord
 {
@@ -393,5 +394,13 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getReferralLoanApplicationTrackings()
     {
         return $this->hasMany(ReferralLoanApplicationTracking::className(), ['loan_application_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSharedLoanApplications()
+    {
+        return $this->hasMany(SharedLoanApplications::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 }
