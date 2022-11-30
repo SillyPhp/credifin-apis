@@ -1425,6 +1425,10 @@ class SiteController extends Controller
         return $this->render('preference-testing');
     }
 
+    public function actionBrandPrograms(){
+        return $this->render('brand-programs');
+    }
+
     public function actionHowToCreateCareerPageLink()
     {
         return $this->render('how-to-create-career-page-link');
