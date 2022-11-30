@@ -1099,7 +1099,7 @@ class CompanyDashboardController extends ApiBaseController
                 $loan_application->phone_no = $d[12];
                 $loan_application->loan_amount = $d[17];
                 $loan_application->loan_type = 'Vehicle Loan';
-                $loan_application->loan_lender = 'rav1';
+                $loan_application->loan_lender = 'phfleasing';
                 $loan_application->vehicle_type = ucwords(strtolower($d[13]));
                 $loan_application->lead_type = 'Online';
                 $loan_application->form_type = 'diwali-dhamaka';
