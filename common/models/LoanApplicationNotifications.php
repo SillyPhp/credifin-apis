@@ -16,6 +16,7 @@ use Yii;
  * @property string $last_updated_on On which date Post Notification information was updated
  * @property string $last_updated_by
  * @property int $status Post Notification Status (0 as Pending, 1 as Approved, 2 as Rejected)
+ * @property string $source
  * @property int $is_deleted Is Notification Deleted (0 as False, 1 as True)
  *
  * @property LoanApplications $loanApplicationEnc
@@ -39,7 +40,7 @@ class LoanApplicationNotifications extends \yii\db\ActiveRecord
     {
         return [
             [['notification_enc_id', 'loan_application_enc_id', 'message', 'created_by'], 'required'],
-            [['message'], 'string'],
+            [['message', 'source'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['status', 'is_deleted'], 'integer'],
             [['notification_enc_id', 'loan_application_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],

@@ -37,7 +37,7 @@ class IndividualSignup extends Model
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'phone', 'username', 'email'], 'required'],
+            [['first_name', 'last_name', 'phone', 'username'], 'required'],
             [['first_name', 'last_name', 'phone', 'username', 'email'], 'trim'],
 
             ['phone', 'unique', 'targetClass' => 'api\modules\v4\models\Candidates', 'message' => 'phone number already registered'],
@@ -75,6 +75,13 @@ class IndividualSignup extends Model
 
             $username->username = $this->username;
             $username->assigned_to = 1;
+
+            //if username exists the concat random string to user-name
+            $username_exists = Usernames::findOne(['username' => $this->username]);
+            if (!$username_exists) {
+                $username->username = $this->username . strtolower(Yii::$app->getSecurity()->generateRandomString(5));
+            }
+
             if (!$username->validate() || !$username->save()) {
                 $transaction->rollback();
                 return false;

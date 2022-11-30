@@ -17,6 +17,7 @@ use Yii;
  * @property string $last_updated_on On which date Post Comment information was updated
  * @property string $last_updated_by
  * @property int $status Post Comment Status (0 as Pending, 1 as Approved, 2 as Rejected)
+ * @property string $source
  * @property int $is_deleted Is Comment Deleted (0 as False, 1 as True)
  *
  * @property LoanApplicationComments $replyTo
@@ -42,7 +43,7 @@ class LoanApplicationComments extends \yii\db\ActiveRecord
     {
         return [
             [['comment_enc_id', 'loan_application_enc_id', 'comment', 'created_by'], 'required'],
-            [['comment'], 'string'],
+            [['comment', 'source'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['status', 'is_deleted'], 'integer'],
             [['comment_enc_id', 'loan_application_enc_id', 'reply_to', 'created_by', 'last_updated_by'], 'string', 'max' => 100],

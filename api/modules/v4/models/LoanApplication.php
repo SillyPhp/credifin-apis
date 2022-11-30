@@ -377,6 +377,9 @@ class LoanApplication extends Model
         $loan_provider->assigned_loan_provider_enc_id = $utilitiesModel->encrypt();
         $loan_provider->loan_application_enc_id = $loan_id;
         $loan_provider->provider_enc_id = $organization->organization_enc_id;
+        if ($this->form_type == 'diwali-dhamaka') {
+            $loan_provider->status = 5;
+        }
         $loan_provider->created_by = $user_id;
         $loan_provider->created_on = date('Y-m-d H:i:s');
         if (!$loan_provider->save()) {
@@ -662,6 +665,13 @@ class LoanApplication extends Model
             $usernamesModel = new Usernames();
             $usernamesModel->username = strtolower($username);
             $usernamesModel->assigned_to = 1;
+
+            //if username exists the concat random string to user-name
+            $username_exists = Usernames::findOne(['username' => $username]);
+            if (!$username_exists) {
+                $usernamesModel->username = $username . strtolower(Yii::$app->getSecurity()->generateRandomString(5));
+            }
+
             if (!$usernamesModel->validate() || !$usernamesModel->save()) {
                 $transaction->rollBack();
                 return false;

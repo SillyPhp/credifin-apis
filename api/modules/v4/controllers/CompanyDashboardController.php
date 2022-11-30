@@ -2,9 +2,13 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\IndividualSignup;
+use api\modules\v4\models\LoanApplication;
+use common\models\AssignedDeals;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
+use common\models\ClaimedDeals;
 use common\models\EducationLoanPayments;
 use common\models\EsignOrganizationTracking;
 use common\models\LoanApplicationComments;
@@ -17,6 +21,7 @@ use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
 use common\models\SharedLoanApplications;
 use common\models\Users;
+use yii\web\UploadedFile;
 use yii\db\Expression;
 use common\models\Utilities;
 use yii\filters\VerbFilter;
@@ -187,6 +192,7 @@ class CompanyDashboardController extends ApiBaseController
                     WHEN i.status = "11" THEN "Disbursed"
                     ELSE "N/A"
                 END) as loan_status',
+                    'i.status status_number',
                     'CONCAT(k.first_name, " ", k.last_name) employee_name',
                     'a.applicant_name',
                     'a.amount',
@@ -382,12 +388,12 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanApplicationNotifications e' => function ($e) {
                     $e->select(['e.notification_enc_id', 'e.message', 'e.loan_application_enc_id', 'e.created_on', 'concat(e1.first_name," ",e1.last_name) created_by']);
                     $e->joinWith(['createdBy e1'], false);
-                    $e->onCondition(['e.is_deleted' => 0]);
+                    $e->onCondition(['e.is_deleted' => 0, 'e.source' => 'EL']);
                 }])
                 ->joinWith(['loanApplicationComments f' => function ($f) {
                     $f->select(['f.comment_enc_id', 'f.comment', 'f.loan_application_enc_id', 'f.created_on', 'concat(f1.first_name," ",f1.last_name) created_by']);
                     $f->joinWith(['createdBy f1'], false);
-                    $f->onCondition(['f.is_deleted' => 0]);
+                    $f->onCondition(['f.is_deleted' => 0, 'f.source' => 'EL']);
                 }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
@@ -890,6 +896,7 @@ class CompanyDashboardController extends ApiBaseController
             $notification->notification_enc_id = Yii::$app->getSecurity()->generateRandomString();
             $notification->loan_application_enc_id = $params['loan_id'];
             $notification->message = $params['message'];
+            $notification->source = 'EL';
             $notification->created_by = $user->user_enc_id;
             $notification->created_on = date('Y-m-d H:i:s');
             if (!$notification->save()) {
@@ -920,6 +927,7 @@ class CompanyDashboardController extends ApiBaseController
             $comment->comment_enc_id = Yii::$app->getSecurity()->generateRandomString();
             $comment->loan_application_enc_id = $params['loan_id'];
             $comment->comment = $params['comment'];
+            $comment->source = 'EL';
             $comment->created_by = $user->user_enc_id;
             $comment->created_on = date('Y-m-d H:i:s');
             if (!$comment->save()) {
@@ -1007,6 +1015,266 @@ class CompanyDashboardController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    private function generate_username($string_name = null, $rand_no = 200)
+    {
+        $username_parts = array_filter(explode(" ", strtolower($string_name))); //explode and lowercase name
+        $username_parts = array_slice($username_parts, 0, 2); //return only first two arry part
+
+        $part1 = (!empty($username_parts[0])) ? substr($username_parts[0], 0, 8) : ""; //cut first name to 8 letters
+        $part2 = (!empty($username_parts[1])) ? substr($username_parts[1], 0, 5) : ""; //cut second name to 5 letters
+        $part3 = ($rand_no) ? rand(0, $rand_no) : "";
+
+        $username = $part1 . str_shuffle($part2) . $part3; //str_shuffle to randomly shuffle all characters
+        return $username;
+    }
+
+    public function actionSaveDiwaliDhamakaData()
+    {
+
+        $ids = '';
+
+        //getting csv file
+        $data = UploadedFile::getInstanceByName('file');
+
+        //reading file
+        $file = fopen($data->tempName, "r");
+        $array_data = [];
+
+        //get data from csv
+        while (($data = fgetcsv($file)) !== FALSE) {
+            if (!empty($data)) {
+                array_push($array_data, $data);
+            }
+        }
+
+
+        unset($array_data[0]);
+
+        for ($i = 1; $i <= count($array_data); $i++) {
+            $d = $array_data[$i];
+            // extracting and transforming name
+            $name = $d[8];
+            if (str_contains($name, 'S/O')) {
+                $name = explode('S/O', $name)[0];
+            } elseif (str_contains($name, 'W/O')) {
+                $name = explode('W/O', $name)[0];
+            } elseif (str_contains($name, 'D/O')) {
+                $name = explode('D/O', $name)[0];
+            }
+
+            //saving data
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $bdo_name = $d[5];
+                $bdo_number = $d[6];
+                $refId = Referral::findOne(['organization_enc_id' => Organizations::findOne(['slug' => 'phfleasing'])->organization_enc_id])->code;
+                $employee_exists = Users::findOne(['phone' => [$bdo_number, '+91' . $bdo_number]]);
+                if (!$employee_exists) {
+                    $signup = new IndividualSignup();
+                    $signup->phone = $bdo_number;
+                    $signup->dsaRefId = $refId;
+                    $signup->user_type = 'Employee';
+                    $e_bdo_name = explode(' ', $bdo_name);
+                    $signup->first_name = $e_bdo_name[0];
+                    $signup->last_name = $e_bdo_name[1];
+                    $signup->username = $this->generate_username($bdo_name);
+                    $signup->password = $bdo_number;
+                    $signup->source = Yii::$app->getRequest()->getUserIP();
+                    if (!$signup->saveUser()) {
+                        $transaction->rollback();
+                        $ids = $ids . $d[0] . ',';
+                    }
+
+                }
+
+                $employee_id = Users::findOne(['phone' => [$bdo_number, '+91' . $bdo_number]])->user_enc_id;
+                $loan_application = new LoanApplication();
+                $loan_application->disbursement_date = date('Y-m-d', strtotime($d[2]));
+                $loan_application->dealer_name = $d[3];
+                $loan_application->applicant_name = ucwords(strtolower($name));
+                $loan_application->pan_number = $d[10];
+                $loan_application->aadhar_number = $d[11];
+                $loan_application->phone_no = $d[12];
+                $loan_application->loan_amount = $d[17];
+                $loan_application->loan_type = 'Vehicle Loan';
+                $loan_application->loan_lender = 'rav1';
+                $loan_application->vehicle_type = ucwords(strtolower($d[13]));
+                $loan_application->lead_type = 'Online';
+                $loan_application->form_type = 'diwali-dhamaka';
+                $loan_application->vehicle_making_year = '2022';
+                if (!$loan_application->save($employee_id)) {
+                    $transaction->rollback();
+                    $ids = $ids . $d[0] . ',';
+                }
+
+                $transaction->commit();
+
+            } catch (Exception $e) {
+                $ids = $ids . $d[0] . ',' . $e->getMessage();
+                $transaction->rollback();
+//                    $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()]);
+            }
+
+        }
+
+
+        //closing file
+        fclose($file);
+
+        if (!empty($ids)) {
+            Yii::$app->mailer->htmlLayout = 'layouts/email';
+            $mail = Yii::$app->mailer->compose()
+                ->setFrom([Yii::$app->params->from_email => 'Empower Loans'])
+                ->setTo(['ravindersaini15697@gmail.com' => 'Ravinder Singh'])
+                ->setTextBody($ids)
+                ->setSubject('not saved ids');
+
+            if ($mail->send()) {
+                return $this->response(200, ['status' => 200, 'message' => 'mail sent']);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred email']);
+            }
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+    }
+
+    public function actionSaveCode()
+    {
+
+        $loan_users = null;
+        // deal slug
+        $deal_slug = 'diwali-dhamaka';
+        // coupon for everyone
+        $code_for_everyone = 'BAG';
+        // coupon for HEADPHONE
+        $code_for_headphone = 'HEADPHONES';
+        // coupon for Power Bank
+        $code_for_powerbank = 'POWERBANK';
+        $headphone_cnt = 0;
+        $powerbank_cnt = 0;
+        $get_random = true;
+
+        // if users exists for scratch card else not found 404 code
+        if ($users = $this->scratchCardUsers()) {
+            $loan_users = $users;
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            foreach ($loan_users as $user) {
+                // getting and converting card count to INT
+                $user_cnt = (int)$user['cnt'];
+
+                // saving coupon code for user
+                for ($i = 0; $i < $user_cnt; $i++) {
+
+                    // check if unique for 2 times for overall and only 1 per user
+                    if ($headphone_cnt < 100 & $get_random) {
+
+                        // getting random code
+                        $code = $this->_genCode([$code_for_headphone, $code_for_everyone, $code_for_powerbank]);
+                        if ($code == $code_for_headphone) {
+                            $headphone_cnt += 1;
+                            $get_random = false;
+                        }
+
+                    } else if ($powerbank_cnt < 100 & $get_random) {
+
+                        // getting random code
+                        $code = $this->_genCode([$code_for_headphone, $code_for_everyone, $code_for_powerbank]);
+                        if ($code == $code_for_powerbank) {
+                            $powerbank_cnt += 1;
+                            $get_random = false;
+                        }
+
+                    } else {
+                        $code = $code_for_everyone;
+                    }
+
+                    //saving claimed deal for user
+                    $claim = new ClaimedDeals();
+                    $claim->claimed_deal_enc_id = \Yii::$app->security->generateRandomString();
+                    $claim->deal_enc_id = AssignedDeals::findOne(['slug' => $deal_slug])->deal_enc_id;
+                    $claim->user_enc_id = $user['user_id'];
+                    $claim->claimed_coupon_code = $code;
+                    $claim->created_by = $user['user_id'];
+                    $claim->created_on = date('Y-m-d H:i:s');
+                    if (!$claim->save()) {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $claim->getErrors()]);
+                    }
+                }
+
+                // get random true for next user
+                $get_random = true;
+
+            }
+            $transaction->commit();
+
+        } catch (Exception $e) {
+            $transaction->rollback();
+            $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()]);
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+    }
+
+    private function scratchCardUsers()
+    {
+        // getting date before 3 months
+        $date = new \DateTime('now');
+        $date->modify('-3 month'); // or you can use '-90 day' for deduct
+        $date = $date->format('Y-m-d');
+
+        // getting loan application count for with users
+
+        //Scratch card conditions:-
+        //  - Disbursed with phf
+        //  - two-wheeler loan or e rickshaw loan
+        //  - has disbursed date and under 3 month
+        $loans = LoanApplications::find()
+            ->alias('a')
+            ->select(['COUNT(a.loan_app_enc_id) cnt', 'a.created_by user_id', 'a.loan_app_enc_id'])
+            ->joinWith(['assignedLoanProviders b' => function ($b) {
+                $b->joinWith(['providerEnc b1']);
+            }], false)
+            ->joinWith(['loanApplicationOptions c'], false)
+            ->joinWith(['loanDisbursementSchedules d'], false)
+            ->where(['a.is_deleted' => 0, 'a.loan_type' => 'Vehicle Loan', 'a.source' => 'EmpowerFintech'])
+            ->andWhere(['b1.slug' => 'phfleasing', 'b.status' => 5])
+//            ->andWhere(['b1.slug' => 'rav1', 'b.status' => 5])
+            ->andWhere(['<>', 'a.created_by', 'null'])
+            ->andWhere(['>=', "c.disbursement_date", $date])
+            ->andWhere([
+                'or',
+                ['c.vehicle_type' => 'Two Wheeler'],
+                ['c.vehicle_type' => 'Three Wheeler'],
+                ['c.vehicle_option' => 'E-Rickshaw']
+            ])
+            ->groupBy(['a.created_by'])
+            ->asArray()
+            ->all();
+
+        if ($loans) {
+            return $loans;
+        }
+
+        return false;
+    }
+
+    private function _genCode($arr)
+    {
+        for ($i = 0; $i < 1; $i++) {
+            $index = rand(0, count($arr) - 1);
+            $randomString = $arr[$index];
+        }
+        return $randomString;
     }
 
 
