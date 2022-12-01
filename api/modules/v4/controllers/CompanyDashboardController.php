@@ -316,6 +316,15 @@ class CompanyDashboardController extends ApiBaseController
                             }
                         }
                     }
+
+                    $loans[$key]['claimedDeals'] = ClaimedDeals::find()
+                        ->alias('a')
+                        ->select(['a.claimed_deal_enc_id', 'a.deal_enc_id', 'a.user_enc_id', 'a.claimed_coupon_code'])
+                        ->joinWith(['dealEnc b'], false)
+                        ->andWhere(['a.user_enc_id' => $val['created_by'], 'a.is_deleted' => 0, 'b.slug' => 'diwali-dhamaka'])
+                        ->asArray()
+                        ->all();
+
                 }
             }
 
