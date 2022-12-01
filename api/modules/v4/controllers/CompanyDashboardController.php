@@ -1034,6 +1034,7 @@ class CompanyDashboardController extends ApiBaseController
     {
 
         $ids = '';
+        $params = Yii::$app->request->post();
 
         //getting csv file
         $data = UploadedFile::getInstanceByName('file');
@@ -1052,7 +1053,7 @@ class CompanyDashboardController extends ApiBaseController
 
         unset($array_data[0]);
 
-        for ($i = 1; $i <= count($array_data); $i++) {
+        for ($i = (int)$params['start']; $i <= count($array_data); $i++) {
             $d = $array_data[$i];
             // extracting and transforming name
             $name = $d[8];
