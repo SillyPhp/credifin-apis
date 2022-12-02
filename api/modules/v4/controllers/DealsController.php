@@ -183,6 +183,7 @@ class DealsController extends ApiBaseController
                     $b->joinWith(['organizationEnc b1'], false);
                 }], false)
                 ->where(['a.user_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
+                ->andWhere(['!=', 'a.slug', 'diwali-dhamaka'])
                 ->asArray()
                 ->all();
 
