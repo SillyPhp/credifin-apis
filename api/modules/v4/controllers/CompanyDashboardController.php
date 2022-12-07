@@ -633,8 +633,8 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             $already_exists = SharedLoanApplications::find()
-                ->select(['a.shared_to'])
-                ->where(['a.is_deleted' => 0, 'a.loan_app_enc_id' => $loan_id])
+                ->select(['shared_to'])
+                ->where(['is_deleted' => 0, 'loan_app_enc_id' => $loan_id])
                 ->asArray()
                 ->all();
 
