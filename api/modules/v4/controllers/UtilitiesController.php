@@ -29,6 +29,7 @@ class UtilitiesController extends ApiBaseController
                 'designations' => ['GET', 'OPTIONS'],
                 'states' => ['GET', 'OPTIONS'],
                 'cities' => ['GET', 'OPTIONS'],
+                'search-cities' => ['GET', 'OPTIONS'],
                 'file-upload' => ['POST', 'OPTIONS'],
             ]
         ];
@@ -90,6 +91,22 @@ class UtilitiesController extends ApiBaseController
             ->all();
 
         return $this->response(200, ['status' => 200, 'cities' => $cities]);
+    }
+
+    public function actionSearchCities($keyword)
+    {
+        $cities = Cities::find()
+            ->alias('a')
+            ->select(['a.city_enc_id id', 'concat(a.name,", ",b.name) name'])
+            ->joinWith(['stateEnc b' => function ($b) {
+                $b->joinWith(['countryEnc c'], false);
+            }], false)
+            ->andWhere(['like', 'a.name', $keyword])
+            ->andWhere(['c.country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMOGM2K3loZz09'])
+            ->asArray()
+            ->all();
+
+        return $this->response(200, ['status' => 200, 'list' => $cities]);
     }
 
     public function actionFileUpload()

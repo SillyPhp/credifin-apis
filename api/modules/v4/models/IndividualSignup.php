@@ -32,6 +32,10 @@ class IndividualSignup extends Model
     public $dsaRefId;
     public $is_connector;
     public $user_type;
+    public $organization_name;
+    public $organization_email;
+    public $organization_phone;
+    public $organization_website;
 
 
     public function rules()
@@ -54,13 +58,21 @@ class IndividualSignup extends Model
             [['password'], 'string', 'length' => [8, 20]],
 
             ['source', 'required'],
-            [['dsaRefId', 'is_connector', 'user_type'], 'safe']
+            [['dsaRefId', 'is_connector', 'user_type', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'safe']
         ];
     }
 
     public function saveUser()
     {
-        $user_type = $this->user_type == 'Employee' ? 'Employee' : 'Individual';
+//        $user_type = $this->user_type == 'Employee' ? 'Employee' : 'Individual';
+
+        if ($this->user_type == 'Employee') {
+            $user_type = 'Employee';
+        } elseif ($this->user_type == 'Dealer') {
+            $user_type = 'Dealer';
+        } else {
+            $user_type = 'Individual';
+        }
 
         if ($this->user_type == 'Connector') {
             $this->is_connector = true;
@@ -131,6 +143,24 @@ class IndividualSignup extends Model
                 }
             }
 
+            if ($this->organization_name) {
+                $org = new Organizations();
+                $org->organization_enc_id = Yii::$app->security->generateRandomString(32);
+                $org->name = $this->organization_name;
+                $org->email = $this->organization_email;
+                $org->phone = $this->organization_phone;
+                $org->website = $this->organization_website;
+                $utilitiesModel->variables['name'] = $this->username;
+                $utilitiesModel->variables['table_name'] = Organizations::tableName();
+                $utilitiesModel->variables['field_name'] = 'slug';
+                $org->slug = $utilitiesModel->create_slug();
+                $org->initials_color = RandomColors::one();;
+                $org->created_by = $user->user_enc_id;
+                if (!$org->save()) {
+                    return false;
+                }
+            }
+
             $transaction->commit();
 
             $data['username'] = $user->username;
@@ -151,6 +181,12 @@ class IndividualSignup extends Model
             $data['organization_enc_id'] = '';
             $data['organization_name'] = '';
             $data['organization_slug'] = '';
+
+            if($this->organization_name){
+                $data['organization_enc_id'] = $org->organization_enc_id;
+                $data['organization_name'] = $org->name;
+                $data['organization_slug'] = $org->slug;
+            }
 
             if ($this->dsaRefId && $this->user_type == 'Employee') {
                 $org_id = \common\models\Referral::findOne(['code' => $this->dsaRefId])->organization_enc_id;
