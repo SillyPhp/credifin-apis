@@ -3,11 +3,14 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\BusinessLoanApplication;
+use common\models\BillDetails;
+use common\models\CertificateTypes;
 use common\models\EsignAgreementDetails;
 use common\models\EsignDocuments;
 use common\models\EsignRequestedAgreements;
 use common\models\EsignVehicleLoanDetails;
 use common\models\LeadsApplications;
+use common\models\LoanCertificates;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\spaces\Spaces;
@@ -40,6 +43,7 @@ class LoansController extends ApiBaseController
                 'get-esign-applications' => ['POST', 'OPTIONS'],
                 'get-documents' => ['POST', 'OPTIONS'],
                 'get-document-url' => ['POST', 'OPTIONS'],
+                'upload-document' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -443,4 +447,69 @@ class LoansController extends ApiBaseController
         }
     }
 
+    public function actionUploadDocument(){
+        if($user = $this->isAuthorized()){
+            $params = Yii::$app->request->post();
+
+            if(empty($params['loan_id'])){
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "loan_id"']);
+            }
+            if(empty($params['proof_of'])){
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "proof_of"']);
+            }
+            if(empty($params['document_type'])){
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "document_type"']);
+            }
+
+            $file = UploadedFile::getInstanceByName('file');
+
+            if(!$type_id = $this->getCertificateTypeId($params['document_type'])){
+               return $this->response(500, ['status'=> 500, 'message'=> 'An Error Occurred']) ;
+            }
+            $utilitiesModel = new Utilities();
+            $certificate = new LoanCertificates();
+            $certificate->certificate_enc_id = \Yii::$app->getSecurity()->generateRandomString();
+            $certificate->loan_app_enc_id = $params['loan_id'];
+            $certificate->certificate_type_enc_id = $type_id;
+            $certificate->proof_of = $params['proof_of'];
+            $certificate->created_by = $user->user_enc_id;
+            if(!empty($params['short_description'])){
+                $certificate->short_description = $params['short_description'];
+            }
+            $certificate->proof_image_location = \Yii::$app->getSecurity()->generateRandomString();
+            $base_path = Yii::$app->params->upload_directories->loans->image . $certificate->proof_image_location . '/';
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $certificate->proof_image = $utilitiesModel->encrypt() . '.' . 'pdf';
+            $type = $file->type;
+            if ($certificate->save()) {
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $result = $my_space->uploadFileSources($file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $certificate->proof_image, "private", ['params' => ['ContentType' => $type]]);
+                if ($result) {
+                    return $this->response(200, ['status'=>200, 'message'=>'Successfully Saved']);
+                } else {
+                    return $this->response(500, ['status'=>500, 'message'=>'Some Error Occurred']);
+                }
+            } else {
+                return $this->response(500, ['status'=>500, 'message'=>'Some Error Occurred', 'error'=>$certificate->getErrors()]);
+            }
+        }
+
+    }
+
+    private function getCertificateTypeId($type){
+        $exists = CertificateTypes::findOne(['name' => $type]);
+        if(!$exists){
+            $model = new CertificateTypes();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+            $model->certificate_type_enc_id =  $utilitiesModel->encrypt();
+            $model->name = $type;
+            if($model->save()){
+                return $model->certificate_type_enc_id;
+            }
+            return false;
+        }
+        return $exists->certificate_type_enc_id;
+    }
 }
