@@ -376,8 +376,7 @@ class CompanyDashboardController extends ApiBaseController
 //                    $b->where(['b.provider_enc_id' => $organization_id]);
                 }], false)
                 ->joinWith(['loanCertificates c' => function ($c) {
-                    $c->select(['c.certificate_enc_id', 'c.loan_app_enc_id', 'c.certificate_type_enc_id', 'c.number', 'c1.name',
-                        'CASE WHEN c.proof_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->proof, 'https') . '", c.proof_image_location, "/", c.proof_image) ELSE NULL END proof_image',]);
+                    $c->select(['c.certificate_enc_id', 'c.loan_app_enc_id', 'c.certificate_type_enc_id', 'c.number', 'c1.name', 'c.proof_image', 'c.proof_image_location',]);
                     $c->joinWith(['certificateTypeEnc c1'], false);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
@@ -413,6 +412,17 @@ class CompanyDashboardController extends ApiBaseController
                     ->one();
 
                 $loan['loanSanctionReports'] = $loan_sanction_report;
+
+                if($loan['loanCertificates']){
+                    foreach ($loan['loanCertificates'] as $key=>$val){
+                        if($val['proof_image']){
+                            $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                            $proof = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . $val['proof_image_location'] . DIRECTORY_SEPARATOR . $val['proof_image'], "15 minutes");
+                            $loan['loanCertificates'][$key]['proof_image'] = $proof;
+                        }
+                    }
+                }
 
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }
