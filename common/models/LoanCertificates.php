@@ -21,6 +21,7 @@ use Yii;
  * @property string $created_on
  * @property string $updated_by
  * @property string $updated_on
+ * @property string $short_description
  * @property int $is_deleted 0 false,1 true
  *
  * @property LoanApplications $loanAppEnc
@@ -47,7 +48,7 @@ class LoanCertificates extends \yii\db\ActiveRecord
         return [
             [['certificate_enc_id', 'certificate_type_enc_id'], 'required'],
             [['proof_of'], 'string'],
-            [['created_on', 'updated_on'], 'safe'],
+            [['created_on', 'updated_on', 'short_description'], 'safe'],
             [['is_deleted'], 'integer'],
             [['certificate_enc_id', 'loan_app_enc_id', 'loan_co_app_enc_id', 'certificate_type_enc_id', 'proof_image', 'proof_image_name', 'proof_image_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['number'], 'string', 'max' => 20],
