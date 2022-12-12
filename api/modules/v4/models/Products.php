@@ -23,6 +23,7 @@ class Products extends Model
     public $ownership_type;
     public $images;
     public $dent_images;
+    public $status;
 
     public function formName()
     {
@@ -32,7 +33,7 @@ class Products extends Model
     public function rules()
     {
         return [
-            [['model_id', 'price', 'city_id', 'assigned_category', 'product_other_detail', 'ownership_type', 'images'], 'required'],
+            [['model_id', 'price', 'city_id', 'assigned_category', 'product_other_detail', 'ownership_type', 'images', 'status'], 'required'],
             [['variant', 'description', 'product_name', 'dent_images'], 'safe'],
             [['assigned_category', 'product_name'], 'trim'],
             [['images'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 8],
@@ -52,14 +53,14 @@ class Products extends Model
             $product->assigned_category_enc_id = $this->assigned_category;
             $product->price = $this->price;
             $product->city_enc_id = $this->city_id;
-            if ($this->product_name) {
-                $product->name = $this->product_name;
-            }
-
-            if ($this->description) {
-                $product->description = $this->description;
-            }
-
+            $product->name = $this->product_name;
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['name'] = $product->name;
+            $utilitiesModel->variables['table_name'] = \common\models\Products::tableName();
+            $utilitiesModel->variables['field_name'] = 'slug';
+            $product->slug = $utilitiesModel->create_slug();
+            $product->description = $this->description;
+            $product->status = $this->status;
             $product->created_by = $user_id;
 
             if (!$product->save()) {
