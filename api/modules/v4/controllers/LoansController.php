@@ -456,9 +456,6 @@ class LoansController extends ApiBaseController
             if (empty($params['loan_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "loan_id"']);
             }
-            if (empty($params['proof_of'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "proof_of"']);
-            }
             if (empty($params['document_type'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "document_type"']);
             }
@@ -473,7 +470,9 @@ class LoansController extends ApiBaseController
             $certificate->certificate_enc_id = \Yii::$app->getSecurity()->generateRandomString();
             $certificate->loan_app_enc_id = $params['loan_id'];
             $certificate->certificate_type_enc_id = $type_id;
-            $certificate->proof_of = $params['proof_of'];
+            if (!empty($params['proof_of'])) {
+                $certificate->proof_of = $params['proof_of'];
+            }
             $certificate->created_by = $user->user_enc_id;
             if (!empty($params['short_description'])) {
                 $certificate->short_description = $params['short_description'];
