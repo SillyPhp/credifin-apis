@@ -43,7 +43,8 @@ class LoansController extends ApiBaseController
                 'get-esign-applications' => ['POST', 'OPTIONS'],
                 'get-documents' => ['POST', 'OPTIONS'],
                 'get-document-url' => ['POST', 'OPTIONS'],
-                'upload-document' => ['POST', 'OPTIONS']
+                'upload-document' => ['POST', 'OPTIONS'],
+                'update-application-number' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -447,24 +448,25 @@ class LoansController extends ApiBaseController
         }
     }
 
-    public function actionUploadDocument(){
-        if($user = $this->isAuthorized()){
+    public function actionUploadDocument()
+    {
+        if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
-            if(empty($params['loan_id'])){
+            if (empty($params['loan_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "loan_id"']);
             }
-            if(empty($params['proof_of'])){
+            if (empty($params['proof_of'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "proof_of"']);
             }
-            if(empty($params['document_type'])){
+            if (empty($params['document_type'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "document_type"']);
             }
 
             $file = UploadedFile::getInstanceByName('file');
 
-            if(!$type_id = $this->getCertificateTypeId($params['document_type'])){
-               return $this->response(500, ['status'=> 500, 'message'=> 'An Error Occurred']) ;
+            if (!$type_id = $this->getCertificateTypeId($params['document_type'], $params['assigned_to'])) {
+                return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
             }
             $utilitiesModel = new Utilities();
             $certificate = new LoanCertificates();
@@ -473,9 +475,10 @@ class LoansController extends ApiBaseController
             $certificate->certificate_type_enc_id = $type_id;
             $certificate->proof_of = $params['proof_of'];
             $certificate->created_by = $user->user_enc_id;
-            if(!empty($params['short_description'])){
+            if (!empty($params['short_description'])) {
                 $certificate->short_description = $params['short_description'];
             }
+            $certificate->related_to = (int)$params['assigned_to'];
             $certificate->proof_image_location = \Yii::$app->getSecurity()->generateRandomString();
             $base_path = Yii::$app->params->upload_directories->loans->image . $certificate->proof_image_location . '/';
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -486,30 +489,65 @@ class LoansController extends ApiBaseController
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                 $result = $my_space->uploadFileSources($file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $certificate->proof_image, "private", ['params' => ['ContentType' => $type]]);
                 if ($result) {
-                    return $this->response(200, ['status'=>200, 'message'=>'Successfully Saved']);
+                    return $this->response(200, ['status' => 200, 'message' => 'Successfully Saved']);
                 } else {
-                    return $this->response(500, ['status'=>500, 'message'=>'Some Error Occurred']);
+                    return $this->response(500, ['status' => 500, 'message' => 'Some Error Occurred']);
                 }
             } else {
-                return $this->response(500, ['status'=>500, 'message'=>'Some Error Occurred', 'error'=>$certificate->getErrors()]);
+                return $this->response(500, ['status' => 500, 'message' => 'Some Error Occurred', 'error' => $certificate->getErrors()]);
             }
         }
 
     }
 
-    private function getCertificateTypeId($type){
+    private function getCertificateTypeId($type, $assigned_to)
+    {
         $exists = CertificateTypes::findOne(['name' => $type]);
-        if(!$exists){
+        if (!$exists) {
             $model = new CertificateTypes();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(10, 100000);
-            $model->certificate_type_enc_id =  $utilitiesModel->encrypt();
+            $model->certificate_type_enc_id = $utilitiesModel->encrypt();
             $model->name = $type;
-            if($model->save()){
+            $model->assigned_to = (int)$assigned_to;
+            if ($model->save()) {
                 return $model->certificate_type_enc_id;
             }
             return false;
         }
         return $exists->certificate_type_enc_id;
+    }
+
+    public function actionUpdateApplicationNumber()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['application_number'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "application_nubmer"']);
+            }
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            $application = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']]);
+
+            if ($application) {
+                $application->application_number = $params['application_number'];
+                $application->updated_by = $user->user_enc_id;
+                $application->updated_on = date('Y-m-d H:i:s');
+                if (!$application->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 }

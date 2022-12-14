@@ -7,6 +7,7 @@ namespace common\models;
  *
  * @property int $id
  * @property string $loan_app_enc_id
+ * @property string $application_number loan application number
  * @property string $parent_application_enc_id loan parent application enc id
  * @property int $had_taken_addmission 1 for yes 0 for no
  * @property string $current_scheme_id
@@ -109,12 +110,13 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_app_enc_id', 'applicant_name', 'phone', 'source'], 'required'],
+            [['loan_app_enc_id', 'application_number', 'applicant_name', 'phone', 'source'], 'required'],
             [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'gender', 'ask_guarantor_info', 'status', 'loan_status', 'is_deleted', 'is_removed'], 'integer'],
             [['employement_type', 'degree', 'candidate_status', 'candidate_sub_status', 'source', 'loan_type', 'form_type', 'lender_reasons'], 'string'],
             [['applicant_dob', 'deadline', 'intake', 'created_on', 'updated_on'], 'safe'],
             [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship'], 'number'],
             [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'created_by', 'updated_by', 'lead_application_enc_id'], 'string', 'max' => 100],
+            [['application_number'], 'string', 'max' => 50],
             [['phone', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['loan_purpose'], 'string', 'max' => 255],

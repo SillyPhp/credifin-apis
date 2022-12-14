@@ -379,7 +379,7 @@ class CompanyDashboardController extends ApiBaseController
 
             $loan = LoanApplications::find()
                 ->alias('a')
-                ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date',
+                ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number',
                     'a.applicant_name', 'a.phone', 'a.email', 'b.status as loan_status', 'a.loan_type'])
                 ->joinWith(['assignedLoanProviders b' => function ($b) use ($organization_id) {
 //                    $b->where(['b.provider_enc_id' => $organization_id]);
@@ -422,9 +422,9 @@ class CompanyDashboardController extends ApiBaseController
 
                 $loan['loanSanctionReports'] = $loan_sanction_report;
 
-                if($loan['loanCertificates']){
-                    foreach ($loan['loanCertificates'] as $key=>$val){
-                        if($val['proof_image']){
+                if ($loan['loanCertificates']) {
+                    foreach ($loan['loanCertificates'] as $key => $val) {
+                        if ($val['proof_image']) {
                             $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                             $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                             $proof = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . $val['proof_image_location'] . DIRECTORY_SEPARATOR . $val['proof_image'], "15 minutes");
