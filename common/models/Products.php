@@ -13,6 +13,7 @@ use Yii;
  * @property string $dealer_enc_id dealer id
  * @property string $assigned_category_enc_id product category
  * @property string $name product name
+ * @property string $slug product slug
  * @property double $price product price
  * @property string $description product description
  * @property string $city_enc_id city id
@@ -53,7 +54,7 @@ class Products extends \yii\db\ActiveRecord
             [['description', 'status'], 'string'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['product_enc_id', 'model_enc_id', 'dealer_enc_id', 'assigned_category_enc_id', 'name', 'city_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['product_enc_id', 'model_enc_id', 'dealer_enc_id', 'assigned_category_enc_id', 'name', 'slug', 'city_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['product_enc_id'], 'unique'],
             [['model_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => BrandModels::className(), 'targetAttribute' => ['model_enc_id' => 'model_enc_id']],
             [['dealer_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['dealer_enc_id' => 'user_enc_id']],

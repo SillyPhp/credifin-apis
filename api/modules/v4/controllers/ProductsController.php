@@ -2,11 +2,13 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\Products;
 use common\models\AssignedCategories;
 use common\models\BrandModels;
 use common\models\Brands;
 use common\models\ProductImages;
-use common\models\Products;
+//use common\models\Products;
+use common\models\Categories;
 use yii\web\UploadedFile;
 use yii\db\Expression;
 use common\models\Utilities;
@@ -49,13 +51,7 @@ class ProductsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
-            $assigned_category_id = AssignedCategories::find()
-                ->alias('a')
-                ->select(['a.assigned_category_enc_id'])
-                ->joinWith(['categoryEnc b'], false)
-                ->andWhere(['b.name' => $params['assigned_category'], 'a.is_deleted' => 0])
-                ->asArray()
-                ->one();
+            $assigned_category_id = $this->getAssignedCategory($user->user_enc_id, $params['assigned_category'], $params['category']);
 
             if (!$assigned_category_id) {
                 return $this->response(500, ['status' => 500, 'message' => 'category not found']);
@@ -67,7 +63,7 @@ class ProductsController extends ApiBaseController
                 foreach ($params['brands'] as $b) {
                     $brand = new Brands();
                     $brand->brand_enc_id = Yii::$app->security->generateRandomString(32);
-                    $brand->assigned_category_enc_id = $assigned_category_id['assigned_category_enc_id'];
+                    $brand->assigned_category_enc_id = $assigned_category_id;
                     $brand->name = $b['name'];
                     $brand->created_by = $user->user_enc_id;
                     if (!$brand->save()) {
@@ -101,6 +97,72 @@ class ProductsController extends ApiBaseController
         }
     }
 
+    private function getAssignedCategory($user_id, $assigned_category = 'Two Wheeler', $category = 'Vehicle')
+    {
+        $assigned_category_id = AssignedCategories::find()
+            ->alias('a')
+            ->select(['a.assigned_category_enc_id'])
+            ->joinWith(['categoryEnc b'], false)
+            ->andWhere(['b.name' => $assigned_category, 'a.is_deleted' => 0])
+            ->asArray()
+            ->one();
+
+        if ($assigned_category_id) {
+            return $assigned_category_id['assigned_category_enc_id'];
+        }
+
+        $parent_category_id = $this->getCategory($category, $user_id);
+
+        if (!$parent_category_id) {
+            return false;
+        }
+
+        $category_id = $this->getCategory($assigned_category, $user_id);
+
+        $assigned_category = new AssignedCategories();
+        $assigned_category->assigned_category_enc_id = Yii::$app->security->generateRandomString(32);
+        $assigned_category->category_enc_id = $category_id;
+        $assigned_category->parent_enc_id = $parent_category_id;
+        $assigned_category->assigned_to = 'Refurbish';
+        $assigned_category->created_by = $user_id;
+        if ($assigned_category->save()) {
+            return $assigned_category->assigned_category_enc_id;
+        }
+
+        return false;
+    }
+
+    private function getCategory($category, $user_id)
+    {
+        $category_id = AssignedCategories::find()
+            ->alias('a')
+            ->select(['a.assigned_category_enc_id', 'b.category_enc_id'])
+            ->joinWith(['categoryEnc b'], false)
+            ->andWhere(['b.name' => $category, 'a.is_deleted' => 0])
+            ->asArray()
+            ->one();
+
+        if ($category_id) {
+            return $category_id['category_enc_id'];
+        }
+
+        $cat = new Categories();
+        $cat->category_enc_id = Yii::$app->security->generateRandomString(32);
+        $cat->name = $category;
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['name'] = $category;
+        $utilitiesModel->variables['table_name'] = Categories::tableName();
+        $utilitiesModel->variables['field_name'] = 'slug';
+        $cat->slug = $utilitiesModel->create_slug();
+        $cat->source = 0;
+        $cat->created_by = $user_id;
+        if ($cat->save()) {
+            return $cat->category_enc_id;
+        }
+
+        return false;
+    }
+
     public function actionGetBrands()
     {
         if ($user = $this->isAuthorized()) {
@@ -131,6 +193,7 @@ class ProductsController extends ApiBaseController
             if ($model->load(Yii::$app->request->post(), '')) {
 
                 $model->images = UploadedFile::getInstances($model, 'images');
+                $model->dent_images = UploadedFile::getInstances($model, 'dent_images');
 
                 $assigned_category = AssignedCategories::find()
                     ->alias('a')
@@ -172,7 +235,7 @@ class ProductsController extends ApiBaseController
                 $page = $params['page'];
             }
 
-            $products = Products::find()
+            $products = \common\models\Products::find()
                 ->alias('a')
                 ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status'])
                 ->joinWith(['productImages c' => function($c){
