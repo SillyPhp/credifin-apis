@@ -2,11 +2,12 @@
 
 namespace api\modules\v4\controllers;
 
-use api\modules\v4\models\Products;
+use api\modules\v4\models\ProductsForm;
 use common\models\AssignedCategories;
 use common\models\BrandModels;
 use common\models\Brands;
 use common\models\Categories;
+use common\models\Products;
 use yii\web\UploadedFile;
 use yii\db\Expression;
 use common\models\Utilities;
@@ -26,7 +27,9 @@ class ProductsController extends ApiBaseController
             'class' => VerbFilter::className(),
             'actions' => [
                 'add-brands' => ['POST', 'OPTIONS'],
-                'get-brands' => ['GET', 'OPTIONS']
+                'get-brands' => ['GET', 'OPTIONS'],
+                'get-products' => ['POST', 'OPTIONS'],
+                'get-product-details' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -185,7 +188,7 @@ class ProductsController extends ApiBaseController
     public function actionAdd()
     {
         if ($user = $this->isAuthorized()) {
-            $model = new Products();
+            $model = new ProductsForm();
 
             if ($model->load(Yii::$app->request->post(), '')) {
 
@@ -218,4 +221,71 @@ class ProductsController extends ApiBaseController
         }
     }
 
+    public function actionGetProducts()
+    {
+
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+            $limit = 10;
+            $page = 1;
+
+            if (isset($params['limit']) && !empty($params['limit'])) {
+                $limit = $params['limit'];
+            }
+
+            if (isset($params['page']) && !empty($params['page'])) {
+                $page = $params['page'];
+            }
+
+            $products = Products::find()
+                ->alias('a')
+                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'b.other_detail'])
+                ->joinWith(['productOtherDetailEnc b'], false)
+                ->joinWith(['productImages c' => function ($c) {
+                    $c->select(['c.product_enc_id', 'c.alt', 'c.type',
+                        'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
+                }])
+                ->where(['a.dealer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
+                ->groupBy('a.product_enc_id')
+                ->orderBy(['a.created_on' => SORT_DESC])
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->asArray()
+                ->all();
+
+            if ($products) {
+                return $this->response(200, ['status' => 200, 'products' => $products]);
+            }
+            return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+        }
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    public function actionGetProductDetails(){
+        if($user = $this->isAuthorized()){
+            $params = Yii::$app->request->post();
+
+            $product_id = $params['product_id'];
+
+            $details = Products::find()
+                ->alias('a')
+                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'b.other_detail'])
+                ->joinWith(['productOtherDetailEnc b'], false)
+                ->joinWith(['productImages c' => function ($c) {
+                    $c->select(['c.product_enc_id', 'c.alt', 'c.type',
+                        'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
+                }])
+                ->where(['a.product_enc_id' => $product_id,'a.dealer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
+                ->asArray()
+                ->one();
+
+            if ($details) {
+                return $this->response(200, ['status' => 200, 'products' => $details]);
+            }
+            return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+        }
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+
+    }
 }
