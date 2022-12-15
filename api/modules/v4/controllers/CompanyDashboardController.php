@@ -91,10 +91,17 @@ class CompanyDashboardController extends ApiBaseController
                 $dsa[] = $user->user_enc_id;
             }
 
+            $service = SelectedServices::find()
+                ->alias('a')
+                ->joinWith(['serviceEnc b'], false)
+                ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
+                ->exists();
+
             $stats = LoanApplications::find()
                 ->alias('a')
                 ->select([
-                    'COUNT(DISTINCT a.loan_app_enc_id) as all_applications',
+//                    'COUNT(DISTINCT a.loan_app_enc_id) as all_applications',
+                    'COUNT(CASE WHEN a.form_type = "others" THEN 1 END) as all_applications',
                     'COUNT(CASE WHEN i.status = "0" THEN 1 END) as new_leads',
                     'COUNT(CASE WHEN i.status = "1" THEN 1 END) as accepted',
                     'COUNT(CASE WHEN i.status = "2" THEN 1 END) as pre_verification',
@@ -103,19 +110,34 @@ class CompanyDashboardController extends ApiBaseController
                     'COUNT(CASE WHEN i.status = "5" THEN 1 END) as disbursed',
                     'COUNT(CASE WHEN i.status = "10" THEN 1 END) as rejected',
                 ])
-                ->joinWith(['assignedLoanProviders i' => function ($i) {
-                    $i->onCondition(['or',
-                        ['not', ['i.provider_enc_id' => null]],
-                        ['not', ['i.provider_enc_id' => '']]
-                    ]);
-                    $i->andWhere(['in', 'i.status', [0, 3, 4, 10]]);
-                }], false)
+//                ->joinWith(['assignedLoanProviders i' => function ($i) {
+//                    $i->onCondition(['or',
+//                        ['not', ['i.provider_enc_id' => null]],
+//                        ['not', ['i.provider_enc_id' => '']]
+//                    ]);
+////                    $i->andWhere(['in', 'i.status', [0, 3, 4, 10]]);
+//                }], false)
+                ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
+                    $i->joinWith(['providerEnc j']);
+                    if ($service) {
+                        $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
+                    }
+                }])
                 ->andWhere(['a.is_deleted' => 0]);
 
+//            if ($user->organization_enc_id) {
+//                $stats->andWhere(['a.lead_by' => $dsa]);
+//            } else {
+////                $stats->andWhere(['a.lead_by' => $user->user_enc_id]);
+//                $stats->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
+//            }
+
             if ($user->organization_enc_id) {
-                $stats->andWhere(['a.lead_by' => $dsa]);
+                if (!$service) {
+                    $stats->andWhere(['a.lead_by' => $dsa]);
+                }
             } else {
-//                $stats->andWhere(['a.lead_by' => $user->user_enc_id]);
+//                $loans->andWhere(['a.lead_by' => $user->user_enc_id]);
                 $stats->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
             }
 
