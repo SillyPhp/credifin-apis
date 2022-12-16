@@ -10,13 +10,14 @@ use Yii;
  * @property int $id
  * @property string $certificate_type_enc_id
  * @property string $name
+ * @property int $assigned_to 1 customer, 2 company
  *
  * @property LoanCertificates[] $loanCertificates
  */
 class CertificateTypes extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -24,12 +25,13 @@ class CertificateTypes extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
             [['certificate_type_enc_id', 'name'], 'required'],
+            [['assigned_to'], 'integer'],
             [['certificate_type_enc_id'], 'string', 'max' => 100],
             [['name'], 'string', 'max' => 50],
             [['certificate_type_enc_id'], 'unique'],

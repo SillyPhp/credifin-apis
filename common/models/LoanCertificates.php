@@ -17,11 +17,13 @@ use Yii;
  * @property string $proof_image_name
  * @property string $proof_image_location id proof image location
  * @property string $proof_of
+ * @property double $certificate_periods in years
+ * @property string $short_description
+ * @property int $related_to 1 customer, 2 company
  * @property string $created_by
  * @property string $created_on
  * @property string $updated_by
  * @property string $updated_on
- * @property string $short_description
  * @property int $is_deleted 0 false,1 true
  *
  * @property LoanApplications $loanAppEnc
@@ -48,10 +50,12 @@ class LoanCertificates extends \yii\db\ActiveRecord
         return [
             [['certificate_enc_id', 'certificate_type_enc_id'], 'required'],
             [['proof_of'], 'string'],
-            [['created_on', 'updated_on', 'short_description'], 'safe'],
-            [['is_deleted'], 'integer'],
+            [['certificate_periods'], 'number'],
+            [['related_to', 'is_deleted'], 'integer'],
+            [['created_on', 'updated_on'], 'safe'],
             [['certificate_enc_id', 'loan_app_enc_id', 'loan_co_app_enc_id', 'certificate_type_enc_id', 'proof_image', 'proof_image_name', 'proof_image_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['number'], 'string', 'max' => 20],
+            [['short_description'], 'string', 'max' => 250],
             [['certificate_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['loan_co_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanCoApplicants::className(), 'targetAttribute' => ['loan_co_app_enc_id' => 'loan_co_app_enc_id']],
