@@ -2,13 +2,13 @@
 
 namespace api\modules\v4\controllers;
 
-use api\modules\v4\models\Products;
+use api\modules\v4\models\ProductsForm;
 use common\models\AssignedCategories;
 use common\models\BrandModels;
 use common\models\Brands;
-use common\models\ProductImages;
-//use common\models\Products;
 use common\models\Categories;
+use common\models\ProductImages;
+use common\models\Products;
 use yii\web\UploadedFile;
 use yii\db\Expression;
 use common\models\Utilities;
@@ -29,7 +29,8 @@ class ProductsController extends ApiBaseController
             'actions' => [
                 'add-brands' => ['POST', 'OPTIONS'],
                 'get-brands' => ['GET', 'OPTIONS'],
-                'get-products' => ['POST', 'OPTIONS']
+                'get-products' => ['POST', 'OPTIONS'],
+                'get-product-details' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -188,7 +189,7 @@ class ProductsController extends ApiBaseController
     public function actionAdd()
     {
         if ($user = $this->isAuthorized()) {
-            $model = new Products();
+            $model = new ProductsForm();
 
             if ($model->load(Yii::$app->request->post(), '')) {
 
@@ -221,8 +222,11 @@ class ProductsController extends ApiBaseController
         }
     }
 
-    public function actionGetProducts(){
-        if($users = $this->isAuthorized()){
+    public function actionGetProducts()
+    {
+
+        if ($user = $this->isAuthorized()) {
+
             $params = Yii::$app->request->post();
             $limit = 10;
             $page = 1;
@@ -235,14 +239,15 @@ class ProductsController extends ApiBaseController
                 $page = $params['page'];
             }
 
-            $products = \common\models\Products::find()
+            $products = Products::find()
                 ->alias('a')
-                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status'])
-                ->joinWith(['productImages c' => function($c){
+                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'b.other_detail', 'a.created_on'])
+                ->joinWith(['productOtherDetailEnc b'], false)
+                ->joinWith(['productImages c' => function ($c) {
                     $c->select(['c.product_enc_id', 'c.alt', 'c.type',
-                        'CASE WHEN c.image IS NOT NULL THEN CONCAT("'. Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
+                        'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
                 }])
-                ->where(['a.dealer_enc_id'=>$users->user_enc_id, 'a.is_deleted' => 0])
+                ->where(['a.dealer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
                 ->groupBy('a.product_enc_id')
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->limit($limit)
@@ -250,14 +255,70 @@ class ProductsController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-
-
-            if($products){
-                return $this->response(200, ['status'=>200, 'products' => $products]);
+            if ($products) {
+                return $this->response(200, ['status' => 200, 'products' => $products]);
             }
-            return $this->response(404, ['status'=>404, 'message'=>'Not Found']);
+            return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
         }
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
+    public function actionGetProductDetails()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if(empty($params['slug'])){
+                return $this->response(422, ['status'=>422, 'message'=>'Missing Information "Slug"']);
+            }
+            $slug = $params['slug'];
+
+            $details = Products::find()
+                ->alias('a')
+                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'b.ownership_type', 'b.variant',
+                    'b.product_other_detail_enc_id', 'a.status', 'b.other_detail', 'c1.name city', 'c2.name state', 'm.name model'])
+                ->joinWith(['productOtherDetails b'], false)
+                ->joinWith(['productImages c' => function ($c) {
+                    $c->select(['c.product_enc_id', 'c.alt', 'c.type','c.image_enc_id',
+                        'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
+                }])
+                ->joinWith(['cityEnc c1' => function($c1){
+                    $c1->joinWith(['stateEnc c2']);
+                }], false)
+                ->joinWith(['modelEnc m' => function($m){
+
+                }],false)
+                ->where(['a.slug' => $slug, 'a.dealer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
+                ->asArray()
+                ->one();
+
+            if ($details) {
+                return $this->response(200, ['status' => 200, 'products' => $details]);
+            }
+            return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+        }
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+
+    }
+
+    public function actionRemoveProductImage(){
+        if($user = $this->isAuthorized()){
+            $params = Yii::$app->request->post();
+            if(empty($params['image_id'])){
+              return $this->response(422, ['status'=>422, 'message'=>'Missing Information "image_id"']);
+            }
+
+            $productImage = ProductImages::findOne(['image_enc_id' => $params['image_id']]);
+            if(!$productImage){
+                return $this->response(404, ['status' => 404, 'message' => 'Image Not Found']);
+            }
+
+            $productImage->is_deleted = 1;
+            $productImage->updated_by = $user->user_enc_id;
+            $productImage->updated_on = date('Y-m-d H:i:s');
+            if(!$productImage->update()){
+                return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
+        }
+    }
 }

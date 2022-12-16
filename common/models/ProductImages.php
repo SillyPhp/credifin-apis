@@ -16,10 +16,13 @@ use Yii;
  * @property string $type image type
  * @property string $created_by created by
  * @property string $created_on created on
+ * @property string $updated_by
+ * @property string $updated_on
  * @property int $is_deleted 0 false, 1 true
  *
  * @property Products $productEnc
  * @property Users $createdBy
+ * @property Users $updatedBy
  */
 class ProductImages extends \yii\db\ActiveRecord
 {
@@ -39,15 +42,17 @@ class ProductImages extends \yii\db\ActiveRecord
         return [
             [['image_enc_id', 'product_enc_id', 'image', 'image_location', 'created_by'], 'required'],
             [['type'], 'string'],
-            [['created_on'], 'safe'],
+            [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['image_enc_id', 'product_enc_id', 'image', 'image_location', 'created_by'], 'string', 'max' => 100],
+            [['image_enc_id', 'product_enc_id', 'image', 'image_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['alt'], 'string', 'max' => 50],
             [['image_enc_id'], 'unique'],
             [['product_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Products::className(), 'targetAttribute' => ['product_enc_id' => 'product_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+            [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -63,5 +68,13 @@ class ProductImages extends \yii\db\ActiveRecord
     public function getCreatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
     }
 }

@@ -56,6 +56,7 @@ class Products extends \yii\db\ActiveRecord
             [['is_deleted'], 'integer'],
             [['product_enc_id', 'model_enc_id', 'dealer_enc_id', 'assigned_category_enc_id', 'name', 'slug', 'city_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['product_enc_id'], 'unique'],
+            [['slug'], 'unique'],
             [['model_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => BrandModels::className(), 'targetAttribute' => ['model_enc_id' => 'model_enc_id']],
             [['dealer_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['dealer_enc_id' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
