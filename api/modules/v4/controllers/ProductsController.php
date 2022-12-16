@@ -240,7 +240,7 @@ class ProductsController extends ApiBaseController
 
             $products = Products::find()
                 ->alias('a')
-                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'b.other_detail'])
+                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'b.other_detail', 'a.created_on'])
                 ->joinWith(['productOtherDetailEnc b'], false)
                 ->joinWith(['productImages c' => function ($c) {
                     $c->select(['c.product_enc_id', 'c.alt', 'c.type',
@@ -262,11 +262,12 @@ class ProductsController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-    public function actionGetProductDetails(){
-        if($user = $this->isAuthorized()){
+    public function actionGetProductDetails()
+    {
+        if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
-            $product_id = $params['product_id'];
+            $slug = $params['slug'];
 
             $details = Products::find()
                 ->alias('a')
@@ -276,7 +277,7 @@ class ProductsController extends ApiBaseController
                     $c->select(['c.product_enc_id', 'c.alt', 'c.type',
                         'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
                 }])
-                ->where(['a.product_enc_id' => $product_id,'a.dealer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
+                ->where(['a.slug' => $slug, 'a.dealer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
 

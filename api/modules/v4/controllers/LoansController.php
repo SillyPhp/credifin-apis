@@ -523,18 +523,18 @@ class LoansController extends ApiBaseController
 
             $params = Yii::$app->request->post();
 
-            if (empty($params['application_number'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "application_nubmer"']);
+            if (empty($params['value'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "value"']);
             }
 
-            if (empty($params['loan_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            if (empty($params['id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "id"']);
             }
 
-            $application = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']]);
+            $application = LoanApplications::findOne(['loan_app_enc_id' => $params['id']]);
 
             if ($application) {
-                $application->application_number = $params['application_number'];
+                $application->application_number = $params['value'];
                 $application->updated_by = $user->user_enc_id;
                 $application->updated_on = date('Y-m-d H:i:s');
                 if (!$application->update()) {
