@@ -351,7 +351,7 @@ class ProductsController extends ApiBaseController
         $products = Products::find()
             ->alias('a')
             ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'b.other_detail', 'a.created_on',
-            'c1.name city', 'c2.name state', 'm.name model', 'be.name brand'])
+            'c1.name city', 'c2.name state', 'm.name model', 'be.name brand', 'CONCAT(d.first_name, " ", d.last_name) dealer_name'])
             ->joinWith(['productOtherDetailEnc b'], false)
             ->joinWith(['productImages c' => function ($c) {
                 $c->select(['c.product_enc_id', 'c.alt', 'c.type',
@@ -363,13 +363,16 @@ class ProductsController extends ApiBaseController
             ->joinWith(['modelEnc m' => function($m){
                 $m->joinWith(['brandEnc be']);
             }],false)
-            ->joinWith(['dealerEnc d'])
+            ->joinWith(['dealerEnc d'], false)
             ->where(['a.is_deleted' => 0])
             ->groupBy('a.product_enc_id')
             ->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
 
-        return $this->response(200, ['status' => 200, 'products' => $products]);
+            if($products){
+                return $this->response(200, ['status' => 200, 'products' => $products]);
+            }
+            return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
     }
 }
