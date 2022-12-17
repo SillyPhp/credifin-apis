@@ -31,6 +31,8 @@ class ProductsController extends ApiBaseController
                 'get-brands' => ['GET', 'OPTIONS'],
                 'get-products' => ['POST', 'OPTIONS'],
                 'get-product-details' => ['POST', 'OPTIONS'],
+                'remove-product-image' => ['POST', 'OPTIONS'],
+                'remove-product' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -275,8 +277,8 @@ class ProductsController extends ApiBaseController
             $details = Products::find()
                 ->alias('a')
                 ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'b.ownership_type', 'b.variant',
-                    'b.product_other_detail_enc_id', 'a.status', 'b.other_detail', 'c1.name city', 'c2.name state', 'm.name model'])
-                ->joinWith(['productOtherDetails b'], false)
+                    'b.product_other_detail_enc_id', 'a.status', 'b.other_detail', 'c1.name city', 'c2.name state', 'm.name model', 'be.name brand'])
+                ->joinWith(['productOtherDetailEnc b'], false)
                 ->joinWith(['productImages c' => function ($c) {
                     $c->select(['c.product_enc_id', 'c.alt', 'c.type','c.image_enc_id',
                         'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
@@ -285,7 +287,7 @@ class ProductsController extends ApiBaseController
                     $c1->joinWith(['stateEnc c2']);
                 }], false)
                 ->joinWith(['modelEnc m' => function($m){
-
+                    $m->joinWith(['brandEnc be']);
                 }],false)
                 ->where(['a.slug' => $slug, 'a.dealer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
                 ->asArray()
@@ -318,7 +320,56 @@ class ProductsController extends ApiBaseController
             if(!$productImage->update()){
                 return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
             }
-            return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
+            return $this->response(200, ['status' => 200, 'message' => 'Image Deleted Successfully']);
         }
+    }
+
+    public function actionRemoveProduct(){
+        if($user = $this->isAuthorized()){
+
+            $params = Yii::$app->request->post();
+
+            if(empty($params['product_id'])){
+                return $this->response(422, ['status'=> 422, 'message' => 'Missing Information "product_id"']);
+            }
+
+            $product = Products::findOne(['product_enc_id' => $params['product_id']]);
+            if(!$product){
+                return $this->response(404,['status' => 404, 'message' => 'Product Not Found']);
+            }
+            $product->is_deleted = 1;
+            $product->updated_by = $user->user_enc_id;
+            $product->updated_on = date('Y-m-d H:i:s');
+            if(!$product->update()){
+                return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'Product Deleted Successfully']);
+        }
+    }
+
+    public function actionAllProducts(){
+        $products = Products::find()
+            ->alias('a')
+            ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'b.other_detail', 'a.created_on',
+            'c1.name city', 'c2.name state', 'm.name model', 'be.name brand'])
+            ->joinWith(['productOtherDetailEnc b'], false)
+            ->joinWith(['productImages c' => function ($c) {
+                $c->select(['c.product_enc_id', 'c.alt', 'c.type',
+                    'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
+            }])
+            ->joinWith(['cityEnc c1' => function($c1){
+                $c1->joinWith(['stateEnc c2']);
+            }], false)
+            ->joinWith(['modelEnc m' => function($m){
+                $m->joinWith(['brandEnc be']);
+            }],false)
+            ->joinWith(['dealerEnc d'])
+            ->where(['a.is_deleted' => 0])
+            ->groupBy('a.product_enc_id')
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        return $this->response(200, ['status' => 200, 'products' => $products]);
     }
 }
