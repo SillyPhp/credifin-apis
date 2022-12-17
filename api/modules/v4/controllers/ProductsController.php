@@ -32,7 +32,8 @@ class ProductsController extends ApiBaseController
                 'get-products' => ['POST', 'OPTIONS'],
                 'get-product-details' => ['POST', 'OPTIONS'],
                 'remove-product-image' => ['POST', 'OPTIONS'],
-                'remove-product' => ['POST', 'OPTIONS']
+                'remove-product' => ['POST', 'OPTIONS'],
+                'all-products' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -333,7 +334,7 @@ class ProductsController extends ApiBaseController
                 return $this->response(422, ['status'=> 422, 'message' => 'Missing Information "product_id"']);
             }
 
-            $product = Products::findOne(['product_enc_id' => $params['product_id']]);
+            $product = Products::findOne(['product_enc_id' => $params['product_id'], 'dealer_enc_id' => $user->user_enc_id]);
             if(!$product){
                 return $this->response(404,['status' => 404, 'message' => 'Product Not Found']);
             }
@@ -348,6 +349,19 @@ class ProductsController extends ApiBaseController
     }
 
     public function actionAllProducts(){
+
+        $params = Yii::$app->request->post();
+        $limit = 10;
+        $page = 1;
+
+        if (isset($params['limit']) && !empty($params['limit'])) {
+            $limit = $params['limit'];
+        }
+
+        if (isset($params['page']) && !empty($params['page'])) {
+            $page = $params['page'];
+        }
+
         $products = Products::find()
             ->alias('a')
             ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'b.other_detail', 'a.created_on',
@@ -367,6 +381,8 @@ class ProductsController extends ApiBaseController
             ->where(['a.is_deleted' => 0])
             ->groupBy('a.product_enc_id')
             ->orderBy(['a.created_on' => SORT_DESC])
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
             ->asArray()
             ->all();
 
