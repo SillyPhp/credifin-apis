@@ -453,6 +453,7 @@ class LoansController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
+
             if (empty($params['loan_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "loan_id"']);
             }
@@ -481,7 +482,11 @@ class LoansController extends ApiBaseController
             $certificate->proof_image_location = \Yii::$app->getSecurity()->generateRandomString();
             $base_path = Yii::$app->params->upload_directories->loans->image . $certificate->proof_image_location . '/';
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $certificate->proof_image = $utilitiesModel->encrypt() . '.' . 'pdf';
+            if ($file->extension == null || $file->extension == '') {
+                $certificate->proof_image = $utilitiesModel->encrypt() . '.' . 'pdf';
+            } else {
+                $certificate->proof_image = $utilitiesModel->encrypt() . '.' . $file->extension;
+            }
             $type = $file->type;
             if ($certificate->save()) {
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);

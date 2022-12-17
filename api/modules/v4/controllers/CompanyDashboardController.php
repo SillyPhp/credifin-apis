@@ -202,7 +202,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->distinct()
                 ->alias('a')
                 ->select(['a.id', 'a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
-                    'a.created_on as apply_date',
+                    'a.created_on as apply_date', 'a.application_number',
                     '(CASE
                     WHEN i.status = "0" THEN "New Lead"
                     WHEN i.status = "1" THEN "Accepted"
