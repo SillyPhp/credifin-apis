@@ -33,7 +33,8 @@ class ProductsController extends ApiBaseController
                 'get-product-details' => ['POST', 'OPTIONS'],
                 'remove-product-image' => ['POST', 'OPTIONS'],
                 'remove-product' => ['POST', 'OPTIONS'],
-                'all-products' => ['POST', 'OPTIONS']
+                'all-products' => ['POST', 'OPTIONS'],
+                'add-model' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -68,22 +69,28 @@ class ProductsController extends ApiBaseController
                     $brand = new Brands();
                     $brand->brand_enc_id = Yii::$app->security->generateRandomString(32);
                     $brand->assigned_category_enc_id = $assigned_category_id;
-                    $brand->name = $b['name'];
+                    if ($params['assigned_category'] == 'Mobiles') {
+                        $brand->name = $b;
+                    } else {
+                        $brand->name = $b['name'];
+                    }
                     $brand->created_by = $user->user_enc_id;
                     if (!$brand->save()) {
                         $transaction->rollBack();
                         return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $brand->getErrors()]);
                     }
 
-                    foreach ($b['models'] as $m) {
-                        $model = new BrandModels();
-                        $model->model_enc_id = Yii::$app->security->generateRandomString(32);
-                        $model->brand_enc_id = $brand->brand_enc_id;
-                        $model->name = $m['name'];
-                        $model->created_by = $user->user_enc_id;
-                        if (!$model->save()) {
-                            $transaction->rollBack();
-                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()]);
+                    if (!empty($b['models'])) {
+                        foreach ($b['models'] as $m) {
+                            $model = new BrandModels();
+                            $model->model_enc_id = Yii::$app->security->generateRandomString(32);
+                            $model->brand_enc_id = $brand->brand_enc_id;
+                            $model->name = $m['name'];
+                            $model->created_by = $user->user_enc_id;
+                            if (!$model->save()) {
+                                $transaction->rollBack();
+                                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()]);
+                            }
                         }
                     }
                 }
@@ -96,6 +103,36 @@ class ProductsController extends ApiBaseController
                 $transaction->rollBack();
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()]);
             }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAddModel()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['brand_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "brand_id"']);
+            }
+
+            if (empty($params['model'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "model"']);
+            }
+
+            $model = new BrandModels();
+            $model->model_enc_id = Yii::$app->security->generateRandomString(32);
+            $model->brand_enc_id = $params['brand_id'];
+            $model->name = $params['model'];
+            $model->created_by = $user->user_enc_id;
+            if (!$model->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved', 'model_id' => $model->model_enc_id]);
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
@@ -167,16 +204,20 @@ class ProductsController extends ApiBaseController
         return false;
     }
 
-    public function actionGetBrands()
+    public function actionGetBrands($type = 'Two Wheeler')
     {
         if ($user = $this->isAuthorized()) {
+
             $brands = Brands::find()
                 ->alias('a')
                 ->select(['a.brand_enc_id value', 'a.name label', 'a.brand_enc_id'])
-                ->innerJoinWith(['brandModels b' => function ($b) {
+                ->joinWith(['brandModels b' => function ($b) {
                     $b->select(['b.model_enc_id', 'b.model_enc_id value', 'b.name label', 'b.brand_enc_id'])->onCondition(['b.is_deleted' => 0]);
                 }])
-                ->andWhere(['a.is_deleted' => 0])
+                ->joinWith(['assignedCategoryEnc c' => function ($c) {
+                    $c->joinWith(['categoryEnc c1']);
+                }], false)
+                ->andWhere(['a.is_deleted' => 0, 'c1.name' => $type])
                 ->groupBy(['a.name'])
                 ->asArray()
                 ->all();
@@ -210,10 +251,11 @@ class ProductsController extends ApiBaseController
                 $model->assigned_category = $assigned_category['assigned_category_enc_id'];
 
                 if ($model->validate()) {
-                    if (!$model->save($user->user_enc_id)) {
-                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    $product = $model->save($user->user_enc_id);
+                    if ($product['status'] == 500) {
+                        return $this->response(500, $product);
                     }
-                    return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+                    return $this->response(200, $product);
                 } else {
                     return $this->response(422, ['status' => 422, 'error' => $model->getErrors()]);
                 }
@@ -270,8 +312,8 @@ class ProductsController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
-            if(empty($params['slug'])){
-                return $this->response(422, ['status'=>422, 'message'=>'Missing Information "Slug"']);
+            if (empty($params['slug'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "Slug"']);
             }
             $slug = $params['slug'];
 
@@ -281,15 +323,15 @@ class ProductsController extends ApiBaseController
                     'b.product_other_detail_enc_id', 'a.status', 'b.other_detail', 'c1.name city', 'c2.name state', 'm.name model', 'be.name brand'])
                 ->joinWith(['productOtherDetailEnc b'], false)
                 ->joinWith(['productImages c' => function ($c) {
-                    $c->select(['c.product_enc_id', 'c.alt', 'c.type','c.image_enc_id',
+                    $c->select(['c.product_enc_id', 'c.alt', 'c.type', 'c.image_enc_id',
                         'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
                 }])
-                ->joinWith(['cityEnc c1' => function($c1){
+                ->joinWith(['cityEnc c1' => function ($c1) {
                     $c1->joinWith(['stateEnc c2']);
                 }], false)
-                ->joinWith(['modelEnc m' => function($m){
+                ->joinWith(['modelEnc m' => function ($m) {
                     $m->joinWith(['brandEnc be']);
-                }],false)
+                }], false)
                 ->where(['a.slug' => $slug, 'a.dealer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
@@ -303,52 +345,55 @@ class ProductsController extends ApiBaseController
 
     }
 
-    public function actionRemoveProductImage(){
-        if($user = $this->isAuthorized()){
+    public function actionRemoveProductImage()
+    {
+        if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
-            if(empty($params['image_id'])){
-              return $this->response(422, ['status'=>422, 'message'=>'Missing Information "image_id"']);
+            if (empty($params['image_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "image_id"']);
             }
 
             $productImage = ProductImages::findOne(['image_enc_id' => $params['image_id']]);
-            if(!$productImage){
+            if (!$productImage) {
                 return $this->response(404, ['status' => 404, 'message' => 'Image Not Found']);
             }
 
             $productImage->is_deleted = 1;
             $productImage->updated_by = $user->user_enc_id;
             $productImage->updated_on = date('Y-m-d H:i:s');
-            if(!$productImage->update()){
+            if (!$productImage->update()) {
                 return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
             }
             return $this->response(200, ['status' => 200, 'message' => 'Image Deleted Successfully']);
         }
     }
 
-    public function actionRemoveProduct(){
-        if($user = $this->isAuthorized()){
+    public function actionRemoveProduct()
+    {
+        if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
 
-            if(empty($params['product_id'])){
-                return $this->response(422, ['status'=> 422, 'message' => 'Missing Information "product_id"']);
+            if (empty($params['product_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "product_id"']);
             }
 
             $product = Products::findOne(['product_enc_id' => $params['product_id'], 'dealer_enc_id' => $user->user_enc_id]);
-            if(!$product){
-                return $this->response(404,['status' => 404, 'message' => 'Product Not Found']);
+            if (!$product) {
+                return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
             }
             $product->is_deleted = 1;
             $product->updated_by = $user->user_enc_id;
             $product->updated_on = date('Y-m-d H:i:s');
-            if(!$product->update()){
+            if (!$product->update()) {
                 return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
             }
             return $this->response(200, ['status' => 200, 'message' => 'Product Deleted Successfully']);
         }
     }
 
-    public function actionAllProducts(){
+    public function actionAllProducts()
+    {
 
         $params = Yii::$app->request->post();
         $limit = 10;
@@ -365,18 +410,18 @@ class ProductsController extends ApiBaseController
         $products = Products::find()
             ->alias('a')
             ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'b.other_detail', 'a.created_on',
-            'c1.name city', 'c2.name state', 'm.name model', 'be.name brand', 'CONCAT(d.first_name, " ", d.last_name) dealer_name'])
+                'c1.name city', 'c2.name state', 'm.name model', 'be.name brand', 'CONCAT(d.first_name, " ", d.last_name) dealer_name'])
             ->joinWith(['productOtherDetailEnc b'], false)
             ->joinWith(['productImages c' => function ($c) {
                 $c->select(['c.product_enc_id', 'c.alt', 'c.type',
                     'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
             }])
-            ->joinWith(['cityEnc c1' => function($c1){
+            ->joinWith(['cityEnc c1' => function ($c1) {
                 $c1->joinWith(['stateEnc c2']);
             }], false)
-            ->joinWith(['modelEnc m' => function($m){
+            ->joinWith(['modelEnc m' => function ($m) {
                 $m->joinWith(['brandEnc be']);
-            }],false)
+            }], false)
             ->joinWith(['dealerEnc d'], false)
             ->where(['a.is_deleted' => 0])
             ->groupBy('a.product_enc_id')
@@ -386,9 +431,9 @@ class ProductsController extends ApiBaseController
             ->asArray()
             ->all();
 
-            if($products){
-                return $this->response(200, ['status' => 200, 'products' => $products]);
-            }
-            return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
+        if ($products) {
+            return $this->response(200, ['status' => 200, 'products' => $products]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
     }
 }

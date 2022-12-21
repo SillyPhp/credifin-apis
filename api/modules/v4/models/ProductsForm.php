@@ -54,7 +54,7 @@ class ProductsForm extends Model
             $product_other_detail->created_by = $user_id;
             if (!$product_other_detail->save()) {
                 $transaction->rollBack();
-                return false;
+                return ['status' => 500, 'message' => 'an error occurred', 'error' => $product_other_detail->getErrors()];
             }
 
             $product = new \common\models\Products();
@@ -77,20 +77,21 @@ class ProductsForm extends Model
 
             if (!$product->save()) {
                 $transaction->rollBack();
-                return false;
+                return ['status' => 500, 'message' => 'an error occurred', 'error' => $product->getErrors()];
             }
 
             if (!$this->saveImages($user_id, $product->product_enc_id)) {
                 $transaction->rollBack();
-                return false;
+                return ['status' => 500, 'message' => 'an error occurred', 'error' => 'error occurred while uploading images'];
             }
 
             $transaction->commit();
 
-            return true;
+            return ['status' => 200, 'message' => 'successfully saved'];
+
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            return false;
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()];
         }
     }
 

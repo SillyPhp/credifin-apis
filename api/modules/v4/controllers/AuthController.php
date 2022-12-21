@@ -267,6 +267,8 @@ class AuthController extends ApiBaseController
 
         if ($user->image) {
             $data['image'] = Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $user->image_location . DIRECTORY_SEPARATOR . $user->image, 'https');
+        } else {
+            $data['image'] = "https://ui-avatars.com/api/?name=" . $user->first_name . ' ' . $user->last_name . "&size=200&rounded=false&background=" . str_replace("#", "", $user->initials_color) . "&color=ffffff";
         }
 
         if ($data['user_type'] == 'Employee') {
