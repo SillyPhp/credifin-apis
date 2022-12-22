@@ -12,6 +12,7 @@ use common\models\Organizations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
+use common\models\spaces\Spaces;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
@@ -38,6 +39,7 @@ class AuthController extends ApiBaseController
                 'validate',
                 'login',
                 'upload-profile-picture',
+                'upload-logo',
                 'otp-login',
                 'forgot-password',
                 'reset-password',
@@ -57,6 +59,7 @@ class AuthController extends ApiBaseController
                 'validate' => ['POST', 'OPTIONS'],
                 'login' => ['POST', 'OPTIONS'],
                 'upload-profile-picture' => ['POST', 'OPTIONS'],
+                'upload-logo' => ['POST', 'OPTIONS'],
                 'otp-login' => ['POST', 'OPTIONS'],
                 'forgot-password' => ['POST', 'OPTIONS'],
                 'reset-password' => ['POST', 'OPTIONS'],
@@ -221,6 +224,11 @@ class AuthController extends ApiBaseController
             $data['organization_slug'] = $org->slug;
             $data['organization_enc_id'] = $org->organization_enc_id;
             $data['organization_username'] = Users::findOne(['organization_enc_id' => $org->organization_enc_id])->username;
+            if($org->logo != null){
+                $data['logo'] = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org->logo_location . '/' . $org->logo;
+            }else{
+                $data['logo'] = "https://ui-avatars.com/api/?name=" . $org->name . "&size=200&rounded=false&background=" . str_replace("#", "", $org->initials_color) . "&color=ffffff";
+            }
         } else {
             $data['referral_code'] = Referral::findOne(['user_enc_id' => $user->user_enc_id])->code;
         }
@@ -368,6 +376,41 @@ class AuthController extends ApiBaseController
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionUploadLogo(){
+        if($user = $this->isAuthorized()){
+            $utilitiesModel = new Utilities();
+            if($user->organization_enc_id){
+                $logo = UploadedFile::getInstanceByName('logo');
+                $orgModel = Organizations::findOne(['organization_enc_id' => $user->organization_enc_id]);
+
+                if($orgModel){
+                    $orgModel->logo_location = \Yii::$app->getSecurity()->generateRandomString();
+                    $base_path = Yii::$app->params->upload_directories->organizations->logo . $orgModel->logo_location . '/';
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $orgModel->logo = $utilitiesModel->encrypt() . '.' . $logo->extension;
+                    $type = $logo->type;
+                    if ($orgModel->update()) {
+                        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                        $result = $my_space->uploadFileSources($logo->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $orgModel->logo, "public", ['params' => ['ContentType' => $type]]);
+                        if ($result) {
+                            return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
+                        } else {
+                            return $this->response(500,['status' => 500, 'message' => 'An Error Occurred']);
+                        }
+                    } else {
+                        return $this->response(500,['status' => 500, 'message' => 'An Error Occurred']);
+                    }
+                }else{
+                    return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+                }
+
+            }else{
+                return $this->response(409, ['status' => 409, 'message' => 'Must be an organization']);
+            };
         }
     }
 
