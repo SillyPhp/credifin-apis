@@ -216,6 +216,8 @@ class AuthController extends ApiBaseController
 
             $org = Organizations::findOne(['organization_enc_id' => $user->organization_enc_id]);
             $data['organization_name'] = $org->name;
+            $data['organization_email'] = $org->email;
+            $data['organization_phone'] = $org->phone;
             $data['organization_slug'] = $org->slug;
             $data['organization_enc_id'] = $org->organization_enc_id;
             $data['organization_username'] = Users::findOne(['organization_enc_id' => $org->organization_enc_id])->username;
