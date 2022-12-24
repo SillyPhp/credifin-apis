@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id primary key
  * @property string $product_other_detail_enc_id product other detail id
+ * @property string $product_enc_id product id
  * @property string $other_detail product other detail
  * @property int $ownership_type 1.I bought it new 2.I'm the Second Owner 3.I'm the Third Owner 4.I'm the Fourth Owner
  * @property string $variant variant
@@ -20,7 +21,7 @@ use Yii;
  *
  * @property Users $createdBy
  * @property Users $updatedBy
- * @property Products[] $products
+ * @property Products $productEnc
  */
 class ProductOtherDetails extends \yii\db\ActiveRecord
 {
@@ -38,15 +39,16 @@ class ProductOtherDetails extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_other_detail_enc_id', 'other_detail', 'created_by'], 'required'],
+            [['product_other_detail_enc_id', 'product_enc_id', 'other_detail', 'created_by'], 'required'],
             [['other_detail'], 'string'],
             [['ownership_type', 'is_deleted'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
-            [['product_other_detail_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['product_other_detail_enc_id', 'product_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['variant'], 'string', 'max' => 50],
             [['product_other_detail_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
+            [['product_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Products::className(), 'targetAttribute' => ['product_enc_id' => 'product_enc_id']],
         ];
     }
 
@@ -69,8 +71,8 @@ class ProductOtherDetails extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getProducts()
+    public function getProductEnc()
     {
-        return $this->hasMany(Products::className(), ['product_other_detail_enc_id' => 'product_other_detail_enc_id']);
+        return $this->hasOne(Products::className(), ['product_enc_id' => 'product_enc_id']);
     }
 }

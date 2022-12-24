@@ -16,7 +16,6 @@ use Yii;
  * @property string $slug product slug
  * @property double $price product price
  * @property string $description product description
- * @property string $product_other_detail_enc_id product other detail id
  * @property string $city_enc_id city id
  * @property string $created_by created by
  * @property string $created_on created on
@@ -26,13 +25,13 @@ use Yii;
  * @property int $is_deleted 0 false,1 true
  *
  * @property ProductImages[] $productImages
+ * @property ProductOtherDetails[] $productOtherDetails
  * @property BrandModels $modelEnc
  * @property Users $dealerEnc
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property AssignedCategories $assignedCategoryEnc
  * @property Cities $cityEnc
- * @property ProductOtherDetails $productOtherDetailEnc
  */
 class Products extends \yii\db\ActiveRecord
 {
@@ -55,7 +54,7 @@ class Products extends \yii\db\ActiveRecord
             [['description', 'status'], 'string'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['product_enc_id', 'model_enc_id', 'dealer_enc_id', 'assigned_category_enc_id', 'name', 'slug', 'product_other_detail_enc_id', 'city_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['product_enc_id', 'model_enc_id', 'dealer_enc_id', 'assigned_category_enc_id', 'name', 'slug', 'city_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['product_enc_id'], 'unique'],
             [['slug'], 'unique'],
             [['model_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => BrandModels::className(), 'targetAttribute' => ['model_enc_id' => 'model_enc_id']],
@@ -64,7 +63,6 @@ class Products extends \yii\db\ActiveRecord
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['assigned_category_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedCategories::className(), 'targetAttribute' => ['assigned_category_enc_id' => 'assigned_category_enc_id']],
             [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
-            [['product_other_detail_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductOtherDetails::className(), 'targetAttribute' => ['product_other_detail_enc_id' => 'product_other_detail_enc_id']],
         ];
     }
 
@@ -74,6 +72,14 @@ class Products extends \yii\db\ActiveRecord
     public function getProductImages()
     {
         return $this->hasMany(ProductImages::className(), ['product_enc_id' => 'product_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductOtherDetails()
+    {
+        return $this->hasMany(ProductOtherDetails::className(), ['product_enc_id' => 'product_enc_id']);
     }
 
     /**
@@ -122,13 +128,5 @@ class Products extends \yii\db\ActiveRecord
     public function getCityEnc()
     {
         return $this->hasOne(Cities::className(), ['city_enc_id' => 'city_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProductOtherDetailEnc()
-    {
-        return $this->hasOne(ProductOtherDetails::className(), ['product_other_detail_enc_id' => 'product_other_detail_enc_id']);
     }
 }

@@ -46,17 +46,6 @@ class ProductsForm extends Model
         $transaction = Yii::$app->db->beginTransaction();
         try {
 
-            $product_other_detail = new ProductOtherDetails();
-            $product_other_detail->product_other_detail_enc_id = Yii::$app->security->generateRandomString(32);
-            $product_other_detail->other_detail = $this->product_other_detail;
-            $product_other_detail->variant = $this->variant;
-            $product_other_detail->ownership_type = $this->ownership_type;
-            $product_other_detail->created_by = $user_id;
-            if (!$product_other_detail->save()) {
-                $transaction->rollBack();
-                return ['status' => 500, 'message' => 'an error occurred', 'error' => $product_other_detail->getErrors()];
-            }
-
             $product = new \common\models\Products();
             $product->product_enc_id = Yii::$app->security->generateRandomString(32);
             $product->model_enc_id = $this->model_id;
@@ -71,13 +60,24 @@ class ProductsForm extends Model
             $utilitiesModel->variables['field_name'] = 'slug';
             $product->slug = $utilitiesModel->create_slug();
             $product->description = $this->description;
-            $product->product_other_detail_enc_id = $product_other_detail->product_other_detail_enc_id;
             $product->status = $this->status;
             $product->created_by = $user_id;
 
             if (!$product->save()) {
                 $transaction->rollBack();
                 return ['status' => 500, 'message' => 'an error occurred', 'error' => $product->getErrors()];
+            }
+
+            $product_other_detail = new ProductOtherDetails();
+            $product_other_detail->product_other_detail_enc_id = Yii::$app->security->generateRandomString(32);
+            $product_other_detail->product_enc_id = $product->product_enc_id;
+            $product_other_detail->other_detail = $this->product_other_detail;
+            $product_other_detail->variant = $this->variant;
+            $product_other_detail->ownership_type = $this->ownership_type;
+            $product_other_detail->created_by = $user_id;
+            if (!$product_other_detail->save()) {
+                $transaction->rollBack();
+                return ['status' => 500, 'message' => 'an error occurred', 'error' => $product_other_detail->getErrors()];
             }
 
             if (!$this->saveImages($user_id, $product->product_enc_id)) {

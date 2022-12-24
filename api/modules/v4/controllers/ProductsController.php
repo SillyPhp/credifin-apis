@@ -286,8 +286,11 @@ class ProductsController extends ApiBaseController
 
             $products = Products::find()
                 ->alias('a')
-                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'b.other_detail', 'a.created_on'])
-                ->joinWith(['productOtherDetailEnc b'], false)
+                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'a.created_on'])
+                ->joinWith(['productOtherDetails b' => function ($b) {
+                    $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.other_detail']);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }])
                 ->joinWith(['productImages c' => function ($c) {
                     $c->select(['c.product_enc_id', 'c.alt', 'c.type',
                         'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
@@ -319,9 +322,11 @@ class ProductsController extends ApiBaseController
 
             $details = Products::find()
                 ->alias('a')
-                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'b.ownership_type', 'b.variant',
-                    'b.product_other_detail_enc_id', 'a.status', 'b.other_detail', 'c1.name city', 'c2.name state', 'm.name model', 'be.name brand'])
-                ->joinWith(['productOtherDetailEnc b'], false)
+                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'c1.name city', 'c2.name state', 'm.name model', 'be.name brand'])
+                ->joinWith(['productOtherDetails b' => function ($b) {
+                    $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.other_detail', 'b.ownership_type', 'b.variant']);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }])
                 ->joinWith(['productImages c' => function ($c) {
                     $c->select(['c.product_enc_id', 'c.alt', 'c.type', 'c.image_enc_id',
                         'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
@@ -409,9 +414,12 @@ class ProductsController extends ApiBaseController
 
         $products = Products::find()
             ->alias('a')
-            ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'b.other_detail', 'a.created_on',
+            ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'a.created_on',
                 'c1.name city', 'c2.name state', 'm.name model', 'be.name brand', 'CONCAT(d.first_name, " ", d.last_name) dealer_name'])
-            ->joinWith(['productOtherDetailEnc b'], false)
+            ->joinWith(['productOtherDetails b' => function ($b) {
+                $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.other_detail']);
+                $b->onCondition(['b.is_deleted' => 0]);
+            }])
             ->joinWith(['productImages c' => function ($c) {
                 $c->select(['c.product_enc_id', 'c.alt', 'c.type',
                     'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
