@@ -24,6 +24,7 @@ class OrganizationsController extends ApiBaseController
                 'add-branch' => ['POST', 'OPTIONS'],
                 'get-branches' => ['POST', 'OPTIONS'],
                 'update-branch' => ['POST', 'OPTIONS'],
+                'remove-branch' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -108,7 +109,7 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $locations = OrganizationLocations::find()
                 ->alias('a')
-                ->select(['a.location_enc_id', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'a.status'])
+                ->select(['a.location_enc_id', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'b.city_enc_id', 'a.status'])
                 ->joinWith(['cityEnc b'], false)
                 ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
                 ->asArray()
@@ -123,4 +124,34 @@ class OrganizationsController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
+    public function actionRemoveBranch()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['location_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "location_id"']);
+            }
+
+            $location = OrganizationLocations::findOne(['location_enc_id' => $params['location_id']]);
+
+            if ($location) {
+                $location->is_deleted = 1;
+                $location->last_updated_by = $user->user_enc_id;
+                $location->last_updated_on = date('Y-m-d H:i:s');
+                if (!$location->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $location->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
 }

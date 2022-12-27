@@ -24,6 +24,10 @@ class ProductsForm extends Model
     public $images;
     public $dent_images;
     public $status;
+    public $km_driven;
+    public $making_year;
+    public $ram;
+    public $rom;
 
     public function formName()
     {
@@ -34,7 +38,7 @@ class ProductsForm extends Model
     {
         return [
             [['model_id', 'price', 'city_id', 'assigned_category', 'product_other_detail', 'ownership_type', 'images', 'status'], 'required'],
-            [['variant', 'description', 'product_name', 'dent_images'], 'safe'],
+            [['variant', 'description', 'product_name', 'dent_images', 'km_driven', 'making_year', 'ram', 'rom'], 'safe'],
             [['assigned_category', 'product_name'], 'trim'],
             [['images'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 8],
             [['dent_images'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxFiles' => 8]
@@ -74,6 +78,10 @@ class ProductsForm extends Model
             $product_other_detail->other_detail = $this->product_other_detail;
             $product_other_detail->variant = $this->variant;
             $product_other_detail->ownership_type = $this->ownership_type;
+            $product_other_detail->km_driven = $this->km_driven;
+            $product_other_detail->making_year = $this->making_year;
+            $product_other_detail->ram = $this->ram;
+            $product_other_detail->rom = $this->rom;
             $product_other_detail->created_by = $user_id;
             if (!$product_other_detail->save()) {
                 $transaction->rollBack();

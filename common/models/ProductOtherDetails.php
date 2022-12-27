@@ -13,6 +13,10 @@ use Yii;
  * @property string $other_detail product other detail
  * @property int $ownership_type 1.I bought it new 2.I'm the Second Owner 3.I'm the Third Owner 4.I'm the Fourth Owner
  * @property string $variant variant
+ * @property int $km_driven km driven
+ * @property string $making_year making year
+ * @property int $ram ram in gb
+ * @property int $rom rom in gb
  * @property string $created_by created by
  * @property string $created_on created on
  * @property string $updated_by updated by
@@ -41,8 +45,8 @@ class ProductOtherDetails extends \yii\db\ActiveRecord
         return [
             [['product_other_detail_enc_id', 'product_enc_id', 'other_detail', 'created_by'], 'required'],
             [['other_detail'], 'string'],
-            [['ownership_type', 'is_deleted'], 'integer'],
-            [['created_on', 'updated_on'], 'safe'],
+            [['ownership_type', 'km_driven', 'ram', 'rom', 'is_deleted'], 'integer'],
+            [['making_year', 'created_on', 'updated_on'], 'safe'],
             [['product_other_detail_enc_id', 'product_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['variant'], 'string', 'max' => 50],
             [['product_other_detail_enc_id'], 'unique'],

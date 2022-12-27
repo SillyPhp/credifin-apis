@@ -122,6 +122,12 @@ class ProductsController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "model"']);
             }
 
+            $exists = BrandModels::findOne(['brand_enc_id' => $params['brand_id'], 'name' => $params['name'], 'is_deleted' => 0]);
+
+            if ($exists) {
+                return $this->response(200, ['status' => 200, 'message' => 'successfully saved', 'model_id' => $exists->model_enc_id, 'model_name' => $exists->name]);
+            }
+
             $model = new BrandModels();
             $model->model_enc_id = Yii::$app->security->generateRandomString(32);
             $model->brand_enc_id = $params['brand_id'];
@@ -131,7 +137,7 @@ class ProductsController extends ApiBaseController
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
 
-            return $this->response(200, ['status' => 200, 'message' => 'successfully saved', 'model_id' => $model->model_enc_id]);
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved', 'model_id' => $model->model_enc_id, 'model_name' => $model->name]);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
