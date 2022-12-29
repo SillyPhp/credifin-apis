@@ -281,6 +281,7 @@ class ProductsController extends ApiBaseController
             $params = Yii::$app->request->post();
             $limit = 10;
             $page = 1;
+            $category = 'Two Wheeler';
 
             if (isset($params['limit']) && !empty($params['limit'])) {
                 $limit = $params['limit'];
@@ -288,6 +289,10 @@ class ProductsController extends ApiBaseController
 
             if (isset($params['page']) && !empty($params['page'])) {
                 $page = $params['page'];
+            }
+
+            if (isset($params['category']) && !empty($params['category'])) {
+                $category = $params['category'];
             }
 
             $products = Products::find()
@@ -301,7 +306,11 @@ class ProductsController extends ApiBaseController
                     $c->select(['c.product_enc_id', 'c.alt', 'c.type',
                         'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
                 }])
+                ->joinWith(['assignedCategoryEnc d' => function ($d) {
+                    $d->joinWith(['categoryEnc d1']);
+                }], false)
                 ->where(['a.dealer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
+                ->andWhere(['d1.name' => $category])
                 ->groupBy('a.product_enc_id')
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->limit($limit)
@@ -409,6 +418,7 @@ class ProductsController extends ApiBaseController
         $params = Yii::$app->request->post();
         $limit = 10;
         $page = 1;
+        $category = 'Two Wheeler';
 
         if (isset($params['limit']) && !empty($params['limit'])) {
             $limit = $params['limit'];
@@ -416,6 +426,10 @@ class ProductsController extends ApiBaseController
 
         if (isset($params['page']) && !empty($params['page'])) {
             $page = $params['page'];
+        }
+
+        if (isset($params['category']) && !empty($params['category'])) {
+            $category = $params['category'];
         }
 
         $products = Products::find()
@@ -437,7 +451,10 @@ class ProductsController extends ApiBaseController
                 $m->joinWith(['brandEnc be']);
             }], false)
             ->joinWith(['dealerEnc d'], false)
-            ->where(['a.is_deleted' => 0])
+            ->joinWith(['assignedCategoryEnc dd' => function ($d) {
+                $d->joinWith(['categoryEnc dd1']);
+            }], false)
+            ->where(['a.is_deleted' => 0, 'dd1.name' => $category])
             ->groupBy('a.product_enc_id')
             ->orderBy(['a.created_on' => SORT_DESC])
             ->limit($limit)

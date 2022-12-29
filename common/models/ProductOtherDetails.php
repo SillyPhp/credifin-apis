@@ -17,6 +17,10 @@ use Yii;
  * @property string $making_year making year
  * @property int $ram ram in gb
  * @property int $rom rom in gb
+ * @property double $screen_size screen size in inch's
+ * @property double $front_camera front camera in MP
+ * @property double $back_camera back camera in MP
+ * @property string $sim_type sim type
  * @property string $created_by created by
  * @property string $created_on created on
  * @property string $updated_by updated by
@@ -47,8 +51,10 @@ class ProductOtherDetails extends \yii\db\ActiveRecord
             [['other_detail'], 'string'],
             [['ownership_type', 'km_driven', 'ram', 'rom', 'is_deleted'], 'integer'],
             [['making_year', 'created_on', 'updated_on'], 'safe'],
+            [['screen_size', 'front_camera', 'back_camera'], 'number'],
             [['product_other_detail_enc_id', 'product_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['variant'], 'string', 'max' => 50],
+            [['sim_type'], 'string', 'max' => 20],
             [['product_other_detail_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],

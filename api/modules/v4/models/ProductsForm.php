@@ -28,6 +28,10 @@ class ProductsForm extends Model
     public $making_year;
     public $ram;
     public $rom;
+    public $screen_size;
+    public $front_camera;
+    public $back_camera;
+    public $sim_type;
 
     public function formName()
     {
@@ -38,7 +42,7 @@ class ProductsForm extends Model
     {
         return [
             [['model_id', 'price', 'city_id', 'assigned_category', 'product_other_detail', 'ownership_type', 'images', 'status'], 'required'],
-            [['variant', 'description', 'product_name', 'dent_images', 'km_driven', 'making_year', 'ram', 'rom'], 'safe'],
+            [['variant', 'description', 'product_name', 'dent_images', 'km_driven', 'making_year', 'ram', 'rom', 'screen_size', 'front_camera', 'back_camera', 'sim_type'], 'safe'],
             [['assigned_category', 'product_name'], 'trim'],
             [['images'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 8],
             [['dent_images'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxFiles' => 8]
@@ -82,6 +86,10 @@ class ProductsForm extends Model
             $product_other_detail->making_year = $this->making_year;
             $product_other_detail->ram = $this->ram;
             $product_other_detail->rom = $this->rom;
+            $product_other_detail->screen_size = $this->screen_size;
+            $product_other_detail->front_camera = $this->front_camera;
+            $product_other_detail->back_camera = $this->back_camera;
+            $product_other_detail->sim_type = $this->sim_type;
             $product_other_detail->created_by = $user_id;
             if (!$product_other_detail->save()) {
                 $transaction->rollBack();
