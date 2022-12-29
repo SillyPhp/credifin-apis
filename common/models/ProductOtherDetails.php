@@ -54,7 +54,7 @@ class ProductOtherDetails extends \yii\db\ActiveRecord
             [['screen_size', 'front_camera', 'back_camera'], 'number'],
             [['product_other_detail_enc_id', 'product_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['variant'], 'string', 'max' => 50],
-            [['sim_type'], 'string', 'max' => 20],
+            [['sim_type'], 'string', 'max' => 80],
             [['product_other_detail_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
