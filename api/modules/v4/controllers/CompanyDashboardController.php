@@ -289,7 +289,9 @@ class CompanyDashboardController extends ApiBaseController
                     ['like', 'a.applicant_name', $params['search_keyword']],
                     ['like', 'a.loan_type', $params['search_keyword']],
                     ['like', 'a.amount', $params['search_keyword']],
-                    ['like', 'a.created_on', $params['search_keyword']]
+                    ['like', 'a.created_on', $params['search_keyword']],
+                    ['like', 'a.phone', $params['search_keyword']],
+                    ['like', 'a.application_number', $params['search_keyword']],
                 ]);
             }
 
