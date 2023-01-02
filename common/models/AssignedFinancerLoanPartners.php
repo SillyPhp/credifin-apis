@@ -11,6 +11,7 @@ use Yii;
  * @property string $assigned_loan_partner_enc_id
  * @property string $assigned_financer_enc_id
  * @property string $loan_partner_enc_id Foreign key to users table
+ * @property string $type type
  * @property double $ltv LTV in percentage
  * @property string $created_on
  * @property string $created_by Foreign key to users table
@@ -40,6 +41,7 @@ class AssignedFinancerLoanPartners extends \yii\db\ActiveRecord
     {
         return [
             [['assigned_loan_partner_enc_id', 'assigned_financer_enc_id', 'created_by'], 'required'],
+            [['type'], 'string'],
             [['ltv'], 'number'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],

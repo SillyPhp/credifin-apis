@@ -11,8 +11,7 @@ use Yii;
  * @property string $assigned_financer_enc_id
  * @property string $financer_enc_id
  * @property string $loan_type_enc_id
- * @property string $type
- * @property int $status 0 no, 1 yes
+ * @property int $status 0 false, 1 true
  * @property string $created_on
  * @property string $created_by
  * @property string $updated_by
@@ -41,8 +40,7 @@ class AssignedFinancerLoanType extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['assigned_financer_enc_id', 'financer_enc_id', 'loan_type_enc_id', 'type', 'created_by'], 'required'],
-            [['type'], 'string'],
+            [['assigned_financer_enc_id', 'financer_enc_id', 'loan_type_enc_id', 'created_by'], 'required'],
             [['status', 'is_deleted'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
             [['assigned_financer_enc_id', 'financer_enc_id', 'loan_type_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
