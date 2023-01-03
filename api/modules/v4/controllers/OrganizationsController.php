@@ -34,6 +34,7 @@ class OrganizationsController extends ApiBaseController
                 'update-loan-type' => ['POST', 'OPTIONS'],
                 'assigned-loan-types' => ['POST', 'OPTIONS'],
                 'get-documents-list' => ['POST', 'OPTIONS'],
+                'assign-document' => ['POST', 'OPTIONS'],
             ]
         ];
 

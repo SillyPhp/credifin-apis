@@ -89,10 +89,10 @@ class IndividualSignup extends Model
             $username->assigned_to = 1;
 
             //if username exists the concat random string to user-name
-            $username_exists = Usernames::findOne(['username' => $this->username]);
-            if (!$username_exists) {
-                $username->username = $this->username . strtolower(Yii::$app->getSecurity()->generateRandomString(5));
-            }
+//            $username_exists = Usernames::findOne(['username' => $this->username]);
+//            if (!$username_exists) {
+//                $username->username = $this->username . strtolower(Yii::$app->getSecurity()->generateRandomString(5));
+//            }
 
             if (!$username->validate() || !$username->save()) {
                 $transaction->rollback();
