@@ -3,6 +3,8 @@
 namespace api\modules\v4\controllers;
 
 use common\models\AssignedFinancerLoanType;
+use common\models\CertificateTypes;
+use common\models\FinancerLoanDocuments;
 use common\models\LoanType;
 use common\models\OrganizationLocations;
 use yii\web\UploadedFile;
@@ -31,6 +33,7 @@ class OrganizationsController extends ApiBaseController
                 'get-loan-types' => ['POST', 'OPTIONS'],
                 'update-loan-type' => ['POST', 'OPTIONS'],
                 'assigned-loan-types' => ['POST', 'OPTIONS'],
+                'get-documents-list' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -254,5 +257,70 @@ class OrganizationsController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    public function actionGetDocumentsList()
+    {
+        if ($user = $this->isAuthorized()) {
+            $documentsList = CertificateTypes::find()->asArray()->all();
+            return $this->response(200, ['status' => 200, 'documents_list' => $documentsList]);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAssignDocument()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['certificate_type']) || empty($params['assigned_financer_loan_type_id']) || empty($params['sequence'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "certificate_type, assigned_financer_loan_type_id, sequence"']);
+            }
+
+            $certificate_id = $this->__getCertificateTypeId($params['certificate_type']);
+
+            if (!$certificate_id) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while getting certificate type']);
+            }
+
+            $loan_documents = new FinancerLoanDocuments();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+            $loan_documents->financer_loan_document_enc_id = $utilitiesModel->encrypt();
+            $loan_documents->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
+            $loan_documents->certificate_type_enc_id = $certificate_id;
+            $loan_documents->sequence = $params['sequence'];
+            $loan_documents->created_by = $user->user_enc_id;
+            $loan_documents->created_on = date('Y-m-d H:i:s');
+            if (!$loan_documents->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_documents->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function __getCertificateTypeId($certificate)
+    {
+        $certificate = CertificateTypes::findOne(['name' => $certificate]);
+
+        if ($certificate) {
+            return $certificate->certificate_type_enc_id;
+        }
+
+        $certificate = new CertificateTypes();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+        $certificate->certificate_type_enc_id = $utilitiesModel->encrypt();
+        $certificate->name = $certificate;
+        if ($certificate->save()) {
+            return $certificate->certificate_type_enc_id;
+        }
+
+        return false;
     }
 }
