@@ -263,7 +263,7 @@ class OrganizationsController extends ApiBaseController
     public function actionGetDocumentsList()
     {
         if ($user = $this->isAuthorized()) {
-            $documentsList = CertificateTypes::find()->asArray()->all();
+            $documentsList = CertificateTypes::find()->select(['certificate_type_enc_id value', 'name label'])->asArray()->all();
             return $this->response(200, ['status' => 200, 'documents_list' => $documentsList]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -275,30 +275,43 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
-            if (empty($params['certificate_type']) || empty($params['assigned_financer_loan_type_id']) || empty($params['sequence'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "certificate_type, assigned_financer_loan_type_id, sequence"']);
+            if (empty($params['certificate_types']) || empty($params['assigned_financer_loan_type_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "certificate_types, assigned_financer_loan_type_id"']);
             }
 
-            $certificate_id = $this->__getCertificateTypeId($params['certificate_type']);
 
-            if (!$certificate_id) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while getting certificate type']);
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                foreach ($params['certificate_types'] as $key => $c) {
+
+                    $certificate_id = $this->__getCertificateTypeId($c['name']);
+
+                    if (!$certificate_id) {
+                        $transaction->rollback();
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred while getting certificate type id for "' . $c['name'] . '"']);
+                    }
+
+                    $loan_documents = new FinancerLoanDocuments();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+                    $loan_documents->financer_loan_document_enc_id = $utilitiesModel->encrypt();
+                    $loan_documents->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
+                    $loan_documents->certificate_type_enc_id = $certificate_id;
+                    $loan_documents->sequence = $key;
+                    $loan_documents->created_by = $user->user_enc_id;
+                    $loan_documents->created_on = date('Y-m-d H:i:s');
+                    if (!$loan_documents->save()) {
+                        $transaction->rollback();
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_documents->getErrors()]);
+                    }
+                }
+
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+            } catch (Exception $e) {
+                $transaction->rollback();
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()]);
             }
-
-            $loan_documents = new FinancerLoanDocuments();
-            $utilitiesModel = new \common\models\Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
-            $loan_documents->financer_loan_document_enc_id = $utilitiesModel->encrypt();
-            $loan_documents->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
-            $loan_documents->certificate_type_enc_id = $certificate_id;
-            $loan_documents->sequence = $params['sequence'];
-            $loan_documents->created_by = $user->user_enc_id;
-            $loan_documents->created_on = date('Y-m-d H:i:s');
-            if (!$loan_documents->save()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_documents->getErrors()]);
-            }
-
-            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
