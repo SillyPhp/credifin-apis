@@ -45,6 +45,8 @@ class IndividualSignup extends Model
             [['first_name', 'last_name', 'phone', 'username', 'email'], 'trim'],
 
             ['phone', 'unique', 'targetClass' => 'api\modules\v4\models\Candidates', 'message' => 'phone number already registered'],
+            ['organization_email', 'unique', 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_email' => 'email'], 'message' => 'This organization email address has already been used.'],
+            ['organization_phone', 'unique', 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_phone' => 'phone'], 'message' => 'This organization phone number has already been used.'],
 
             [['username'], 'string', 'length' => [3, 20]],
             [['username'], 'match', 'pattern' => '/^([A-Za-z]+[0-9]|[0-9]+[A-Za-z]|[a-zA-Z])[A-Za-z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
@@ -157,6 +159,7 @@ class IndividualSignup extends Model
                 $org->initials_color = RandomColors::one();;
                 $org->created_by = $user->user_enc_id;
                 if (!$org->save()) {
+                    $transaction->rollback();
                     return false;
                 }
             }
@@ -182,7 +185,7 @@ class IndividualSignup extends Model
             $data['organization_name'] = '';
             $data['organization_slug'] = '';
 
-            if($this->organization_name){
+            if ($this->organization_name) {
                 $data['organization_enc_id'] = $org->organization_enc_id;
                 $data['organization_name'] = $org->name;
                 $data['organization_slug'] = $org->slug;
