@@ -337,9 +337,10 @@ class ProductsController extends ApiBaseController
 
             $details = Products::find()
                 ->alias('a')
-                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'c1.name city', 'c2.name state', 'm.name model', 'be.name brand'])
+                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'a.created_on', 'c1.name city', 'c2.name state', 'm.name model', 'be.name brand'])
                 ->joinWith(['productOtherDetails b' => function ($b) {
-                    $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.other_detail', 'b.ownership_type', 'b.variant']);
+                    $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.km_driven', 'b.making_year', 'b.other_detail', 'b.ownership_type', 'b.variant', 'b.rom', 'b.ram', 'b.screen_size',
+                        'b.back_camera', 'b.front_camera', 'b.sim_type']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->joinWith(['productImages c' => function ($c) {
@@ -466,5 +467,14 @@ class ProductsController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'products' => $products]);
         }
         return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
+    }
+
+    public function actionUpdateProduct()
+    {
+        if ($user = $this->isAuthorized()) {
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 }

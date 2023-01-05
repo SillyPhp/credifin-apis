@@ -12,6 +12,7 @@ use Yii;
  * @property string $loan_app_enc_id loan encrypted id
  * @property string $loan_co_app_enc_id
  * @property string $certificate_type_enc_id id proof type
+ * @property string $financer_loan_document_enc_id financer loan document enc id
  * @property string $number id proof number
  * @property string $proof_image id proof image
  * @property string $proof_image_name
@@ -53,7 +54,7 @@ class LoanCertificates extends \yii\db\ActiveRecord
             [['certificate_periods'], 'number'],
             [['related_to', 'is_deleted'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
-            [['certificate_enc_id', 'loan_app_enc_id', 'loan_co_app_enc_id', 'certificate_type_enc_id', 'proof_image', 'proof_image_name', 'proof_image_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['certificate_enc_id', 'loan_app_enc_id', 'loan_co_app_enc_id', 'certificate_type_enc_id', 'financer_loan_document_enc_id', 'proof_image', 'proof_image_name', 'proof_image_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['number'], 'string', 'max' => 20],
             [['short_description'], 'string', 'max' => 250],
             [['certificate_enc_id'], 'unique'],

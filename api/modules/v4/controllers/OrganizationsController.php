@@ -35,7 +35,6 @@ class OrganizationsController extends ApiBaseController
                 'assigned-loan-types' => ['POST', 'OPTIONS'],
                 'get-documents-list' => ['POST', 'OPTIONS'],
                 'assign-document' => ['POST', 'OPTIONS'],
-                'add-loan-branch' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -120,7 +119,7 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $locations = OrganizationLocations::find()
                 ->alias('a')
-                ->select(['a.location_enc_id', 'a.location_enc_id as id', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , " ", b.name) as value', 'b.city_enc_id', 'a.status'])
+                ->select(['a.location_enc_id', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'b.city_enc_id', 'a.status'])
                 ->joinWith(['cityEnc b'], false)
                 ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
                 ->asArray()
@@ -285,27 +284,25 @@ class OrganizationsController extends ApiBaseController
             try {
                 foreach ($params['certificate_types'] as $key => $c) {
 
-                    if (!empty($c['name'])) {
-                        $certificate_id = $this->__getCertificateTypeId($c['name']);
+                    $certificate_id = $this->__getCertificateTypeId($c['name']);
 
-                        if (!$certificate_id) {
-                            $transaction->rollback();
-                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred while getting certificate type id for "' . $c['name'] . '"']);
-                        }
+                    if (!$certificate_id) {
+                        $transaction->rollback();
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred while getting certificate type id for "' . $c['name'] . '"']);
+                    }
 
-                        $loan_documents = new FinancerLoanDocuments();
-                        $utilitiesModel = new \common\models\Utilities();
-                        $utilitiesModel->variables['string'] = time() . rand(10, 100000);
-                        $loan_documents->financer_loan_document_enc_id = $utilitiesModel->encrypt();
-                        $loan_documents->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
-                        $loan_documents->certificate_type_enc_id = $certificate_id;
-                        $loan_documents->sequence = $key;
-                        $loan_documents->created_by = $user->user_enc_id;
-                        $loan_documents->created_on = date('Y-m-d H:i:s');
-                        if (!$loan_documents->save()) {
-                            $transaction->rollback();
-                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_documents->getErrors()]);
-                        }
+                    $loan_documents = new FinancerLoanDocuments();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+                    $loan_documents->financer_loan_document_enc_id = $utilitiesModel->encrypt();
+                    $loan_documents->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
+                    $loan_documents->certificate_type_enc_id = $certificate_id;
+                    $loan_documents->sequence = $key;
+                    $loan_documents->created_by = $user->user_enc_id;
+                    $loan_documents->created_on = date('Y-m-d H:i:s');
+                    if (!$loan_documents->save()) {
+                        $transaction->rollback();
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_documents->getErrors()]);
                     }
                 }
 
