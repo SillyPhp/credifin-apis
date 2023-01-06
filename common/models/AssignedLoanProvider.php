@@ -1,14 +1,22 @@
 <?php
+
 namespace common\models;
+
+use Yii;
+
 /**
  * This is the model class for table "{{%assigned_loan_provider}}".
  *
  * @property int $id
  * @property string $assigned_loan_provider_enc_id assigned_loan_schemes_enc_id
  * @property string $loan_application_enc_id linked to loan application
+ * @property string $institute_lead_enc_id linked to Institute Loan Application
  * @property string $provider_enc_id linked to organization_enc_id
  * @property string $scheme_enc_id linked to organization schemes
- * @property int $status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Senctioned, 5 as Disbursed 10 as Rejected
+ * @property string $assigned_lender_service_enc_id Assigned Lender Service
+ * @property int $status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Sanctioned, 5 as Disbursed,10 as Rejected,11 as Completed
+ * @property string $remarks ANy remarks or reason for rejection or any status change
+ * @property string $branch_enc_id branch id
  * @property string $created_by linked to user table
  * @property string $created_on created on
  * @property string $updated_on updated on
@@ -20,11 +28,14 @@ namespace common\models;
  * @property LoanApplications $loanApplicationEnc
  * @property Users $createdBy
  * @property Users $updatedBy
+ * @property InstituteLeads $instituteLeadEnc
+ * @property AssignedLenderServices $assignedLenderServiceEnc
+ * @property OrganizationLocations $branchEnc
  */
 class AssignedLoanProvider extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -32,20 +43,25 @@ class AssignedLoanProvider extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['assigned_loan_provider_enc_id', 'loan_application_enc_id', 'provider_enc_id'], 'required'],
+            [['assigned_loan_provider_enc_id', 'provider_enc_id'], 'required'],
             [['status', 'is_deleted'], 'integer'],
+            [['remarks'], 'string'],
             [['created_on', 'updated_on'], 'safe'],
-            [['assigned_loan_provider_enc_id', 'loan_application_enc_id', 'provider_enc_id', 'scheme_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['assigned_loan_provider_enc_id', 'loan_application_enc_id', 'institute_lead_enc_id', 'provider_enc_id', 'scheme_enc_id', 'assigned_lender_service_enc_id', 'branch_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['assigned_loan_provider_enc_id'], 'unique'],
             [['provider_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['provider_enc_id' => 'organization_enc_id']],
             [['scheme_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationLoanSchemes::className(), 'targetAttribute' => ['scheme_enc_id' => 'scheme_enc_id']],
             [['loan_application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_application_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
+            [['institute_lead_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => InstituteLeads::className(), 'targetAttribute' => ['institute_lead_enc_id' => 'lead_enc_id']],
+            [['assigned_lender_service_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedLenderServices::className(), 'targetAttribute' => ['assigned_lender_service_enc_id' => 'assigned_lender_service_enc_id']],
+            [['branch_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationLocations::className(), 'targetAttribute' => ['branch_enc_id' => 'location_enc_id']],
         ];
     }
 
@@ -87,5 +103,29 @@ class AssignedLoanProvider extends \yii\db\ActiveRecord
     public function getUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInstituteLeadEnc()
+    {
+        return $this->hasOne(InstituteLeads::className(), ['lead_enc_id' => 'institute_lead_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedLenderServiceEnc()
+    {
+        return $this->hasOne(AssignedLenderServices::className(), ['assigned_lender_service_enc_id' => 'assigned_lender_service_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBranchEnc()
+    {
+        return $this->hasOne(OrganizationLocations::className(), ['location_enc_id' => 'branch_enc_id']);
     }
 }

@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\BusinessLoanApplication;
+use common\models\AssignedLoanProvider;
 use common\models\BillDetails;
 use common\models\CertificateTypes;
 use common\models\EsignAgreementDetails;
@@ -45,6 +46,7 @@ class LoansController extends ApiBaseController
                 'get-document-url' => ['POST', 'OPTIONS'],
                 'upload-document' => ['POST', 'OPTIONS'],
                 'update-application-number' => ['POST', 'OPTIONS'],
+                'add-loan-branch' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -532,6 +534,34 @@ class LoansController extends ApiBaseController
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAddLoanBranch()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            // id = loan_app_enc_id
+            // value = branch_id
+            // parent_id = provider_id
+            if (empty($params['id']) || empty($params['value']) || empty($params['parent_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id, branch_id, provider_id"']);
+            }
+
+            $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $params['id'], 'provider_enc_id' => $params['parent_id']]);
+
+            $provider->branch_enc_id = $params['value'];
+            $provider->updated_by = $user->user_enc_id;
+            $provider->updated_on = date('Y-m-d H:i:d');
+            if (!$provider->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $provider->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully added']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);

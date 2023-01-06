@@ -39,7 +39,7 @@ class FinancerLoanDocuments extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['financer_loan_document_enc_id', 'assigned_financer_loan_type_id', 'certificate_type_enc_id', 'sequence', 'created_by', 'is_deleted'], 'required'],
+            [['financer_loan_document_enc_id', 'assigned_financer_loan_type_id', 'certificate_type_enc_id', 'sequence', 'created_by'], 'required'],
             [['sequence', 'is_deleted'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
             [['financer_loan_document_enc_id', 'assigned_financer_loan_type_id', 'certificate_type_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],

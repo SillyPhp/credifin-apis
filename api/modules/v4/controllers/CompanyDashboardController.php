@@ -400,6 +400,10 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
+            if (empty($params['provider_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "provider_id"']);
+            }
+
 
             $loan = LoanApplications::find()
                 ->alias('a')
@@ -456,6 +460,19 @@ class CompanyDashboardController extends ApiBaseController
                         }
                     }
                 }
+
+                $branch = AssignedLoanProvider::find()
+                    ->alias('a')
+                    ->select(['a.assigned_loan_provider_enc_id', 'a.branch_enc_id', 'b.location_name', 'b1.name city'])
+                    ->joinWith(['branchEnc b' => function ($b) {
+                        $b->joinWith(['cityEnc b1']);
+                    }], false)
+                    ->andWhere(['a.loan_application_enc_id' => $loan['loan_app_enc_id'], 'a.provider_enc_id' => $params['provider_id']])
+                    ->asArray()
+                    ->one();
+
+                $loan['branch_id'] = $branch['branch_enc_id'];
+                $loan['branch'] = $branch['location_name'] . ' ' . $branch['city'];
 
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }
