@@ -8,6 +8,7 @@ use api\modules\v4\models\ProfilePicture;
 use api\modules\v4\models\Candidates;
 use api\modules\v4\models\LoginForm;
 use api\modules\v4\models\IndividualSignup;
+use common\models\AssignedSupervisor;
 use common\models\Organizations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
@@ -224,9 +225,9 @@ class AuthController extends ApiBaseController
             $data['organization_slug'] = $org->slug;
             $data['organization_enc_id'] = $org->organization_enc_id;
             $data['organization_username'] = Users::findOne(['organization_enc_id' => $org->organization_enc_id])->username;
-            if($org->logo != null){
+            if ($org->logo != null) {
                 $data['logo'] = Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . $org->logo_location . '/' . $org->logo;
-            }else{
+            } else {
                 $data['logo'] = "https://ui-avatars.com/api/?name=" . $org->name . "&size=200&rounded=false&background=" . str_replace("#", "", $org->initials_color) . "&color=ffffff";
             }
         } else {
@@ -291,6 +292,34 @@ class AuthController extends ApiBaseController
                     ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'b.username'])
                     ->joinWith(['createdBy b'], false)
                     ->where(['a.organization_enc_id' => $org_id])
+                    ->asArray()
+                    ->one();
+                $data['organization_name'] = $organization['name'];
+                $data['organization_slug'] = $organization['slug'];
+                $data['organization_username'] = $organization['username'];
+                $data['organization_enc_id'] = $organization['organization_enc_id'];
+            }
+        }
+
+        if ($data['user_type'] == 'DSA') {
+
+            $dsa = AssignedSupervisor::find()
+                ->alias('a')
+                ->select(['a.assigned_enc_id', 'a.supervisor_enc_id', 'b.organization_enc_id'])
+                ->joinWith(['supervisorEnc b'], false);
+            if ($user->organization_enc_id) {
+                $dsa->where(['a.assigned_organization_enc_id' => $user->organization_enc_id, 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
+            } else {
+                $dsa->where(['a.assigned_user_enc_id' => $user->user_enc_id, 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
+            }
+            $dsa = $dsa->asArray()->one();
+
+            if ($dsa['organization_enc_id']) {
+                $organization = Organizations::find()
+                    ->alias('a')
+                    ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'b.username'])
+                    ->joinWith(['createdBy b'], false)
+                    ->where(['a.organization_enc_id' => $dsa['organization_enc_id']])
                     ->asArray()
                     ->one();
                 $data['organization_name'] = $organization['name'];
@@ -379,14 +408,15 @@ class AuthController extends ApiBaseController
         }
     }
 
-    public function actionUploadLogo(){
-        if($user = $this->isAuthorized()){
+    public function actionUploadLogo()
+    {
+        if ($user = $this->isAuthorized()) {
             $utilitiesModel = new Utilities();
-            if($user->organization_enc_id){
+            if ($user->organization_enc_id) {
                 $logo = UploadedFile::getInstanceByName('logo');
                 $orgModel = Organizations::findOne(['organization_enc_id' => $user->organization_enc_id]);
 
-                if($orgModel){
+                if ($orgModel) {
                     $orgModel->logo_location = \Yii::$app->getSecurity()->generateRandomString();
                     $base_path = Yii::$app->params->upload_directories->organizations->logo . $orgModel->logo_location . '/';
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -399,16 +429,16 @@ class AuthController extends ApiBaseController
                         if ($result) {
                             return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
                         } else {
-                            return $this->response(500,['status' => 500, 'message' => 'An Error Occurred']);
+                            return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
                         }
                     } else {
-                        return $this->response(500,['status' => 500, 'message' => 'An Error Occurred']);
+                        return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
                     }
-                }else{
+                } else {
                     return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
                 }
 
-            }else{
+            } else {
                 return $this->response(409, ['status' => 409, 'message' => 'Must be an organization']);
             };
         }
