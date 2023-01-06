@@ -35,6 +35,8 @@ class OrganizationsController extends ApiBaseController
                 'assigned-loan-types' => ['POST', 'OPTIONS'],
                 'get-documents-list' => ['POST', 'OPTIONS'],
                 'assign-document' => ['POST', 'OPTIONS'],
+                'get-assigned-documents' => ['POST', 'OPTIONS'],
+                'remove-assigned-certificates' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -119,7 +121,7 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $locations = OrganizationLocations::find()
                 ->alias('a')
-                ->select(['a.location_enc_id', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'b.city_enc_id', 'a.status'])
+                ->select(['a.location_enc_id', 'a.location_enc_id as id', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , " ", b.name) as value', 'b.city_enc_id', 'a.status'])
                 ->joinWith(['cityEnc b'], false)
                 ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
                 ->asArray()
@@ -279,30 +281,31 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "certificate_types, assigned_financer_loan_type_id"']);
             }
 
-
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 foreach ($params['certificate_types'] as $key => $c) {
 
-                    $certificate_id = $this->__getCertificateTypeId($c['name']);
+                    if (!empty($c['name'])) {
+                        $certificate_id = $this->__getCertificateTypeId($c['name']);
 
-                    if (!$certificate_id) {
-                        $transaction->rollback();
-                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred while getting certificate type id for "' . $c['name'] . '"']);
-                    }
+                        if (!$certificate_id) {
+                            $transaction->rollback();
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred while getting certificate type id for "' . $c['name'] . '"']);
+                        }
 
-                    $loan_documents = new FinancerLoanDocuments();
-                    $utilitiesModel = new \common\models\Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(10, 100000);
-                    $loan_documents->financer_loan_document_enc_id = $utilitiesModel->encrypt();
-                    $loan_documents->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
-                    $loan_documents->certificate_type_enc_id = $certificate_id;
-                    $loan_documents->sequence = $key;
-                    $loan_documents->created_by = $user->user_enc_id;
-                    $loan_documents->created_on = date('Y-m-d H:i:s');
-                    if (!$loan_documents->save()) {
-                        $transaction->rollback();
-                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_documents->getErrors()]);
+                        $loan_documents = new FinancerLoanDocuments();
+                        $utilitiesModel = new \common\models\Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+                        $loan_documents->financer_loan_document_enc_id = $utilitiesModel->encrypt();
+                        $loan_documents->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
+                        $loan_documents->certificate_type_enc_id = $certificate_id;
+                        $loan_documents->sequence = $key;
+                        $loan_documents->created_by = $user->user_enc_id;
+                        $loan_documents->created_on = date('Y-m-d H:i:s');
+                        if (!$loan_documents->save()) {
+                            $transaction->rollback();
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_documents->getErrors()]);
+                        }
                     }
                 }
 
@@ -318,9 +321,9 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    private function __getCertificateTypeId($certificate)
+    private function __getCertificateTypeId($certificateName)
     {
-        $certificate = CertificateTypes::findOne(['name' => $certificate]);
+        $certificate = CertificateTypes::findOne(['name' => $certificateName]);
 
         if ($certificate) {
             return $certificate->certificate_type_enc_id;
@@ -330,11 +333,68 @@ class OrganizationsController extends ApiBaseController
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         $certificate->certificate_type_enc_id = $utilitiesModel->encrypt();
-        $certificate->name = $certificate;
+        $certificate->name = $certificateName;
+
         if ($certificate->save()) {
             return $certificate->certificate_type_enc_id;
         }
 
         return false;
+    }
+
+    public function actionGetAssignedDocuments()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $certificates = AssignedFinancerLoanType::find()
+                ->alias('a')
+                ->select(['a.assigned_financer_enc_id', 'a.financer_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
+                ->joinWith(['loanTypeEnc lt'], false)
+                ->innerJoinWith(['financerLoanDocuments b' => function ($b) {
+                    $b->select(['b.financer_loan_document_enc_id', 'b.assigned_financer_loan_type_id', 'b.certificate_type_enc_id',
+                        'b.sequence', 'ct.name certificate_name']);
+                    $b->joinWith(['certificateTypeEnc ct'], false);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }])
+                ->where(['a.financer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
+                ->groupBy(['a.loan_type_enc_id'])
+                ->asArray()
+                ->all();
+
+            if ($certificates) {
+                return $this->response(200, ['status' => 200, 'certificates' => $certificates]);
+            }
+            return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+    }
+
+    public function actionRemoveAssignedCertificates() {
+        if($user = $this->isAuthorized()){
+
+            $params = Yii::$app->request->post();
+
+            if(empty($params['assigned_financer_enc_id'])){
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "assigned_financer_enc_id"']);
+            }
+
+            $removeCertificates = FinancerLoanDocuments::updateAll([
+                'is_deleted' => 1,
+                'updated_by' => $user->user_enc_id,
+                'updated_on' => date('Y-m-d H:i:s'),
+            ],[ 'and',
+                ['assigned_financer_loan_type_id' => $params['assigned_financer_enc_id']],
+                ['created_by' => $user->user_enc_id]
+            ]);
+
+            if($removeCertificates){
+                return $this->response(200, ['status' => 200, 'message' => 'Delete Successfully']);
+            }
+
+            return $this->response(404, ['status'=>404, 'message'=>'Not Found']);
+        }else{
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
     }
 }
