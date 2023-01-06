@@ -17,6 +17,13 @@ use Yii;
  * @property int $status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Sanctioned, 5 as Disbursed,10 as Rejected,11 as Completed
  * @property string $remarks ANy remarks or reason for rejection or any status change
  * @property string $branch_enc_id branch id
+ * @property double $bdo_approved_amount BDO approved amount
+ * @property double $tl_approved_amount TL approved amount
+ * @property double $soft_approval soft approvel
+ * @property double $soft_sanction soft sanction
+ * @property double $valuation valuation
+ * @property double $disbursement_approved disbursement approved
+ * @property double $insurance_charges insurance and incident charges
  * @property string $created_by linked to user table
  * @property string $created_on created on
  * @property string $updated_on updated on
@@ -51,6 +58,7 @@ class AssignedLoanProvider extends \yii\db\ActiveRecord
             [['assigned_loan_provider_enc_id', 'provider_enc_id'], 'required'],
             [['status', 'is_deleted'], 'integer'],
             [['remarks'], 'string'],
+            [['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges'], 'number'],
             [['created_on', 'updated_on'], 'safe'],
             [['assigned_loan_provider_enc_id', 'loan_application_enc_id', 'institute_lead_enc_id', 'provider_enc_id', 'scheme_enc_id', 'assigned_lender_service_enc_id', 'branch_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['assigned_loan_provider_enc_id'], 'unique'],

@@ -47,6 +47,7 @@ class LoansController extends ApiBaseController
                 'upload-document' => ['POST', 'OPTIONS'],
                 'update-application-number' => ['POST', 'OPTIONS'],
                 'add-loan-branch' => ['POST', 'OPTIONS'],
+                'update-loan-amounts' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -567,4 +568,40 @@ class LoansController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
+    public function actionUpdateLoanAmounts()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            // provider_id
+            // id = field name
+            // value = field value
+            // parent_id = loan_id
+            if (empty($params['parent_id']) || empty($params['provider_id']) || empty($params['id']) || empty($params['value'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "parent_id, org_id, id, value"']);
+            }
+
+            $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $params['parent_id'], 'provider_enc_id' => $params['provider_id']]);
+
+            if (!$provider) {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+            $field = $params['id'];
+            $provider->$field = $params['value'];
+            $provider->updated_by = $user->user_enc_id;
+            $provider->updated_on = date('Y-m-d H:i:s');
+            if (!$provider->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $provider->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
 }

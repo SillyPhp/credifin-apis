@@ -349,6 +349,16 @@ class CompanyDashboardController extends ApiBaseController
                         ->asArray()
                         ->all();
 
+                    $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $params['provider_id']]);
+
+                    $loans[$key]['bdo_approved_amount'] = $provider->bdo_approved_amount;
+                    $loans[$key]['tl_approved_amount'] = $provider->tl_approved_amount;
+                    $loans[$key]['soft_approval'] = $provider->soft_approval;
+                    $loans[$key]['soft_sanction'] = $provider->soft_sanction;
+                    $loans[$key]['valuation'] = $provider->valuation;
+                    $loans[$key]['disbursement_approved'] = $provider->disbursement_approved;
+                    $loans[$key]['insurance_charges'] = $provider->insurance_charges;
+
                 }
             }
 
