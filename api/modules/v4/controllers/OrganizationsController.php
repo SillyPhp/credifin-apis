@@ -35,6 +35,8 @@ class OrganizationsController extends ApiBaseController
                 'assigned-loan-types' => ['POST', 'OPTIONS'],
                 'get-documents-list' => ['POST', 'OPTIONS'],
                 'assign-document' => ['POST', 'OPTIONS'],
+                'get-assigned-documents' => ['POST', 'OPTIONS'],
+                'remove-assigned-certificates' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -279,7 +281,6 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "certificate_types, assigned_financer_loan_type_id"']);
             }
 
-
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 foreach ($params['certificate_types'] as $key => $c) {
@@ -320,9 +321,9 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    private function __getCertificateTypeId($certificate)
+    private function __getCertificateTypeId($certificateName)
     {
-        $certificate = CertificateTypes::findOne(['name' => $certificate]);
+        $certificate = CertificateTypes::findOne(['name' => $certificateName]);
 
         if ($certificate) {
             return $certificate->certificate_type_enc_id;
@@ -332,7 +333,8 @@ class OrganizationsController extends ApiBaseController
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         $certificate->certificate_type_enc_id = $utilitiesModel->encrypt();
-        $certificate->name = $certificate;
+        $certificate->name = $certificateName;
+
         if ($certificate->save()) {
             return $certificate->certificate_type_enc_id;
         }
@@ -364,6 +366,34 @@ class OrganizationsController extends ApiBaseController
             }
             return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
         } else {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+    }
+
+    public function actionRemoveAssignedCertificates() {
+        if($user = $this->isAuthorized()){
+
+            $params = Yii::$app->request->post();
+
+            if(empty($params['assigned_financer_enc_id'])){
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "assigned_financer_enc_id"']);
+            }
+
+            $removeCertificates = FinancerLoanDocuments::updateAll([
+                'is_deleted' => 1,
+                'updated_by' => $user->user_enc_id,
+                'updated_on' => date('Y-m-d H:i:s'),
+            ],[ 'and',
+                ['assigned_financer_loan_type_id' => $params['assigned_financer_enc_id']],
+                ['created_by' => $user->user_enc_id]
+            ]);
+
+            if($removeCertificates){
+                return $this->response(200, ['status' => 200, 'message' => 'Delete Successfully']);
+            }
+
+            return $this->response(404, ['status'=>404, 'message'=>'Not Found']);
+        }else{
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
     }
