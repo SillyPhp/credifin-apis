@@ -121,7 +121,7 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $locations = OrganizationLocations::find()
                 ->alias('a')
-                ->select(['a.location_enc_id', 'a.location_enc_id as id', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , " ", b.name) as value', 'b.city_enc_id', 'a.status'])
+                ->select(['a.location_enc_id', 'a.location_enc_id as id', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , ", ", b.name) as value', 'b.city_enc_id', 'a.status'])
                 ->joinWith(['cityEnc b'], false)
                 ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
                 ->asArray()

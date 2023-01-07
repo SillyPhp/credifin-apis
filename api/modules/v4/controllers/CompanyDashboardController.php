@@ -482,7 +482,7 @@ class CompanyDashboardController extends ApiBaseController
                     ->one();
 
                 $loan['branch_id'] = $branch['branch_enc_id'];
-                $loan['branch'] = $branch['location_name'] . ' ' . $branch['city'];
+                $loan['branch'] = $branch['location_name'] . ', ' . $branch['city'];
 
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }
