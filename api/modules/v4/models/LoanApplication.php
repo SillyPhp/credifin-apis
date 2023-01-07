@@ -365,7 +365,14 @@ class LoanApplication extends Model
 
     private function saveLender($loan_id, $lender_slug, $user_id = null)
     {
-        $organization = Organizations::findOne(['slug' => $lender_slug]);
+//        $organization = Organizations::findOne(['slug' => $lender_slug]);
+        $organization = Organizations::find()
+            ->where([
+                'or',
+                ['slug' => $lender_slug],
+                ['organization_enc_id' => $lender_slug],
+            ])
+            ->one();
 
         if (!$organization) {
             return false;

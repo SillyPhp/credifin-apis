@@ -74,6 +74,14 @@ class LoansController extends ApiBaseController
                 if (!$user_id) {
                     $user_id = NULL;
                 }
+
+                if ($user = $this->isAuthorized()) {
+                    $lender = $this->getFinancerId($user);
+                    if ($lender != null) {
+                        $model->loan_lender = $lender;
+                    }
+                }
+
                 $resposne = $model->save($user_id);
                 if ($resposne['status']) {
                     return $this->response(200, ['status' => 200, 'data' => $resposne['data']]);

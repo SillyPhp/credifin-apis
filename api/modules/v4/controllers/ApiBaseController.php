@@ -2,6 +2,12 @@
 
 namespace api\modules\v4\controllers;
 
+use common\models\AssignedSupervisor;
+use common\models\Organizations;
+use common\models\Referral;
+use common\models\ReferralSignUpTracking;
+use common\models\SelectedServices;
+use common\models\UserTypes;
 use Yii;
 use yii\web\Response;
 use yii\rest\Controller;
@@ -93,5 +99,69 @@ class ApiBaseController extends Controller
             return false;
         }
         return false;
+    }
+
+    public function getFinancerId($user)
+    {
+        $service = SelectedServices::find()
+            ->alias('a')
+            ->select(['b.name'])
+            ->joinWith(['serviceEnc b'], false)
+            ->where(['a.is_selected' => 1]);
+        if ($user->organization_enc_id) {
+            $service->andWhere(['or', ['a.organization_enc_id' => $user->organization_enc_id]]);
+        } else {
+            $service->andWhere(['or', ['a.created_by' => $user->user_enc_id]]);
+        }
+
+        $service = $service->asArray()
+            ->all();
+
+        $serviceArr = array_column($service, 'name');
+
+        $user_type = '';
+        if (in_array('Loans', $serviceArr)) {
+            return $user->organization_enc_id;
+        } else if (in_array('E-Partners', $serviceArr)) {
+            $user_type = "DSA";
+        } else if (in_array('Connector', $serviceArr)) {
+            $user_type = "Connector";
+        } else {
+            $user_type = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
+        }
+
+        if ($user_type == 'Employee') {
+            $ref_enc_id = ReferralSignUpTracking::findOne(['sign_up_user_enc_id' => $user->user_enc_id])->referral_enc_id;
+            $org_id = Referral::findOne(['referral_enc_id' => $ref_enc_id])->organization_enc_id;
+
+            if ($org_id) {
+                return $org_id;
+            }
+
+            return null;
+        }
+
+        if ($user_type == 'DSA') {
+
+            $dsa = AssignedSupervisor::find()
+                ->alias('a')
+                ->select(['a.assigned_enc_id', 'a.supervisor_enc_id', 'b.organization_enc_id'])
+                ->joinWith(['supervisorEnc b'], false);
+            if ($user->organization_enc_id) {
+                $dsa->where(['a.assigned_organization_enc_id' => $user->organization_enc_id, 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
+            } else {
+                $dsa->where(['a.assigned_user_enc_id' => $user->user_enc_id, 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
+            }
+            $dsa = $dsa->asArray()->one();
+
+            if ($dsa) {
+                return $dsa['organization_enc_id'];
+            }
+
+            return null;
+        }
+
+        return null;
+
     }
 }
