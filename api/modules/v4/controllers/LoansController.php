@@ -477,6 +477,10 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "document_type"']);
             }
 
+            if(empty($params['assigned_to'])){
+                $params['assigned_to'] = 1;
+            }
+
             $file = UploadedFile::getInstanceByName('file');
 
             if (!$type_id = $this->getCertificateTypeId($params['document_type'], $params['assigned_to'])) {
@@ -489,6 +493,9 @@ class LoansController extends ApiBaseController
             $certificate->certificate_type_enc_id = $type_id;
             if (!empty($params['proof_of'])) {
                 $certificate->proof_of = $params['proof_of'];
+            }
+            if (!empty($params['financer_loan_document_enc_id'])) {
+                $certificate->financer_loan_document_enc_id = $params['financer_loan_document_enc_id'];
             }
             $certificate->created_by = $user->user_enc_id;
             if (!empty($params['short_description'])) {

@@ -32,6 +32,7 @@ use Yii;
  * @property CertificateTypes $certificateTypeEnc
  * @property Users $createdBy
  * @property Users $updatedBy
+ * @property FinancerLoanDocuments $financerLoanDocumentEnc
  */
 class LoanCertificates extends \yii\db\ActiveRecord
 {
@@ -63,6 +64,7 @@ class LoanCertificates extends \yii\db\ActiveRecord
             [['certificate_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CertificateTypes::className(), 'targetAttribute' => ['certificate_type_enc_id' => 'certificate_type_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
+            [['financer_loan_document_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanDocuments::className(), 'targetAttribute' => ['financer_loan_document_enc_id' => 'financer_loan_document_enc_id']],
         ];
     }
 
@@ -104,5 +106,13 @@ class LoanCertificates extends \yii\db\ActiveRecord
     public function getUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerLoanDocumentEnc()
+    {
+        return $this->hasOne(FinancerLoanDocuments::className(), ['financer_loan_document_enc_id' => 'financer_loan_document_enc_id']);
     }
 }
