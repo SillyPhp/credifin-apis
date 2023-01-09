@@ -65,6 +65,8 @@ class LoanApplication extends Model
     public $disbursement_date;
     public $form_type;
 
+    public $branch_id;
+
     public function formName()
     {
         return '';
@@ -76,7 +78,7 @@ class LoanApplication extends Model
             [['applicant_name', 'loan_type', 'phone_no'], 'required'],
             [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhar_number', 'loan_lender',
                 'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount',
-                'vehicle_brand', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type'], 'safe'],
+                'vehicle_brand', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type', 'branch_id'], 'safe'],
             [['applicant_name', 'loan_purpose', 'email'], 'trim'],
             [['applicant_name'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],
@@ -384,6 +386,7 @@ class LoanApplication extends Model
         $loan_provider->assigned_loan_provider_enc_id = $utilitiesModel->encrypt();
         $loan_provider->loan_application_enc_id = $loan_id;
         $loan_provider->provider_enc_id = $organization->organization_enc_id;
+        $loan_provider->branch_enc_id = $this->branch_id;
         if ($this->form_type == 'diwali-dhamaka') {
             $loan_provider->status = 5;
         }
