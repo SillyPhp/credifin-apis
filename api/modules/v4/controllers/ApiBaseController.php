@@ -7,6 +7,7 @@ use common\models\Organizations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
+use common\models\Users;
 use common\models\UserTypes;
 use Yii;
 use yii\web\Response;
@@ -103,19 +104,7 @@ class ApiBaseController extends Controller
 
     public function getFinancerId($user)
     {
-        $service = SelectedServices::find()
-            ->alias('a')
-            ->select(['b.name'])
-            ->joinWith(['serviceEnc b'], false)
-            ->where(['a.is_selected' => 1]);
-        if ($user->organization_enc_id) {
-            $service->andWhere(['or', ['a.organization_enc_id' => $user->organization_enc_id]]);
-        } else {
-            $service->andWhere(['or', ['a.created_by' => $user->user_enc_id]]);
-        }
-
-        $service = $service->asArray()
-            ->all();
+        $service = $this->getServices($user);
 
         $serviceArr = array_column($service, 'name');
 
@@ -161,7 +150,62 @@ class ApiBaseController extends Controller
             return null;
         }
 
-        return null;
+        if ($user_type == 'Connector') {
 
+            // getting connector service obj
+            $s = SelectedServices::findOne(['created_by' => $user->user_enc_id]);
+
+            // connector assigned by user data
+            $u = Users::findOne(['user_enc_id' => $s->assigned_user]);
+
+            // getting assigned by user service
+            $ser = $this->getServices($u);
+
+            $serArr = array_column($ser, 'name');
+
+            // if assigned by user is financer
+            if (in_array('Loans', $serArr)) {
+                return $u->organization_enc_id;
+            } else if (in_array('E-Partners', $serviceArr)) {
+                // if assigned by user is dsa
+                $dsa = AssignedSupervisor::find()
+                    ->alias('a')
+                    ->select(['a.assigned_enc_id', 'a.supervisor_enc_id', 'b.organization_enc_id'])
+                    ->joinWith(['supervisorEnc b'], false);
+                if ($u->organization_enc_id) {
+                    $dsa->where(['a.assigned_organization_enc_id' => $u->organization_enc_id, 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
+                } else {
+                    $dsa->where(['a.assigned_user_enc_id' => $u->user_enc_id, 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
+                }
+                $dsa = $dsa->asArray()->one();
+
+                if ($dsa) {
+                    return $dsa['organization_enc_id'];
+                }
+
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    private function getServices($user)
+    {
+        $service = SelectedServices::find()
+            ->alias('a')
+            ->select(['b.name'])
+            ->joinWith(['serviceEnc b'], false)
+            ->where(['a.is_selected' => 1]);
+        if ($user->organization_enc_id) {
+            $service->andWhere(['or', ['a.organization_enc_id' => $user->organization_enc_id]]);
+        } else {
+            $service->andWhere(['or', ['a.created_by' => $user->user_enc_id]]);
+        }
+
+        $service = $service->asArray()
+            ->all();
+
+        return $service;
     }
 }

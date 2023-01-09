@@ -15,6 +15,7 @@ use common\models\LoanCertificates;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\spaces\Spaces;
+use common\models\Users;
 use common\models\Utilities;
 use yii\web\UploadedFile;
 use api\modules\v4\models\LoanApplication;
@@ -79,6 +80,27 @@ class LoansController extends ApiBaseController
                     $lender = $this->getFinancerId($user);
                     if ($lender != null) {
                         $model->loan_lender = $lender;
+                    }
+                }
+
+                if (!empty($model->ref_id)) {
+                    $referralData = Referral::findOne(['code' => $model->ref_id]);
+                    if ($referralData) {
+
+                        $user_obj = null;
+                        if ($referralData['user_enc_id'] != null) {
+                            $user_obj = Users::findOne(['user_enc_id' => $referralData['user_enc_id']]);
+                        } elseif ($referralData['organization_enc_id'] != null) {
+                            $user_obj = Users::findOne(['organization_enc_id' => $referralData['organization_enc_id']]);
+                        }
+
+                        if ($user_obj != null) {
+                            $lender = $this->getFinancerId($user_obj);
+                            if ($lender != null) {
+                                $model->loan_lender = $lender;
+                            }
+                        }
+
                     }
                 }
 
