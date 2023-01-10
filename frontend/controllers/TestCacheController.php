@@ -302,4 +302,5 @@ class TestCacheController extends Controller
         $c = $amount * 100;
         return (int)$c;
     }
+
 }
