@@ -387,6 +387,7 @@ class LoanApplication extends Model
         $loan_provider->loan_application_enc_id = $loan_id;
         $loan_provider->provider_enc_id = $organization->organization_enc_id;
         $loan_provider->branch_enc_id = $this->branch_id;
+        $loan_provider->auto_assigned = 1;
         if ($this->form_type == 'diwali-dhamaka') {
             $loan_provider->status = 5;
         }

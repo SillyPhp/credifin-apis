@@ -49,6 +49,7 @@ class LoansController extends ApiBaseController
                 'update-application-number' => ['POST', 'OPTIONS'],
                 'add-loan-branch' => ['POST', 'OPTIONS'],
                 'update-loan-amounts' => ['POST', 'OPTIONS'],
+                'remove-loan-application' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -477,7 +478,7 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "document_type"']);
             }
 
-            if(empty($params['assigned_to'])){
+            if (empty($params['assigned_to'])) {
                 $params['assigned_to'] = 1;
             }
 
@@ -635,6 +636,31 @@ class LoansController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionRemoveLoanApplication()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            $loan_app = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']]);
+
+            $loan_app->is_deleted = 1;
+            $loan_app->updated_by = $user->user_enc_id;
+            $loan_app->updated_on = date('Y-m-d H:i:s');
+            if (!$loan_app->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
