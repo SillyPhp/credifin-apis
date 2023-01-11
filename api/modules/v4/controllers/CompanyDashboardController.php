@@ -310,12 +310,12 @@ class CompanyDashboardController extends ApiBaseController
 
             if ($loans) {
                 foreach ($loans as $key => $val) {
-                    if (!$loans['educationLoanPayments']) {
-                        $get_amount = EducationLoanPayments::find()->where(['loan_app_enc_id' => $val['loan_app_enc_id']])->one();
-                        $loans[$key]['payment_status'] = $get_amount->payment_status;
-                    } else {
-                        $loans[$key]['payment_status'] = $val[0]['payment_status'];
-                    }
+//                    if (!$loans[$key]['educationLoanPayments']) {
+//                        $get_amount = EducationLoanPayments::find()->where(['loan_app_enc_id' => $val['loan_app_enc_id']])->one();
+//                        $loans[$key]['payment_status'] = $get_amount->payment_status;
+//                    } else {
+//                        $loans[$key]['payment_status'] = $val['payment_status'];
+//                    }
                     unset($loans[$key]['educationLoanPayments']);
 
                     $loans[$key]['sharedTo'] = SharedLoanApplications::find()
@@ -341,13 +341,15 @@ class CompanyDashboardController extends ApiBaseController
                         }
                     }
 
-                    $loans[$key]['claimedDeals'] = ClaimedDeals::find()
+                    $d = ClaimedDeals::find()
                         ->alias('a')
                         ->select(['a.claimed_deal_enc_id', 'a.deal_enc_id', 'a.user_enc_id', 'a.claimed_coupon_code'])
                         ->joinWith(['dealEnc b'], false)
                         ->andWhere(['a.user_enc_id' => $val['created_by'], 'a.is_deleted' => 0, 'b.slug' => 'diwali-dhamaka'])
                         ->asArray()
                         ->all();
+                    $loans[$key]['claimedDeals'] = $d;
+                    $loans[$key]['deal'] = $d[0]['claimed_coupon_code'];
 
                     $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $params['provider_id']]);
 
