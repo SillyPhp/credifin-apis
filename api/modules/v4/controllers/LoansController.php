@@ -15,6 +15,7 @@ use common\models\LoanCertificates;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\spaces\Spaces;
+use common\models\Users;
 use common\models\Utilities;
 use yii\web\UploadedFile;
 use api\modules\v4\models\LoanApplication;
@@ -47,6 +48,8 @@ class LoansController extends ApiBaseController
                 'upload-document' => ['POST', 'OPTIONS'],
                 'update-application-number' => ['POST', 'OPTIONS'],
                 'add-loan-branch' => ['POST', 'OPTIONS'],
+                'update-loan-amounts' => ['POST', 'OPTIONS'],
+                'remove-loan-application' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -73,6 +76,35 @@ class LoansController extends ApiBaseController
                 if (!$user_id) {
                     $user_id = NULL;
                 }
+
+                if ($user = $this->isAuthorized()) {
+                    $lender = $this->getFinancerId($user);
+                    if ($lender != null) {
+                        $model->loan_lender = $lender;
+                    }
+                }
+
+                if (!empty($model->ref_id)) {
+                    $referralData = Referral::findOne(['code' => $model->ref_id]);
+                    if ($referralData) {
+
+                        $user_obj = null;
+                        if ($referralData['user_enc_id'] != null) {
+                            $user_obj = Users::findOne(['user_enc_id' => $referralData['user_enc_id']]);
+                        } elseif ($referralData['organization_enc_id'] != null) {
+                            $user_obj = Users::findOne(['organization_enc_id' => $referralData['organization_enc_id']]);
+                        }
+
+                        if ($user_obj != null) {
+                            $lender = $this->getFinancerId($user_obj);
+                            if ($lender != null) {
+                                $model->loan_lender = $lender;
+                            }
+                        }
+
+                    }
+                }
+
                 $resposne = $model->save($user_id);
                 if ($resposne['status']) {
                     return $this->response(200, ['status' => 200, 'data' => $resposne['data']]);
@@ -446,6 +478,10 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "document_type"']);
             }
 
+            if (empty($params['assigned_to'])) {
+                $params['assigned_to'] = 1;
+            }
+
             $file = UploadedFile::getInstanceByName('file');
 
             if (!$type_id = $this->getCertificateTypeId($params['document_type'], $params['assigned_to'])) {
@@ -458,6 +494,9 @@ class LoansController extends ApiBaseController
             $certificate->certificate_type_enc_id = $type_id;
             if (!empty($params['proof_of'])) {
                 $certificate->proof_of = $params['proof_of'];
+            }
+            if (!empty($params['financer_loan_document_enc_id'])) {
+                $certificate->financer_loan_document_enc_id = $params['financer_loan_document_enc_id'];
             }
             $certificate->created_by = $user->user_enc_id;
             if (!empty($params['short_description'])) {
@@ -567,4 +606,65 @@ class LoansController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
+    public function actionUpdateLoanAmounts()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            // provider_id
+            // id = field name
+            // value = field value
+            // parent_id = loan_id
+            if (empty($params['parent_id']) || empty($params['provider_id']) || empty($params['id']) || empty($params['value'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "parent_id, org_id, id, value"']);
+            }
+
+            $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $params['parent_id'], 'provider_enc_id' => $params['provider_id']]);
+
+            if (!$provider) {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+            $field = $params['id'];
+            $provider->$field = $params['value'];
+            $provider->updated_by = $user->user_enc_id;
+            $provider->updated_on = date('Y-m-d H:i:s');
+            if (!$provider->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $provider->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionRemoveLoanApplication()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            $loan_app = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']]);
+
+            $loan_app->is_deleted = 1;
+            $loan_app->updated_by = $user->user_enc_id;
+            $loan_app->updated_on = date('Y-m-d H:i:s');
+            if (!$loan_app->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
 }

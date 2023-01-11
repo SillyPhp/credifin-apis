@@ -310,12 +310,12 @@ class CompanyDashboardController extends ApiBaseController
 
             if ($loans) {
                 foreach ($loans as $key => $val) {
-                    if (!$loans['educationLoanPayments']) {
-                        $get_amount = EducationLoanPayments::find()->where(['loan_app_enc_id' => $val['loan_app_enc_id']])->one();
-                        $loans[$key]['payment_status'] = $get_amount->payment_status;
-                    } else {
-                        $loans[$key]['payment_status'] = $val[0]['payment_status'];
-                    }
+//                    if (!$loans[$key]['educationLoanPayments']) {
+//                        $get_amount = EducationLoanPayments::find()->where(['loan_app_enc_id' => $val['loan_app_enc_id']])->one();
+//                        $loans[$key]['payment_status'] = $get_amount->payment_status;
+//                    } else {
+//                        $loans[$key]['payment_status'] = $val['payment_status'];
+//                    }
                     unset($loans[$key]['educationLoanPayments']);
 
                     $loans[$key]['sharedTo'] = SharedLoanApplications::find()
@@ -341,13 +341,25 @@ class CompanyDashboardController extends ApiBaseController
                         }
                     }
 
-                    $loans[$key]['claimedDeals'] = ClaimedDeals::find()
+                    $d = ClaimedDeals::find()
                         ->alias('a')
                         ->select(['a.claimed_deal_enc_id', 'a.deal_enc_id', 'a.user_enc_id', 'a.claimed_coupon_code'])
                         ->joinWith(['dealEnc b'], false)
                         ->andWhere(['a.user_enc_id' => $val['created_by'], 'a.is_deleted' => 0, 'b.slug' => 'diwali-dhamaka'])
                         ->asArray()
                         ->all();
+                    $loans[$key]['claimedDeals'] = $d;
+                    $loans[$key]['deal'] = $d[0]['claimed_coupon_code'];
+
+                    $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $params['provider_id']]);
+
+                    $loans[$key]['bdo_approved_amount'] = $provider->bdo_approved_amount;
+                    $loans[$key]['tl_approved_amount'] = $provider->tl_approved_amount;
+                    $loans[$key]['soft_approval'] = $provider->soft_approval;
+                    $loans[$key]['soft_sanction'] = $provider->soft_sanction;
+                    $loans[$key]['valuation'] = $provider->valuation;
+                    $loans[$key]['disbursement_approved'] = $provider->disbursement_approved;
+                    $loans[$key]['insurance_charges'] = $provider->insurance_charges;
 
                 }
             }
@@ -413,8 +425,9 @@ class CompanyDashboardController extends ApiBaseController
 //                    $b->where(['b.provider_enc_id' => $organization_id]);
                 }], false)
                 ->joinWith(['loanCertificates c' => function ($c) {
-                    $c->select(['c.certificate_enc_id', 'c.loan_app_enc_id', 'c.short_description', 'c.certificate_type_enc_id', 'c.number', 'c1.name', 'c.proof_image', 'c.proof_image_location',]);
+                    $c->select(['c.certificate_enc_id', 'c.loan_app_enc_id', 'c.short_description', 'c.certificate_type_enc_id', 'c.number', 'c1.name', 'c.proof_image', 'c.proof_image_location', 'c.created_on', 'CONCAT(c2.first_name," ",c2.last_name) created_by']);
                     $c->joinWith(['certificateTypeEnc c1'], false);
+                    $c->joinWith(['createdBy c2'], false);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
                 ->joinWith(['loanCoApplicants d' => function ($d) {
@@ -472,7 +485,7 @@ class CompanyDashboardController extends ApiBaseController
                     ->one();
 
                 $loan['branch_id'] = $branch['branch_enc_id'];
-                $loan['branch'] = $branch['location_name'] . ' ' . $branch['city'];
+                $loan['branch'] = $branch['location_name'] . ', ' . $branch['city'];
 
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }
