@@ -310,12 +310,12 @@ class CompanyDashboardController extends ApiBaseController
 
             if ($loans) {
                 foreach ($loans as $key => $val) {
-//                    if (!$loans[$key]['educationLoanPayments']) {
-//                        $get_amount = EducationLoanPayments::find()->where(['loan_app_enc_id' => $val['loan_app_enc_id']])->one();
-//                        $loans[$key]['payment_status'] = $get_amount->payment_status;
-//                    } else {
-//                        $loans[$key]['payment_status'] = $val['payment_status'];
-//                    }
+                    if (!$val['educationLoanPayments']) {
+                        $get_amount = EducationLoanPayments::find()->where(['loan_app_enc_id' => $val['loan_app_enc_id']])->one();
+                        $loans[$key]['payment_status'] = $get_amount->payment_status;
+                    } else {
+                        $loans[$key]['payment_status'] = $val['educationLoanPayments'][0]['payment_status'];
+                    }
                     unset($loans[$key]['educationLoanPayments']);
 
                     $loans[$key]['sharedTo'] = SharedLoanApplications::find()
@@ -485,7 +485,7 @@ class CompanyDashboardController extends ApiBaseController
                     ->one();
 
                 $loan['branch_id'] = $branch['branch_enc_id'];
-                $loan['branch'] = $branch['location_name'] . ', ' . $branch['city'];
+                $loan['branch'] = $branch['location_name'] ? $branch['location_name'] . ', ' . $branch['city'] : $branch['city'];
 
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }
