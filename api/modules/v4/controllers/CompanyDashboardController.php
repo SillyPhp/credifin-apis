@@ -930,7 +930,7 @@ class CompanyDashboardController extends ApiBaseController
 
             $detail['assignedFinancerLoanTypes'] = AssignedFinancerLoanType::find()
                 ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.financer_enc_id', 'a.loan_type_enc_id', 'a.type', 'b.name loan_type'])
+                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'a.type', 'b.name loan_type'])
                 ->joinWith(['loanTypeEnc b'], false)
                 ->joinWith(['assignedFinancerLoanPartners c' => function ($c) {
                     $c->select(['c.assigned_loan_partner_enc_id', 'c.assigned_financer_enc_id', 'c.loan_partner_enc_id',
@@ -938,7 +938,7 @@ class CompanyDashboardController extends ApiBaseController
                     $c->joinWith(['loanPartnerEnc c1'], false);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
-                ->where(['a.is_deleted' => 0, 'a.status' => 1, 'a.financer_enc_id' => Users::findOne(['organization_enc_id' => $detail['organization_enc_id']])->user_enc_id])
+                ->where(['a.is_deleted' => 0, 'a.status' => 1, 'a.organization_enc_id' => $detail['organization_enc_id']])
                 ->andWhere(['<>', 'b.name', 'Vehicle Loan'])
                 ->asArray()
                 ->all();
