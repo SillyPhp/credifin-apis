@@ -349,7 +349,6 @@ class CompanyDashboardController extends ApiBaseController
                         ->asArray()
                         ->all();
                     $loans[$key]['claimedDeals'] = $d;
-                    $loans[$key]['deal'] = $d[0]['claimed_coupon_code'];
 
                     $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $params['provider_id']]);
 
