@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 use common\models\Categories;
 use common\models\extended\PaymentsModule;
+use common\models\spaces\Spaces;
 use kartik\mpdf\Pdf;
 use common\models\extended\EducationLoanPaymentsExtends;
 use common\models\OpenTitles;
@@ -302,5 +303,4 @@ class TestCacheController extends Controller
         $c = $amount * 100;
         return (int)$c;
     }
-
 }
