@@ -112,6 +112,9 @@ class LoanApplication extends Model
             if ($this->form_type == 'diwali-dhamaka') {
                 $model->form_type = $this->form_type;
             }
+            if ($this->loan_lender) {
+                $model->auto_assigned = 1;
+            }
             $model->loan_type = $this->loan_type;
             $model->loan_purpose = $this->loan_purpose;
             $model->yearly_income = $this->annual_income;
@@ -387,7 +390,6 @@ class LoanApplication extends Model
         $loan_provider->loan_application_enc_id = $loan_id;
         $loan_provider->provider_enc_id = $organization->organization_enc_id;
         $loan_provider->branch_enc_id = $this->branch_id;
-        $loan_provider->auto_assigned = 1;
         if ($this->form_type == 'diwali-dhamaka') {
             $loan_provider->status = 5;
         }

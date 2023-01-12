@@ -160,22 +160,4 @@ class UtilitiesController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
     }
 
-    public function actionMoveData()
-    {
-        Yii::$app->cache->flush();
-        $assignedFinancerLoanType = AssignedFinancerLoanType::find()->asArray()->all();
-
-        if ($assignedFinancerLoanType) {
-            foreach ($assignedFinancerLoanType as $val) {
-                $a = AssignedFinancerLoanType::findOne(['assigned_financer_enc_id' => $val['assigned_financer_enc_id']]);
-                $a->organization_enc_id = Users::findOne(['user_enc_id' => $val['financer_enc_id']])->organization_enc_id;
-                $a->updated_on = date('Y-m-d H:i:s');
-                if (!$a->update()) {
-                    print_r($a->getErrors());
-                }
-            }
-        }
-        echo 'done';
-        die();
-    }
 }
