@@ -121,11 +121,15 @@ class OrganizationsController extends ApiBaseController
     public function actionGetBranches()
     {
         if ($user = $this->isAuthorized()) {
+            $lender = $this->getFinancerId($user);
+            if (!$lender) {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
             $locations = OrganizationLocations::find()
                 ->alias('a')
                 ->select(['a.location_enc_id', 'a.location_enc_id as id', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , ", ", b.name) as value', 'b.city_enc_id', 'a.status'])
                 ->joinWith(['cityEnc b'], false)
-                ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
+                ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $lender])
                 ->asArray()
                 ->all();
 
