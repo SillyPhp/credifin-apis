@@ -122,11 +122,15 @@ class OrganizationsController extends ApiBaseController
     public function actionGetBranches()
     {
         if ($user = $this->isAuthorized()) {
+            $lender = $this->getFinancerId($user);
+            if (!$lender) {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
             $locations = OrganizationLocations::find()
                 ->alias('a')
                 ->select(['a.location_enc_id', 'a.location_enc_id as id', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , ", ", b.name) as value', 'b.city_enc_id', 'a.status'])
                 ->joinWith(['cityEnc b'], false)
-                ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
+                ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $lender])
                 ->asArray()
                 ->all();
 
@@ -174,9 +178,9 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $assignedLoanTypes = AssignedFinancerLoanType::find()
                 ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.financer_enc_id', 'a.loan_type_enc_id', 'a.status', 'b.name'])
+                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'a.status', 'b.name'])
                 ->joinWith(['loanTypeEnc b'], false)
-                ->where(['a.financer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
+                ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_deleted' => 0])
                 ->asArray()
                 ->all();
 
@@ -214,7 +218,7 @@ class OrganizationsController extends ApiBaseController
             }
 
 
-            $assignedType = AssignedFinancerLoanType::findOne(['financer_enc_id' => $user->user_enc_id, 'loan_type_enc_id' => $params['loan_type_enc_id'], 'is_deleted' => 0]);
+            $assignedType = AssignedFinancerLoanType::findOne(['organization_enc_id' => $user->organization_enc_id, 'loan_type_enc_id' => $params['loan_type_enc_id'], 'is_deleted' => 0]);
 
             if ($assignedType) {
                 $assignedType->status = $params['status'] == 'Active' ? 1 : 0;
@@ -226,7 +230,7 @@ class OrganizationsController extends ApiBaseController
             } else {
                 $assignedType = new AssignedFinancerLoanType();
                 $assignedType->assigned_financer_enc_id = Yii::$app->security->generateRandomString(32);
-                $assignedType->financer_enc_id = $user->user_enc_id;
+                $assignedType->organization_enc_id = $user->organization_enc_id;
                 $assignedType->loan_type_enc_id = $params['loan_type_enc_id'];
                 $assignedType->status = $params['status'] == 'Active' ? 1 : 0;
                 $assignedType->created_by = $user->user_enc_id;
@@ -248,9 +252,9 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $assignedLoanTypes = AssignedFinancerLoanType::find()
                 ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.financer_enc_id', 'a.loan_type_enc_id', 'b.name'])
+                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name'])
                 ->joinWith(['loanTypeEnc b'], false)
-                ->where(['a.financer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0, 'a.status' => 1])
+                ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_deleted' => 0, 'a.status' => 1])
                 ->asArray()
                 ->all();
 
@@ -351,7 +355,7 @@ class OrganizationsController extends ApiBaseController
 
             $certificates = AssignedFinancerLoanType::find()
                 ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.financer_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
+                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
                 ->joinWith(['loanTypeEnc lt'], false)
                 ->innerJoinWith(['financerLoanDocuments b' => function ($b) {
                     $b->select(['b.financer_loan_document_enc_id', 'b.assigned_financer_loan_type_id', 'b.certificate_type_enc_id',
@@ -360,7 +364,7 @@ class OrganizationsController extends ApiBaseController
                     $b->orderBy(['b.sequence' => SORT_ASC]);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
-                ->where(['a.financer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
+                ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_deleted' => 0])
                 ->groupBy(['a.loan_type_enc_id'])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()

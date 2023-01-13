@@ -310,12 +310,12 @@ class CompanyDashboardController extends ApiBaseController
 
             if ($loans) {
                 foreach ($loans as $key => $val) {
-//                    if (!$loans[$key]['educationLoanPayments']) {
-//                        $get_amount = EducationLoanPayments::find()->where(['loan_app_enc_id' => $val['loan_app_enc_id']])->one();
-//                        $loans[$key]['payment_status'] = $get_amount->payment_status;
-//                    } else {
-//                        $loans[$key]['payment_status'] = $val['payment_status'];
-//                    }
+                    if (!$val['educationLoanPayments']) {
+                        $get_amount = EducationLoanPayments::find()->where(['loan_app_enc_id' => $val['loan_app_enc_id']])->one();
+                        $loans[$key]['payment_status'] = $get_amount->payment_status;
+                    } else {
+                        $loans[$key]['payment_status'] = $val['educationLoanPayments'][0]['payment_status'];
+                    }
                     unset($loans[$key]['educationLoanPayments']);
 
                     $loans[$key]['sharedTo'] = SharedLoanApplications::find()
@@ -349,7 +349,6 @@ class CompanyDashboardController extends ApiBaseController
                         ->asArray()
                         ->all();
                     $loans[$key]['claimedDeals'] = $d;
-                    $loans[$key]['deal'] = $d[0]['claimed_coupon_code'];
 
                     $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $params['provider_id']]);
 
@@ -485,7 +484,7 @@ class CompanyDashboardController extends ApiBaseController
                     ->one();
 
                 $loan['branch_id'] = $branch['branch_enc_id'];
-                $loan['branch'] = $branch['location_name'] . ', ' . $branch['city'];
+                $loan['branch'] = $branch['location_name'] ? $branch['location_name'] . ', ' . $branch['city'] : $branch['city'];
 
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }
@@ -931,7 +930,7 @@ class CompanyDashboardController extends ApiBaseController
 
             $detail['assignedFinancerLoanTypes'] = AssignedFinancerLoanType::find()
                 ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.financer_enc_id', 'a.loan_type_enc_id', 'a.type', 'b.name loan_type'])
+                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'a.type', 'b.name loan_type'])
                 ->joinWith(['loanTypeEnc b'], false)
                 ->joinWith(['assignedFinancerLoanPartners c' => function ($c) {
                     $c->select(['c.assigned_loan_partner_enc_id', 'c.assigned_financer_enc_id', 'c.loan_partner_enc_id',
@@ -939,7 +938,7 @@ class CompanyDashboardController extends ApiBaseController
                     $c->joinWith(['loanPartnerEnc c1'], false);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
-                ->where(['a.is_deleted' => 0, 'a.status' => 1, 'a.financer_enc_id' => Users::findOne(['organization_enc_id' => $detail['organization_enc_id']])->user_enc_id])
+                ->where(['a.is_deleted' => 0, 'a.status' => 1, 'a.organization_enc_id' => $detail['organization_enc_id']])
                 ->andWhere(['<>', 'b.name', 'Vehicle Loan'])
                 ->asArray()
                 ->all();

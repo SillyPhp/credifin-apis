@@ -3,7 +3,6 @@
 namespace api\modules\v4\controllers;
 
 use common\models\AssignedDeals;
-use common\models\AssignedFinancerLoanType;
 use common\models\ClaimedDeals;
 use common\models\UnclaimedOrganizations;
 use yii\helpers\Url;
