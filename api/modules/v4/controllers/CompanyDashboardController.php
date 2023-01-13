@@ -999,6 +999,9 @@ class CompanyDashboardController extends ApiBaseController
             $comment->comment_enc_id = Yii::$app->getSecurity()->generateRandomString();
             $comment->loan_application_enc_id = $params['loan_id'];
             $comment->comment = $params['comment'];
+            if (!empty($params['is_important']) && (int)$params['is_important'] == 1) {
+                $comment->is_important = 1;
+            }
             $comment->source = 'EL';
             $comment->created_by = $user->user_enc_id;
             $comment->created_on = date('Y-m-d H:i:s');
