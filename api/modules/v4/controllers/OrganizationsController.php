@@ -39,7 +39,9 @@ class OrganizationsController extends ApiBaseController
                 'get-assigned-documents' => ['POST', 'OPTIONS'],
                 'remove-assigned-documents-list' => ['POST', 'OPTIONS'],
                 'update-assigned-documents' => ['POST', 'OPTIONS'],
-                'remove-assigned-document' => ['POST', 'OPTIONS'],
+                'add-purpose' => ['POST', 'OPTIONS'],
+                'get-purpose-list' => ['POST', 'OPTIONS'],
+                'remove-purpose-list' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -494,5 +496,81 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-   
+    public function actionAddPurpose(){
+        if($user = $this->isAuthorized()){
+            $params = Yii::$app->request->post();
+
+            if(empty($params['assigned_financer_loan_type_id']) || empty($params['loan_purpose']) ){
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "assigned_financer_loan_type_id" or "loan_purpose"']);
+            }
+
+            $purpose = new FinancerLoanPurpose();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+            $purpose->financer_loan_purpose_enc_id = $utilitiesModel->encrypt();
+            $purpose->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
+            $purpose->purpose = $params['loan_purpose'];
+            $purpose->created_by = $user->user_enc_id;
+            $purpose->created_on = date('Y-m-d H:i:s');
+            if(!$purpose->save()){
+                return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $purpose->getErrors()]);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'Saved Successfully']);
+        }else{
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+    }
+
+    public function actionGetPurposeList(){
+        if($user = $this->isAuthorized()){
+            $purpose = AssignedFinancerLoanType::find()
+                ->alias('a')
+                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan',
+                    'b.financer_loan_purpose_enc_id', 'b.assigned_financer_loan_type_id', 'b.purpose'])
+                ->joinWith(['loanTypeEnc lt'], false)
+                ->innerJoinWith(['financerLoanPurposes b' => function($b){
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }],false)
+                ->where(['a.organization_enc_id' => $user->organization_enc_id])
+                ->orderBy(['a.created_by' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            if($purpose){
+               return $this->response(200, ['status' => 200, 'purpose' => $purpose]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+        }else{
+            return $this->response(500, ['status' => 500, 'message' => 'Unauthorized']);
+        }
+    }
+
+    public function actionRemovePurposeList(){
+        if($user = $this->isAuthorized()){
+
+            $params = Yii::$app->request->post();
+
+            if(empty($params['financer_loan_purpose_enc_id'])){
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "assigned_financer_loan_type_id"']);
+            }
+
+            $purpose = FinancerLoanPurpose::findOne(['financer_loan_purpose_enc_id' => $params['financer_loan_purpose_enc_id']]);
+
+            if($purpose){
+                $purpose->is_deleted = 1;
+                $purpose->updated_by = $user->user_enc_id;
+                $purpose->updated_on = date('Y-m-d H:i:s');
+                if(!$purpose->update()){
+                    return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $purpose->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'Successfully Updated']);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+        }else{
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+    }
 }
