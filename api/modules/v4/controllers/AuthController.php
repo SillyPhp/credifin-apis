@@ -231,7 +231,8 @@ class AuthController extends ApiBaseController
                 $data['logo'] = "https://ui-avatars.com/api/?name=" . $org->name . "&size=200&rounded=false&background=" . str_replace("#", "", $org->initials_color) . "&color=ffffff";
             }
         } else {
-            $data['referral_code'] = Referral::findOne(['user_enc_id' => $user->user_enc_id])->code;
+            $ref = Referral::findOne(['user_enc_id' => $user->user_enc_id]);
+            $data['referral_code'] = !empty($ref) ? $ref->code : '';
         }
 
         $service = SelectedServices::find()

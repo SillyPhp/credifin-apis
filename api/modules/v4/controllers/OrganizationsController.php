@@ -351,7 +351,10 @@ class OrganizationsController extends ApiBaseController
     public function actionGetAssignedDocuments()
     {
         if ($user = $this->isAuthorized()) {
-
+            $lender = $this->getFinancerId($user);
+            if (!$lender) {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
             $certificates = AssignedFinancerLoanType::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
@@ -363,7 +366,7 @@ class OrganizationsController extends ApiBaseController
                     $b->orderBy(['b.sequence' => SORT_ASC]);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
-                ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_deleted' => 0])
+                ->where(['a.organization_enc_id' => $lender, 'a.is_deleted' => 0])
                 ->groupBy(['a.loan_type_enc_id'])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
