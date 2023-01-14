@@ -24,6 +24,7 @@ use Yii;
  * @property Users $updatedBy
  * @property Organizations $organizationEnc
  * @property FinancerLoanDocuments[] $financerLoanDocuments
+ * @property FinancerLoanPurpose[] $financerLoanPurposes
  */
 class AssignedFinancerLoanType extends \yii\db\ActiveRecord
 {
@@ -118,5 +119,13 @@ class AssignedFinancerLoanType extends \yii\db\ActiveRecord
     public function getFinancerLoanDocuments()
     {
         return $this->hasMany(FinancerLoanDocuments::className(), ['assigned_financer_loan_type_id' => 'assigned_financer_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerLoanPurposes()
+    {
+        return $this->hasMany(FinancerLoanPurpose::className(), ['assigned_financer_loan_type_id' => 'assigned_financer_enc_id']);
     }
 }
