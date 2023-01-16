@@ -7,6 +7,7 @@ use common\models\BillDetails;
 use common\models\CertificateTypes;
 use common\models\EmailLogs;
 use common\models\LoanCertificates;
+use common\models\LoanPurpose;
 use common\models\Organizations;
 use common\models\Referral;
 use common\models\spaces\Spaces;
@@ -116,7 +117,6 @@ class LoanApplication extends Model
                 $model->auto_assigned = 1;
             }
             $model->loan_type = $this->loan_type;
-            $model->loan_purpose = $this->loan_purpose;
             $model->yearly_income = $this->annual_income;
             $model->created_on = date('Y-m-d H:i:s');
             $model->created_by = $user_id;
@@ -142,9 +142,25 @@ class LoanApplication extends Model
                 return false;
             }
 
+            if (!empty($this->loan_purpose)) {
+                foreach ($this->loan_purpose as $p) {
+                    $purpose = new LoanPurpose();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $purpose->loan_purpose_enc_id = $utilitiesModel->encrypt();
+                    $purpose->financer_loan_purpose_enc_id = $p;
+                    $purpose->created_by = $user_id;
+                    $purpose->created_on = date('Y-m-d H:i:s');
+                    if (!$purpose->save()) {
+                        $transaction->rollback();
+                        return false;
+                    }
+                }
+            }
+
             // saving other options
             if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Vehicle Loan') {
                 $loan_options = new LoanApplicationOptions();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $loan_options->option_enc_id = $utilitiesModel->encrypt();
                 $loan_options->loan_app_enc_id = $model->loan_app_enc_id;
                 $loan_options->name_of_company = $this->company;
