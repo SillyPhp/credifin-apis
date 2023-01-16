@@ -504,18 +504,30 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "assigned_financer_loan_type_id" or "loan_purpose"']);
             }
 
-            $purpose = new FinancerLoanPurpose();
-            $utilitiesModel = new \common\models\Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
-            $purpose->financer_loan_purpose_enc_id = $utilitiesModel->encrypt();
-            $purpose->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
-            $purpose->purpose = $params['loan_purpose'];
-            $purpose->created_by = $user->user_enc_id;
-            $purpose->created_on = date('Y-m-d H:i:s');
-            if(!$purpose->save()){
-                return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $purpose->getErrors()]);
+            $transaction = Yii::$app->db->beginTransaction();
+            try{
+                foreach ($params['loan_purpose'] as $key => $val){
+                    $purpose = new FinancerLoanPurpose();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+                    $purpose->financer_loan_purpose_enc_id = $utilitiesModel->encrypt();
+                    $purpose->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
+                    $purpose->purpose = $val['purpose'];
+                    $purpose->sequence = $key;
+                    $purpose->created_by = $user->user_enc_id;
+                    $purpose->created_on = date('Y-m-d H:i:s');
+                    if(!$purpose->save()){
+                        return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $purpose->getErrors()]);
+                    }
+                }
+
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+            }catch (\Exception $e){
+                $transaction->rollback();
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()]);
+
             }
-            return $this->response(200, ['status' => 200, 'message' => 'Saved Successfully']);
         }else{
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
@@ -525,13 +537,15 @@ class OrganizationsController extends ApiBaseController
         if($user = $this->isAuthorized()){
             $purpose = AssignedFinancerLoanType::find()
                 ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan',
-                    'b.financer_loan_purpose_enc_id', 'b.assigned_financer_loan_type_id', 'b.purpose'])
+                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
                 ->joinWith(['loanTypeEnc lt'], false)
                 ->innerJoinWith(['financerLoanPurposes b' => function($b){
+                    $b->select(['b.financer_loan_purpose_enc_id', 'b.assigned_financer_loan_type_id', 'b.purpose', 'b.sequence']);
+                    $b->orderBy(['b.sequence' => SORT_ASC]);
                     $b->onCondition(['b.is_deleted' => 0]);
-                }],false)
+                }])
                 ->where(['a.organization_enc_id' => $user->organization_enc_id])
+                ->groupBy(['a.loan_type_enc_id'])
                 ->orderBy(['a.created_by' => SORT_DESC])
                 ->asArray()
                 ->all();
