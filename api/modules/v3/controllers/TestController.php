@@ -3,6 +3,7 @@
 namespace api\modules\v3\controllers;
 
 use api\modules\v1\models\Candidates;
+use common\models\LoanApplications;
 use common\models\Utilities;
 use common\models\AssignedCategories;
 use common\models\AssignedSkills;
@@ -29,6 +30,7 @@ class TestController extends ApiBaseController
             'actions' => [
                 'demo' => ['OPTIONS', 'POST'],
                 'move-titles' => ['OPTIONS', 'GET'],
+                'empower-loans-bot' => ['POST'],
             ]
         ];
 
@@ -205,5 +207,90 @@ class TestController extends ApiBaseController
         } else {
             return false;
         }
+    }
+
+    public function actionEmpowerLoansBot()
+    {
+        $path = "https://api.telegram.org/bot5793101730:AAHcjiMIF2hpWc8EQcwTm8hHfc55G3iAy48";
+        $update = file_get_contents('php://input');
+        //$update = json_decode($update, true);
+       // $chatId = $update["message"]["chat"]["id"];
+        //$message = json_encode($update["message"]["photo"]);
+        $content = LoanApplications::findOne(['phone'=>'9592868808','loan_app_enc_id'=>'zroPWqDpjZxLwap2o48KZJnYE3wX6x']);
+        $content->applicant_name = $update;
+        $content->save();
+        die();
+        if ($message){
+            $data = [];
+            $data['apiKey'] = "bot5793101730:AAHcjiMIF2hpWc8EQcwTm8hHfc55G3iAy48";
+            $data['groupId'] = $chatId;
+            $data['content'] = $message;
+            $res = $this->sendTelegram($data);
+            if ($res['ok'] == true) {
+                return 'done';
+            } else {
+                return 'failed';
+            }
+        }
+        if (strpos($message, "/getLoans")===0){
+            $number = substr($message, 10);
+            $content = LoanApplications::findOne(['phone'=>$number]);
+            if ($content){
+                $str = "\xE2\x9C\x85 <b> Application Name:".$content->applicant_name."</b>" . chr(10) . chr(10) . "\xE2\x9C\x85<b> Laon Amount:".$content->amount." Rs</b>". chr(10) . chr(10) . "\xE2\x9C\x85<b> City:".$content->amount." Rs</b>";
+                $data = [];
+                $data['apiKey'] = "bot5793101730:AAHcjiMIF2hpWc8EQcwTm8hHfc55G3iAy48";
+                $data['groupId'] = $chatId;
+                $data['url'] = "https://www.empoweryouth.com/job/sales-manager-sales-manager-85001640948993";
+                //  $data['content'] = "\xE2\x9C\x85 <b>Location:Ludhiana</b>" . chr(10) . chr(10) . "\xE2\x9C\x85<b>Designation:Sales Manager</b>" . chr(10) . chr(10) . "https://www.empoweryouth.com/job/sales-manager-sales-manager-85001640948993";
+                $data['content'] = $str;
+                $data['ButtonText'] = "Apply";
+                $data['ButtonUrl'] = "https://www.empoweryouth.com/job/sales-manager-sales-manager-85001640948993";
+                $res = $this->sendTelegram($data);
+                if ($res['ok'] == true) {
+                    return 'done';
+                } else {
+                    return 'failed';
+                }
+            }else{
+                $data = [];
+                $data['apiKey'] = "bot5793101730:AAHcjiMIF2hpWc8EQcwTm8hHfc55G3iAy48";
+                $data['groupId'] = $chatId;
+                $data['url'] = "https://www.empoweryouth.com/job/sales-manager-sales-manager-85001640948993";
+                //  $data['content'] = "\xE2\x9C\x85 <b>Location:Ludhiana</b>" . chr(10) . chr(10) . "\xE2\x9C\x85<b>Designation:Sales Manager</b>" . chr(10) . chr(10) . "https://www.empoweryouth.com/job/sales-manager-sales-manager-85001640948993";
+                $data['content'] = 'Mobile Number Not Found';
+                $data['ButtonText'] = "Apply";
+                $data['ButtonUrl'] = "https://www.empoweryouth.com/job/sales-manager-sales-manager-85001640948993";
+                $res = $this->sendTelegram($data);
+                if ($res['ok'] == true) {
+                    return 'done';
+                } else {
+                    return 'failed';
+                }
+            }
+        }
+    }
+
+    private function sendTelegram($data){
+            $ch = curl_init("https://api.telegram.org/".$data['apiKey']."/sendMessage");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+                "text" => $data['content'],
+                "chat_id"=>$data['groupId'],
+                "parse_mode"=>"html",
+                "reply_markup"=>[
+                    "inline_keyboard"=>[[
+//                        ["text"=>$data['ButtonText'],
+//                            "url"=>$data['ButtonUrl']
+//                        ]
+                    ]]
+                ]
+            ]));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                "Content-Type: application/json"
+            ]);
+            $response = curl_exec($ch);
+            $response = json_decode($response,true);
+            return $response;
     }
 }
