@@ -143,16 +143,11 @@ class LoanApplication extends Model
             }
 
             if (!empty($this->loan_purpose)) {
-                foreach ($this->loan_purpose as $p) {
-                    $purpose = new LoanPurpose();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $purpose->loan_purpose_enc_id = $utilitiesModel->encrypt();
-                    $purpose->financer_loan_purpose_enc_id = $p;
-                    $purpose->created_by = $user_id;
-                    $purpose->created_on = date('Y-m-d H:i:s');
-                    if (!$purpose->save()) {
-                        $transaction->rollback();
-                        return false;
+                if (!is_array($this->loan_purpose)) {
+                    $this->addPurpose($model->loan_app_enc_id, $user_id, $this->loan_purpose, $transaction);
+                } else {
+                    foreach ($this->loan_purpose as $p) {
+                        $this->addPurpose($model->loan_app_enc_id, $user_id, $p, $transaction);
                     }
                 }
             }
@@ -353,6 +348,24 @@ class LoanApplication extends Model
         }
     }
 
+    private function addPurpose($loan_id, $user_id, $p, $transaction)
+    {
+        $purpose = new LoanPurpose();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $purpose->loan_purpose_enc_id = $utilitiesModel->encrypt();
+        $purpose->loan_app_enc_id = $loan_id;
+        $purpose->financer_loan_purpose_enc_id = $p;
+        $purpose->created_by = $user_id;
+        $purpose->created_on = date('Y-m-d H:i:s');
+        if (!$purpose->save()) {
+            $transaction->rollback();
+            return false;
+        }
+
+        return true;
+    }
+
     private function saveCertificate($loan_id, $key, $val, $user_id = null)
     {
         $utilitiesModel = new Utilities();
@@ -405,7 +418,7 @@ class LoanApplication extends Model
         $loan_provider->assigned_loan_provider_enc_id = $utilitiesModel->encrypt();
         $loan_provider->loan_application_enc_id = $loan_id;
         $loan_provider->provider_enc_id = $organization->organization_enc_id;
-        $loan_provider->branch_enc_id = $this->branch_id;
+        $loan_provider->branch_enc_id = !empty($this->branch_id) ? $this->branch_id : null;
         if ($this->form_type == 'diwali-dhamaka') {
             $loan_provider->status = 5;
         }

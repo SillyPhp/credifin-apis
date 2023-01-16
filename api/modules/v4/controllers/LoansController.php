@@ -106,7 +106,7 @@ class LoansController extends ApiBaseController
                 }
 
                 $resposne = $model->save($user_id);
-                if ($resposne['status']) {
+                if (isset($resposne['status']) && $resposne['status'] == true) {
                     return $this->response(200, ['status' => 200, 'data' => $resposne['data']]);
                 } else {
                     return $this->response(500, ['status' => 500, 'message' => 'Some Internal Server Error']);
