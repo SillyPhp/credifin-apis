@@ -24,7 +24,6 @@ use Yii;
  * @property double $valuation valuation
  * @property double $disbursement_approved disbursement approved
  * @property double $insurance_charges insurance and incident charges
- * @property int $auto_assigned 0 false, 1 true
  * @property string $created_by linked to user table
  * @property string $created_on created on
  * @property string $updated_on updated on
@@ -57,7 +56,7 @@ class AssignedLoanProvider extends \yii\db\ActiveRecord
     {
         return [
             [['assigned_loan_provider_enc_id', 'provider_enc_id'], 'required'],
-            [['status', 'auto_assigned', 'is_deleted'], 'integer'],
+            [['status', 'is_deleted'], 'integer'],
             [['remarks'], 'string'],
             [['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges'], 'number'],
             [['created_on', 'updated_on'], 'safe'],

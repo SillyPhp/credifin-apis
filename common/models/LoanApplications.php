@@ -56,6 +56,7 @@ namespace common\models;
  * @property string $form_type
  * @property string $loan_purpose
  * @property string $lender_reasons
+ * @property int $auto_assigned 0 false, 1 true
  * @property int $is_deleted 0 as False, 1 as True
  * @property int $is_removed 0 as Permanently false 1 as Permanently True
  *
@@ -111,7 +112,7 @@ class LoanApplications extends \yii\db\ActiveRecord
     {
         return [
             [['loan_app_enc_id', 'applicant_name', 'phone', 'source'], 'required'],
-            [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'gender', 'ask_guarantor_info', 'status', 'loan_status', 'is_deleted', 'is_removed'], 'integer'],
+            [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'gender', 'ask_guarantor_info', 'status', 'loan_status', 'auto_assigned', 'is_deleted', 'is_removed'], 'integer'],
             [['employement_type', 'degree', 'candidate_status', 'candidate_sub_status', 'source', 'loan_type', 'form_type', 'lender_reasons'], 'string'],
             [['applicant_dob', 'deadline', 'intake', 'created_on', 'updated_on'], 'safe'],
             [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship'], 'number'],
