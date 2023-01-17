@@ -42,6 +42,8 @@ class OrganizationsController extends ApiBaseController
                 'add-purpose' => ['POST', 'OPTIONS'],
                 'get-purpose-list' => ['POST', 'OPTIONS'],
                 'remove-purpose-list' => ['POST', 'OPTIONS'],
+                'update-purpose-list' => ['POST', 'OPTIONS'],
+                'remove-purpose' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -399,7 +401,6 @@ class OrganizationsController extends ApiBaseController
                 'updated_on' => date('Y-m-d H:i:s'),
             ],[ 'and',
                 ['assigned_financer_loan_type_id' => $params['assigned_financer_enc_id']],
-                ['created_by' => $user->user_enc_id]
             ]);
 
             if($removeCertificates){
@@ -478,7 +479,6 @@ class OrganizationsController extends ApiBaseController
 
             $document = FinancerLoanDocuments::findOne([
                 'financer_loan_document_enc_id' => $params['financer_loan_document_enc_id'],
-                'created_by' => $user->user_enc_id
             ]);
 
             if($document){
@@ -568,11 +568,89 @@ class OrganizationsController extends ApiBaseController
 
             $params = Yii::$app->request->post();
 
-            if(empty($params['financer_loan_purpose_enc_id'])){
-                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "assigned_financer_loan_type_id"']);
+            if(empty($params['assigned_financer_enc_id'])){
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "assigned_financer_enc_id"']);
             }
 
-            $purpose = FinancerLoanPurpose::findOne(['financer_loan_purpose_enc_id' => $params['financer_loan_purpose_enc_id']]);
+            $purpose = FinancerLoanPurpose::updateAll([
+                'is_deleted' => 1,
+                'updated_by' => $user->user_enc_id,
+                'updated_on' => date('Y-m-d H:i:s')
+            ],[
+                'assigned_financer_loan_type_id' => $params['assigned_financer_enc_id']
+            ]);
+
+            if($purpose){
+                 return $this->response(200, ['status' => 200, 'message' => 'Delete Successfully']);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+        }else{
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+    }
+
+    public function actionUpdatePurposeList(){
+        if($user = $this->isAuthorized()){
+            $params = Yii::$app->request->post();
+            $transaction = Yii::$app->db->beginTransaction();
+            try{
+                if(!empty($params['loan_purpose'])){
+                    foreach ($params['loan_purpose'] as $key => $val){
+                        $purpose = FinancerLoanPurpose::findOne([
+                            'financer_loan_purpose_enc_id' => $val['financer_loan_purpose_enc_id'],
+                             'is_deleted' => 0
+                        ]);
+
+                        if($purpose){
+                            $purpose->sequence = $key;
+                            $purpose->purpose = $val['purpose'];
+                            $purpose->updated_by = $user->user_enc_id;
+                            $purpose->updated_on = date('Y-m-d H:i:s');
+                            if(!$purpose->update()){
+                                $transaction->rollBack();
+                            }
+                        }else{
+                            if(!empty($val['purpose'])){
+                                $purpose = new FinancerLoanPurpose();
+                                $utilitiesModel = new \common\models\Utilities();
+                                $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+                                $purpose->financer_loan_purpose_enc_id = $utilitiesModel->encrypt();
+                                $purpose->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
+                                $purpose->purpose = $val['purpose'];
+                                $purpose->sequence = $key;
+                                $purpose->created_by = $user->user_enc_id;
+                                $purpose->created_on = date('Y-m-d H:i:s');
+                                if(!$purpose->save()){
+                                    $transaction->rollback();
+                                    return $this->response(500, ['status'=>500, 'message'=>'An error occurred', 'error'=> $purpose->getErrors()]);
+                                }
+                            }
+                        }
+                    }
+                    $transaction->commit();
+                    return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+                }
+            }catch(Exception $e){
+                $transaction->rollBack();
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getErrors()]);
+            }
+        }else{
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionRemovePurpose(){
+        if($user = $this->isAuthorized()){
+            $params = Yii::$app->request->post();
+
+            if(empty($params['financer_loan_purpose_enc_id'])){
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "financer_loan_purpose_enc_id"']);
+            }
+
+            $purpose = FinancerLoanPurpose::findOne([
+                'financer_loan_purpose_enc_id' => $params['financer_loan_purpose_enc_id']
+            ]);
 
             if($purpose){
                 $purpose->is_deleted = 1;
@@ -581,13 +659,11 @@ class OrganizationsController extends ApiBaseController
                 if(!$purpose->update()){
                     return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $purpose->getErrors()]);
                 }
-
-                return $this->response(200, ['status' => 200, 'message' => 'Successfully Updated']);
+                return $this->response(200, ['status'=>200, 'message'=>'Updated Successfully']);
             }
-
-            return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }else{
-            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 }
