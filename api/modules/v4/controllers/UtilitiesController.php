@@ -6,6 +6,7 @@ use common\models\AssignedFinancerLoanType;
 use common\models\BillDetails;
 use common\models\Cities;
 use common\models\Designations;
+use common\models\LoanStatus;
 use common\models\OrganizationTypes;
 use common\models\spaces\Spaces;
 use common\models\SponsoredCourses;
@@ -158,6 +159,32 @@ class UtilitiesController extends ApiBaseController
         }
 
         return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+    }
+
+    public function actionAddLoanStatus()
+    {
+        if ($user = $this->isAuthorized()) {
+            $status_arr = ['New Lead', 'Accepted', 'Pre Verification', 'Under Process', 'Sanctioned', 'Disbursed',
+                'Login', 'Credit Check', 'Online Login Not Received', 'Invalid Login: Login Again', 'CIBIL Reject', 'CIBIL Approved',
+                'Field Visit & Document Collection', 'TL Approved', 'PD Planned', 'TVR Calling Done', 'PD Done', 'Soft Approval',
+                'Conditional Sanction', 'Pendencies', 'Decision Pending', 'L&T Fee Pending', 'Legal/Technical initiated', 'Valuation Received',
+                'Legal Received', 'Technical/Legal Approval Received', 'Soft Sanction', 'Finalise ASAP', 'Disbursement Approval', 'Disbursement',
+                'CNI', 'On Hold', 'Rejected', 'Completed'];
+
+            foreach ($status_arr as $s) {
+                $status = new LoanStatus();
+                $status->loan_status_enc_id = Yii::$app->getSecurity()->generateRandomString(50);
+                $status->loan_status = $s;
+                $status->created_by = $user->user_enc_id;
+                $status->created_on = date('Y-m-d H:i:s');
+                if (!$status->save()) {
+                    return $this->response(500, ['status' => 500, 'error' => $status->getErrors()]);
+                }
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 
 }
