@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "lJCWPnNNVy3d95ppLp7M_financer_loan_purpose".
+ * This is the model class for table "{{%financer_loan_purpose}}".
  *
  * @property int $id
  * @property string $financer_loan_purpose_enc_id
@@ -29,7 +29,7 @@ class FinancerLoanPurpose extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'lJCWPnNNVy3d95ppLp7M_financer_loan_purpose';
+        return '{{%financer_loan_purpose}}';
     }
 
     /**
@@ -39,8 +39,8 @@ class FinancerLoanPurpose extends \yii\db\ActiveRecord
     {
         return [
             [['financer_loan_purpose_enc_id', 'assigned_financer_loan_type_id', 'purpose', 'sequence', 'created_by'], 'required'],
-            [['created_on', 'updated_on'], 'safe'],
             [['sequence', 'is_deleted'], 'integer'],
+            [['created_on', 'updated_on'], 'safe'],
             [['financer_loan_purpose_enc_id', 'assigned_financer_loan_type_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['purpose'], 'string', 'max' => 200],
             [['financer_loan_purpose_enc_id'], 'unique'],

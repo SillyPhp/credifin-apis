@@ -443,6 +443,10 @@ class CompanyDashboardController extends ApiBaseController
                     $f->joinWith(['createdBy f1'], false);
                     $f->onCondition(['f.is_deleted' => 0, 'f.source' => 'EL']);
                 }])
+                ->joinWith(['loanPurposes g' => function ($g) {
+                    $g->select(['g.financer_loan_purpose_enc_id', 'g.financer_loan_purpose_enc_id', 'g.loan_app_enc_id', 'g1.purpose']);
+                    $g->joinWith(['financerLoanPurposeEnc g1'], false);
+                }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
