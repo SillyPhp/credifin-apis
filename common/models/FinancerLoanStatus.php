@@ -9,7 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string $financer_loan_status_enc_id financer loan status enc id
- * @property string $assigned_financer_enc_id assigned financer loan type id
+ * @property string $assigned_financer_loan_type_id assigned financer loan type id
  * @property string $loan_status_enc_id loan status enc id
  * @property string $created_by created by
  * @property string $created_on created on
@@ -17,7 +17,7 @@ use Yii;
  * @property string $updated_on updated on
  * @property int $is_deleted 0 false, 1 true
  *
- * @property AssignedFinancerLoanType $assignedFinancerEnc
+ * @property AssignedFinancerLoanType $assignedFinancerLoanType
  * @property LoanStatus $loanStatusEnc
  * @property Users $createdBy
  * @property Users $updatedBy
@@ -38,12 +38,12 @@ class FinancerLoanStatus extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['financer_loan_status_enc_id', 'assigned_financer_enc_id', 'loan_status_enc_id', 'created_by'], 'required'],
+            [['financer_loan_status_enc_id', 'assigned_financer_loan_type_id', 'loan_status_enc_id', 'created_by'], 'required'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['financer_loan_status_enc_id', 'assigned_financer_enc_id', 'loan_status_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['financer_loan_status_enc_id', 'assigned_financer_loan_type_id', 'loan_status_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['financer_loan_status_enc_id'], 'unique'],
-            [['assigned_financer_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedFinancerLoanType::className(), 'targetAttribute' => ['assigned_financer_enc_id' => 'assigned_financer_enc_id']],
+            [['assigned_financer_loan_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedFinancerLoanType::className(), 'targetAttribute' => ['assigned_financer_loan_type_id' => 'assigned_financer_enc_id']],
             [['loan_status_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanStatus::className(), 'targetAttribute' => ['loan_status_enc_id' => 'loan_status_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
@@ -53,9 +53,9 @@ class FinancerLoanStatus extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAssignedFinancerEnc()
+    public function getAssignedFinancerLoanType()
     {
-        return $this->hasOne(AssignedFinancerLoanType::className(), ['assigned_financer_enc_id' => 'assigned_financer_enc_id']);
+        return $this->hasOne(AssignedFinancerLoanType::className(), ['assigned_financer_enc_id' => 'assigned_financer_loan_type_id']);
     }
 
     /**
