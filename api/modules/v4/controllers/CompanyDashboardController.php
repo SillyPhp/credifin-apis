@@ -699,8 +699,13 @@ class CompanyDashboardController extends ApiBaseController
             $params['type'] = $type;
             $params['loan_id'] = $loan_id;
 
-            if (!$user->organization_enc_id) {
-                return $this->response(403, ['status' => 403, 'message' => 'forbidden']);
+//            if (!$user->organization_enc_id) {
+//                return $this->response(403, ['status' => 403, 'message' => 'forbidden']);
+//            }
+
+            $lender = $this->getFinancerId($user);
+            if (!$lender) {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
 
             $already_exists = SharedLoanApplications::find()
@@ -719,7 +724,7 @@ class CompanyDashboardController extends ApiBaseController
             $params['alreadyExists'] = $already_exists_ids;
 
             if ($params['type'] == 'employees') {
-                $employees = $this->employeesList($user->organization_enc_id, $params);
+                $employees = $this->employeesList($lender, $params);
                 if ($employees) {
                     foreach ($employees as $key => $val) {
                         $employees[$key]['lead_by'] = false;
