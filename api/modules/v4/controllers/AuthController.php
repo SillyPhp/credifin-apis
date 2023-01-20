@@ -216,7 +216,8 @@ class AuthController extends ApiBaseController
     private function returnData($user, $token)
     {
         if ($user->organization_enc_id) {
-            $data['referral_code'] = Referral::findOne(['organization_enc_id' => $user->organization_enc_id])->code;
+            $ref = Referral::findOne(['organization_enc_id' => $user->organization_enc_id]);
+            $data['referral_code'] = !empty($ref) ? $ref->code : '';
 
             $org = Organizations::findOne(['organization_enc_id' => $user->organization_enc_id]);
             $data['organization_name'] = $org->name;
@@ -250,7 +251,9 @@ class AuthController extends ApiBaseController
         $service = $service->asArray()
             ->all();
 
+
         $serviceArr = array_column($service, 'name');
+
 
         if (in_array('Loans', $serviceArr)) {
             $data['user_type'] = "Financer";
@@ -275,7 +278,6 @@ class AuthController extends ApiBaseController
         $data['refresh_token'] = $token->refresh_token;
         $data['access_token_expiry_time'] = $token->access_token_expiration;
         $data['refresh_token_expiry_time'] = $token->refresh_token_expiration;
-        $data['image'] = '';
 
         if ($user->image) {
             $data['image'] = Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . $user->image_location . DIRECTORY_SEPARATOR . $user->image, 'https');
@@ -315,7 +317,7 @@ class AuthController extends ApiBaseController
             }
             $dsa = $dsa->asArray()->one();
 
-            if ($dsa['organization_enc_id']) {
+            if (!empty($dsa) && $dsa['organization_enc_id']) {
                 $organization = Organizations::find()
                     ->alias('a')
                     ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'b.username'])

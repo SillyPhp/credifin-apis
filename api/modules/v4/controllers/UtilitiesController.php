@@ -3,14 +3,18 @@
 namespace api\modules\v4\controllers;
 
 use common\models\AssignedFinancerLoanType;
+use common\models\AssignedLoanProvider;
 use common\models\BillDetails;
 use common\models\Cities;
 use common\models\Designations;
 use common\models\LoanStatus;
 use common\models\OrganizationTypes;
+use common\models\Referral;
+use common\models\ReferralSignUpTracking;
 use common\models\spaces\Spaces;
 use common\models\SponsoredCourses;
 use common\models\States;
+use common\models\UserRoles;
 use common\models\Users;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
@@ -185,6 +189,99 @@ class UtilitiesController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    public function actionUpdateProviderStatus()
+    {
+        if ($user = $this->isAuthorized()) {
+            $list = AssignedLoanProvider::find()
+                ->select(['assigned_loan_provider_enc_id', 'status'])
+                ->where(['status' => [4, 5, 10, 11]])
+                ->asArray()
+                ->all();
+
+            if ($list) {
+                foreach ($list as $l) {
+                    $provider = AssignedLoanProvider::findOne(['assigned_loan_provider_enc_id' => $l['assigned_loan_provider_enc_id']]);
+                    if ($provider->status == 4) {
+                        $provider->status = 30;
+                    } elseif ($provider->status == 5) {
+                        $provider->status = 31;
+                    } elseif ($provider->status == 10) {
+                        $provider->status = 32;
+                    } elseif ($provider->status == 11) {
+                        $provider->status = 33;
+                    }
+
+                    $provider->updated_on = date('Y-m-d H:i:s');
+                    if (!$provider->update()) {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $provider->getErrors()]);
+                    }
+
+                }
+                return $this->response(200, ['status' => 200, 'message' => 'updated']);
+            }
+        }
+
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    public function actionUpdateSequence()
+    {
+        if ($this->isAuthorized()) {
+            $status = LoanStatus::find()->asArray()->all();
+            if ($status) {
+                foreach ($status as $key => $val) {
+                    $s = LoanStatus::findOne(['loan_status_enc_id' => $val['loan_status_enc_id']]);
+                    $s->value = $key;
+                    $s->sequence = $key;
+                    $s->updated_on = date('Y-m-d H:i:s');
+                    if (!$s->update()) {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $s->getErrors()]);
+                    }
+                }
+                return $this->response(200, ['status' => 200, 'message' => 'updated']);
+            }
+        }
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    public function actionAddEmployee()
+    {
+        $employees = Users::find()
+            ->alias('a')
+            ->joinWith(['userTypeEnc b'], false)
+            ->where(['a.last_visit_through' => 'EL', 'b.user_type' => 'Employee'])
+            ->asArray()
+            ->all();
+
+        if ($employees) {
+            foreach ($employees as $e) {
+                $ref_enc_id = ReferralSignUpTracking::findOne(['sign_up_user_enc_id' => $e['user_enc_id']]);
+                if (!empty($ref_enc_id)) {
+                    $org_id = Referral::findOne(['referral_enc_id' => $ref_enc_id->referral_enc_id])->organization_enc_id;
+                    if ($org_id) {
+                        $already = UserRoles::findOne(['user_enc_id' => $e['user_enc_id'], 'organization_enc_id' => $org_id]);
+                        if (!$already) {
+                            $user_role = new UserRoles();
+                            $user_role->role_enc_id = Yii::$app->getSecurity()->generateRandomString();
+                            $user_role->user_type_enc_id = $e['user_type_enc_id'];
+                            $user_role->user_enc_id = $e['user_enc_id'];
+                            $user_role->organization_enc_id = $org_id;
+                            $user_role->created_by = $e['user_enc_id'];
+                            $user_role->created_on = date('Y-m-d H:i:s');
+                            if (!$user_role->save()) {
+                                return $this->response(500, ['status' => 500, 'error' => $user_role->getErrors()]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return 'done';
+        }
+
+        return 'not found';
     }
 
 }

@@ -10,10 +10,15 @@ use Yii;
  * @property int $id
  * @property string $loan_status_enc_id loan status enc id
  * @property string $loan_status loan status name
+ * @property int $value loan status value
+ * @property int $sequence loan status sequence
  * @property string $created_by created by
  * @property string $created_on created on
+ * @property string $updated_by
+ * @property string $updated_on
  * @property int $is_deleted 0 false, 1 true
  *
+ * @property FinancerLoanStatus[] $financerLoanStatuses
  * @property Users $createdBy
  */
 class LoanStatus extends \yii\db\ActiveRecord
@@ -32,13 +37,23 @@ class LoanStatus extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_status_enc_id', 'loan_status', 'created_by'], 'required'],
-            [['created_on'], 'safe'],
-            [['is_deleted'], 'integer'],
+            [['loan_status_enc_id', 'loan_status', 'value', 'sequence', 'created_by'], 'required'],
+            [['value', 'sequence', 'is_deleted'], 'integer'],
+            [['created_on', 'updated_on'], 'safe'],
             [['loan_status_enc_id', 'loan_status', 'created_by'], 'string', 'max' => 100],
+            [['updated_by'], 'string', 'max' => 200],
             [['loan_status_enc_id'], 'unique'],
+            [['value'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerLoanStatuses()
+    {
+        return $this->hasMany(FinancerLoanStatus::className(), ['loan_status_enc_id' => 'loan_status_enc_id']);
     }
 
     /**
