@@ -20,7 +20,9 @@ use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
 use common\models\SharedLoanApplications;
+use common\models\UserRoles;
 use common\models\Users;
+use common\models\UserTypes;
 use yii\web\UploadedFile;
 use yii\db\Expression;
 use common\models\Utilities;
@@ -487,8 +489,10 @@ class CompanyDashboardController extends ApiBaseController
                     ->asArray()
                     ->one();
 
-                $loan['branch_id'] = $branch['branch_enc_id'];
-                $loan['branch'] = $branch['location_name'] ? $branch['location_name'] . ', ' . $branch['city'] : $branch['city'];
+                if (!empty($branch)) {
+                    $loan['branch_id'] = $branch['branch_enc_id'];
+                    $loan['branch'] = $branch['location_name'] ? $branch['location_name'] . ', ' . $branch['city'] : $branch['city'];
+                }
 
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }
@@ -695,8 +699,13 @@ class CompanyDashboardController extends ApiBaseController
             $params['type'] = $type;
             $params['loan_id'] = $loan_id;
 
-            if (!$user->organization_enc_id) {
-                return $this->response(403, ['status' => 403, 'message' => 'forbidden']);
+//            if (!$user->organization_enc_id) {
+//                return $this->response(403, ['status' => 403, 'message' => 'forbidden']);
+//            }
+
+            $lender = $this->getFinancerId($user);
+            if (!$lender) {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
 
             $already_exists = SharedLoanApplications::find()
@@ -715,7 +724,7 @@ class CompanyDashboardController extends ApiBaseController
             $params['alreadyExists'] = $already_exists_ids;
 
             if ($params['type'] == 'employees') {
-                $employees = $this->employeesList($user->organization_enc_id, $params);
+                $employees = $this->employeesList($lender, $params);
                 if ($employees) {
                     foreach ($employees as $key => $val) {
                         $employees[$key]['lead_by'] = false;
@@ -1357,5 +1366,51 @@ class CompanyDashboardController extends ApiBaseController
         return $randomString;
     }
 
+    public function actionUpdateEmployee()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['employee_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "employee_id"']);
+            }
+
+            $employee = UserRoles::findOne(['user_enc_id' => $params['employee_id']]);
+
+            if (!empty($employee)) {
+                !empty($params['designation_id']) ? $employee->designation_enc_id = $params['designation_id'] : '';
+                !empty($params['employee_code']) ? $employee->employee_code = $params['employee_code'] : '';
+                !empty($params['reporting_person']) ? $employee->reporting_person = $params['reporting_person'] : '';
+                !empty($params['branch_enc_id']) ? $employee->branch_enc_id = $params['branch_enc_id'] : '';
+                $employee->updated_by = $user->user_enc_id;
+                $employee->updated_on = date('Y-m-d H:i:s');
+                if (!$employee->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $employee->getErrors()]);
+                }
+            } else {
+                $employee = new UserRoles();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $employee->role_enc_id = $utilitiesModel->encrypt();
+                $employee->user_type_enc_id = UserTypes::findOne(['user_type' => 'Employee'])->user_type_enc_id;
+                $employee->user_enc_id = $params['employee_id'];
+                $employee->organization_enc_id = $user->organization_enc_id;
+                !empty($params['designation_id']) ? $employee->designation_enc_id = $params['designation_id'] : '';
+                !empty($params['employee_code']) ? $employee->employee_code = $params['employee_code'] : '';
+                !empty($params['reporting_person']) ? $employee->reporting_person = $params['reporting_person'] : '';
+                !empty($params['branch_enc_id']) ? $employee->branch_enc_id = $params['branch_enc_id'] : '';
+                $employee->created_by = $user->user_enc_id;
+                $employee->created_on = date('Y-m-d H:i:s');
+                if (!$employee->save()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $employee->getErrors()]);
+                }
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
 
 }

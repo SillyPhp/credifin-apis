@@ -551,6 +551,12 @@ class OrganizationsController extends ApiBaseController
     public function actionGetPurposeList()
     {
         if ($user = $this->isAuthorized()) {
+
+            $lender = $this->getFinancerId($user);
+            if (!$lender) {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
             $purpose = AssignedFinancerLoanType::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
@@ -560,7 +566,7 @@ class OrganizationsController extends ApiBaseController
                     $b->orderBy(['b.sequence' => SORT_ASC]);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
-                ->where(['a.organization_enc_id' => $user->organization_enc_id])
+                ->where(['a.organization_enc_id' => $lender])
                 ->groupBy(['a.loan_type_enc_id'])
                 ->orderBy(['a.created_by' => SORT_DESC])
                 ->asArray()
@@ -687,8 +693,9 @@ class OrganizationsController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $loan_status = LoanStatus::find()
-                ->select(['loan_status_enc_id', 'loan_status'])
+                ->select(['loan_status_enc_id', 'loan_status name', 'value', 'sequence'])
                 ->where(['is_deleted' => 0])
+                ->orderBy(['sequence' => SORT_ASC])
                 ->asArray()
                 ->all();
 
@@ -745,16 +752,23 @@ class OrganizationsController extends ApiBaseController
     public function actionLoanStatusList()
     {
         if ($user = $this->isAuthorized()) {
+
+            $lender = $this->getFinancerId($user);
+            if (!$lender) {
+                return $this->response(404, ['status' => 404, 'message' => 'lender not found']);
+            }
+
             $loan_status = AssignedFinancerLoanType::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
                 ->joinWith(['loanTypeEnc lt'], false)
                 ->innerJoinWith(['financerLoanStatuses b' => function ($b) {
-                    $b->select(['b.financer_loan_status_enc_id', 'b.assigned_financer_loan_type_id', 'b1.loan_status']);
+                    $b->select(['b.financer_loan_status_enc_id', 'b.assigned_financer_loan_type_id', 'b1.loan_status_enc_id', 'b1.loan_status name', 'b1.value', 'b1.sequence']);
                     $b->joinWith(['loanStatusEnc b1'], false);
                     $b->onCondition(['b.is_deleted' => 0]);
+                    $b->orderBy(['b1.sequence' => SORT_ASC]);
                 }])
-                ->where(['a.organization_enc_id' => $user->organization_enc_id])
+                ->where(['a.organization_enc_id' => $lender])
                 ->groupBy(['a.loan_type_enc_id'])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
@@ -840,7 +854,7 @@ class OrganizationsController extends ApiBaseController
                         ]);
 
                         if ($loan_status) {
-                            $loan_status->loan_status_enc_id = $val['status_id'];
+                            $loan_status->loan_status_enc_id = $val['loan_status_enc_id'];
                             $loan_status->updated_by = $user->user_enc_id;
                             $loan_status->updated_on = date('Y-m-d H:i:s');
                             if (!$loan_status->update()) {
@@ -848,13 +862,13 @@ class OrganizationsController extends ApiBaseController
                                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_status->getErrors()]);
                             }
                         } else {
-                            if (!empty($val['status_id'])) {
+                            if (!empty($val['loan_status_enc_id'])) {
                                 $loan_status = new FinancerLoanStatus();
                                 $utilitiesModel = new \common\models\Utilities();
                                 $utilitiesModel->variables['string'] = time() . rand(10, 100000);
                                 $loan_status->financer_loan_status_enc_id = $utilitiesModel->encrypt();
                                 $loan_status->assigned_financer_loan_type_id = $params['assigned_financer_loan_type_id'];
-                                $loan_status->loan_status_enc_id = $val['status_id'];
+                                $loan_status->loan_status_enc_id = $val['loan_status_enc_id'];
                                 $loan_status->created_by = $user->user_enc_id;
                                 $loan_status->created_on = date('Y-m-d H:i:s');
                                 if (!$loan_status->save()) {
