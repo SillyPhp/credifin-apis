@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "lJCWPnNNVy3d95ppLp7M_assigned_financer_loan_type".
+ * This is the model class for table "{{%assigned_financer_loan_type}}".
  *
  * @property int $id
  * @property string $assigned_financer_enc_id
@@ -25,6 +25,7 @@ use Yii;
  * @property Organizations $organizationEnc
  * @property FinancerLoanDocuments[] $financerLoanDocuments
  * @property FinancerLoanPurpose[] $financerLoanPurposes
+ * @property FinancerLoanStatus[] $financerLoanStatuses
  */
 class AssignedFinancerLoanType extends \yii\db\ActiveRecord
 {
@@ -33,7 +34,7 @@ class AssignedFinancerLoanType extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'lJCWPnNNVy3d95ppLp7M_assigned_financer_loan_type';
+        return '{{%assigned_financer_loan_type}}';
     }
 
     /**
@@ -51,25 +52,6 @@ class AssignedFinancerLoanType extends \yii\db\ActiveRecord
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'assigned_financer_enc_id' => 'Assigned Financer Enc ID',
-            'organization_enc_id' => 'Organization Enc ID',
-            'loan_type_enc_id' => 'Loan Type Enc ID',
-            'status' => 'Status',
-            'created_on' => 'Created On',
-            'created_by' => 'Created By',
-            'updated_by' => 'Updated By',
-            'updated_on' => 'Updated On',
-            'is_deleted' => 'Is Deleted',
         ];
     }
 
@@ -127,5 +109,13 @@ class AssignedFinancerLoanType extends \yii\db\ActiveRecord
     public function getFinancerLoanPurposes()
     {
         return $this->hasMany(FinancerLoanPurpose::className(), ['assigned_financer_loan_type_id' => 'assigned_financer_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerLoanStatuses()
+    {
+        return $this->hasMany(FinancerLoanStatus::className(), ['assigned_financer_loan_type_id' => 'assigned_financer_enc_id']);
     }
 }
