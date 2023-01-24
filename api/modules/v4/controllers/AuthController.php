@@ -11,11 +11,11 @@ use api\modules\v4\models\IndividualSignup;
 use common\models\AssignedSupervisor;
 use common\models\Organizations;
 use common\models\Referral;
-use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
 use common\models\spaces\Spaces;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
+use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
 use common\models\UserVerificationTokens;
@@ -286,9 +286,7 @@ class AuthController extends ApiBaseController
         }
 
         if ($data['user_type'] == 'Employee') {
-            $ref_enc_id = ReferralSignUpTracking::findOne(['sign_up_user_enc_id' => $user->user_enc_id])->referral_enc_id;
-            $org_id = Referral::findOne(['referral_enc_id' => $ref_enc_id])->organization_enc_id;
-
+            $org_id = UserRoles::findOne(['user_enc_id' => $user->user_enc_id])->organization_enc_id;
             if ($org_id) {
                 $organization = Organizations::find()
                     ->alias('a')

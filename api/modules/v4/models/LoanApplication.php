@@ -666,7 +666,7 @@ class LoanApplication extends Model
             }
         } else {
             $params = [];
-            $params['id'] = $data['loan_app_enc_id'];
+            $params['id'] = $data['loan_app_id'];
             $params['name'] = $data['name'];
             $params['email'] = $data['email'];
             $params['phone'] = str_replace('+', '', $data['phone']);
@@ -697,7 +697,7 @@ class LoanApplication extends Model
         $password = $params['phone'];
         $arr = explode(' ', $params['name']);
         $first_name = $arr[0];
-        $last_name = $arr[1] . ' ' . (($arr[2]) ? $arr[2] : '');
+        $last_name = $arr[1] . ' ' . ((isset($arr[2]) && !empty($arr[2])) ? $arr[2] : '');
         if (empty($last_name)):
             $last_name = null;
         endif;
@@ -721,7 +721,7 @@ class LoanApplication extends Model
 
             $utilitiesModel = new Utilities();
             $usersModel = new Candidates();
-            $usersModel->username = strtolower($username);
+            $usersModel->username = strtolower($usernamesModel->username);
             $usersModel->first_name = ucfirst(strtolower($first_name));
             $usersModel->last_name = ucfirst(strtolower($last_name));
             if ($params['email']) {
