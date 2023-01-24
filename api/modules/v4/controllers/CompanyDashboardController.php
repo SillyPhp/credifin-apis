@@ -57,6 +57,7 @@ class CompanyDashboardController extends ApiBaseController
                 'share-application' => ['POST', 'OPTIONS'],
                 'update-shared-application' => ['POST', 'OPTIONS'],
                 'employee-search' => ['GET', 'OPTIONS'],
+                'update-employee' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -580,7 +581,6 @@ class CompanyDashboardController extends ApiBaseController
 
                 $params = Yii::$app->request->post();
 
-
                 $employee = $this->employeesList($user->organization_enc_id, $params);
                 $dsa = $this->dsaList($user->user_enc_id, $params);
 
@@ -607,12 +607,22 @@ class CompanyDashboardController extends ApiBaseController
 
     private function employeesList($org_id, $params = null)
     {
-        $employee = ReferralSignUpTracking::find()
+        $employee = Users::find()
             ->alias('a')
-            ->select(['a.sign_up_user_enc_id user_enc_id', 'c.username', 'c.email', 'c.phone', 'c.first_name', 'c.last_name', 'c.status', new Expression('"Employee" as user_type')])
-            ->joinWith(['referralEnc b'], false)
-            ->joinWith(['signUpUserEnc c'], false)
-            ->where(['b.organization_enc_id' => $org_id, 'c.is_deleted' => 0, 'a.is_deleted' => 0]);
+            ->select(['a.user_enc_id','ur.employee_code','rs.sign_up_user_enc_id', 'a.username', 'a.email', 'a.phone',
+                'a.first_name', 'a.last_name', 'a.status', new Expression('"Employee" as user_type')])
+            ->joinWith(['userRoles0 ur'], false)
+            ->joinWith(['referralSignUpTrackings rs' => function($rs){
+                $rs->joinWith(['referralEnc b'], false);
+            }], false)
+            ->where(['b.organization_enc_id' => $org_id, 'a.is_deleted' => 0, 'rs.is_deleted' => 0]);
+
+//        $employee = ReferralSignUpTracking::find()
+//            ->alias('a')
+//            ->select(['a.sign_up_user_enc_id user_enc_id', 'c.username', 'c.email', 'c.phone', 'c.first_name', 'c.last_name', 'c.status', new Expression('"Employee" as user_type')])
+//            ->joinWith(['referralEnc b'], false)
+//            ->joinWith(['signUpUserEnc c'], false)
+//            ->where(['b.organization_enc_id' => $org_id, 'c.is_deleted' => 0, 'a.is_deleted' => 0]);
 
         if ($params != null && !empty($params['employee_search'])) {
             $employee->andWhere([
@@ -1371,17 +1381,18 @@ class CompanyDashboardController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
-            if (empty($params['employee_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "employee_id"']);
+            // parent_id = user_enc_id/employee_id
+            // id = field name
+            // value = field value
+            if (empty($params['parent_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "parent_id"']);
             }
 
-            $employee = UserRoles::findOne(['user_enc_id' => $params['employee_id']]);
+            $employee = UserRoles::findOne(['user_enc_id' => $params['parent_id'], 'organization_enc_id' => $user->organization_enc_id]);
+            $field = $params['id'];
 
             if (!empty($employee)) {
-                !empty($params['designation_id']) ? $employee->designation_enc_id = $params['designation_id'] : '';
-                !empty($params['employee_code']) ? $employee->employee_code = $params['employee_code'] : '';
-                !empty($params['reporting_person']) ? $employee->reporting_person = $params['reporting_person'] : '';
-                !empty($params['branch_enc_id']) ? $employee->branch_enc_id = $params['branch_enc_id'] : '';
+                $employee->$field = $params['value'];
                 $employee->updated_by = $user->user_enc_id;
                 $employee->updated_on = date('Y-m-d H:i:s');
                 if (!$employee->update()) {
@@ -1393,12 +1404,9 @@ class CompanyDashboardController extends ApiBaseController
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $employee->role_enc_id = $utilitiesModel->encrypt();
                 $employee->user_type_enc_id = UserTypes::findOne(['user_type' => 'Employee'])->user_type_enc_id;
-                $employee->user_enc_id = $params['employee_id'];
+                $employee->user_enc_id = $params['parent_id'];
                 $employee->organization_enc_id = $user->organization_enc_id;
-                !empty($params['designation_id']) ? $employee->designation_enc_id = $params['designation_id'] : '';
-                !empty($params['employee_code']) ? $employee->employee_code = $params['employee_code'] : '';
-                !empty($params['reporting_person']) ? $employee->reporting_person = $params['reporting_person'] : '';
-                !empty($params['branch_enc_id']) ? $employee->branch_enc_id = $params['branch_enc_id'] : '';
+                $employee->$field = $params['value'];
                 $employee->created_by = $user->user_enc_id;
                 $employee->created_on = date('Y-m-d H:i:s');
                 if (!$employee->save()) {
