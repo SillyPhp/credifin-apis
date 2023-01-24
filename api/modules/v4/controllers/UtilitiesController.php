@@ -165,42 +165,4 @@ class UtilitiesController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
     }
 
-    public function actionAddEmployee()
-    {
-        $employees = Users::find()
-            ->alias('a')
-            ->joinWith(['userTypeEnc b'], false)
-            ->where(['a.last_visit_through' => 'EL', 'b.user_type' => 'Employee'])
-            ->asArray()
-            ->all();
-
-        if ($employees) {
-            foreach ($employees as $e) {
-                $ref_enc_id = ReferralSignUpTracking::findOne(['sign_up_user_enc_id' => $e['user_enc_id']]);
-                if (!empty($ref_enc_id)) {
-                    $org_id = Referral::findOne(['referral_enc_id' => $ref_enc_id->referral_enc_id])->organization_enc_id;
-                    if ($org_id) {
-                        $already = UserRoles::findOne(['user_enc_id' => $e['user_enc_id'], 'organization_enc_id' => $org_id]);
-                        if (!$already) {
-                            $user_role = new UserRoles();
-                            $user_role->role_enc_id = Yii::$app->getSecurity()->generateRandomString();
-                            $user_role->user_type_enc_id = $e['user_type_enc_id'];
-                            $user_role->user_enc_id = $e['user_enc_id'];
-                            $user_role->organization_enc_id = $org_id;
-                            $user_role->created_by = $e['user_enc_id'];
-                            $user_role->created_on = date('Y-m-d H:i:s');
-                            if (!$user_role->save()) {
-                                return $this->response(500, ['status' => 500, 'error' => $user_role->getErrors()]);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return 'done';
-        }
-
-        return 'not found';
-    }
-
 }
