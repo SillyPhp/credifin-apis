@@ -206,17 +206,6 @@ class CompanyDashboardController extends ApiBaseController
                 ->alias('a')
                 ->select(['a.id', 'a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
                     'a.created_on as apply_date', 'a.application_number',
-                    '(CASE
-                    WHEN i.status = "0" THEN "New Lead"
-                    WHEN i.status = "1" THEN "Accepted"
-                    WHEN i.status = "2" THEN "Pre Verification"
-                    WHEN i.status = "3" THEN "Under Process"
-                    WHEN i.status = "4" THEN "Sanctioned"
-                    WHEN i.status = "5" THEN "Disbursed"
-                    WHEN i.status = "10" THEN "Reject"
-                    WHEN i.status = "11" THEN "Disbursed"
-                    ELSE "N/A"
-                END) as loan_status',
                     'i.status status_number',
                     'CONCAT(k.first_name, " ", k.last_name) employee_name',
                     'a.applicant_name',
@@ -540,7 +529,6 @@ class CompanyDashboardController extends ApiBaseController
 
     public function actionSaveOrganizationTracking()
     {
-        Yii::$app->cache->flush();
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
@@ -581,6 +569,7 @@ class CompanyDashboardController extends ApiBaseController
 
                 $params = Yii::$app->request->post();
 
+
                 $employee = $this->employeesList($user->organization_enc_id, $params);
                 $dsa = $this->dsaList($user->user_enc_id, $params);
 
@@ -607,35 +596,31 @@ class CompanyDashboardController extends ApiBaseController
 
     private function employeesList($org_id, $params = null)
     {
-        $employee = Users::find()
+        $employee = UserRoles::find()
             ->alias('a')
-            ->select(['a.user_enc_id','ur.employee_code','rs.sign_up_user_enc_id', 'a.username', 'a.email', 'a.phone',
-                'a.first_name', 'a.last_name', 'a.status', new Expression('"Employee" as user_type')])
-            ->joinWith(['userRoles0 ur'], false)
-            ->joinWith(['referralSignUpTrackings rs' => function($rs){
-                $rs->joinWith(['referralEnc b'], false);
+            ->select(['a.role_enc_id', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code',
+                'd.designation', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name'])
+            ->joinWith(['userEnc b'], false)
+            ->joinWith(['userTypeEnc c'], false)
+            ->joinWith(['designationEnc d'], false)
+            ->joinWith(['reportingPerson e'], false)
+            ->joinWith(['branchEnc f' => function ($f) {
+                $f->joinWith(['cityEnc f1']);
             }], false)
-            ->where(['b.organization_enc_id' => $org_id, 'a.is_deleted' => 0, 'rs.is_deleted' => 0]);
-
-//        $employee = ReferralSignUpTracking::find()
-//            ->alias('a')
-//            ->select(['a.sign_up_user_enc_id user_enc_id', 'c.username', 'c.email', 'c.phone', 'c.first_name', 'c.last_name', 'c.status', new Expression('"Employee" as user_type')])
-//            ->joinWith(['referralEnc b'], false)
-//            ->joinWith(['signUpUserEnc c'], false)
-//            ->where(['b.organization_enc_id' => $org_id, 'c.is_deleted' => 0, 'a.is_deleted' => 0]);
+            ->where(['a.organization_enc_id' => $org_id, 'c.user_type' => 'Employee', 'a.is_deleted' => 0, 'b.is_deleted' => 0]);
 
         if ($params != null && !empty($params['employee_search'])) {
             $employee->andWhere([
                 'or',
-                ['like', 'CONCAT(c.first_name," ", c.last_name)', $params['employee_search']],
-                ['like', 'c.username', $params['employee_search']],
-                ['like', 'c.email', $params['employee_search']],
-                ['like', 'c.phone', $params['employee_search']],
+                ['like', 'CONCAT(b.first_name," ", b.last_name)', $params['employee_search']],
+                ['like', 'b.username', $params['employee_search']],
+                ['like', 'b.email', $params['employee_search']],
+                ['like', 'b.phone', $params['employee_search']],
             ]);
         }
 
         if ($params != null && !empty($params['alreadyExists'])) {
-            $employee->andWhere(['not', ['a.sign_up_user_enc_id' => $params['alreadyExists']]]);
+            $employee->andWhere(['not', ['a.user_enc_id' => $params['alreadyExists']]]);
         }
 
         return $employee->asArray()

@@ -3,10 +3,8 @@
 namespace api\modules\v4\controllers;
 
 use common\models\AssignedSupervisor;
-use common\models\Organizations;
-use common\models\Referral;
-use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
+use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
 use Yii;
@@ -120,11 +118,11 @@ class ApiBaseController extends Controller
         }
 
         if ($user_type == 'Employee') {
-            $ref_enc_id = ReferralSignUpTracking::findOne(['sign_up_user_enc_id' => $user->user_enc_id])->referral_enc_id;
-            $org_id = Referral::findOne(['referral_enc_id' => $ref_enc_id])->organization_enc_id;
+
+            $org_id = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
 
             if ($org_id) {
-                return $org_id;
+                return $org_id->organization_enc_id;
             }
 
             return null;
