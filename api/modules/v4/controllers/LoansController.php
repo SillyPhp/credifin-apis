@@ -12,6 +12,7 @@ use common\models\EsignRequestedAgreements;
 use common\models\EsignVehicleLoanDetails;
 use common\models\LeadsApplications;
 use common\models\LoanCertificates;
+use common\models\LoanVerificationLocations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\spaces\Spaces;
@@ -50,6 +51,7 @@ class LoansController extends ApiBaseController
                 'add-loan-branch' => ['POST', 'OPTIONS'],
                 'update-loan-amounts' => ['POST', 'OPTIONS'],
                 'remove-loan-application' => ['POST', 'OPTIONS'],
+                'add-verification-location' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -661,6 +663,38 @@ class LoansController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAddVerificationLocation()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            $verification_location = new LoanVerificationLocations();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+            $verification_location->loan_verification_enc_id = $utilitiesModel->encrypt();
+            $verification_location->loan_app_enc_id = $params['loan_id'];
+            (!empty($params['location_name'])) ? $verification_location->location_name = $params['location_name'] : null;
+            (!empty($params['local_address'])) ? $verification_location->local_address = $params['local_address'] : null;
+            (!empty($params['latitude'])) ? $verification_location->latitude = $params['latitude'] : null;
+            (!empty($params['longitude'])) ? $verification_location->longitude = $params['longitude'] : null;
+            $verification_location->created_by = $user->user_enc_id;
+            $verification_location->created_on = date('Y-m-d H:i:s');
+            if (!$verification_location->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $verification_location->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);

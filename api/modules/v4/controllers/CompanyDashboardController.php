@@ -293,6 +293,14 @@ class CompanyDashboardController extends ApiBaseController
                 $loans->andWhere(['!=', 'a.form_type', 'diwali-dhamaka']);
             }
 
+            if (!empty($params['loan_type'])) {
+                $loans->andWhere(['a.loan_type' => $params['loan_type']]);
+            }
+
+            if (isset($params['loan_status'])) {
+                $loans->andWhere(['i.status' => $params['loan_status']]);
+            }
+
             $loans = $loans
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->limit($limit)

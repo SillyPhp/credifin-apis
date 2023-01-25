@@ -89,6 +89,7 @@ namespace common\models;
  * @property LoanDisbursementSchedule[] $loanDisbursementSchedules
  * @property LoanPurpose[] $loanPurposes
  * @property LoanSanctionReports[] $loanSanctionReports
+ * @property LoanVerificationLocations[] $loanVerificationLocations
  * @property PathToClaimOrgLoanApplication[] $pathToClaimOrgLoanApplications
  * @property PathToOpenLeads[] $pathToOpenLeads
  * @property PathToUnclaimOrgLoanApplication[] $pathToUnclaimOrgLoanApplications
@@ -405,5 +406,13 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getSharedLoanApplications()
     {
         return $this->hasMany(SharedLoanApplications::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanVerificationLocations()
+    {
+        return $this->hasMany(LoanVerificationLocations::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 }
