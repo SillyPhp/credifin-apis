@@ -78,8 +78,6 @@ class CompanyDashboardController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
 
-            $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
-
             if ($user->organization_enc_id) {
 
                 $leads = $this->getDsa($user->user_enc_id);
@@ -103,44 +101,28 @@ class CompanyDashboardController extends ApiBaseController
             $stats = LoanApplications::find()
                 ->alias('a')
                 ->select([
-//                    'COUNT(DISTINCT a.loan_app_enc_id) as all_applications',
                     'COUNT(CASE WHEN a.form_type = "others" THEN 1 END) as all_applications',
-                    'COUNT(CASE WHEN i.status = "0" THEN 1 END) as new_leads',
-                    'COUNT(CASE WHEN i.status = "1" THEN 1 END) as accepted',
-                    'COUNT(CASE WHEN i.status = "2" THEN 1 END) as pre_verification',
-                    'COUNT(CASE WHEN i.status = "3" THEN 1 END) as under_process',
-                    'COUNT(CASE WHEN i.status = "4" THEN 1 END) as sanctioned',
-                    'COUNT(CASE WHEN i.status = "5" THEN 1 END) as disbursed',
-                    'COUNT(CASE WHEN i.status = "10" THEN 1 END) as rejected',
+                    'COUNT(CASE WHEN a.form_type = "others" and i.status = "0" THEN 1 END) as new_leads',
+                    'COUNT(CASE WHEN a.form_type = "others" and i.status = "1" THEN 1 END) as accepted',
+                    'COUNT(CASE WHEN a.form_type = "others" and i.status = "2" THEN 1 END) as pre_verification',
+                    'COUNT(CASE WHEN a.form_type = "others" and i.status = "3" THEN 1 END) as under_process',
+                    'COUNT(CASE WHEN a.form_type = "others" and i.status = "30" THEN 1 END) as sanctioned',
+                    'COUNT(CASE WHEN a.form_type = "others" and i.status = "31" THEN 1 END) as disbursed',
+                    'COUNT(CASE WHEN a.form_type = "others" and i.status = "32" THEN 1 END) as rejected',
                 ])
-//                ->joinWith(['assignedLoanProviders i' => function ($i) {
-//                    $i->onCondition(['or',
-//                        ['not', ['i.provider_enc_id' => null]],
-//                        ['not', ['i.provider_enc_id' => '']]
-//                    ]);
-////                    $i->andWhere(['in', 'i.status', [0, 3, 4, 10]]);
-//                }], false)
                 ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
                     $i->joinWith(['providerEnc j']);
                     if ($service) {
                         $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
                     }
-                }])
+                }], false)
                 ->andWhere(['a.is_deleted' => 0]);
-
-//            if ($user->organization_enc_id) {
-//                $stats->andWhere(['a.lead_by' => $dsa]);
-//            } else {
-////                $stats->andWhere(['a.lead_by' => $user->user_enc_id]);
-//                $stats->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
-//            }
 
             if ($user->organization_enc_id) {
                 if (!$service) {
                     $stats->andWhere(['a.lead_by' => $dsa]);
                 }
             } else {
-//                $loans->andWhere(['a.lead_by' => $user->user_enc_id]);
                 $stats->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
             }
 
@@ -158,8 +140,6 @@ class CompanyDashboardController extends ApiBaseController
     public function actionLoanApplications()
     {
         if ($user = $this->isAuthorized()) {
-
-            $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
 
             $service = SelectedServices::find()
                 ->alias('a')
@@ -291,14 +271,6 @@ class CompanyDashboardController extends ApiBaseController
                 $loans->andWhere(['a.form_type' => 'diwali-dhamaka']);
             } else {
                 $loans->andWhere(['!=', 'a.form_type', 'diwali-dhamaka']);
-            }
-
-            if (!empty($params['loan_type'])) {
-                $loans->andWhere(['a.loan_type' => $params['loan_type']]);
-            }
-
-            if (isset($params['loan_status'])) {
-                $loans->andWhere(['i.status' => $params['loan_status']]);
             }
 
             $loans = $loans
@@ -1413,5 +1385,4 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
-
 }
