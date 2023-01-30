@@ -13,6 +13,7 @@ use common\models\EducationLoanPayments;
 use common\models\EsignOrganizationTracking;
 use common\models\LoanApplicationComments;
 use common\models\LoanApplicationNotifications;
+use common\models\LoanApplicationPartners;
 use common\models\LoanApplications;
 use common\models\LoanSanctionReports;
 use common\models\Organizations;
@@ -1385,4 +1386,44 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
+    public function actionAssignLoanPartner()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            if (empty($params['partner_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "partner_id"']);
+            }
+
+            if (empty($params['type'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "type"']);
+            }
+
+            $partner = new LoanApplicationPartners();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $partner->loan_application_partner_enc_id = $utilitiesModel->encrypt();
+            $partner->loan_app_enc_id = $params['loan_id'];
+            $partner->provider_enc_id = $user->organization_enc_id;
+            $partner->partner_enc_id = $params['partner_id'];
+            $partner->type = $params['type'];
+            $partner->created_by = $user->user_enc_id;
+            $partner->created_on = date('Y-m-d H:i:s');
+            if (!$partner->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $partner->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
 }

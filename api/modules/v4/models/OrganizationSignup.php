@@ -86,7 +86,6 @@ class OrganizationSignup extends Model
             $usersModel->phone = $this->phone;
             $usersModel->initials_color = RandomColors::one();
             $usersModel->user_type_enc_id = $user_type->user_type_enc_id;
-            $usersModel->status = 'Active';
             $usersModel->last_visit = date('Y-m-d H:i:s');
             $usersModel->last_visit_through = 'EL';
             $usersModel->signed_up_through = 'EL';
@@ -112,7 +111,6 @@ class OrganizationSignup extends Model
             $utilitiesModel->variables['table_name'] = Organizations::tableName();
             $utilitiesModel->variables['field_name'] = 'slug';
             $organizationsModel->slug = $utilitiesModel->create_slug();
-            $organizationsModel->status = 'Active';
             if (!$organizationsModel->validate() || !$organizationsModel->save()) {
                 $transaction->rollback();
                 return false;
@@ -148,7 +146,7 @@ class OrganizationSignup extends Model
             $data['organization_name'] = $organizationsModel->name;
             $data['organization_slug'] = $organizationsModel->slug;
             $data['organization_enc_id'] = $organizationsModel->organization_enc_id;
-            $data['user_type'] = 'DSA';
+            $data['user_type'] = 'Financer';
             $data['access_token'] = '';
             $data['source'] = '';
             $data['refresh_token'] = '';
@@ -203,7 +201,7 @@ class OrganizationSignup extends Model
 
     private function addService($organization_id, $user_id)
     {
-        $service_id = Services::findOne(['name' => 'E-Partners'])->service_enc_id;
+        $service_id = Services::findOne(['name' => 'Loans'])->service_enc_id;
 
         $service = new SelectedServices();
         $utilitiesModel = new \common\models\Utilities();
