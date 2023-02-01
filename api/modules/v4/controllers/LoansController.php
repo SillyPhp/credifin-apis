@@ -10,6 +10,11 @@ use common\models\EsignAgreementDetails;
 use common\models\EsignDocuments;
 use common\models\EsignRequestedAgreements;
 use common\models\EsignVehicleLoanDetails;
+use common\models\extended\AssignedLoanProviderExtended;
+use common\models\extended\EducationLoanPaymentsExtends;
+use common\models\extended\LoanApplicationsExtended;
+use common\models\extended\LoanCertificatesExtended;
+use common\models\extended\LoanVerificationLocationsExtended;
 use common\models\LeadsApplications;
 use common\models\LoanCertificates;
 use common\models\LoanVerificationLocations;
@@ -138,7 +143,7 @@ class LoansController extends ApiBaseController
         }
 
         if ($params['status'] == 'captured') {
-            $loan_application = LoanApplications::find()
+            $loan_application = LoanApplicationsExtended::find()
                 ->where(['loan_app_enc_id' => $loan_app_id])
                 ->one();
             if ($loan_application) {
@@ -149,7 +154,7 @@ class LoansController extends ApiBaseController
             }
         }
 
-        $loan_payments = EducationLoanPayments::find()
+        $loan_payments = EducationLoanPaymentsExtends::find()
             ->where(['education_loan_payment_enc_id' => $loan_payment_id])
             ->one();
         if ($loan_payments) {
@@ -228,7 +233,7 @@ class LoansController extends ApiBaseController
 
     private function savePaymentStatus($payment_id, $status, $plink_id, $signature)
     {
-        $loan_payment = EducationLoanPayments::findOne(['payment_token' => $plink_id]);
+        $loan_payment = EducationLoanPaymentsExtends::findOne(['payment_token' => $plink_id]);
         $loan_payment->payment_status = $status;
         $loan_payment->payment_id = $payment_id;
         $loan_payment->payment_signature = $signature;
@@ -490,7 +495,7 @@ class LoansController extends ApiBaseController
                 return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
             }
             $utilitiesModel = new Utilities();
-            $certificate = new LoanCertificates();
+            $certificate = new LoanCertificatesExtended();
             $certificate->certificate_enc_id = \Yii::$app->getSecurity()->generateRandomString();
             $certificate->loan_app_enc_id = $params['loan_id'];
             $certificate->certificate_type_enc_id = $type_id;
@@ -562,7 +567,7 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "id"']);
             }
 
-            $application = LoanApplications::findOne(['loan_app_enc_id' => $params['id']]);
+            $application = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
 
             if ($application) {
                 $application->application_number = $params['value'];
@@ -593,7 +598,7 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id, branch_id, provider_id"']);
             }
 
-            $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $params['id'], 'provider_enc_id' => $params['parent_id']]);
+            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['id'], 'provider_enc_id' => $params['parent_id']]);
 
             $provider->branch_enc_id = $params['value'];
             $provider->updated_by = $user->user_enc_id;
@@ -623,7 +628,7 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "parent_id, org_id, id, value"']);
             }
 
-            $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $params['parent_id'], 'provider_enc_id' => $params['provider_id']]);
+            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['parent_id'], 'provider_enc_id' => $params['provider_id']]);
 
             if (!$provider) {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
@@ -653,7 +658,7 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
-            $loan_app = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']]);
+            $loan_app = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['loan_id']]);
 
             $loan_app->is_deleted = 1;
             $loan_app->updated_by = $user->user_enc_id;
@@ -679,7 +684,7 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
-            $verification_location = new LoanVerificationLocations();
+            $verification_location = new LoanVerificationLocationsExtended();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(10, 100000);
             $verification_location->loan_verification_enc_id = $utilitiesModel->encrypt();

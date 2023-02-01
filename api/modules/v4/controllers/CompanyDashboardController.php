@@ -11,6 +11,10 @@ use common\models\AssignedSupervisor;
 use common\models\ClaimedDeals;
 use common\models\EducationLoanPayments;
 use common\models\EsignOrganizationTracking;
+use common\models\extended\AssignedLoanProviderExtended;
+use common\models\extended\LoanApplicationCommentsExtended;
+use common\models\extended\LoanApplicationNotificationsExtended;
+use common\models\extended\SharedLoanApplicationsExtended;
 use common\models\LoanApplicationComments;
 use common\models\LoanApplicationNotifications;
 use common\models\LoanApplications;
@@ -488,7 +492,7 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
             }
 
-            $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $params['loan_id'], 'provider_enc_id' => $user->organization_enc_id, 'is_deleted' => 0]);
+            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['loan_id'], 'provider_enc_id' => $user->organization_enc_id, 'is_deleted' => 0]);
 
             if (!$provider) {
                 return $this->response(404, ['status' => 404, 'message' => 'provider not found with this loan_id']);
@@ -952,7 +956,7 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "message"']);
             }
 
-            $notification = new LoanApplicationNotifications();
+            $notification = new LoanApplicationNotificationsExtended();
             $notification->notification_enc_id = Yii::$app->getSecurity()->generateRandomString();
             $notification->loan_application_enc_id = $params['loan_id'];
             $notification->message = $params['message'];
@@ -983,7 +987,7 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "comment"']);
             }
 
-            $comment = new LoanApplicationComments();
+            $comment = new LoanApplicationCommentsExtended();
             $comment->comment_enc_id = Yii::$app->getSecurity()->generateRandomString();
             $comment->loan_application_enc_id = $params['loan_id'];
             $comment->comment = $params['comment'];
@@ -1026,7 +1030,7 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(409, ['status' => 409, 'message' => 'Application already shared with this user']);
             }
 
-            $shared = new SharedLoanApplications();
+            $shared = new SharedLoanApplicationsExtended();
             $shared->shared_loan_app_enc_id = Yii::$app->getSecurity()->generateRandomString();
             $shared->loan_app_enc_id = $params['loan_id'];
             $shared->shared_by = $user->user_enc_id;
@@ -1054,7 +1058,7 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "shared_loan_app_id"']);
             }
 
-            $shared = SharedLoanApplications::findOne(['shared_loan_app_enc_id' => $params['shared_loan_app_id'], 'is_deleted' => 0]);
+            $shared = SharedLoanApplicationsExtended::findOne(['shared_loan_app_enc_id' => $params['shared_loan_app_id'], 'is_deleted' => 0]);
 
             if (!$shared) {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
