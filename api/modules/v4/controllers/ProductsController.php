@@ -337,7 +337,8 @@ class ProductsController extends ApiBaseController
 
             $details = Products::find()
                 ->alias('a')
-                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'a.created_on', 'c1.name city', 'c2.name state', 'm.name model', 'be.name brand'])
+                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'a.created_on',
+                    'c1.name city', 'c2.name state', 'm.name model', 'be.name brand', 'd1.name category'])
                 ->joinWith(['productOtherDetails b' => function ($b) {
                     $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.km_driven', 'b.making_year', 'b.other_detail', 'b.ownership_type', 'b.variant', 'b.rom', 'b.ram', 'b.screen_size',
                         'b.back_camera', 'b.front_camera', 'b.sim_type']);
@@ -353,12 +354,24 @@ class ProductsController extends ApiBaseController
                 ->joinWith(['modelEnc m' => function ($m) {
                     $m->joinWith(['brandEnc be']);
                 }], false)
+                ->joinWith(['assignedCategoryEnc d' => function ($d) {
+                    $d->joinWith(['categoryEnc d1']);
+                }], false)
                 ->where(['a.slug' => $slug, 'a.dealer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
 
             if ($details) {
-                return $this->response(200, ['status' => 200, 'products' => $details]);
+
+                $options = [];
+                $options['limit'] = 3;
+                $options['page'] = 1;
+                $options['category'] = $details['category'];
+                $options['product_id'] = $details['product_enc_id'];
+
+                $similar_products = $this->__getProducts($options);
+
+                return $this->response(200, ['status' => 200, 'products' => $details, 'similar_products' => $similar_products]);
             }
             return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
         }
@@ -433,12 +446,28 @@ class ProductsController extends ApiBaseController
             $category = $params['category'];
         }
 
+        $options = [];
+        $options['limit'] = $limit;
+        $options['page'] = $page;
+        $options['category'] = $category;
+
+        $products = $this->__getProducts($options);
+
+
+        if ($products) {
+            return $this->response(200, ['status' => 200, 'products' => $products]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
+    }
+
+    private function __getProducts($options)
+    {
         $products = Products::find()
             ->alias('a')
             ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'a.created_on',
                 'c1.name city', 'c2.name state', 'm.name model', 'be.name brand', 'CONCAT(d.first_name, " ", d.last_name) dealer_name'])
             ->joinWith(['productOtherDetails b' => function ($b) {
-                $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.other_detail']);
+                $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.other_detail', 'b.rom', 'b.ram', 'b.making_year', 'b.km_driven']);
                 $b->onCondition(['b.is_deleted' => 0]);
             }])
             ->joinWith(['productImages c' => function ($c) {
@@ -455,18 +484,19 @@ class ProductsController extends ApiBaseController
             ->joinWith(['assignedCategoryEnc dd' => function ($d) {
                 $d->joinWith(['categoryEnc dd1']);
             }], false)
-            ->where(['a.is_deleted' => 0, 'dd1.name' => $category])
-            ->groupBy('a.product_enc_id')
-            ->orderBy(['a.created_on' => SORT_DESC])
-            ->limit($limit)
-            ->offset(($page - 1) * $limit)
+            ->where(['a.is_deleted' => 0, 'dd1.name' => $options['category']]);
+        if (isset($options['product_id']) && !empty($options['product_id'])) {
+            $products->andWhere(['not', ['a.product_enc_id' => $options['product_id']]]);
+            $products->orderBy(new Expression('rand()'));
+        } else {
+            $products->orderBy(['a.created_on' => SORT_DESC]);
+        }
+        $products = $products->groupBy('a.product_enc_id')
+            ->limit($options['limit'])
+            ->offset(($options['page'] - 1) * $options['limit'])
             ->asArray()
             ->all();
-
-        if ($products) {
-            return $this->response(200, ['status' => 200, 'products' => $products]);
-        }
-        return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
+        return $products;
     }
 
     public function actionUpdateProduct()

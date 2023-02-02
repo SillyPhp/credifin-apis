@@ -59,6 +59,10 @@ class CompanyDashboardController extends ApiBaseController
                 'update-shared-application' => ['POST', 'OPTIONS'],
                 'employee-search' => ['GET', 'OPTIONS'],
                 'update-employee' => ['POST', 'OPTIONS'],
+                'get-financer-list' => ['POST', 'OPTIONS'],
+                'assign-loan-partner' => ['POST', 'OPTIONS'],
+                'remove-partner' => ['POST', 'OPTIONS'],
+                'status-stats' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -343,6 +347,17 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    private function __partnerApplications($user)
+    {
+        return LoanApplicationPartners::find()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id'])
+            ->joinWith(['providerEnc b'], false)
+            ->where(['a.is_deleted' => 0, 'a.partner_enc_id' => $user->organization_enc_id])
+            ->asArray()
+            ->all();
+    }
+
     private function sharedApps($user_id)
     {
         $shared = SharedLoanApplications::find()
@@ -465,6 +480,8 @@ class CompanyDashboardController extends ApiBaseController
                     $loan['branch'] = $branch['location_name'] ? $branch['location_name'] . ', ' . $branch['city'] : $branch['city'];
                 }
 
+                $loan['loan_partners'] = $this->__applicationPartners($user, $loan['loan_app_enc_id']);
+
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }
 
@@ -473,6 +490,17 @@ class CompanyDashboardController extends ApiBaseController
         }
 
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    private function __applicationPartners($user, $loan_id)
+    {
+        return LoanApplicationPartners::find()
+            ->alias('a')
+            ->select(['a.loan_application_partner_enc_id', 'a.loan_app_enc_id', 'a.type', 'a.ltv', 'a.partner_enc_id', 'b.name'])
+            ->joinWith(['partnerEnc b'], false)
+            ->where(['a.is_deleted' => 0, 'a.provider_enc_id' => $user->organization_enc_id, 'a.loan_app_enc_id' => $loan_id])
+            ->asArray()
+            ->all();
     }
 
     public function actionUpdateProviderStatus()
@@ -1405,6 +1433,12 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "type"']);
             }
 
+            $partner = LoanApplicationPartners::findOne(['loan_app_enc_id' => $params['loan_id'], 'partner_enc_id' => $params['partner_id'], 'is_deleted' => 0]);
+
+            if (!empty($partner)) {
+                return $this->response(409, ['status' => 409, ['conflict already added']]);
+            }
+
             $partner = new LoanApplicationPartners();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -1420,6 +1454,123 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionRemovePartner()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_partner_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_partner_id"']);
+            }
+
+            $partner = LoanApplicationPartners::findOne(['loan_application_partner_enc_id' => $params['loan_partner_id']]);
+
+            if (!empty($partner)) {
+                $partner->is_deleted = 1;
+                $partner->updated_by = $user->user_enc_id;
+                $partner->updated_on = date('Y-m-d H:i:s');
+                if (!$partner->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $partner->getErrors()]);
+                }
+                return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetFinancerList()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $financer = SelectedServices::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id', 'c.name', 'c.slug'])
+                ->joinWith(['serviceEnc b'], false)
+                ->joinWith(['organizationEnc c'], false)
+                ->where(['b.name' => 'Loans', 'a.is_selected' => 1, 'c.status' => 'Active'])
+                ->andWhere(['not', ['a.organization_enc_id' => $user->organization_enc_id]])
+                ->asArray()
+                ->all();
+
+            if ($financer) {
+                return $this->response(200, ['status' => 200, 'financer_list' => $financer]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionStatusStats()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if ($user->organization_enc_id) {
+
+                $leads = $this->getDsa($user->user_enc_id);
+
+                $dsa = [];
+                if ($leads) {
+                    foreach ($leads as $val) {
+                        array_push($dsa, $val['assigned_user_enc_id']);
+                    }
+                }
+
+                $dsa[] = $user->user_enc_id;
+            }
+
+            $service = SelectedServices::find()
+                ->alias('a')
+                ->joinWith(['serviceEnc b'], false)
+                ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
+                ->exists();
+
+            $stats = LoanApplications::find()
+                ->alias('a')
+                ->select(['j1.loan_status', 'COUNT(a.status) count'])
+                ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
+                    $i->joinWith(['providerEnc j']);
+                    $i->joinWith(['status0 j1']);
+                    if ($service) {
+                        $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
+                    }
+                }], false)
+                ->andWhere(['a.is_deleted' => 0, 'a.form_type' => 'others']);
+
+            if ($user->organization_enc_id) {
+                if (!$service) {
+                    $stats->andWhere(['a.lead_by' => $dsa]);
+                }
+            } else {
+                $stats->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
+            }
+
+            if (!empty($params['loan_type'])) {
+                $stats->andWhere(['a.loan_type' => $params['loan_type']]);
+            }
+
+            $stats = $stats
+                ->groupBy(['i.status'])
+                ->asArray()
+                ->all();
+
+            return $this->response(200, ['status' => 200, 'stats' => $stats]);
+
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
