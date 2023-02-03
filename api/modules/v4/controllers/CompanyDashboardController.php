@@ -9,6 +9,7 @@ use common\models\AssignedFinancerLoanType;
 use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
 use common\models\ClaimedDeals;
+use common\models\ColumnPreferences;
 use common\models\EducationLoanPayments;
 use common\models\EsignOrganizationTracking;
 use common\models\LoanApplicationComments;
@@ -1355,6 +1356,99 @@ class CompanyDashboardController extends ApiBaseController
             $randomString = $arr[$index];
         }
         return $randomString;
+    }
+
+    public function actionAddColumnPreference()
+    {
+        $params = Yii::$app->request->post();
+        if ($user = $this->isAuthorized()) {
+            $identity = $user->user_enc_id;
+            $exist_check = ColumnPreferences::findOne(['user_enc_id' => $user->user_enc_id, 'is_deleted' => 0]);
+
+            if (!$params['disabled_fields']) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "disabled_fields"']);
+            }
+            if ($exist_check) {
+                $query = Yii::$app->db->createCommand()
+                    ->update(ColumnPreferences::tableName(), ['disabled_fields' => $params['disabled_fields'], 'updated_by' => $identity, 'updated_on' => date('Y-m-d H:i:s')], ['user_enc_id' => $identity, 'column_preference_enc_id' => $exist_check['column_preference_enc_id']])
+                    ->execute();
+                if ($query) {
+                    return $this->response(200, [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Preference has been changed.',
+                    ]);
+                } else {
+                    return $this->response(500, [
+                        'status' => 500,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ]);
+                }
+            } else {
+                $preference = new ColumnPreferences();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $preference->column_preference_enc_id = $utilitiesModel->encrypt();
+                $preference->user_enc_id = $identity;
+                $preference->created_by = $identity;
+                $preference->created_on = date('Y-m-d H:i:s');
+                $preference->disabled_fields = $params['disabled_fields'];
+                if (!$preference->validate()) {
+                    return 'nope';
+                }
+                $transaction = Yii::$app->db->beginTransaction();
+                try {
+                    if (!$preference->save()) {
+                        $transaction->rollBack();
+                    } else {
+                        $transaction->commit();
+                        $status = true;
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                    return false;
+                }
+                if ($status) {
+                    return $this->response(200, [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Preference added successfully',
+                    ]);
+                } else {
+                    return $this->response(500, [
+                        'status' => 500,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ]);
+                }
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetColumnPreference()
+    {
+        $params = Yii::$app->request->post();
+        if ($user = $this->isAuthorized()) {
+            $identity = $user->user_enc_id;
+            $fetch = ColumnPreferences::findOne(['user_enc_id' => $identity]);
+            if ($fetch) {
+                return $this->response(200, [
+                    'status' => 200,
+                    'preference' => $fetch['disabled_fields'],
+                ]);
+            } else {
+                return $this->response(404, [
+                    'status' => 404,
+                    'message' => 'Preference not found',
+                ]);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 
 

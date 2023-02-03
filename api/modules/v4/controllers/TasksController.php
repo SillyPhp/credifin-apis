@@ -58,6 +58,8 @@ class TasksController extends ApiBaseController
                     'message' => 'Tasks not found',
                 ]);
             }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -89,7 +91,7 @@ class TasksController extends ApiBaseController
                 ]);
             }
         } else {
-            return false;
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
 
     }
@@ -126,6 +128,8 @@ class TasksController extends ApiBaseController
                     'message' => 'An error has occurred. Please try again.',
                 ]);
             }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -158,6 +162,8 @@ class TasksController extends ApiBaseController
                     'message' => 'An error has occurred. Please try again.',
                 ]);
             }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -192,6 +198,8 @@ class TasksController extends ApiBaseController
                     'message' => 'An error has occurred. Please try again.',
                 ]);
             }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 }
