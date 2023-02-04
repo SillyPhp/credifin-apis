@@ -169,6 +169,16 @@ class CompanyDashboardController extends ApiBaseController
 
             $shared_apps = $this->sharedApps($user->user_enc_id);
 
+            //partnered applications
+//            $applications = $this->__partnerApplications($user);
+//            $partnered_applications = [];
+//            if (!empty($applications)) {
+//                foreach ($applications as $a) {
+//                    array_push($partnered_applications, $a['loan_app_enc_id']);
+//                }
+//            }
+
+
             $params = Yii::$app->request->post();
 
             $filter = null;
@@ -435,6 +445,12 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanPurposes g' => function ($g) {
                     $g->select(['g.financer_loan_purpose_enc_id', 'g.financer_loan_purpose_enc_id', 'g.loan_app_enc_id', 'g1.purpose']);
                     $g->joinWith(['financerLoanPurposeEnc g1'], false);
+                }])
+                ->joinWith(['loanVerificationLocations h' => function ($h) {
+                    $h->select(['h.loan_verification_enc_id', 'h.loan_app_enc_id', 'h.location_name',
+                        'h.local_address', 'h.latitude', 'h.longitude', 'CONCAT(h1.first_name," ",h1.last_name) created_by']);
+                    $h->joinWith(['createdBy h1'], false);
+                    $h->onCondition(['h.is_deleted' => 0]);
                 }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
