@@ -12,12 +12,14 @@ use Yii;
  * @property string $loan_status loan status name
  * @property int $value loan status value
  * @property int $sequence loan status sequence
+ * @property string $status_color status color code
  * @property string $created_by created by
  * @property string $created_on created on
  * @property string $updated_by
  * @property string $updated_on
  * @property int $is_deleted 0 false, 1 true
  *
+ * @property AssignedLoanProvider[] $assignedLoanProviders
  * @property FinancerLoanStatus[] $financerLoanStatuses
  * @property Users $createdBy
  */
@@ -41,11 +43,20 @@ class LoanStatus extends \yii\db\ActiveRecord
             [['value', 'sequence', 'is_deleted'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
             [['loan_status_enc_id', 'loan_status', 'created_by'], 'string', 'max' => 100],
+            [['status_color'], 'string', 'max' => 7],
             [['updated_by'], 'string', 'max' => 200],
             [['loan_status_enc_id'], 'unique'],
             [['value'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedLoanProviders()
+    {
+        return $this->hasMany(AssignedLoanProvider::className(), ['status' => 'value']);
     }
 
     /**
