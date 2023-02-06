@@ -16,6 +16,7 @@ use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
 use common\models\extended\LoanVerificationLocationsExtended;
 use common\models\LeadsApplications;
+use common\models\LoanAuditTrail;
 use common\models\LoanCertificates;
 use common\models\LoanVerificationLocations;
 use common\models\Referral;
@@ -700,6 +701,34 @@ class LoansController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAuditTrailList()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            $audit = LoanAuditTrail::find()
+                ->alias('a')
+                ->select(['a.old_value', 'a.new_value', 'a.action', 'a.model', 'a.stamp'])
+                ->where(['loan_id' => $params['loan_id']])
+                ->asArray()
+                ->all();
+
+            if ($audit) {
+                return $this->response(200, ['status' => 200, 'audit_list' => $audit]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
