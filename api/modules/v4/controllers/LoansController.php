@@ -58,6 +58,7 @@ class LoansController extends ApiBaseController
                 'update-loan-amounts' => ['POST', 'OPTIONS'],
                 'remove-loan-application' => ['POST', 'OPTIONS'],
                 'add-verification-location' => ['POST', 'OPTIONS'],
+                'audit-trail-list' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -712,15 +713,28 @@ class LoansController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
+            $limit = 10;
+            $page = 1;
 
             if (empty($params['loan_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
+            if (!empty($params['limit'])) {
+                $limit = $params['limit'];
+            }
+
+            if (!empty($params['page'])) {
+                $page = $params['page'];
+            }
+
             $audit = LoanAuditTrail::find()
                 ->alias('a')
-                ->select(['a.old_value', 'a.new_value', 'a.action', 'a.model', 'a.stamp'])
-                ->where(['loan_id' => $params['loan_id']])
+                ->select(['a.old_value', 'a.new_value', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'])
+                ->joinWith(['user b'], false)
+                ->where(['a.loan_id' => $params['loan_id']])
+                ->limit($limit)
+                ->page(($page - 1) * $limit)
                 ->asArray()
                 ->all();
 

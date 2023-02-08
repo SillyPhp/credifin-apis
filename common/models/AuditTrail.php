@@ -1,118 +1,71 @@
 <?php
 
-namespace common\models\extended;
-
+namespace common\models;
 use Yii;
-use yii\db\ActiveRecord;
 
 /**
- * The followings are the available columns in table 'tbl_audit_trail':
- * @var integer $id
- * @var string $new_value
- * @var string $old_value
- * @var string $action
- * @var string $model
- * @var string $field
- * @var string $stamp
- * @var integer $user_id
- * @var string $model_id
+ * This is the model class for table "{{%audit_trail}}".
+ *
+ * @property int $id
+ * @property string $old_value
+ * @property string $new_value
+ * @property string $action
+ * @property string $model
+ * @property string $field
+ * @property string $stamp
+ * @property int $user_id
+ * @property string $model_id
+ *
+ * @property Users $user
  */
-class AuditTrail extends ActiveRecord
+class AuditTrail extends \yii\db\ActiveRecord
 {
-    private $_message_category = 'audittrail';
-
     /**
-     * @return string the associated database table name
+     * {@inheritdoc}
      */
     public static function tableName()
     {
-//        if(isset(Yii::$app->params['audittrail.table'])){
-//            return Yii::$app->params['audittrail.table'];
-//        }else{
         return '{{%audit_trail}}';
-        //}
     }
 
     /**
-     * @return \yii\db\Connection the database connection used by this AR class.
-     */
-    public static function getDb()
-    {
-//        if (isset(Yii::$app->params['audittrail.db'])) {
-//            return Yii::$app->get(Yii::$app->params['audittrail.db']);
-//        } else  {
-        return parent::getDb();
-        //}
-        // return Yii::$app->get('dbUser');
-    }
-
-    public function init()
-    {
-        parent::init();
-
-        \Yii::$app->i18n->translations[$this->_message_category] = [
-            'class' => 'yii\i18n\PhpMessageSource',
-        ];
-    }
-
-    /**
-     * @return array customized attribute labels (name=>label)
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => Yii::t('audittrail','ID'),
-            'old_value' => Yii::t('audittrail','Old Value'),
-            'new_value' => Yii::t('audittrail','New Value'),
-            'action' => Yii::t('audittrail','Action'),
-            'model' => Yii::t('audittrail','Type'),
-            'field' => Yii::t('audittrail','Field'),
-            'stamp' => Yii::t('audittrail','Stamp'),
-            'user_id' => Yii::t('audittrail','User'),
-            'model_id' => Yii::t('audittrail','ID'),
-        ];
-    }
-
-    /**
-     * @return array validation rules for model attributes.
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
+            [['old_value', 'new_value'], 'string'],
             [['action', 'model', 'stamp', 'model_id'], 'required'],
-            ['action', 'string', 'max' => 255],
-            ['model', 'string', 'max' => 255],
-            ['field', 'string', 'max' => 255],
-            ['model_id', 'string', 'max' => 255],
-            ['user_id', 'string', 'max' => 255],
-            [['old_value', 'new_value'], 'safe']
+            [['stamp'], 'safe'],
+            [['user_id'], 'integer'],
+            [['action', 'model', 'field', 'model_id'], 'string', 'max' => 255],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
-    public static function recently($query)
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
     {
-        $query->orderBy(['[[stamp]]' => SORT_DESC]);
+        return [
+            'id' => Yii::t('app', 'ID'),
+            'old_value' => Yii::t('app', 'Old Value'),
+            'new_value' => Yii::t('app', 'New Value'),
+            'action' => Yii::t('app', 'Action'),
+            'model' => Yii::t('app', 'Model'),
+            'field' => Yii::t('app', 'Field'),
+            'stamp' => Yii::t('app', 'Stamp'),
+            'user_id' => Yii::t('app', 'User ID'),
+            'model_id' => Yii::t('app', 'Model ID'),
+        ];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getUser()
     {
-        if(isset(Yii::$app->params['audittrail.model']) && isset(Yii::$app->params['audittrail.model'])){
-            return $this->hasOne(Yii::$app->params['audittrail.model'], ['id' => 'user_id']);
-        }else{
-            return $this->hasOne('common\models\User', ['id' => 'user_id']);
-        }
-    }
-
-    public function getParent(){
-        $model_name =
-            (
-            isset(Yii::$app->params['audittrail.FQNPrefix']) &&
-            rtrim(Yii::$app->params['audittrail.FQNPrefix'], '\\') ?
-                rtrim(Yii::$app->params['audittrail.FQNPrefix'], '\\') . '\\' :
-                ''
-            ) . $this->model;
-        return new $model_name;
+        return $this->hasOne(Users::className(), ['id' => 'user_id']);
     }
 }
-
-?>

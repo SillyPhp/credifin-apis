@@ -5,7 +5,6 @@ namespace common\models\extended;
 use common\models\AssignedCollegeCourses;
 use common\models\AssignedLenderServices;
 use common\models\Countries;
-use common\models\extended\AuditTrail;
 use common\models\extended\LoanAuditTrail;
 use common\models\LoanStatus;
 use Yii;
