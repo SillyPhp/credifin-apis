@@ -9,6 +9,7 @@ use common\models\AssignedFinancerLoanType;
 use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
 use common\models\ClaimedDeals;
+use common\models\ColumnPreferences;
 use common\models\EducationLoanPayments;
 use common\models\EsignOrganizationTracking;
 use common\models\extended\AssignedLoanProviderExtended;
@@ -17,6 +18,7 @@ use common\models\extended\LoanApplicationNotificationsExtended;
 use common\models\extended\SharedLoanApplicationsExtended;
 use common\models\LoanApplicationComments;
 use common\models\LoanApplicationNotifications;
+use common\models\LoanApplicationPartners;
 use common\models\LoanApplications;
 use common\models\LoanSanctionReports;
 use common\models\Organizations;
@@ -62,6 +64,10 @@ class CompanyDashboardController extends ApiBaseController
                 'update-shared-application' => ['POST', 'OPTIONS'],
                 'employee-search' => ['GET', 'OPTIONS'],
                 'update-employee' => ['POST', 'OPTIONS'],
+                'get-financer-list' => ['POST', 'OPTIONS'],
+                'assign-loan-partner' => ['POST', 'OPTIONS'],
+                'remove-partner' => ['POST', 'OPTIONS'],
+                'status-stats' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -166,6 +172,16 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             $shared_apps = $this->sharedApps($user->user_enc_id);
+
+            //partnered applications
+//            $applications = $this->__partnerApplications($user);
+//            $partnered_applications = [];
+//            if (!empty($applications)) {
+//                foreach ($applications as $a) {
+//                    array_push($partnered_applications, $a['loan_app_enc_id']);
+//                }
+//            }
+
 
             $params = Yii::$app->request->post();
 
@@ -346,6 +362,17 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    private function __partnerApplications($user)
+    {
+        return LoanApplicationPartners::find()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id'])
+            ->joinWith(['providerEnc b'], false)
+            ->where(['a.is_deleted' => 0, 'a.partner_enc_id' => $user->organization_enc_id])
+            ->asArray()
+            ->all();
+    }
+
     private function sharedApps($user_id)
     {
         $shared = SharedLoanApplications::find()
@@ -423,6 +450,14 @@ class CompanyDashboardController extends ApiBaseController
                     $g->select(['g.financer_loan_purpose_enc_id', 'g.financer_loan_purpose_enc_id', 'g.loan_app_enc_id', 'g1.purpose']);
                     $g->joinWith(['financerLoanPurposeEnc g1'], false);
                 }])
+                ->joinWith(['loanVerificationLocations h' => function ($h) {
+                    $h->select(['h.loan_verification_enc_id', 'h.loan_app_enc_id', 'h.location_name',
+                        'h.local_address', 'h.latitude', 'h.longitude', 'CONCAT(h1.first_name," ",h1.last_name) created_by', 'h.created_on',
+                        'CASE WHEN h1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", h1.image_location, "/", h1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(h1.first_name," ",h1.last_name), "&size=200&rounded=false&background=", REPLACE(h1.initials_color, "#", ""), "&color=ffffff") END image'
+                    ]);
+                    $h->joinWith(['createdBy h1'], false);
+                    $h->onCondition(['h.is_deleted' => 0]);
+                }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
@@ -468,6 +503,8 @@ class CompanyDashboardController extends ApiBaseController
                     $loan['branch'] = $branch['location_name'] ? $branch['location_name'] . ', ' . $branch['city'] : $branch['city'];
                 }
 
+                $loan['loan_partners'] = $this->__applicationPartners($user, $loan['loan_app_enc_id']);
+
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }
 
@@ -476,6 +513,17 @@ class CompanyDashboardController extends ApiBaseController
         }
 
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    private function __applicationPartners($user, $loan_id)
+    {
+        return LoanApplicationPartners::find()
+            ->alias('a')
+            ->select(['a.loan_application_partner_enc_id', 'a.loan_app_enc_id', 'a.type', 'a.ltv', 'a.partner_enc_id', 'b.name'])
+            ->joinWith(['partnerEnc b'], false)
+            ->where(['a.is_deleted' => 0, 'a.provider_enc_id' => $user->organization_enc_id, 'a.loan_app_enc_id' => $loan_id])
+            ->asArray()
+            ->all();
     }
 
     public function actionUpdateProviderStatus()
@@ -1389,4 +1437,261 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
+    public function actionAssignLoanPartner()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            if (empty($params['partner_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "partner_id"']);
+            }
+
+            if (empty($params['type'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "type"']);
+            }
+
+            $partner = LoanApplicationPartners::findOne(['loan_app_enc_id' => $params['loan_id'], 'partner_enc_id' => $params['partner_id'], 'is_deleted' => 0]);
+
+            if (!empty($partner)) {
+                return $this->response(409, ['status' => 409, ['conflict already added']]);
+            }
+
+            $partner = new LoanApplicationPartners();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $partner->loan_application_partner_enc_id = $utilitiesModel->encrypt();
+            $partner->loan_app_enc_id = $params['loan_id'];
+            $partner->provider_enc_id = $user->organization_enc_id;
+            $partner->partner_enc_id = $params['partner_id'];
+            $partner->type = $params['type'];
+            $partner->created_by = $user->user_enc_id;
+            $partner->created_on = date('Y-m-d H:i:s');
+            if (!$partner->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $partner->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionRemovePartner()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_partner_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_partner_id"']);
+            }
+
+            $partner = LoanApplicationPartners::findOne(['loan_application_partner_enc_id' => $params['loan_partner_id']]);
+
+            if (!empty($partner)) {
+                $partner->is_deleted = 1;
+                $partner->updated_by = $user->user_enc_id;
+                $partner->updated_on = date('Y-m-d H:i:s');
+                if (!$partner->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $partner->getErrors()]);
+                }
+                return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetFinancerList()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $financer = SelectedServices::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id', 'c.name', 'c.slug'])
+                ->joinWith(['serviceEnc b'], false)
+                ->joinWith(['organizationEnc c'], false)
+                ->where(['b.name' => 'Loans', 'a.is_selected' => 1, 'c.status' => 'Active'])
+                ->andWhere(['not', ['a.organization_enc_id' => $user->organization_enc_id]])
+                ->asArray()
+                ->all();
+
+            if ($financer) {
+                return $this->response(200, ['status' => 200, 'financer_list' => $financer]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionStatusStats()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if ($user->organization_enc_id) {
+
+                $leads = $this->getDsa($user->user_enc_id);
+
+                $dsa = [];
+                if ($leads) {
+                    foreach ($leads as $val) {
+                        array_push($dsa, $val['assigned_user_enc_id']);
+                    }
+                }
+
+                $dsa[] = $user->user_enc_id;
+            }
+
+            $service = SelectedServices::find()
+                ->alias('a')
+                ->joinWith(['serviceEnc b'], false)
+                ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
+                ->exists();
+
+            $stats = LoanApplications::find()
+                ->alias('a')
+                ->select(['j1.loan_status', 'COUNT(a.status) count', 'j1.status_color'])
+                ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
+                    $i->joinWith(['providerEnc j']);
+                    $i->joinWith(['status0 j1']);
+                    if ($service) {
+                        $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
+                    }
+                }], false)
+                ->andWhere(['a.is_deleted' => 0, 'a.form_type' => 'others']);
+
+            if ($user->organization_enc_id) {
+                if (!$service) {
+                    $stats->andWhere(['a.lead_by' => $dsa]);
+                }
+            } else {
+                $stats->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
+            }
+
+            if (!empty($params['loan_type'])) {
+                $stats->andWhere(['a.loan_type' => $params['loan_type']]);
+            }
+
+            $stats = $stats
+                ->groupBy(['i.status'])
+                ->asArray()
+                ->all();
+
+            return $this->response(200, ['status' => 200, 'stats' => $stats]);
+
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAddColumnPreference()
+    {
+        $params = Yii::$app->request->post();
+        if ($user = $this->isAuthorized()) {
+            $identity = $user->user_enc_id;
+            $exist_check = ColumnPreferences::findOne(['user_enc_id' => $user->user_enc_id, 'is_deleted' => 0]);
+
+            if (!$params['disabled_fields']) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "disabled_fields"']);
+            }
+            if ($exist_check) {
+                $query = Yii::$app->db->createCommand()
+                    ->update(ColumnPreferences::tableName(), ['disabled_fields' => $params['disabled_fields'], 'updated_by' => $identity, 'updated_on' => date('Y-m-d H:i:s')], ['user_enc_id' => $identity, 'column_preference_enc_id' => $exist_check['column_preference_enc_id']])
+                    ->execute();
+                if ($query) {
+                    return $this->response(200, [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Preference has been changed.',
+                    ]);
+                } else {
+                    return $this->response(500, [
+                        'status' => 500,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ]);
+                }
+            } else {
+                $preference = new ColumnPreferences();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $preference->column_preference_enc_id = $utilitiesModel->encrypt();
+                $preference->user_enc_id = $identity;
+                $preference->created_by = $identity;
+                $preference->created_on = date('Y-m-d H:i:s');
+                $preference->disabled_fields = $params['disabled_fields'];
+                if (!$preference->validate()) {
+                    return 'nope';
+                }
+                $transaction = Yii::$app->db->beginTransaction();
+                try {
+                    if (!$preference->save()) {
+                        $transaction->rollBack();
+                    } else {
+                        $transaction->commit();
+                        $status = true;
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                    return false;
+                }
+                if ($status) {
+                    return $this->response(200, [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Preference added successfully',
+                    ]);
+                } else {
+                    return $this->response(500, [
+                        'status' => 500,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ]);
+                }
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetColumnPreference()
+    {
+        $params = Yii::$app->request->post();
+        if ($user = $this->isAuthorized()) {
+            $identity = $user->user_enc_id;
+            $fetch = ColumnPreferences::findOne(['user_enc_id' => $identity]);
+            if ($fetch) {
+                return $this->response(200, [
+                    'status' => 200,
+                    'preference' => $fetch['disabled_fields'],
+                ]);
+            } else {
+                return $this->response(404, [
+                    'status' => 404,
+                    'message' => 'Preference not found',
+                ]);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+
 }
