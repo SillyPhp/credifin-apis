@@ -733,7 +733,7 @@ class LoansController extends ApiBaseController
                 ->select(['a.old_value', 'a.new_value', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'])
                 ->joinWith(['user b'], false)
                 ->where(['a.loan_id' => $params['loan_id']])
-                ->andWhere(['not', ['a.field' => ['', 'updated_on', 'created_by', 'created_on', 'id']]])
+                ->andWhere(['not', ['a.field' => ['', 'updated_on', 'created_by', 'created_on', 'id', null]]])
                 ->andWhere(['not like', 'a.field', '%_enc_id%', false])
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
