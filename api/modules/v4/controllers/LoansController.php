@@ -12,6 +12,7 @@ use common\models\EsignRequestedAgreements;
 use common\models\EsignVehicleLoanDetails;
 use common\models\LeadsApplications;
 use common\models\LoanCertificates;
+use common\models\LoanCoApplicants;
 use common\models\LoanVerificationLocations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
@@ -692,6 +693,34 @@ class LoansController extends ApiBaseController
             $verification_location->created_on = date('Y-m-d H:i:s');
             if (!$verification_location->save()) {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $verification_location->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAddCoApplicant()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            $co_applicant = new LoanCoApplicants();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+            $co_applicant->loan_co_app_enc_id = $utilitiesModel->encrypt();
+            $co_applicant->loan_app_enc_id = '';
+            $co_applicant->name = '';
+            $co_applicant->phone = '';
+            $co_applicant->co_applicant_dob = '';
+            $co_applicant->pan_number = '';
+            $co_applicant->aadhaar_number = '';
+            $co_applicant->created_by = $user->user_enc_id;
+            $co_applicant->created_on = date('Y-m-d H:i:s');
+            if (!$co_applicant->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $co_applicant->getErrors()]);
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
