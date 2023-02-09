@@ -734,7 +734,8 @@ class LoansController extends ApiBaseController
                 ->joinWith(['user b'], false)
                 ->where(['a.loan_id' => $params['loan_id']])
                 ->limit($limit)
-                ->page(($page - 1) * $limit)
+                ->offset(($page - 1) * $limit)
+                ->orderBy(['a.stamp' => SORT_DESC])
                 ->asArray()
                 ->all();
 
