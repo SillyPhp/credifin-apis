@@ -93,6 +93,8 @@ class ApiBaseController extends Controller
                 $time_now = date('Y-m-d H:i:s');
                 $access_token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
                 $access_token->refresh_token_expiration = date('Y-m-d H:i:s', strtotime("+11520 minute", strtotime($time_now)));
+                $identity = Candidates::findOne(['user_enc_id' => $access_token->user_enc_id]);
+                Yii::$app->user->login($identity);
                 return Candidates::findOne(['user_enc_id' => $access_token->user_enc_id]);
             }
             return false;
