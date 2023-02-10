@@ -53,6 +53,7 @@ class LoansController extends ApiBaseController
                 'update-loan-amounts' => ['POST', 'OPTIONS'],
                 'remove-loan-application' => ['POST', 'OPTIONS'],
                 'add-verification-location' => ['POST', 'OPTIONS'],
+                'add-co-applicant' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -705,18 +706,36 @@ class LoansController extends ApiBaseController
     public function actionAddCoApplicant()
     {
         if ($user = $this->isAuthorized()) {
+
             $params = Yii::$app->request->post();
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            if (empty($params['name'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "name"']);
+            }
+
+            if (empty($params['phone'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "phone"']);
+            }
+
+            if (empty($params['dob'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "dob"']);
+            }
 
             $co_applicant = new LoanCoApplicants();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(10, 100000);
             $co_applicant->loan_co_app_enc_id = $utilitiesModel->encrypt();
-            $co_applicant->loan_app_enc_id = '';
-            $co_applicant->name = '';
-            $co_applicant->phone = '';
-            $co_applicant->co_applicant_dob = '';
-            $co_applicant->pan_number = '';
-            $co_applicant->aadhaar_number = '';
+            $co_applicant->loan_app_enc_id = $params['loan_id'];
+            $co_applicant->name = $params['name'];
+            $co_applicant->phone = $params['phone'];
+            $co_applicant->co_applicant_dob = $params['dob'];
+            !empty($params['pan_number']) ? $co_applicant->pan_number = $params['pan_number'] : null;
+            !empty($params['aadhaar_number']) ? $co_applicant->aadhaar_number = $params['aadhaar_number'] : null;
+            !empty($params['voter_card_number']) ? $co_applicant->voter_card_number = $params['voter_card_number'] : null;
             $co_applicant->created_by = $user->user_enc_id;
             $co_applicant->created_on = date('Y-m-d H:i:s');
             if (!$co_applicant->save()) {
