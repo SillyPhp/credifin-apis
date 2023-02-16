@@ -433,6 +433,7 @@ class ProductsController extends ApiBaseController
         $limit = 10;
         $page = 1;
         $category = 'Two Wheeler';
+        $filter = '';
 
         if (isset($params['limit']) && !empty($params['limit'])) {
             $limit = $params['limit'];
@@ -446,10 +447,15 @@ class ProductsController extends ApiBaseController
             $category = $params['category'];
         }
 
+        if (isset($params['filter']) && !empty($params['filter'])) {
+            $filter = $params['filter'];
+        }
+
         $options = [];
         $options['limit'] = $limit;
         $options['page'] = $page;
         $options['category'] = $category;
+        $options['filter'] = $filter;
 
         $products = $this->__getProducts($options);
 
@@ -491,17 +497,92 @@ class ProductsController extends ApiBaseController
         } else {
             $products->orderBy(['a.created_on' => SORT_DESC]);
         }
+        if (!empty($options['filter'])) {
+            $params = $options['filter'];
+            if (isset($params['brand']) && !empty($params['brand'])) {
+                $products->andWhere(['be.name' => $params['brand']]);
+            }
+            if (isset($params['min_km_driven']) && !empty($params['min_km_driven'])) {
+                $products->andWhere(['>=', 'b.km_driven', $params['min_km_driven']]);
+            }
+            if (isset($params['max_km_driven']) && !empty($params['max_km_driven'])) {
+                $products->andWhere(['<=', 'b.km_driven', $params['max_km_driven']]);
+            }
+            if (isset($params['model_name']) && !empty($params['model_name'])) {
+                $products->andWhere(['m.name' => $params['model_name']]);
+            }
+            if (isset($params['making_year']) && !empty($params['making_year'])) {
+                $products->andWhere(['b.making_year' => $params['making_year']]);
+            }
+            if (isset($params['budget_start_range']) && !empty($params['budget_start_range'])) {
+                $products->andWhere(['>=', 'a.price', $params['budget_start_range']]);
+            }
+            if (isset($params['budget_end_range']) && !empty($params['budget_end_range'])) {
+                $products->andWhere(['<=', 'a.price', $params['budget_end_range']]);
+            }
+        }
         $products = $products->groupBy('a.product_enc_id')
             ->limit($options['limit'])
             ->offset(($options['page'] - 1) * $options['limit'])
             ->asArray()
             ->all();
+
+
         return $products;
+    }
+
+    public function actionProductFilterData()
+    {
+        $params = Yii::$app->request->post();
+        $category = 'Two Wheeler';
+        if (isset($params['category']) && !empty($params['category'])) {
+            $category = $params['category'];
+        }
+        $filter = Products::find()
+            ->alias('a')
+            ->select(['min(b.making_year) min_year',
+                'max(b.making_year) max_year',
+                'min(a.price) min_price',
+                'max(a.price) max_price',
+                'min(b.km_driven) min_km_driven',
+                'max(b.km_driven) max_km_driven'])
+            ->joinWith(['productOtherDetails b'], false)
+            ->joinWith(['assignedCategoryEnc dd' => function ($d) {
+                $d->joinWith(['categoryEnc dd1']);
+            }], false)
+            ->where(['a.is_deleted' => 0, 'dd1.name' => $category])
+            ->asArray()
+            ->one();
+
+        $filter_brands = Brands::find()
+            ->alias('a')
+            ->select(['a.name'])
+            ->joinWith(['brandModels b' => function ($b) {
+                $b->innerJoinWith(['products p' => function ($p) {
+                    $p->joinWith(['assignedCategoryEnc dd' => function ($d) {
+                        $d->joinWith(['categoryEnc dd1']);
+                    }], false);
+                }]);
+            }], false)
+            ->where(['dd1.name' => $category, 'p.is_deleted' => 0])
+            ->distinct()
+            ->asArray()
+            ->all();
+        $filter['brands'] = $filter_brands;
+        if ($category == 'Mobiles') {
+            unset($filter['min_km_driven']);
+            unset($filter['max_km_driven']);
+        }
+
+        return $this->response(200, ['status' => 200, 'filter' => $filter]);
+
     }
 
     public function actionUpdateProduct()
     {
         if ($user = $this->isAuthorized()) {
+
+
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
