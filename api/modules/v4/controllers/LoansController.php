@@ -10,8 +10,16 @@ use common\models\EsignAgreementDetails;
 use common\models\EsignDocuments;
 use common\models\EsignRequestedAgreements;
 use common\models\EsignVehicleLoanDetails;
+use common\models\extended\AssignedLoanProviderExtended;
+use common\models\extended\EducationLoanPaymentsExtends;
+use common\models\extended\LoanApplicationsExtended;
+use common\models\extended\LoanCertificatesExtended;
+use common\models\extended\LoanCoApplicantsExtended;
+use common\models\extended\LoanVerificationLocationsExtended;
 use common\models\LeadsApplications;
+use common\models\LoanAuditTrail;
 use common\models\LoanCertificates;
+use common\models\LoanCoApplicants;
 use common\models\LoanVerificationLocations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
@@ -52,6 +60,8 @@ class LoansController extends ApiBaseController
                 'update-loan-amounts' => ['POST', 'OPTIONS'],
                 'remove-loan-application' => ['POST', 'OPTIONS'],
                 'add-verification-location' => ['POST', 'OPTIONS'],
+                'add-co-applicant' => ['POST', 'OPTIONS'],
+                'audit-trail-list' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -138,7 +148,7 @@ class LoansController extends ApiBaseController
         }
 
         if ($params['status'] == 'captured') {
-            $loan_application = LoanApplications::find()
+            $loan_application = LoanApplicationsExtended::find()
                 ->where(['loan_app_enc_id' => $loan_app_id])
                 ->one();
             if ($loan_application) {
@@ -149,7 +159,7 @@ class LoansController extends ApiBaseController
             }
         }
 
-        $loan_payments = EducationLoanPayments::find()
+        $loan_payments = EducationLoanPaymentsExtends::find()
             ->where(['education_loan_payment_enc_id' => $loan_payment_id])
             ->one();
         if ($loan_payments) {
@@ -228,7 +238,7 @@ class LoansController extends ApiBaseController
 
     private function savePaymentStatus($payment_id, $status, $plink_id, $signature)
     {
-        $loan_payment = EducationLoanPayments::findOne(['payment_token' => $plink_id]);
+        $loan_payment = EducationLoanPaymentsExtends::findOne(['payment_token' => $plink_id]);
         $loan_payment->payment_status = $status;
         $loan_payment->payment_id = $payment_id;
         $loan_payment->payment_signature = $signature;
@@ -490,7 +500,7 @@ class LoansController extends ApiBaseController
                 return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
             }
             $utilitiesModel = new Utilities();
-            $certificate = new LoanCertificates();
+            $certificate = new LoanCertificatesExtended();
             $certificate->certificate_enc_id = \Yii::$app->getSecurity()->generateRandomString();
             $certificate->loan_app_enc_id = $params['loan_id'];
             $certificate->certificate_type_enc_id = $type_id;
@@ -562,7 +572,7 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "id"']);
             }
 
-            $application = LoanApplications::findOne(['loan_app_enc_id' => $params['id']]);
+            $application = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
 
             if ($application) {
                 $application->application_number = $params['value'];
@@ -593,7 +603,7 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id, branch_id, provider_id"']);
             }
 
-            $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $params['id'], 'provider_enc_id' => $params['parent_id']]);
+            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['id'], 'provider_enc_id' => $params['parent_id']]);
 
             $provider->branch_enc_id = $params['value'];
             $provider->updated_by = $user->user_enc_id;
@@ -623,7 +633,7 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "parent_id, org_id, id, value"']);
             }
 
-            $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $params['parent_id'], 'provider_enc_id' => $params['provider_id']]);
+            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['parent_id'], 'provider_enc_id' => $params['provider_id']]);
 
             if (!$provider) {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
@@ -653,7 +663,7 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
-            $loan_app = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']]);
+            $loan_app = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['loan_id']]);
 
             $loan_app->is_deleted = 1;
             $loan_app->updated_by = $user->user_enc_id;
@@ -679,7 +689,7 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
-            $verification_location = new LoanVerificationLocations();
+            $verification_location = new LoanVerificationLocationsExtended();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(10, 100000);
             $verification_location->loan_verification_enc_id = $utilitiesModel->encrypt();
@@ -695,6 +705,101 @@ class LoansController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAddCoApplicant()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            if (empty($params['name'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "name"']);
+            }
+
+            if (empty($params['phone'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "phone"']);
+            }
+
+            if (empty($params['dob'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "dob"']);
+            }
+
+            if (empty($params['relation'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "relation"']);
+            }
+
+            $co_applicant = new LoanCoApplicantsExtended();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+            $co_applicant->loan_co_app_enc_id = $utilitiesModel->encrypt();
+            $co_applicant->loan_app_enc_id = $params['loan_id'];
+            $co_applicant->name = $params['name'];
+            $co_applicant->phone = $params['phone'];
+            $co_applicant->co_applicant_dob = $params['dob'];
+            $co_applicant->relation = $params['relation'];
+            !empty($params['pan_number']) ? $co_applicant->pan_number = $params['pan_number'] : null;
+            !empty($params['aadhaar_number']) ? $co_applicant->aadhaar_number = $params['aadhaar_number'] : null;
+            !empty($params['voter_card_number']) ? $co_applicant->voter_card_number = $params['voter_card_number'] : null;
+            $co_applicant->created_by = $user->user_enc_id;
+            $co_applicant->created_on = date('Y-m-d H:i:s');
+            if (!$co_applicant->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $co_applicant->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAuditTrailList()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+            $limit = 10;
+            $page = 1;
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            if (!empty($params['limit'])) {
+                $limit = $params['limit'];
+            }
+
+            if (!empty($params['page'])) {
+                $page = $params['page'];
+            }
+
+            $audit = LoanAuditTrail::find()
+                ->alias('a')
+                ->select(['a.old_value', 'a.new_value', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'])
+                ->joinWith(['user b'], false)
+                ->where(['a.loan_id' => $params['loan_id']])
+                ->andWhere(['not', ['a.field' => ['', 'updated_on', 'created_by', 'created_on', 'id', null]]])
+                ->andWhere(['not like', 'a.field', '%_enc_id%', false])
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->orderBy(['a.stamp' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            if ($audit) {
+                return $this->response(200, ['status' => 200, 'audit_list' => $audit]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);

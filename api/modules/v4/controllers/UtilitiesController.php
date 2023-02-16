@@ -2,20 +2,12 @@
 
 namespace api\modules\v4\controllers;
 
-use common\models\AssignedFinancerLoanType;
-use common\models\AssignedLoanProvider;
-use common\models\BillDetails;
 use common\models\Cities;
 use common\models\Designations;
-use common\models\LoanStatus;
 use common\models\OrganizationTypes;
-use common\models\Referral;
-use common\models\ReferralSignUpTracking;
 use common\models\spaces\Spaces;
 use common\models\SponsoredCourses;
 use common\models\States;
-use common\models\UserRoles;
-use common\models\Users;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use Yii;
