@@ -497,6 +497,7 @@ class ProductsController extends ApiBaseController
         } else {
             $products->orderBy(['a.created_on' => SORT_DESC]);
         }
+
         if (!empty($options['filter'])) {
             $params = $options['filter'];
             if (isset($params['brand']) && !empty($params['brand'])) {
@@ -526,8 +527,6 @@ class ProductsController extends ApiBaseController
             ->offset(($options['page'] - 1) * $options['limit'])
             ->asArray()
             ->all();
-
-
         return $products;
     }
 
@@ -581,8 +580,6 @@ class ProductsController extends ApiBaseController
     public function actionUpdateProduct()
     {
         if ($user = $this->isAuthorized()) {
-
-
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
