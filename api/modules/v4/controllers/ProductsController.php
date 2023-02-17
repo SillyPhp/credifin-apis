@@ -495,7 +495,6 @@ class ProductsController extends ApiBaseController
             $products->orderBy(['a.created_on' => SORT_DESC]);
         }
 
-
         if (!empty($options['filter'])) {
             $params = $options['filter'];
             if (isset($params['brand']) && !empty($params['brand'])) {
@@ -525,8 +524,6 @@ class ProductsController extends ApiBaseController
             ->offset(($options['page'] - 1) * $options['limit'])
             ->asArray()
             ->all();
-
-
         return $products;
     }
 
