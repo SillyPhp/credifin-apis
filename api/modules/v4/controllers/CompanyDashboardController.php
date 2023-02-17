@@ -321,6 +321,30 @@ class CompanyDashboardController extends ApiBaseController
             $loans->andWhere(['in', 'i.status', $filter]);
         }
 
+        if (!empty($params['loan_type'])) {
+            $loans->andWhere(['a.loan_type' => $params['loan_type']]);
+        }
+
+        if (isset($params['fields_search']) && !empty($params['fields_search'])) {
+            $a = ['applicant_name', 'application_number', 'amount', 'apply_date'];
+            $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status'];
+            foreach ($params['fields_search'] as $key => $val) {
+
+                if (in_array($key, $a)) {
+                    if ($key == 'apply_date') {
+                        $loans->andWhere(['like', 'a.created_on', $val]);
+                    } else {
+                        $loans->andWhere(['like', 'a.' . $key, $val]);
+                    }
+                }
+
+                if (in_array($key, $i)) {
+                    $loans->andWhere(['like', 'i.' . $key, $val]);
+                }
+
+            }
+        }
+
         if (!empty($params['search_keyword'])) {
             $loans->andWhere([
                 'or',
