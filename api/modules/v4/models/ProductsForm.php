@@ -4,6 +4,7 @@ namespace api\modules\v4\models;
 
 use common\models\ProductImages;
 use common\models\ProductOtherDetails;
+use common\models\Products;
 use common\models\RandomColors;
 use common\models\spaces\Spaces;
 use Yii;
@@ -41,8 +42,8 @@ class ProductsForm extends Model
     public function rules()
     {
         return [
-            [['model_id', 'price', 'city_id', 'assigned_category', 'product_other_detail', 'ownership_type', 'images', 'status'], 'required'],
-            [['variant', 'description', 'product_name', 'dent_images', 'km_driven', 'making_year', 'ram', 'rom', 'screen_size', 'front_camera', 'back_camera', 'sim_type'], 'safe'],
+            [['model_id', 'price', 'city_id', 'assigned_category', 'product_other_detail', 'ownership_type', 'status'], 'required'],
+            [['variant', 'description', 'product_name', 'dent_images', 'km_driven', 'making_year', 'ram', 'rom', 'images', 'screen_size', 'front_camera', 'back_camera', 'sim_type'], 'safe'],
             [['assigned_category', 'product_name'], 'trim'],
             [['images'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 8],
             [['dent_images'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxFiles' => 8]
@@ -163,5 +164,21 @@ class ProductsForm extends Model
         }
 
         return true;
+    }
+
+    public function update()
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+        $params = Yii::$app->request->post();
+        $product_enc_id = $params['product_enc_id'];
+        try {
+            $product = Products::findOne(['product_enc_id' => $product_enc_id]);
+
+            $product_other_details = ProductOtherDetails::findOne(['product_enc_id' => $product_enc_id]);
+
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()];
+        }
     }
 }
