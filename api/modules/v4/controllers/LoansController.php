@@ -7,7 +7,7 @@ use common\models\AssignedLoanProvider;
 use common\models\BillDetails;
 use common\models\CertificateTypes;
 use common\models\EsignAgreementDetails;
-use common\models\EsignDocuments;
+use common\models\EsignDocumentsTemplates;
 use common\models\EsignRequestedAgreements;
 use common\models\EsignVehicleLoanDetails;
 use common\models\extended\AssignedLoanProviderExtended;
@@ -416,7 +416,7 @@ class LoansController extends ApiBaseController
 
     private function getDocuments()
     {
-        $docs = EsignDocuments::find()
+        $docs = EsignDocumentsTemplates::find()
             ->select(['doc_id', 'name', 'file_url'])
             ->asArray()
             ->all();

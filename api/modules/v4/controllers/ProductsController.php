@@ -328,54 +328,51 @@ class ProductsController extends ApiBaseController
 
     public function actionGetProductDetails()
     {
-        if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
-            if (empty($params['slug'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "Slug"']);
-            }
-            $slug = $params['slug'];
-
-            $details = Products::find()
-                ->alias('a')
-                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'a.created_on',
-                    'c1.name city', 'c2.name state', 'm.name model', 'be.name brand', 'd1.name category'])
-                ->joinWith(['productOtherDetails b' => function ($b) {
-                    $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.km_driven', 'b.making_year', 'b.other_detail', 'b.ownership_type', 'b.variant', 'b.rom', 'b.ram', 'b.screen_size',
-                        'b.back_camera', 'b.front_camera', 'b.sim_type']);
-                    $b->onCondition(['b.is_deleted' => 0]);
-                }])
-                ->joinWith(['productImages c' => function ($c) {
-                    $c->select(['c.product_enc_id', 'c.alt', 'c.type', 'c.image_enc_id',
-                        'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
-                }])
-                ->joinWith(['cityEnc c1' => function ($c1) {
-                    $c1->joinWith(['stateEnc c2']);
-                }], false)
-                ->joinWith(['modelEnc m' => function ($m) {
-                    $m->joinWith(['brandEnc be']);
-                }], false)
-                ->joinWith(['assignedCategoryEnc d' => function ($d) {
-                    $d->joinWith(['categoryEnc d1']);
-                }], false)
-                ->where(['a.slug' => $slug, 'a.dealer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
-                ->asArray()
-                ->one();
-
-            if ($details) {
-
-                $options = [];
-                $options['limit'] = 3;
-                $options['page'] = 1;
-                $options['category'] = $details['category'];
-                $options['product_id'] = $details['product_enc_id'];
-
-                $similar_products = $this->__getProducts($options);
-
-                return $this->response(200, ['status' => 200, 'products' => $details, 'similar_products' => $similar_products]);
-            }
-            return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+        $params = Yii::$app->request->post();
+        if (empty($params['slug'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing Information "Slug"']);
         }
-        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        $slug = $params['slug'];
+
+        $details = Products::find()
+            ->alias('a')
+            ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'a.created_on',
+                'c1.name city', 'c2.name state', 'm.name model', 'be.name brand', 'd1.name category'])
+            ->joinWith(['productOtherDetails b' => function ($b) {
+                $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.km_driven', 'b.making_year', 'b.other_detail', 'b.ownership_type', 'b.variant', 'b.rom', 'b.ram', 'b.screen_size',
+                    'b.back_camera', 'b.front_camera', 'b.sim_type']);
+                $b->onCondition(['b.is_deleted' => 0]);
+            }])
+            ->joinWith(['productImages c' => function ($c) {
+                $c->select(['c.product_enc_id', 'c.alt', 'c.type', 'c.image_enc_id',
+                    'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
+            }])
+            ->joinWith(['cityEnc c1' => function ($c1) {
+                $c1->joinWith(['stateEnc c2']);
+            }], false)
+            ->joinWith(['modelEnc m' => function ($m) {
+                $m->joinWith(['brandEnc be']);
+            }], false)
+            ->joinWith(['assignedCategoryEnc d' => function ($d) {
+                $d->joinWith(['categoryEnc d1']);
+            }], false)
+            ->where(['a.slug' => $slug, 'a.is_deleted' => 0])
+            ->asArray()
+            ->one();
+
+        if ($details) {
+
+            $options = [];
+            $options['limit'] = 3;
+            $options['page'] = 1;
+            $options['category'] = $details['category'];
+            $options['product_id'] = $details['product_enc_id'];
+
+            $similar_products = $this->__getProducts($options);
+
+            return $this->response(200, ['status' => 200, 'products' => $details, 'similar_products' => $similar_products]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
 
     }
 
@@ -497,6 +494,7 @@ class ProductsController extends ApiBaseController
         } else {
             $products->orderBy(['a.created_on' => SORT_DESC]);
         }
+
         if (!empty($options['filter'])) {
             $params = $options['filter'];
             if (isset($params['brand']) && !empty($params['brand'])) {
@@ -526,8 +524,6 @@ class ProductsController extends ApiBaseController
             ->offset(($options['page'] - 1) * $options['limit'])
             ->asArray()
             ->all();
-
-
         return $products;
     }
 
@@ -581,8 +577,6 @@ class ProductsController extends ApiBaseController
     public function actionUpdateProduct()
     {
         if ($user = $this->isAuthorized()) {
-
-
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);

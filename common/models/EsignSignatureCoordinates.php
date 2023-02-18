@@ -15,7 +15,7 @@ use Yii;
  * @property string $date_created
  * @property string $updated_on
  *
- * @property EsignDocuments $doc
+ * @property EsignDocumentsTemplates $doc
  */
 class EsignSignatureCoordinates extends \yii\db\ActiveRecord
 {
@@ -38,7 +38,7 @@ class EsignSignatureCoordinates extends \yii\db\ActiveRecord
             [['date_created', 'updated_on'], 'safe'],
             [['coordinates_id', 'doc_id'], 'string', 'max' => 200],
             [['coordinates_id'], 'unique'],
-            [['doc_id'], 'exist', 'skipOnError' => true, 'targetClass' => EsignDocuments::className(), 'targetAttribute' => ['doc_id' => 'doc_id']],
+            [['doc_id'], 'exist', 'skipOnError' => true, 'targetClass' => EsignDocumentsTemplates::className(), 'targetAttribute' => ['doc_id' => 'doc_id']],
         ];
     }
 
@@ -47,6 +47,6 @@ class EsignSignatureCoordinates extends \yii\db\ActiveRecord
      */
     public function getDoc()
     {
-        return $this->hasOne(EsignDocuments::className(), ['doc_id' => 'doc_id']);
+        return $this->hasOne(EsignDocumentsTemplates::className(), ['doc_id' => 'doc_id']);
     }
 }

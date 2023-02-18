@@ -68,6 +68,7 @@ class CompanyDashboardController extends ApiBaseController
                 'assign-loan-partner' => ['POST', 'OPTIONS'],
                 'remove-partner' => ['POST', 'OPTIONS'],
                 'status-stats' => ['POST', 'OPTIONS'],
+                'status-applications' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -151,47 +152,33 @@ class CompanyDashboardController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
 
-            $service = SelectedServices::find()
-                ->alias('a')
-                ->joinWith(['serviceEnc b'], false)
-                ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
-                ->exists();
+            $params = Yii::$app->request->post();
 
-            if ($user->organization_enc_id) {
+            $loans = $this->__getApplications($user, $params);
 
-                $leads = $this->getDsa($user->user_enc_id);
+            return $this->response(200, ['status' => 200, 'loans' => $loans]);
 
-                $dsa = [];
-                if ($leads) {
-                    foreach ($leads as $val) {
-                        array_push($dsa, $val['assigned_user_enc_id']);
-                    }
-                }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
 
-                $dsa[] = $user->user_enc_id;
-            }
-
-            $shared_apps = $this->sharedApps($user->user_enc_id);
-
-            //partnered applications
-//            $applications = $this->__partnerApplications($user);
-//            $partnered_applications = [];
-//            if (!empty($applications)) {
-//                foreach ($applications as $a) {
-//                    array_push($partnered_applications, $a['loan_app_enc_id']);
-//                }
-//            }
-
+    public function actionStatusApplications()
+    {
+        if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
 
-            $filter = null;
+            if (empty($params['status'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
+            }
+
+            if (empty($params['loan_type'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_type"']);
+            }
+
             $limit = 10;
             $page = 1;
-
-            if (isset($params['filter']) && !empty($params['filter'])) {
-                $filter = $params['filter'];
-            }
 
             if (isset($params['limit']) && !empty($params['limit'])) {
                 $limit = $params['limit'];
@@ -201,149 +188,233 @@ class CompanyDashboardController extends ApiBaseController
                 $page = $params['page'];
             }
 
-            $loans = LoanApplications::find()
-                ->distinct()
-                ->alias('a')
-                ->select(['a.id', 'a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
-                    'a.created_on as apply_date', 'a.application_number',
-                    'i.status status_number',
-                    'CONCAT(k.first_name, " ", k.last_name) employee_name',
-                    'a.applicant_name',
-                    'a.amount',
-                    'a.amount_received',
-                    'a.amount_due',
-                    'a.scholarship',
-                    'a.loan_type',
-                    'REPLACE(g.name, "&amp;", "&") as org_name',
-                    'a.semesters',
-                    'a.years',
-                    'a.phone',
-                    'a.email',
-                    'a.applicant_current_city as city',
-                    '(CASE
+            $status = $params['status'];
+            $loan_status = [];
+            foreach ($status as $s) {
+                $params['filter'] = [$s];
+                $params['search_keyword'] = $params['loan_type'];
+                $loan_status[$s]['data'] = $this->__getApplications($user, $params);
+                $loan_status[$s]['page'] = $page;
+                $loan_status[$s]['limit'] = $limit;
+            }
+
+
+            return $this->response(200, ['status' => 200, 'loans' => $loan_status]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function __getApplications($user, $params)
+    {
+
+        $service = SelectedServices::find()
+            ->alias('a')
+            ->joinWith(['serviceEnc b'], false)
+            ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
+            ->exists();
+
+        $dsa = [];
+        if ($user->organization_enc_id) {
+
+            $leads = $this->getDsa($user->user_enc_id);
+
+            if ($leads) {
+                foreach ($leads as $val) {
+                    array_push($dsa, $val['assigned_user_enc_id']);
+                }
+            }
+
+            $dsa[] = $user->user_enc_id;
+        }
+
+        $shared_apps = $this->sharedApps($user->user_enc_id);
+
+        $filter = null;
+        $limit = 10;
+        $page = 1;
+
+        if (isset($params['filter']) && !empty($params['filter'])) {
+            $filter = $params['filter'];
+        }
+
+        if (isset($params['limit']) && !empty($params['limit'])) {
+            $limit = $params['limit'];
+        }
+
+        if (isset($params['page']) && !empty($params['page'])) {
+            $page = $params['page'];
+        }
+
+        $loans = LoanApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select(['a.id', 'a.loan_app_enc_id', 'a.college_course_enc_id', 'a.college_enc_id',
+                'a.created_on as apply_date', 'a.application_number',
+                'i.status status_number',
+                'CONCAT(k.first_name, " ", k.last_name) employee_name',
+                'a.applicant_name',
+                'a.amount',
+                'a.amount_received',
+                'a.amount_due',
+                'a.scholarship',
+                'a.loan_type',
+                'REPLACE(g.name, "&amp;", "&") as org_name',
+                'a.semesters',
+                'a.years',
+                'a.phone',
+                'a.email',
+                'a.applicant_current_city as city',
+                '(CASE
                     WHEN a.gender = "1" THEN "Male"
                     WHEN a.gender = "2" THEN "Female"
                     ELSE "N/A"
                 END) as gender',
-                    'a.applicant_dob as dob',
-                    'a.created_by',
-                    'a.lead_by',
-                    'a.managed_by'
-                ])
-                ->joinWith(['collegeCourseEnc f'], false)
-                ->joinWith(['collegeEnc g'], false)
-                ->joinWith(['loanCoApplicants h' => function ($h) {
-                    $h->select(['h.loan_app_enc_id',
-                        'h.relation',
-                        'h.name',
-                        'h.annual_income',
-                        '(CASE
+                'a.applicant_dob as dob',
+                'a.created_by',
+                'a.lead_by',
+                'a.managed_by'
+            ])
+            ->joinWith(['collegeCourseEnc f'], false)
+            ->joinWith(['collegeEnc g'], false)
+            ->joinWith(['loanCoApplicants h' => function ($h) {
+                $h->select(['h.loan_app_enc_id',
+                    'h.relation',
+                    'h.name',
+                    'h.annual_income',
+                    '(CASE
                         WHEN h.employment_type = "0" THEN "Non Working"
                         WHEN h.employment_type = "1" THEN "Salaried"
                         WHEN h.employment_type = "2" THEN "Self Employed"
                         ELSE "N/A"
                     END) as employment_type',
-                    ]);
-                }])
-                ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
-                    $i->joinWith(['providerEnc j']);
-                    if ($service) {
-                        $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
-                    }
-                }])
-                ->joinWith(['managedBy k'], false)
-                ->joinWith(['educationLoanPayments l' => function ($l) {
-                    $l->select(['l.loan_app_enc_id', 'l.payment_status']);
-                    $l->onCondition(['l.payment_status' => ['captured', 'created', 'waived off']]);
-                }])
-                ->andWhere(['a.is_deleted' => 0]);
-
-            if ($user->organization_enc_id) {
-                if (!$service) {
-                    $loans->andWhere(['a.lead_by' => $dsa]);
-                }
-            } else {
-//                $loans->andWhere(['a.lead_by' => $user->user_enc_id]);
-                $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
-            }
-
-            if ($shared_apps['app_ids']) {
-                $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
-            }
-
-            if ($filter) {
-                $loans->andWhere(['in', 'i.status', $filter]);
-            }
-
-            if (!empty($params['search_keyword'])) {
-                $loans->andWhere([
-                    'or',
-                    ['like', 'a.applicant_name', $params['search_keyword']],
-                    ['like', 'a.loan_type', $params['search_keyword']],
-                    ['like', 'a.amount', $params['search_keyword']],
-                    ['like', 'a.created_on', $params['search_keyword']],
-                    ['like', 'a.phone', $params['search_keyword']],
-                    ['like', 'a.application_number', $params['search_keyword']],
                 ]);
+            }])
+            ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
+                $i->joinWith(['providerEnc j']);
+                if ($service) {
+                    $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
+                }
+            }])
+            ->joinWith(['managedBy k'], false)
+            ->joinWith(['educationLoanPayments l' => function ($l) {
+                $l->select(['l.loan_app_enc_id', 'l.payment_status']);
+                $l->onCondition(['l.payment_status' => ['captured', 'created', 'waived off']]);
+            }])
+            ->andWhere(['a.is_deleted' => 0]);
+
+        if ($user->organization_enc_id) {
+            if (!$service) {
+                $loans->andWhere(['a.lead_by' => $dsa]);
             }
+        } else {
+//                $loans->andWhere(['a.lead_by' => $user->user_enc_id]);
+            $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
+        }
 
-            if (!empty($params['form_type']) && $params['form_type'] == 'diwali-dhamaka') {
-                $loans->andWhere(['a.form_type' => 'diwali-dhamaka']);
-            } else {
-                $loans->andWhere(['!=', 'a.form_type', 'diwali-dhamaka']);
-            }
+        if ($shared_apps['app_ids']) {
+            $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
+        }
 
-            $loans = $loans
-                ->orderBy(['a.created_on' => SORT_DESC])
-                ->limit($limit)
-                ->offset(($page - 1) * $limit)
-                ->asArray()
-                ->all();
+        if ($filter) {
+            $loans->andWhere(['in', 'i.status', $filter]);
+        }
 
-            if ($loans) {
-                foreach ($loans as $key => $val) {
-                    if (!$val['educationLoanPayments']) {
-                        $get_amount = EducationLoanPayments::find()->where(['loan_app_enc_id' => $val['loan_app_enc_id']])->one();
-                        $loans[$key]['payment_status'] = $get_amount->payment_status;
+        if (!empty($params['loan_type'])) {
+            $loans->andWhere(['a.loan_type' => $params['loan_type']]);
+        }
+
+        if (isset($params['fields_search']) && !empty($params['fields_search'])) {
+            $a = ['applicant_name', 'application_number', 'amount', 'apply_date'];
+            $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status'];
+            foreach ($params['fields_search'] as $key => $val) {
+
+                if (in_array($key, $a)) {
+                    if ($key == 'apply_date') {
+                        $loans->andWhere(['like', 'a.created_on', $val]);
                     } else {
-                        $loans[$key]['payment_status'] = $val['educationLoanPayments'][0]['payment_status'];
+                        $loans->andWhere(['like', 'a.' . $key, $val]);
                     }
-                    unset($loans[$key]['educationLoanPayments']);
+                }
 
-                    $loans[$key]['sharedTo'] = SharedLoanApplications::find()
-                        ->alias('a')
-                        ->select(['a.shared_loan_app_enc_id', 'a.loan_app_enc_id', 'a.access', 'a.status', 'concat(b.first_name," ",b.last_name) name', 'b.phone',
-                            'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
-                        ])
-                        ->joinWith(['sharedTo b'], false)
-                        ->where(['a.is_deleted' => 0, 'a.shared_by' => $user->user_enc_id, 'a.loan_app_enc_id' => $val['loan_app_enc_id']])
-                        ->asArray()
-                        ->all();
+                if (in_array($key, $i)) {
+                    $loans->andWhere(['like', 'i.' . $key, $val]);
+                }
 
-                    $loans[$key]['access'] = null;
-                    $loans[$key]['shared_by'] = null;
-                    $loans[$key]['is_shared'] = false;
-                    if ($shared_apps['app_ids']) {
-                        foreach ($shared_apps['shared'] as $s) {
-                            if ($val['loan_app_enc_id'] == $s['loan_app_enc_id']) {
-                                $loans[$key]['access'] = $s['access'];
-                                $loans[$key]['shared_by'] = $s['shared_by'];
-                                $loans[$key]['is_shared'] = true;
-                            }
+            }
+        }
+
+        if (!empty($params['search_keyword'])) {
+            $loans->andWhere([
+                'or',
+                ['like', 'a.applicant_name', $params['search_keyword']],
+                ['like', 'a.loan_type', $params['search_keyword']],
+                ['like', 'a.amount', $params['search_keyword']],
+                ['like', 'a.created_on', $params['search_keyword']],
+                ['like', 'a.phone', $params['search_keyword']],
+                ['like', 'a.application_number', $params['search_keyword']],
+            ]);
+        }
+
+        if (!empty($params['form_type']) && $params['form_type'] == 'diwali-dhamaka') {
+            $loans->andWhere(['a.form_type' => 'diwali-dhamaka']);
+        } else {
+            $loans->andWhere(['!=', 'a.form_type', 'diwali-dhamaka']);
+        }
+
+        $loans = $loans
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if ($loans) {
+            foreach ($loans as $key => $val) {
+                if (!$val['educationLoanPayments']) {
+                    $get_amount = EducationLoanPayments::find()->where(['loan_app_enc_id' => $val['loan_app_enc_id']])->one();
+                    $loans[$key]['payment_status'] = $get_amount->payment_status;
+                } else {
+                    $loans[$key]['payment_status'] = $val['educationLoanPayments'][0]['payment_status'];
+                }
+                unset($loans[$key]['educationLoanPayments']);
+
+                $loans[$key]['sharedTo'] = SharedLoanApplications::find()
+                    ->alias('a')
+                    ->select(['a.shared_loan_app_enc_id', 'a.loan_app_enc_id', 'a.access', 'a.status', 'concat(b.first_name," ",b.last_name) name', 'b.phone',
+                        'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
+                    ])
+                    ->joinWith(['sharedTo b'], false)
+                    ->where(['a.is_deleted' => 0, 'a.shared_by' => $user->user_enc_id, 'a.loan_app_enc_id' => $val['loan_app_enc_id']])
+                    ->asArray()
+                    ->all();
+
+                $loans[$key]['access'] = null;
+                $loans[$key]['shared_by'] = null;
+                $loans[$key]['is_shared'] = false;
+                if ($shared_apps['app_ids']) {
+                    foreach ($shared_apps['shared'] as $s) {
+                        if ($val['loan_app_enc_id'] == $s['loan_app_enc_id']) {
+                            $loans[$key]['access'] = $s['access'];
+                            $loans[$key]['shared_by'] = $s['shared_by'];
+                            $loans[$key]['is_shared'] = true;
                         }
                     }
+                }
 
-                    $d = ClaimedDeals::find()
-                        ->alias('a')
-                        ->select(['a.claimed_deal_enc_id', 'a.deal_enc_id', 'a.user_enc_id', 'a.claimed_coupon_code'])
-                        ->joinWith(['dealEnc b'], false)
-                        ->andWhere(['a.user_enc_id' => $val['created_by'], 'a.is_deleted' => 0, 'b.slug' => 'diwali-dhamaka'])
-                        ->asArray()
-                        ->all();
-                    $loans[$key]['claimedDeals'] = $d;
+                $d = ClaimedDeals::find()
+                    ->alias('a')
+                    ->select(['a.claimed_deal_enc_id', 'a.deal_enc_id', 'a.user_enc_id', 'a.claimed_coupon_code'])
+                    ->joinWith(['dealEnc b'], false)
+                    ->andWhere(['a.user_enc_id' => $val['created_by'], 'a.is_deleted' => 0, 'b.slug' => 'diwali-dhamaka'])
+                    ->asArray()
+                    ->all();
+                $loans[$key]['claimedDeals'] = $d;
 
-                    $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $params['provider_id']]);
+                $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $params['provider_id']]);
 
+                if (!empty($provider)) {
                     $loans[$key]['bdo_approved_amount'] = $provider->bdo_approved_amount;
                     $loans[$key]['tl_approved_amount'] = $provider->tl_approved_amount;
                     $loans[$key]['soft_approval'] = $provider->soft_approval;
@@ -351,15 +422,12 @@ class CompanyDashboardController extends ApiBaseController
                     $loans[$key]['valuation'] = $provider->valuation;
                     $loans[$key]['disbursement_approved'] = $provider->disbursement_approved;
                     $loans[$key]['insurance_charges'] = $provider->insurance_charges;
-
                 }
+
             }
-
-            return $this->response(200, ['status' => 200, 'loans' => $loans]);
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+
+        return $loans;
     }
 
     private function __partnerApplications($user)
@@ -1565,7 +1633,7 @@ class CompanyDashboardController extends ApiBaseController
 
             $stats = LoanApplications::find()
                 ->alias('a')
-                ->select(['j1.loan_status', 'COUNT(a.status) count', 'j1.status_color'])
+                ->select(['j1.loan_status', 'COUNT(a.status) count', 'j1.status_color', 'j1.value'])
                 ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
                     $i->joinWith(['providerEnc j']);
                     $i->joinWith(['status0 j1']);
