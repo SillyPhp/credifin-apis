@@ -1038,7 +1038,7 @@ class CompanyDashboardController extends ApiBaseController
 
             $detail['assignedFinancerLoanTypes'] = AssignedFinancerLoanType::find()
                 ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'a.type', 'b.name loan_type'])
+                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name loan_type'])
                 ->joinWith(['loanTypeEnc b'], false)
                 ->joinWith(['assignedFinancerLoanPartners c' => function ($c) {
                     $c->select(['c.assigned_loan_partner_enc_id', 'c.assigned_financer_enc_id', 'c.loan_partner_enc_id',

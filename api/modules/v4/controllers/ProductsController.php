@@ -8,6 +8,7 @@ use common\models\BrandModels;
 use common\models\Brands;
 use common\models\Categories;
 use common\models\ProductImages;
+use common\models\ProductOtherDetails;
 use common\models\Products;
 use yii\web\UploadedFile;
 use yii\db\Expression;
@@ -454,6 +455,10 @@ class ProductsController extends ApiBaseController
         $options['category'] = $category;
         $options['filter'] = $filter;
 
+        if (!empty($params['search_keyword'])) {
+            $options['search_keyword'] = $params['search_keyword'];
+        }
+
         $products = $this->__getProducts($options);
 
 
@@ -495,6 +500,15 @@ class ProductsController extends ApiBaseController
             $products->orderBy(['a.created_on' => SORT_DESC]);
         }
 
+        if (isset($options['search_keyword']) && !empty($options['search_keyword'])) {
+            $products->andWhere([
+                'or',
+                ['like', 'a.name', $options['search_keyword']],
+                ['like', 'm.name', $options['search_keyword']],
+                ['like', 'be.name', $options['search_keyword']],
+            ]);
+        }
+
         if (!empty($options['filter'])) {
             $params = $options['filter'];
             if (isset($params['brand']) && !empty($params['brand'])) {
@@ -506,11 +520,11 @@ class ProductsController extends ApiBaseController
             if (isset($params['max_km_driven']) && !empty($params['max_km_driven'])) {
                 $products->andWhere(['<=', 'b.km_driven', $params['max_km_driven']]);
             }
-            if (isset($params['model_name']) && !empty($params['model_name'])) {
-                $products->andWhere(['m.name' => $params['model_name']]);
+            if (isset($params['brand_name']) && !empty($params['brand_name'])) {
+                $products->andWhere(['in', 'be.name', $params['brand_name']]);
             }
             if (isset($params['making_year']) && !empty($params['making_year'])) {
-                $products->andWhere(['b.making_year' => $params['making_year']]);
+                $products->andWhere(['in', 'b.making_year', $params['making_year']]);
             }
             if (isset($params['budget_start_range']) && !empty($params['budget_start_range'])) {
                 $products->andWhere(['>=', 'a.price', $params['budget_start_range']]);
@@ -536,8 +550,7 @@ class ProductsController extends ApiBaseController
         }
         $filter = Products::find()
             ->alias('a')
-            ->select(['min(b.making_year) min_year',
-                'max(b.making_year) max_year',
+            ->select([
                 'min(a.price) min_price',
                 'max(a.price) max_price',
                 'min(b.km_driven) min_km_driven',
@@ -549,6 +562,20 @@ class ProductsController extends ApiBaseController
             ->where(['a.is_deleted' => 0, 'dd1.name' => $category])
             ->asArray()
             ->one();
+
+        $years = ProductOtherDetails::find()
+            ->alias('a')
+            ->select(['a.making_year'])
+            ->joinWith(['productEnc b' => function ($b) {
+                $b->joinWith(['assignedCategoryEnc dd' => function ($d) {
+                    $d->joinWith(['categoryEnc dd1']);
+                }], false);
+            }])
+            ->where(['b.is_deleted' => 0, 'dd1.name' => $category])
+            ->groupBy(['a.making_year'])
+            ->orderBy(['a.making_year' => SORT_ASC])
+            ->asArray()
+            ->all();
 
         $filter_brands = Brands::find()
             ->alias('a')
@@ -564,7 +591,10 @@ class ProductsController extends ApiBaseController
             ->distinct()
             ->asArray()
             ->all();
+
         $filter['brands'] = $filter_brands;
+        $filter['years'] = $years;
+
         if ($category == 'Mobiles') {
             unset($filter['min_km_driven']);
             unset($filter['max_km_driven']);
