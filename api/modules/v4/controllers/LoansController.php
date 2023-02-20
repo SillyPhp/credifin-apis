@@ -737,6 +737,10 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "relation"']);
             }
 
+            if (empty($params['borrower_type'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "borrower_type"']);
+            }
+
             $co_applicant = new LoanCoApplicantsExtended();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(10, 100000);
@@ -746,6 +750,7 @@ class LoansController extends ApiBaseController
             $co_applicant->phone = $params['phone'];
             $co_applicant->co_applicant_dob = $params['dob'];
             $co_applicant->relation = $params['relation'];
+            $co_applicant->borrower_type = $params['borrower_type'];
             !empty($params['pan_number']) ? $co_applicant->pan_number = $params['pan_number'] : null;
             !empty($params['aadhaar_number']) ? $co_applicant->aadhaar_number = $params['aadhaar_number'] : null;
             !empty($params['voter_card_number']) ? $co_applicant->voter_card_number = $params['voter_card_number'] : null;

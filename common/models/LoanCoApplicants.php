@@ -15,6 +15,7 @@ use Yii;
  * @property int $cibil_score cibil score
  * @property string $phone
  * @property string $relation
+ * @property string $borrower_type borrower type
  * @property int $gender Gender (1 as Male, 2 as Female, 3 as Transgender, 4 as Rather not say)
  * @property int $employment_type 0 as Non Working, 1 as Salaried, 2 as Self Employed
  * @property double $annual_income
@@ -57,7 +58,7 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
         return [
             [['loan_co_app_enc_id', 'loan_app_enc_id', 'relation'], 'required'],
             [['cibil_score', 'gender', 'employment_type', 'years_in_current_house', 'address'], 'integer'],
-            [['relation'], 'string'],
+            [['relation', 'borrower_type'], 'string'],
             [['annual_income'], 'number'],
             [['co_applicant_dob', 'created_on', 'updated_on'], 'safe'],
             [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'email', 'image', 'image_location', 'occupation', 'created_by', 'updated_by'], 'string', 'max' => 100],
