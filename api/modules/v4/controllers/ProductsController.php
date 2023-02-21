@@ -274,6 +274,33 @@ class ProductsController extends ApiBaseController
         }
     }
 
+    public function actionUpdate()
+    {
+        if ($user = $this->isAuthorized()) {
+            $model = new ProductsForm();
+            $identity = $user->user_enc_id;
+            $params = Yii::$app->request->post();
+            $model->images = UploadedFile::getInstances($model, 'images');
+            if (empty($params['product_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "product_enc_id"']);
+            }
+            if ($model->load(Yii::$app->request->post(), '')) {
+                if ($model->validate()) {
+                    $product = $model->update($identity);
+                    if ($product['status'] == 500) {
+                        return $this->response(500, $product);
+                    }
+                    return $this->response(200, $product);
+                } else {
+                    return $this->response(422, ['status' => 422, 'error' => $model->getErrors()]);
+                }
+            }
+            return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
     public function actionGetProducts()
     {
 

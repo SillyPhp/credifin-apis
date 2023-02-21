@@ -4,6 +4,7 @@ namespace api\modules\v4\models;
 
 use common\models\ProductImages;
 use common\models\ProductOtherDetails;
+use common\models\Products;
 use common\models\RandomColors;
 use common\models\spaces\Spaces;
 use Yii;
@@ -19,6 +20,7 @@ class ProductsForm extends Model
     public $assigned_category;
     public $city_id;
     public $variant;
+    public $discounted_price;
     public $product_other_detail;
     public $ownership_type;
     public $images;
@@ -41,11 +43,9 @@ class ProductsForm extends Model
     public function rules()
     {
         return [
-            [['model_id', 'price', 'city_id', 'assigned_category', 'product_other_detail', 'ownership_type', 'images', 'status'], 'required'],
-            [['variant', 'description', 'product_name', 'dent_images', 'km_driven', 'making_year', 'ram', 'rom', 'screen_size', 'front_camera', 'back_camera', 'sim_type'], 'safe'],
+            [['model_id', 'price', 'city_id', 'assigned_category', 'product_other_detail', 'ownership_type', 'status'], 'required'],
+            [['variant', 'description', 'product_name', 'dent_images', 'km_driven', 'making_year', 'ram', 'rom', 'images', 'discounted_price', 'screen_size', 'front_camera', 'back_camera', 'sim_type'], 'safe'],
             [['assigned_category', 'product_name'], 'trim'],
-            [['images'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg', 'maxFiles' => 8],
-            [['dent_images'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxFiles' => 8]
         ];
     }
 
@@ -62,6 +62,7 @@ class ProductsForm extends Model
             $product->price = $this->price;
             $product->city_enc_id = $this->city_id;
             $product->name = $this->product_name;
+            $product->discounted_price = $this->discounted_price;
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['name'] = $product->name;
             $utilitiesModel->variables['table_name'] = \common\models\Products::tableName();
@@ -121,9 +122,9 @@ class ProductsForm extends Model
             $base_path = Yii::$app->params->upload_directories->refurbished->image . $image->image_location . '/';
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $image->image = $utilitiesModel->encrypt() . '.' . $i->extension;
+            $image->image = $utilitiesModel->encrypt() . '.' . 'jpg';
             $image->created_by = $user_id;
-            $type = $i->type;
+            $type = 'image/jpeg';
             if ($image->save()) {
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
@@ -145,10 +146,10 @@ class ProductsForm extends Model
                 $base_path = Yii::$app->params->upload_directories->refurbished->image . $image->image_location . '/';
                 $utilitiesModel = new Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $image->image = $utilitiesModel->encrypt() . '.' . $d->extension;
+                $image->image = $utilitiesModel->encrypt() . '.' . 'jpg';
                 $image->type = 'defect';
                 $image->created_by = $user_id;
-                $type = $d->type;
+                $type = 'image/jpeg';
                 if ($image->save()) {
                     $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                     $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
@@ -163,5 +164,61 @@ class ProductsForm extends Model
         }
 
         return true;
+    }
+
+    public function update($user_id)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+        $params = Yii::$app->request->post();
+
+        $product_enc_id = $params['product_enc_id'];
+        try {
+            $product = Products::findOne(['product_enc_id' => $product_enc_id]);
+            if ($product) {
+                $product->name = $this->product_name;
+                $product->price = $this->price;
+                $product->discounted_price = $this->discounted_price;
+                $product->description = $this->description;
+                $product->updated_by = $user_id;
+                $product->product_enc_id = $product_enc_id;
+                $product->city_enc_id = $this->city_id;
+                $product->updated_on = date('Y-m-d H:i:s');
+                if (!$product->save()) {
+                    $transaction->rollBack();
+                    return ['status' => 500, 'message' => 'an error occurred', 'error' => $product->getErrors()];
+                }
+                $product_other_details = ProductOtherDetails::findOne(['product_enc_id' => $product_enc_id]);
+
+                if ($product_other_details) {
+                    $product_other_details->other_detail = $this->product_other_detail;
+                    $product_other_details->variant = $this->variant;
+                    $product_other_details->km_driven = $this->km_driven;
+                    $product_other_details->making_year = $this->making_year;
+                    $product_other_details->ram = $this->ram;
+                    $product_other_details->rom = $this->rom;
+                    $product_other_details->front_camera = $this->front_camera;
+                    $product_other_details->back_camera = $this->back_camera;
+                    $product_other_details->sim_type = $this->sim_type;
+                    $product_other_details->updated_by = $user_id;
+                    $product_other_details->updated_on = date('Y-m-d H:i:s');
+                    if (!$product_other_details->save()) {
+                        $transaction->rollBack();
+                        return ['status' => 500, 'message' => 'an error occurred', 'error' => $product_other_details->getErrors()];
+                    }
+                    if (!$this->saveImages($user_id, $product_enc_id)) {
+                        $transaction->rollBack();
+                        return ['status' => 500, 'message' => 'an error occurred', 'error' => 'error occurred while uploading images'];
+                    } else {
+                        $transaction->rollBack();
+                    }
+                    $transaction->rollBack();
+                }
+            }
+            $transaction->commit();
+            return ['status' => 200, 'message' => 'successfully updated'];
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()];
+        }
     }
 }
