@@ -193,9 +193,12 @@ class CompanyDashboardController extends ApiBaseController
             foreach ($status as $s) {
                 $params['filter'] = [$s];
                 $params['search_keyword'] = $params['loan_type'];
-                $loan_status[$s]['data'] = $this->__getApplications($user, $params);
-                $loan_status[$s]['page'] = $page;
-                $loan_status[$s]['limit'] = $limit;
+                $d = $this->__getApplications($user, $params);
+                if (!empty($d)) {
+                    $loan_status[$s]['data'] = $d;
+                    $loan_status[$s]['page'] = $page;
+                    $loan_status[$s]['limit'] = $limit;
+                }
             }
 
 
@@ -501,7 +504,7 @@ class CompanyDashboardController extends ApiBaseController
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
                 ->joinWith(['loanCoApplicants d' => function ($d) {
-                    $d->select(['d.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone',
+                    $d->select(['d.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
                         'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation']);
                 }])
                 ->joinWith(['loanApplicationNotifications e' => function ($e) {
