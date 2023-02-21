@@ -599,6 +599,7 @@ class ProductsController extends ApiBaseController
                 }], false);
             }])
             ->where(['b.is_deleted' => 0, 'dd1.name' => $category])
+            ->andWhere(['not', ['a.making_year' => null]])
             ->groupBy(['a.making_year'])
             ->orderBy(['a.making_year' => SORT_ASC])
             ->asArray()
