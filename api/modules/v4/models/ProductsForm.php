@@ -162,7 +162,6 @@ class ProductsForm extends Model
                 }
             }
         }
-
         return true;
     }
 
@@ -170,26 +169,23 @@ class ProductsForm extends Model
     {
         $transaction = Yii::$app->db->beginTransaction();
         $params = Yii::$app->request->post();
-
         $product_enc_id = $params['product_enc_id'];
         try {
             $product = Products::findOne(['product_enc_id' => $product_enc_id]);
-            if ($product) {
+            if (!empty($product)) {
                 $product->name = $this->product_name;
                 $product->price = $this->price;
                 $product->discounted_price = $this->discounted_price;
                 $product->description = $this->description;
                 $product->updated_by = $user_id;
-                $product->product_enc_id = $product_enc_id;
                 $product->city_enc_id = $this->city_id;
                 $product->updated_on = date('Y-m-d H:i:s');
-                if (!$product->save()) {
+                if (!$product->update()) {
                     $transaction->rollBack();
                     return ['status' => 500, 'message' => 'an error occurred', 'error' => $product->getErrors()];
                 }
                 $product_other_details = ProductOtherDetails::findOne(['product_enc_id' => $product_enc_id]);
-
-                if ($product_other_details) {
+                if (!empty($product_other_details)) {
                     $product_other_details->other_detail = $this->product_other_detail;
                     $product_other_details->variant = $this->variant;
                     $product_other_details->km_driven = $this->km_driven;
@@ -201,17 +197,14 @@ class ProductsForm extends Model
                     $product_other_details->sim_type = $this->sim_type;
                     $product_other_details->updated_by = $user_id;
                     $product_other_details->updated_on = date('Y-m-d H:i:s');
-                    if (!$product_other_details->save()) {
+                    if (!$product_other_details->update()) {
                         $transaction->rollBack();
                         return ['status' => 500, 'message' => 'an error occurred', 'error' => $product_other_details->getErrors()];
                     }
-                    if (!$this->saveImages($user_id, $product_enc_id)) {
-                        $transaction->rollBack();
-                        return ['status' => 500, 'message' => 'an error occurred', 'error' => 'error occurred while uploading images'];
-                    } else {
-                        $transaction->rollBack();
-                    }
+                }
+                if (!$this->saveImages($user_id, $product_enc_id)) {
                     $transaction->rollBack();
+                    return ['status' => 500, 'message' => 'an error occurred', 'error' => 'error occurred while uploading images'];
                 }
             }
             $transaction->commit();
