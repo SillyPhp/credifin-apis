@@ -24,7 +24,7 @@ class LoanLoggableBehavior extends \sammaye\audittrail\LoggableBehavior
             if (isset($this->owner->loan_app_enc_id)) {
                 $this->loan_id = $this->owner->loan_app_enc_id;
             } else {
-                $this->loan_id = $this->owner->loan_application_enc_id;
+                $this->loan_id = isset($this->owner->loan_application_enc_id) ? $this->owner->loan_application_enc_id : $this->owner->loan_id;
             }
             $log->model = $this->className;
             $log->old_value = $old_value;

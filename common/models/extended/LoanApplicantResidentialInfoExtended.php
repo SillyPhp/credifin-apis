@@ -6,6 +6,8 @@ use common\models\LoanApplicantResidentialInfo;
 
 class LoanApplicantResidentialInfoExtended extends LoanApplicantResidentialInfo
 {
+
+    public $loan_id;
     public function behaviors()
     {
         $model = explode("\\", LoanApplicantResidentialInfo::className());

@@ -188,6 +188,7 @@ class LoanApplication extends Model
 
             // saving address
             $loan_address = new LoanApplicantResidentialInfoExtended();
+            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
             $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
             $loan_address->loan_app_enc_id = $model->loan_app_enc_id;
             $loan_address->address = $this->address;
