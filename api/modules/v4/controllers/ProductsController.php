@@ -280,11 +280,12 @@ class ProductsController extends ApiBaseController
             $model = new ProductsForm();
             $identity = $user->user_enc_id;
             $params = Yii::$app->request->post();
-            $model->images = UploadedFile::getInstances($model, 'images');
             if (empty($params['product_enc_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "product_enc_id"']);
             }
             if ($model->load(Yii::$app->request->post(), '')) {
+                $model->images = UploadedFile::getInstances($model, 'images');
+                $model->dent_images = UploadedFile::getInstances($model, 'dent_images');
                 if ($model->validate()) {
                     $product = $model->update($identity);
                     if ($product['status'] == 500) {
@@ -630,14 +631,5 @@ class ProductsController extends ApiBaseController
 
         return $this->response(200, ['status' => 200, 'filter' => $filter]);
 
-    }
-
-    public function actionUpdateProduct()
-    {
-        if ($user = $this->isAuthorized()) {
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
     }
 }
