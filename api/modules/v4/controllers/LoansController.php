@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\BusinessLoanApplication;
+use api\modules\v4\models\CoApplicantFrom;
 use common\models\AssignedLoanProvider;
 use common\models\BillDetails;
 use common\models\CertificateTypes;
@@ -12,6 +13,7 @@ use common\models\EsignRequestedAgreements;
 use common\models\EsignVehicleLoanDetails;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\EducationLoanPaymentsExtends;
+use common\models\extended\LoanApplicantResidentialInfoExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
 use common\models\extended\LoanCoApplicantsExtended;
@@ -721,46 +723,50 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
-            if (empty($params['name'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "name"']);
+            if (!empty($params['loan_co_app_enc_id'])) {
+
+                $co_applicant = LoanCoApplicantsExtended::findOne(['loan_co_app_enc_id' => $params['loan_co_app_enc_id']]);
+
+                !empty($params['name']) ? $co_applicant->name = $params['name'] : null;
+                !empty($params['dob']) ? $co_applicant->dob = $params['dob'] : null;
+                !empty($params['phone']) ? $co_applicant->phone = $params['phone'] : null;
+                !empty($params['pan_number']) ? $co_applicant->pan_number = $params['pan_number'] : null;
+                !empty($params['aadhaar_number']) ? $co_applicant->aadhaar_number = $params['aadhaar_number'] : null;
+                !empty($params['voter_card_number']) ? $co_applicant->voter_card_number = $params['voter_card_number'] : null;
+                $co_applicant->updated_by = $user->user_enc_id;
+                $co_applicant->updated_on = date('Y-m-d H:i:s');
+                if (!$co_applicant->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $co_applicant->getErrors()]);
+                }
+
+                if (!empty($params['address'])) {
+                    $res_info = LoanApplicantResidentialInfoExtended::findOne(['loan_co_app_enc_id' => $params['loan_co_app_enc_id']]);
+                    $res_info->address = $params['address'];
+                    $res_info->updated_by = $user->user_enc_id;
+                    $res_info->updated_on = date('Y-m-d H:i:s');
+                    if (!$res_info->update()) {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $res_info->getErrors()]);
+                    }
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
             }
 
-            if (empty($params['phone'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "phone"']);
-            }
+            $model = new CoApplicantFrom();
 
-            if (empty($params['dob'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "dob"']);
-            }
+            if ($model->load(Yii::$app->request->post(), '')) {
 
-            if (empty($params['relation'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "relation"']);
+                if ($model->validate()) {
+                    $co_applicant = $model->save($params['loan_id'], $user->user_enc_id);
+                    if ($co_applicant['status'] == 500) {
+                        return $this->response(500, $co_applicant);
+                    }
+                    return $this->response(200, $co_applicant);
+                } else {
+                    return $this->response(422, ['status' => 422, 'error' => $model->getErrors()]);
+                }
             }
-
-            if (empty($params['borrower_type'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "borrower_type"']);
-            }
-
-            $co_applicant = new LoanCoApplicantsExtended();
-            $utilitiesModel = new \common\models\Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
-            $co_applicant->loan_co_app_enc_id = $utilitiesModel->encrypt();
-            $co_applicant->loan_app_enc_id = $params['loan_id'];
-            $co_applicant->name = $params['name'];
-            $co_applicant->phone = $params['phone'];
-            $co_applicant->co_applicant_dob = $params['dob'];
-            $co_applicant->relation = $params['relation'];
-            $co_applicant->borrower_type = $params['borrower_type'];
-            !empty($params['pan_number']) ? $co_applicant->pan_number = $params['pan_number'] : null;
-            !empty($params['aadhaar_number']) ? $co_applicant->aadhaar_number = $params['aadhaar_number'] : null;
-            !empty($params['voter_card_number']) ? $co_applicant->voter_card_number = $params['voter_card_number'] : null;
-            $co_applicant->created_by = $user->user_enc_id;
-            $co_applicant->created_on = date('Y-m-d H:i:s');
-            if (!$co_applicant->save()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $co_applicant->getErrors()]);
-            }
-
-            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+            return $this->response(400, ['status' => 400, 'message' => 'bad request']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
