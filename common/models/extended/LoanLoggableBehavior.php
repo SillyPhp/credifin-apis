@@ -214,7 +214,8 @@ class LoanLoggableBehavior extends \sammaye\audittrail\LoggableBehavior
                 $amount = numfmt_format($fmt, $amount) . "\n";
                 $amount = explode(".", $amount);
                 $amount = $amount[0];
-                $newValue = '<span class="amountLoan">' . $amount . '</span>';
+//                $newValue = '<span class="amountLoan">' . $amount . '</span>';
+                $newValue = $amount;
                 break;
             case 'provider_enc_id':
             case 'assigned_lender_service_enc_id':

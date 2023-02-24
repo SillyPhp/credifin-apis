@@ -63,7 +63,6 @@ class LoansController extends ApiBaseController
                 'remove-loan-application' => ['POST', 'OPTIONS'],
                 'add-verification-location' => ['POST', 'OPTIONS'],
                 'add-co-applicant' => ['POST', 'OPTIONS'],
-                'update-co-applicant' => ['POST', 'OPTIONS'],
                 'audit-trail-list' => ['POST', 'OPTIONS'],
             ]
         ];
@@ -724,6 +723,35 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
+            if (!empty($params['loan_co_app_enc_id'])) {
+
+                $co_applicant = LoanCoApplicantsExtended::findOne(['loan_co_app_enc_id' => $params['loan_co_app_enc_id']]);
+
+                !empty($params['name']) ? $co_applicant->name = $params['name'] : null;
+                !empty($params['dob']) ? $co_applicant->dob = $params['dob'] : null;
+                !empty($params['phone']) ? $co_applicant->phone = $params['phone'] : null;
+                !empty($params['pan_number']) ? $co_applicant->pan_number = $params['pan_number'] : null;
+                !empty($params['aadhaar_number']) ? $co_applicant->aadhaar_number = $params['aadhaar_number'] : null;
+                !empty($params['voter_card_number']) ? $co_applicant->voter_card_number = $params['voter_card_number'] : null;
+                $co_applicant->updated_by = $user->user_enc_id;
+                $co_applicant->updated_on = date('Y-m-d H:i:s');
+                if (!$co_applicant->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $co_applicant->getErrors()]);
+                }
+
+                if (!empty($params['address'])) {
+                    $res_info = LoanApplicantResidentialInfoExtended::findOne(['loan_co_app_enc_id' => $params['loan_co_app_enc_id']]);
+                    $res_info->address = $params['address'];
+                    $res_info->updated_by = $user->user_enc_id;
+                    $res_info->updated_on = date('Y-m-d H:i:s');
+                    if (!$res_info->update()) {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $res_info->getErrors()]);
+                    }
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+            }
+
             $model = new CoApplicantFrom();
 
             if ($model->load(Yii::$app->request->post(), '')) {
@@ -739,47 +767,6 @@ class LoansController extends ApiBaseController
                 }
             }
             return $this->response(400, ['status' => 400, 'message' => 'bad request']);
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-    }
-
-    public function actionUpdateCoApplicant()
-    {
-        if ($user = $this->isAuthorized()) {
-
-            $params = Yii::$app->request->post();
-
-            if (empty($params['loan_co_app_enc_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_co_app_enc_id"']);
-            }
-
-            $co_applicant = LoanCoApplicantsExtended::findOne(['loan_co_app_enc_id' => $params['loan_co_app_enc_id']]);
-
-            !empty($params['name']) ? $co_applicant->name = $params['name'] : null;
-            !empty($params['dob']) ? $co_applicant->dob = $params['dob'] : null;
-            !empty($params['phone']) ? $co_applicant->phone = $params['phone'] : null;
-            !empty($params['pan_number']) ? $co_applicant->pan_number = $params['pan_number'] : null;
-            !empty($params['aadhaar_number']) ? $co_applicant->aadhaar_number = $params['aadhaar_number'] : null;
-            !empty($params['voter_card_number']) ? $co_applicant->voter_card_number = $params['voter_card_number'] : null;
-            $co_applicant->updated_by = $user->user_enc_id;
-            $co_applicant->updated_on = date('Y-m-d H:i:s');
-            if (!$co_applicant->update()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $co_applicant->getErrors()]);
-            }
-
-            if (!empty($params['address'])) {
-                $res_info = LoanApplicantResidentialInfoExtended::findOne(['loan_co_app_enc_id' => $params['loan_co_app_enc_id']]);
-                $res_info->address = $params['address'];
-                $res_info->updated_by = $user->user_enc_id;
-                $res_info->updated_on = date('Y-m-d H:i:s');
-                if (!$res_info->update()) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $res_info->getErrors()]);
-                }
-            }
-
-            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);

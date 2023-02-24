@@ -505,7 +505,8 @@ class CompanyDashboardController extends ApiBaseController
                 }])
                 ->joinWith(['loanCoApplicants d' => function ($d) {
                     $d->select(['d.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
-                        'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation', 'd1.address']);
+                        'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation', 'd1.address',
+                        'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.co_applicant_dob']);
                     $d->joinWith(['loanApplicantResidentialInfos d1'], false);
                 }])
                 ->joinWith(['loanApplicationNotifications e' => function ($e) {
