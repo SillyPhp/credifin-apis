@@ -11,6 +11,7 @@ use common\models\FinancerLoanStatus;
 use common\models\LoanStatus;
 use common\models\LoanType;
 use common\models\OrganizationLocations;
+use common\models\Referral;
 use yii\web\UploadedFile;
 use yii\db\Expression;
 use common\models\Utilities;
@@ -906,6 +907,13 @@ class OrganizationsController extends ApiBaseController
                 if (!$model->source) {
                     $model->source = Yii::$app->getRequest()->getUserIP();
                 }
+
+                $ref = Referral::findOne(['organization_enc_id' => $user->organization_enc_id]);
+
+                if (!empty($ref)) {
+                    $model->dsaRefId = $ref->code;
+                }
+                $model->user_type = 'Dealer';
 //
 //                if ($model->dsaRefId && !$model->is_connector && $model->user_type != 'Employee') {
 //                    if (!$this->DsaOrgExist($model->dsaRefId)) {
