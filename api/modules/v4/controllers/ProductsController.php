@@ -3,10 +3,12 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\ProductsForm;
+use api\modules\v4\models\EnquiryForm;
 use common\models\AssignedCategories;
 use common\models\BrandModels;
 use common\models\Brands;
 use common\models\Categories;
+use common\models\ProductEnquiry;
 use common\models\ProductImages;
 use common\models\ProductOtherDetails;
 use common\models\Products;
@@ -123,7 +125,7 @@ class ProductsController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "model"']);
             }
 
-            $exists = BrandModels::findOne(['brand_enc_id' => $params['brand_id'], 'name' => $params['name'], 'is_deleted' => 0]);
+            $exists = BrandModels::findOne(['brand_enc_id' => $params['brand_id'], 'name' => $params['model'], 'is_deleted' => 0]);
 
             if ($exists) {
                 return $this->response(200, ['status' => 200, 'message' => 'successfully saved', 'model_id' => $exists->model_enc_id, 'model_name' => $exists->name]);
@@ -362,11 +364,10 @@ class ProductsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "Slug"']);
         }
         $slug = $params['slug'];
-
         $details = Products::find()
             ->alias('a')
             ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'a.created_on',
-                'c1.name city', 'c2.name state', 'm.name model', 'be.name brand', 'd1.name category'])
+                'c1.name city', 'c1.city_enc_id', 'c2.name state', 'm.name model', 'm.model_enc_id model_id', 'be.name brand', 'd1.name category'])
             ->joinWith(['productOtherDetails b' => function ($b) {
                 $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.km_driven', 'b.making_year', 'b.other_detail', 'b.ownership_type', 'b.variant', 'b.rom', 'b.ram', 'b.screen_size',
                     'b.back_camera', 'b.front_camera', 'b.sim_type']);
@@ -632,4 +633,112 @@ class ProductsController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'filter' => $filter]);
 
     }
+
+    public function actionAddProductEnquiry()
+    {
+        $model = new EnquiryForm();
+        if ($model->load(Yii::$app->request->post(), '')) {
+            if ($user = $this->isAuthorized()) {
+                $model->created_by = $user->user_enc_id;
+            }
+
+            if ($model->validate()) {
+                $query = $model->create();
+                if ($query['status'] == 500) {
+                    return $this->response(500, $query);
+                }
+                return $this->response(200, $query);
+
+            } else {
+                return $this->response(422, ['status' => 422, 'error' => $model->getErrors()]);
+            }
+
+
+        }
+        return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+    }
+
+    public function actionUpdateProductEnquiry()
+    {
+
+        if ($user = $this->isAuthorized()) {
+            $model = new EnquiryForm();
+            $params = Yii::$app->request->post();
+            $identity = $user->user_enc_id;
+            if (empty($params['enquiry_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "enquiry_enc_id"']);
+            }
+            if ($model->load(Yii::$app->request->post(), '')) {
+                if ($model->validate()) {
+                    $query = $model->update($identity);
+                    if ($query['status'] == 500) {
+                        return $this->response(500, $query);
+                    }
+                    return $this->response(200, $query);
+
+                } else {
+                    return $this->response(422, ['status' => 422, 'error' => $model->getErrors()]);
+                }
+            }
+            return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionDealerViewProductEnquiry()
+    {
+        if ($user = $this->isAuthorized()) {
+            $limit = 10;
+            $page = 1;
+            $enquiry = Products::find()
+                ->alias('a')
+                ->select(['a.name', 'a.price', 'a.product_enc_id'])
+                ->joinWith(['productEnquiries b' => function ($b) {
+                    $b->select(['b.product_id', 'b.first_name', 'b.last_name', 'b.email', 'b.mobile_number']);
+                }])
+                ->where(['not', ['b.status' => 'Closed']])
+                ->andWhere(['a.dealer_enc_id' => $user->user_enc_id])
+                ->groupBy(['a.product_enc_id'])
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->asArray()
+                ->all();
+            if ($enquiry) {
+                return $this->response(200, ['status' => 200, 'enquiry' => $enquiry]);
+            }
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionUserViewProductEnquiry()
+    {
+        if ($user = $this->isAuthorized()) {
+            $limit = 10;
+            $page = 1;
+            $product = ProductEnquiry::findOne(['created_by' => $user->user_enc_id]);
+            if ($product) {
+                $enquiry = Products::find()
+                    ->alias('a')
+                    ->select(['a.name', 'a.price', 'b.first_name', 'b.last_name', 'b.email', 'b.mobile_number'])
+                    ->joinWith(['productEnquiries b'], false)
+                    ->where(['not', ['b.status' => 'Closed']])
+                    ->andWhere(['b.created_by' => $user->user_enc_id])
+                    ->limit($limit)
+                    ->offset(($page - 1) * $limit)
+                    ->asArray()
+                    ->all();
+                if ($enquiry) {
+                    return $this->response(200, ['status' => 200, 'enquiry' => $enquiry]);
+                }
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
 }
