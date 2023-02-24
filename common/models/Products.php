@@ -25,6 +25,7 @@ use Yii;
  * @property string $status status
  * @property int $is_deleted 0 false,1 true
  *
+ * @property ProductEnquiry[] $productEnquiries
  * @property ProductImages[] $productImages
  * @property ProductOtherDetails[] $productOtherDetails
  * @property BrandModels $modelEnc
@@ -65,6 +66,14 @@ class Products extends \yii\db\ActiveRecord
             [['assigned_category_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedCategories::className(), 'targetAttribute' => ['assigned_category_enc_id' => 'assigned_category_enc_id']],
             [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductEnquiries()
+    {
+        return $this->hasMany(ProductEnquiry::className(), ['product_id' => 'product_enc_id']);
     }
 
     /**

@@ -116,6 +116,7 @@ class ProductsForm extends Model
     {
         foreach ($this->images as $i) {
             $image = new ProductImages();
+
             $image->image_enc_id = Yii::$app->security->generateRandomString(32);
             $image->product_enc_id = $product_id;
             $image->image_location = \Yii::$app->getSecurity()->generateRandomString();
@@ -173,7 +174,7 @@ class ProductsForm extends Model
         try {
             $product = Products::findOne(['product_enc_id' => $product_enc_id]);
             if (!empty($product)) {
-                $product->name = $this->product_name;
+                $product->status = $this->status;
                 $product->price = $this->price;
                 $product->discounted_price = $this->discounted_price;
                 $product->description = $this->description;
@@ -190,6 +191,7 @@ class ProductsForm extends Model
                     $product_other_details->variant = $this->variant;
                     $product_other_details->km_driven = $this->km_driven;
                     $product_other_details->making_year = $this->making_year;
+                    $product_other_details->ownership_type = $this->ownership_type;
                     $product_other_details->ram = $this->ram;
                     $product_other_details->rom = $this->rom;
                     $product_other_details->front_camera = $this->front_camera;
