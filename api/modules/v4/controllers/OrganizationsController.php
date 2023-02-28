@@ -893,47 +893,4 @@ class OrganizationsController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
-
-    public function actionAddDealer()
-    {
-        if ($user = $this->isAuthorized()) {
-
-            $params = Yii::$app->request->post();
-
-            $model = new IndividualSignup();
-
-            if ($model->load(Yii::$app->request->post(), '')) {
-
-                if (!$model->source) {
-                    $model->source = Yii::$app->getRequest()->getUserIP();
-                }
-
-                $ref = Referral::findOne(['organization_enc_id' => $user->organization_enc_id]);
-
-                if (!empty($ref)) {
-                    $model->dsaRefId = $ref->code;
-                }
-                $model->user_type = 'Dealer';
-//
-//                if ($model->dsaRefId && !$model->is_connector && $model->user_type != 'Employee') {
-//                    if (!$this->DsaOrgExist($model->dsaRefId)) {
-//                        return $this->response(404, ['status' => 404, 'message' => 'no organization found with this ref id']);
-//                    }
-//                }
-
-                if ($model->validate()) {
-                    if ($data = $model->saveUser()) {
-                        return $this->response(201, ['status' => 201, 'data' => $data]);
-                    } else {
-                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
-                    }
-                }
-                return $this->response(409, ['status' => 409, 'error' => $model->getErrors()]);
-            }
-            return $this->response(400, ['status' => 400, 'message' => 'bad request']);
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-    }
 }
