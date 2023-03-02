@@ -24,13 +24,14 @@ class CoApplicantFrom extends Model
     public $city;
     public $state;
     public $zip;
+    public $gender;
 
 
     public function rules()
     {
         return [
             [['name', 'phone', 'dob', 'relation', 'borrower_type'], 'required'],
-            [['pan_number', 'aadhaar_number', 'voter_card_number', 'address', 'city', 'state', 'zip'], 'safe'],
+            [['pan_number', 'aadhaar_number', 'voter_card_number', 'address', 'city', 'state', 'zip', 'gender'], 'safe'],
             [['name', 'phone', 'pan_number', 'aadhaar_number', 'voter_card_number'], 'trim'],
             [['name'], 'string', 'max' => 200],
             [['phone'], 'string', 'length' => [10, 15]],
@@ -50,6 +51,7 @@ class CoApplicantFrom extends Model
             $co_applicant->phone = $this->phone;
             $co_applicant->co_applicant_dob = $this->dob;
             $co_applicant->relation = $this->relation;
+            $co_applicant->gender = $this->gender;
             $co_applicant->borrower_type = $this->borrower_type;
             $co_applicant->pan_number = $this->pan_number;
             $co_applicant->aadhaar_number = $this->aadhaar_number;
