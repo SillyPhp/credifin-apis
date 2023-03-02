@@ -29,8 +29,8 @@ class CoApplicantFrom extends Model
     public function rules()
     {
         return [
-            [['name', 'phone', 'dob', 'relation', 'borrower_type'], 'required'],
-            [['pan_number', 'aadhaar_number', 'voter_card_number', 'address', 'city', 'state', 'zip'], 'safe'],
+            [['name', 'dob', 'relation', 'borrower_type'], 'required'],
+            [['pan_number', 'phone', 'aadhaar_number', 'voter_card_number', 'address', 'city', 'state', 'zip'], 'safe'],
             [['name', 'phone', 'pan_number', 'aadhaar_number', 'voter_card_number'], 'trim'],
             [['name'], 'string', 'max' => 200],
             [['phone'], 'string', 'length' => [10, 15]],
