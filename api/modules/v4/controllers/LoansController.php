@@ -733,6 +733,7 @@ class LoansController extends ApiBaseController
                 !empty($params['name']) ? $co_applicant->name = $params['name'] : null;
                 !empty($params['dob']) ? $co_applicant->co_applicant_dob = $params['dob'] : null;
                 !empty($params['phone']) ? $co_applicant->phone = $params['phone'] : null;
+                !empty($params['gender']) ? $co_applicant->gender = $params['gender'] : null;
                 !empty($params['pan_number']) ? $co_applicant->pan_number = $params['pan_number'] : null;
                 !empty($params['aadhaar_number']) ? $co_applicant->aadhaar_number = $params['aadhaar_number'] : null;
                 !empty($params['voter_card_number']) ? $co_applicant->voter_card_number = $params['voter_card_number'] : null;

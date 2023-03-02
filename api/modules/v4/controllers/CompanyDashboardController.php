@@ -492,15 +492,11 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
-//            if (empty($params['provider_id'])) {
-//                return $this->response(422, ['status' => 422, 'message' => 'missing information "provider_id"']);
-//            }
-
-
             $loan = LoanApplications::find()
                 ->alias('a')
                 ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number',
-                    'a.applicant_name', 'a.phone', 'a.email', 'b.status as loan_status', 'a.loan_type'])
+                    'a.applicant_name', 'a.phone', 'a.email', 'b.status as loan_status', 'a.loan_type', 'a.gender', 'a.applicant_dob',
+                    'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i.postal_code', 'i.address'])
                 ->joinWith(['assignedLoanProviders b' => function ($b) use ($organization_id) {
 //                    $b->where(['b.provider_enc_id' => $organization_id]);
                 }], false)
@@ -513,8 +509,11 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanCoApplicants d' => function ($d) {
                     $d->select(['d.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
                         'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation', 'd1.address',
-                        'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.co_applicant_dob']);
-                    $d->joinWith(['loanApplicantResidentialInfos d1'], false);
+                        'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.co_applicant_dob', 'd.gender', 'd2.city_enc_id', 'd2.name city', 'd3.state_enc_id', 'd3.name state', 'd3.abbreviation state_abbreviation', 'd1.postal_code']);
+                    $d->joinWith(['loanApplicantResidentialInfos d1' => function ($d1) {
+                        $d1->joinWith(['cityEnc d2'], false);
+                        $d1->joinWith(['stateEnc d3'], false);
+                    }], false);
                 }])
                 ->joinWith(['loanApplicationNotifications e' => function ($e) {
                     $e->select(['e.notification_enc_id', 'e.message', 'e.loan_application_enc_id', 'e.created_on', 'concat(e1.first_name," ",e1.last_name) created_by']);
@@ -538,6 +537,10 @@ class CompanyDashboardController extends ApiBaseController
                     $h->joinWith(['createdBy h1'], false);
                     $h->onCondition(['h.is_deleted' => 0]);
                 }])
+                ->joinWith(['loanApplicantResidentialInfos i' => function ($i) {
+                    $i->joinWith(['cityEnc i1'], false);
+                    $i->joinWith(['stateEnc i2'], false);
+                }], false)
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();

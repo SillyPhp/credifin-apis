@@ -38,6 +38,10 @@ class ApiBaseController extends Controller
             $response = [
                 'response' => $data
             ];
+        } else {
+            $response = [
+                'response' => ['status' => $code]
+            ];
         }
 
         $this->setHeader($code);
@@ -86,7 +90,10 @@ class ApiBaseController extends Controller
     {
         $source = Yii::$app->request->headers->get('source');
         $bearer_token = Yii::$app->request->headers->get('Authorization');
-        $token = explode(" ", $bearer_token)[1];
+        $token = explode(" ", $bearer_token);
+        if(!isset($token[1])){
+            return false;
+        }
         $access_token = UserAccessTokens::findOne(['access_token' => $token]);
         if (!empty($access_token) && $source == $access_token->source) {
             if (strtotime($access_token->access_token_expiration) > strtotime("now")) {
