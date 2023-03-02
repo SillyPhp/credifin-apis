@@ -626,16 +626,19 @@ class LoansController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
-
+            $provider_id = $this->getFinancerId($user);
+            if ($provider_id == null) {
+                return $this->response(409, ['status' => 409, 'message' => 'provider id not found']);
+            }
             // provider_id
             // id = field name
             // value = field value
             // parent_id = loan_id
-            if (empty($params['parent_id']) || empty($params['provider_id']) || empty($params['id']) || empty($params['value'])) {
+            if (empty($params['parent_id']) || empty($params['id']) || empty($params['value'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "parent_id, org_id, id, value"']);
             }
 
-            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['parent_id'], 'provider_enc_id' => $params['provider_id']]);
+            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['parent_id'], 'provider_enc_id' => $provider_id]);
 
             if (!$provider) {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
@@ -728,7 +731,7 @@ class LoansController extends ApiBaseController
                 $co_applicant = LoanCoApplicantsExtended::findOne(['loan_co_app_enc_id' => $params['loan_co_app_enc_id']]);
 
                 !empty($params['name']) ? $co_applicant->name = $params['name'] : null;
-                !empty($params['dob']) ? $co_applicant->dob = $params['dob'] : null;
+                !empty($params['dob']) ? $co_applicant->co_applicant_dob = $params['dob'] : null;
                 !empty($params['phone']) ? $co_applicant->phone = $params['phone'] : null;
                 !empty($params['pan_number']) ? $co_applicant->pan_number = $params['pan_number'] : null;
                 !empty($params['aadhaar_number']) ? $co_applicant->aadhaar_number = $params['aadhaar_number'] : null;

@@ -415,7 +415,8 @@ class CompanyDashboardController extends ApiBaseController
                     ->all();
                 $loans[$key]['claimedDeals'] = $d;
 
-                $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $params['provider_id']]);
+                $provider_id = $this->getFinancerId($user);
+                $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $provider_id]);
 
                 if (!empty($provider)) {
                     $loans[$key]['bdo_approved_amount'] = $provider->bdo_approved_amount;
@@ -481,13 +482,19 @@ class CompanyDashboardController extends ApiBaseController
             $organization_id = Users::findOne(['user_enc_id' => $user->user_enc_id])->organization_enc_id;
             $params = Yii::$app->request->post();
 
+            $provider_id = $this->getFinancerId($user);
+
+            if ($provider_id == null) {
+                return $this->response(409, ['status' => 409, 'message' => 'provider id not found']);
+            }
+
             if (empty($params['loan_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
-            if (empty($params['provider_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "provider_id"']);
-            }
+//            if (empty($params['provider_id'])) {
+//                return $this->response(422, ['status' => 422, 'message' => 'missing information "provider_id"']);
+//            }
 
 
             $loan = LoanApplications::find()
@@ -567,7 +574,7 @@ class CompanyDashboardController extends ApiBaseController
                     ->joinWith(['branchEnc b' => function ($b) {
                         $b->joinWith(['cityEnc b1']);
                     }], false)
-                    ->andWhere(['a.loan_application_enc_id' => $loan['loan_app_enc_id'], 'a.provider_enc_id' => $params['provider_id']])
+                    ->andWhere(['a.loan_application_enc_id' => $loan['loan_app_enc_id'], 'a.provider_enc_id' => $provider_id])
                     ->asArray()
                     ->one();
 
@@ -603,6 +610,8 @@ class CompanyDashboardController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
 
+            $provider_id = $this->getFinancerId($user);
+
             $params = Yii::$app->request->post();
 
             if (empty($params['loan_id'])) {
@@ -613,7 +622,7 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
             }
 
-            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['loan_id'], 'provider_enc_id' => $user->organization_enc_id, 'is_deleted' => 0]);
+            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['loan_id'], 'provider_enc_id' => $provider_id, 'is_deleted' => 0]);
 
             if (!$provider) {
                 return $this->response(404, ['status' => 404, 'message' => 'provider not found with this loan_id']);
