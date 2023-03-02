@@ -450,6 +450,8 @@ class LoanApplication extends Model
             $model = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $loan_id]);
             $model->applicant_current_city = $this->current_city;
             $model->email = $this->email ? $this->email : $model->email;
+            $model->gender = $this->gender ? $this->gender : $model->gender;
+            $model->applicant_dob = $this->applicant_dob ? $this->applicant_dob : $model->applicant_dob;
             $model->loan_purpose = $this->loan_purpose ? $this->loan_purpose : $model->loan_purpose;
             $model->yearly_income = $this->annual_income ? $this->annual_income : $model->yearly_income;
             $model->updated_on = date('Y-m-d H:i:s');
@@ -489,30 +491,31 @@ class LoanApplication extends Model
             }
 
             // saving address
-            if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Loan Against Property' || $this->loan_type == 'Vehicle Loan') {
-                $loan_address = LoanApplicantResidentialInfoExtended::findOne(['loan_app_enc_id' => $loan_id, 'is_deleted' => 0]);
+//            if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Loan Against Property' || $this->loan_type == 'Vehicle Loan') {
+            $loan_address = LoanApplicantResidentialInfoExtended::findOne(['loan_app_enc_id' => $loan_id, 'is_deleted' => 0]);
 
-                if (!$loan_address) {
-                    $loan_address = new LoanApplicantResidentialInfoExtended();
-                    $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
-                    $loan_address->loan_app_enc_id = $model->loan_app_enc_id;
-                    $loan_address->created_on = date('Y-m-d H:i:s');
-                    $loan_address->created_by = $user_id;
-                }
-
-
-                $loan_address->address = $this->address ? $this->address : $loan_address->address;
-                $loan_address->city_enc_id = $this->city ? $this->city : $loan_address->city_enc_id;
-                $loan_address->state_enc_id = $this->state ? $this->state : $loan_address->state_enc_id;
-                $loan_address->postal_code = $this->zip ? $this->zip : $loan_address->postal_code;
+            if (!$loan_address) {
+                $loan_address = new LoanApplicantResidentialInfoExtended();
+                $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
+                $loan_address->loan_app_enc_id = $model->loan_app_enc_id;
+                $loan_address->created_on = date('Y-m-d H:i:s');
+                $loan_address->created_by = $user_id;
+            } else {
                 $loan_address->updated_on = date('Y-m-d H:i:s');
                 $loan_address->updated_by = $user_id;
-
-                if (!$loan_address->save()) {
-                    $transaction->rollback();
-                    return false;
-                }
             }
+
+
+            $loan_address->address = $this->address ? $this->address : $loan_address->address;
+            $loan_address->city_enc_id = $this->city ? $this->city : $loan_address->city_enc_id;
+            $loan_address->state_enc_id = $this->state ? $this->state : $loan_address->state_enc_id;
+            $loan_address->postal_code = $this->zip ? $this->zip : $loan_address->postal_code;
+
+            if (!$loan_address->save()) {
+                $transaction->rollback();
+                return false;
+            }
+//            }
 
             $transaction->commit();
 
