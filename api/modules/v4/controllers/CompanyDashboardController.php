@@ -109,6 +109,8 @@ class CompanyDashboardController extends ApiBaseController
                 ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
                 ->exists();
 
+            $shared_apps = $this->sharedApps($user->user_enc_id);
+
             $stats = LoanApplications::find()
                 ->alias('a')
                 ->select([
@@ -135,6 +137,10 @@ class CompanyDashboardController extends ApiBaseController
                 }
             } else {
                 $stats->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
+            }
+
+            if ($shared_apps['app_ids']) {
+                $stats->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
             }
 
             $stats = $stats->asArray()
@@ -494,9 +500,9 @@ class CompanyDashboardController extends ApiBaseController
 
             $loan = LoanApplications::find()
                 ->alias('a')
-                ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number',
+                ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number',
                     'a.applicant_name', 'a.phone', 'a.email', 'b.status as loan_status', 'a.loan_type', 'a.gender', 'a.applicant_dob',
-                    'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i.postal_code', 'i.address'])
+                    'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address'])
                 ->joinWith(['assignedLoanProviders b' => function ($b) use ($organization_id) {
 //                    $b->where(['b.provider_enc_id' => $organization_id]);
                 }], false)
@@ -509,7 +515,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanCoApplicants d' => function ($d) {
                     $d->select(['d.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
                         'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation', 'd1.address',
-                        'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.co_applicant_dob', 'd.gender', 'd2.city_enc_id', 'd2.name city', 'd3.state_enc_id', 'd3.name state', 'd3.abbreviation state_abbreviation', 'd1.postal_code']);
+                        'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.co_applicant_dob', 'd.gender', 'd2.city_enc_id', 'd2.name city', 'd3.state_enc_id', 'd3.name state', 'd3.abbreviation state_abbreviation', 'd1.postal_code', 'd3.state_code']);
                     $d->joinWith(['loanApplicantResidentialInfos d1' => function ($d1) {
                         $d1->joinWith(['cityEnc d2'], false);
                         $d1->joinWith(['stateEnc d3'], false);
@@ -1648,6 +1654,8 @@ class CompanyDashboardController extends ApiBaseController
                 ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
                 ->exists();
 
+            $shared_apps = $this->sharedApps($user->user_enc_id);
+
             $stats = LoanApplications::find()
                 ->alias('a')
                 ->select(['j1.loan_status', 'COUNT(a.status) count', 'j1.status_color', 'j1.value'])
@@ -1666,6 +1674,10 @@ class CompanyDashboardController extends ApiBaseController
                 }
             } else {
                 $stats->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
+            }
+
+            if ($shared_apps['app_ids']) {
+                $stats->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
             }
 
             if (!empty($params['loan_type'])) {

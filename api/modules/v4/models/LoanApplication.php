@@ -117,6 +117,8 @@ class LoanApplication extends Model
             $model->email = $this->email;
             $model->applicant_dob = $this->applicant_dob;
             $model->gender = $this->gender;
+            $model->aadhaar_number = $this->aadhar_number;
+            $model->pan_number = $this->pan_number;
             $model->amount = str_replace(',', '', $this->loan_amount);
             $model->source = 'EmpowerFintech';
             if ($this->form_type == 'diwali-dhamaka') {
@@ -451,6 +453,8 @@ class LoanApplication extends Model
             $model->applicant_current_city = $this->current_city;
             $model->email = $this->email ? $this->email : $model->email;
             $model->gender = $this->gender ? $this->gender : $model->gender;
+            $model->aadhaar_number = $this->aadhar_number ? $this->aadhar_number : $model->aadhaar_number;
+            $model->pan_number = $this->pan_number ? $this->pan_number : $model->pan_number;
             $model->applicant_dob = $this->applicant_dob ? $this->applicant_dob : $model->applicant_dob;
             $model->loan_purpose = $this->loan_purpose ? $this->loan_purpose : $model->loan_purpose;
             $model->yearly_income = $this->annual_income ? $this->annual_income : $model->yearly_income;

@@ -63,7 +63,7 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
             [['co_applicant_dob', 'created_on', 'updated_on'], 'safe'],
             [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'email', 'image', 'image_location', 'occupation', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
-            [['voter_card_number'], 'string', 'max' => 10],
+            [['voter_card_number'], 'string', 'max' => 20],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['loan_co_app_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],

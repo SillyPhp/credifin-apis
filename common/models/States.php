@@ -11,6 +11,7 @@ use Yii;
  * @property string $state_enc_id State Encrypted ID
  * @property string $name State Name
  * @property string $abbreviation
+ * @property int $state_code state code
  * @property string $country_enc_id Foreign Key to Countries Table
  *
  * @property Cities[] $cities
@@ -37,6 +38,7 @@ class States extends \yii\db\ActiveRecord
     {
         return [
             [['state_enc_id', 'name', 'country_enc_id'], 'required'],
+            [['state_code'], 'integer'],
             [['state_enc_id', 'country_enc_id'], 'string', 'max' => 100],
             [['name'], 'string', 'max' => 30],
             [['abbreviation'], 'string', 'max' => 3],
