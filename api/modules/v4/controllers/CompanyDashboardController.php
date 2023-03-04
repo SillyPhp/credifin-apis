@@ -373,7 +373,7 @@ class CompanyDashboardController extends ApiBaseController
         }
 
         $loans = $loans
-            ->orderBy(['a.created_on' => SORT_DESC])
+            ->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC])
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
