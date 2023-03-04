@@ -2,15 +2,12 @@
 
 namespace api\modules\v4\controllers;
 
-use common\models\AssignedFinancerLoanType;
-use common\models\BillDetails;
 use common\models\Cities;
 use common\models\Designations;
 use common\models\OrganizationTypes;
 use common\models\spaces\Spaces;
 use common\models\SponsoredCourses;
 use common\models\States;
-use common\models\Users;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use Yii;
@@ -66,7 +63,7 @@ class UtilitiesController extends ApiBaseController
             ->select(['designation_enc_id', 'designation', 'designation_enc_id id', 'designation name'])
             ->where(['is_deleted' => 0])
             ->andFilterWhere(['like', 'designation', $keyword])
-            ->limit(20)
+            ->limit(10)
             ->asArray()
             ->all();
 

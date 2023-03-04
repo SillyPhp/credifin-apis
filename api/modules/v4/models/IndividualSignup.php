@@ -11,6 +11,7 @@ use common\models\SelectedServices;
 use common\models\Services;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
+use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
 use common\models\RandomColors;
@@ -140,6 +141,13 @@ class IndividualSignup extends Model
 
             if ($this->dsaRefId && $user_type != 'Employee') {
                 if (!$this->assignedDsaService($user->user_enc_id, $this->dsaRefId)) {
+                    $transaction->rollback();
+                    return false;
+                }
+            }
+
+            if ($user_type == 'Employee') {
+                if (!$this->__addUserRole($user->user_enc_id, $user->user_type_enc_id)) {
                     $transaction->rollback();
                     return false;
                 }
@@ -281,6 +289,30 @@ class IndividualSignup extends Model
             $randomString .= $characters[$index];
         }
         return $randomString;
+    }
+
+    private function __addUserRole($user_id, $user_type_id)
+    {
+        $org_id = \common\models\Referral::findOne(['code' => $this->dsaRefId])->organization_enc_id;
+
+        if ($org_id) {
+            $user_role = new UserRoles();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+            $user_role->role_enc_id = $utilitiesModel->encrypt();
+            $user_role->user_type_enc_id = $user_type_id;
+            $user_role->user_enc_id = $user_id;
+            $user_role->organization_enc_id = $org_id;
+            $user_role->created_by = $user_id;
+            $user_role->created_on = date('Y-m-d H:i:s');
+            if (!$user_role->save()) {
+                print_r($user_id->getErrors());
+                return false;
+            }
+            return true;
+        }
+        print_r('organization_id not found');
+        return false;
     }
 
     private function sendMail($userId)

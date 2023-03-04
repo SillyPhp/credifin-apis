@@ -15,6 +15,8 @@ use Yii;
  * @property int $cibil_score cibil score
  * @property string $phone
  * @property string $relation
+ * @property string $borrower_type borrower type
+ * @property int $gender Gender (1 as Male, 2 as Female, 3 as Transgender, 4 as Rather not say)
  * @property int $employment_type 0 as Non Working, 1 as Salaried, 2 as Self Employed
  * @property double $annual_income
  * @property string $co_applicant_dob
@@ -24,6 +26,7 @@ use Yii;
  * @property string $occupation
  * @property int $address 0 new address,1 same as applicant
  * @property string $pan_number co borrower pan card number
+ * @property string $voter_card_number
  * @property string $aadhaar_number
  * @property string $aadhaar_link_phone_number Aadhar Link Phone Number
  * @property string $created_by user_enc_id
@@ -54,12 +57,13 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     {
         return [
             [['loan_co_app_enc_id', 'loan_app_enc_id', 'relation'], 'required'],
-            [['cibil_score', 'employment_type', 'years_in_current_house', 'address'], 'integer'],
-            [['relation'], 'string'],
+            [['cibil_score', 'gender', 'employment_type', 'years_in_current_house', 'address'], 'integer'],
+            [['relation', 'borrower_type'], 'string'],
             [['annual_income'], 'number'],
             [['co_applicant_dob', 'created_on', 'updated_on'], 'safe'],
             [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'email', 'image', 'image_location', 'occupation', 'created_by', 'updated_by'], 'string', 'max' => 100],
-            [['phone', 'pan_number','aadhaar_link_phone_number'], 'string', 'max' => 15],
+            [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
+            [['voter_card_number'], 'string', 'max' => 20],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['loan_co_app_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],

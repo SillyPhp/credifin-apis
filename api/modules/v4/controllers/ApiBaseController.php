@@ -3,10 +3,8 @@
 namespace api\modules\v4\controllers;
 
 use common\models\AssignedSupervisor;
-use common\models\Organizations;
-use common\models\Referral;
-use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
+use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
 use Yii;
@@ -39,6 +37,10 @@ class ApiBaseController extends Controller
         if (!empty($data)) {
             $response = [
                 'response' => $data
+            ];
+        } else {
+            $response = [
+                'response' => ['status' => $code]
             ];
         }
 
@@ -88,13 +90,18 @@ class ApiBaseController extends Controller
     {
         $source = Yii::$app->request->headers->get('source');
         $bearer_token = Yii::$app->request->headers->get('Authorization');
-        $token = explode(" ", $bearer_token)[1];
+        $token = explode(" ", $bearer_token);
+        if(!isset($token[1])){
+            return false;
+        }
         $access_token = UserAccessTokens::findOne(['access_token' => $token]);
         if (!empty($access_token) && $source == $access_token->source) {
             if (strtotime($access_token->access_token_expiration) > strtotime("now")) {
                 $time_now = date('Y-m-d H:i:s');
                 $access_token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
                 $access_token->refresh_token_expiration = date('Y-m-d H:i:s', strtotime("+11520 minute", strtotime($time_now)));
+                $identity = Candidates::findOne(['user_enc_id' => $access_token->user_enc_id]);
+                Yii::$app->user->login($identity);
                 return Candidates::findOne(['user_enc_id' => $access_token->user_enc_id]);
             }
             return false;
@@ -120,11 +127,11 @@ class ApiBaseController extends Controller
         }
 
         if ($user_type == 'Employee') {
-            $ref_enc_id = ReferralSignUpTracking::findOne(['sign_up_user_enc_id' => $user->user_enc_id])->referral_enc_id;
-            $org_id = Referral::findOne(['referral_enc_id' => $ref_enc_id])->organization_enc_id;
+
+            $org_id = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
 
             if ($org_id) {
-                return $org_id;
+                return $org_id->organization_enc_id;
             }
 
             return null;

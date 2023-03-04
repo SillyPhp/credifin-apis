@@ -7,11 +7,9 @@ use common\models\AssignedSupervisor;
 use common\models\OrganizationAppFields;
 use common\models\OrganizationApps;
 use common\models\OrganizationAppUsers;
-use common\models\Referral;
-use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
 use common\models\spaces\Spaces;
-use common\models\User;
+use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
 use common\models\Utilities;
@@ -242,15 +240,11 @@ class OrganizationAppsController extends ApiBaseController
             }
 
             // checking for employee authorization
-            $ref_enc_id = ReferralSignUpTracking::findOne(['sign_up_user_enc_id' => $user->user_enc_id])->referral_enc_id;
 
-            if ($ref_enc_id) {
+            $org_id = UserRoles::findOne(['user_enc_id' => $user->user_enc_id])->organization_enc_id;
 
-                $org_id = Referral::findOne(['referral_enc_id' => $ref_enc_id])->organization_enc_id;
-
-                if ($org_id && ($org_id == $app->organization_enc_id)) {
-                    return true;
-                }
+            if ($org_id && ($org_id == $app->organization_enc_id)) {
+                return true;
             }
 
 
@@ -404,7 +398,7 @@ class OrganizationAppsController extends ApiBaseController
                         $assigned_user_del->is_deleted = 1;
                         $assigned_user_del->updated_by = $user->user_enc_id;
                         $assigned_user_del->updated_on = date('Y-m-d H:i:s');
-                        if(!$assigned_user_del->update()){
+                        if (!$assigned_user_del->update()) {
                             $transaction->rollBack();
                             return false;
                         }

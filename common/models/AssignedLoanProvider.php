@@ -14,7 +14,7 @@ use Yii;
  * @property string $provider_enc_id linked to organization_enc_id
  * @property string $scheme_enc_id linked to organization schemes
  * @property string $assigned_lender_service_enc_id Assigned Lender Service
- * @property int $status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Sanctioned, 5 as Disbursed,10 as Rejected,11 as Completed
+ * @property int $status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Login, 5 as Credit Check, 6 as Online Login Not Received, 7 as Invalid Login: Login Again, 8 as CIBIL Reject, 9 as CIBIL Approved, 10 as Field Visit & Document Collection, 11 as TL Approved, 12 as PD Planned, 13 as TVR Calling Done, 14 as PD Done, 15 as Soft Approval, 16 as Conditional Sanction, 17 as Pendencies, 18 as Decision Pending, 19 as L&T Fee Pending, 20 as Legal/Technical initiated, 21 as Valuation Received, 22 as Legal Received, 23 as Technical/Legal Approval Received, 24 as Soft Sanction, 25 as Finalise ASAP, 26 as Disbursement Approval, 27 as Disbursement, 28 as CNI, 29 as On Hold, 30 as Sanctioned, 31 as Disbursed, 32 as Rejected, 33 as Completed
  * @property string $remarks ANy remarks or reason for rejection or any status change
  * @property string $branch_enc_id branch id
  * @property double $bdo_approved_amount BDO approved amount
@@ -38,6 +38,7 @@ use Yii;
  * @property InstituteLeads $instituteLeadEnc
  * @property AssignedLenderServices $assignedLenderServiceEnc
  * @property OrganizationLocations $branchEnc
+ * @property LoanStatus $status0
  */
 class AssignedLoanProvider extends \yii\db\ActiveRecord
 {
@@ -70,6 +71,7 @@ class AssignedLoanProvider extends \yii\db\ActiveRecord
             [['institute_lead_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => InstituteLeads::className(), 'targetAttribute' => ['institute_lead_enc_id' => 'lead_enc_id']],
             [['assigned_lender_service_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedLenderServices::className(), 'targetAttribute' => ['assigned_lender_service_enc_id' => 'assigned_lender_service_enc_id']],
             [['branch_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationLocations::className(), 'targetAttribute' => ['branch_enc_id' => 'location_enc_id']],
+            [['status'], 'exist', 'skipOnError' => true, 'targetClass' => LoanStatus::className(), 'targetAttribute' => ['status' => 'value']],
         ];
     }
 
@@ -135,5 +137,13 @@ class AssignedLoanProvider extends \yii\db\ActiveRecord
     public function getBranchEnc()
     {
         return $this->hasOne(OrganizationLocations::className(), ['location_enc_id' => 'branch_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStatus0()
+    {
+        return $this->hasOne(LoanStatus::className(), ['value' => 'status']);
     }
 }
