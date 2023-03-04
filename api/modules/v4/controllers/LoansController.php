@@ -86,10 +86,13 @@ class LoansController extends ApiBaseController
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
             $model->file = UploadedFile::getInstanceByName('bill');
             if ($model->validate()) {
-                $user_id = $this->isAuthorized()->user_enc_id;
-                if (!$user_id) {
+                $user_id = $this->isAuthorized();
+                if (!empty($user_id)) {
+                    $user_id = $user_id->user_enc_id;
+                } else {
                     $user_id = NULL;
                 }
+
 
                 if ($user = $this->isAuthorized()) {
                     $lender = $this->getFinancerId($user);
@@ -802,14 +805,14 @@ class LoansController extends ApiBaseController
                 ->select(['a.old_value', 'a.new_value', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'])
                 ->joinWith(['user b'], false)
                 ->where(['a.loan_id' => $params['loan_id']])
-                ->andWhere(['not', ['a.field' => ['', 'updated_on', 'created_by', 'created_on', 'id','proof_image','proof_image_location', null]]])
+                ->andWhere(['not', ['a.field' => ['', 'updated_on', 'created_by', 'created_on', 'id', 'proof_image', 'proof_image_location', null]]])
                 ->andWhere(['not like', 'a.field', '%_enc_id%', false])
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->orderBy(['a.stamp' => SORT_DESC])
                 ->asArray()
                 ->all();
-            
+
             if ($audit) {
                 return $this->response(200, ['status' => 200, 'audit_list' => $audit]);
             }

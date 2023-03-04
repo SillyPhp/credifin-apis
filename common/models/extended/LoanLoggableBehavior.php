@@ -37,7 +37,7 @@ class LoanLoggableBehavior extends \sammaye\audittrail\LoggableBehavior
             if ($this->getUserId()) {
                 $log->user_id = (string)$this->getUserId(); // Lets get the user id
             } else {
-                $log->user_id = (string)Yii::$app->user->identity->id; // Lets get the user id
+                $log->user_id = isset(Yii::$app->user->identity->id) ? (string)Yii::$app->user->identity->id : null; // Lets get the user id
             }
             return $log->save();
         } else {
