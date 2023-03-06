@@ -60,7 +60,8 @@ namespace common\models;
  * @property int $auto_assigned 0 false, 1 true
  * @property int $is_deleted 0 as False, 1 as True
  * @property int $is_removed 0 as Permanently false 1 as Permanently True
- *
+ * 
+ * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
  * @property AssignedLoanProvider[] $assignedLoanProviders
  * @property EducationLoanPayments[] $educationLoanPayments
  * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
@@ -415,5 +416,13 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanVerificationLocations()
     {
         return $this->hasMany(LoanVerificationLocations::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreditLoanApplicationReports()
+    {
+        return $this->hasMany(CreditLoanApplicationReports::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 }
