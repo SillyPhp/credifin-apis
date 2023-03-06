@@ -485,6 +485,11 @@ class CompanyDashboardController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
 
+            // getting date before 1 month
+            $date = new \DateTime('now');
+            $date->modify('-30 day'); // or you can use '-90 day' for deduct
+            $date = $date->format('Y-m-d');
+
             $organization_id = Users::findOne(['user_enc_id' => $user->user_enc_id])->organization_enc_id;
             $params = Yii::$app->request->post();
 
@@ -512,7 +517,7 @@ class CompanyDashboardController extends ApiBaseController
                     $c->joinWith(['createdBy c2'], false);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
-                ->joinWith(['loanCoApplicants d' => function ($d) {
+                ->joinWith(['loanCoApplicants d' => function ($d) use ($date) {
                     $d->select(['d.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
                         'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation', 'd1.address',
                         'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.co_applicant_dob', 'd.gender', 'd2.city_enc_id', 'd2.name city', 'd3.state_enc_id', 'd3.name state', 'd3.abbreviation state_abbreviation', 'd1.postal_code', 'd3.state_code']);
@@ -520,6 +525,17 @@ class CompanyDashboardController extends ApiBaseController
                         $d1->joinWith(['cityEnc d2'], false);
                         $d1->joinWith(['stateEnc d3'], false);
                     }], false);
+                    $d->joinWith(['creditLoanApplicationReports d4' => function ($d4) use ($date) {
+                        $d4->onCondition(['d4.is_deleted' => 0]);
+                        $d4->onCondition(['>=', "j.created_on", $date]);
+                        $d4->select(['d4.loan_co_app_enc_id', 'd5.file_url', 'd5.filename', 'd5.created_on', 'd6.request_source']);
+                        $d4->joinWith([
+                            'responseEnc d5' => function ($d5) {
+                                $d5->joinWith(['requestEnc d6'], false);
+                            }
+                        ], false);
+                    }
+                    ]);
                 }])
                 ->joinWith(['loanApplicationNotifications e' => function ($e) {
                     $e->select(['e.notification_enc_id', 'e.message', 'e.loan_application_enc_id', 'e.created_on', 'concat(e1.first_name," ",e1.last_name) created_by']);
@@ -547,6 +563,15 @@ class CompanyDashboardController extends ApiBaseController
                     $i->joinWith(['cityEnc i1'], false);
                     $i->joinWith(['stateEnc i2'], false);
                 }], false)
+                ->joinWith(['creditLoanApplicationReports j' => function ($j) use ($date) {
+                    $j->onCondition(['j.loan_co_app_enc_id' => null, 'j.is_deleted' => 0]);
+                    $j->onCondition(['>=', "j.created_on", $date]);
+                    $j->select(['j.loan_app_enc_id', 'j1.file_url', 'j1.filename', 'j1.created_on', 'j2.request_source'])
+                        ->joinWith(['responseEnc j1' => function ($j1) {
+                            $j1->joinWith(['requestEnc j2'], false);
+                        }], false);
+
+                }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();

@@ -132,21 +132,19 @@ class IndividualSignup extends Model
                 return false;
             }
 
-            if ($this->dsaRefId && ($this->user_type == 'Employee' || $this->is_connector)) {
-                if (!$this->signupTracking($user->user_enc_id)) {
-                    $transaction->rollback();
-                    return false;
-                }
+            if (!$this->signupTracking($user->user_enc_id)) {
+                $transaction->rollback();
+                return false;
             }
 
-            if ($this->dsaRefId && $user_type != 'Employee') {
+            if ($this->dsaRefId && $user_type != 'Employee' && $user_type != 'Dealer') {
                 if (!$this->assignedDsaService($user->user_enc_id, $this->dsaRefId)) {
                     $transaction->rollback();
                     return false;
                 }
             }
 
-            if ($user_type == 'Employee') {
+            if ($user_type == 'Employee' || $user_type == 'Dealer') {
                 if (!$this->__addUserRole($user->user_enc_id, $user->user_type_enc_id)) {
                     $transaction->rollback();
                     return false;
