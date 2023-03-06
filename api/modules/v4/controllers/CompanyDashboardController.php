@@ -500,6 +500,7 @@ class CompanyDashboardController extends ApiBaseController
 
             $loan = LoanApplications::find()
                 ->alias('a')
+            
                 ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number',
                     'a.applicant_name', 'a.phone', 'a.email', 'b.status as loan_status', 'a.loan_type', 'a.gender', 'a.applicant_dob',
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address'])
@@ -520,6 +521,16 @@ class CompanyDashboardController extends ApiBaseController
                         $d1->joinWith(['cityEnc d2'], false);
                         $d1->joinWith(['stateEnc d3'], false);
                     }], false);
+                    $d-> joinWith(['creditLoanApplicationReports d4'=> function ($d4){
+                        $d4-> onCondition(['d4.is_deleted'=> 0]);
+                        $d4->select(['d4.loan_co_app_enc_id','d5.file_url','d5.filename','d5.created_on','d6.request_source']);
+                        $d4->joinWith([
+                            'responseEnc d5' =>function($d5){
+                                $d5->joinWith(['requestEnc d6'],false);
+                            }
+                        ], false);
+                    } 
+                ]);
                 }])
                 ->joinWith(['loanApplicationNotifications e' => function ($e) {
                     $e->select(['e.notification_enc_id', 'e.message', 'e.loan_application_enc_id', 'e.created_on', 'concat(e1.first_name," ",e1.last_name) created_by']);
@@ -547,6 +558,20 @@ class CompanyDashboardController extends ApiBaseController
                     $i->joinWith(['cityEnc i1'], false);
                     $i->joinWith(['stateEnc i2'], false);
                 }], false)
+
+                ->joinWith(['creditLoanApplicationReports j'=> function($j){
+                    $j->onCondition([
+                        'j.loan_co_app_enc_id'=> null,'j.is_deleted'=>0
+                    ]);
+                    $j->select([
+                        'j.loan_app_enc_id','j1.file_url','j1.filename','j1.created_on','j2.request_source'
+                    ])->joinWith([
+                        'responseEnc j1' =>function($j1){
+                            $j1->joinWith(['requestEnc j2'],false);
+                        }
+                    ], false);
+                    
+                }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();

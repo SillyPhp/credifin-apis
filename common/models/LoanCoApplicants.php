@@ -33,7 +33,8 @@ use Yii;
  * @property string $created_on created on
  * @property string $updated_on
  * @property string $updated_by
- *
+ * 
+ * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
  * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
  * @property LoanCertificates[] $loanCertificates
  * @property LoanApplications $loanAppEnc
@@ -110,5 +111,13 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     public function getUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
+    }
+    
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreditLoanApplicationReports()
+    {
+        return $this->hasMany(CreditLoanApplicationReports::className(), ['loan_co_app_enc_id' => 'loan_co_app_enc_id']);
     }
 }
