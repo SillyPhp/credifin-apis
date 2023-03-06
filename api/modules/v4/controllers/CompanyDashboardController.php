@@ -527,13 +527,14 @@ class CompanyDashboardController extends ApiBaseController
                     }], false);
                     $d->joinWith(['creditLoanApplicationReports d4' => function ($d4) use ($date) {
                         $d4->onCondition(['d4.is_deleted' => 0]);
-                        $d4->onCondition(['>=', "j.created_on", $date]);
-                        $d4->select(['d4.loan_co_app_enc_id', 'd5.file_url', 'd5.filename', 'd5.created_on', 'd6.request_source']);
+                        $d4->onCondition(['>=', "d4.created_on", $date]);
+                        $d4->select(['d4.loan_co_app_enc_id', 'd5.file_url', 'd5.filename', 'd4.created_on', 'd6.request_source']);
                         $d4->joinWith([
                             'responseEnc d5' => function ($d5) {
                                 $d5->joinWith(['requestEnc d6'], false);
                             }
                         ], false);
+                        $d4->orderBy(['d4.created_on' => SORT_DESC]);
                     }
                     ]);
                 }])
@@ -566,10 +567,11 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['creditLoanApplicationReports j' => function ($j) use ($date) {
                     $j->onCondition(['j.loan_co_app_enc_id' => null, 'j.is_deleted' => 0]);
                     $j->onCondition(['>=', "j.created_on", $date]);
-                    $j->select(['j.loan_app_enc_id', 'j1.file_url', 'j1.filename', 'j1.created_on', 'j2.request_source'])
+                    $j->select(['j.loan_app_enc_id', 'j1.file_url', 'j1.filename', 'j.created_on', 'j2.request_source'])
                         ->joinWith(['responseEnc j1' => function ($j1) {
                             $j1->joinWith(['requestEnc j2'], false);
                         }], false);
+                    $j->orderBy(['j.created_on' => SORT_DESC]);
 
                 }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
