@@ -526,14 +526,14 @@ class CompanyDashboardController extends ApiBaseController
                         $d1->joinWith(['stateEnc d3'], false);
                     }], false);
                     $d->joinWith(['creditLoanApplicationReports d4' => function ($d4) use ($date) {
-                        $d4->onCondition(['d4.is_deleted' => 0]);
-                        $d4->onCondition(['>=', "d4.created_on", $date]);
-                        $d4->select(['d4.loan_co_app_enc_id', 'd5.file_url', 'd5.filename', 'd4.created_on', 'd6.request_source']);
-                        $d4->joinWith([
-                            'responseEnc d5' => function ($d5) {
-                                $d5->joinWith(['requestEnc d6'], false);
-                            }
-                        ], false);
+                        $d4->select(['d4.report_enc_id', 'd4.loan_co_app_enc_id', 'd5.file_url', 'd5.filename', 'd4.created_on', 'd6.request_source']);
+                        $d4->joinWith(['responseEnc d5' => function ($d5) {
+                            $d5->joinWith(['requestEnc d6'], false);
+                        }], false);
+                        $d4->onCondition(['and',
+                            ['d4.is_deleted' => 0],
+                            ['>=', "d4.created_on", $date]
+                        ]);
                         $d4->orderBy(['d4.created_on' => SORT_DESC]);
                     }]);
                     $d->groupBy(['d.loan_co_app_enc_id']);
@@ -565,12 +565,14 @@ class CompanyDashboardController extends ApiBaseController
                     $i->joinWith(['stateEnc i2'], false);
                 }], false)
                 ->joinWith(['creditLoanApplicationReports j' => function ($j) use ($date) {
-                    $j->onCondition(['j.loan_co_app_enc_id' => null, 'j.is_deleted' => 0]);
-                    $j->onCondition(['>=', "j.created_on", $date]);
-                    $j->select(['j.loan_app_enc_id', 'j1.file_url', 'j1.filename', 'j.created_on', 'j2.request_source'])
+                    $j->select(['j.report_enc_id', 'j.loan_app_enc_id', 'j1.file_url', 'j1.filename', 'j.created_on', 'j2.request_source'])
                         ->joinWith(['responseEnc j1' => function ($j1) {
                             $j1->joinWith(['requestEnc j2'], false);
                         }], false);
+                    $j->onCondition(['and',
+                        ['j.loan_co_app_enc_id' => null, 'j.is_deleted' => 0],
+                        ['>=', "j.created_on", $date]
+                    ]);
                     $j->orderBy(['j.created_on' => SORT_DESC]);
 
                 }])
