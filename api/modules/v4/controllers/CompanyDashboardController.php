@@ -535,8 +535,8 @@ class CompanyDashboardController extends ApiBaseController
                             }
                         ], false);
                         $d4->orderBy(['d4.created_on' => SORT_DESC]);
-                    }
-                    ]);
+                    }]);
+                    $d->groupBy(['d.loan_co_app_enc_id']);
                 }])
                 ->joinWith(['loanApplicationNotifications e' => function ($e) {
                     $e->select(['e.notification_enc_id', 'e.message', 'e.loan_application_enc_id', 'e.created_on', 'concat(e1.first_name," ",e1.last_name) created_by']);
