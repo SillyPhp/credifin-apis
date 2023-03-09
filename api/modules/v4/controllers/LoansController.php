@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\BusinessLoanApplication;
+use api\modules\v4\models\DocumentForm;
 use api\modules\v4\models\CoApplicantFrom;
 use common\models\AssignedLoanProvider;
 use common\models\BillDetails;
@@ -481,63 +482,38 @@ class LoansController extends ApiBaseController
 
     public function actionUploadDocument()
     {
+
         if ($user = $this->isAuthorized()) {
+            $identity = $user->user_enc_id;
             $params = Yii::$app->request->post();
-
-
             if (empty($params['loan_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "loan_id"']);
             }
             if (empty($params['document_type'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "document_type"']);
             }
-
             if (empty($params['assigned_to'])) {
                 $params['assigned_to'] = 1;
             }
-
-            $file = UploadedFile::getInstanceByName('file');
-
+            $model = new DocumentForm();
             if (!$type_id = $this->getCertificateTypeId($params['document_type'], $params['assigned_to'])) {
                 return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
             }
-            $utilitiesModel = new Utilities();
-            $certificate = new LoanCertificatesExtended();
-            $certificate->certificate_enc_id = \Yii::$app->getSecurity()->generateRandomString();
-            $certificate->loan_app_enc_id = $params['loan_id'];
-            $certificate->certificate_type_enc_id = $type_id;
-            if (!empty($params['proof_of'])) {
-                $certificate->proof_of = $params['proof_of'];
-            }
-            if (!empty($params['financer_loan_document_enc_id'])) {
-                $certificate->financer_loan_document_enc_id = $params['financer_loan_document_enc_id'];
-            }
-            $certificate->created_by = $user->user_enc_id;
-            if (!empty($params['short_description'])) {
-                $certificate->short_description = $params['short_description'];
-            }
-            $certificate->related_to = (int)$params['assigned_to'];
-            $certificate->proof_image_location = \Yii::$app->getSecurity()->generateRandomString();
-            $base_path = Yii::$app->params->upload_directories->loans->image . $certificate->proof_image_location . '/';
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            if ($file->extension == null || $file->extension == '') {
-                $certificate->proof_image = $utilitiesModel->encrypt() . '.' . 'pdf';
-            } else {
-                $certificate->proof_image = $utilitiesModel->encrypt() . '.' . $file->extension;
-            }
-            $type = $file->type;
-            if ($certificate->save()) {
-                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                $result = $my_space->uploadFileSources($file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $certificate->proof_image, "private", ['params' => ['ContentType' => $type]]);
-                if ($result) {
-                    return $this->response(200, ['status' => 200, 'message' => 'Successfully Saved']);
+            if ($model->load(Yii::$app->request->post(), '')) {
+                $model->proof_images = UploadedFile::getInstances($model, 'proof_images');
+                if ($model->validate()) {
+                    $query = $model->upload($identity, $type_id);
+                    if ($query['status'] == 500) {
+                        return $this->response(500, $query);
+                    }
+                    return $this->response(200, $query);
                 } else {
-                    return $this->response(500, ['status' => 500, 'message' => 'Some Error Occurred']);
+                    return $this->response(422, ['status' => 422, 'error' => $model->getErrors()]);
                 }
-            } else {
-                return $this->response(500, ['status' => 500, 'message' => 'Some Error Occurred', 'error' => $certificate->getErrors()]);
             }
+            return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
 
     }

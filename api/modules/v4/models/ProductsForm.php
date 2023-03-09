@@ -116,8 +116,9 @@ class ProductsForm extends Model
     {
         foreach ($this->images as $i) {
             $image = new ProductImages();
-
-            $image->image_enc_id = Yii::$app->security->generateRandomString(32);
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $image->image_enc_id = $utilitiesModel->encrypt();
             $image->product_enc_id = $product_id;
             $image->image_location = \Yii::$app->getSecurity()->generateRandomString();
             $base_path = Yii::$app->params->upload_directories->refurbished->image . $image->image_location . '/';

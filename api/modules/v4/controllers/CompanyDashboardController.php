@@ -508,6 +508,10 @@ class CompanyDashboardController extends ApiBaseController
                     $c->select(['c.certificate_enc_id', 'c.loan_app_enc_id', 'c.short_description', 'c.certificate_type_enc_id', 'c.number', 'c1.name', 'c.proof_image', 'c.proof_image_location', 'c.created_on', 'CONCAT(c2.first_name," ",c2.last_name) created_by']);
                     $c->joinWith(['certificateTypeEnc c1'], false);
                     $c->joinWith(['createdBy c2'], false);
+                    $c->groupBy(['c.certificate_enc_id']);
+                    $c->joinWith(['loanCertificatesImages c3' => function ($c3) {
+                        $c3->select(['c3.certificate_enc_id', 'c3.image', 'c3.image_location']);
+                    }]);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
                 ->joinWith(['loanCoApplicants d' => function ($d) {
@@ -554,16 +558,16 @@ class CompanyDashboardController extends ApiBaseController
                     ->groupBy(['d.report_enc_id'])
                     ->asArray()
                     ->one();
-
                 $loan['loanSanctionReports'] = $loan_sanction_report;
-
                 if ($loan['loanCertificates']) {
                     foreach ($loan['loanCertificates'] as $key => $val) {
-                        if ($val['proof_image']) {
-                            $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-                            $proof = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . $val['proof_image_location'] . DIRECTORY_SEPARATOR . $val['proof_image'], "15 minutes");
-                            $loan['loanCertificates'][$key]['proof_image'] = $proof;
+                        if ($val['loanCertificatesImages']) {
+                            foreach ($val['loanCertificatesImages'] as $imageKey => $imageValue) {
+                                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                                $proof = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . $imageValue['image_location'] . DIRECTORY_SEPARATOR . $imageValue['image'], "15 minutes");
+                                $loan['loanCertificates'][$key]['loanCertificatesImages'][$imageKey]['image'] = $proof;
+                            }
                         }
                     }
                 }
