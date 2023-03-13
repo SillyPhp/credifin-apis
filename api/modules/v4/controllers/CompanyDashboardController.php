@@ -529,7 +529,6 @@ class CompanyDashboardController extends ApiBaseController
                         $d4->select(['d4.report_enc_id', 'd4.loan_co_app_enc_id', 'd5.file_url', 'd5.filename', 'd4.created_on', 'd6.request_source']);
                         $d4->joinWith(['responseEnc d5' => function ($d5) {
                             $d5->joinWith(['requestEnc d6'], false);
-                            $d5->andWhere(['not', ['d5.file_url' => null]]);
                         }], false);
                         $d4->onCondition(['and',
                             ['d4.is_deleted' => 0],
@@ -569,7 +568,6 @@ class CompanyDashboardController extends ApiBaseController
                     $j->select(['j.report_enc_id', 'j.loan_app_enc_id', 'j1.file_url', 'j1.filename', 'j.created_on', 'j2.request_source'])
                         ->joinWith(['responseEnc j1' => function ($j1) {
                             $j1->joinWith(['requestEnc j2'], false);
-                            $j1->andWhere(['not', ['j1.file_url' => null]]);
                         }], false);
                     $j->onCondition(['and',
                         ['j.loan_co_app_enc_id' => null, 'j.is_deleted' => 0],
