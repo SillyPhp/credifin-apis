@@ -109,6 +109,8 @@ class CompanyDashboardController extends ApiBaseController
                 ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
                 ->exists();
 
+            $shared_apps = $this->sharedApps($user->user_enc_id);
+
             $stats = LoanApplications::find()
                 ->alias('a')
                 ->select([
@@ -135,6 +137,10 @@ class CompanyDashboardController extends ApiBaseController
                 }
             } else {
                 $stats->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
+            }
+
+            if ($shared_apps['app_ids']) {
+                $stats->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
             }
 
             $stats = $stats->asArray()
@@ -367,7 +373,7 @@ class CompanyDashboardController extends ApiBaseController
         }
 
         $loans = $loans
-            ->orderBy(['a.created_on' => SORT_DESC])
+            ->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC])
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
@@ -479,6 +485,11 @@ class CompanyDashboardController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
 
+            // getting date before 1 month
+            $date = new \DateTime('now');
+            $date->modify('-30 day'); // or you can use '-90 day' for deduct
+            $date = $date->format('Y-m-d');
+
             $organization_id = Users::findOne(['user_enc_id' => $user->user_enc_id])->organization_enc_id;
             $params = Yii::$app->request->post();
 
@@ -492,15 +503,11 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
-//            if (empty($params['provider_id'])) {
-//                return $this->response(422, ['status' => 422, 'message' => 'missing information "provider_id"']);
-//            }
-
-
             $loan = LoanApplications::find()
                 ->alias('a')
-                ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number',
-                    'a.applicant_name', 'a.phone', 'a.email', 'b.status as loan_status', 'a.loan_type'])
+                ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number',
+                    'a.applicant_name', 'a.phone', 'a.email', 'b.status as loan_status', 'a.loan_type', 'a.gender', 'a.applicant_dob',
+                    'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address'])
                 ->joinWith(['assignedLoanProviders b' => function ($b) use ($organization_id) {
 //                    $b->where(['b.provider_enc_id' => $organization_id]);
                 }], false)
@@ -514,11 +521,26 @@ class CompanyDashboardController extends ApiBaseController
                     }]);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
-                ->joinWith(['loanCoApplicants d' => function ($d) {
+                ->joinWith(['loanCoApplicants d' => function ($d) use ($date) {
                     $d->select(['d.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
                         'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation', 'd1.address',
-                        'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.co_applicant_dob']);
-                    $d->joinWith(['loanApplicantResidentialInfos d1'], false);
+                        'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.co_applicant_dob', 'd.gender', 'd2.city_enc_id', 'd2.name city', 'd3.state_enc_id', 'd3.name state', 'd3.abbreviation state_abbreviation', 'd1.postal_code', 'd3.state_code']);
+                    $d->joinWith(['loanApplicantResidentialInfos d1' => function ($d1) {
+                        $d1->joinWith(['cityEnc d2'], false);
+                        $d1->joinWith(['stateEnc d3'], false);
+                    }], false);
+                    $d->joinWith(['creditLoanApplicationReports d4' => function ($d4) use ($date) {
+                        $d4->select(['d4.report_enc_id', 'd4.loan_co_app_enc_id', 'd5.file_url', 'd5.filename', 'd4.created_on', 'd6.request_source']);
+                        $d4->joinWith(['responseEnc d5' => function ($d5) {
+                            $d5->joinWith(['requestEnc d6'], false);
+                        }], false);
+                        $d4->onCondition(['and',
+                            ['d4.is_deleted' => 0],
+                            ['>=', "d4.created_on", $date],
+                        ]);
+                        $d4->orderBy(['d4.created_on' => SORT_DESC]);
+                    }]);
+                    $d->groupBy(['d.loan_co_app_enc_id']);
                 }])
                 ->joinWith(['loanApplicationNotifications e' => function ($e) {
                     $e->select(['e.notification_enc_id', 'e.message', 'e.loan_application_enc_id', 'e.created_on', 'concat(e1.first_name," ",e1.last_name) created_by']);
@@ -541,6 +563,22 @@ class CompanyDashboardController extends ApiBaseController
                     ]);
                     $h->joinWith(['createdBy h1'], false);
                     $h->onCondition(['h.is_deleted' => 0]);
+                }])
+                ->joinWith(['loanApplicantResidentialInfos i' => function ($i) {
+                    $i->joinWith(['cityEnc i1'], false);
+                    $i->joinWith(['stateEnc i2'], false);
+                }], false)
+                ->joinWith(['creditLoanApplicationReports j' => function ($j) use ($date) {
+                    $j->select(['j.report_enc_id', 'j.loan_app_enc_id', 'j1.file_url', 'j1.filename', 'j.created_on', 'j2.request_source'])
+                        ->joinWith(['responseEnc j1' => function ($j1) {
+                            $j1->joinWith(['requestEnc j2'], false);
+                        }], false);
+                    $j->onCondition(['and',
+                        ['j.loan_co_app_enc_id' => null, 'j.is_deleted' => 0],
+                        ['>=', "j.created_on", $date],
+                    ]);
+                    $j->orderBy(['j.created_on' => SORT_DESC]);
+
                 }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
@@ -1649,6 +1687,8 @@ class CompanyDashboardController extends ApiBaseController
                 ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
                 ->exists();
 
+            $shared_apps = $this->sharedApps($user->user_enc_id);
+
             $stats = LoanApplications::find()
                 ->alias('a')
                 ->select(['j1.loan_status', 'COUNT(a.status) count', 'j1.status_color', 'j1.value'])
@@ -1667,6 +1707,10 @@ class CompanyDashboardController extends ApiBaseController
                 }
             } else {
                 $stats->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
+            }
+
+            if ($shared_apps['app_ids']) {
+                $stats->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
             }
 
             if (!empty($params['loan_type'])) {

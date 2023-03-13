@@ -36,6 +36,7 @@ namespace common\models;
  * @property double $amount_due
  * @property double $scholarship
  * @property string $aadhaar_number
+ * @property string $pan_number
  * @property string $source
  * @property int $ask_guarantor_info 1 for yes 0 for no
  * @property string $deadline
@@ -59,7 +60,8 @@ namespace common\models;
  * @property int $auto_assigned 0 false, 1 true
  * @property int $is_deleted 0 as False, 1 as True
  * @property int $is_removed 0 as Permanently false 1 as Permanently True
- *
+ * 
+ * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
  * @property AssignedLoanProvider[] $assignedLoanProviders
  * @property EducationLoanPayments[] $educationLoanPayments
  * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
@@ -119,7 +121,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship'], 'number'],
             [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'created_by', 'updated_by', 'lead_application_enc_id'], 'string', 'max' => 100],
             [['application_number'], 'string', 'max' => 50],
-            [['phone', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
+            [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['loan_purpose'], 'string', 'max' => 255],
             [['loan_app_enc_id'], 'unique'],
@@ -414,5 +416,13 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanVerificationLocations()
     {
         return $this->hasMany(LoanVerificationLocations::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreditLoanApplicationReports()
+    {
+        return $this->hasMany(CreditLoanApplicationReports::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 }

@@ -24,13 +24,14 @@ class CoApplicantFrom extends Model
     public $city;
     public $state;
     public $zip;
+    public $gender;
 
 
     public function rules()
     {
         return [
-            [['name', 'phone', 'dob', 'relation', 'borrower_type'], 'required'],
-            [['pan_number', 'aadhaar_number', 'voter_card_number', 'address', 'city', 'state', 'zip'], 'safe'],
+            [['name', 'dob', 'relation', 'borrower_type'], 'required'],
+            [['pan_number', 'phone', 'aadhaar_number', 'voter_card_number', 'address', 'city', 'state', 'zip', 'gender'], 'safe'],
             [['name', 'phone', 'pan_number', 'aadhaar_number', 'voter_card_number'], 'trim'],
             [['name'], 'string', 'max' => 200],
             [['phone'], 'string', 'length' => [10, 15]],
@@ -50,6 +51,7 @@ class CoApplicantFrom extends Model
             $co_applicant->phone = $this->phone;
             $co_applicant->co_applicant_dob = $this->dob;
             $co_applicant->relation = $this->relation;
+            $co_applicant->gender = $this->gender;
             $co_applicant->borrower_type = $this->borrower_type;
             $co_applicant->pan_number = $this->pan_number;
             $co_applicant->aadhaar_number = $this->aadhaar_number;
@@ -86,5 +88,47 @@ class CoApplicantFrom extends Model
             $transaction->rollBack();
             return ['status' => 500, 'message' => 'an error occurred', 'error1' => $exception->getMessage()];
         }
+    }
+
+    public function update($co_app_id, $user_id)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $co_applicant = LoanCoApplicantsExtended::findOne(['loan_co_app_enc_id' => $co_app_id]);
+
+            $co_applicant->name = $this->name ? $this->name : $co_applicant->name;
+            $co_applicant->co_applicant_dob = $this->dob ? $this->dob : $co_applicant->co_applicant_dob;
+            $co_applicant->phone = $this->phone ? $this->phone : $co_applicant->phone;
+            $co_applicant->gender = $this->gender ? $this->gender : $co_applicant->gender;
+            $co_applicant->pan_number = $this->pan_number ? $this->pan_number : $co_applicant->pan_number;
+            $co_applicant->aadhaar_number = $this->aadhaar_number ? $this->aadhaar_number : $co_applicant->aadhaar_number;
+            $co_applicant->voter_card_number = $this->voter_card_number ? $this->voter_card_number : $co_applicant->voter_card_number;
+            $co_applicant->updated_by = $user_id;
+            $co_applicant->updated_on = date('Y-m-d H:i:s');
+            if (!$co_applicant->update()) {
+                $transaction->rollBack();
+                return ['status' => 500, 'message' => 'an error occurred', 'error' => $co_applicant->getErrors()];
+            }
+
+            // saving address
+            $loan_address = LoanApplicantResidentialInfoExtended::findOne(['loan_co_app_enc_id' => $co_app_id]);
+            $loan_address->address = $this->address ? $this->address : $loan_address->address;
+            $loan_address->city_enc_id = $this->city ? $this->city : $loan_address->city_enc_id;
+            $loan_address->state_enc_id = $this->state ? $this->state : $loan_address->state_enc_id;
+            $loan_address->postal_code = $this->zip ? $this->zip : $loan_address->postal_code;
+            $loan_address->updated_on = date('Y-m-d H:i:s');
+            $loan_address->updated_by = $user_id;
+            if (!$loan_address->save()) {
+                $transaction->rollBack();
+                return ['status' => 500, 'message' => 'an error occurred', 'error2' => $loan_address->getErrors()];
+            }
+            $transaction->commit();
+
+            return ['status' => 200, 'message' => 'successfully updated'];
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return ['status' => 500, 'message' => 'an error occurred', 'error1' => $exception->getMessage()];
+        }
+
     }
 }
