@@ -612,7 +612,7 @@ class CompanyDashboardController extends ApiBaseController
 
                 $branch = AssignedLoanProvider::find()
                     ->alias('a')
-                    ->select(['a.assigned_loan_provider_enc_id', 'a.branch_enc_id', 'b.location_name', 'b1.name city'])
+                    ->select(['a.assigned_loan_provider_enc_id', 'a.branch_enc_id', 'b.location_name', 'b1.name city', 'a.bdo_approved_amount', 'a.tl_approved_amount', 'a.soft_approval', 'a.soft_sanction', 'a.valuation', 'a.disbursement_approved', 'a.insurance_charges'])
                     ->joinWith(['branchEnc b' => function ($b) {
                         $b->joinWith(['cityEnc b1']);
                     }], false)
@@ -623,6 +623,13 @@ class CompanyDashboardController extends ApiBaseController
                 if (!empty($branch)) {
                     $loan['branch_id'] = $branch['branch_enc_id'];
                     $loan['branch'] = $branch['location_name'] ? $branch['location_name'] . ', ' . $branch['city'] : $branch['city'];
+                    $loan['bdo_approved_amount'] = $branch['bdo_approved_amount'];
+                    $loan['tl_approved_amount'] = $branch['tl_approved_amount'];
+                    $loan['soft_approval'] = $branch['soft_approval'];
+                    $loan['soft_sanction'] = $branch['soft_sanction'];
+                    $loan['valuation'] = $branch['valuation'];
+                    $loan['disbursement_approved'] = $branch['disbursement_approved'];
+                    $loan['insurance_charges'] = $branch['insurance_charges'];
                 }
 
                 $loan['loan_partners'] = $this->__applicationPartners($user, $loan['loan_app_enc_id']);
