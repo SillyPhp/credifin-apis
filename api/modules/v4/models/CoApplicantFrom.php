@@ -112,12 +112,19 @@ class CoApplicantFrom extends Model
 
             // saving address
             $loan_address = LoanApplicantResidentialInfoExtended::findOne(['loan_co_app_enc_id' => $co_app_id]);
+            if (!empty($loan_address)) {
+                $loan_address->updated_on = date('Y-m-d H:i:s');
+                $loan_address->updated_by = $user_id;
+            } else {
+                $loan_address = new LoanApplicantResidentialInfoExtended();
+                $loan_address->created_on = date('Y-m-d H:i:s');
+                $loan_address->created_by = $user_id;
+            }
             $loan_address->address = $this->address ? $this->address : $loan_address->address;
             $loan_address->city_enc_id = $this->city ? $this->city : $loan_address->city_enc_id;
             $loan_address->state_enc_id = $this->state ? $this->state : $loan_address->state_enc_id;
             $loan_address->postal_code = $this->zip ? $this->zip : $loan_address->postal_code;
-            $loan_address->updated_on = date('Y-m-d H:i:s');
-            $loan_address->updated_by = $user_id;
+
             if (!$loan_address->save()) {
                 $transaction->rollBack();
                 return ['status' => 500, 'message' => 'an error occurred', 'error2' => $loan_address->getErrors()];
