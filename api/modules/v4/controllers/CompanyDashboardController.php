@@ -21,6 +21,7 @@ use common\models\LoanApplicationNotifications;
 use common\models\LoanApplicationPartners;
 use common\models\LoanApplications;
 use common\models\LoanSanctionReports;
+use common\models\LoanType;
 use common\models\Organizations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
@@ -651,6 +652,7 @@ class CompanyDashboardController extends ApiBaseController
                 }
 
                 $loan['loan_partners'] = $this->__applicationPartners($user, $loan['loan_app_enc_id']);
+                $loan['loan_type_code'] = LoanType::findOne(['name' => $loan['loan_type']])->value;
 
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }
