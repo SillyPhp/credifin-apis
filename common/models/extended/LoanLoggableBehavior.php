@@ -121,6 +121,7 @@ class LoanLoggableBehavior extends \sammaye\audittrail\LoggableBehavior
         switch ($key) {
             case 'created_by':
             case 'updated_by':
+            case 'last_updated_by':
             case 'managed_by':
             case 'lead_by':
             case 'shared_by':
