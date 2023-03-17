@@ -21,6 +21,7 @@ use common\models\LoanApplicationNotifications;
 use common\models\LoanApplicationPartners;
 use common\models\LoanApplications;
 use common\models\LoanSanctionReports;
+use common\models\LoanType;
 use common\models\Organizations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
@@ -371,9 +372,31 @@ class CompanyDashboardController extends ApiBaseController
         } else {
             $loans->andWhere(['!=', 'a.form_type', 'diwali-dhamaka']);
         }
+        if (isset($params['field_sort']) && !empty($params['field_sort'])) {
+            $a = ['applicant_name', 'application_number', 'amount', 'apply_date', 'loan_type'];
+            $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status'];
+            foreach ($params['field_sort'] as $key => $val) {
+                if ($val == 'asc') {
+                    $val = SORT_ASC;
+                } else if ($val == 'desc') {
+                    $val = SORT_DESC;
+                }
+                if (in_array($key, $a)) {
+                    if ($key == 'apply_date') {
+                        $loans->orderBy(['a.created_on' => $val]);
+                    } else {
+                        $loans->orderBy(['a.' . $key => $val]);
+                    }
+                    if (in_array($key, $i)) {
+                        $loans->orderBy(['i.' . $key => $val]);
+                    }
+                }
+            }
 
+        } else {
+            $loans->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
+        }
         $loans = $loans
-            ->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC])
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
@@ -532,7 +555,7 @@ class CompanyDashboardController extends ApiBaseController
                         }], false);
                         $d4->onCondition(['and',
                             ['d4.is_deleted' => 0],
-                            ['>=', "d4.created_on", $date]
+                            ['>=', "d4.created_on", $date],
                         ]);
                         $d4->orderBy(['d4.created_on' => SORT_DESC]);
                     }]);
@@ -571,7 +594,7 @@ class CompanyDashboardController extends ApiBaseController
                         }], false);
                     $j->onCondition(['and',
                         ['j.loan_co_app_enc_id' => null, 'j.is_deleted' => 0],
-                        ['>=', "j.created_on", $date]
+                        ['>=', "j.created_on", $date],
                     ]);
                     $j->orderBy(['j.created_on' => SORT_DESC]);
 
@@ -608,7 +631,7 @@ class CompanyDashboardController extends ApiBaseController
 
                 $branch = AssignedLoanProvider::find()
                     ->alias('a')
-                    ->select(['a.assigned_loan_provider_enc_id', 'a.branch_enc_id', 'b.location_name', 'b1.name city'])
+                    ->select(['a.assigned_loan_provider_enc_id', 'a.branch_enc_id', 'b.location_name', 'b1.name city', 'a.bdo_approved_amount', 'a.tl_approved_amount', 'a.soft_approval', 'a.soft_sanction', 'a.valuation', 'a.disbursement_approved', 'a.insurance_charges'])
                     ->joinWith(['branchEnc b' => function ($b) {
                         $b->joinWith(['cityEnc b1']);
                     }], false)
@@ -619,9 +642,17 @@ class CompanyDashboardController extends ApiBaseController
                 if (!empty($branch)) {
                     $loan['branch_id'] = $branch['branch_enc_id'];
                     $loan['branch'] = $branch['location_name'] ? $branch['location_name'] . ', ' . $branch['city'] : $branch['city'];
+                    $loan['bdo_approved_amount'] = $branch['bdo_approved_amount'];
+                    $loan['tl_approved_amount'] = $branch['tl_approved_amount'];
+                    $loan['soft_approval'] = $branch['soft_approval'];
+                    $loan['soft_sanction'] = $branch['soft_sanction'];
+                    $loan['valuation'] = $branch['valuation'];
+                    $loan['disbursement_approved'] = $branch['disbursement_approved'];
+                    $loan['insurance_charges'] = $branch['insurance_charges'];
                 }
 
                 $loan['loan_partners'] = $this->__applicationPartners($user, $loan['loan_app_enc_id']);
+                $loan['loan_type_code'] = LoanType::findOne(['name' => $loan['loan_type']])->value;
 
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }

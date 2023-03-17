@@ -33,6 +33,7 @@ use Yii;
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property FinancerLoanDocuments $financerLoanDocumentEnc
+ * @property LoanCertificatesImages[] $loanCertificatesImages
  */
 class LoanCertificates extends \yii\db\ActiveRecord
 {
@@ -114,5 +115,13 @@ class LoanCertificates extends \yii\db\ActiveRecord
     public function getFinancerLoanDocumentEnc()
     {
         return $this->hasOne(FinancerLoanDocuments::className(), ['financer_loan_document_enc_id' => 'financer_loan_document_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanCertificatesImages()
+    {
+        return $this->hasMany(LoanCertificatesImages::className(), ['certificate_enc_id' => 'certificate_enc_id']);
     }
 }

@@ -123,6 +123,8 @@ class LoanLoggableBehavior extends \sammaye\audittrail\LoggableBehavior
             case 'updated_by':
             case 'managed_by':
             case 'lead_by':
+            case 'shared_by':
+            case 'shared_to':
             case 'cpa':
                 if ($value) {
                     $model = Users::findOne(['user_enc_id' => $value]);
