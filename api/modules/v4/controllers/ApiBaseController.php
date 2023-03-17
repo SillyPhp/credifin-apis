@@ -133,9 +133,18 @@ class ApiBaseController extends Controller
             if ($org_id) {
                 return $org_id->organization_enc_id;
             }
-
             return null;
         }
+        if ($user_type == 'Dealer') {
+
+            $org_id = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+
+            if ($org_id) {
+                return $org_id->organization_enc_id;
+            }
+            return null;
+        }
+
 
         if ($user_type == 'DSA') {
 
