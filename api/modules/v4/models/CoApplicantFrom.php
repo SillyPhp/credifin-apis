@@ -117,6 +117,9 @@ class CoApplicantFrom extends Model
                 $loan_address->updated_by = $user_id;
             } else {
                 $loan_address = new LoanApplicantResidentialInfoExtended();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+                $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
                 $loan_address->created_on = date('Y-m-d H:i:s');
                 $loan_address->created_by = $user_id;
             }
