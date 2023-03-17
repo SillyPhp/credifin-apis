@@ -372,9 +372,31 @@ class CompanyDashboardController extends ApiBaseController
         } else {
             $loans->andWhere(['!=', 'a.form_type', 'diwali-dhamaka']);
         }
+        if (isset($params['field_sort']) && !empty($params['field_sort'])) {
+            $a = ['applicant_name', 'application_number', 'amount', 'apply_date', 'loan_type'];
+            $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status'];
+            foreach ($params['field_sort'] as $key => $val) {
+                if ($val == 'asc') {
+                    $val = SORT_ASC;
+                } else if ($val == 'desc') {
+                    $val = SORT_DESC;
+                }
+                if (in_array($key, $a)) {
+                    if ($key == 'apply_date') {
+                        $loans->orderBy(['a.created_on' => $val]);
+                    } else {
+                        $loans->orderBy(['a.' . $key => $val]);
+                    }
+                    if (in_array($key, $i)) {
+                        $loans->orderBy(['i.' . $key => $val]);
+                    }
+                }
+            }
 
+        } else {
+            $loans->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
+        }
         $loans = $loans
-            ->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC])
             ->limit($limit)
             ->offset(($page - 1) * $limit)
             ->asArray()
