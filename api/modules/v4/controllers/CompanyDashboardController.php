@@ -376,20 +376,24 @@ class CompanyDashboardController extends ApiBaseController
             $a = ['applicant_name', 'application_number', 'amount', 'apply_date', 'loan_type'];
             $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status'];
             foreach ($params['field_sort'] as $key => $val) {
-                if ($val == 'asc') {
-                    $val = SORT_ASC;
-                } else if ($val == 'desc') {
-                    $val = SORT_DESC;
-                }
-                if (in_array($key, $a)) {
-                    if ($key == 'apply_date') {
-                        $loans->orderBy(['a.created_on' => $val]);
-                    } else {
-                        $loans->orderBy(['a.' . $key => $val]);
+                if ($val != null || $val != '') {
+                    if ($val == 'ASC') {
+                        $val = SORT_ASC;
+                    } else if ($val == 'DESC') {
+                        $val = SORT_DESC;
                     }
-                    if (in_array($key, $i)) {
-                        $loans->orderBy(['i.' . $key => $val]);
+                    if (in_array($key, $a)) {
+                        if ($key == 'apply_date') {
+                            $loans->orderBy(['a.created_on' => $val]);
+                        } else {
+                            $loans->orderBy(['a.' . $key => $val]);
+                        }
+                        if (in_array($key, $i)) {
+                            $loans->orderBy(['i.' . $key => $val]);
+                        }
                     }
+                } else {
+                    $loans->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
                 }
             }
 
