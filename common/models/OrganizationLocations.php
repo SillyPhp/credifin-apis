@@ -43,7 +43,6 @@ class OrganizationLocations extends \yii\db\ActiveRecord
     {
         return '{{%organization_locations}}';
     }
-
     /**
      * @inheritdoc
      */
