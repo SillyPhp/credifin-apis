@@ -36,6 +36,8 @@ namespace common\models;
  * @property double $amount_due
  * @property double $scholarship
  * @property string $aadhaar_number
+ * @property string $voter_card_number
+
  * @property string $pan_number
  * @property string $source
  * @property int $ask_guarantor_info 1 for yes 0 for no
@@ -122,6 +124,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'created_by', 'updated_by', 'lead_application_enc_id'], 'string', 'max' => 100],
             [['application_number'], 'string', 'max' => 50],
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
+            [['voter_card_number'], 'string', 'max' => 20],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['loan_purpose'], 'string', 'max' => 255],
             [['loan_app_enc_id'], 'unique'],
