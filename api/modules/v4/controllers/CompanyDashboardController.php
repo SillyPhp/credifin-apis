@@ -449,16 +449,28 @@ class CompanyDashboardController extends ApiBaseController
                 $loans[$key]['claimedDeals'] = $d;
 
                 $provider_id = $this->getFinancerId($user);
-                $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $provider_id]);
+//                $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $provider_id]);
+
+                $provider = AssignedLoanProvider::find()
+                    ->alias('a')
+                    ->select(['a.assigned_loan_provider_enc_id', 'a.branch_enc_id', 'b.location_name', 'b1.name city', 'a.bdo_approved_amount', 'a.tl_approved_amount', 'a.soft_approval', 'a.soft_sanction', 'a.valuation', 'a.disbursement_approved', 'a.insurance_charges'])
+                    ->joinWith(['branchEnc b' => function ($b) {
+                        $b->joinWith(['cityEnc b1']);
+                    }], false)
+                    ->andWhere(['a.loan_application_enc_id' => $val['loan_app_enc_id'], 'a.provider_enc_id' => $provider_id])
+                    ->asArray()
+                    ->one();
 
                 if (!empty($provider)) {
-                    $loans[$key]['bdo_approved_amount'] = $provider->bdo_approved_amount;
-                    $loans[$key]['tl_approved_amount'] = $provider->tl_approved_amount;
-                    $loans[$key]['soft_approval'] = $provider->soft_approval;
-                    $loans[$key]['soft_sanction'] = $provider->soft_sanction;
-                    $loans[$key]['valuation'] = $provider->valuation;
-                    $loans[$key]['disbursement_approved'] = $provider->disbursement_approved;
-                    $loans[$key]['insurance_charges'] = $provider->insurance_charges;
+                    $loans[$key]['bdo_approved_amount'] = $provider['bdo_approved_amount'];
+                    $loans[$key]['tl_approved_amount'] = $provider['tl_approved_amount'];
+                    $loans[$key]['soft_approval'] = $provider['soft_approval'];
+                    $loans[$key]['soft_sanction'] = $provider['soft_sanction'];
+                    $loans[$key]['valuation'] = $provider['valuation'];
+                    $loans[$key]['disbursement_approved'] = $provider['disbursement_approved'];
+                    $loans[$key]['insurance_charges'] = $provider['insurance_charges'];
+                    $loans[$key]['branch_id'] = $provider['branch_enc_id'];
+                    $loans[$key]['branch'] = $provider['location_name'] ? $provider['location_name'] . ', ' . $provider['city'] : $provider['city'];
                 }
 
             }
