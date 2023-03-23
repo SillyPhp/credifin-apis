@@ -464,6 +464,7 @@ class LoanApplication extends Model
             $model->email = $this->email ? $this->email : $model->email;
             $model->gender = $this->gender ? $this->gender : $model->gender;
             $model->aadhaar_number = $this->aadhar_number ? $this->aadhar_number : $model->aadhaar_number;
+            $model->voter_card_number = $this->voter_card_number ? $this->voter_card_number : $model->voter_card_number;
             $model->pan_number = $this->pan_number ? $this->pan_number : $model->pan_number;
             $model->applicant_dob = $this->applicant_dob ? $this->applicant_dob : $model->applicant_dob;
             $model->loan_purpose = $this->loan_purpose ? $this->loan_purpose : $model->loan_purpose;

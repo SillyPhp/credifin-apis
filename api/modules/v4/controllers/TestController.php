@@ -208,9 +208,7 @@ class TestController extends ApiBaseController
                 ->joinWith(['loanCoApplicants b' => function ($b) {
                     $b->joinWith(['loanApplicantResidentialInfos b1']);
                     $b->select(['b.loan_app_enc_id',
-                        'b.relation',
                         'b.name','b1.type','b1.address']);
-
                 }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
@@ -219,14 +217,3 @@ class TestController extends ApiBaseController
         }
     }
 }
-
-//                ->alias('a')
-//                ->select(['COUNT(b.loan_application_enc_id) count','b1.location_name'])
-//                ->joinWith(['assignedLoanProviders b' => function ($b) {
-//                    $b ->joinWith(['branchEnc b1']);
-//                }], false)
-//                ->andWhere(['b.provider_enc_id'=>$user->organization_enc_id])
-//                ->andWhere(['between','a.created_on',$previousDate,$todayDate]);
-
-
-
