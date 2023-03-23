@@ -6,6 +6,11 @@ use common\models\AssignedLoanProvider;
 use common\models\BillDetails;
 use common\models\CertificateTypes;
 use common\models\EmailLogs;
+use common\models\extended\AssignedLoanProviderExtended;
+use common\models\extended\LoanApplicantResidentialInfoExtended;
+use common\models\extended\LoanApplicationOptionsExtended;
+use common\models\extended\LoanApplicationsExtended;
+use common\models\extended\LoanCertificatesExtended;
 use common\models\LoanCertificates;
 use common\models\LoanPurpose;
 use common\models\Organizations;
@@ -67,6 +72,8 @@ class LoanApplication extends Model
     public $form_type;
 
     public $branch_id;
+    public $applicant_dob;
+    public $gender;
 
     public function formName()
     {
@@ -78,7 +85,7 @@ class LoanApplication extends Model
         return [
             [['applicant_name', 'loan_type', 'phone_no'], 'required'],
             [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhar_number', 'loan_lender',
-                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount',
+                'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount', 'applicant_dob', 'gender',
                 'vehicle_brand', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type', 'branch_id'], 'safe'],
             [['applicant_name', 'loan_purpose', 'email'], 'trim'],
             [['applicant_name'], 'string', 'max' => 200],
@@ -99,7 +106,7 @@ class LoanApplication extends Model
                 $user_type = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
             }
 
-            $model = new LoanApplications();
+            $model = new LoanApplicationsExtended();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $model->loan_app_enc_id = $utilitiesModel->encrypt();
@@ -108,6 +115,10 @@ class LoanApplication extends Model
             $model->applicant_current_city = $this->current_city;
             $model->phone = $this->phone_no;
             $model->email = $this->email;
+            $model->applicant_dob = $this->applicant_dob;
+            $model->gender = $this->gender;
+            $model->aadhaar_number = $this->aadhar_number;
+            $model->pan_number = $this->pan_number;
             $model->amount = str_replace(',', '', $this->loan_amount);
             $model->source = 'EmpowerFintech';
             if ($this->form_type == 'diwali-dhamaka') {
@@ -154,7 +165,7 @@ class LoanApplication extends Model
 
             // saving other options
             if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Vehicle Loan') {
-                $loan_options = new LoanApplicationOptions();
+                $loan_options = new LoanApplicationOptionsExtended();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $loan_options->option_enc_id = $utilitiesModel->encrypt();
                 $loan_options->loan_app_enc_id = $model->loan_app_enc_id;
@@ -182,7 +193,8 @@ class LoanApplication extends Model
             }
 
             // saving address
-            $loan_address = new LoanApplicantResidentialInfo();
+            $loan_address = new LoanApplicantResidentialInfoExtended();
+            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
             $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
             $loan_address->loan_app_enc_id = $model->loan_app_enc_id;
             $loan_address->address = $this->address;
@@ -382,7 +394,7 @@ class LoanApplication extends Model
         }
 
 
-        $loanCertificate = new LoanCertificates();
+        $loanCertificate = new LoanCertificatesExtended();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $loanCertificate->certificate_enc_id = $utilitiesModel->encrypt();
         $loanCertificate->loan_app_enc_id = $loan_id;
@@ -412,7 +424,7 @@ class LoanApplication extends Model
             return false;
         }
 
-        $loan_provider = new AssignedLoanProvider();
+        $loan_provider = new AssignedLoanProviderExtended();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $loan_provider->assigned_loan_provider_enc_id = $utilitiesModel->encrypt();
@@ -437,9 +449,13 @@ class LoanApplication extends Model
         try {
 
             $utilitiesModel = new Utilities();
-            $model = LoanApplications::findOne(['loan_app_enc_id' => $loan_id]);
+            $model = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $loan_id]);
             $model->applicant_current_city = $this->current_city;
             $model->email = $this->email ? $this->email : $model->email;
+            $model->gender = $this->gender ? $this->gender : $model->gender;
+            $model->aadhaar_number = $this->aadhar_number ? $this->aadhar_number : $model->aadhaar_number;
+            $model->pan_number = $this->pan_number ? $this->pan_number : $model->pan_number;
+            $model->applicant_dob = $this->applicant_dob ? $this->applicant_dob : $model->applicant_dob;
             $model->loan_purpose = $this->loan_purpose ? $this->loan_purpose : $model->loan_purpose;
             $model->yearly_income = $this->annual_income ? $this->annual_income : $model->yearly_income;
             $model->updated_on = date('Y-m-d H:i:s');
@@ -452,9 +468,9 @@ class LoanApplication extends Model
 
             // saving other options
             if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Vehicle Loan') {
-                $loan_options = LoanApplicationOptions::findOne(['loan_app_enc_id' => $loan_id, 'is_deleted' => 0]);
+                $loan_options = LoanApplicationOptionsExtended::findOne(['loan_app_enc_id' => $loan_id, 'is_deleted' => 0]);
                 if (!$loan_options) {
-                    $loan_options = new LoanApplicationOptions();
+                    $loan_options = new LoanApplicationOptionsExtended();
                     $loan_options->option_enc_id = $utilitiesModel->encrypt();
                     $loan_options->loan_app_enc_id = $model->loan_app_enc_id;
                     $loan_options->created_on = date('Y-m-d H:i:s');
@@ -479,30 +495,31 @@ class LoanApplication extends Model
             }
 
             // saving address
-            if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Loan Against Property' || $this->loan_type == 'Vehicle Loan') {
-                $loan_address = LoanApplicantResidentialInfo::findOne(['loan_app_enc_id' => $loan_id, 'is_deleted' => 0]);
+//            if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Loan Against Property' || $this->loan_type == 'Vehicle Loan') {
+            $loan_address = LoanApplicantResidentialInfoExtended::findOne(['loan_app_enc_id' => $loan_id, 'is_deleted' => 0]);
 
-                if (!$loan_address) {
-                    $loan_address = new LoanApplicantResidentialInfo();
-                    $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
-                    $loan_address->loan_app_enc_id = $model->loan_app_enc_id;
-                    $loan_address->created_on = date('Y-m-d H:i:s');
-                    $loan_address->created_by = $user_id;
-                }
-
-
-                $loan_address->address = $this->address ? $this->address : $loan_address->address;
-                $loan_address->city_enc_id = $this->city ? $this->city : $loan_address->city_enc_id;
-                $loan_address->state_enc_id = $this->state ? $this->state : $loan_address->state_enc_id;
-                $loan_address->postal_code = $this->zip ? $this->zip : $loan_address->postal_code;
+            if (!$loan_address) {
+                $loan_address = new LoanApplicantResidentialInfoExtended();
+                $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
+                $loan_address->loan_app_enc_id = $model->loan_app_enc_id;
+                $loan_address->created_on = date('Y-m-d H:i:s');
+                $loan_address->created_by = $user_id;
+            } else {
                 $loan_address->updated_on = date('Y-m-d H:i:s');
                 $loan_address->updated_by = $user_id;
-
-                if (!$loan_address->save()) {
-                    $transaction->rollback();
-                    return false;
-                }
             }
+
+
+            $loan_address->address = $this->address ? $this->address : $loan_address->address;
+            $loan_address->city_enc_id = $this->city ? $this->city : $loan_address->city_enc_id;
+            $loan_address->state_enc_id = $this->state ? $this->state : $loan_address->state_enc_id;
+            $loan_address->postal_code = $this->zip ? $this->zip : $loan_address->postal_code;
+
+            if (!$loan_address->save()) {
+                $transaction->rollback();
+                return false;
+            }
+//            }
 
             $transaction->commit();
 

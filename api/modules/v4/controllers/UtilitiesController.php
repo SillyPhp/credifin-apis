@@ -2,20 +2,16 @@
 
 namespace api\modules\v4\controllers;
 
-use common\models\AssignedFinancerLoanType;
-use common\models\AssignedLoanProvider;
-use common\models\BillDetails;
 use common\models\Cities;
 use common\models\Designations;
-use common\models\LoanStatus;
+use common\models\LoanApplicationOptions;
+use common\models\LoanApplications;
+use common\models\LoanCertificates;
+use common\models\LoanCertificatesImages;
 use common\models\OrganizationTypes;
-use common\models\Referral;
-use common\models\ReferralSignUpTracking;
 use common\models\spaces\Spaces;
 use common\models\SponsoredCourses;
 use common\models\States;
-use common\models\UserRoles;
-use common\models\Users;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use Yii;
@@ -71,7 +67,7 @@ class UtilitiesController extends ApiBaseController
             ->select(['designation_enc_id', 'designation', 'designation_enc_id id', 'designation name'])
             ->where(['is_deleted' => 0])
             ->andFilterWhere(['like', 'designation', $keyword])
-            ->limit(20)
+            ->limit(10)
             ->asArray()
             ->all();
 
@@ -164,5 +160,78 @@ class UtilitiesController extends ApiBaseController
 
         return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
     }
+
+    public function actionImageShifter()
+    {
+        if ($this->isAuthorized()) {
+            $query = LoanCertificates::find()
+                ->where(['is_deleted' => 0])
+                ->andWhere(['IS NOT', 'proof_image', null])
+                ->asArray()
+                ->all();
+
+            $utilitiesModel = new \common\models\Utilities();
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                foreach ($query as $oldRow) {
+                    $newRow = new LoanCertificatesImages();
+                    $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+                    $newRow->certificate_image_enc_id = $utilitiesModel->encrypt();
+                    $newRow->certificate_enc_id = $oldRow['certificate_enc_id'];
+                    $newRow->image = $oldRow['proof_image'];
+                    $newRow->image_location = $oldRow['proof_image_location'];
+                    $newRow->created_by = $oldRow['created_by'];
+                    $newRow->created_on = $oldRow['created_on'];
+                    if (!$newRow->save()) {
+                        $transaction->rollBack();
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $newRow->getErrors()]);
+                    }
+                }
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+            } catch (\Exception $exception) {
+                $transaction->rollBack();
+                return ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()];
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+    public function actionUpdateLoanType()
+    {
+        if ($this->isAuthorized()) {
+
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $type = LoanApplicationOptions::find()
+                    ->distinct()
+                    ->select(['vehicle_type', 'loan_app_enc_id'])
+                    ->andWhere(['vehicle_type' => ['Four Wheeler', 'Two Wheeler', 'E-vehicle']])
+                    ->asArray()
+                    ->all();
+
+                foreach ($type as $row) {
+
+                    $loan = LoanApplications::findOne(['loan_app_enc_id' => $row['loan_app_enc_id']]);
+                    if (!empty($loan)) {
+                        $loan->loan_type = $row['vehicle_type'];
+                        $loan->updated_on = date('Y-m-d H:i:s');
+                        if (!$loan->update()) {
+                            $transaction->rollBack();
+                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan->getErrors()]);
+                        }
+                    }
+                }
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'data' => 'updated success    fully']);
+            } catch (\Exception $exception) {
+                $transaction->rollBack();
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()]);
+            }
+        }
+        else return "unauthorized";
+    }
+
 
 }

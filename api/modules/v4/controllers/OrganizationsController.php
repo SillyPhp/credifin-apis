@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\IndividualSignup;
 use common\models\AssignedFinancerLoanType;
 use common\models\CertificateTypes;
 use common\models\FinancerLoanDocuments;
@@ -10,6 +11,7 @@ use common\models\FinancerLoanStatus;
 use common\models\LoanStatus;
 use common\models\LoanType;
 use common\models\OrganizationLocations;
+use common\models\Referral;
 use yii\web\UploadedFile;
 use yii\db\Expression;
 use common\models\Utilities;
@@ -188,6 +190,7 @@ class OrganizationsController extends ApiBaseController
     public function actionGetLoanTypes()
     {
         if ($user = $this->isAuthorized()) {
+            
             $assignedLoanTypes = AssignedFinancerLoanType::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'a.status', 'b.name'])
@@ -262,11 +265,13 @@ class OrganizationsController extends ApiBaseController
     public function actionAssignedLoanTypes()
     {
         if ($user = $this->isAuthorized()) {
+            $provider_id = $this->getFinancerId($user);
+
             $assignedLoanTypes = AssignedFinancerLoanType::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name'])
                 ->joinWith(['loanTypeEnc b'], false)
-                ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_deleted' => 0, 'a.status' => 1])
+                ->where(['a.organization_enc_id' =>$provider_id, 'a.is_deleted' => 0, 'a.status' => 1])
                 ->asArray()
                 ->all();
 

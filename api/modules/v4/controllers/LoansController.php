@@ -3,15 +3,26 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\BusinessLoanApplication;
+use api\modules\v4\models\CoApplicantFrom;
 use common\models\AssignedLoanProvider;
 use common\models\BillDetails;
 use common\models\CertificateTypes;
 use common\models\EsignAgreementDetails;
-use common\models\EsignDocuments;
+use common\models\EsignDocumentsTemplates;
 use common\models\EsignRequestedAgreements;
 use common\models\EsignVehicleLoanDetails;
+use common\models\extended\AssignedLoanProviderExtended;
+use common\models\extended\EducationLoanPaymentsExtends;
+use common\models\extended\LoanApplicantResidentialInfoExtended;
+use common\models\extended\LoanApplicationsExtended;
+use common\models\extended\LoanCertificatesExtended;
+use common\models\extended\LoanCoApplicantsExtended;
+use common\models\extended\LoanVerificationLocationsExtended;
 use common\models\LeadsApplications;
+use common\models\LoanAuditTrail;
 use common\models\LoanCertificates;
+use common\models\LoanCoApplicants;
+use common\models\LoanVerificationLocations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\spaces\Spaces;
@@ -50,6 +61,9 @@ class LoansController extends ApiBaseController
                 'add-loan-branch' => ['POST', 'OPTIONS'],
                 'update-loan-amounts' => ['POST', 'OPTIONS'],
                 'remove-loan-application' => ['POST', 'OPTIONS'],
+                'add-verification-location' => ['POST', 'OPTIONS'],
+                'add-co-applicant' => ['POST', 'OPTIONS'],
+                'audit-trail-list' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -72,10 +86,13 @@ class LoansController extends ApiBaseController
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
             $model->file = UploadedFile::getInstanceByName('bill');
             if ($model->validate()) {
-                $user_id = $this->isAuthorized()->user_enc_id;
-                if (!$user_id) {
+                $user_id = $this->isAuthorized();
+                if (!empty($user_id)) {
+                    $user_id = $user_id->user_enc_id;
+                } else {
                     $user_id = NULL;
                 }
+
 
                 if ($user = $this->isAuthorized()) {
                     $lender = $this->getFinancerId($user);
@@ -136,7 +153,7 @@ class LoansController extends ApiBaseController
         }
 
         if ($params['status'] == 'captured') {
-            $loan_application = LoanApplications::find()
+            $loan_application = LoanApplicationsExtended::find()
                 ->where(['loan_app_enc_id' => $loan_app_id])
                 ->one();
             if ($loan_application) {
@@ -147,7 +164,7 @@ class LoansController extends ApiBaseController
             }
         }
 
-        $loan_payments = EducationLoanPayments::find()
+        $loan_payments = EducationLoanPaymentsExtends::find()
             ->where(['education_loan_payment_enc_id' => $loan_payment_id])
             ->one();
         if ($loan_payments) {
@@ -226,7 +243,7 @@ class LoansController extends ApiBaseController
 
     private function savePaymentStatus($payment_id, $status, $plink_id, $signature)
     {
-        $loan_payment = EducationLoanPayments::findOne(['payment_token' => $plink_id]);
+        $loan_payment = EducationLoanPaymentsExtends::findOne(['payment_token' => $plink_id]);
         $loan_payment->payment_status = $status;
         $loan_payment->payment_id = $payment_id;
         $loan_payment->payment_signature = $signature;
@@ -404,7 +421,7 @@ class LoansController extends ApiBaseController
 
     private function getDocuments()
     {
-        $docs = EsignDocuments::find()
+        $docs = EsignDocumentsTemplates::find()
             ->select(['doc_id', 'name', 'file_url'])
             ->asArray()
             ->all();
@@ -488,7 +505,7 @@ class LoansController extends ApiBaseController
                 return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
             }
             $utilitiesModel = new Utilities();
-            $certificate = new LoanCertificates();
+            $certificate = new LoanCertificatesExtended();
             $certificate->certificate_enc_id = \Yii::$app->getSecurity()->generateRandomString();
             $certificate->loan_app_enc_id = $params['loan_id'];
             $certificate->certificate_type_enc_id = $type_id;
@@ -560,7 +577,7 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "id"']);
             }
 
-            $application = LoanApplications::findOne(['loan_app_enc_id' => $params['id']]);
+            $application = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
 
             if ($application) {
                 $application->application_number = $params['value'];
@@ -591,7 +608,7 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id, branch_id, provider_id"']);
             }
 
-            $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $params['id'], 'provider_enc_id' => $params['parent_id']]);
+            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['id'], 'provider_enc_id' => $params['parent_id']]);
 
             $provider->branch_enc_id = $params['value'];
             $provider->updated_by = $user->user_enc_id;
@@ -612,16 +629,19 @@ class LoansController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
-
+            $provider_id = $this->getFinancerId($user);
+            if ($provider_id == null) {
+                return $this->response(409, ['status' => 409, 'message' => 'provider id not found']);
+            }
             // provider_id
             // id = field name
             // value = field value
             // parent_id = loan_id
-            if (empty($params['parent_id']) || empty($params['provider_id']) || empty($params['id']) || empty($params['value'])) {
+            if (empty($params['parent_id']) || empty($params['id']) || empty($params['value'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "parent_id, org_id, id, value"']);
             }
 
-            $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $params['parent_id'], 'provider_enc_id' => $params['provider_id']]);
+            $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['parent_id'], 'provider_enc_id' => $provider_id]);
 
             if (!$provider) {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
@@ -651,7 +671,7 @@ class LoansController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
-            $loan_app = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']]);
+            $loan_app = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['loan_id']]);
 
             $loan_app->is_deleted = 1;
             $loan_app->updated_by = $user->user_enc_id;
@@ -661,6 +681,118 @@ class LoansController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAddVerificationLocation()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            $verification_location = new LoanVerificationLocationsExtended();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+            $verification_location->loan_verification_enc_id = $utilitiesModel->encrypt();
+            $verification_location->loan_app_enc_id = $params['loan_id'];
+            (!empty($params['location_name'])) ? $verification_location->location_name = $params['location_name'] : null;
+            (!empty($params['local_address'])) ? $verification_location->local_address = $params['local_address'] : null;
+            (!empty($params['latitude'])) ? $verification_location->latitude = $params['latitude'] : null;
+            (!empty($params['longitude'])) ? $verification_location->longitude = $params['longitude'] : null;
+            $verification_location->created_by = $user->user_enc_id;
+            $verification_location->created_on = date('Y-m-d H:i:s');
+            if (!$verification_location->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $verification_location->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAddCoApplicant()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            $model = new CoApplicantFrom();
+
+            if ($model->load(Yii::$app->request->post(), '')) {
+
+                if ($model->validate()) {
+                    if (!empty($params['loan_co_app_enc_id'])) {
+                        $co_applicant = $model->update($params['loan_co_app_enc_id'], $user->user_enc_id);
+                    } else {
+                        $co_applicant = $model->save($params['loan_id'], $user->user_enc_id);
+                    }
+                    if ($co_applicant['status'] == 500) {
+                        return $this->response(500, $co_applicant);
+                    }
+                    return $this->response(200, $co_applicant);
+                } else {
+                    return $this->response(422, ['status' => 422, 'error' => $model->getErrors()]);
+                }
+            }
+            return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAuditTrailList()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+            $limit = 10;
+            $page = 1;
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            if (!empty($params['limit'])) {
+                $limit = $params['limit'];
+            }
+
+            if (!empty($params['page'])) {
+                $page = $params['page'];
+            }
+
+            $audit = LoanAuditTrail::find()
+                ->alias('a')
+                ->select(['a.old_value', 'a.new_value', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'])
+                ->joinWith(['user b'], false)
+                ->where(['a.loan_id' => $params['loan_id']])
+                ->andWhere(['not', ['a.field' => ['', 'created_by', 'created_on', 'id', 'proof_image', 'proof_image_location', null]]])
+                ->andWhere(['not like', 'a.field', '%_enc_id%', false])
+                ->andWhere(['not like', 'a.field', '%updated_on%', false])
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->orderBy(['a.stamp' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            if ($audit) {
+                return $this->response(200, ['status' => 200, 'audit_list' => $audit]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);

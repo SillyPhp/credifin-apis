@@ -15,6 +15,7 @@ use Yii;
  * @property string $name product name
  * @property string $slug product slug
  * @property double $price product price
+ * @property double $discounted_price discounted_price
  * @property string $description product description
  * @property string $city_enc_id city id
  * @property string $created_by created by
@@ -24,6 +25,7 @@ use Yii;
  * @property string $status status
  * @property int $is_deleted 0 false,1 true
  *
+ * @property ProductEnquiry[] $productEnquiries
  * @property ProductImages[] $productImages
  * @property ProductOtherDetails[] $productOtherDetails
  * @property BrandModels $modelEnc
@@ -50,7 +52,7 @@ class Products extends \yii\db\ActiveRecord
     {
         return [
             [['product_enc_id', 'model_enc_id', 'dealer_enc_id', 'assigned_category_enc_id', 'price', 'created_by'], 'required'],
-            [['price'], 'number'],
+            [['price', 'discounted_price'], 'number'],
             [['description', 'status'], 'string'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
@@ -64,6 +66,14 @@ class Products extends \yii\db\ActiveRecord
             [['assigned_category_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedCategories::className(), 'targetAttribute' => ['assigned_category_enc_id' => 'assigned_category_enc_id']],
             [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProductEnquiries()
+    {
+        return $this->hasMany(ProductEnquiry::className(), ['product_id' => 'product_enc_id']);
     }
 
     /**

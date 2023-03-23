@@ -3,7 +3,6 @@
 namespace frontend\controllers;
 use common\models\Categories;
 use common\models\extended\PaymentsModule;
-use common\models\spaces\Spaces;
 use kartik\mpdf\Pdf;
 use common\models\extended\EducationLoanPaymentsExtends;
 use common\models\OpenTitles;
@@ -302,5 +301,84 @@ class TestCacheController extends Controller
     {
         $c = $amount * 100;
         return (int)$c;
+    }
+    public function actionEquifax(){
+        $apiUrl = "https://ists.equifax.co.in/cir360service/cir360report";
+        $string = '{
+    "RequestHeader": {
+        "CustomerId": "7367", 
+        "UserId": "STS_PHFPCS",
+        "Password": "W3#QeicsB",
+        "MemberNumber": "003FP02437",
+        "SecurityCode": "3NH",
+        "CustRefField": "123456",
+        "ProductCode": [
+            "PCS"
+        ]
+    },
+    "RequestBody": {
+        "InquiryPurpose": "00",
+        "TransactionAmount": "0",
+        "FirstName": "Di Ahreya",
+        "MiddleName": "",
+        "LastName": "",
+        "InquiryAddresses": [
+            {
+                "seq": "1",
+                "AddressLine1": "S/O SUKHWINDER SINGH VILL JHUNER TEH MALERKOTLA DISTT SANGRUR MALERKOTLA",
+                "City": "",
+                "State": "UP",
+                "AddressType": [
+                    "H"
+                ],
+                "Postal": "602050"
+            }
+        ],
+        "InquiryPhones": [
+            {
+                "seq": "1",
+                "Number": "7859063708",
+                "PhoneType": [
+                    "M"
+                ]
+            }
+        ],
+        "IDDetails": [
+            {
+                "seq": "1",
+                "IDValue": "TN291881173798",
+                "IDType": "V",
+                "Source": "Inquiry"
+            },
+            {
+                "seq": "2",
+                "IDValue": "AATPT8228F",
+                "IDType": "T",
+                "Source": "Inquiry"
+            }
+        ],
+        "DOB": "1978-07-11",
+        "Gender": "M"
+    },
+    "Score": [
+        {
+            "Type": "ERS",
+            "Version": "3.1"
+        }
+    ]
+}';
+        $ch = curl_init($apiUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS,$string);
+        curl_setopt($ch, CURLOPT_FAILONERROR, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Content-Type: application/json",
+        ]);
+        $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curl_errno= curl_errno($ch);
+        $response = curl_exec($ch);
+        $response = json_decode($response, true);
+        print_r($response);
     }
 }
