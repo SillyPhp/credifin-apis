@@ -545,7 +545,7 @@ class CompanyDashboardController extends ApiBaseController
             $loan = LoanApplications::find()
                 ->alias('a')
                 ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number',
-                    'a.applicant_name', 'a.phone', 'a.email', 'b.status as loan_status', 'a.loan_type', 'a.gender', 'a.applicant_dob',
+                    'a.applicant_name', 'a.phone','a.voter_card_number','a.email', 'b.status as loan_status', 'a.loan_type', 'a.gender', 'a.applicant_dob',
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address'])
                 ->joinWith(['assignedLoanProviders b' => function ($b) use ($organization_id) {
 //                    $b->where(['b.provider_enc_id' => $organization_id]);
