@@ -284,7 +284,7 @@ class CompanyDashboardController extends ApiBaseController
                 'a.applicant_dob as dob',
                 'a.created_by',
                 'a.lead_by',
-                'a.managed_by'
+                'a.managed_by',
             ])
             ->joinWith(['collegeCourseEnc f'], false)
             ->joinWith(['collegeEnc g'], false)
@@ -306,6 +306,7 @@ class CompanyDashboardController extends ApiBaseController
                 if ($service) {
                     $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
                 }
+                $i->joinWith(['branchEnc be']);
             }])
             ->joinWith(['managedBy k'], false)
             ->joinWith(['educationLoanPayments l' => function ($l) {
