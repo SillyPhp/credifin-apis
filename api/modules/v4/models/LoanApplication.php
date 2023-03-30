@@ -63,6 +63,7 @@ class LoanApplication extends Model
     public $pan_number;
     public $loan_lender;
     public $aadhar_number;
+    public $voter_card_number;
     public $vehicle_brand;
     public $vehicle_model;
     public $vehicle_making_year;
@@ -86,7 +87,7 @@ class LoanApplication extends Model
             [['applicant_name', 'loan_type', 'phone_no'], 'required'],
             [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhar_number', 'loan_lender',
                 'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount', 'applicant_dob', 'gender',
-                'vehicle_brand', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type', 'branch_id'], 'safe'],
+                'vehicle_brand', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type', 'branch_id','voter_card_number'], 'safe'],
             [['applicant_name', 'loan_purpose', 'email'], 'trim'],
             [['applicant_name'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],
@@ -117,6 +118,7 @@ class LoanApplication extends Model
             $model->email = $this->email;
             $model->applicant_dob = $this->applicant_dob;
             $model->gender = $this->gender;
+            $model->voter_card_number = $this->voter_card_number;
             $model->aadhaar_number = $this->aadhar_number;
             $model->pan_number = $this->pan_number;
             $model->amount = str_replace(',', '', $this->loan_amount);
@@ -219,6 +221,14 @@ class LoanApplication extends Model
             // saving aadhar
             if ($this->aadhar_number) {
                 if (!$this->saveCertificate($model->loan_app_enc_id, 'Aadhar Card', $this->aadhar_number, $user_id)) {
+                    $transaction->rollback();
+                    return false;
+                }
+            }
+            // saving voter_card_number
+
+            if ($this->aadhar_number) {
+                if (!$this->saveCertificate($model->loan_app_enc_id, 'Voter ID', $this->voter_card_number, $user_id)) {
                     $transaction->rollback();
                     return false;
                 }
@@ -454,6 +464,7 @@ class LoanApplication extends Model
             $model->email = $this->email ? $this->email : $model->email;
             $model->gender = $this->gender ? $this->gender : $model->gender;
             $model->aadhaar_number = $this->aadhar_number ? $this->aadhar_number : $model->aadhaar_number;
+            $model->voter_card_number = $this->voter_card_number ? $this->voter_card_number : $model->voter_card_number;
             $model->pan_number = $this->pan_number ? $this->pan_number : $model->pan_number;
             $model->applicant_dob = $this->applicant_dob ? $this->applicant_dob : $model->applicant_dob;
             $model->loan_purpose = $this->loan_purpose ? $this->loan_purpose : $model->loan_purpose;

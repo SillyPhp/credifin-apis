@@ -196,6 +196,10 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             $status = $params['status'];
+            if (!empty($params['fields_search']['status'])) {
+                $status = [$params['fields_search']['status']];
+            }
+
             $loan_status = [];
             foreach ($status as $s) {
                 $params['filter'] = [$s];
@@ -338,7 +342,7 @@ class CompanyDashboardController extends ApiBaseController
 
         if (isset($params['fields_search']) && !empty($params['fields_search'])) {
             $a = ['applicant_name', 'application_number', 'amount', 'apply_date'];
-            $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status'];
+            $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status', 'branch'];
             foreach ($params['fields_search'] as $key => $val) {
 
                 if (in_array($key, $a)) {
@@ -350,7 +354,11 @@ class CompanyDashboardController extends ApiBaseController
                 }
 
                 if (in_array($key, $i)) {
-                    $loans->andWhere(['like', 'i.' . $key, $val]);
+                    if ($key == 'branch') {
+                        $loans->andWhere(['like', 'i.branch_enc_id', $val]);
+                    } else {
+                        $loans->andWhere(['like', 'i.' . $key, $val]);
+                    }
                 }
 
             }
@@ -450,16 +458,28 @@ class CompanyDashboardController extends ApiBaseController
                 $loans[$key]['claimedDeals'] = $d;
 
                 $provider_id = $this->getFinancerId($user);
-                $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $provider_id]);
+//                $provider = AssignedLoanProvider::findOne(['loan_application_enc_id' => $val['loan_app_enc_id'], 'provider_enc_id' => $provider_id]);
+
+                $provider = AssignedLoanProvider::find()
+                    ->alias('a')
+                    ->select(['a.assigned_loan_provider_enc_id', 'a.branch_enc_id', 'b.location_name', 'b1.name city', 'a.bdo_approved_amount', 'a.tl_approved_amount', 'a.soft_approval', 'a.soft_sanction', 'a.valuation', 'a.disbursement_approved', 'a.insurance_charges'])
+                    ->joinWith(['branchEnc b' => function ($b) {
+                        $b->joinWith(['cityEnc b1']);
+                    }], false)
+                    ->andWhere(['a.loan_application_enc_id' => $val['loan_app_enc_id'], 'a.provider_enc_id' => $provider_id])
+                    ->asArray()
+                    ->one();
 
                 if (!empty($provider)) {
-                    $loans[$key]['bdo_approved_amount'] = $provider->bdo_approved_amount;
-                    $loans[$key]['tl_approved_amount'] = $provider->tl_approved_amount;
-                    $loans[$key]['soft_approval'] = $provider->soft_approval;
-                    $loans[$key]['soft_sanction'] = $provider->soft_sanction;
-                    $loans[$key]['valuation'] = $provider->valuation;
-                    $loans[$key]['disbursement_approved'] = $provider->disbursement_approved;
-                    $loans[$key]['insurance_charges'] = $provider->insurance_charges;
+                    $loans[$key]['bdo_approved_amount'] = $provider['bdo_approved_amount'];
+                    $loans[$key]['tl_approved_amount'] = $provider['tl_approved_amount'];
+                    $loans[$key]['soft_approval'] = $provider['soft_approval'];
+                    $loans[$key]['soft_sanction'] = $provider['soft_sanction'];
+                    $loans[$key]['valuation'] = $provider['valuation'];
+                    $loans[$key]['disbursement_approved'] = $provider['disbursement_approved'];
+                    $loans[$key]['insurance_charges'] = $provider['insurance_charges'];
+                    $loans[$key]['branch_id'] = $provider['branch_enc_id'];
+                    $loans[$key]['branch'] = $provider['location_name'] ? $provider['location_name'] . ', ' . $provider['city'] : $provider['city'];
                 }
 
             }
@@ -534,7 +554,7 @@ class CompanyDashboardController extends ApiBaseController
             $loan = LoanApplications::find()
                 ->alias('a')
                 ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number',
-                    'a.applicant_name', 'a.phone', 'a.email', 'b.status as loan_status', 'a.loan_type', 'a.gender', 'a.applicant_dob',
+                    'a.applicant_name', 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'a.gender', 'a.applicant_dob',
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address'])
                 ->joinWith(['assignedLoanProviders b' => function ($b) use ($organization_id) {
 //                    $b->where(['b.provider_enc_id' => $organization_id]);

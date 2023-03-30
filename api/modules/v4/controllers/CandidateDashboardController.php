@@ -85,14 +85,14 @@ class CandidateDashboardController extends ApiBaseController
             if ($loan_application) {
                 foreach ($loan_application as $key => $val) {
 
-                    if (!$loan_application['educationLoanPayments']) {
+                    if (!empty($loan_application['educationLoanPayments'])) {
                         $get_amount = EducationLoanPayments::find()->where(['loan_app_enc_id' => $val['loan_app_enc_id']])->one();
                         $loan_application[$key]['payment_token'] = $get_amount->payment_token;
                         $loan_application[$key]['amount'] = $get_amount->payment_amount;
                     }
 
                     $loan_application[$key]['loanSanctionReports'] = [];
-                    if ($val['assignedLoanProviders'][0]['status'] == 5) {
+                    if (!empty($val['assignedLoanProviders']) && $val['assignedLoanProviders'][0]['status'] == 5) {
                         $loan_application[$key]['loanSanctionReports'] = $this->__loanSanctionReports($val['loan_app_enc_id'], $val['assignedLoanProviders'][0]['provider_enc_id']);
                     }
                 }
