@@ -2,13 +2,13 @@
 
 namespace common\models\extended;
 
-use common\models\EducationLoanPayments;
+use common\models\LoanPurpose;
 
-class EducationLoanPaymentsExtends extends EducationLoanPayments
+class LoanPurposeExtended extends LoanPurpose
 {
     public function behaviors()
     {
-        $model = explode("\\", EducationLoanPayments::className());
+        $model = explode("\\", LoanPurpose::className());
         return [
             'LoggableBehavior' => [
                 'class' => 'common\models\extended\LoanLoggableBehavior',
@@ -17,5 +17,3 @@ class EducationLoanPaymentsExtends extends EducationLoanPayments
         ];
     }
 }
-
-?>
