@@ -380,6 +380,10 @@ namespace common\models;
  * @property UnclaimOrganizationLocations[] $unclaimOrganizationLocations0
  * @property UnclaimedOrganizations[] $unclaimedOrganizations
  * @property UserOtherDetails[] $userOtherDetails
+ * @property UserRoles[] $userRoles
+ * @property UserRoles[] $userRoles0
+ * @property UserRoles[] $userRoles1
+ * @property UserRoles[] $userRoles2
  * @property UserVerificationTokens[] $userVerificationTokens
  * @property UserWebinarInterest[] $userWebinarInterests
  * @property UserWebinarInterest[] $userWebinarInterests0
@@ -4131,6 +4135,37 @@ class Users extends \yii\db\ActiveRecord
     public function getUserOtherDetails()
     {
         return $this->hasMany(UserOtherDetails::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserRoles()
+    {
+        return $this->hasMany(UserRoles::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserRoles0()
+    {
+        return $this->hasMany(UserRoles::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserRoles1()
+    {
+        return $this->hasMany(UserRoles::className(), ['reporting_person' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserRoles2()
+    {
+        return $this->hasMany(UserRoles::className(), ['updated_by' => 'user_enc_id']);
     }
 
     /**

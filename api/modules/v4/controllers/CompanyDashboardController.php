@@ -70,6 +70,7 @@ class CompanyDashboardController extends ApiBaseController
                 'remove-partner' => ['POST', 'OPTIONS'],
                 'status-stats' => ['POST', 'OPTIONS'],
                 'status-applications' => ['POST', 'OPTIONS'],
+                'add-column-preference' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -212,8 +213,9 @@ class CompanyDashboardController extends ApiBaseController
                 }
             }
 
+            $loan_id = LoanType::findOne(['name' => $params['loan_type'], 'is_deleted' => 0 ]);
 
-            return $this->response(200, ['status' => 200, 'loans' => $loan_status]);
+            return $this->response(200, ['status' => 200, 'loans' => $loan_status, 'loan_id' => $loan_id->loan_type_enc_id]);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -288,7 +290,7 @@ class CompanyDashboardController extends ApiBaseController
                 'a.applicant_dob as dob',
                 'a.created_by',
                 'a.lead_by',
-                'a.managed_by'
+                'a.managed_by',
             ])
             ->joinWith(['collegeCourseEnc f'], false)
             ->joinWith(['collegeEnc g'], false)
@@ -310,6 +312,7 @@ class CompanyDashboardController extends ApiBaseController
                 if ($service) {
                     $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
                 }
+                $i->joinWith(['branchEnc be']);
             }])
             ->joinWith(['managedBy k'], false)
             ->joinWith(['educationLoanPayments l' => function ($l) {
@@ -1786,7 +1789,7 @@ class CompanyDashboardController extends ApiBaseController
         $params = Yii::$app->request->post();
         if ($user = $this->isAuthorized()) {
             $identity = $user->user_enc_id;
-            $exist_check = ColumnPreferences::findOne(['user_enc_id' => $user->user_enc_id, 'is_deleted' => 0]);
+            $exist_check = ColumnPreferences::findOne(['user_enc_id' => $user->user_enc_id, 'loan_type_enc_id' => $params['loan_type_enc_id'], 'is_deleted' => 0]);
 
             if (!$params['disabled_fields']) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "disabled_fields"']);
@@ -1814,11 +1817,12 @@ class CompanyDashboardController extends ApiBaseController
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $preference->column_preference_enc_id = $utilitiesModel->encrypt();
                 $preference->user_enc_id = $identity;
+                $preference->loan_type_enc_id = $params['loan_type_enc_id'];
                 $preference->created_by = $identity;
                 $preference->created_on = date('Y-m-d H:i:s');
                 $preference->disabled_fields = $params['disabled_fields'];
                 if (!$preference->validate()) {
-                    return 'nope';
+                    return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $preference->getErrors()]);
                 }
                 $transaction = Yii::$app->db->beginTransaction();
                 try {
@@ -1856,12 +1860,11 @@ class CompanyDashboardController extends ApiBaseController
     {
         $params = Yii::$app->request->post();
         if ($user = $this->isAuthorized()) {
-            $identity = $user->user_enc_id;
-            $fetch = ColumnPreferences::findOne(['user_enc_id' => $identity]);
-            if ($fetch) {
+            $fetch = ColumnPreferences::findOne(['user_enc_id' => $user->user_enc_id, 'loan_type_enc_id' => $params['loan_type_id']]);
+            if ($fetch) {;
                 return $this->response(200, [
                     'status' => 200,
-                    'preference' => $fetch['disabled_fields'],
+                    'columns' => json_decode($fetch['disabled_fields']),
                 ]);
             } else {
                 return $this->response(404, [
