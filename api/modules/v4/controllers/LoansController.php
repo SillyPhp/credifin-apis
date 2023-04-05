@@ -858,12 +858,20 @@ class LoansController extends ApiBaseController
     public function actionGetFinancerLoanNegativeLocation()
     {
         if ($user = $this->isAuthorized()) {
+            $lender = $this->getFinancerId($user);
             $query = FinancerLoanNegativeLocation::find()
                 ->alias('a')
                 ->select(['a.negative_location_enc_id', 'CONCAT(b.first_name, " ", b.last_name) AS name', 'a.address', 'a.radius', 'a.latitude', 'a.longitude', 'a.status', 'a.created_by', 'a.created_on'])
-                ->joinWith(['userEnc b'], false)
-                ->andWhere(['a.is_deleted' => 0, 'a.created_by' => $user->user_enc_id])
-                ->asArray()
+                ->joinWith(['userEnc b'], false);
+            $org = $user->organization_enc_id;
+            if (!empty($org)) {
+                $query->andWhere(['a.is_deleted' => 0, 'a.financer_enc_id' => $org]);
+            } else {
+                $query->andWhere(['a.is_deleted' => 0]);
+                $query->andWhere(['or', ['a.user_enc_id' => $user->user_enc_id], ['and', ['a.financer_enc_id' => $lender], ['a.status' => 'Active']]]);
+            }
+
+            $query = $query->asArray()
                 ->all();
             if ($query) {
                 return $this->response(200, ['status' => 200, 'data' => $query]);
