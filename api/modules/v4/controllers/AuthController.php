@@ -20,7 +20,6 @@ use common\models\Users;
 use common\models\UserTypes;
 use common\models\UserVerificationTokens;
 use common\models\Utilities;
-use frontend\models\accounts\ResetPasswordForm;
 use yii\web\UploadedFile;
 use Yii;
 use yii\helpers\Url;
@@ -82,8 +81,10 @@ class AuthController extends ApiBaseController
         return $behaviors;
     }
 
+    // this action is used for user signup
     public function actionSignup()
     {
+        // creating user signup form object
         $model = new IndividualSignup();
 
         if ($model->load(Yii::$app->request->post(), '')) {
