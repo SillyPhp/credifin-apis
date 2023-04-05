@@ -80,54 +80,59 @@ class LoansController extends ApiBaseController
         return $behaviors;
     }
 
+    // saving loan application
     public function actionLoanApplication()
     {
         $model = new LoanApplication();
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
-            $model->file = UploadedFile::getInstanceByName('bill');
+
             if ($model->validate()) {
-                $user_id = $this->isAuthorized();
-                if (!empty($user_id)) {
-                    $user_id = $user_id->user_enc_id;
-                } else {
-                    $user_id = NULL;
-                }
 
+                $user = $this->isAuthorized();
+                $user_id = !empty($user) ? $user->user_enc_id : NULL;
 
-                if ($user = $this->isAuthorized()) {
+                if (!$user) {
+                    // getting financer/employer id from logged in user
                     $lender = $this->getFinancerId($user);
                     if ($lender != null) {
                         $model->loan_lender = $lender;
                     }
                 }
 
+                // if ref-id not empty getting financer/employer id from the referral code
                 if (!empty($model->ref_id)) {
+
+                    // getting user id from referral code
                     $referralData = Referral::findOne(['code' => $model->ref_id]);
                     if ($referralData) {
 
+                        // getting user object from user id
                         $user_obj = null;
-                        if ($referralData['user_enc_id'] != null) {
-                            $user_obj = Users::findOne(['user_enc_id' => $referralData['user_enc_id']]);
-                        } elseif ($referralData['organization_enc_id'] != null) {
-                            $user_obj = Users::findOne(['organization_enc_id' => $referralData['organization_enc_id']]);
+                        if ($referralData->user_enc_id != null) {
+                            $user_obj = Users::findOne(['user_enc_id' => $referralData->user_enc_id]);
+                        } elseif ($referralData->organization_enc_id != null) {
+                            $user_obj = Users::findOne(['organization_enc_id' => $referralData->organization_enc_id]);
                         }
 
+                        // getting financer/employer id from this user object
                         if ($user_obj != null) {
                             $lender = $this->getFinancerId($user_obj);
                             if ($lender != null) {
                                 $model->loan_lender = $lender;
                             }
                         }
-
                     }
                 }
 
-                $resposne = $model->save($user_id);
-                if (isset($resposne['status']) && $resposne['status'] == true) {
-                    return $this->response(200, ['status' => 200, 'data' => $resposne['data']]);
+                // saving loan application
+                $response = $model->save($user_id);
+
+                if ($response['status'] == 200) {
+                    return $this->response(200, $response);
                 } else {
-                    return $this->response(500, ['status' => 500, 'message' => 'Some Internal Server Error']);
+                    return $this->response(500, $response);
                 }
+
             } else {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information', 'error' => $model->getErrors()]);
             }
@@ -136,6 +141,7 @@ class LoansController extends ApiBaseController
         }
     }
 
+    // updating payment status
     public function actionUpdatePaymentStatus()
     {
         $params = Yii::$app->request->post();
@@ -288,6 +294,7 @@ class LoansController extends ApiBaseController
         }
     }
 
+    // updating loan application
     public function actionUpdate()
     {
         $params = Yii::$app->request->post();
@@ -310,16 +317,17 @@ class LoansController extends ApiBaseController
 
                 if ($model->validate()) {
 
-                    $user_id = $this->isAuthorized()->user_enc_id;
-                    if (!$user_id) {
-                        $user_id = NULL;
-                    }
-                    $resposne = $model->update($params['loan_id'], $user_id);
-                    if ($resposne['status']) {
-                        return $this->response(200, ['status' => 200, 'data' => $resposne['data']]);
+                    $user = $this->isAuthorized();
+                    $user_id = !empty($user) ? $user->user_enc_id : NULL;
+
+                    $response = $model->update($params['loan_id'], $user_id);
+
+                    if ($response['status'] == 200) {
+                        return $this->response(200, $response);
                     } else {
-                        return $this->response(500, ['status' => 500, 'message' => 'Some Internal Server Error']);
+                        return $this->response(500, $response);
                     }
+
                 } else {
                     return $this->response(422, ['status' => 422, 'message' => 'missing information', 'error' => $model->getErrors()]);
                 }

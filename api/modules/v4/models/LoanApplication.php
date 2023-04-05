@@ -2,20 +2,18 @@
 
 namespace api\modules\v4\models;
 
-use common\models\AssignedLoanProvider;
-use common\models\BillDetails;
 use common\models\CertificateTypes;
 use common\models\EmailLogs;
 use common\models\extended\AssignedLoanProviderExtended;
+use common\models\extended\EducationLoanPaymentsExtends;
 use common\models\extended\LoanApplicantResidentialInfoExtended;
 use common\models\extended\LoanApplicationOptionsExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
-use common\models\LoanCertificates;
+use common\models\extended\LoanPurposeExtended;
 use common\models\LoanPurpose;
 use common\models\Organizations;
 use common\models\Referral;
-use common\models\spaces\Spaces;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
@@ -23,9 +21,6 @@ use common\models\UserTypes;
 use Razorpay\Api\Api;
 use common\models\extended\Payments;
 use common\models\EducationLoanPayments;
-use common\models\extended\PaymentsModule;
-use common\models\LoanApplicantResidentialInfo;
-use common\models\LoanApplicationOptions;
 use common\models\LoanApplications;
 use common\models\RandomColors;
 use Yii;
@@ -71,7 +66,6 @@ class LoanApplication extends Model
     public $dealer_name;
     public $disbursement_date;
     public $form_type;
-
     public $branch_id;
     public $applicant_dob;
     public $gender;
@@ -87,7 +81,7 @@ class LoanApplication extends Model
             [['applicant_name', 'loan_type', 'phone_no'], 'required'],
             [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhar_number', 'loan_lender',
                 'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount', 'applicant_dob', 'gender',
-                'vehicle_brand', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type', 'branch_id','voter_card_number'], 'safe'],
+                'vehicle_brand', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type', 'branch_id', 'voter_card_number'], 'safe'],
             [['applicant_name', 'loan_purpose', 'email'], 'trim'],
             [['applicant_name'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],
@@ -96,17 +90,21 @@ class LoanApplication extends Model
         ];
     }
 
+    // function to save loan application
     public function save($user_id)
     {
+        // starting db transaction
         $transaction = Yii::$app->db->beginTransaction();
         try {
 
+            // getting user type if user id not null
             $user_type = null;
             if ($user_id) {
                 $user = Users::findOne(['user_enc_id' => $user_id]);
                 $user_type = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])->user_type;
             }
 
+            // saving data in loan applications using extended model to save audit trails and data
             $model = new LoanApplicationsExtended();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -126,6 +124,8 @@ class LoanApplication extends Model
             if ($this->form_type == 'diwali-dhamaka') {
                 $model->form_type = $this->form_type;
             }
+
+            // if loan lender then auto assigning lender to application
             if ($this->loan_lender) {
                 $model->auto_assigned = 1;
             }
@@ -134,38 +134,47 @@ class LoanApplication extends Model
             $model->created_on = date('Y-m-d H:i:s');
             $model->created_by = $user_id;
 
+            // assigning lead by id to ref id user enc id
             if ($this->ref_id) {
                 $referralData = Referral::findOne(['code' => $this->ref_id]);
                 if ($referralData) {
-                    if ($referralData->user_enc_id):
+
+                    // if it's normal user then assigning user enc id
+                    if ($referralData->user_enc_id) {
                         $model->lead_by = $referralData->user_enc_id;
-                    endif;
-                    if ($referralData->organization_enc_id):
+                    }
+
+                    // if it's organization then getting user id of this organization and assign it to lead by
+                    if ($referralData->organization_enc_id) {
                         $model->lead_by = Users::findOne(['organization_enc_id' => $referralData->organization_enc_id])->user_enc_id;
-                    endif;
+                    }
                 }
             }
 
+            // if user type employee then setting lead by to employee user id
             if ($user_type == 'Employee') {
                 $model->lead_by = $user_id;
             }
 
             if (!$model->save()) {
                 $transaction->rollback();
-                return false;
+                throw new \Exception(json_encode($model->getErrors()));
             }
 
+            // if not empty loan purpose then saving it
             if (!empty($this->loan_purpose)) {
+
+                // if not array making it into array
                 if (!is_array($this->loan_purpose)) {
-                    $this->addPurpose($model->loan_app_enc_id, $user_id, $this->loan_purpose, $transaction);
-                } else {
-                    foreach ($this->loan_purpose as $p) {
-                        $this->addPurpose($model->loan_app_enc_id, $user_id, $p, $transaction);
-                    }
+                    $this->loan_purpose = [$this->loan_purpose];
+                }
+
+                foreach ($this->loan_purpose as $p) {
+                    $this->addPurpose($model->loan_app_enc_id, $user_id, $p);
                 }
             }
 
-            // saving other options
+            // saving other options if loan types are these
             if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Vehicle Loan') {
                 $loan_options = new LoanApplicationOptionsExtended();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -190,7 +199,7 @@ class LoanApplication extends Model
                 $loan_options->created_by = $user_id;
                 if (!$loan_options->save()) {
                     $transaction->rollback();
-                    return false;
+                    throw new \Exception(json_encode($loan_options->getErrors()));
                 }
             }
 
@@ -207,83 +216,13 @@ class LoanApplication extends Model
             $loan_address->created_by = $user_id;
             if (!$loan_address->save()) {
                 $transaction->rollback();
-                return false;
+                throw new \Exception(json_encode($loan_address->getErrors()));
             }
 
-            // saving pan
-            if ($this->pan_number) {
-                if (!$this->saveCertificate($model->loan_app_enc_id, 'PAN', $this->pan_number, $user_id)) {
-                    $transaction->rollback();
-                    return false;
-                }
-            }
-
-            // saving aadhar
-            if ($this->aadhar_number) {
-                if (!$this->saveCertificate($model->loan_app_enc_id, 'Aadhar Card', $this->aadhar_number, $user_id)) {
-                    $transaction->rollback();
-                    return false;
-                }
-            }
-            // saving voter_card_number
-
-            if ($this->aadhar_number) {
-                if (!$this->saveCertificate($model->loan_app_enc_id, 'Voter ID', $this->voter_card_number, $user_id)) {
-                    $transaction->rollback();
-                    return false;
-                }
-            }
-
-            // saving lender
+            // assign lender to loan application
             if ($this->loan_lender) {
-                if (!$this->saveLender($model->loan_app_enc_id, $this->loan_lender, $user_id)) {
-                    $transaction->rollback();
-                    return false;
-                }
+                $this->saveLender($model->loan_app_enc_id, $this->loan_lender, $user_id);
             }
-
-
-            if ($this->file && ($this->loan_type == 'Medical Loan')) {
-                if (!$this->uploadFile($model->loan_app_enc_id)) {
-                    $transaction->rollback();
-                    return false;
-                }
-            }
-
-//            $userId = Yii::$app->user->identity->user_enc_id;
-//            $total_amount = $amount = 500;
-//            $gst = 0;
-//            $args = [];
-//            $args['amount'] = $this->floatPaisa($total_amount);
-//            $args['currency'] = "INR";
-//            $args['accessKey'] = Yii::$app->params->EmpowerYouth->permissionKey;
-//            $response = PaymentsModule::_authPayToken($args);
-//            if (isset($response['status']) && $response['status'] == 'created') {
-//                $token = $response['id'];
-//                $loan_payment = new EducationLoanPayments();
-//                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//                $loan_payment->education_loan_payment_enc_id = $utilitiesModel->encrypt();
-//                $loan_payment->loan_app_enc_id = $model->loan_app_enc_id;
-//                $loan_payment->payment_token = $token;
-//                $loan_payment->payment_amount = $amount;
-//                $loan_payment->payment_gst = $gst;
-//                $loan_payment->created_by = (($userId) ? $userId : null);
-//                $loan_payment->created_on = date('Y-m-d H:i:s');
-//                if (!$loan_payment->save()) {
-//                    $transaction->rollBack();
-//                    return false;
-//                } else {
-//                    $transaction->commit();
-//                    $data = [];
-//                    $data['loan_app_enc_id'] = $model->loan_app_enc_id;
-//                    $data['payment_enc_id'] = $loan_payment->education_loan_payment_enc_id;
-//                    $data['payment_id'] = $loan_payment->payment_token;
-//                    return [
-//                        'status' => true,
-//                        'data' => $data
-//                    ];
-//                }
-//            }
 
             $data = [];
             $options['loan_app_id'] = $model->loan_app_enc_id;
@@ -291,24 +230,21 @@ class LoanApplication extends Model
             $options['phone'] = $model->phone;
             $options['email'] = $model->email;
 
+            // if user id null or user submitting application without login
             if ($user_id == null) {
-                $signup = $this->SignUp($options);
-                if (!$signup) {
-                    $transaction->rollback();
-                    return false;
-                }
 
-                $user = Users::findOne(['user_enc_id' => $signup['user_id']]);
-                $access_token = $this->newToken($signup['user_id']);
-                $data['access_token'] = $access_token->access_token;
-                $data['source'] = $access_token->source;
+                $user = $this->SignUp($options);
+
+                $access_token = $this->newToken($user->user_enc_id);
                 $data['username'] = $user->username;
-                $data['user_enc_id'] = $access_token->user_enc_id;
+                $data['user_enc_id'] = $user->user_enc_id;
                 $data['first_name'] = $user->first_name;
                 $data['last_name'] = $user->last_name;
                 $data['initials_color'] = $user->initials_color;
                 $data['email'] = $user->email;
                 $data['phone'] = $user->phone;
+                $data['access_token'] = $access_token->access_token;
+                $data['source'] = $access_token->source;
                 $data['refresh_token'] = $access_token->refresh_token;
                 $data['access_token_expiry_time'] = $access_token->access_token_expiration;
                 $data['refresh_token_expiry_time'] = $access_token->refresh_token_expiration;
@@ -316,15 +252,13 @@ class LoanApplication extends Model
                 $data['user_type'] = 'Individual';
             }
 
-            if ($user_type == 'Employee' && $user_id != null) {
-                $signup = $this->SignUp($options);
-                if (!$signup) {
-                    $transaction->rollback();
-                    return false;
-                }
+            $user = Users::findOne(['phone' => [$model->phone, '+91' . $model->phone]]);
+            if (empty($user)) {
+                $this->SignUp($options);
             }
 
-            $payment_model = new EducationLoanPayments();
+            // saving data in education loan payments right now it's waived off by default
+            $payment_model = new EducationLoanPaymentsExtends();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $payment_model->education_loan_payment_enc_id = $utilitiesModel->encrypt();
@@ -336,7 +270,7 @@ class LoanApplication extends Model
             $payment_model->created_by = $user_id;
             $payment_model->created_on = date('Y-m-d H:i:s');
             if (!$payment_model->save()) {
-                return false;
+                throw new \Exception(json_encode($payment_model->getErrors()));
             }
 
             $transaction->commit();
@@ -344,35 +278,19 @@ class LoanApplication extends Model
             $data['loan_app_enc_id'] = $model->loan_app_enc_id;
             $data['payment_url'] = null;
             $data['user_id'] = Users::findOne(['phone' => [$model->phone, '+91' . $model->phone]])->user_enc_id;
-            return [
-                'status' => true,
-                'data' => $data
-            ];
 
-//            $paymentUrl = $this->createUrl($options);
-//            if ($paymentUrl['status'] == 200) {
-//                $data = [];
-//                $data['loan_app_enc_id'] = $model->loan_app_enc_id;
-//                $data['payment_url'] = $paymentUrl['surl'];
-//                return [
-//                    'status' => true,
-//                    'data' => $data
-//                ];
-//            } else {
-//                $transaction->rollBack();
-//                return false;
-//            }
+            return ['status' => 200, 'data' => $data];
 
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            print_r($exception);
-            return false;
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception->getMessage(), true)];
         }
     }
 
-    private function addPurpose($loan_id, $user_id, $p, $transaction)
+    // private function to save loan purpose
+    private function addPurpose($loan_id, $user_id, $p)
     {
-        $purpose = new LoanPurpose();
+        $purpose = new LoanPurposeExtended();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $purpose->loan_purpose_enc_id = $utilitiesModel->encrypt();
@@ -381,29 +299,28 @@ class LoanApplication extends Model
         $purpose->created_by = $user_id;
         $purpose->created_on = date('Y-m-d H:i:s');
         if (!$purpose->save()) {
-            $transaction->rollback();
-            return false;
+            throw new \Exception(json_encode($purpose->getErrors()));
         }
-
-        return true;
     }
 
+    // saving loan certificate
     private function saveCertificate($loan_id, $key, $val, $user_id = null)
     {
         $utilitiesModel = new Utilities();
         $certificate_type = CertificateTypes::findOne(['name' => $key]);
 
+        // if certification type not exits then saving it into certificate type table
         if (!$certificate_type) {
             $certificate_type = new CertificateTypes();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $certificate_type->certificate_type_enc_id = $utilitiesModel->encrypt();
             $certificate_type->name = $key;
             if (!$certificate_type->save()) {
-                return false;
+                throw new \Exception(json_encode($certificate_type->getErrors()));
             }
         }
 
-
+        // if certificate type exists or after saving now saving main data
         $loanCertificate = new LoanCertificatesExtended();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $loanCertificate->certificate_enc_id = $utilitiesModel->encrypt();
@@ -413,25 +330,18 @@ class LoanApplication extends Model
         $loanCertificate->created_by = $user_id;
         $loanCertificate->created_on = date('Y-m-d H:i:s');
         if (!$loanCertificate->save()) {
-            return false;
+            throw new \Exception(json_encode($loanCertificate->getErrors()));
         }
-
-        return true;
     }
 
+    // assign lender to loan application
     private function saveLender($loan_id, $lender_slug, $user_id = null)
     {
-//        $organization = Organizations::findOne(['slug' => $lender_slug]);
-        $organization = Organizations::find()
-            ->where([
-                'or',
-                ['slug' => $lender_slug],
-                ['organization_enc_id' => $lender_slug],
-            ])
-            ->one();
+        // finding organization from slug or organization id
+        $organization = Organizations::find()->where(['or', ['slug' => $lender_slug], ['organization_enc_id' => $lender_slug],])->one();
 
         if (!$organization) {
-            return false;
+            throw new \Exception(json_encode('lender not found'));
         }
 
         $loan_provider = new AssignedLoanProviderExtended();
@@ -442,22 +352,20 @@ class LoanApplication extends Model
         $loan_provider->provider_enc_id = $organization->organization_enc_id;
         $loan_provider->branch_enc_id = !empty($this->branch_id) ? $this->branch_id : null;
         if ($this->form_type == 'diwali-dhamaka') {
-            $loan_provider->status = 5;
+            $loan_provider->status = 31;
         }
         $loan_provider->created_by = $user_id;
         $loan_provider->created_on = date('Y-m-d H:i:s');
         if (!$loan_provider->save()) {
-            return false;
+            throw new \Exception(json_encode($loan_provider->getErrors()));
         }
-
-        return true;
     }
 
+    // updating loan application
     public function update($loan_id, $user_id)
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-
             $utilitiesModel = new Utilities();
             $model = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $loan_id]);
             $model->applicant_current_city = $this->current_city;
@@ -471,10 +379,9 @@ class LoanApplication extends Model
             $model->yearly_income = $this->annual_income ? $this->annual_income : $model->yearly_income;
             $model->updated_on = date('Y-m-d H:i:s');
             $model->updated_by = $user_id;
-
-            if (!$model->save()) {
+            if (!$model->update()) {
                 $transaction->rollback();
-                return false;
+                throw new \Exception(json_encode($model->getErrors()));
             }
 
             // saving other options
@@ -501,12 +408,11 @@ class LoanApplication extends Model
                 $loan_options->last_updated_by = $user_id;
                 if (!$loan_options->save()) {
                     $transaction->rollback();
-                    return false;
+                    throw new \Exception(json_encode($loan_options->getErrors()));
                 }
             }
 
             // saving address
-//            if ($this->loan_type == 'Business Loan' || $this->loan_type == 'Personal Loan' || $this->loan_type == 'Loan Against Property' || $this->loan_type == 'Vehicle Loan') {
             $loan_address = LoanApplicantResidentialInfoExtended::findOne(['loan_app_enc_id' => $loan_id, 'is_deleted' => 0]);
 
             if (!$loan_address) {
@@ -528,33 +434,30 @@ class LoanApplication extends Model
 
             if (!$loan_address->save()) {
                 $transaction->rollback();
-                return false;
+                throw new \Exception(json_encode($loan_address->getErrors()));
             }
-//            }
 
             $transaction->commit();
 
             $data = [];
             $data['loan_app_enc_id'] = $model->loan_app_enc_id;
             $data['payment_url'] = null;
-            return [
-                'status' => true,
-                'data' => $data
-            ];
+            return ['status' => 200, 'data' => $data];
 
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            print_r($exception);
-            return false;
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception->getMessage(), true)];
         }
     }
 
+    // converting amount RS to paisa for payment gateway
     private function floatPaisa($amount)
     {
         $c = $amount * 100;
         return (int)$c;
     }
 
+    // creating url for payment
     private function createUrl($params)
     {
         $model = new Payments();
@@ -672,121 +575,101 @@ class LoanApplication extends Model
 
     public function SignUp($data)
     {
-        $id = Users::find();
+        // finding user with email or phone
+        $user = Users::find();
         if ($data['email']) {
-            $id->where([
-                'or',
-                ['phone' => $data['phone']],
-                ['email' => $data['email']],
-            ]);
+            $user->where(['or', ['phone' => [$data['phone'], '+91' . $data['phone']]], ['email' => $data['email']]]);
         } else {
-            $id->where(['phone' => [$data['phone'], '+91' . $data['phone']]]);
+            $user->where(['phone' => [$data['phone'], '+91' . $data['phone']]]);
         }
-        $id = $id->one();
+        $user = $user->one();
 
-        if ($id) {
-            $get = LoanApplications::findOne(['loan_app_enc_id' => $data['loan_app_id']]);
-            $get->created_by = $id->user_enc_id;
-            if ($get->save()) {
-                return ['user_id' => $id->user_enc_id];
+        // if user already exists then assign user to loan application
+        $loan_app = LoanApplications::findOne(['loan_app_enc_id' => $data['loan_app_id']]);
+        if ($user) {
+            $loan_app->created_by = $user->user_enc_id;
+            if ($loan_app->update()) {
+                return $user;
             } else {
-                return false;
+                throw new \Exception(json_encode($loan_app->getErrors()));
             }
+
         } else {
-            $params = [];
-            $params['id'] = $data['loan_app_id'];
-            $params['name'] = $data['name'];
-            $params['email'] = $data['email'];
-            $params['phone'] = str_replace('+', '', $data['phone']);
-            $id = $this->userAutoSignUp($params);
-            if ($id) {
-                $get = LoanApplications::findOne(['loan_app_enc_id' => $data['loan_app_id']]);
-                $get->created_by = $id['id'];
-                if ($get->save()) {
-                    return ['user_id' => $id['id']];
-                } else {
-                    return false;
-                }
+            $data['id'] = $data['loan_app_id'];
+            $data['phone'] = str_replace('+', '', $data['phone']);
+            $user = $this->userAutoSignUp($data);
+            $loan_app->created_by = $user->user_enc_id;
+            if ($loan_app->update()) {
+                return $user;
+            } else {
+                throw new \Exception(json_encode($loan_app->getErrors()));
             }
+
         }
     }
 
+    // user auto-signup if not exists in DB
     public function userAutoSignUp($params)
     {
-        $user_type = UserTypes::findOne([
-            'user_type' => 'Individual',
-        ]);
+        $user_type = UserTypes::findOne(['user_type' => 'Individual']);
 
         if (!$user_type) {
-            return false;
+            throw new \Exception(json_encode('user type not found'));
         }
 
         $username = $this->generate_username($params['name']);
         $password = $params['phone'];
         $arr = explode(' ', $params['name']);
         $first_name = $arr[0];
-        $last_name = $arr[1] . ' ' . ((isset($arr[2]) && !empty($arr[2])) ? $arr[2] : '');
-        if (empty($last_name)):
+        $last_name = isset($arr[1]) ? $arr[1] . ' ' . ((isset($arr[2]) && !empty($arr[2])) ? $arr[2] : '') : null;
+        if (empty($last_name)) {
             $last_name = null;
-        endif;
-
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-            $usernamesModel = new Usernames();
-            $usernamesModel->username = strtolower($username);
-            $usernamesModel->assigned_to = 1;
-
-            //if username exists the concat random string to user-name
-            $username_exists = Usernames::findOne(['username' => $username]);
-            if (!$username_exists) {
-                $usernamesModel->username = $username . strtolower(Yii::$app->getSecurity()->generateRandomString(5));
-            }
-
-            if (!$usernamesModel->validate() || !$usernamesModel->save()) {
-                $transaction->rollBack();
-                return false;
-            }
-
-            $utilitiesModel = new Utilities();
-            $usersModel = new Candidates();
-            $usersModel->username = strtolower($usernamesModel->username);
-            $usersModel->first_name = ucfirst(strtolower($first_name));
-            $usersModel->last_name = ucfirst(strtolower($last_name));
-            if ($params['email']) {
-                $usersModel->email = strtolower($params['email']);
-            }
-            $usersModel->phone = $params['phone'];
-            $usersModel->initials_color = RandomColors::one();
-            $usersModel->user_type_enc_id = $user_type->user_type_enc_id;
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $usersModel->user_enc_id = $utilitiesModel->encrypt();
-            $usersModel->status = 'Active';
-            $usersModel->last_visit = date('Y-m-d H:i:s');
-            $usersModel->last_visit_through = 'EL';
-            $usersModel->signed_up_through = 'EL';
-            $usersModel->setPassword($password);
-            $usersModel->generateAuthKey();
-            if (!$usersModel->validate() || !$usersModel->save()) {
-                $transaction->rollBack();
-                return false;
-                //throw new \Exception (implode("<br />", \yii\helpers\ArrayHelper::getColumn($usersModel->errors, 0, false)));
-            }
-
-            $ref = $this->addRef($usersModel->user_enc_id);
-            if (!$ref) {
-                $transaction->rollBack();
-                return false;
-            }
-
-//            $this->autoSignupEmail($username, $password, $usersModel);
-
-            $transaction->commit();
-            return ['id' => $usersModel->user_enc_id];
-
-        } catch (Exception $e) {
-            $transaction->rollBack();
-            return false;
         }
+
+        $usernamesModel = new Usernames();
+        $usernamesModel->username = strtolower($username);
+        $usernamesModel->assigned_to = 1;
+
+        //if username exists then concat random string to username to create new one
+        $username_exists = Usernames::findOne(['username' => $username]);
+        if ($username_exists) {
+            $usernamesModel->username = strtolower($username . Yii::$app->getSecurity()->generateRandomString(5));
+        }
+
+        if (!$usernamesModel->validate() || !$usernamesModel->save()) {
+            throw new \Exception(json_encode($usernamesModel->getErrors()));
+        }
+
+        // saving/signup user
+        $utilitiesModel = new Utilities();
+        $usersModel = new Candidates();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $usersModel->user_enc_id = $utilitiesModel->encrypt();
+        $usersModel->username = $usernamesModel->username;
+        $usersModel->first_name = ucfirst(strtolower($first_name));
+        $usersModel->last_name = ucfirst(strtolower($last_name));
+        if ($params['email']) {
+            $usersModel->email = strtolower($params['email']);
+        }
+        $usersModel->phone = $params['phone'];
+        $usersModel->initials_color = RandomColors::one();
+        $usersModel->user_type_enc_id = $user_type->user_type_enc_id;
+        $usersModel->status = 'Active';
+        $usersModel->last_visit = date('Y-m-d H:i:s');
+        $usersModel->last_visit_through = 'EL';
+        $usersModel->signed_up_through = 'EL';
+        $usersModel->setPassword($password);
+        $usersModel->generateAuthKey();
+        if (!$usersModel->validate() || !$usersModel->save()) {
+            throw new \Exception(json_encode($usersModel->getErrors()));
+        }
+
+        // generating and saving referral code for sign up user
+        $this->addRef($usersModel->user_enc_id);
+//        $this->autoSignupEmail($username, $password, $usersModel);
+
+        return $usersModel;
+
     }
 
     private function autoSignupEmail($username, $password, $usersModel)
@@ -815,6 +698,7 @@ class LoanApplication extends Model
         }
     }
 
+    // generating username for auto signup
     private function generate_username($string_name = null, $rand_no = 200)
     {
         $username_parts = array_filter(explode(" ", strtolower($string_name))); //explode and lowercase name
@@ -828,6 +712,7 @@ class LoanApplication extends Model
         return $username;
     }
 
+    // creating referral code for new sign up user
     private function addRef($user_id)
     {
         $ref = new \common\models\Referral();
@@ -842,9 +727,10 @@ class LoanApplication extends Model
             return $ref->code;
         }
 
-        return false;
+        throw new \Exception(json_encode($ref->getErrors()));
     }
 
+    // generating random referral code
     private function _getReferralCode($n = 10)
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -857,31 +743,7 @@ class LoanApplication extends Model
         return $randomString;
     }
 
-    public function uploadFile($loan_id)
-    {
-        $utilitiesModel = new Utilities();
-        $bill = new BillDetails();
-        $bill->bill_detail_enc_id = \Yii::$app->getSecurity()->generateRandomString();
-        $bill->loan_app_enc_id = $loan_id;
-        $bill->file_location = \Yii::$app->getSecurity()->generateRandomString();
-        $base_path = Yii::$app->params->upload_directories->loans->bill . $bill->file_location . '/';
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $bill->file = $utilitiesModel->encrypt() . '.' . 'pdf';
-        $type = $this->file->type;
-        if ($bill->save()) {
-            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-            $result = $my_space->uploadFileSources($this->file->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $bill->file, "private", ['params' => ['ContentType' => $type]]);
-            if ($result) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
+    // generating token for new sign up user
     private function newToken($user_id)
     {
         $source = Yii::$app->getRequest()->getUserIP();
@@ -899,7 +761,7 @@ class LoanApplication extends Model
         if ($token->save()) {
             return $token;
         }
-        return false;
+        throw new \Exception(json_encode($token->getErrors()));
     }
 
 }
