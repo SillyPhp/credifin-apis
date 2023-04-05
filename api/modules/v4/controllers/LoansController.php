@@ -91,7 +91,7 @@ class LoansController extends ApiBaseController
                 $user = $this->isAuthorized();
                 $user_id = !empty($user) ? $user->user_enc_id : NULL;
 
-                if (!$user) {
+                if ($user) {
                     // getting financer/employer id from logged in user
                     $lender = $this->getFinancerId($user);
                     if ($lender != null) {

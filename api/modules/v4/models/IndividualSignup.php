@@ -170,6 +170,12 @@ class IndividualSignup extends Model
                     $transaction->rollback();
                     return false;
                 }
+
+                $user->organization_enc_id = $org->organization_enc_id;
+                if (!$user->update()) {
+                    $transaction->rollback();
+                    return false;
+                }
             }
 
             $transaction->commit();
@@ -293,7 +299,11 @@ class IndividualSignup extends Model
 
     private function __addUserRole($user_id, $user_type_id)
     {
-        $org_id = \common\models\Referral::findOne(['code' => $this->dsaRefId])->organization_enc_id;
+        if ($this->user_type == 'Dealer' && !Yii::$app->user->isGuest) {
+            $org_id = Yii::$app->user->identity->organization_enc_id;
+        } else {
+            $org_id = \common\models\Referral::findOne(['code' => $this->dsaRefId])->organization_enc_id;
+        }
 
         if ($org_id) {
             $user_role = new UserRoles();

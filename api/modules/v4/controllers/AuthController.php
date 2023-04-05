@@ -85,6 +85,7 @@ class AuthController extends ApiBaseController
     public function actionSignup()
     {
         $model = new IndividualSignup();
+        $this->isAuthorized();
 
         if ($model->load(Yii::$app->request->post(), '')) {
 
