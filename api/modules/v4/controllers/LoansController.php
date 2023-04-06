@@ -18,6 +18,7 @@ use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
 use common\models\extended\LoanCoApplicantsExtended;
 use common\models\extended\LoanVerificationLocationsExtended;
+use common\models\FinancerLoanNegativeLocation;
 use common\models\LeadsApplications;
 use common\models\LoanAuditTrail;
 use common\models\LoanCertificates;
@@ -805,6 +806,118 @@ class LoansController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+    }
+
+    public function actionCreateFinancerLoanNegativeLocation()
+    {
+
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            $lender = $this->getFinancerId($user);
+            if ($lender == null) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "financer id not found"']);
+            }
+            if (empty($params['local_address'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "local_address"']);
+            }
+            if (empty($params['radius'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "radius"']);
+            }
+            if (empty($params['latitude'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "latitude"']);
+            }
+            if (empty($params['longitude'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "longitude"']);
+            }
+
+            $model = new FinancerLoanNegativeLocation();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->negative_location_enc_id = $utilitiesModel->encrypt();
+            $model->financer_enc_id = $lender;
+            $model->user_enc_id = $user->user_enc_id;
+            $model->address = $params['local_address'];
+            $model->radius = $params['radius'];
+            $model->latitude = $params['latitude'];
+            $model->longitude = $params['longitude'];
+            if (!empty($params['status'])) {
+                $model->status = $params['status'];
+            }
+            $model->created_on = date('Y-m-d H:i:s');
+            $model->created_by = $user->user_enc_id;
+
+            if (!$model->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'saved successfully']);
+        }
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    public function actionGetFinancerLoanNegativeLocation()
+    {
+        if ($user = $this->isAuthorized()) {
+            $lender = $this->getFinancerId($user);
+            $query = FinancerLoanNegativeLocation::find()
+                ->alias('a')
+                ->select(['a.negative_location_enc_id', 'CONCAT(b.first_name, " ", b.last_name) AS name', 'a.address', 'a.radius', 'a.latitude', 'a.longitude', 'a.status', 'a.created_by', 'a.created_on'])
+                ->joinWith(['userEnc b'], false);
+            $org = $user->organization_enc_id;
+            if (!empty($org)) {
+                $query->andWhere(['a.is_deleted' => 0, 'a.financer_enc_id' => $org]);
+            } else {
+                $query->andWhere(['a.is_deleted' => 0]);
+                $query->andWhere(['or', ['a.user_enc_id' => $user->user_enc_id], ['and', ['a.financer_enc_id' => $lender], ['a.status' => 'Active']]]);
+            }
+
+            $query = $query->asArray()
+                ->all();
+            if ($query) {
+                return $this->response(200, ['status' => 200, 'data' => $query]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    public function actionUpdateFinancerLoanNegativeLocation()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['negative_location_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "negative_location_enc_id"']);
+            }
+
+            $query = FinancerLoanNegativeLocation::findOne(['negative_location_enc_id' => $params['negative_location_enc_id']]);
+
+            if (!empty($params['is_deleted'])) {
+                $query->is_deleted = $params['is_deleted'];
+            } else if (!empty($params['status'])) {
+                $query->status = $params['status'];
+            }
+
+            $query->updated_by = $user->user_enc_id;
+            $query->updated_on = date('Y-m-d H:i:s');
+
+            if ($query->update()) {
+                return $this->response(200, [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Updated successfully.',
+                ]);
+            } else {
+                return $this->response(500, [
+                    'status' => 500,
+                    'title' => 'Error',
+                    'message' => 'An error has occurred while updating. Please try again.',
+                ]);
+            }
+
+        }
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
 }
