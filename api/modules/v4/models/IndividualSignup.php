@@ -299,6 +299,7 @@ class IndividualSignup extends Model
 
     private function __addUserRole($user_id, $user_type_id)
     {
+        $org_id = false;
         if ($this->user_type == 'Dealer' && !Yii::$app->user->isGuest) {
             $org_id = Yii::$app->user->identity->organization_enc_id;
         } elseif (!empty($this->dsaRefId)) {
