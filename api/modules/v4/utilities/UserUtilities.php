@@ -2,6 +2,8 @@
 
 namespace api\modules\v4\utilities;
 
+use common\models\AssignedSupervisor;
+use common\models\Organizations;
 use common\models\UserRoles;
 use Yii;
 use common\models\SelectedServices;
@@ -12,7 +14,7 @@ use common\models\UserTypes;
 // this class is used to get user related data
 class UserUtilities
 {
-    public function userData($user_id, $source = null)
+    public function userData($user_id)
     {
         $user = Users::find()
             ->alias('a')
@@ -37,18 +39,32 @@ class UserUtilities
 
         $user['user_type'] = $this->getUserType($user_id);
 
-        if ($source != null) {
-            $token = $this->findToken($user_id, $source);
-            $token = !empty($token) ? $this->getToken($token) : $this->generateNewToken($user_id, $source);
-            $user['access_token'] = $token->access_token;
-            $user['source'] = $token->source;
-            $user['refresh_token'] = $token->refresh_token;
-            $user['access_token_expiry_time'] = $token->access_token_expiration;
-            $user['refresh_token_expiry_time'] = $token->refresh_token_expiration;
-        }
+        if ($user['user_type'] == 'Employee') {
 
-        if($user['user_type'] == 'Employee'){
-            $user_role = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $user_role = UserRoles::findOne(['user_enc_id' => $user_id, 'is_deleted' => 0]);
+
+            if (!empty($user_role) && $user_role->organization_enc_id != null) {
+                $employee_organization = $this->getOrganization($user_role->organization_enc_id);
+                $user = array_merge($user, $employee_organization);
+            }
+
+        } elseif ($user['user_type'] == 'DSA') {
+
+            $dsa = AssignedSupervisor::find()
+                ->alias('a')
+                ->select(['a.assigned_enc_id', 'a.supervisor_enc_id', 'b.organization_enc_id'])
+                ->joinWith(['supervisorEnc b'], false);
+            if ($user->organization_enc_id) {
+                $dsa->where(['a.assigned_organization_enc_id' => $user->organization_enc_id, 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
+            } else {
+                $dsa->where(['a.assigned_user_enc_id' => $user->user_enc_id, 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
+            }
+            $dsa = $dsa->asArray()->one();
+
+            if (!empty($dsa) && $dsa['organization_enc_id']) {
+                $dsa_organization = $this->getOrganization($dsa['organization_enc_id']);
+                $user = array_merge($user, $dsa_organization);
+            }
         }
 
         return $user;
@@ -87,7 +103,18 @@ class UserUtilities
         return $user_type;
     }
 
-    private function findToken($user_id, $source)
+    private function getOrganization($organization_id)
+    {
+        return Organizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id', 'a.name organization_name', 'a.slug organization_slug', 'b.username organization_username'])
+            ->joinWith(['createdBy b'], false)
+            ->where(['a.organization_enc_id' => $organization_id])
+            ->asArray()
+            ->one();
+    }
+
+    private static function findToken($user_id, $source)
     {
         return UserAccessTokens::findOne([
             'user_enc_id' => $user_id,
@@ -95,7 +122,7 @@ class UserUtilities
         ]);
     }
 
-    private function getToken($token)
+    private static function getToken($token)
     {
         $time_now = date('Y-m-d H:i:s', time());
         $token->access_token = \Yii::$app->security->generateRandomString(32);
@@ -108,7 +135,7 @@ class UserUtilities
         return $token->getErrors();
     }
 
-    private function generateNewToken($user_id, $source)
+    private static function generateNewToken($user_id, $source)
     {
         $token = new UserAccessTokens();
         $time_now = date('Y-m-d H:i:s');
