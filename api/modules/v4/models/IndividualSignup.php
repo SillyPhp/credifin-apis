@@ -301,7 +301,7 @@ class IndividualSignup extends Model
     {
         if ($this->user_type == 'Dealer' && !Yii::$app->user->isGuest) {
             $org_id = Yii::$app->user->identity->organization_enc_id;
-        } else {
+        } elseif (!empty($this->dsaRefId)) {
             $org_id = \common\models\Referral::findOne(['code' => $this->dsaRefId])->organization_enc_id;
         }
 
@@ -321,8 +321,7 @@ class IndividualSignup extends Model
             }
             return true;
         }
-        print_r('organization_id not found');
-        return false;
+        return true;
     }
 
     private function sendMail($userId)
