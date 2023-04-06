@@ -8,6 +8,8 @@ use api\modules\v4\models\ProfilePicture;
 use api\modules\v4\models\Candidates;
 use api\modules\v4\models\LoginForm;
 use api\modules\v4\models\IndividualSignup;
+use api\modules\v4\models\SignupForm;
+use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedSupervisor;
 use common\models\Organizations;
 use common\models\Referral;
@@ -82,33 +84,77 @@ class AuthController extends ApiBaseController
     }
 
     // this action is used for user signup
+//    public function actionSignup()
+//    {
+//        // creating user signup form object
+//        $model = new IndividualSignup();
+//
+//        if ($model->load(Yii::$app->request->post(), '')) {
+//
+//            if (!$model->source) {
+//                $model->source = Yii::$app->getRequest()->getUserIP();
+//            }
+//
+//            if ($model->dsaRefId && !$model->is_connector && $model->user_type != 'Employee') {
+//                if (!$this->DsaOrgExist($model->dsaRefId)) {
+//                    return $this->response(404, ['status' => 404, 'message' => 'no organization found with this ref id']);
+//                }
+//            }
+//
+//            if ($model->validate()) {
+//                if ($data = $model->saveUser()) {
+//                    return $this->response(201, ['status' => 201, 'data' => $data]);
+//                } else {
+//                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+//                }
+//            }
+//            return $this->response(409, ['status' => 409, 'error' => $model->getErrors()]);
+//        }
+//        return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+//    }
+
+    // this action is used for signup
     public function actionSignup()
     {
-        // creating user signup form object
-        $model = new IndividualSignup();
+        try {
+            // creating signup form object
+            $model = new SignupForm();
 
-        if ($model->load(Yii::$app->request->post(), '')) {
+            // loading data from post request to model
+            if ($model->load(Yii::$app->request->post(), '')) {
 
-            if (!$model->source) {
-                $model->source = Yii::$app->getRequest()->getUserIP();
-            }
+                // if source empty then assign user ip address
+                $model->source = !empty($model->source) ? $model->source : Yii::$app->getRequest()->getUserIP();
 
-            if ($model->dsaRefId && !$model->is_connector && $model->user_type != 'Employee') {
-                if (!$this->DsaOrgExist($model->dsaRefId)) {
-                    return $this->response(404, ['status' => 404, 'message' => 'no organization found with this ref id']);
+                // if model validated then it will save data
+                if ($model->validate()) {
+
+                    // saving user data
+                    $data = $model->save();
+
+                    // if user saved successfully
+                    if ($data['status'] == 201) {
+                        // creating user utilities model to get user data
+                        $user = new UserUtilities();
+                        $user_data = $user->userData($data['user_id'], $model->source);
+
+                        return $this->response(201, ['status' => 201, 'data' => $user_data]);
+                    } else {
+                        // if there is error while saving data
+                        return $this->response(500, $data);
+                    }
                 }
+
+                // if there is errors in model while validating then return errors
+                return $this->response(409, ['status' => 409, 'error' => $model->getErrors()]);
             }
 
-            if ($model->validate()) {
-                if ($data = $model->saveUser()) {
-                    return $this->response(201, ['status' => 201, 'data' => $data]);
-                } else {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
-                }
-            }
-            return $this->response(409, ['status' => 409, 'error' => $model->getErrors()]);
+            // if there is no data in post request then send 400 bad request
+            return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+
+        } catch (\Exception $exception) {
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception->getMessage(), true)];
         }
-        return $this->response(400, ['status' => 400, 'message' => 'bad request']);
     }
 
     private function DsaOrgExist($dsaRefId)

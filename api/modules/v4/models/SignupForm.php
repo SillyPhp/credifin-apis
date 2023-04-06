@@ -142,7 +142,7 @@ class SignupForm extends Model
             }
 
             $transaction->commit();
-            return ['status' => 200, 'user_id' => $user->user_enc_id];
+            return ['status' => 201, 'user_id' => $user->user_enc_id];
 
         } catch (\Exception $exception) {
             $transaction->rollback();
