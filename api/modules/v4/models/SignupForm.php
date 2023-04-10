@@ -3,6 +3,7 @@
 namespace api\modules\v4\models;
 
 use common\models\AssignedSupervisor;
+use common\models\EmailLogs;
 use common\models\Organizations;
 use common\models\RandomColors;
 use common\models\Referral;
@@ -40,10 +41,10 @@ class SignupForm extends Model
     public function rules()
     {
         return [
-            [['username', 'first_name', 'last_name', 'phone', 'password', 'source'], 'required'],
-            [['organization_name', 'organization_email', 'organization_phone'], 'required', 'on' => 'organization'],
-            [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'trim'],
-            [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
+            [['username', 'first_name', 'last_name', 'phone', 'password', 'source', 'user_type'], 'required'],
+            [['organization_name', 'organization_email', 'organization_phone'], 'required', 'on' => 'Financer'],
+            [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id'], 'trim'],
+            [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
             [['username'], 'string', 'length' => [3, 20]],
             [['email', 'organization_email'], 'string', 'max' => 100],
@@ -65,18 +66,13 @@ class SignupForm extends Model
     // saving data
     public function save()
     {
-        // if user type is Employee or Dealer it will be saved as it is
-        if ($this->user_type == 'Employee' || $this->user_type == 'Dealer') {
-            $user_type = $this->user_type;
-        } elseif ($this->user_type == 'Financer') {
-            // if user_type is financer it's type will be saved as Organization Admin and for financer (Loans) service assigned in selected_services
-            $user_type = 'Organization Admin';
-        } elseif ($this->user_type == 'DSA' && !empty($this->organization_name)) {
-            // if user_type DSA and With organization name it will be saved as Organization Admin type and E-Partners service assigned in selected_services
+        // if user type is Employee or Dealer it will be saved as it is PA0iwUzc4y
+        if ($this->user_type == 'Financer') {
+            // if user_type is financer its type will be saved as Organization Admin and for financer (Loans) service assigned in selected_services
             $user_type = 'Organization Admin';
         } else {
             // else type will be individual for DSA without organization name, Connector and Individual user. for connector (Connector) service  assigned in selected_services
-            $user_type = 'Individual';
+            $user_type = !empty($this->user_type) ? $this->user_type : 'Individual';
         }
 
         // transaction begin
@@ -95,11 +91,11 @@ class SignupForm extends Model
             $user->first_name = ucfirst(strtolower($this->first_name));
             $user->last_name = ucfirst(strtolower($this->last_name));
             $user->phone = preg_replace("/\s+/", "", $this->phone);
-            $user->email = strtolower($this->email);
+            $user->email = $this->email ? strtolower($this->email) : null;
             $user->initials_color = RandomColors::one();
             $user->user_type_enc_id = UserTypes::findOne(['user_type' => $user_type])->user_type_enc_id;
-            $user->created_on = date('Y-m-d H:i:s');
             $user->status = ($user_type == 'Employee') ? 'Pending' : 'Active';
+            $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
             $user->last_visit = date('Y-m-d H:i:s');
             $user->last_visit_through = 'EL';
             $user->signed_up_through = 'EL';
@@ -111,7 +107,7 @@ class SignupForm extends Model
             }
 
             // if user_type Organization Admin or Organization name not empty for dealer user_type
-            if ($user_type == 'Organization Admin' || (!empty($this->organization_name) && $user_type == 'Dealer')) {
+            if ($user_type == 'Organization Admin' || (!empty($this->organization_name))) {
 
                 // saving organization data
                 $this->organization_id = $this->saveOrganization($user);
@@ -131,8 +127,8 @@ class SignupForm extends Model
                 $this->signupTracking();
             }
 
-            // if user_type Employee and Dealer then saving user role for them
-            if ($user_type == 'Employee' || $user_type == 'Dealer') {
+            // if user_type Employee or Dealer then saving user role for them
+            if (($user_type == 'Employee' || $user_type == 'Dealer') && !empty($this->ref_id)) {
                 $this->addUserRole($user->user_type_enc_id);
             }
 
@@ -141,6 +137,7 @@ class SignupForm extends Model
                 $this->addService();
             }
 
+            // commiting code
             $transaction->commit();
             return ['status' => 201, 'user_id' => $user->user_enc_id];
 
@@ -252,7 +249,6 @@ class SignupForm extends Model
             }
         }
 
-        throw new \Exception(json_encode('Organization not found with this ref_id for user roles'));
     }
 
     // adding service for Financer, DSA and Connector
@@ -278,6 +274,7 @@ class SignupForm extends Model
         if ($this->user_type == 'Financer') {
             $service = 'Loans';
         } elseif ($this->user_type == 'DSA') {
+
             // if user_type DSA then service will be E-Partners
             $service = 'E-Partners';
 
@@ -317,13 +314,40 @@ class SignupForm extends Model
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         $assignedSuper->assigned_enc_id = $utilitiesModel->encrypt();
         $assignedSuper->supervisor_enc_id = Users::findOne(['organization_enc_id' => $referralData->organization_enc_id])->user_enc_id;
-        $assignedSuper->assigned_user_enc_id = $this->user_id;
+        !empty($this->organization_id) ? $assignedSuper->assigned_organization_enc_id = $this->organization_id : $assignedSuper->assigned_user_enc_id = $this->user_id;
         $assignedSuper->is_supervising = 1;
         $assignedSuper->supervisor_role = $role;
         $assignedSuper->created_on = date('Y-m-d H:i:s');
         $assignedSuper->created_by = $this->user_id;
         if (!$assignedSuper->save()) {
             throw new \Exception(json_encode($assignedSuper->getErrors()));
+        }
+    }
+
+    private function sendMail($userId)
+    {
+        $mail = Yii::$app->mail;
+        $mail->receivers = [];
+        $mail->receivers[] = [
+            "name" => $this->first_name . " " . $this->last_name,
+            "email" => $this->email,
+        ];
+        $mail->subject = 'Welcome to My eCampus';
+        $mail->template = 'mec-thank-you';
+        if ($mail->send()) {
+            $mail_logs = new EmailLogs();
+            $utilitesModel = new Utilities();
+            $utilitesModel->variables['string'] = time() . rand(100, 100000);
+            $mail_logs->email_log_enc_id = $utilitesModel->encrypt();
+            $mail_logs->email_type = 5;
+            $mail_logs->user_enc_id = $userId;
+            $mail_logs->receiver_name = $this->first_name . " " . $this->last_name;
+            $mail_logs->receiver_email = $this->email;
+            $mail_logs->receiver_phone = $this->phone;
+            $mail_logs->subject = 'Welcome to My eCampus';
+            $mail_logs->template = 'mec-thank-you';
+            $mail_logs->is_sent = 1;
+            $mail_logs->save();
         }
     }
 

@@ -4,6 +4,7 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\IndividualSignup;
 use api\modules\v4\models\LoanApplication;
+use api\modules\v4\models\SignupForm;
 use common\models\AssignedDeals;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedLoanProvider;
@@ -1366,9 +1367,9 @@ class CompanyDashboardController extends ApiBaseController
                 $refId = Referral::findOne(['organization_enc_id' => Organizations::findOne(['slug' => 'phfleasing'])->organization_enc_id])->code;
                 $employee_exists = Users::findOne(['phone' => [$bdo_number, '+91' . $bdo_number]]);
                 if (!$employee_exists) {
-                    $signup = new IndividualSignup();
+                    $signup = new SignupForm();
                     $signup->phone = $bdo_number;
-                    $signup->dsaRefId = $refId;
+                    $signup->ref_id = $refId;
                     $signup->user_type = 'Employee';
                     $e_bdo_name = explode(' ', $bdo_name);
                     $signup->first_name = $e_bdo_name[0];

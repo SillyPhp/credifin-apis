@@ -7,7 +7,6 @@ use api\modules\v4\models\OrganizationSignup;
 use api\modules\v4\models\ProfilePicture;
 use api\modules\v4\models\Candidates;
 use api\modules\v4\models\LoginForm;
-use api\modules\v4\models\IndividualSignup;
 use api\modules\v4\models\SignupForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedSupervisor;
@@ -83,42 +82,15 @@ class AuthController extends ApiBaseController
         return $behaviors;
     }
 
-    // this action is used for user signup
-//    public function actionSignup()
-//    {
-//        // creating user signup form object
-//        $model = new IndividualSignup();
-//
-//        if ($model->load(Yii::$app->request->post(), '')) {
-//
-//            if (!$model->source) {
-//                $model->source = Yii::$app->getRequest()->getUserIP();
-//            }
-//
-//            if ($model->dsaRefId && !$model->is_connector && $model->user_type != 'Employee') {
-//                if (!$this->DsaOrgExist($model->dsaRefId)) {
-//                    return $this->response(404, ['status' => 404, 'message' => 'no organization found with this ref id']);
-//                }
-//            }
-//
-//            if ($model->validate()) {
-//                if ($data = $model->saveUser()) {
-//                    return $this->response(201, ['status' => 201, 'data' => $data]);
-//                } else {
-//                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
-//                }
-//            }
-//            return $this->response(409, ['status' => 409, 'error' => $model->getErrors()]);
-//        }
-//        return $this->response(400, ['status' => 400, 'message' => 'bad request']);
-//    }
-
     // this action is used for signup
     public function actionSignup()
     {
         try {
-            // creating signup form object
-            $model = new SignupForm();
+
+            $params = Yii::$app->request->post();
+
+            // creating signup form object. if its financer then it will make object with scenario Financer to require organization fields
+            $model = ($params['user_type'] == 'Financer') ? new SignupForm(['scenario' => 'Financer']) : new SignupForm();
 
             // loading data from post request to model
             if ($model->load(Yii::$app->request->post(), '')) {
@@ -128,7 +100,6 @@ class AuthController extends ApiBaseController
 
                 // if model validated then it will save data
                 if ($model->validate()) {
-
                     // saving user data
                     $data = $model->save();
 
@@ -157,20 +128,6 @@ class AuthController extends ApiBaseController
         }
     }
 
-    private function DsaOrgExist($dsaRefId)
-    {
-        return Organizations::find()
-            ->alias('a')
-            ->where(['a.organization_enc_id' => $dsaRefId])
-            ->joinWith(['selectedServices b' => function ($x) {
-                $x->andWhere(['b.is_selected' => 1]);
-                $x->joinWith(['serviceEnc c' => function ($b) {
-                    $b->andWhere(['c.name' => ['E-Partners', 'Loans']]);
-                }], 'INNER JOIN');
-            }], 'INNER JOIN')
-            ->exists();
-    }
-
     public function actionOrgSignup()
     {
         $model = new OrganizationSignup();
@@ -190,10 +147,12 @@ class AuthController extends ApiBaseController
         return $this->response(400, ['status' => 400, 'message' => 'bad request']);
     }
 
+    // this action is used to validate fields like username, email, phone etc.
     public function actionValidate()
     {
         $params = Yii::$app->request->post();
 
+        // if field is username then checking in  usernames table
         if ($params['field'] == 'username') {
             $exists = Usernames::findOne(['username' => $params['value']]);
             if ($exists) {
@@ -201,6 +160,7 @@ class AuthController extends ApiBaseController
             }
         }
 
+        // checking in users table
         $user_exists = Users::findOne([$params['field'] => $params['value']]);
 
         if ($user_exists) {
@@ -210,22 +170,26 @@ class AuthController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'exists' => false]);
     }
 
+    // this action is used to log user in
     public function actionLogin()
     {
+        // creating login form object
         $model = new LoginForm();
+
+        // loading login request data into form
         if ($model->load(Yii::$app->request->post(), '')) {
+
+            // logging in user
             if ($model->login()) {
+
+                // if source empty then assigning user if as source
                 $source = Yii::$app->request->post('source');
                 if (!$source) {
                     $source = Yii::$app->getRequest()->getUserIP();
                 }
-                $user = $this->findUser($model);
 
-//                if ($user->organization_enc_id) {
-//                    if (!$this->isEPartner($user)) {
-//                        return $this->response(409, ['status' => 409, 'message' => 'organization must be e-partner']);
-//                    }
-//                }
+                // getting user object
+                $user = $this->findUser($model);
 
                 $user->last_visit = date('Y-m-d H:i:s');
                 $user->last_visit_through = 'EL';
@@ -248,6 +212,8 @@ class AuthController extends ApiBaseController
             }
             return $this->response(409, ['status' => 409, 'data' => $model->getErrors()]);
         }
+
+        // if there is no data in request then error 400 bad request
         return $this->response(400, ['status' => 400, 'message' => 'bad request']);
     }
 
@@ -332,7 +298,7 @@ class AuthController extends ApiBaseController
             $data['image'] = "https://ui-avatars.com/api/?name=" . $user->first_name . ' ' . $user->last_name . "&size=200&rounded=false&background=" . str_replace("#", "", $user->initials_color) . "&color=ffffff";
         }
 
-        if ($data['user_type'] == 'Employee') {
+        if ($data['user_type'] == 'Employee' || $data['user_type'] == 'Dealer') {
             $org_id = UserRoles::findOne(['user_enc_id' => $user->user_enc_id])->organization_enc_id;
             if ($org_id) {
                 $organization = Organizations::find()
@@ -365,7 +331,7 @@ class AuthController extends ApiBaseController
             if (!empty($dsa) && $dsa['organization_enc_id']) {
                 $organization = Organizations::find()
                     ->alias('a')
-                    ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'b.username'])
+                    ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'b.username', 'a.email'])
                     ->joinWith(['createdBy b'], false)
                     ->where(['a.organization_enc_id' => $dsa['organization_enc_id']])
                     ->asArray()
@@ -373,6 +339,7 @@ class AuthController extends ApiBaseController
                 $data['organization_name'] = $organization['name'];
                 $data['organization_slug'] = $organization['slug'];
                 $data['organization_username'] = $organization['username'];
+                $data['organization_email'] = $organization['email'];
                 $data['organization_enc_id'] = $organization['organization_enc_id'];
             }
         }
@@ -380,17 +347,10 @@ class AuthController extends ApiBaseController
         return $data;
     }
 
+    // finding user with username or email
     private function findUser($model)
     {
-        $user = Candidates::findOne([
-            'username' => $model->username
-        ]);
-        if (!$user) {
-            $user = Candidates::findOne([
-                'email' => $model->username
-            ]);
-        }
-        return $user;
+        return Candidates::find()->where(['or', ['username' => $model->username], ['email' => $model->username]])->one();
     }
 
     private function onlyTokens($token)

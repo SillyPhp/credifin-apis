@@ -43,7 +43,7 @@ class UserUtilities
         $user['user_type'] = $this->getUserType($user_id);
 
         // if user_type is Employee then getting its organization data and merging it into user array
-        if ($user['user_type'] == 'Employee') {
+        if ($user['user_type'] == 'Employee' || $user['user_type'] == 'Dealer') {
 
             // getting user role data to get organization id the employee belongs to
             $user_role = UserRoles::findOne(['user_enc_id' => $user_id, 'is_deleted' => 0]);
@@ -136,7 +136,7 @@ class UserUtilities
     {
         return Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name organization_name', 'a.slug organization_slug', 'b.username organization_username'])
+            ->select(['a.organization_enc_id', 'a.name organization_name', 'a.slug organization_slug', 'b.username organization_username', 'a.email organization_email'])
             ->joinWith(['createdBy b'], false)
             ->where(['a.organization_enc_id' => $organization_id])
             ->asArray()
