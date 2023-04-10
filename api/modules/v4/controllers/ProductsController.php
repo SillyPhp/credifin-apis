@@ -357,6 +357,35 @@ class ProductsController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
+    public function actionUpdateProductStatus()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            $product_id = $params['product_enc_id'];
+            $status = $params['status'];
+
+            if (empty($product_id)) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "product_enc_id"']);
+            }
+            if (empty($status)) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
+            }
+
+            $product = Products::findOne(['product_enc_id' => $product_id]);
+            if (!$product) {
+                return $this->response(404, ['status' => 404, 'message' => 'Product not Found']);
+            }
+            $product->status = $status;
+            $product->updated_on = date('Y-m-d H:i:s');
+            $product->updated_by = $user->user_enc_id;
+            if (!$product->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'Status Updated']);
+        }
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
     public function actionGetProductDetails()
     {
         $params = Yii::$app->request->post();
