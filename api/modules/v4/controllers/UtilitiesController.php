@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\utilities\UserUtilities;
 use common\models\Cities;
 use common\models\Designations;
 use common\models\LoanApplicationOptions;
@@ -231,6 +232,15 @@ class UtilitiesController extends ApiBaseController
             }
         }
         else return "unauthorized";
+    }
+
+    public function actionTest(){
+        if($user = $this->isAuthorized()){
+            $userData = new UserUtilities();
+            print_r($userData->userData($user->user_enc_id));
+            die();
+        }
+        print_r('unauthorized');
     }
 
 
