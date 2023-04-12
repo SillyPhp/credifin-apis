@@ -17,77 +17,81 @@ class UserUtilities
     // getting user data to return after signup/login
     public function userData($user_id, $source = null)
     {
-        // query to get user data
-        $user = Users::find()
-            ->alias('a')
-            ->select([
-                'a.user_enc_id', 'a.username', 'a.first_name', 'a.last_name', 'a.initials_color', 'a.phone', 'a.email', 'a.organization_enc_id',
-                'b.name organization_name', 'b.slug organization_slug', 'a.username organization_username', 'b.email organization_email', 'b.phone organization_phone',
-                '(CASE
+        try {
+            // query to get user data
+            $user = Users::find()
+                ->alias('a')
+                ->select([
+                    'a.user_enc_id', 'a.username', 'a.first_name', 'a.last_name', 'a.initials_color', 'a.phone', 'a.email', 'a.organization_enc_id',
+                    'b.name organization_name', 'b.slug organization_slug', 'a.username organization_username', 'b.email organization_email', 'b.phone organization_phone',
+                    '(CASE
                 WHEN c.code IS NOT NULL THEN c.code
                 WHEN b1.code IS NOT NULL THEN b1.code
                 ELSE NULL
                 END) as referral_code',
-                'CASE WHEN b.logo IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo',
-                'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(a.first_name," ",a.last_name), "&size=200&rounded=true&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END image',
-            ])
-            ->joinWith(['organizationEnc b' => function ($b) {
-                $b->joinWith(['referrals b1']);
-            }], false)
-            ->joinWith(['referrals0 c'], false)
-            ->where(['a.user_enc_id' => $user_id])
-            ->asArray()
-            ->one();
+                    'CASE WHEN b.logo IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo',
+                    'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(a.first_name," ",a.last_name), "&size=200&rounded=true&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END image',
+                ])
+                ->joinWith(['organizationEnc b' => function ($b) {
+                    $b->joinWith(['referrals b1']);
+                }], false)
+                ->joinWith(['referrals0 c'], false)
+                ->where(['a.user_enc_id' => $user_id])
+                ->asArray()
+                ->one();
 
-        // getting user type
-        $user['user_type'] = $this->getUserType($user_id);
+            // getting user type
+            $user['user_type'] = $this->getUserType($user_id);
 
-        // if user_type is Employee then getting its organization data and merging it into user array
-        if ($user['user_type'] == 'Employee' || $user['user_type'] == 'Dealer') {
+            // if user_type is Employee then getting its organization data and merging it into user array
+            if ($user['user_type'] == 'Employee' || $user['user_type'] == 'Dealer') {
 
-            // getting user role data to get organization id the employee belongs to
-            $user_role = UserRoles::findOne(['user_enc_id' => $user_id, 'is_deleted' => 0]);
+                // getting user role data to get organization id the employee belongs to
+                $user_role = UserRoles::findOne(['user_enc_id' => $user_id, 'is_deleted' => 0]);
 
-            // user_role not empty and organization id not null then getting organization data and merging it into user array
-            if (!empty($user_role) && $user_role->organization_enc_id != null) {
-                $employee_organization = $this->getOrganization($user_role->organization_enc_id);
-                $user = array_merge($user, $employee_organization);
+                // user_role not empty and organization id not null then getting organization data and merging it into user array
+                if (!empty($user_role) && $user_role->organization_enc_id != null) {
+                    $employee_organization = $this->getOrganization($user_role->organization_enc_id);
+                    $user = array_merge($user, $employee_organization);
+                }
+
+            } elseif ($user['user_type'] == 'DSA') {
+
+                // if user_type is DSA then getting its organization id from assigned supervisor table
+                $dsa = AssignedSupervisor::find()
+                    ->alias('a')
+                    ->select(['a.assigned_enc_id', 'a.supervisor_enc_id', 'b.organization_enc_id'])
+                    ->joinWith(['supervisorEnc b'], false);
+                // DSA can be organization or individual user so if it is organization then getting data with assigned_organization_enc_id
+                if ($user['organization_enc_id']) {
+                    $dsa->where(['a.assigned_organization_enc_id' => $user['organization_enc_id'], 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
+                } else {
+                    // if it's individual user then getting data with assigned_user_enc_id
+                    $dsa->where(['a.assigned_user_enc_id' => $user_id, 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
+                }
+                $dsa = $dsa->asArray()->one();
+
+                // if not empty DSA array then getting organization data and merging it into user array
+                if (!empty($dsa) && $dsa['organization_enc_id']) {
+                    $dsa_organization = $this->getOrganization($dsa['organization_enc_id']);
+                    $user = array_merge($user, $dsa_organization);
+                }
             }
 
-        } elseif ($user['user_type'] == 'DSA') {
-
-            // if user_type is DSA then getting its organization id from assigned supervisor table
-            $dsa = AssignedSupervisor::find()
-                ->alias('a')
-                ->select(['a.assigned_enc_id', 'a.supervisor_enc_id', 'b.organization_enc_id'])
-                ->joinWith(['supervisorEnc b'], false);
-            // DSA can be organization or individual user so if it is organization then getting data with assigned_organization_enc_id
-            if ($user['organization_enc_id']) {
-                $dsa->where(['a.assigned_organization_enc_id' => $user['organization_enc_id'], 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
-            } else {
-                // if it's individual user then getting data with assigned_user_enc_id
-                $dsa->where(['a.assigned_user_enc_id' => $user_id, 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
+            if ($source != null) {
+                $token = $this->findToken($user_id, $source);
+                $token = !empty($token) ? $this->getToken($token) : $this->generateNewToken($user_id, $source);
+                $user['access_token'] = $token->access_token;
+                $user['source'] = $token->source;
+                $user['refresh_token'] = $token->refresh_token;
+                $user['access_token_expiry_time'] = $token->access_token_expiration;
+                $user['refresh_token_expiry_time'] = $token->refresh_token_expiration;
             }
-            $dsa = $dsa->asArray()->one();
 
-            // if not empty DSA array then getting organization data and merging it into user array
-            if (!empty($dsa) && $dsa['organization_enc_id']) {
-                $dsa_organization = $this->getOrganization($dsa['organization_enc_id']);
-                $user = array_merge($user, $dsa_organization);
-            }
+            return $user;
+        } catch (\Exception $exception) {
+            throw new \Exception($exception);
         }
-
-        if ($source != null) {
-            $token = $this->findToken($user_id, $source);
-            $token = !empty($token) ? $this->getToken($token) : $this->generateNewToken($user_id, $source);
-            $user['access_token'] = $token->access_token;
-            $user['source'] = $token->source;
-            $user['refresh_token'] = $token->refresh_token;
-            $user['access_token_expiry_time'] = $token->access_token_expiration;
-            $user['refresh_token_expiry_time'] = $token->refresh_token_expiration;
-        }
-
-        return $user;
     }
 
     // getting user type Financer, DSA, Connector, Employee, Dealer
