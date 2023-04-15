@@ -440,6 +440,11 @@ class AuthController extends ApiBaseController
             // getting token detail with this access_token and source
             $token = UserAccessTokens::findOne(['access_token' => $access_token, 'source' => $source]);
 
+            // if token not found
+            if (!$token) {
+                return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            }
+
             // creating today's date
             $today_date = new \DateTime();
             $today_date = $today_date->format('Y-m-d H:i:s');
