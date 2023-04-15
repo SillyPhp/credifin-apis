@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\utilities\UserUtilities;
 use common\models\Cities;
 use common\models\Designations;
 use common\models\LoanApplicationOptions;

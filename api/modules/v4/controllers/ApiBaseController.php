@@ -240,7 +240,7 @@ class ApiBaseController extends Controller
             ->joinWith(['serviceEnc b'], false)
             ->where(['a.is_selected' => 1]);
 
-        if ($user->organization_enc_id) {
+        if (!empty($user->organization_enc_id)) {
             $service->andWhere(['or', ['a.organization_enc_id' => $user->organization_enc_id]]);
         } else {
             $service->andWhere(['or', ['a.created_by' => $user->user_enc_id]]);

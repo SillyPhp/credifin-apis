@@ -39,27 +39,17 @@ class BlogController extends ApiBaseController
         return $behaviors;
     }
 
+    // this action is used to get list of blogs
     public function actionList()
     {
-
         $params = Yii::$app->request->post();
 
-        $limit = 8;
-        $page = 1;
-        $keyword = 'loan';
+        // setting limit, page and keyword
+        $limit = !empty($params['limit']) ? $params['limit'] : 8;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $keyword = !empty($params['keyword']) ? $params['keyword'] : 'loan';
 
-        if (isset($params['limit']) && !empty($params['limit'])) {
-            $limit = $params['limit'];
-        }
-
-        if (isset($params['page']) && !empty($params['page'])) {
-            $page = $params['page'];
-        }
-
-        if (isset($params['keyword']) && !empty($params['keyword'])) {
-            $keyword = $params['keyword'];
-        }
-
+        // getting posts
         $posts = Posts::find()
             ->alias('a')
             ->select(['a.post_enc_id', 'a.featured_image_alt', 'featured_image_title', 'a.title', 'a.slug', 'a.excerpt',
@@ -80,19 +70,20 @@ class BlogController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'posts' => $posts]);
     }
 
+    // this action is used to get blog post detail
     public function actionDetail()
     {
         $params = Yii::$app->request->post();
 
+        // checking slug if empty then sending missing information
         if (empty($params['slug'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "slug"']);
         }
 
-        $keyword = 'loan';
-        if (isset($params['keyword']) && !empty($params['keyword'])) {
-            $keyword = $params['keyword'];
-        }
+        // if keyword is empty then setting default keyword loan
+        $keyword = !empty($params['keyword']) ? $params['keyword'] : 'loan';
 
+        // getting post detail
         $post = Posts::find()
             ->alias('a')
             ->select(['a.post_enc_id', 'a.title', 'a.slug', 'a.description', 'a.featured_image_alt', 'featured_image_title',
@@ -108,6 +99,7 @@ class BlogController extends ApiBaseController
             ->asArray()
             ->one();
 
+        // getting post categories and adding them to categories array
         $categories = [];
         if ($post) {
 
@@ -124,6 +116,7 @@ class BlogController extends ApiBaseController
             }
         }
 
+        // getting similar posts with main post categories
         $similar_posts = Posts::find()
             ->alias('z')
             ->select(['z.post_enc_id', 'z.featured_image_alt', 'z.featured_image_title', 'z.title', 'z.slug', 'z.excerpt',
@@ -147,6 +140,7 @@ class BlogController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'detail' => $post, 'similar_posts' => $similar_posts]);
         }
 
-        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        // if post not exists
+        return $this->response(404, ['status' => 404, 'message' => 'post not found']);
     }
 }
