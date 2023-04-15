@@ -2,7 +2,6 @@
 
 namespace api\modules\v4\controllers;
 
-use api\modules\v4\models\IndividualSignup;
 use common\models\AssignedFinancerLoanType;
 use common\models\CertificateTypes;
 use common\models\FinancerLoanDocuments;
