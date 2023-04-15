@@ -9,9 +9,12 @@ use common\models\LoanApplications;
 use common\models\LoanCertificates;
 use common\models\LoanCertificatesImages;
 use common\models\OrganizationTypes;
+use common\models\SelectedServices;
 use common\models\spaces\Spaces;
 use common\models\SponsoredCourses;
 use common\models\States;
+use common\models\Users;
+use common\models\UserTypes;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use Yii;
@@ -198,6 +201,7 @@ class UtilitiesController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
     public function actionUpdateLoanType()
     {
         if ($this->isAuthorized()) {
@@ -224,14 +228,61 @@ class UtilitiesController extends ApiBaseController
                     }
                 }
                 $transaction->commit();
-                return $this->response(200, ['status' => 200, 'data' => 'updated success    fully']);
+                return $this->response(200, ['status' => 200, 'data' => 'updated successfully']);
             } catch (\Exception $exception) {
                 $transaction->rollBack();
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()]);
             }
+        } else {
+            return "unauthorized";
         }
-        else return "unauthorized";
     }
 
+    public function actionUserTypeShifter()
+    {
 
+        if ($this->isAuthorized()) {
+
+            $transaction = Yii::$app->db->beginTransaction();
+            try {
+                $query = SelectedServices::find()
+                    ->alias('a')
+                    ->select(['a.created_by', 'a.selected_service_enc_id', 's.name'])
+                    ->joinWith(['serviceEnc s'], false)
+                    ->where(['s.name' => ['Connector', 'E-Partners']])
+                    ->andWhere(['not', ['a.created_by' => [null, 'undefined']]])
+                    ->asArray()
+                    ->all();
+                $dsa = UserTypes::findOne(['user_type' => 'DSA'])['user_type_enc_id'];
+                $connector = UserTypes::findOne(['user_type' => 'Connector'])['user_type_enc_id'];
+                foreach ($query as $key => $value) {
+                    $user = Users::findOne(['user_enc_id' => $value['created_by']]);
+                    $user_type = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])['user_type'];
+
+                    if ($user_type == 'Individual') {
+                        if (!empty($user)) {
+                            if ($value['name'] == 'Connector') {
+                                $user->user_type_enc_id = $connector;
+                            } else {
+                                $user->user_type_enc_id = $dsa;
+                            }
+                            $user->last_updated_on = date('Y-m-d H:i:s');
+                            if (!$user->update()) {
+                                $transaction->rollBack();
+                                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error1' => $user->getErrors()]);
+                            }
+                        }
+                    }
+                }
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'data' => 'updated successfully']);
+            } catch
+            (\Exception $exception) {
+                $transaction->rollBack();
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error2' => $exception->getMessage()]);
+            }
+        } else {
+            return "unauthorized";
+        }
+    }
 }

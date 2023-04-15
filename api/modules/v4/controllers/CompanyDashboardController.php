@@ -270,6 +270,10 @@ class CompanyDashboardController extends ApiBaseController
                 'a.created_on as apply_date', 'a.application_number',
                 'i.status status_number',
                 'CONCAT(k.first_name, " ", k.last_name) employee_name',
+                '(CASE
+                    WHEN ute.user_type = "Individual" THEN CONCAT("SELF (",cb.first_name, " ", cb.last_name, ")")
+                    ELSE CONCAT(cb.first_name, " ", cb.last_name)
+                END) as creator_name',
                 'a.applicant_name',
                 'a.amount',
                 'a.amount_received',
@@ -294,6 +298,9 @@ class CompanyDashboardController extends ApiBaseController
             ])
             ->joinWith(['collegeCourseEnc f'], false)
             ->joinWith(['collegeEnc g'], false)
+            ->joinWith(['createdBy cb' => function ($cr) {
+                $cr->joinWith(['userTypeEnc ute'], false);
+            }], false)
             ->joinWith(['loanCoApplicants h' => function ($h) {
                 $h->select(['h.loan_app_enc_id',
                     'h.relation',
