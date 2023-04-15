@@ -63,13 +63,24 @@ class CreditReportsController extends ApiBaseController
                 }], false)
                 ->joinWith(['createdBy d'], false)
                 ->joinWith(['loanCoAppEnc e'], false)
-                ->andWhere(['b1.provider_enc_id' => $user->organization_enc_id,'b1.is_deleted' => 0])
+                ->andWhere(['b1.provider_enc_id' => $user->organization_enc_id,'b1.is_deleted' => 0]);
+
+            if (isset($params['keyword']) && !empty($params['keyword'])) {
+                $CreditReport->andWhere([
+                    'or',
+                    ['like', 'b.applicant_name', $params['keyword']],
+                    ['like', 'e.name', $params['keyword']],
+                ]);
+            }
+
+            $count = $CreditReport->count();
+                $CreditReport = $CreditReport
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
 
-            return $this->response(200, ['status' => 200, 'data' => $CreditReport]);
+            return $this->response(200, ['status' => 200, 'data' => $CreditReport,'count'=> $count]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
