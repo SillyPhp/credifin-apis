@@ -11,7 +11,6 @@ use common\models\extended\LoanApplicationOptionsExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
 use common\models\extended\LoanPurposeExtended;
-use common\models\LoanPurpose;
 use common\models\Organizations;
 use common\models\Referral;
 use common\models\UserAccessTokens;
@@ -134,12 +133,12 @@ class LoanApplication extends Model
             $model->created_on = date('Y-m-d H:i:s');
             $model->created_by = $user_id;
 
-            // assigning lead by id to ref id user enc id
+            // assigning lead by id to ref id user
             if ($this->ref_id) {
                 $referralData = Referral::findOne(['code' => $this->ref_id]);
                 if ($referralData) {
 
-                    // if it's normal user then assigning user enc id
+                    // if it's normal user then assigning user_enc_id
                     if ($referralData->user_enc_id) {
                         $model->lead_by = $referralData->user_enc_id;
                     }

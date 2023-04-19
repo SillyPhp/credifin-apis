@@ -38,10 +38,14 @@ class CoApplicantFrom extends Model
         ];
     }
 
+    // saving co-applicant
     public function save($loan_id, $user_id)
     {
+        // starting transaction
         $transaction = Yii::$app->db->beginTransaction();
         try {
+
+            // saving data
             $co_applicant = new LoanCoApplicantsExtended();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(10, 100000);
@@ -60,7 +64,7 @@ class CoApplicantFrom extends Model
             $co_applicant->created_on = date('Y-m-d H:i:s');
             if (!$co_applicant->save()) {
                 $transaction->rollBack();
-                return ['status' => 500, 'message' => 'an error occurred', 'error3' => $co_applicant->getErrors()];
+                return ['status' => 500, 'message' => 'an error occurred', 'error' => $co_applicant->getErrors()];
             }
 
             // saving address
@@ -77,25 +81,30 @@ class CoApplicantFrom extends Model
             $loan_address->created_by = $user_id;
             if (!$loan_address->save()) {
                 $transaction->rollBack();
-                return ['status' => 500, 'message' => 'an error occurred', 'error2' => $loan_address->getErrors()];
+                return ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_address->getErrors()];
             }
 
+            // commiting code
             $transaction->commit();
 
             return ['status' => 200, 'message' => 'successfully saved'];
 
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            return ['status' => 500, 'message' => 'an error occurred', 'error1' => $exception->getMessage()];
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()];
         }
     }
 
+    // updating co-applicant
     public function update($co_app_id, $user_id)
     {
+        // starting transaction
         $transaction = Yii::$app->db->beginTransaction();
         try {
+            // getting co-applicant object
             $co_applicant = LoanCoApplicantsExtended::findOne(['loan_co_app_enc_id' => $co_app_id]);
 
+            // updating co-applicant data data
             $co_applicant->name = $this->name ? $this->name : $co_applicant->name;
             $co_applicant->co_applicant_dob = $this->dob ? $this->dob : $co_applicant->co_applicant_dob;
             $co_applicant->phone = $this->phone ? $this->phone : $co_applicant->phone;
@@ -112,10 +121,13 @@ class CoApplicantFrom extends Model
 
             // saving address
             $loan_address = LoanApplicantResidentialInfoExtended::findOne(['loan_co_app_enc_id' => $co_app_id]);
+
+            // if not empty loan address
             if (!empty($loan_address)) {
                 $loan_address->updated_on = date('Y-m-d H:i:s');
                 $loan_address->updated_by = $user_id;
             } else {
+                // else creating new object
                 $loan_address = new LoanApplicantResidentialInfoExtended();
                 $utilitiesModel = new \common\models\Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(10, 100000);
@@ -128,16 +140,18 @@ class CoApplicantFrom extends Model
             $loan_address->state_enc_id = $this->state ? $this->state : $loan_address->state_enc_id;
             $loan_address->postal_code = $this->zip ? $this->zip : $loan_address->postal_code;
 
-            if (!$loan_address->save()) {
+            if (!$loan_address->update()) {
                 $transaction->rollBack();
-                return ['status' => 500, 'message' => 'an error occurred', 'error2' => $loan_address->getErrors()];
+                return ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_address->getErrors()];
             }
-            $transaction->commit();
 
+            // commiting code
+            $transaction->commit();
             return ['status' => 200, 'message' => 'successfully updated'];
+
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            return ['status' => 500, 'message' => 'an error occurred', 'error1' => $exception->getMessage()];
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()];
         }
 
     }
