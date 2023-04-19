@@ -595,7 +595,7 @@ class ProductsController extends ApiBaseController
             }
         }
         $products = $products->groupBy('a.product_enc_id')
-            ->orderBy(['a.status' => SORT_ASC])
+            ->orderBy(['a.status' => SORT_ASC, 'a.created_by' => SORT_DESC])
             ->limit($options['limit'])
             ->offset(($options['page'] - 1) * $options['limit'])
             ->asArray()
