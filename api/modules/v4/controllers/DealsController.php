@@ -42,14 +42,17 @@ class DealsController extends ApiBaseController
         return $behaviors;
     }
 
+    // getting deals of organization from slug
     public function actionDetail()
     {
         $params = Yii::$app->request->post();
 
+        // checking slug
         if (empty($params)) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "slug"']);
         }
 
+        // getting data
         $org_deals = UnclaimedOrganizations::find()
             ->alias('a')
             ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'a.facebook_username', 'a.twitter_username', 'a.linkedin_username', 'a.instagram_username', 'a.description',
@@ -89,8 +92,10 @@ class DealsController extends ApiBaseController
             ->asArray()
             ->one();
 
+
         if ($org_deals) {
 
+            // checking claimed deals
             if ($user = $this->isAuthorized()) {
                 foreach ($org_deals['assignedDeals'] as $key => $val) {
                     $org_deals['assignedDeals'][$key]['is_claimed'] = $this->_isClaimed($val['deal_enc_id'], $user->user_enc_id);
@@ -104,6 +109,7 @@ class DealsController extends ApiBaseController
 
     }
 
+    // checking deal claimed or not
     public function _isClaimed($deal_id, $user_id)
     {
         return ClaimedDeals::find()
@@ -111,19 +117,27 @@ class DealsController extends ApiBaseController
             ->exists();
     }
 
+    // action to claim deal
     public function actionClaim()
     {
         if ($user = $this->isAuthorized()) {
+
             $params = Yii::$app->request->post();
 
+            // checking deal_id
             if (empty($params['deal_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "deal_id"']);
             }
 
+            // saving data
             $claim = new ClaimedDeals();
-            $claim->claimed_deal_enc_id = \Yii::$app->security->generateRandomString();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $claim->claimed_deal_enc_id = $utilitiesModel->encrypt();
             $claim->deal_enc_id = $params['deal_id'];
             $claim->user_enc_id = $user->user_enc_id;
+
+            // getting coupon code
             if ($code = $this->_getCouponCode($params['deal_id'], $user->user_enc_id)) {
                 $claim->claimed_coupon_code = $code;
             }
@@ -141,13 +155,16 @@ class DealsController extends ApiBaseController
         }
     }
 
+    // getting coupon code
     private function _getCouponCode($deal_id, $user_id)
     {
         $deal = AssignedDeals::findOne(['deal_enc_id' => $deal_id]);
 
+        // if coupon code exists then returning it
         if ($deal->coupon_code) {
             return $deal->coupon_code;
         } else {
+            // else adding it in raw and return
             $deal->coupon_code = $this->_genCode(8);
             $deal->last_updated_by = $user_id;
             $deal->last_updated_on = date('Y-m-d H:i:s');
@@ -159,6 +176,7 @@ class DealsController extends ApiBaseController
         }
     }
 
+    // generating random coupon code
     private function _genCode($n = 10)
     {
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -171,9 +189,12 @@ class DealsController extends ApiBaseController
         return $randomString;
     }
 
+    // this action is used to get claimed deals list
     public function actionGetClaimed()
     {
         if ($user = $this->isAuthorized()) {
+
+            // getting claimed deals list
             $claimed = ClaimedDeals::find()
                 ->alias('a')
                 ->select(['a.claimed_deal_enc_id', 'a.deal_enc_id', 'a.claimed_coupon_code', 'a.expiry_date', 'b.deal_type', 'b.name', 'b.title', 'b.value', 'b.type', 'b.discount_type',
@@ -186,6 +207,7 @@ class DealsController extends ApiBaseController
                 ->asArray()
                 ->all();
 
+            // if data exists then returning 200
             if ($claimed) {
                 return $this->response(200, ['status' => 200, 'claimed_deals' => $claimed]);
             }
