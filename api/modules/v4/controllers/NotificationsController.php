@@ -10,6 +10,7 @@ use yii\filters\Cors;
 use yii\filters\ContentNegotiator;
 use common\models\Utilities;
 
+// this controller is used for push notifications
 class NotificationsController extends ApiBaseController
 {
 
