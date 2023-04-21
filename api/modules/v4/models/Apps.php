@@ -35,36 +35,43 @@ class Apps extends Model
         ];
     }
 
+
     public function add($user)
     {
+        // starting transaction
         $transaction = Yii::$app->db->beginTransaction();
         try {
 
+            // saving data in organization apps
             $model = new OrganizationApps();
-            $model->app_enc_id = Yii::$app->getSecurity()->generateRandomString();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->app_enc_id = $utilitiesModel->encrypt();
             $model->organization_enc_id = $user->organization_enc_id;
             $model->app_name = $this->app_name;
             $model->app_description = $this->app_description;
             $model->assigned_to = $this->assigned_to;
 
+            // if logo exists
             if ($this->logo) {
                 $model->app_icon = Yii::$app->getSecurity()->generateRandomString() . '.' . $this->logo->extension;
                 $model->app_icon_location = Yii::$app->getSecurity()->generateRandomString() . '/';
-                if (!$this->fileUpload($model->app_icon, $model->app_icon_location)) {
-                    $transaction->rollBack();
-                    return false;
-                }
+
+                // uploading file
+                $this->fileUpload($model->app_icon, $model->app_icon_location);
             }
 
             $model->created_by = $user->user_enc_id;
             $model->created_on = date('Y-m-d H:i:s');
             if (!$model->save()) {
                 $transaction->rollBack();
-                return false;
+                return ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()];
             }
 
+            // decoding assigned users
             $assigned_users = json_decode($this->assigned_users, true);
-//            $assigned_users = $this->assigned_users;
+
+            // if assigned users exists then saving them to organization app users
             if ($assigned_users) {
                 foreach ($assigned_users as $val) {
                     $assigned_user = new OrganizationAppUsers();
@@ -75,13 +82,15 @@ class Apps extends Model
                     $assigned_user->created_on = date('Y-m-d H:i:s');
                     if (!$assigned_user->save()) {
                         $transaction->rollBack();
-                        return false;
+                        return ['status' => 500, 'message' => 'an error occurred', 'error' => $assigned_user->getErrors()];
                     }
                 }
             }
 
+            // decoding elements
             $elems = json_decode($this->elements, true);
-//            $elems = $this->elements;
+
+            // if elements exists then saving them to organization app fields
             if ($elems) {
                 foreach ($elems as $key => $arr) {
                     $app_fields = new OrganizationAppFields();
@@ -95,33 +104,35 @@ class Apps extends Model
                     $app_fields->created_on = date('Y-m-d H:i:s');
                     if (!$app_fields->save()) {
                         $transaction->rollBack();
-                        return false;
+                        return ['status' => 500, 'message' => 'an error occurred', 'error' => $app_fields->getErrors()];
                     }
                 }
             }
 
+            // commiting code
             $transaction->commit();
-            return true;
+            return ['status' => 201, 'message' => 'successfully saved'];
 
 
         } catch (\Exception $exception) {
             $transaction->rollBack();
-            return false;
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()];
         }
     }
 
+    // uploading file/logo
     private function fileUpload($icon, $icon_location)
     {
 
         $base_path = Yii::$app->params->upload_directories->form_apps->logo . $icon_location;
         $type = $this->logo->type;
 
+        // creating spaces object
         $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
         $result = $my_space->uploadFileSources($this->logo->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $icon, "private", ['params' => ['ContentType' => $type]]);
         if (!$result) {
-            return false;
+            throw new \Exception('error occurred while uploading logo');
         }
-        return true;
     }
 }

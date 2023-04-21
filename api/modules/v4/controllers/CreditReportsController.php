@@ -39,10 +39,21 @@ class CreditReportsController extends ApiBaseController
     public function actionList()
     {
         if ($user = $this->isAuthorized()) {
-            $loan = CreditLoanApplicationReports::find()
+            $params = Yii::$app->request->post();
+            $limit = 10;
+            $page = 1;
+
+            if (isset($params['limit']) && !empty($params['limit'])) {
+                $limit = $params['limit'];
+            }
+            if (isset($params['page']) && !empty($params['page'])) {
+                $page = $params['page'];
+            }
+
+            $CreditReport = CreditLoanApplicationReports::find()
                 ->distinct()
                 ->alias('a')
-                ->select(['a.loan_app_enc_id', 'b.applicant_name', 'b.loan_type', 'c.file_url', 'c.created_by', 'c1.request_source', 'concat(d.first_name," ",d.last_name) name','e.name as co_applicant_name','e.relation','e.borrower_type'])
+                ->select(['a.loan_app_enc_id', 'b.applicant_name', 'b.loan_type', 'c.file_url', 'c.created_by', 'c1.request_source', 'concat(d.first_name," ",d.last_name) created_by_name','e.name as co_applicant_name','e.relation','e.borrower_type'])
                 ->joinWith(['loanAppEnc b' => function ($b) {
                     $b->joinWith(['assignedLoanProviders b1']);
                 }], false)
@@ -52,11 +63,24 @@ class CreditReportsController extends ApiBaseController
                 }], false)
                 ->joinWith(['createdBy d'], false)
                 ->joinWith(['loanCoAppEnc e'], false)
-                ->andWhere(['b1.provider_enc_id' => $user->organization_enc_id,'b1.is_deleted' => 0])
+                ->andWhere(['b1.provider_enc_id' => $user->organization_enc_id,'b1.is_deleted' => 0]);
+
+            if (isset($params['keyword']) && !empty($params['keyword'])) {
+                $CreditReport->andWhere([
+                    'or',
+                    ['like', 'b.applicant_name', $params['keyword']],
+                    ['like', 'e.name', $params['keyword']],
+                ]);
+            }
+
+            $count = $CreditReport->count();
+                $CreditReport = $CreditReport
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
 
-            return $this->response(200, ['status' => 200, 'data' => $loan]);
+            return $this->response(200, ['status' => 200, 'data' => $CreditReport,'count'=> $count]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }

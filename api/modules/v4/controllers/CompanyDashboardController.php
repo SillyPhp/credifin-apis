@@ -2,7 +2,6 @@
 
 namespace api\modules\v4\controllers;
 
-use api\modules\v4\models\IndividualSignup;
 use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\SignupForm;
 use common\models\AssignedDeals;
@@ -17,8 +16,6 @@ use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\LoanApplicationCommentsExtended;
 use common\models\extended\LoanApplicationNotificationsExtended;
 use common\models\extended\SharedLoanApplicationsExtended;
-use common\models\LoanApplicationComments;
-use common\models\LoanApplicationNotifications;
 use common\models\LoanApplicationPartners;
 use common\models\LoanApplications;
 use common\models\LoanSanctionReports;
@@ -88,32 +85,40 @@ class CompanyDashboardController extends ApiBaseController
         return $behaviors;
     }
 
+    // getting lead stats
     public function actionLeadStats()
     {
+        // checking user authorization
         if ($user = $this->isAuthorized()) {
 
+            // if user is organization/financer then getting its DSA's
             if ($user->organization_enc_id) {
 
+                // getting DSA
                 $leads = $this->getDsa($user->user_enc_id);
 
-                $dsa = [];
+                // if leads not empty then adding assigned_user_enc_id in dsa array
                 if ($leads) {
+                    $dsa = [];
                     foreach ($leads as $val) {
-                        array_push($dsa, $val['assigned_user_enc_id']);
+                        $dsa[] = $val['assigned_user_enc_id'];
                     }
                 }
 
                 $dsa[] = $user->user_enc_id;
             }
 
+            // checking if this user is financer by checking service "Loans"
             $service = SelectedServices::find()
                 ->alias('a')
                 ->joinWith(['serviceEnc b'], false)
                 ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
                 ->exists();
 
+            // getting shared applications list to show stats of shared applications
             $shared_apps = $this->sharedApps($user->user_enc_id);
 
+            // getting loan application stats
             $stats = LoanApplications::find()
                 ->alias('a')
                 ->select([
@@ -128,20 +133,24 @@ class CompanyDashboardController extends ApiBaseController
                 ])
                 ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
                     $i->joinWith(['providerEnc j']);
+                    // if loans service exists then using andWhere with provider_enc_id
                     if ($service) {
                         $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
                     }
                 }], false)
                 ->andWhere(['a.is_deleted' => 0]);
 
+            // if its organization and service is not "Loans" then checking lead_by=$dsa
             if ($user->organization_enc_id) {
                 if (!$service) {
                     $stats->andWhere(['a.lead_by' => $dsa]);
                 }
             } else {
+                // else checking lead_by and managed_by by logged-in user
                 $stats->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
             }
 
+            // if shared app_ids exists then also getting data for those applications
             if ($shared_apps['app_ids']) {
                 $stats->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
             }
@@ -151,18 +160,20 @@ class CompanyDashboardController extends ApiBaseController
 
             return $this->response(200, ['status' => 200, 'stats' => $stats]);
 
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
+    // getting loan applications
     public function actionLoanApplications()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
 
+            // getting applications data
             $loans = $this->__getApplications($user, $params);
 
             return $this->response(200, ['status' => 200, 'loans' => $loans]);
@@ -172,41 +183,43 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    // getting loan applications by loan status
     public function actionStatusApplications()
     {
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
 
+            // if status is empty sending missing information status
             if (empty($params['status'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
             }
 
+            // if status is empty sending missing information loan_type
             if (empty($params['loan_type'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_type"']);
             }
 
-            $limit = 10;
-            $page = 1;
+            $limit = !empty($params['limit']) ? $params['limit'] : 10;
+            $page = !empty($params['page']) ? $params['page'] : 1;
 
-            if (isset($params['limit']) && !empty($params['limit'])) {
-                $limit = $params['limit'];
-            }
-
-            if (isset($params['page']) && !empty($params['page'])) {
-                $page = $params['page'];
-            }
-
+            // assigning status
             $status = $params['status'];
             if (!empty($params['fields_search']['status'])) {
                 $status = [$params['fields_search']['status']];
             }
 
+            // getting loan application by loan_status
             $loan_status = [];
             foreach ($status as $s) {
+
+                // to filter loan status
                 $params['filter'] = [$s];
-                $params['search_keyword'] = $params['loan_type'];
+
+                // getting applications
                 $d = $this->__getApplications($user, $params);
+
+                // if not empty then add it to main loan_status array
                 if (!empty($d)) {
                     $loan_status[$s]['data'] = $d;
                     $loan_status[$s]['page'] = $page;
@@ -214,7 +227,8 @@ class CompanyDashboardController extends ApiBaseController
                 }
             }
 
-            $loan_id = LoanType::findOne(['name' => $params['loan_type'], 'is_deleted' => 0 ]);
+            // getting and returning loan_type_enc_id
+            $loan_id = LoanType::findOne(['name' => $params['loan_type'], 'is_deleted' => 0]);
 
             return $this->response(200, ['status' => 200, 'loans' => $loan_status, 'loan_id' => $loan_id->loan_type_enc_id]);
 
@@ -225,45 +239,38 @@ class CompanyDashboardController extends ApiBaseController
 
     private function __getApplications($user, $params)
     {
-
+        // checking if this user is financer by checking service "Loans"
         $service = SelectedServices::find()
             ->alias('a')
             ->joinWith(['serviceEnc b'], false)
             ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
             ->exists();
 
-        $dsa = [];
+        // if user is organization/financer then getting its DSA's
         if ($user->organization_enc_id) {
 
+            // getting DSA
             $leads = $this->getDsa($user->user_enc_id);
 
+            // if leads not empty then adding assigned_user_enc_id in dsa array
+            $dsa = [];
             if ($leads) {
                 foreach ($leads as $val) {
-                    array_push($dsa, $val['assigned_user_enc_id']);
+                    $dsa[] = $val['assigned_user_enc_id'];
                 }
             }
 
             $dsa[] = $user->user_enc_id;
         }
 
+        // getting shared applications to logged-in user
         $shared_apps = $this->sharedApps($user->user_enc_id);
 
-        $filter = null;
-        $limit = 10;
-        $page = 1;
+        $filter = !empty($params['filter']) ? $params['filter'] : null;
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
 
-        if (isset($params['filter']) && !empty($params['filter'])) {
-            $filter = $params['filter'];
-        }
-
-        if (isset($params['limit']) && !empty($params['limit'])) {
-            $limit = $params['limit'];
-        }
-
-        if (isset($params['page']) && !empty($params['page'])) {
-            $page = $params['page'];
-        }
-
+        // getting loan applications list
         $loans = LoanApplications::find()
             ->distinct()
             ->alias('a')
@@ -271,6 +278,10 @@ class CompanyDashboardController extends ApiBaseController
                 'a.created_on as apply_date', 'a.application_number',
                 'i.status status_number',
                 'CONCAT(k.first_name, " ", k.last_name) employee_name',
+                '(CASE
+                    WHEN ute.user_type = "Individual" THEN CONCAT("SELF (",cb.first_name, " ", cb.last_name, ")")
+                    ELSE CONCAT(cb.first_name, " ", cb.last_name)
+                END) as creator_name',
                 'a.applicant_name',
                 'a.amount',
                 'a.amount_received',
@@ -295,6 +306,9 @@ class CompanyDashboardController extends ApiBaseController
             ])
             ->joinWith(['collegeCourseEnc f'], false)
             ->joinWith(['collegeEnc g'], false)
+            ->joinWith(['createdBy cb' => function ($cr) {
+                $cr->joinWith(['userTypeEnc ute'], false);
+            }], false)
             ->joinWith(['loanCoApplicants h' => function ($h) {
                 $h->select(['h.loan_app_enc_id',
                     'h.relation',
@@ -310,6 +324,7 @@ class CompanyDashboardController extends ApiBaseController
             }])
             ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
                 $i->joinWith(['providerEnc j']);
+                // if loans service exists then using andWhere with provider_enc_id
                 if ($service) {
                     $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
                 }
@@ -322,44 +337,62 @@ class CompanyDashboardController extends ApiBaseController
             }])
             ->andWhere(['a.is_deleted' => 0]);
 
+        // if its organization and service is not "Loans" then checking lead_by=$dsa
         if ($user->organization_enc_id) {
             if (!$service) {
                 $loans->andWhere(['a.lead_by' => $dsa]);
             }
         } else {
-//                $loans->andWhere(['a.lead_by' => $user->user_enc_id]);
+            // else checking lead_by and managed_by by logged-in user
             $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
         }
 
+        // if shared app_ids exists then also getting data for those applications
         if ($shared_apps['app_ids']) {
             $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
         }
 
+        // filter to check status
         if ($filter) {
             $loans->andWhere(['in', 'i.status', $filter]);
         }
 
+        // checking loan type filter
         if (!empty($params['loan_type'])) {
             $loans->andWhere(['a.loan_type' => $params['loan_type']]);
         }
 
-        if (isset($params['fields_search']) && !empty($params['fields_search'])) {
+        // fields search filter
+        if (!empty($params['fields_search'])) {
+            // fields array for "a" alias table
             $a = ['applicant_name', 'application_number', 'amount', 'apply_date'];
+
+            // fields array for "i" alias table
             $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status', 'branch'];
+
+            // loop fields
             foreach ($params['fields_search'] as $key => $val) {
 
+                // key match to "a" table array
                 if (in_array($key, $a)) {
+
+                    // if key is apply_date then checking created_on time
                     if ($key == 'apply_date') {
                         $loans->andWhere(['like', 'a.created_on', $val]);
                     } else {
+                        // else checking other fields with their names
                         $loans->andWhere(['like', 'a.' . $key, $val]);
                     }
                 }
 
+                // key match to "i" table array
                 if (in_array($key, $i)) {
+
+                    // if key is branch then checking branch_enc_id time
                     if ($key == 'branch') {
                         $loans->andWhere(['like', 'i.branch_enc_id', $val]);
                     } else {
+                        // else checking other fields with their names
                         $loans->andWhere(['like', 'i.' . $key, $val]);
                     }
                 }
@@ -367,6 +400,7 @@ class CompanyDashboardController extends ApiBaseController
             }
         }
 
+        // keyword search matching with these fields
         if (!empty($params['search_keyword'])) {
             $loans->andWhere([
                 'or',
@@ -379,39 +413,62 @@ class CompanyDashboardController extends ApiBaseController
             ]);
         }
 
+        // if form_type == diwali_dhamaka
         if (!empty($params['form_type']) && $params['form_type'] == 'diwali-dhamaka') {
             $loans->andWhere(['a.form_type' => 'diwali-dhamaka']);
         } else {
             $loans->andWhere(['!=', 'a.form_type', 'diwali-dhamaka']);
         }
-        if (isset($params['field_sort']) && !empty($params['field_sort'])) {
+
+        // sorting data
+        if (!empty($params['field_sort'])) {
+
+            // fields array of "a" alias table
             $a = ['applicant_name', 'application_number', 'amount', 'apply_date', 'loan_type'];
+
+            // fields array of "i" alias table
             $i = ['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges', 'status'];
+
+            // loop field_sort array
             foreach ($params['field_sort'] as $key => $val) {
+
+                // if $val not null or empty
                 if ($val != null || $val != '') {
+
+                    // if val is ASC then sorting ascending
                     if ($val == 'ASC') {
                         $val = SORT_ASC;
                     } else if ($val == 'DESC') {
+                        // else sort descending
                         $val = SORT_DESC;
                     }
+
                     if (in_array($key, $a)) {
+
+                        // if key apply_date then order_by created_by
                         if ($key == 'apply_date') {
                             $loans->orderBy(['a.created_on' => $val]);
                         } else {
+                            // else with field name
                             $loans->orderBy(['a.' . $key => $val]);
                         }
+
+                        // if "i" alias table array matching then sorting from their
                         if (in_array($key, $i)) {
                             $loans->orderBy(['i.' . $key => $val]);
                         }
                     }
                 } else {
+                    // else order_by i.updated_on desc and created_on desc
                     $loans->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
                 }
             }
 
         } else {
+            // else order_by i.updated_on desc and created_on desc
             $loans->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
         }
+
         $loans = $loans
             ->limit($limit)
             ->offset(($page - 1) * $limit)
@@ -491,19 +548,21 @@ class CompanyDashboardController extends ApiBaseController
         return $loans;
     }
 
-    private function __partnerApplications($user)
-    {
-        return LoanApplicationPartners::find()
-            ->alias('a')
-            ->select(['a.loan_app_enc_id'])
-            ->joinWith(['providerEnc b'], false)
-            ->where(['a.is_deleted' => 0, 'a.partner_enc_id' => $user->organization_enc_id])
-            ->asArray()
-            ->all();
-    }
+//    private function __partnerApplications($user)
+//    {
+//        return LoanApplicationPartners::find()
+//            ->alias('a')
+//            ->select(['a.loan_app_enc_id'])
+//            ->joinWith(['providerEnc b'], false)
+//            ->where(['a.is_deleted' => 0, 'a.partner_enc_id' => $user->organization_enc_id])
+//            ->asArray()
+//            ->all();
+//    }
 
+    // getting shared loan applications
     private function sharedApps($user_id)
     {
+        // getting loan applications shared to this user
         $shared = SharedLoanApplications::find()
             ->alias('a')
             ->select(['a.loan_app_enc_id', 'a.access', 'concat(b.first_name," ",b.last_name) shared_by'])
@@ -512,18 +571,22 @@ class CompanyDashboardController extends ApiBaseController
             ->asArray()
             ->all();
 
+        // getting shared application id's
         $loan_app_ids = [];
         if ($shared) {
             foreach ($shared as $s) {
-                array_push($loan_app_ids, $s['loan_app_enc_id']);
+                $loan_app_ids[] = $s['loan_app_enc_id'];
             }
         }
 
+        // returning application id's and shared detail
         return ['app_ids' => $loan_app_ids, 'shared' => $shared];
     }
 
+    // getting financer dsa list
     private function getDsa($user_id)
     {
+        // getting dsa of this user
         return AssignedSupervisor::find()
             ->select(['assigned_user_enc_id'])
             ->where(['supervisor_enc_id' => $user_id, 'supervisor_role' => 'Lead Source', 'is_supervising' => 1])
@@ -532,8 +595,10 @@ class CompanyDashboardController extends ApiBaseController
             ->all();
     }
 
+    // getting detail of loan application
     public function actionLoanDetail()
     {
+        // checking user authorization
         if ($user = $this->isAuthorized()) {
 
             // getting date before 1 month
@@ -541,27 +606,28 @@ class CompanyDashboardController extends ApiBaseController
             $date->modify('-30 day'); // or you can use '-90 day' for deduct
             $date = $date->format('Y-m-d');
 
-            $organization_id = Users::findOne(['user_enc_id' => $user->user_enc_id])->organization_enc_id;
             $params = Yii::$app->request->post();
 
+            // getting provider/financer id
             $provider_id = $this->getFinancerId($user);
 
+            // if not found provider id
             if ($provider_id == null) {
                 return $this->response(409, ['status' => 409, 'message' => 'provider id not found']);
             }
 
+            // if loan_id empty
             if (empty($params['loan_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
             }
 
+            // getting loan detail
             $loan = LoanApplications::find()
                 ->alias('a')
                 ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number',
                     'a.applicant_name', 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'a.gender', 'a.applicant_dob',
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address'])
-                ->joinWith(['assignedLoanProviders b' => function ($b) use ($organization_id) {
-//                    $b->where(['b.provider_enc_id' => $organization_id]);
-                }], false)
+                ->joinWith(['assignedLoanProviders b'], false)
                 ->joinWith(['loanCertificates c' => function ($c) {
                     $c->select(['c.certificate_enc_id', 'c.loan_app_enc_id', 'c.short_description', 'c.certificate_type_enc_id', 'c.number', 'c1.name', 'c.proof_image', 'c.proof_image_location', 'c.created_on', 'CONCAT(c2.first_name," ",c2.last_name) created_by']);
                     $c->joinWith(['certificateTypeEnc c1'], false);
@@ -631,21 +697,22 @@ class CompanyDashboardController extends ApiBaseController
                 ->asArray()
                 ->one();
 
+            // if loan application exists
             if ($loan) {
 
-                $loan_sanction_report = LoanSanctionReports::find()
+                // getting loan sanction reports
+                $loan['loanSanctionReports'] = LoanSanctionReports::find()
                     ->alias('d')
                     ->select(['d.report_enc_id', 'd.loan_app_enc_id', 'd.loan_amount', 'd.processing_fee', 'd.rate_of_interest', 'd.fldg'])
                     ->joinWith(['loanEmiStructures d1' => function ($d1) {
                         $d1->select(['d1.loan_structure_enc_id', 'd1.sanction_report_enc_id', 'd1.due_date', 'd1.amount', 'd1.is_advance']);
                     }])
-                    ->where(['d.loan_app_enc_id' => $loan['loan_app_enc_id'], 'd.loan_provider_id' => $organization_id])
+                    ->where(['d.loan_app_enc_id' => $loan['loan_app_enc_id'], 'd.loan_provider_id' => $provider_id])
                     ->groupBy(['d.report_enc_id'])
                     ->asArray()
                     ->one();
 
-                $loan['loanSanctionReports'] = $loan_sanction_report;
-
+                // if loan certificates exists then getting their images private links
                 if ($loan['loanCertificates']) {
                     foreach ($loan['loanCertificates'] as $key => $val) {
                         if ($val['proof_image']) {
@@ -657,6 +724,7 @@ class CompanyDashboardController extends ApiBaseController
                     }
                 }
 
+                // getting other details of this loan application from provider
                 $branch = AssignedLoanProvider::find()
                     ->alias('a')
                     ->select(['a.assigned_loan_provider_enc_id', 'a.branch_enc_id', 'b.location_name', 'b1.name city', 'a.bdo_approved_amount', 'a.tl_approved_amount', 'a.soft_approval', 'a.soft_sanction', 'a.valuation', 'a.disbursement_approved', 'a.insurance_charges'])
@@ -679,12 +747,16 @@ class CompanyDashboardController extends ApiBaseController
                     $loan['insurance_charges'] = $branch['insurance_charges'];
                 }
 
+                // getting loan application partners
                 $loan['loan_partners'] = $this->__applicationPartners($user, $loan['loan_app_enc_id']);
+
+                // getting loan type code
                 $loan['loan_type_code'] = LoanType::findOne(['name' => $loan['loan_type']])->value;
 
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }
 
+            // if application detail not found
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
 
         }
@@ -692,6 +764,7 @@ class CompanyDashboardController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
+    // getting partnered applications
     private function __applicationPartners($user, $loan_id)
     {
         return LoanApplicationPartners::find()
@@ -703,10 +776,13 @@ class CompanyDashboardController extends ApiBaseController
             ->all();
     }
 
+    // updating loan status
     public function actionUpdateProviderStatus()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
 
+            // getting provider id
             $provider_id = $this->getFinancerId($user);
 
             $params = Yii::$app->request->post();
@@ -719,17 +795,20 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
             }
 
+            // getting object to update
             $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['loan_id'], 'provider_enc_id' => $provider_id, 'is_deleted' => 0]);
 
+            // if provider not found to update status
             if (!$provider) {
                 return $this->response(404, ['status' => 404, 'message' => 'provider not found with this loan_id']);
             }
 
+            // updating data
             $provider->status = $params['status'];
             $provider->updated_by = $user->user_enc_id;
             $provider->updated_on = date('Y-m-d H:i:s');
             if (!$provider->update()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating status']);
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating status', 'error' => $provider->getErrors()]);
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
@@ -738,6 +817,7 @@ class CompanyDashboardController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
+    // saving data for organization tracking
     public function actionSaveOrganizationTracking()
     {
         if ($user = $this->isAuthorized()) {
@@ -746,6 +826,7 @@ class CompanyDashboardController extends ApiBaseController
 
             $org_id = $user->organization_enc_id;
 
+            // if org_id empty then getting organization id from referral_enc_id of whom referred this user of this user
             if (!$org_id) {
                 $ref_enc_id = ReferralSignUpTracking::findOne(['sign_up_user_enc_id' => $user->user_enc_id])->referral_enc_id;
                 if ($ref_enc_id) {
@@ -753,6 +834,7 @@ class CompanyDashboardController extends ApiBaseController
                 }
             }
 
+            // adding data to this table
             $model = new EsignOrganizationTracking();
             $model->esign_tracking_enc_id = Yii::$app->getSecurity()->generateRandomString();
             $model->organization_enc_id = $org_id;
@@ -762,6 +844,7 @@ class CompanyDashboardController extends ApiBaseController
             $model->created_by = $user->user_enc_id;
             $model->created_on = date('Y-m-d H:i:s');
             if (!$model->save()) {
+                // if data not saved
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()]);
             }
 
@@ -772,27 +855,34 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    // getting employee, dsa and connector list of this financer
     public function actionEmployees()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
 
+            // checking if its organization
             if ($user->organization_enc_id) {
 
                 $params = Yii::$app->request->post();
 
-
+                // getting employees list
                 $employee = $this->employeesList($user->organization_enc_id, $params);
+
+                // getting dsa's list
                 $dsa = $this->dsaList($user->user_enc_id, $params);
 
+                // extracting dsa user_enc_Id
                 $dsa_id = [];
                 if ($dsa) {
                     foreach ($dsa as $d) {
-                        array_push($dsa_id, $d['user_enc_id']);
+                        $dsa_id[] = $d['user_enc_id'];
                     }
                 }
 
                 $dsa_id[] = $user->user_enc_id;
 
+                // getting connectors list
                 $connector = $this->connectorsList($dsa_id, $params);
 
                 return $this->response(200, ['status' => 200, 'employees' => $employee, 'dsa' => $dsa, 'connector' => $connector]);
@@ -805,8 +895,10 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    // getting employee list
     private function employeesList($org_id, $params = null)
     {
+        // getting employees data
         $employee = UserRoles::find()
             ->alias('a')
             ->select(['a.role_enc_id', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code',
@@ -820,6 +912,7 @@ class CompanyDashboardController extends ApiBaseController
             }], false)
             ->where(['a.organization_enc_id' => $org_id, 'c.user_type' => 'Employee', 'a.is_deleted' => 0, 'b.is_deleted' => 0]);
 
+        // filter employee search on employee name, username, email and phone
         if ($params != null && !empty($params['employee_search'])) {
             $employee->andWhere([
                 'or',
@@ -830,6 +923,7 @@ class CompanyDashboardController extends ApiBaseController
             ]);
         }
 
+        // checking if this employee already exists in list from frontend
         if ($params != null && !empty($params['alreadyExists'])) {
             $employee->andWhere(['not', ['a.user_enc_id' => $params['alreadyExists']]]);
         }
@@ -838,14 +932,17 @@ class CompanyDashboardController extends ApiBaseController
             ->all();
     }
 
+    // getting dsa list
     private function dsaList($user_id, $params = null)
     {
+        // getting dsa from assigned supervisor table
         $dsa = AssignedSupervisor::find()
             ->alias('a')
             ->select(['a.assigned_user_enc_id user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', new Expression('"DSA" as user_type')])
             ->joinWith(['assignedUserEnc b'], false)
             ->where(['a.supervisor_enc_id' => $user_id, 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
 
+        // filter dsa search on dsa name, username, email and phone
         if ($params != null && !empty($params['dsa_search'])) {
             $dsa->andWhere([
                 'or',
@@ -856,12 +953,15 @@ class CompanyDashboardController extends ApiBaseController
             ]);
         }
 
+        // returning data
         return $dsa->asArray()
             ->all();
     }
 
+    // getting connector list
     private function connectorsList($user_id, $params = null)
     {
+        // getting connector list
         $connector = SelectedServices::find()
             ->alias('a')
             ->select(['a.created_by user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', new Expression('"Connector" as user_type')])
@@ -869,6 +969,7 @@ class CompanyDashboardController extends ApiBaseController
             ->joinWith(['serviceEnc c'], false)
             ->where(['a.assigned_user' => $user_id, 'c.name' => 'Connector', 'b.is_deleted' => 0, 'a.is_selected' => 1]);
 
+        // filter connector search on employee name, username, email and phone
         if ($params != null && !empty($params['connector_search'])) {
             $connector->andWhere([
                 'or',
@@ -883,69 +984,61 @@ class CompanyDashboardController extends ApiBaseController
             ->all();
     }
 
+    // employee search
     public function actionEmployeeSearch($employee_search, $type, $loan_id)
     {
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
 
-//            if (empty($params['employee_search'])) {
-//                return $this->response(422, ['status' => 422, 'message' => 'missing information "employee_search"']);
-//            }
-//
-//            if (empty($params['type'])) {
-//                return $this->response(422, ['status' => 422, 'message' => 'missing information "type"']);
-//            }
-//
-//            if (empty($params['loan_id'])) {
-//                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
-//            }
-
+            // getting and adding in params
             $params['employee_search'] = $employee_search;
             $params['type'] = $type;
             $params['loan_id'] = $loan_id;
 
-//            if (!$user->organization_enc_id) {
-//                return $this->response(403, ['status' => 403, 'message' => 'forbidden']);
-//            }
-
+            // getting lender of this user
             $lender = $this->getFinancerId($user);
+
+            // if lender not found
             if (!$lender) {
-                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+                return $this->response(404, ['status' => 404, 'message' => 'lender not found']);
             }
 
+            // getting employee list already assigned to this loan_id
             $already_exists = SharedLoanApplications::find()
                 ->select(['shared_to'])
                 ->where(['is_deleted' => 0, 'loan_app_enc_id' => $loan_id])
                 ->asArray()
                 ->all();
 
+            // extracting shared to ids
             $already_exists_ids = [];
             if ($already_exists) {
                 foreach ($already_exists as $e) {
-                    array_push($already_exists_ids, $e['shared_to']);
+                    $already_exists_ids[] = $e['shared_to'];
                 }
             }
 
+            // assigning already exists in params
             $params['alreadyExists'] = $already_exists_ids;
 
+            // getting employees list
+            $employees = $this->employeesList($lender, $params);
+
+            // if type employees
             if ($params['type'] == 'employees') {
-                $employees = $this->employeesList($lender, $params);
+
+                // if employees exists
                 if ($employees) {
+
+                    // looping employees
                     foreach ($employees as $key => $val) {
-                        $employees[$key]['lead_by'] = false;
-                        $employees[$key]['managed_by'] = false;
-                        if ($val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->lead_by) {
-                            $employees[$key]['lead_by'] = true;
-                        }
 
-                        if ($val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->managed_by) {
-                            $employees[$key]['managed_by'] = true;
-                        }
-
+                        // adding lead_by and managed_by = false in employees
+                        $employees[$key]['lead_by'] = $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->lead_by;
+                        $employees[$key]['managed_by'] = $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->managed_by;
                         $employees[$key]['id'] = $val['user_enc_id'];
                         $employees[$key]['name'] = $val['first_name'] . ' ' . $val['last_name'];
-
                     }
                 }
             }
@@ -959,9 +1052,7 @@ class CompanyDashboardController extends ApiBaseController
 
     public function actionChangeStatus()
     {
-        if ($user = $this->isAuthorized()) {
-
-//            if ($user->organization_enc_id) {
+        if ($this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
 
@@ -987,38 +1078,40 @@ class CompanyDashboardController extends ApiBaseController
 
             return $this->response(200, ['status' => 200, 'message' => 'status updated']);
 
-
-//            } else {
-//                return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
-//            }
-
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
+    // this action is used to update employee info
     public function actionUpdateEmployeeInfo()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
+
+            // checking if its organization
             if ($user->organization_enc_id) {
 
                 $params = Yii::$app->request->post();
 
+                // if empty user_id then return missing information user id
                 if (empty($params['user_id'])) {
                     return $this->response(422, ['status' => 422, 'message' => 'missing information "user_id"']);
                 }
 
+                // getting employee object from user_id
                 $user = Users::findOne(['user_enc_id' => $params['user_id']]);
 
+                // if user not found
                 if (!$user) {
                     return $this->response(404, ['status' => 404, 'message' => 'user not found']);
                 }
 
+                // checking if variables exists in params to update
                 (!empty($params['first_name'])) ? ($user->first_name = $params['first_name']) : '';
                 (!empty($params['last_name'])) ? ($user->last_name = $params['last_name']) : '';
                 (!empty($params['email'])) ? ($user->email = $params['email']) : '';
                 (!empty($params['phone'])) ? ($user->phone = $params['phone']) : '';
-
                 $user->last_updated_on = date('Y-m-d H:i:s');
 
                 if (!$user->update()) {
@@ -1036,14 +1129,18 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    // getting list of connectors referred by dsa
     public function actionDsaConnectors()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
 
+            // getting connector list
             $connector = $this->connectorsList($user->user_enc_id, $params);
 
+            // returnin data
             return $this->response(200, ['status' => 200, 'connector' => $connector]);
 
         } else {
@@ -1051,59 +1148,50 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    // getting all employees
     public function actionAllEmployees()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
 
+            // checking if its organization
             if ($user->organization_enc_id) {
 
                 $params = Yii::$app->request->post();
 
-
+                // getting employees list
                 $employee = $this->employeesList($user->organization_enc_id, $params);
+
+                // getting dsa list
                 $dsa = $this->dsaList($user->user_enc_id, $params);
 
                 $dsa_id = [];
                 if ($dsa) {
                     foreach ($dsa as $d) {
-                        array_push($dsa_id, $d['user_enc_id']);
+                        $dsa_id[] = $d['user_enc_id'];
                     }
                 }
 
                 $dsa_id[] = $user->user_enc_id;
 
+                // getting connector list
                 $connector = $this->connectorsList($dsa_id, $params);
 
                 $all = [];
 
-                // extracting employee
-                foreach ($employee as $val) {
-                    $data = [];
-                    $data['value'] = $val['user_enc_id'];
-                    $data['label'] = $val['first_name'] . ' ' . $val['last_name'];
-                    $data['user_type'] = $val['user_type'];
-                    $all[] = $data;
-                }
-
-                // extracting dsa
-                foreach ($dsa as $val) {
-                    $data = [];
-                    $data['value'] = $val['user_enc_id'];
-                    $data['label'] = $val['first_name'] . ' ' . $val['last_name'];
-                    $data['user_type'] = $val['user_type'];
-                    $all[] = $data;
-                }
-
-                // extracting dsa
-                foreach ($connector as $val) {
-                    $data = [];
-                    $data['value'] = $val['user_enc_id'];
-                    $data['label'] = $val['first_name'] . ' ' . $val['last_name'];
-                    $data['user_type'] = $val['user_type'];
-                    $all[] = $data;
+                // extracting data from all arrays
+                foreach ([$employee, $dsa, $connector] as $users) {
+                    foreach ($users as $val) {
+                        $data = [];
+                        $data['value'] = $val['user_enc_id'];
+                        $data['label'] = $val['first_name'] . ' ' . $val['last_name'];
+                        $data['user_type'] = $val['user_type'];
+                        $all[] = $data;
+                    }
                 }
 
                 return $this->response(200, ['status' => 200, 'all_employees' => $all]);
+
             } else {
                 return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
             }
@@ -1113,15 +1201,17 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    // this action is used to get financer detail
     public function actionFinancerDetail()
     {
-
         $params = Yii::$app->request->post();
 
+        // checking if slug is missing
         if (empty($params['slug'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing information "slug"']);
         }
 
+        // getting detail
         $detail = Organizations::find()
             ->alias('a')
             ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'a.email', 'a.phone', 'a.description', 'a.facebook', 'a.google', 'a.twitter', 'a.instagram', 'a.linkedin',
@@ -1139,14 +1229,17 @@ class CompanyDashboardController extends ApiBaseController
             ->asArray()
             ->one();
 
+        // checking if service loans exists for this user
         $service = SelectedServices::find()->alias('a')->joinWith(['serviceEnc b'], false)->where(['a.organization_enc_id' => $detail['organization_enc_id'], 'a.is_selected' => 1, 'b.name' => 'Loans'])->exists();
 
         if (!$service) {
             return $this->response(403, ['status' => 403, 'message' => 'forbidden']);
         }
 
+
         if ($detail) {
 
+            // getting financer loan types
             $detail['assignedFinancerLoanTypes'] = AssignedFinancerLoanType::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name loan_type'])
@@ -1169,6 +1262,7 @@ class CompanyDashboardController extends ApiBaseController
 
     }
 
+    // this action is used to save loan notifications
     public function actionSaveNotification()
     {
         if ($user = $this->isAuthorized()) {
@@ -1183,8 +1277,11 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "message"']);
             }
 
+            // saving loan notifications
             $notification = new LoanApplicationNotificationsExtended();
-            $notification->notification_enc_id = Yii::$app->getSecurity()->generateRandomString();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $notification->notification_enc_id = $utilitiesModel->encrypt();
             $notification->loan_application_enc_id = $params['loan_id'];
             $notification->message = $params['message'];
             $notification->source = 'EL';
@@ -1195,11 +1292,13 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
+    // this action is saving comments for loans
     public function actionSaveComment()
     {
         if ($user = $this->isAuthorized()) {
@@ -1214,8 +1313,11 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "comment"']);
             }
 
+            // saving comments
             $comment = new LoanApplicationCommentsExtended();
-            $comment->comment_enc_id = Yii::$app->getSecurity()->generateRandomString();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $comment->comment_enc_id = $utilitiesModel->encrypt();
             $comment->loan_application_enc_id = $params['loan_id'];
             $comment->comment = $params['comment'];
             if (!empty($params['is_important']) && (int)$params['is_important'] == 1) {
@@ -1229,14 +1331,17 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
+    // this action is sharing loan applications with users
     public function actionShareApplication()
     {
         if ($user = $this->isAuthorized()) {
+
             $params = Yii::$app->request->post();
 
             if (empty($params['loan_id'])) {
@@ -1251,14 +1356,19 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "access"']);
             }
 
+            // checking if already exists or not
             $exists = SharedLoanApplications::findOne(['loan_app_enc_id' => $params['loan_id'], 'shared_to' => $params['shared_to'], 'is_deleted' => 0]);
 
+            // if exists then returning 409 conflict
             if ($exists) {
                 return $this->response(409, ['status' => 409, 'message' => 'Application already shared with this user']);
             }
 
+            // saving data
             $shared = new SharedLoanApplicationsExtended();
-            $shared->shared_loan_app_enc_id = Yii::$app->getSecurity()->generateRandomString();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $shared->shared_loan_app_enc_id = $utilitiesModel->encrypt();
             $shared->loan_app_enc_id = $params['loan_id'];
             $shared->shared_by = $user->user_enc_id;
             $shared->shared_to = $params['shared_to'];
@@ -1276,28 +1386,32 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    // updating shared application
     public function actionUpdateSharedApplication()
     {
         if ($user = $this->isAuthorized()) {
+
             $params = Yii::$app->request->post();
 
+            // checking shared_loan_app_id
             if (empty($params['shared_loan_app_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "shared_loan_app_id"']);
             }
 
+            // getting data object from shared_loan_app_id
             $shared = SharedLoanApplicationsExtended::findOne(['shared_loan_app_enc_id' => $params['shared_loan_app_id'], 'is_deleted' => 0]);
 
+            // if not exists
             if (!$shared) {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
 
+            // updating variables if exists in params
             (!empty($params['access'])) ? $shared->access = $params['access'] : "";
             (!empty($params['status'])) ? $shared->status = $params['status'] : "";
-
             if (!empty($params['delete']) && $params['delete'] == true) {
                 $shared->is_deleted = 1;
             }
-
             $shared->updated_by = $user->user_enc_id;
             $shared->updated_on = date('Y-m-d H:i:s');
             if (!$shared->update()) {
@@ -1311,6 +1425,7 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    // generating username
     private function generate_username($string_name = null, $rand_no = 200)
     {
         $username_parts = array_filter(explode(" ", strtolower($string_name))); //explode and lowercase name
@@ -1324,31 +1439,33 @@ class CompanyDashboardController extends ApiBaseController
         return $username;
     }
 
+    // saving diwali dhamaka data
     public function actionSaveDiwaliDhamakaData()
     {
-
         $ids = '';
         $params = Yii::$app->request->post();
 
-        //getting csv file
+        // getting csv file
         $data = UploadedFile::getInstanceByName('file');
 
-        //reading file
+        // reading file
         $file = fopen($data->tempName, "r");
         $array_data = [];
 
-        //get data from csv
+        // get data from csv
         while (($data = fgetcsv($file)) !== FALSE) {
             if (!empty($data)) {
                 array_push($array_data, $data);
             }
         }
 
-
+        // unsetting index
         unset($array_data[0]);
 
+        // looping data
         for ($i = (int)$params['start']; $i <= count($array_data); $i++) {
             $d = $array_data[$i];
+
             // extracting and transforming name
             $name = $d[8];
             if (str_contains($name, 'S/O')) {
@@ -1359,14 +1476,22 @@ class CompanyDashboardController extends ApiBaseController
                 $name = explode('D/O', $name)[0];
             }
 
-            //saving data
+            // starting transaction
             $transaction = Yii::$app->db->beginTransaction();
             try {
                 $bdo_name = $d[5];
                 $bdo_number = $d[6];
+
+                // getting refId of this organization default is phfleasing
                 $refId = Referral::findOne(['organization_enc_id' => Organizations::findOne(['slug' => 'phfleasing'])->organization_enc_id])->code;
+
+                // checking if employee exists with this number
                 $employee_exists = Users::findOne(['phone' => [$bdo_number, '+91' . $bdo_number]]);
+
+                // if not exists then saving it
                 if (!$employee_exists) {
+
+                    // adding data to form
                     $signup = new SignupForm();
                     $signup->phone = $bdo_number;
                     $signup->ref_id = $refId;
@@ -1377,14 +1502,17 @@ class CompanyDashboardController extends ApiBaseController
                     $signup->username = $this->generate_username($bdo_name);
                     $signup->password = $bdo_number;
                     $signup->source = Yii::$app->getRequest()->getUserIP();
-                    if (!$signup->saveUser()) {
+                    if (!$signup->save()) {
                         $transaction->rollback();
                         $ids = $ids . $d[0] . ',';
                     }
 
                 }
 
+                // getting employee user id
                 $employee_id = Users::findOne(['phone' => [$bdo_number, '+91' . $bdo_number]])->user_enc_id;
+
+                // adding data to loan application form
                 $loan_application = new LoanApplication();
                 $loan_application->disbursement_date = date('Y-m-d', strtotime($d[2]));
                 $loan_application->dealer_name = $d[3];
@@ -1404,51 +1532,39 @@ class CompanyDashboardController extends ApiBaseController
                     $ids = $ids . $d[0] . ',';
                 }
 
+                // commiting code
                 $transaction->commit();
 
             } catch (Exception $e) {
                 $ids = $ids . $d[0] . ',' . $e->getMessage();
                 $transaction->rollback();
-//                    $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()]);
+                $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()]);
             }
 
         }
-
 
         //closing file
         fclose($file);
-
-        if (!empty($ids)) {
-            Yii::$app->mailer->htmlLayout = 'layouts/email';
-            $mail = Yii::$app->mailer->compose()
-                ->setFrom([Yii::$app->params->from_email => 'Empower Loans'])
-                ->setTo(['ravindersaini15697@gmail.com' => 'Ravinder Singh'])
-                ->setTextBody($ids)
-                ->setSubject('not saved ids');
-
-            if ($mail->send()) {
-                return $this->response(200, ['status' => 200, 'message' => 'mail sent']);
-            } else {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred email']);
-            }
-        }
 
         return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
 
     }
 
+    // saving scratch card code to loan users
     public function actionSaveCode()
     {
-
-        $loan_users = null;
         // deal slug
         $deal_slug = 'diwali-dhamaka';
-        // coupon for everyone
+
+        // coupon code for everyone
         $code_for_everyone = 'BAG';
-        // coupon for HEADPHONE
+
+        // coupon code for HEADPHONE
         $code_for_headphone = 'HEADPHONES';
-        // coupon for Power Bank
+
+        // coupon code for Power Bank
         $code_for_powerbank = 'POWERBANK';
+
         $headphone_cnt = 0;
         $powerbank_cnt = 0;
         $get_random = true;
@@ -1460,9 +1576,12 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
 
+        // starting transaction
         $transaction = Yii::$app->db->beginTransaction();
         try {
+
             foreach ($loan_users as $user) {
+
                 // getting and converting card count to INT
                 $user_cnt = (int)$user['cnt'];
 
@@ -1492,7 +1611,7 @@ class CompanyDashboardController extends ApiBaseController
                         $code = $code_for_everyone;
                     }
 
-                    //saving claimed deal for user
+                    // saving claimed deal for user
                     $claim = new ClaimedDeals();
                     $claim->claimed_deal_enc_id = \Yii::$app->security->generateRandomString();
                     $claim->deal_enc_id = AssignedDeals::findOne(['slug' => $deal_slug])->deal_enc_id;
@@ -1509,19 +1628,21 @@ class CompanyDashboardController extends ApiBaseController
                 $get_random = true;
 
             }
+
             $transaction->commit();
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
 
         } catch (Exception $e) {
             $transaction->rollback();
             $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getMessage()]);
         }
-
-        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-
     }
 
+    // getting scratch card users
     private function scratchCardUsers()
     {
+
         // getting date before 3 months
         $date = new \DateTime('now');
         $date->modify('-3 month'); // or you can use '-90 day' for deduct
@@ -1543,7 +1664,6 @@ class CompanyDashboardController extends ApiBaseController
             ->joinWith(['loanDisbursementSchedules d'], false)
             ->where(['a.is_deleted' => 0, 'a.loan_type' => 'Vehicle Loan', 'a.source' => 'EmpowerFintech'])
             ->andWhere(['b1.slug' => 'phfleasing', 'b.status' => 5])
-//            ->andWhere(['b1.slug' => 'rav1', 'b.status' => 5])
             ->andWhere(['<>', 'a.created_by', 'null'])
             ->andWhere(['>=', "c.disbursement_date", $date])
             ->andWhere([
@@ -1572,9 +1692,12 @@ class CompanyDashboardController extends ApiBaseController
         return $randomString;
     }
 
+    // this action is used to update employee
     public function actionUpdateEmployee()
     {
+
         if ($user = $this->isAuthorized()) {
+
             $params = Yii::$app->request->post();
 
             // parent_id = user_enc_id/employee_id
@@ -1584,10 +1707,13 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "parent_id"']);
             }
 
+            // getting employee with this id
             $employee = UserRoles::findOne(['user_enc_id' => $params['parent_id'], 'organization_enc_id' => $user->organization_enc_id]);
             $field = $params['id'];
 
+            // if not empty employee
             if (!empty($employee)) {
+                // field name and value
                 $employee->$field = $params['value'];
                 $employee->updated_by = $user->user_enc_id;
                 $employee->updated_on = date('Y-m-d H:i:s');
@@ -1595,6 +1721,7 @@ class CompanyDashboardController extends ApiBaseController
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $employee->getErrors()]);
                 }
             } else {
+                // if not exists then adding it
                 $employee = new UserRoles();
                 $utilitiesModel = new \common\models\Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -1617,6 +1744,7 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    // saving assign loan partner
     public function actionAssignLoanPartner()
     {
         if ($user = $this->isAuthorized()) {
@@ -1635,12 +1763,15 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "type"']);
             }
 
+            // getting loan partner with this id
             $partner = LoanApplicationPartners::findOne(['loan_app_enc_id' => $params['loan_id'], 'partner_enc_id' => $params['partner_id'], 'is_deleted' => 0]);
 
+            // if partner exists with this id then sending error 409 conflict
             if (!empty($partner)) {
                 return $this->response(409, ['status' => 409, ['conflict already added']]);
             }
 
+            // adding loan partner
             $partner = new LoanApplicationPartners();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -1662,18 +1793,22 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    // this action is used to remove loan pertner
     public function actionRemovePartner()
     {
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
 
+            // checking partner id exists or not
             if (empty($params['loan_partner_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_partner_id"']);
             }
 
+            // getting loan partner object
             $partner = LoanApplicationPartners::findOne(['loan_application_partner_enc_id' => $params['loan_partner_id']]);
 
+            // if not empty partner object then removing it
             if (!empty($partner)) {
                 $partner->is_deleted = 1;
                 $partner->updated_by = $user->user_enc_id;
@@ -1691,10 +1826,12 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    // getting financer list
     public function actionGetFinancerList()
     {
         if ($user = $this->isAuthorized()) {
 
+            // getting financer
             $financer = SelectedServices::find()
                 ->alias('a')
                 ->select(['a.organization_enc_id', 'c.name', 'c.slug'])
@@ -1716,34 +1853,40 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    // getting stats according to laon status
     public function actionStatusStats()
     {
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
 
+            // checking if its organization
             if ($user->organization_enc_id) {
 
+                // getting dsa
                 $leads = $this->getDsa($user->user_enc_id);
 
                 $dsa = [];
                 if ($leads) {
                     foreach ($leads as $val) {
-                        array_push($dsa, $val['assigned_user_enc_id']);
+                        $dsa[] = $val['assigned_user_enc_id'];
                     }
                 }
 
                 $dsa[] = $user->user_enc_id;
             }
 
+            // checking if logged-in user financer
             $service = SelectedServices::find()
                 ->alias('a')
                 ->joinWith(['serviceEnc b'], false)
                 ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
                 ->exists();
 
+            // getting shared applications
             $shared_apps = $this->sharedApps($user->user_enc_id);
 
+            // getting stats
             $stats = LoanApplications::find()
                 ->alias('a')
                 ->select(['j1.loan_status', 'COUNT(a.status) count', 'j1.status_color', 'j1.value'])
@@ -1785,34 +1928,36 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    // adding column preferences
     public function actionAddColumnPreference()
     {
-        $params = Yii::$app->request->post();
         if ($user = $this->isAuthorized()) {
-            $identity = $user->user_enc_id;
-            $exist_check = ColumnPreferences::findOne(['user_enc_id' => $user->user_enc_id, 'loan_type_enc_id' => $params['loan_type_enc_id'], 'is_deleted' => 0]);
 
-            if (!$params['disabled_fields']) {
+            $params = Yii::$app->request->post();
+
+            $identity = $user->user_enc_id;
+
+            // checking if already exists
+            $exist = ColumnPreferences::findOne(['user_enc_id' => $user->user_enc_id, 'loan_type_enc_id' => $params['loan_type_enc_id'], 'is_deleted' => 0]);
+
+            if (!empty($params['disabled_fields'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "disabled_fields"']);
             }
-            if ($exist_check) {
+
+            if ($exist) {
+
+                // query to update disabled fields
                 $query = Yii::$app->db->createCommand()
-                    ->update(ColumnPreferences::tableName(), ['disabled_fields' => $params['disabled_fields'], 'updated_by' => $identity, 'updated_on' => date('Y-m-d H:i:s')], ['user_enc_id' => $identity, 'column_preference_enc_id' => $exist_check['column_preference_enc_id']])
+                    ->update(ColumnPreferences::tableName(), ['disabled_fields' => $params['disabled_fields'], 'updated_by' => $identity, 'updated_on' => date('Y-m-d H:i:s')], ['user_enc_id' => $identity, 'column_preference_enc_id' => $exist['column_preference_enc_id']])
                     ->execute();
                 if ($query) {
-                    return $this->response(200, [
-                        'status' => 200,
-                        'title' => 'Success',
-                        'message' => 'Preference has been changed.',
-                    ]);
+                    return $this->response(200, ['status' => 200, 'title' => 'Success', 'message' => 'Preference has been changed.']);
                 } else {
-                    return $this->response(500, [
-                        'status' => 500,
-                        'title' => 'Error',
-                        'message' => 'An error has occurred. Please try again.',
-                    ]);
+                    return $this->response(500, ['status' => 500, 'title' => 'Error', 'message' => 'An error has occurred. Please try again.']);
                 }
             } else {
+
+                // saving column preferences
                 $preference = new ColumnPreferences();
                 $utilitiesModel = new \common\models\Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -1822,34 +1967,11 @@ class CompanyDashboardController extends ApiBaseController
                 $preference->created_by = $identity;
                 $preference->created_on = date('Y-m-d H:i:s');
                 $preference->disabled_fields = $params['disabled_fields'];
-                if (!$preference->validate()) {
+                if (!$preference->save()) {
                     return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $preference->getErrors()]);
                 }
-                $transaction = Yii::$app->db->beginTransaction();
-                try {
-                    if (!$preference->save()) {
-                        $transaction->rollBack();
-                    } else {
-                        $transaction->commit();
-                        $status = true;
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollBack();
-                    return false;
-                }
-                if ($status) {
-                    return $this->response(200, [
-                        'status' => 200,
-                        'title' => 'Success',
-                        'message' => 'Preference added successfully',
-                    ]);
-                } else {
-                    return $this->response(500, [
-                        'status' => 500,
-                        'title' => 'Error',
-                        'message' => 'An error has occurred. Please try again.',
-                    ]);
-                }
+
+                return $this->response(200, ['status' => 200, 'title' => 'Success', 'message' => 'Preference added successfully']);
             }
 
         } else {
@@ -1857,26 +1979,30 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
+    // getting column preferences
     public function actionGetColumnPreference()
     {
-        $params = Yii::$app->request->post();
         if ($user = $this->isAuthorized()) {
-            $fetch = ColumnPreferences::findOne(['user_enc_id' => $user->user_enc_id, 'loan_type_enc_id' => $params['loan_type_id']]);
-            if ($fetch) {;
-                return $this->response(200, [
-                    'status' => 200,
-                    'columns' => json_decode($fetch['disabled_fields']),
-                ]);
-            } else {
-                return $this->response(404, [
-                    'status' => 404,
-                    'message' => 'Preference not found',
-                ]);
+
+            $params = Yii::$app->request->post();
+
+            // checking loan_type_id
+            if (!empty($params['loan_type_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_type_id"']);
             }
+
+            // fetching data
+            $fetch = ColumnPreferences::findOne(['user_enc_id' => $user->user_enc_id, 'loan_type_enc_id' => $params['loan_type_id']]);
+
+            if ($fetch) {
+                return $this->response(200, ['status' => 200, 'columns' => json_decode($fetch['disabled_fields'])]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'Preference not found']);
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
-
 
 }

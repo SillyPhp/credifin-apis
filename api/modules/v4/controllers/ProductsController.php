@@ -590,8 +590,12 @@ class ProductsController extends ApiBaseController
             if (isset($params['budget_end_range']) && !empty($params['budget_end_range'])) {
                 $products->andWhere(['<=', 'a.price', $params['budget_end_range']]);
             }
+            if (isset($params['status']) && !empty($params['status'])) {
+                $products->andWhere(['a.status' => $params['status']]);
+            }
         }
         $products = $products->groupBy('a.product_enc_id')
+            ->orderBy(['a.status' => SORT_ASC, 'a.created_on' => SORT_DESC])
             ->limit($options['limit'])
             ->offset(($options['page'] - 1) * $options['limit'])
             ->asArray()
@@ -651,8 +655,16 @@ class ProductsController extends ApiBaseController
             ->asArray()
             ->all();
 
+        $status = Products::find()
+            ->distinct()
+            ->select(['status'])
+            ->where(['is_deleted' => 0])
+            ->asArray()
+            ->all();
+
         $filter['brands'] = $filter_brands;
         $filter['years'] = $years;
+        $filter['status'] = $status;
 
         if ($category == 'Mobiles') {
             unset($filter['min_km_driven']);

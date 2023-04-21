@@ -10,9 +10,12 @@ use common\models\LoanApplications;
 use common\models\LoanCertificates;
 use common\models\LoanCertificatesImages;
 use common\models\OrganizationTypes;
+use common\models\SelectedServices;
 use common\models\spaces\Spaces;
 use common\models\SponsoredCourses;
 use common\models\States;
+use common\models\Users;
+use common\models\UserTypes;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use Yii;
@@ -199,49 +202,5 @@ class UtilitiesController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
-    public function actionUpdateLoanType()
-    {
-        if ($this->isAuthorized()) {
-
-            $transaction = Yii::$app->db->beginTransaction();
-            try {
-                $type = LoanApplicationOptions::find()
-                    ->distinct()
-                    ->select(['vehicle_type', 'loan_app_enc_id'])
-                    ->andWhere(['vehicle_type' => ['Four Wheeler', 'Two Wheeler', 'E-vehicle']])
-                    ->asArray()
-                    ->all();
-
-                foreach ($type as $row) {
-
-                    $loan = LoanApplications::findOne(['loan_app_enc_id' => $row['loan_app_enc_id']]);
-                    if (!empty($loan)) {
-                        $loan->loan_type = $row['vehicle_type'];
-                        $loan->updated_on = date('Y-m-d H:i:s');
-                        if (!$loan->update()) {
-                            $transaction->rollBack();
-                            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan->getErrors()]);
-                        }
-                    }
-                }
-                $transaction->commit();
-                return $this->response(200, ['status' => 200, 'data' => 'updated success    fully']);
-            } catch (\Exception $exception) {
-                $transaction->rollBack();
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()]);
-            }
-        }
-        else return "unauthorized";
-    }
-
-    public function actionTest(){
-        if($user = $this->isAuthorized()){
-            $userData = new UserUtilities();
-            print_r($userData->userData($user->user_enc_id));
-            die();
-        }
-        print_r('unauthorized');
-    }
-
 
 }
