@@ -54,6 +54,7 @@ class OrganizationsController extends ApiBaseController
                 'remove-status-list' => ['POST', 'OPTIONS'],
                 'remove-status' => ['POST', 'OPTIONS'],
                 'update-status-list' => ['POST', 'OPTIONS'],
+                'get-loan-product-details' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -894,6 +895,55 @@ class OrganizationsController extends ApiBaseController
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetLoanProductDetails(){
+        if($user = $this->isAuthorized()){
+            $params = Yii::$app->request->post();
+            $lender = $this->getFinancerId($user);
+
+            if(empty($params['loan_id'])){
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "assigned_financer_loan_type_id"']);
+            }
+
+            $details = AssignedFinancerLoanType::find()
+                ->alias('a')
+                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan', 'a.is_deleted'])
+                ->joinWith(['loanTypeEnc lt'], false)
+                ->joinWith(['financerLoanPurposes b' => function($b){
+                    $b->select(['b.financer_loan_purpose_enc_id', 'b.assigned_financer_loan_type_id', 'b.purpose', 'b.sequence']);
+                    $b->orderBy(['b.purpose' => SORT_ASC]);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }])
+                ->joinWith(['financerLoanDocuments c' => function ($c) {
+                    $c->select(['c.financer_loan_document_enc_id', 'c.assigned_financer_loan_type_id', 'c.certificate_type_enc_id',
+                        'c.sequence', 'ct.name certificate_name']);
+                    $c->joinWith(['certificateTypeEnc ct'], false);
+                    $c->orderBy(['c.sequence' => SORT_ASC]);
+                    $c->onCondition(['c.is_deleted' => 0]);
+                }])
+                ->joinWith(['financerLoanStatuses d' => function ($d) {
+                    $d->select(['d.financer_loan_status_enc_id', 'd.assigned_financer_loan_type_id', 'd1.loan_status_enc_id', 'd1.loan_status name',
+                        'd1.value', 'd1.sequence']);
+                    $d->joinWith(['loanStatusEnc d1'], false);
+                    $d->onCondition(['d.is_deleted' => 0]);
+                    $d->orderBy(['d1.sequence' => SORT_ASC]);
+                }])
+                ->where(['a.organization_enc_id' => $lender, 'a.loan_type_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
+                ->groupBy(['a.loan_type_enc_id'])
+                ->asArray()
+                ->one();
+
+
+            if ($details) {
+                return $this->response(200, ['status' => 200, 'detail' => $details]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+
+        }else{
+            return $this->response(500, ['status' => 500, 'message' => 'Unauthorized']);
         }
     }
 }
