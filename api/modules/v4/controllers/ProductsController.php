@@ -260,14 +260,19 @@ class ProductsController extends ApiBaseController
     }
 
     // this action is used to get brands list
-    public function actionGetBrands($type = 'Two Wheeler')
+    public function actionGetBrands($type = 'Two Wheeler', $existing = '0')
     {
         // getting brands list
         $brands = Brands::find()
             ->alias('a')
             ->select(['a.brand_enc_id value', 'a.name label', 'a.brand_enc_id'])
-            ->joinWith(['brandModels b' => function ($b) {
+            ->joinWith(['brandModels b' => function ($b) use ($existing) {
                 $b->select(['b.model_enc_id', 'b.model_enc_id value', 'b.name label', 'b.brand_enc_id'])->onCondition(['b.is_deleted' => 0]);
+                if ($existing == '1') {
+                    $b->innerJoinWith(['products b1' => function ($b1) {
+                        $b1->andWhere(['b1.is_deleted' => 0]);
+                    }], false);
+                }
             }])
             ->joinWith(['assignedCategoryEnc c' => function ($c) {
                 $c->joinWith(['categoryEnc c1']);
