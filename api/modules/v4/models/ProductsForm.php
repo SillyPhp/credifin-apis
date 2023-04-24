@@ -121,87 +121,58 @@ class ProductsForm extends Model
     }
 
     // saving images
-//    private function saveImages($user_id, $product_id)
-//    {
-//        foreach ($this->images as $i) {
-//            $image = new ProductImages();
-//            $utilitiesModel = new Utilities();
-//            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//            $image->image_enc_id = $utilitiesModel->encrypt();
-//            $image->product_enc_id = $product_id;
-//            $image->image_location = \Yii::$app->getSecurity()->generateRandomString();
-//            $base_path = Yii::$app->params->upload_directories->refurbished->image . $image->image_location . '/';
-//            $utilitiesModel = new Utilities();
-//            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//            $image->image = $utilitiesModel->encrypt() . '.' . 'jpg';
-//            $image->created_by = $user_id;
-//            $type = 'image/jpeg';
-//            if ($image->save()) {
-//                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-//                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-//                $result = $my_space->uploadFileSources($i->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $image->image, "public", ['params' => ['ContentType' => $type]]);
-//                if (!$result) {
-//                    return false;
-//                }
-//            } else {
-//                return false;
-//            }
-//        }
-//
-//        if ($this->dent_images) {
-//            foreach ($this->dent_images as $d) {
-//                $image = new ProductImages();
-//                $image->image_enc_id = Yii::$app->security->generateRandomString(32);
-//                $image->product_enc_id = $product_id;
-//                $image->image_location = \Yii::$app->getSecurity()->generateRandomString();
-//                $base_path = Yii::$app->params->upload_directories->refurbished->image . $image->image_location . '/';
-//                $utilitiesModel = new Utilities();
-//                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//                $image->image = $utilitiesModel->encrypt() . '.' . 'jpg';
-//                $image->type = 'defect';
-//                $image->created_by = $user_id;
-//                $type = 'image/jpeg';
-//                if ($image->save()) {
-//                    $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-//                    $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-//                    $result = $my_space->uploadFileSources($d->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $image->image, "public", ['params' => ['ContentType' => $type]]);
-//                    if (!$result) {
-//                        return false;
-//                    }
-//                } else {
-//                    return false;
-//                }
-//            }
-//        }
-//        return true;
-//    }
-
-    private function saveImages($user_id, $product_id, $type)
+    private function saveImages($user_id, $product_id)
     {
-        $image = new ProductImages();
-        $utilitiesModel = new Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $image->image_enc_id = $utilitiesModel->encrypt();
-        $image->product_enc_id = $product_id;
-        $image->type = $type;
-        $image->image_location = \Yii::$app->getSecurity()->generateRandomString();
-        $base_path = Yii::$app->params->upload_directories->refurbished->image . $image->image_location . '/';
-        $utilitiesModel = new Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $image->image = $utilitiesModel->encrypt() . '.' . 'jpg';
-        $image->created_by = $user_id;
-        $type = 'image/jpeg';
-        if ($image->save()) {
-            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-            $result = $my_space->uploadFileSources($i->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $image->image, "public", ['params' => ['ContentType' => $type]]);
-            if (!$result) {
+        foreach ($this->images as $i) {
+            $image = new ProductImages();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $image->image_enc_id = $utilitiesModel->encrypt();
+            $image->product_enc_id = $product_id;
+            $image->image_location = \Yii::$app->getSecurity()->generateRandomString();
+            $base_path = Yii::$app->params->upload_directories->refurbished->image . $image->image_location . '/';
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $image->image = $utilitiesModel->encrypt() . '.' . 'jpg';
+            $image->created_by = $user_id;
+            $type = 'image/jpeg';
+            if ($image->save()) {
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $result = $my_space->uploadFileSources($i->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $image->image, "public", ['params' => ['ContentType' => $type]]);
+                if (!$result) {
+                    return false;
+                }
+            } else {
                 return false;
             }
-        } else {
-            return false;
         }
 
+        if ($this->dent_images) {
+            foreach ($this->dent_images as $d) {
+                $image = new ProductImages();
+                $image->image_enc_id = Yii::$app->security->generateRandomString(32);
+                $image->product_enc_id = $product_id;
+                $image->image_location = \Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->refurbished->image . $image->image_location . '/';
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $image->image = $utilitiesModel->encrypt() . '.' . 'jpg';
+                $image->type = 'defect';
+                $image->created_by = $user_id;
+                $type = 'image/jpeg';
+                if ($image->save()) {
+                    $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                    $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                    $result = $my_space->uploadFileSources($d->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $image->image, "public", ['params' => ['ContentType' => $type]]);
+                    if (!$result) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
         return true;
     }
 
