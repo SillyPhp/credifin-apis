@@ -71,6 +71,8 @@ class CreditReportsController extends ApiBaseController
                     ['like', 'b.applicant_name', $params['keyword']],
                     ['like', 'e.name', $params['keyword']],
                     ['like', 'concat(d.first_name," ",d.last_name)', $params['keyword']],
+                    ['like', 'b.loan_type', $params['keyword']],
+
 
                 ]);
             }
