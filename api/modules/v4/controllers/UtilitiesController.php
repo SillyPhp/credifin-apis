@@ -55,6 +55,7 @@ class UtilitiesController extends ApiBaseController
         return $behaviors;
     }
 
+    // this action is used to get organization types
     public function actionOrganizationTypes()
     {
         $org_types = OrganizationTypes::find()
@@ -65,6 +66,7 @@ class UtilitiesController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'organization_types' => $org_types]);
     }
 
+    // this action is used to search designations
     public function actionDesignations($keyword)
     {
         $designations = Designations::find()
@@ -75,10 +77,10 @@ class UtilitiesController extends ApiBaseController
             ->asArray()
             ->all();
 
-        // remove designations after deploy on react
         return $this->response(200, ['status' => 200, 'list' => $designations, 'designations' => $designations]);
     }
 
+    // this action is used to states list default country_enc_id = INDIA
     public function actionStates()
     {
         $states = States::find()
@@ -90,6 +92,7 @@ class UtilitiesController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'states' => $states]);
     }
 
+    // this action is used to get cities list by default state_id = PUNJAB
     public function actionCities($state_id = 'OVlINEg0MGxyRzMydlFrblNTSWExQT09')
     {
         $cities = Cities::find()
@@ -101,6 +104,7 @@ class UtilitiesController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'cities' => $cities]);
     }
 
+    // this action is used to search cities default country_enc_id is INDIA
     public function actionSearchCities($keyword)
     {
         $cities = Cities::find()
@@ -117,6 +121,7 @@ class UtilitiesController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'list' => $cities]);
     }
 
+    // this action is used to upload file for e-sign
     public function actionFileUpload()
     {
         if ($this->isAuthorized()) {
@@ -139,32 +144,7 @@ class UtilitiesController extends ApiBaseController
         }
     }
 
-    public function actionSaveCourse()
-    {
-        $params = Yii::$app->request->post();
-
-        $course = new SponsoredCourses();
-        $course->course_enc_id = Yii::$app->getSecurity()->generateRandomString();
-        $course->name = $params['name'];
-        $course->phone = $params['phone'];
-        $course->email = $params['email'];
-        $course->course_name = $params['course_name'];
-        $course->created_on = date('Y-m-d H:i:s');
-        if (!empty($params['course_price'])) {
-            $course->price = $params['course_price'];
-        }
-
-        if ($user = $this->isAuthorized()) {
-            $course->created_by = $user->user_enc_id;
-        }
-
-        if (!$course->save()) {
-            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $course->getErrors()]);
-        }
-
-        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
-    }
-
+    // this action is used to shift images from loan certificates to LoanCertificatesImages
     public function actionImageShifter()
     {
         if ($this->isAuthorized()) {
