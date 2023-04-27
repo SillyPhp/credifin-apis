@@ -279,9 +279,13 @@ class CompanyDashboardController extends ApiBaseController
                 'i.status status_number',
                 'CONCAT(k.first_name, " ", k.last_name) employee_name',
                 '(CASE
-                    WHEN ute.user_type = "Individual" THEN CONCAT("SELF (",cb.first_name, " ", cb.last_name, ")")
-                    ELSE CONCAT(cb.first_name, " ", cb.last_name)
+                    WHEN a.lead_by IS NOT NULL THEN CONCAT(lb.first_name, " ", lb.last_name)
+                    ELSE CONCAT("SELF (",cb.first_name, " ", cb.last_name, ")")
                 END) as creator_name',
+                '(CASE 
+                    WHEN a.lead_by IS NOT NULL THEN "0" 
+                    ELSE "1" 
+                END) as is_self',
                 'a.applicant_name',
                 'a.amount',
                 'a.amount_received',
@@ -306,6 +310,7 @@ class CompanyDashboardController extends ApiBaseController
             ])
             ->joinWith(['collegeCourseEnc f'], false)
             ->joinWith(['collegeEnc g'], false)
+            ->joinWith(['leadBy lb'], false)
             ->joinWith(['createdBy cb' => function ($cr) {
                 $cr->joinWith(['userTypeEnc ute'], false);
             }], false)

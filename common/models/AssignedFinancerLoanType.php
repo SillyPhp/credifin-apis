@@ -98,9 +98,25 @@ class AssignedFinancerLoanType extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getColumnPreferences()
+    {
+        return $this->hasMany(ColumnPreferences::className(), ['loan_type_enc_id' => 'loan_type_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getFinancerLoanDocuments()
     {
         return $this->hasMany(FinancerLoanDocuments::className(), ['assigned_financer_loan_type_id' => 'assigned_financer_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerLoanProducts()
+    {
+        return $this->hasMany(FinancerLoanProducts::className(), ['assigned_financer_loan_type_enc_id' => 'assigned_financer_enc_id']);
     }
 
     /**

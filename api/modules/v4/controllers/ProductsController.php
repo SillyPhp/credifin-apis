@@ -213,30 +213,31 @@ class ProductsController extends ApiBaseController
         return false;
     }
 
-    public function actionGetBrands($type = 'Two Wheeler')
+    public function actionGetBrands($type = 'Two Wheeler', $existing = '0')
     {
-        if ($user = $this->isAuthorized()) {
+        $brands = Brands::find()
+            ->alias('a')
+            ->select(['a.brand_enc_id value', 'a.name label', 'a.brand_enc_id'])
+            ->joinWith(['brandModels b' => function ($b) use ($existing) {
+                $b->select(['b.model_enc_id', 'b.model_enc_id value', 'b.name label', 'b.brand_enc_id'])->onCondition(['b.is_deleted' => 0]);
+                if ($existing == '1') {
+                    $b->innerJoinWith(['products b1' => function ($b1) {
+                        $b1->andWhere(['b1.is_deleted' => 0]);
+                    }], false);
+                }
+            }])
+            ->joinWith(['assignedCategoryEnc c' => function ($c) {
+                $c->joinWith(['categoryEnc c1']);
+            }], false)
+            ->andWhere(['a.is_deleted' => 0, 'c1.name' => $type])
+            ->groupBy(['a.name'])
+            ->asArray()
+            ->all();
 
-            $brands = Brands::find()
-                ->alias('a')
-                ->select(['a.brand_enc_id value', 'a.name label', 'a.brand_enc_id'])
-                ->joinWith(['brandModels b' => function ($b) {
-                    $b->select(['b.model_enc_id', 'b.model_enc_id value', 'b.name label', 'b.brand_enc_id'])->onCondition(['b.is_deleted' => 0]);
-                }])
-                ->joinWith(['assignedCategoryEnc c' => function ($c) {
-                    $c->joinWith(['categoryEnc c1']);
-                }], false)
-                ->andWhere(['a.is_deleted' => 0, 'c1.name' => $type])
-                ->groupBy(['a.name'])
-                ->asArray()
-                ->all();
-
-            if ($brands) {
-                return $this->response(200, ['status' => 200, 'brands' => $brands]);
-            }
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        if ($brands) {
+            return $this->response(200, ['status' => 200, 'brands' => $brands]);
         }
-        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
 
     public function actionAdd()
@@ -333,6 +334,9 @@ class ProductsController extends ApiBaseController
                     $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.other_detail']);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
+                ->joinWith(['modelEnc m' => function ($m) {
+                    $m->joinWith(['brandEnc m1'], false);
+                }], false)
                 ->joinWith(['productImages c' => function ($c) {
                     $c->select(['c.product_enc_id', 'c.alt', 'c.type',
                         'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
@@ -340,17 +344,29 @@ class ProductsController extends ApiBaseController
                 ->joinWith(['assignedCategoryEnc d' => function ($d) {
                     $d->joinWith(['categoryEnc d1']);
                 }], false)
-                ->where(['a.dealer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
-                ->andWhere(['d1.name' => $category])
+                ->where(['a.dealer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0]);
+
+            if (isset($params['search_keyword'])) {
+                $products->andWhere(['or',
+                    ['like', 'a.name', $params['search_keyword']],
+                    ['like', 'm1.name', $params['search_keyword']],
+                    ['like', 'a.price', $params['search_keyword']]]);
+            }
+
+            $products = $products->andWhere(['d1.name' => $category])
                 ->groupBy('a.product_enc_id')
-                ->orderBy(['a.created_on' => SORT_DESC])
-                ->limit($limit)
+                ->orderBy(['a.created_on' => SORT_DESC]);
+
+            $count = $products->count();
+
+            $products = $products->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
 
+
             if ($products) {
-                return $this->response(200, ['status' => 200, 'products' => $products]);
+                return $this->response(200, ['status' => 200, 'products' => $products, 'count' => $count]);
             }
             return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
         }
@@ -519,11 +535,35 @@ class ProductsController extends ApiBaseController
 
         $products = $this->__getProducts($options);
 
+        $exising_brands = $this->__existingBrands($options['category']);
+
 
         if ($products) {
-            return $this->response(200, ['status' => 200, 'products' => $products]);
+            return $this->response(200, ['status' => 200, 'products' => $products, 'existing_products' => $exising_brands]);
         }
         return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
+    }
+
+    // getting existing brands
+    private function __existingBrands($category)
+    {
+        $existing_brands = Brands::find()
+            ->alias('a')
+            ->select(['a.name'])
+            ->joinWith(['brandModels b' => function ($b) {
+                $b->select(['b.name']);
+                $b->groupBy(['b.name']);
+                $b->innerJoinWith(['products p' => function ($p) {
+                    $p->joinWith(['assignedCategoryEnc dd' => function ($d) {
+                        $d->joinWith(['categoryEnc dd1']);
+                    }], false);
+                }]);
+            }])
+            ->where(['dd1.name' => $category, 'p.is_deleted' => 0])
+            ->distinct()
+            ->asArray()
+            ->all();
+        return $existing_brands;
     }
 
     private function __getProducts($options)
