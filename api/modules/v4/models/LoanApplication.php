@@ -232,23 +232,27 @@ class LoanApplication extends Model
             // if user id null or user submitting application without login
             if ($user_id == null) {
 
-                $user = $this->SignUp($options);
+                $user = Users::findOne(['phone' => [$model->phone, '+91' . $model->phone]]);
+                if(empty($user)) {
 
-                $access_token = $this->newToken($user->user_enc_id);
-                $data['username'] = $user->username;
-                $data['user_enc_id'] = $user->user_enc_id;
-                $data['first_name'] = $user->first_name;
-                $data['last_name'] = $user->last_name;
-                $data['initials_color'] = $user->initials_color;
-                $data['email'] = $user->email;
-                $data['phone'] = $user->phone;
-                $data['access_token'] = $access_token->access_token;
-                $data['source'] = $access_token->source;
-                $data['refresh_token'] = $access_token->refresh_token;
-                $data['access_token_expiry_time'] = $access_token->access_token_expiration;
-                $data['refresh_token_expiry_time'] = $access_token->refresh_token_expiration;
-                $data['image'] = '';
-                $data['user_type'] = 'Individual';
+                    $user = $this->SignUp($options);
+
+                    $access_token = $this->newToken($user->user_enc_id);
+                    $data['username'] = $user->username;
+                    $data['user_enc_id'] = $user->user_enc_id;
+                    $data['first_name'] = $user->first_name;
+                    $data['last_name'] = $user->last_name;
+                    $data['initials_color'] = $user->initials_color;
+                    $data['email'] = $user->email;
+                    $data['phone'] = $user->phone;
+                    $data['access_token'] = $access_token->access_token;
+                    $data['source'] = $access_token->source;
+                    $data['refresh_token'] = $access_token->refresh_token;
+                    $data['access_token_expiry_time'] = $access_token->access_token_expiration;
+                    $data['refresh_token_expiry_time'] = $access_token->refresh_token_expiration;
+                    $data['image'] = '';
+                    $data['user_type'] = 'Individual';
+                }
             }
 
             $user = Users::findOne(['phone' => [$model->phone, '+91' . $model->phone]]);

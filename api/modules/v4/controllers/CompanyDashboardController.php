@@ -176,7 +176,7 @@ class CompanyDashboardController extends ApiBaseController
             // getting applications data
             $loans = $this->__getApplications($user, $params);
 
-            return $this->response(200, ['status' => 200, 'loans' => $loans]);
+            return $this->response(200, ['status' => 200, 'loans' => $loans['loans'], 'count' => $loans['count']]);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -221,7 +221,7 @@ class CompanyDashboardController extends ApiBaseController
 
                 // if not empty then add it to main loan_status array
                 if (!empty($d)) {
-                    $loan_status[$s]['data'] = $d;
+                    $loan_status[$s]['data'] = $d['loans'];
                     $loan_status[$s]['page'] = $page;
                     $loan_status[$s]['limit'] = $limit;
                 }
@@ -474,6 +474,8 @@ class CompanyDashboardController extends ApiBaseController
             $loans->orderBy(['i.updated_on' => SORT_DESC, 'a.created_on' => SORT_DESC]);
         }
 
+        $count = $loans->count();
+
         $loans = $loans
             ->limit($limit)
             ->offset(($page - 1) * $limit)
@@ -550,7 +552,7 @@ class CompanyDashboardController extends ApiBaseController
             }
         }
 
-        return $loans;
+        return ['loans' => $loans, 'count' => $count];
     }
 
 //    private function __partnerApplications($user)

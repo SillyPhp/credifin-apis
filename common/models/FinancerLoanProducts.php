@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "lJCWPnNNVy3d95ppLp7M_financer_loan_products".
+ * This is the model class for table "{{%financer_loan_products}}".
  *
  * @property int $id
  * @property string $financer_loan_product_enc_id assigned financer loan product enc id
@@ -23,6 +23,7 @@ use Yii;
  * @property AssignedFinancerLoanType $assignedFinancerLoanTypeEnc
  * @property Users $createdBy
  * @property Users $updatedBy
+ * @property FinancerRewards[] $financerRewards
  */
 class FinancerLoanProducts extends \yii\db\ActiveRecord
 {
@@ -50,6 +51,8 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
         ];
     }
+
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -97,5 +100,13 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     public function getUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerRewards()
+    {
+        return $this->hasMany(FinancerRewards::className(), ['loan_product_enc_id' => 'financer_loan_product_enc_id']);
     }
 }

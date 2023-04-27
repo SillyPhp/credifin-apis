@@ -14,7 +14,6 @@ use common\models\FinancerLoanStatus;
 use common\models\LoanStatus;
 use common\models\LoanType;
 use common\models\OrganizationLocations;
-use common\models\Referral;
 use yii\web\UploadedFile;
 use yii\db\Expression;
 use common\models\Utilities;
@@ -73,18 +72,24 @@ class OrganizationsController extends ApiBaseController
         return $behaviors;
     }
 
+    // this action is used to add branch to financer
     public function actionAddBranch()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
 
+            // checking location_name, address, city_id
             if (empty($params['location_name']) || empty($params['address']) || empty($params['city_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "location_name, address, city_id"']);
             }
 
+            // adding branch
             $orgLocations = new OrganizationLocations();
-            $orgLocations->location_enc_id = Yii::$app->security->generateRandomString(32);
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $orgLocations->location_enc_id = $utilitiesModel->encrypt();
             $orgLocations->organization_enc_id = $user->organization_enc_id;
             $orgLocations->location_name = $params['location_name'];
             $orgLocations->location_for = json_encode(['1']);
@@ -103,23 +108,28 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
+    // this action is used to update branch
     public function actionUpdateBranch()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
 
-
+            // checking location_id
             if (empty($params['location_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "location_id"']);
             }
 
+            // getting locations object with location_id
             $location = OrganizationLocations::findOne(['location_enc_id' => $params['location_id'], 'is_deleted' => 0]);
 
+            // if not found
             if (!$location) {
-                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+                return $this->response(404, ['status' => 404, 'message' => 'branch not found']);
             }
 
+            // updating data
             (!empty($params['location_name'])) ? $location->location_name = $params['location_name'] : "";
             (!empty($params['city_id'])) ? $location->city_enc_id = $params['city_id'] : "";
             (!empty($params['address'])) ? $location->address = $params['address'] : "";
@@ -136,13 +146,16 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
+    // getting list of branches
     public function actionGetBranches()
     {
         if ($user = $this->isAuthorized()) {
+
             $lender = $this->getFinancerId($user);
             if (!$lender) {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
+
             $locations = OrganizationLocations::find()
                 ->alias('a')
                 ->select(['a.location_enc_id', 'a.location_enc_id as id', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , ", ", b.name) as value', 'b.city_enc_id', 'a.status'])

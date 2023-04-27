@@ -2,10 +2,10 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\TasksForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
-use common\models\UserTasks;
 use yii\filters\VerbFilter;
 use yii\filters\Cors;
 
@@ -40,163 +40,154 @@ class TasksController extends ApiBaseController
         return $behaviors;
     }
 
+    // this action is used to get tasks list
     public function actionList()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
-            $identity = $user->user_enc_id;
-            $taskModel = new \api\modules\v4\models\Tasks();
-            $response = $taskModel->getTasks($identity);
-            if ($response['total'] > 0) {
-                return $this->response(200, [
-                    'status' => 200,
-                    'total' => $response['total'],
-                    'tasks' => $response['data'],
-                ]);
+
+            // creating tasks form object
+            $taskModel = new TasksForm();
+
+            // getting tasks
+            $response = $taskModel->getTasks($user->user_enc_id);
+
+            if ($response['total']) {
+                return $this->response(200, ['status' => 200, 'total' => $response['total'], 'tasks' => $response['data']]);
             } else {
-                return $this->response(404, [
-                    'status' => 404,
-                    'message' => 'Tasks not found',
-                ]);
+                return $this->response(404, ['status' => 404, 'message' => 'Tasks not found']);
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
+    // this action is used to creating tasks
     public function actionCreate()
     {
-        $params = Yii::$app->request->post();
+        // checking authorization
         if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            // checking name
             if (empty($params['name'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "name"']);
             }
-            $options = [
-                'name' => $params['name'],
-                'created_by' => $user->user_enc_id,
-            ];
-            $taskModel = new \api\modules\v4\models\Tasks();
+
+            // adding options
+            $options = ['name' => $params['name'], 'created_by' => $user->user_enc_id];
+
+            // creating tasks object
+            $taskModel = new TasksForm();
+
+            // adding task
             $response = $taskModel->addTasks($options);
-            if ($response) {
-                return $this->response(200, [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Task added successfully',
-                    'data' => $response,
-                ]);
+
+            if ($response['status'] == 200) {
+                return $this->response(200, $response);
             } else {
-                return $this->response(500, [
-                    'status' => 500,
-                    'title' => 'Error',
-                    'message' => 'An error has occurred. Please try again.',
-                ]);
+                return $this->response(500, $response);
             }
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
 
     }
 
+    // this action is used to update task
     public function actionUpdate()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
+
             $params = Yii::$app->request->post();
-            if (!empty($params['name'])) {
-                $data['name'] = $params['name'];
-            } else {
+
+            // checking name
+            if (empty($params['name'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "name"']);
             }
-            if (!empty($params['task_enc_id'])) {
-                $data['task_id'] = $params['task_enc_id'];
-            } else {
+
+            // checking task_enc_id
+            if (empty($params['task_enc_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "task_enc_id"']);
             }
-            $data['identity'] = $user->user_enc_id;
 
+            // creating tasks form object
+            $taskModel = new TasksForm();
 
-            $taskModel = new \api\modules\v4\models\Tasks();
-            $response = $taskModel->updateTasks($data);
+            // updating task
+            $response = $taskModel->updateTasks(['name' => $params['name'], 'task_id' => $params['task_enc_id'], 'identity' => $user->user_enc_id]);
+
             if ($response) {
-                return $this->response(200, [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Task title has been changed.',
-                ]);
+                return $this->response(200, ['status' => 200, 'title' => 'Success', 'message' => 'Task title has been changed.']);
             } else {
-                return $this->response(500, [
-                    'status' => 500,
-                    'title' => 'Error',
-                    'message' => 'An error has occurred. Please try again.',
-                ]);
+                return $this->response(500, ['status' => 500, 'title' => 'Error', 'message' => 'An error has occurred. Please try again.']);
             }
+
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
+    // this action is used to delete task
     public function actionDelete()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
+
+            // getting request params
             $params = Yii::$app->request->post();
-            if (!empty($params['task_enc_id'])) {
-                $task_id = $params['task_enc_id'];
-            } else {
+
+            // checking task_enc_id
+            if (empty($params['task_enc_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "task_enc_id"']);
             }
-            $data = [
-                'task_id' => $task_id,
-                'identity' => $user->user_enc_id,
-            ];
-            $taskModel = new \api\modules\v4\models\Tasks();
-            $response = $taskModel->deleteTasks($data);
 
-            if ($response) {
-                return $this->response(200, [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Task has been deleted.',
-                ]);
+            // updating data query
+            $query = Yii::$app->db->createCommand()
+                ->update(self::tableName(), ['is_deleted' => 1], ['task_enc_id' => $params['task_enc_id'], 'is_deleted' => 0, 'created_by' => $user->user_enc_id])
+                ->execute();
+
+            if ($query) {
+                return $this->response(200, ['status' => 200, 'title' => 'Success', 'message' => 'Task has been deleted.']);
             } else {
-                return $this->response(500, [
-                    'status' => 500,
-                    'title' => 'Error',
-                    'message' => 'An error has occurred. Please try again.',
-                ]);
+                return $this->response(500, ['status' => 500, 'title' => 'Error', 'message' => 'An error has occurred. Please try again.']);
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
+    // this is used to complete task
     public function actionIsComplete()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
+
             $params = Yii::$app->request->post();
-            if (!empty($params['task_enc_id'])) {
-                $data['task_id'] = $params['task_enc_id'];
-            } else {
+
+            // checking task_enc_id
+            if (empty($params['task_enc_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "task_enc_id"']);
             }
 
-            if (isset($params['is_completed'])) {
-                $data['is_completed'] = $params['is_completed'];
-            } else {
+            // checking is_completed
+            if (empty($params['is_completed'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "is_completed"']);
             }
-            $data['identity'] = $user->user_enc_id;
-            $taskModel = new \api\modules\v4\models\Tasks();
-            $response = $taskModel->is_completed_tasks($data);
+
+            // creating form object
+            $taskModel = new TasksForm();
+
+            // completing task
+            $response = $taskModel->is_completed_tasks(['task_id' => $params['task_enc_id'], 'is_completed' => $params['is_completed'], 'identity' => $user->user_enc_id]);
+
             if ($response) {
-                return $this->response(200, [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Task has been updated.',
-                ]);
+                return $this->response(200, ['status' => 200, 'title' => 'Success', 'message' => 'Task has been updated.']);
             } else {
-                return $this->response(500, [
-                    'status' => 500,
-                    'title' => 'Error',
-                    'message' => 'An error has occurred. Please try again.',
-                ]);
+                return $this->response(500, ['status' => 500, 'title' => 'Error', 'message' => 'An error has occurred. Please try again.']);
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
