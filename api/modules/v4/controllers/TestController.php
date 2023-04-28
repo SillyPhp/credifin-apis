@@ -50,6 +50,36 @@ class TestController extends ApiBaseController
         return $behaviors;
     }
 
+    public function actionTest()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            $Credit = CreditLoanApplicationReports::find()
+                ->distinct()
+                ->alias('a')
+                ->select('a.report_enc_id', 'b.loan_app_enc_id','b.applicant_name', 'c.cibil_score', '')
+                ->joinWith(['loanAppEnc b'], false)
+                ->joinWith(['LoanCoAppEnc c'], false)
+                ->joinWith(['responseEnc d' => function ($d) {
+                    $d->joinWith(['requestEnc d1']);
+                }], false)
+                ->andWhere(['']);
+
+
+            if (isset($params['keyword']) && !empty($params['keyword'])) {
+                $Credit->andWhere([
+                    'or',
+                    ['like', 'b.applicant_name', $params['keyword']],
+                ]);
+            }
+        }
+
+    }
+
+    public function actionNew(){
+
+    }
 
 
 }
