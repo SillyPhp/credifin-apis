@@ -770,4 +770,26 @@ class ProductsController extends ApiBaseController
         }
     }
 
+    public function actionProductStats()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $product_stats = Products::find()
+                ->alias('a')
+                ->select(['COUNT(a.product_enc_id) AS all_products',
+                    'COUNT(CASE WHEN a.status = "Sold" THEN 1 END) as sold',
+                    'COUNT(CASE WHEN a.status = "Active" THEN 1 END) as active',
+                    'COUNT(CASE WHEN a.status = "Inactive" THEN 1 END) as inactive',
+                ])
+                ->where(['a.dealer_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0])
+                ->asArray()
+                ->one();
+            return $this->response(200, ['status' => 200, 'enquiry' => $product_stats]);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+
+    }
+
 }
