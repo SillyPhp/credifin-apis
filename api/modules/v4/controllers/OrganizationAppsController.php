@@ -52,27 +52,38 @@ class OrganizationAppsController extends ApiBaseController
         return $behaviors;
     }
 
+    // this is used to add organization apps
     public function actionAdd()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
 
+            // creating apps new object
             $model = new Apps();
+
+            // loading request data to model
             if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
 
+                // getting logo instance by name
                 $model->logo = UploadedFile::getInstanceByName('logo');
 
+                // validating model
                 if ($model->validate()) {
 
-                    if ($model->add($user)) {
+                    // saving data
+                    $data = $model->add($user);
+                    if ($data['status'] == 201) {
                         return $this->response(201, ['status' => 201, 'message' => 'successfully saved']);
                     } else {
                         return $this->response(500, ['status' => 500, 'message' => 'Some Internal Server Error']);
                     }
                 } else {
+                    // returning validation errors
                     return $this->response(422, ['status' => 422, 'message' => 'missing information', 'error' => $model->getErrors()]);
                 }
 
             } else {
+                // in no data in request
                 return $this->response(400, ['status' => 400, 'message' => 'bad request']);
             }
 
@@ -81,25 +92,20 @@ class OrganizationAppsController extends ApiBaseController
         }
     }
 
+    // getting organization apps list
     public function actionList()
     {
         if ($user = $this->isAuthorized()) {
 
+            // if user is organization
             if ($user->organization_enc_id) {
 
                 $params = Yii::$app->request->post();
 
-                $limit = 10;
-                $page = 1;
+                $limit = !empty($params['limit']) ? $params['limit'] : 10;
+                $page = !empty($params['page']) ? $params['page'] : 1;
 
-                if (!empty($params['limit'])) {
-                    $limit = $params['limit'];
-                }
-
-                if (!empty($params['page'])) {
-                    $page = $params['page'];
-                }
-
+                // getting list
                 $list = OrganizationApps::find()
                     ->select(['app_enc_id', 'app_name', 'app_description', 'assigned_to', 'created_on'])
                     ->where(['organization_enc_id' => $user->organization_enc_id, 'is_deleted' => 0])
@@ -110,6 +116,7 @@ class OrganizationAppsController extends ApiBaseController
 
                 if ($list) {
 
+                    // getting logo, decoding assigned_to and getting app fields count
                     foreach ($list as $key => $val) {
                         $list[$key]['logo'] = $this->getFile($val['app_enc_id']);
                         $list[$key]['assigned_to'] = json_decode($val['assigned_to']);
@@ -118,8 +125,11 @@ class OrganizationAppsController extends ApiBaseController
 
                     return $this->response(200, ['status' => 200, 'list' => $list]);
                 }
+
+
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             } else {
+                // if not organization login
                 return $this->response(403, ['status' => 403, 'message' => 'must be organization login']);
             }
 
@@ -128,6 +138,7 @@ class OrganizationAppsController extends ApiBaseController
         }
     }
 
+    // getting file singed url
     private function getFile($app_id)
     {
         $file = OrganizationApps::findOne(['app_enc_id' => $app_id]);
@@ -137,22 +148,28 @@ class OrganizationAppsController extends ApiBaseController
         return $my_space->signedURL($path, "15 minutes");
     }
 
+    // getting app detail
     public function actionDetail()
     {
         $params = Yii::$app->request->post();
 
+        // checking app_id
         if (empty($params['app_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'missing parameter "app_id"']);
         }
 
+        // getting app
         $app = OrganizationApps::findOne(['app_enc_id' => $params['app_id']]);
 
+        // if app not found
         if (!$app) {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
 
+        // checking authorization for app detail
         if ($this->authorize($params['app_id'])) {
 
+            // getting detail
             $detail = OrganizationApps::find()
                 ->alias('a')
                 ->select(['a.app_enc_id', 'a.app_name', 'a.app_description', 'a.assigned_to'])
@@ -173,17 +190,20 @@ class OrganizationAppsController extends ApiBaseController
 
             if ($detail) {
 
+                // getting organization app users and get their type
                 if ($detail['organizationAppUsers']) {
                     foreach ($detail['organizationAppUsers'] as $key => $val) {
                         $detail['organizationAppUsers'][$key]['user_type'] = $this->getType($val['value']);
                     }
                 }
 
+                // get logo
                 $detail['logo'] = $this->getFile($params['app_id']);
                 $detail['assigned_to'] = json_decode($detail['assigned_to']);
                 return $this->response(200, ['status' => 200, 'detail' => $detail]);
             }
 
+            // not found
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
 
         } else {
@@ -191,6 +211,7 @@ class OrganizationAppsController extends ApiBaseController
         }
     }
 
+    // getting user type
     private function getType($user_id)
     {
         $user = Users::findOne(['user_enc_id' => $user_id]);
@@ -221,6 +242,7 @@ class OrganizationAppsController extends ApiBaseController
 
     }
 
+    // authorize user for organization app
     private function authorize($app_id)
     {
         if ($user = $this->isAuthorized()) {
@@ -240,14 +262,13 @@ class OrganizationAppsController extends ApiBaseController
             }
 
             // checking for employee authorization
-
             $org_id = UserRoles::findOne(['user_enc_id' => $user->user_enc_id])->organization_enc_id;
 
             if ($org_id && ($org_id == $app->organization_enc_id)) {
                 return true;
             }
 
-
+            // getting service of user
             $service = SelectedServices::find()
                 ->alias('a')
                 ->select(['a.selected_service_enc_id', 'b.name', 'a.assigned_user', 'a.created_by'])
@@ -259,10 +280,9 @@ class OrganizationAppsController extends ApiBaseController
                 $service->andWhere(['or', ['a.created_by' => $user->user_enc_id]]);
             }
 
-            $service = $service->asArray()
-                ->one();
+            $service = $service->asArray()->one();
 
-            // checking for DSA or E-Partners
+            // checking for DSA/E-Partners
             if ($service['name'] == 'E-Partners') {
                 $supervisor_id = AssignedSupervisor::findOne(['assigned_user_enc_id' => $service['created_by']])->supervisor_enc_id;
                 if ($supervisor_id && (Users::findOne(['user_enc_id' => $supervisor_id])->organization_enc_id == $app->organization_enc_id)) {
@@ -289,24 +309,34 @@ class OrganizationAppsController extends ApiBaseController
         return false;
     }
 
+    // updating apps data
     public function actionUpdate()
     {
         if ($user = $this->isAuthorized()) {
+
             $params = Yii::$app->request->post();
+
+            // getting file instance
             $logo = UploadedFile::getInstanceByName('logo');
 
+            // checking app_id
             if (empty($params['app_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing parameter "app_id"']);
             }
 
+            // starting transaction
             $transaction = Yii::$app->db->beginTransaction();
             try {
+
+                // getting app data object
                 $app = OrganizationApps::findOne(['app_enc_id' => $params['app_id']]);
 
+                // if not exists
                 if (!$app) {
                     return $this->response(404, ['status' => 404, 'message' => 'not found']);
                 }
 
+                // app should be created by this user
                 if ($app->organization_enc_id != $user->organization_enc_id) {
                     return $this->response(403, ['status' => 403, 'message' => 'forbidden']);
                 }
@@ -315,6 +345,7 @@ class OrganizationAppsController extends ApiBaseController
                 (!empty($params['app_description'])) ? $app->app_description = $params['app_description'] : "";
                 (!empty($params['assigned_to'])) ? $app->assigned_to = $params['assigned_to'] : "";
 
+                // uploading file
                 if ($logo) {
                     $app->app_icon = Yii::$app->getSecurity()->generateRandomString() . '.' . $logo->extension;
                     $app->app_icon_location = Yii::$app->getSecurity()->generateRandomString() . '/';
@@ -324,9 +355,10 @@ class OrganizationAppsController extends ApiBaseController
                     }
                 }
 
+                // updating elements
                 if (!empty($params['elements'])) {
+
                     $elements = json_decode($params['elements'], true);
-//                    $elements = $params['elements'];
                     foreach ($elements as $key => $val) {
                         $field = OrganizationAppFields::findOne(['field_enc_id' => $val['field_enc_id'], 'is_deleted' => 0]);
                         if ($field) {
@@ -425,12 +457,14 @@ class OrganizationAppsController extends ApiBaseController
         }
     }
 
+    // uploading file
     private function fileUpload($icon, $icon_location, $logo)
     {
 
         $base_path = Yii::$app->params->upload_directories->form_apps->logo . $icon_location;
         $type = $logo->type;
 
+        // creating spaces object
         $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
         $result = $my_space->uploadFileSources($logo->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $icon, "private", ['params' => ['ContentType' => $type]]);
@@ -440,18 +474,21 @@ class OrganizationAppsController extends ApiBaseController
         return true;
     }
 
+    // this action is used to remove element
     public function actionRemoveElement()
     {
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
 
+            // checking field_id
             if (empty($params['field_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing parameter "field_id"']);
             }
 
             $field = OrganizationAppFields::findOne(['field_enc_id' => $params['field_id']]);
 
+            // if element/field not found
             if (!$field) {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
@@ -460,7 +497,7 @@ class OrganizationAppsController extends ApiBaseController
             $field->updated_by = $user->user_enc_id;
             $field->updated_on = date('Y-m-d H:i:s');
             if (!$field->update()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $field->getErrors()]);
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
@@ -470,16 +507,19 @@ class OrganizationAppsController extends ApiBaseController
         }
     }
 
+    // this action is used to remove app
     public function actionRemoveApp()
     {
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
 
+            // checking app_id
             if (empty($params['app_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing parameter "app_id"']);
             }
 
+            // getting app object
             $app = OrganizationApps::findOne(['app_enc_id' => $params['app_id']]);
 
             if ($app->organization_enc_id != $user->organization_enc_id) {
@@ -490,7 +530,7 @@ class OrganizationAppsController extends ApiBaseController
             $app->updated_by = $user->user_enc_id;
             $app->updated_on = date('Y-m-d H:i:s');
             if (!$app->update()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $app->getErrors()]);
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);

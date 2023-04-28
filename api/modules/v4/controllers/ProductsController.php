@@ -54,24 +54,36 @@ class ProductsController extends ApiBaseController
         return $behaviors;
     }
 
+    // this action is used to add brands
     public function actionAddBrands()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
+
             $params = Yii::$app->request->post();
 
+            // getting assigned_category_id
             $assigned_category_id = $this->getAssignedCategory($user->user_enc_id, $params['assigned_category'], $params['category']);
 
+            // if assigned_category_id not found
             if (!$assigned_category_id) {
                 return $this->response(500, ['status' => 500, 'message' => 'category not found']);
             }
 
+            // starting transaction
             $transaction = Yii::$app->db->beginTransaction();
             try {
 
+                // looping brands array
                 foreach ($params['brands'] as $b) {
+
                     $brand = new Brands();
-                    $brand->brand_enc_id = Yii::$app->security->generateRandomString(32);
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $brand->brand_enc_id = $utilitiesModel->encrypt();
                     $brand->assigned_category_enc_id = $assigned_category_id;
+
+                    // if assigned category is Mobiles
                     if ($params['assigned_category'] == 'Mobiles') {
                         $brand->name = $b;
                     } else {
@@ -83,10 +95,17 @@ class ProductsController extends ApiBaseController
                         return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $brand->getErrors()]);
                     }
 
+                    // adding brand models if not empty
                     if (!empty($b['models'])) {
+
+                        // looping models array
                         foreach ($b['models'] as $m) {
+
+                            // adding models
                             $model = new BrandModels();
-                            $model->model_enc_id = Yii::$app->security->generateRandomString(32);
+                            $utilitiesModel = new Utilities();
+                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                            $model->model_enc_id = $utilitiesModel->encrypt();
                             $model->brand_enc_id = $brand->brand_enc_id;
                             $model->name = $m['name'];
                             $model->created_by = $user->user_enc_id;
@@ -98,6 +117,7 @@ class ProductsController extends ApiBaseController
                     }
                 }
 
+                // commiting code
                 $transaction->commit();
 
                 return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
@@ -111,35 +131,46 @@ class ProductsController extends ApiBaseController
         }
     }
 
+    // this action is used to add custom brand models
     public function actionAddModel()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
 
+            // getting request data
             $params = Yii::$app->request->post();
 
+            // checking brand_id
             if (empty($params['brand_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "brand_id"']);
             }
 
+            // checking model
             if (empty($params['model'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "model"']);
             }
 
+            // checking if model already exists
             $exists = BrandModels::findOne(['brand_enc_id' => $params['brand_id'], 'name' => $params['model'], 'is_deleted' => 0]);
 
+            // if exists
             if ($exists) {
                 return $this->response(200, ['status' => 200, 'message' => 'successfully saved', 'model_id' => $exists->model_enc_id, 'model_name' => $exists->name]);
             }
 
+            // adding model
             $model = new BrandModels();
-            $model->model_enc_id = Yii::$app->security->generateRandomString(32);
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->model_enc_id = $utilitiesModel->encrypt();
             $model->brand_enc_id = $params['brand_id'];
             $model->name = $params['model'];
             $model->created_by = $user->user_enc_id;
             if (!$model->save()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()]);
             }
 
+            // if saved returning model_id and model_name
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved', 'model_id' => $model->model_enc_id, 'model_name' => $model->name]);
 
         } else {
@@ -147,8 +178,10 @@ class ProductsController extends ApiBaseController
         }
     }
 
+    // getting assigned category id
     private function getAssignedCategory($user_id, $assigned_category = 'Two Wheeler', $category = 'Vehicle')
     {
+        // checking assigned_category_id
         $assigned_category_id = AssignedCategories::find()
             ->alias('a')
             ->select(['a.assigned_category_enc_id'])
@@ -157,20 +190,27 @@ class ProductsController extends ApiBaseController
             ->asArray()
             ->one();
 
+        // if assigned category found returning its assigned_category_enc_id
         if ($assigned_category_id) {
             return $assigned_category_id['assigned_category_enc_id'];
         }
 
+        // get parent_category_id
         $parent_category_id = $this->getCategory($category, $user_id);
 
+        // if not found
         if (!$parent_category_id) {
             return false;
         }
 
+        // getting category_id
         $category_id = $this->getCategory($assigned_category, $user_id);
 
+        // adding data to assigned categories
         $assigned_category = new AssignedCategories();
-        $assigned_category->assigned_category_enc_id = Yii::$app->security->generateRandomString(32);
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $assigned_category->assigned_category_enc_id = $utilitiesModel->encrypt();
         $assigned_category->category_enc_id = $category_id;
         $assigned_category->parent_enc_id = $parent_category_id;
         $assigned_category->assigned_to = 'Refurbish';
@@ -182,8 +222,10 @@ class ProductsController extends ApiBaseController
         return false;
     }
 
+    // getting category
     private function getCategory($category, $user_id)
     {
+        // getting category_id
         $category_id = AssignedCategories::find()
             ->alias('a')
             ->select(['a.assigned_category_enc_id', 'b.category_enc_id'])
@@ -192,12 +234,16 @@ class ProductsController extends ApiBaseController
             ->asArray()
             ->one();
 
+        // if exists then returning category_enc_id else adding new entry
         if ($category_id) {
             return $category_id['category_enc_id'];
         }
 
+        // adding data
         $cat = new Categories();
-        $cat->category_enc_id = Yii::$app->security->generateRandomString(32);
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $cat->category_enc_id = $utilitiesModel->encrytp();
         $cat->name = $category;
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['name'] = $category;
@@ -213,42 +259,54 @@ class ProductsController extends ApiBaseController
         return false;
     }
 
-    public function actionGetBrands($type = 'Two Wheeler')
+    // this action is used to get brands list
+    public function actionGetBrands($type = 'Two Wheeler', $existing = '0')
     {
-        if ($user = $this->isAuthorized()) {
+        // getting brands list
+        $brands = Brands::find()
+            ->alias('a')
+            ->select(['a.brand_enc_id value', 'a.name label', 'a.brand_enc_id'])
+            ->joinWith(['brandModels b' => function ($b) use ($existing) {
+                $b->select(['b.model_enc_id', 'b.model_enc_id value', 'b.name label', 'b.brand_enc_id'])->onCondition(['b.is_deleted' => 0]);
+                if ($existing == '1') {
+                    $b->innerJoinWith(['products b1' => function ($b1) {
+                        $b1->andWhere(['b1.is_deleted' => 0]);
+                    }], false);
+                }
+            }])
+            ->joinWith(['assignedCategoryEnc c' => function ($c) {
+                $c->joinWith(['categoryEnc c1']);
+            }], false)
+            ->andWhere(['a.is_deleted' => 0, 'c1.name' => $type])
+            ->groupBy(['a.name'])
+            ->asArray()
+            ->all();
 
-            $brands = Brands::find()
-                ->alias('a')
-                ->select(['a.brand_enc_id value', 'a.name label', 'a.brand_enc_id'])
-                ->joinWith(['brandModels b' => function ($b) {
-                    $b->select(['b.model_enc_id', 'b.model_enc_id value', 'b.name label', 'b.brand_enc_id'])->onCondition(['b.is_deleted' => 0]);
-                }])
-                ->joinWith(['assignedCategoryEnc c' => function ($c) {
-                    $c->joinWith(['categoryEnc c1']);
-                }], false)
-                ->andWhere(['a.is_deleted' => 0, 'c1.name' => $type])
-                ->groupBy(['a.name'])
-                ->asArray()
-                ->all();
-
-            if ($brands) {
-                return $this->response(200, ['status' => 200, 'brands' => $brands]);
-            }
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        if ($brands) {
+            return $this->response(200, ['status' => 200, 'brands' => $brands]);
         }
-        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+
+        // if not found
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
 
+    // this action is used to add product
     public function actionAdd()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
+
+            // creating products form object
             $model = new ProductsForm();
 
+            // loading data to model
             if ($model->load(Yii::$app->request->post(), '')) {
 
+                // getting images and dent_images instance
                 $model->images = UploadedFile::getInstances($model, 'images');
                 $model->dent_images = UploadedFile::getInstances($model, 'dent_images');
 
+                // getting assigned_category
                 $assigned_category = AssignedCategories::find()
                     ->alias('a')
                     ->select(['a.assigned_category_enc_id'])
@@ -257,15 +315,22 @@ class ProductsController extends ApiBaseController
                     ->asArray()
                     ->one();
 
+                // assigning assigned_category
                 $model->assigned_category = $assigned_category['assigned_category_enc_id'];
 
+                // validating model
                 if ($model->validate()) {
+
+                    // saving data
                     $product = $model->save($user->user_enc_id);
-                    if ($product['status'] == 500) {
-                        return $this->response(500, $product);
+
+                    if ($product['status'] == 200) {
+                        return $this->response(200, $product);
                     }
-                    return $this->response(200, $product);
+
+                    return $this->response(500, $product);
                 } else {
+                    // if error in model validation
                     return $this->response(422, ['status' => 422, 'error' => $model->getErrors()]);
                 }
             }
@@ -276,25 +341,42 @@ class ProductsController extends ApiBaseController
         }
     }
 
+    // this action is used to update products
     public function actionUpdate()
     {
+        // checking user authorization
         if ($user = $this->isAuthorized()) {
+
+            // creating new object of products form
             $model = new ProductsForm();
-            $identity = $user->user_enc_id;
+
             $params = Yii::$app->request->post();
+
+            // checking product_enc_id
             if (empty($params['product_enc_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "product_enc_id"']);
             }
+
+            // loading data to model
             if ($model->load(Yii::$app->request->post(), '')) {
+
+                // getting images and dent_images instance
                 $model->images = UploadedFile::getInstances($model, 'images');
                 $model->dent_images = UploadedFile::getInstances($model, 'dent_images');
+
+                // validating model
                 if ($model->validate()) {
-                    $product = $model->update($identity);
-                    if ($product['status'] == 500) {
-                        return $this->response(500, $product);
+
+                    // updating product
+                    $product = $model->update($user->user_enc_id, $params['product_enc_id']);
+
+                    if ($product['status'] == 200) {
+                        return $this->response(200, $product);
                     }
-                    return $this->response(200, $product);
+                    return $this->response(500, $product);
+
                 } else {
+                    // if errors in data validation
                     return $this->response(422, ['status' => 422, 'error' => $model->getErrors()]);
                 }
             }
@@ -304,27 +386,18 @@ class ProductsController extends ApiBaseController
         }
     }
 
+    // getting products list for dealer
     public function actionGetProducts()
     {
-
+        // checking authorization
         if ($user = $this->isAuthorized()) {
 
+            // getting request params
             $params = Yii::$app->request->post();
-            $limit = 10;
-            $page = 1;
-            $category = 'Two Wheeler';
 
-            if (isset($params['limit']) && !empty($params['limit'])) {
-                $limit = $params['limit'];
-            }
-
-            if (isset($params['page']) && !empty($params['page'])) {
-                $page = $params['page'];
-            }
-
-            if (isset($params['category']) && !empty($params['category'])) {
-                $category = $params['category'];
-            }
+            $limit = !empty($params['limit']) ? $params['limit'] : 10;
+            $page = !empty($params['page']) ? $params['page'] : 1;
+            $category = !empty($params['category']) ? $params['category'] : 'Two Wheeler';
 
             $products = Products::find()
                 ->alias('a')
@@ -357,42 +430,56 @@ class ProductsController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
+    // this action used to update product status
     public function actionUpdateProductStatus()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
-            $product_id = $params['product_enc_id'];
-            $status = $params['status'];
 
-            if (empty($product_id)) {
+            $params = Yii::$app->request->post();
+
+            // checking product_enc_id
+            if (empty($params['product_enc_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "product_enc_id"']);
             }
-            if (empty($status)) {
+
+            // checking status
+            if (empty($params['status'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
             }
 
-            $product = Products::findOne(['product_enc_id' => $product_id]);
+            // getting product object with product_enc_id
+            $product = Products::findOne(['product_enc_id' => $params['product_enc_id']]);
+
+            // if not exists
             if (!$product) {
                 return $this->response(404, ['status' => 404, 'message' => 'Product not Found']);
             }
-            $product->status = $status;
+
+            // updating data
+            $product->status = $params['status'];
             $product->updated_on = date('Y-m-d H:i:s');
             $product->updated_by = $user->user_enc_id;
             if (!$product->update()) {
-                return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $product->getErrors()]);
             }
             return $this->response(200, ['status' => 200, 'message' => 'Status Updated']);
         }
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
+    // getting product detail
     public function actionGetProductDetails()
     {
+        // getting request data
         $params = Yii::$app->request->post();
+
+        // checking slug
         if (empty($params['slug'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "Slug"']);
         }
-        $slug = $params['slug'];
+
+        // getting detail
         $details = Products::find()
             ->alias('a')
             ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'a.created_on',
@@ -415,119 +502,130 @@ class ProductsController extends ApiBaseController
             ->joinWith(['assignedCategoryEnc d' => function ($d) {
                 $d->joinWith(['categoryEnc d1']);
             }], false)
-            ->where(['a.slug' => $slug, 'a.is_deleted' => 0])
+            ->where(['a.slug' => $params['slug'], 'a.is_deleted' => 0])
             ->asArray()
             ->one();
 
+        // if detail found
         if ($details) {
 
-            $options = [];
-            $options['limit'] = 3;
-            $options['page'] = 1;
-            $options['category'] = $details['category'];
-            $options['product_id'] = $details['product_enc_id'];
+            $options = ['limit' => 3, 'page' => 1, 'category' => $details['category'], 'product_id' => $details['product_enc_id']];
 
+            // getting similar products
             $similar_products = $this->__getProducts($options);
 
+            // returning product detail and similar products
             return $this->response(200, ['status' => 200, 'products' => $details, 'similar_products' => $similar_products]);
         }
+
+        // if not found
         return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
 
     }
 
+    // remove product image
     public function actionRemoveProductImage()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
+
+            // getting request data
             $params = Yii::$app->request->post();
+
+            // checking image_id
             if (empty($params['image_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "image_id"']);
             }
 
+            // getting image object
             $productImage = ProductImages::findOne(['image_enc_id' => $params['image_id']]);
+
+            // if image data not found
             if (!$productImage) {
                 return $this->response(404, ['status' => 404, 'message' => 'Image Not Found']);
             }
 
+            // removing image
             $productImage->is_deleted = 1;
             $productImage->updated_by = $user->user_enc_id;
             $productImage->updated_on = date('Y-m-d H:i:s');
             if (!$productImage->update()) {
-                return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
+                return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $productImage->getErrors()]);
             }
             return $this->response(200, ['status' => 200, 'message' => 'Image Deleted Successfully']);
         }
     }
 
+    // this action is used remove product
     public function actionRemoveProduct()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
 
+            // getting request params
             $params = Yii::$app->request->post();
 
+            // checking product_id exists
             if (empty($params['product_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'Missing Information "product_id"']);
             }
 
+            // getting product object
             $product = Products::findOne(['product_enc_id' => $params['product_id'], 'dealer_enc_id' => $user->user_enc_id]);
+
+            // product not found
             if (!$product) {
                 return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
             }
+
+            // deleting product
             $product->is_deleted = 1;
             $product->updated_by = $user->user_enc_id;
             $product->updated_on = date('Y-m-d H:i:s');
             if (!$product->update()) {
-                return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred']);
+                return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $product->getErrors()]);
             }
             return $this->response(200, ['status' => 200, 'message' => 'Product Deleted Successfully']);
         }
     }
 
+    // getting products list for customer
     public function actionAllProducts()
     {
-
+        // getting request params
         $params = Yii::$app->request->post();
-        $limit = 10;
-        $page = 1;
-        $category = 'Two Wheeler';
-        $filter = '';
 
-        if (isset($params['limit']) && !empty($params['limit'])) {
-            $limit = $params['limit'];
+        $limit = !empty($params['limit']) ? $params['limit'] : 10;
+        $page = !empty($params['page']) ? $params['page'] : 1;
+        $category = !empty($params['category']) ? $params['category'] : 'Two Wheeler';
+
+        $options = ['limit' => $limit, 'page' => $page, 'category' => $category];
+
+        // setting filter if requested
+        if (!empty($params['filter'])) {
+            $options['filter'] = $params['filter'];
         }
 
-        if (isset($params['page']) && !empty($params['page'])) {
-            $page = $params['page'];
-        }
-
-        if (isset($params['category']) && !empty($params['category'])) {
-            $category = $params['category'];
-        }
-
-        if (isset($params['filter']) && !empty($params['filter'])) {
-            $filter = $params['filter'];
-        }
-
-        $options = [];
-        $options['limit'] = $limit;
-        $options['page'] = $page;
-        $options['category'] = $category;
-        $options['filter'] = $filter;
-
+        // setting search_keyword if requested
         if (!empty($params['search_keyword'])) {
             $options['search_keyword'] = $params['search_keyword'];
         }
 
+        // getting products list
         $products = $this->__getProducts($options);
-
 
         if ($products) {
             return $this->response(200, ['status' => 200, 'products' => $products]);
         }
-        return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
+
+        // if products not found
+        return $this->response(404, ['status' => 404, 'message' => 'Products Not Found']);
     }
 
+    // getting products list
     private function __getProducts($options)
     {
+        // getting products list
         $products = Products::find()
             ->alias('a')
             ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'a.created_on',
@@ -551,14 +649,20 @@ class ProductsController extends ApiBaseController
                 $d->joinWith(['categoryEnc dd1']);
             }], false)
             ->where(['a.is_deleted' => 0, 'dd1.name' => $options['category']]);
-        if (isset($options['product_id']) && !empty($options['product_id'])) {
+
+        // if product_id not empty then exclude this product from list
+        if (!empty($options['product_id'])) {
+
+            // excluding product
             $products->andWhere(['not', ['a.product_enc_id' => $options['product_id']]]);
             $products->orderBy(new Expression('rand()'));
         } else {
+            // else order by sort_desc
             $products->orderBy(['a.created_on' => SORT_DESC]);
         }
 
-        if (isset($options['search_keyword']) && !empty($options['search_keyword'])) {
+        // filter keywords product name,model name, brand name
+        if (!empty($options['search_keyword'])) {
             $products->andWhere([
                 'or',
                 ['like', 'a.name', $options['search_keyword']],
@@ -567,45 +671,70 @@ class ProductsController extends ApiBaseController
             ]);
         }
 
+        // filtering products
         if (!empty($options['filter'])) {
+
             $params = $options['filter'];
-            if (isset($params['brand']) && !empty($params['brand'])) {
+
+            // filter for brand
+            if (!empty($params['brand'])) {
                 $products->andWhere(['be.name' => $params['brand']]);
             }
-            if (isset($params['min_km_driven']) && !empty($params['min_km_driven'])) {
+
+            // filter min_km_driven
+            if (!empty($params['min_km_driven'])) {
                 $products->andWhere(['>=', 'b.km_driven', $params['min_km_driven']]);
             }
-            if (isset($params['max_km_driven']) && !empty($params['max_km_driven'])) {
+
+            // filter max_km_driven
+            if (!empty($params['max_km_driven'])) {
                 $products->andWhere(['<=', 'b.km_driven', $params['max_km_driven']]);
             }
-            if (isset($params['brand_name']) && !empty($params['brand_name'])) {
+
+            // filter brand_name
+            if (!empty($params['brand_name'])) {
                 $products->andWhere(['in', 'be.name', $params['brand_name']]);
             }
-            if (isset($params['making_year']) && !empty($params['making_year'])) {
+
+            // filter making_year
+            if (!empty($params['making_year'])) {
                 $products->andWhere(['in', 'b.making_year', $params['making_year']]);
             }
-            if (isset($params['budget_start_range']) && !empty($params['budget_start_range'])) {
+
+            // filter budget_start_range
+            if (!empty($params['budget_start_range'])) {
                 $products->andWhere(['>=', 'a.price', $params['budget_start_range']]);
             }
-            if (isset($params['budget_end_range']) && !empty($params['budget_end_range'])) {
+
+            // filter budget_end_range
+            if (!empty($params['budget_end_range'])) {
                 $products->andWhere(['<=', 'a.price', $params['budget_end_range']]);
             }
+
+            // filter status
+            if (!empty($params['status'])) {
+                $products->andWhere(['a.status' => $params['status']]);
+            }
         }
-        $products = $products->groupBy('a.product_enc_id')
+
+        // returning products list
+        return $products->groupBy('a.product_enc_id')
+            ->orderBy(['a.status' => SORT_ASC, 'a.created_on' => SORT_DESC])
             ->limit($options['limit'])
             ->offset(($options['page'] - 1) * $options['limit'])
             ->asArray()
             ->all();
-        return $products;
     }
 
+    // this action provide data to filter products list
     public function actionProductFilterData()
     {
+        // getting request params
         $params = Yii::$app->request->post();
-        $category = 'Two Wheeler';
-        if (isset($params['category']) && !empty($params['category'])) {
-            $category = $params['category'];
-        }
+
+        $category = !empty($params['category']) ? $params['category'] : 'Two Wheeler';
+
+        // getting price and km driven filter data
         $filter = Products::find()
             ->alias('a')
             ->select([
@@ -621,6 +750,7 @@ class ProductsController extends ApiBaseController
             ->asArray()
             ->one();
 
+        // getting years data
         $years = ProductOtherDetails::find()
             ->alias('a')
             ->select(['a.making_year'])
@@ -636,6 +766,7 @@ class ProductsController extends ApiBaseController
             ->asArray()
             ->all();
 
+        // getting brands data
         $filter_brands = Brands::find()
             ->alias('a')
             ->select(['a.name'])
@@ -651,8 +782,16 @@ class ProductsController extends ApiBaseController
             ->asArray()
             ->all();
 
+        $status = Products::find()
+            ->distinct()
+            ->select(['status'])
+            ->where(['is_deleted' => 0])
+            ->asArray()
+            ->all();
+
         $filter['brands'] = $filter_brands;
         $filter['years'] = $years;
+        $filter['status'] = $status;
 
         if ($category == 'Mobiles') {
             unset($filter['min_km_driven']);
@@ -663,63 +802,98 @@ class ProductsController extends ApiBaseController
 
     }
 
+    // this action is used for product enquiry
     public function actionAddProductEnquiry()
     {
+        // creating form object
         $model = new EnquiryForm();
+
+        // loading data to model
         if ($model->load(Yii::$app->request->post(), '')) {
+
+            // if user authorized then assign to created_by
             if ($user = $this->isAuthorized()) {
                 $model->created_by = $user->user_enc_id;
             }
 
+            // validating model
             if ($model->validate()) {
+
+                // saving data
                 $query = $model->create();
+
                 if ($query['status'] == 500) {
                     return $this->response(500, $query);
                 }
                 return $this->response(200, $query);
 
             } else {
+                // if validation error occurred
                 return $this->response(422, ['status' => 422, 'error' => $model->getErrors()]);
             }
-
-
         }
+
+        // if no data found in request params
         return $this->response(400, ['status' => 400, 'message' => 'bad request']);
     }
 
+    // this action is used to update product enquiry
     public function actionUpdateProductEnquiry()
     {
-
+        // checking authorization
         if ($user = $this->isAuthorized()) {
+
+            // creating form object
             $model = new EnquiryForm();
+
+            // getting request params
             $params = Yii::$app->request->post();
-            $identity = $user->user_enc_id;
+
+            // checking enquiry_enc_id
             if (empty($params['enquiry_enc_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "enquiry_enc_id"']);
             }
+
+            // loading data to form
             if ($model->load(Yii::$app->request->post(), '')) {
+
+                // validating model
                 if ($model->validate()) {
-                    $query = $model->update($identity);
+
+                    // updating data
+                    $query = $model->update($user->user_enc_id);
+
                     if ($query['status'] == 500) {
                         return $this->response(500, $query);
                     }
                     return $this->response(200, $query);
 
                 } else {
+
+                    // if validation error occurred
                     return $this->response(422, ['status' => 422, 'error' => $model->getErrors()]);
                 }
             }
+
+            // if request data is empty
             return $this->response(400, ['status' => 400, 'message' => 'bad request']);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
+    // this action is used to show enquiries to dealer
     public function actionDealerViewProductEnquiry()
     {
+        // check authorization
         if ($user = $this->isAuthorized()) {
-            $limit = 10;
-            $page = 1;
+
+            $params = Yii::$app->request->post();
+
+            $limit = !empty($params['limit']) ? $params['limit'] : 10;
+            $page = !empty($params['page']) ? $params['page'] : 1;
+
+            // getting enquiries
             $enquiry = Products::find()
                 ->alias('a')
                 ->select(['a.name', 'a.price', 'a.product_enc_id'])
@@ -733,9 +907,12 @@ class ProductsController extends ApiBaseController
                 ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
+
             if ($enquiry) {
                 return $this->response(200, ['status' => 200, 'enquiry' => $enquiry]);
             }
+
+            // if not found
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
 
         } else {
@@ -743,28 +920,35 @@ class ProductsController extends ApiBaseController
         }
     }
 
+    // this action is used to show enquiries to customer who make enquiry
     public function actionUserViewProductEnquiry()
     {
+        // checking authorization
         if ($user = $this->isAuthorized()) {
-            $limit = 10;
-            $page = 1;
-            $product = ProductEnquiry::findOne(['created_by' => $user->user_enc_id]);
-            if ($product) {
-                $enquiry = Products::find()
-                    ->alias('a')
-                    ->select(['a.name', 'a.price', 'b.first_name', 'b.last_name', 'b.email', 'b.mobile_number'])
-                    ->joinWith(['productEnquiries b'], false)
-                    ->where(['not', ['b.status' => 'Closed']])
-                    ->andWhere(['b.created_by' => $user->user_enc_id])
-                    ->limit($limit)
-                    ->offset(($page - 1) * $limit)
-                    ->asArray()
-                    ->all();
-                if ($enquiry) {
-                    return $this->response(200, ['status' => 200, 'enquiry' => $enquiry]);
-                }
-                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+            $params = Yii::$app->request->post();
+
+            $limit = !empty($params['limit']) ? $params['limit'] : 10;
+            $page = !empty($params['page']) ? $params['page'] : 1;
+
+            // getting enquiries
+            $enquiry = Products::find()
+                ->alias('a')
+                ->select(['a.name', 'a.price', 'b.first_name', 'b.last_name', 'b.email', 'b.mobile_number'])
+                ->joinWith(['productEnquiries b'], false)
+                ->where(['not', ['b.status' => 'Closed']])
+                ->andWhere(['b.created_by' => $user->user_enc_id])
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->asArray()
+                ->all();
+
+            if ($enquiry) {
+                return $this->response(200, ['status' => 200, 'enquiry' => $enquiry]);
             }
+
+            // if data not found
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
