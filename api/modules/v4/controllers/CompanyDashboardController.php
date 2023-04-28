@@ -987,7 +987,7 @@ class CompanyDashboardController extends ApiBaseController
     }
 
     // employee search
-    public function actionEmployeeSearch($employee_search, $type, $loan_id)
+    public function actionEmployeeSearch($employee_search, $type, $loan_id = null)
     {
         if ($user = $this->isAuthorized()) {
 
@@ -1037,8 +1037,8 @@ class CompanyDashboardController extends ApiBaseController
                     foreach ($employees as $key => $val) {
 
                         // adding lead_by and managed_by = false in employees
-                        $employees[$key]['lead_by'] = $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->lead_by;
-                        $employees[$key]['managed_by'] = $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->managed_by;
+                        $employees[$key]['lead_by'] = $loan_id != null && $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->lead_by;
+                        $employees[$key]['managed_by'] = $loan_id != null && $val['user_enc_id'] == LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']])->managed_by;
                         $employees[$key]['id'] = $val['user_enc_id'];
                         $employees[$key]['name'] = $val['first_name'] . ' ' . $val['last_name'];
                     }
