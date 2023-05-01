@@ -18,6 +18,7 @@ use common\models\extended\LoanApplicationNotificationsExtended;
 use common\models\extended\SharedLoanApplicationsExtended;
 use common\models\LoanApplicationPartners;
 use common\models\LoanApplications;
+use common\models\LoanCertificates;
 use common\models\LoanSanctionReports;
 use common\models\LoanType;
 use common\models\Organizations;
@@ -764,6 +765,40 @@ class CompanyDashboardController extends ApiBaseController
         }
 
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    public function actionLoanCertificates()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            $query = LoanCertificates::find()
+                ->alias('a')
+                ->select(['a.certificate_enc_id', 'a.loan_app_enc_id', 'a.short_description', 'a.certificate_type_enc_id', 'a.number', 'c1.name', 'a.proof_image', 'a.proof_image_location', 'a.created_on', 'CONCAT(c2.first_name," ",c2.last_name) created_by'])
+                ->joinWith(['certificateTypeEnc c1'], false)
+                ->joinWith(['createdBy c2'], false)
+                ->andWhere(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            if ($query) {
+                foreach ($query as $key => $val) {
+                    if ($val['proof_image']) {
+                        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                        $proof = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . $val['proof_image_location'] . DIRECTORY_SEPARATOR . $val['proof_image'], "15 minutes");
+                        $query[$key]['proof_image'] = $proof;
+                    }
+                }
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+            }
+            return $this->response(200, ['status' => 200, 'loan_detail' => $query]);
+        }
     }
 
     // getting partnered applications
