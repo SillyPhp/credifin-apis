@@ -52,6 +52,8 @@ namespace common\models;
  * @property string $signed_up_through from where user has first signed up
  * @property int $is_deleted Is User Deleted (0 as False, 1 as True)
  *
+ * @property LoanApplications[] $loanApplications3
+ * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
  * @property IndianGovtDepartments[] $indianGovtDepartments
  * @property UsaDepartments[] $usaDepartments
  * @property UsaProfileCodes[] $usaProfileCodes
@@ -4324,4 +4326,21 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(SharedLoanApplications::className(), ['shared_by' => 'user_enc_id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplications3()
+    {
+        return $this->hasMany(LoanApplications::className(), ['lead_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreditLoanApplicationReports()
+    {
+        return $this->hasMany(CreditLoanApplicationReports::className(), ['created_by' => 'user_enc_id']);
+    }
 }
+
