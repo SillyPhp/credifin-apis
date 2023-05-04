@@ -2050,13 +2050,13 @@ class CompanyDashboardController extends ApiBaseController
             if (isset($params['keyword']) && !empty($params['keyword'])) {
                 $EmployeeStats->andWhere([
                     'or',
-                    ['like', 'concat(a.first_name," ",a.last_name) employee_name', $params['keyword']],
+                    ['like', 'concat(a.first_name," ",a.last_name)', $params['keyword']],
                     ['like', 'a.phone', $params['keyword']],
                     ['like', 'a.username', $params['keyword']],
                     ['like', 'a.email', $params['keyword']],
                     ['like', 'b1.designation', $params['keyword']],
-                    ['like', 'concat(b2.first_name," ",b2.last_name) reporting_person', $params['keyword']],
-                    ['like', 'a.b3.location_name', $params['keyword']],
+                    ['like', 'concat(b2.first_name," ",b2.last_name)', $params['keyword']],
+                    ['like', 'b3.location_name', $params['keyword']],
                 ]);
             }
 
@@ -2067,7 +2067,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            return $this->response(200, ['status' => 200, 'data' => $EmployeeStats]);
+            return $this->response(200, ['status' => 200, 'data' => $EmployeeStats,'count'=> $count]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
