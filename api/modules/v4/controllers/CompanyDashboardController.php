@@ -68,7 +68,8 @@ class CompanyDashboardController extends ApiBaseController
                 'remove-partner' => ['POST', 'OPTIONS'],
                 'status-stats' => ['POST', 'OPTIONS'],
                 'status-applications' => ['POST', 'OPTIONS'],
-                'add-column-preference' => ['POST', 'OPTIONS']
+                'add-column-preference' => ['POST', 'OPTIONS'],
+                'employee-stats' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -2007,5 +2008,72 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
+    public function actionEmployeeStats()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            $limit = !empty($params['limit']) ? $params['limit'] : 10;
+            $page = !empty($params['page']) ? $params['page'] : 1;
+
+            $EmployeeStats = Users::find()
+                ->alias('a')
+                ->select(['a.user_enc_id', 'concat(a.first_name," ",a.last_name) employee_name', 'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'b1.designation', 'concat(b2.first_name," ",b2.last_name) reporting_person', 'b3.location_name',
+                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status !="Disbursed" and c2.loan_status !="Rejected" THEN c.loan_app_enc_id END) as active',
+                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" THEN c.loan_app_enc_id END) as total_cases',
+                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "New Lead" THEN c.loan_app_enc_id END) as new_lead',
+                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "Sanctioned" THEN c.loan_app_enc_id END) as sanctioned',
+                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others"  and c2.loan_status = "Rejected" THEN c.loan_app_enc_id END) as rejected',
+                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "Disbursed" THEN c.loan_app_enc_id END) as disbursed',
+                    'COUNT(DISTINCT CASE WHEN d2.request_source = "CIBIL" THEN d.loan_app_enc_id END) as cibil',
+                    'COUNT(DISTINCT CASE WHEN d2.request_source = "EQUIFAX" THEN d.loan_app_enc_id END) as equifax',
+                    'COUNT(DISTINCT CASE WHEN d2.request_source = "CRIF" THEN d.loan_app_enc_id END) as crif'])
+                ->joinWith(['userRoles b' => function ($b) {
+                    $b->joinWith(['designationEnc b1'])
+                        ->joinWith(['reportingPerson b2'])
+                        ->joinWith(['branchEnc b3'])
+                        ->joinWith(['userTypeEnc b4']);
+                }], false)
+                ->joinWith(['loanApplications3 c' => function ($c) {
+                    $c->joinWith(['assignedLoanProviders c1' => function ($c1) {
+                        $c1->joinWith(['status0 c2']);
+                    }], false);
+                }], false)
+                ->joinWith(['creditLoanApplicationReports d' => function ($d) {
+                    $d->joinWith(['responseEnc d1' => function ($d1) {
+                        $d1->joinWith(['requestEnc d2']);
+                    }], false);
+                }], false)
+                ->andWhere(['b.organization_enc_id' => $user->organization_enc_id, 'b4.user_type' => 'Employee', 'b.is_deleted' => 0])
+                ->groupBy(['a.user_enc_id']);
+
+            if (isset($params['keyword']) && !empty($params['keyword'])) {
+                $EmployeeStats->andWhere([
+                    'or',
+                    ['like', 'concat(a.first_name," ",a.last_name)', $params['keyword']],
+                    ['like', 'a.phone', $params['keyword']],
+                    ['like', 'a.username', $params['keyword']],
+                    ['like', 'a.email', $params['keyword']],
+                    ['like', 'b1.designation', $params['keyword']],
+                    ['like', 'concat(b2.first_name," ",b2.last_name)', $params['keyword']],
+                    ['like', 'b3.location_name', $params['keyword']],
+                ]);
+            }
+
+            $count = $EmployeeStats->count();
+            $EmployeeStats = $EmployeeStats
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->asArray()
+                ->all();
+
+            return $this->response(200, ['status' => 200, 'data' => $EmployeeStats,'count'=> $count]);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+
+    }
+
 
 }
