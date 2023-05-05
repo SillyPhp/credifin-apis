@@ -144,7 +144,9 @@ class TestController extends ApiBaseController
                         return ['status' => 500, 'message' => 'an error occurred', 'error' => $query3->getErrors()];
                     }
                 } else {
+                    $transaction->rollBack();
 
+                    return 'no';
                 }
             }
             $transaction->commit();
