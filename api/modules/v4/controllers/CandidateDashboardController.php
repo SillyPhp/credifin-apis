@@ -53,7 +53,7 @@ class CandidateDashboardController extends ApiBaseController
             // getting details of loan applications of this user
             $loan_application = LoanApplications::find()
                 ->alias('a')
-                ->select(['a.id', 'a.loan_app_enc_id', 'a.applicant_name', 'a.amount loan_amount', 'a.loan_type', 'b.payment_token', 'b.education_loan_payment_enc_id', 'a.email', 'a.phone', 'b.payment_amount amount'])
+                ->select(['a.id', 'a.loan_app_enc_id', 'a.applicant_name', 'a.amount loan_amount', 'a.loan_type', 'b.payment_token', 'b.education_loan_payment_enc_id', 'a.email', 'a.phone', 'b.payment_amount amount', 'a.is_deleted'])
                 ->joinWith(['educationLoanPayments b' => function ($b) {
                     $b->select(['b.loan_app_enc_id', 'b.payment_status']);
                     $b->onCondition(['b.payment_status' => ['captured', 'created', 'waived off']]);
@@ -70,7 +70,7 @@ class CandidateDashboardController extends ApiBaseController
                 ->joinWith(['loanApplicationNotifications e' => function ($e) {
                     $e->select(['e.message', 'e.loan_application_enc_id', 'e.created_on']);
                 }])
-                ->where(['a.is_deleted' => 0, 'a.created_by' => $user->user_enc_id])
+                ->where(['a.created_by' => $user->user_enc_id])
                 ->groupBy(['a.loan_app_enc_id'])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
@@ -79,7 +79,7 @@ class CandidateDashboardController extends ApiBaseController
             // this query is showing applications list in sidebar to get detail
             $loan_apps = LoanApplications::find()
                 ->select(['loan_app_enc_id', 'applicant_name', 'amount'])
-                ->where(['is_deleted' => 0, 'created_by' => $user->user_enc_id])
+                ->where(['created_by' => $user->user_enc_id])
                 ->groupBy(['loan_app_enc_id'])
                 ->orderBy(['created_on' => SORT_DESC])
                 ->asArray()
