@@ -1,0 +1,70 @@
+<?php
+
+namespace api\modules\v4\controllers;
+
+use api\modules\v4\models\FinancerRewardsForm;
+use common\models\FinancerRewards;
+use common\models\FinancerRewardsOption;
+use yii\filters\VerbFilter;
+use yii\filters\Cors;
+use common\models\Utilities;
+use yii\web\UploadedFile;
+use Yii;
+
+class FinancerRewardsController extends ApiBaseController
+{
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+
+        $behaviors['verbs'] = [
+            'class' => VerbFilter::className(),
+            'actions' => [
+                'add' => ['POST', 'OPTIONS'],
+            ]
+        ];
+        $behaviors['corsFilter'] = [
+            'class' => Cors::className(),
+            'cors' => [
+                'Origin' => ['https://www.empowerloans.in/'],
+                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                'Access-Control-Max-Age' => 86400,
+                'Access-Control-Expose-Headers' => [],
+            ],
+        ];
+        return $behaviors;
+    }
+
+    public function actionAddReward()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $model = new FinancerRewardsForm();
+            if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+                $model->image = UploadedFile::getInstanceByName('image');
+                if ($model->validate()) {
+                    $reward = $model->addReward($user);
+
+                    if ($reward['status']==201) {
+                        return $this->response(201, $reward);
+                    } else {
+                        return $this->response(500, $reward);
+                    }
+                } else {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information', 'error' => $model->getErrors()]);
+                }
+
+            } else {
+                return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+
+    }
+
+}
+
+
+?>
