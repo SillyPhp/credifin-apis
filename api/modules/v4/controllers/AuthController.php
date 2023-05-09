@@ -82,7 +82,7 @@ class AuthController extends ApiBaseController
             $params = Yii::$app->request->post();
 
             // creating signup form object. if its financer then it will make object with scenario Financer to require organization fields
-            $model = ($params['user_type'] == 'Financer') ? new SignupForm(['scenario' => 'Financer']) : new SignupForm();
+            $model = !empty($params['user_type']) ? (($params['user_type'] == 'Financer') ? new SignupForm(['scenario' => 'Financer']) : new SignupForm()) : new SignupForm();
 
             // loading data from post request to model
             if ($model->load(Yii::$app->request->post(), '')) {
