@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v3\models\widgets\Referral;
 use api\modules\v4\models\ForgotPassword;
 use api\modules\v4\models\ProfilePicture;
 use api\modules\v4\models\Candidates;
@@ -584,5 +585,28 @@ class AuthController extends ApiBaseController
         }
 
         return $this->response(404, ['status' => 404, 'message' => 'user not found']);
+    }
+
+    public function actionReferralLogo()
+    {
+        $params = Yii::$app->request->post();
+        $ref = \common\models\Referral::find()
+            ->alias('a')
+            ->select([
+                'a.referral_enc_id',
+                'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",b.logo_location, "/", b.logo) 
+                    ELSE null
+                    END AS logo'
+            ])
+            ->joinWith(['organizationEnc b' ])
+            ->where(['a.code' => $params['code']])
+            ->andWhere(['<>', 'a.organization_enc_id', 'null'])
+            ->asArray()
+            ->one();
+
+        if ($ref) {
+            return $this->response(200, ['status' => 200, 'data' => $ref]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
 }
