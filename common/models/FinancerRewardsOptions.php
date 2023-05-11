@@ -27,7 +27,7 @@ use Yii;
  * @property Users $createdBy
  * @property Users $updatedBy
  */
-class FinancerRewardsOption extends \yii\db\ActiveRecord
+class FinancerRewardsOptions extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
