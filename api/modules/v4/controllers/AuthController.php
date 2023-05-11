@@ -598,7 +598,7 @@ class AuthController extends ApiBaseController
         $ref = \common\models\Referral::find()
             ->alias('a')
             ->select([
-                'a.referral_enc_id',
+                'a.referral_enc_id','b.name','b.slug',
                 'CASE WHEN b.logo IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo'
             ])
             ->joinWith(['organizationEnc b'])
