@@ -13,8 +13,10 @@ use common\models\extended\LoanCertificatesExtended;
 use common\models\extended\LoanPurposeExtended;
 use common\models\Organizations;
 use common\models\Referral;
+use common\models\SharedLoanApplications;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
+use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
 use Razorpay\Api\Api;
@@ -160,6 +162,10 @@ class LoanApplication extends Model
                 throw new \Exception(json_encode($model->getErrors()));
             }
 
+            if (!empty($model->lead_by)) {
+                $this->share_leads($user_id, $model->loan_app_enc_id);
+            }
+
             // if not empty loan purpose then saving it
             if (!empty($this->loan_purpose)) {
 
@@ -233,7 +239,7 @@ class LoanApplication extends Model
             if ($user_id == null) {
 
                 $user = Users::findOne(['phone' => [$model->phone, '+91' . $model->phone]]);
-                if(empty($user)) {
+                if (empty($user)) {
 
                     $user = $this->SignUp($options);
 
@@ -766,5 +772,46 @@ class LoanApplication extends Model
         }
         throw new \Exception(json_encode($token->getErrors()));
     }
+
+    private function getting_reporting_ids($user_id)
+    {
+        $data = [];
+        while (true) {
+            $query = UserRoles::find()
+                ->alias('a')
+                ->select(['a.reporting_person'])
+                ->where(['a.user_enc_id' => $user_id, 'a.is_deleted' => 0])
+                ->asArray()
+                ->one();
+            if (!empty($query['reporting_person'])) {
+                $data[] = $user_id = $query['reporting_person'];
+            } else {
+                return $data;
+            }
+        }
+    }
+
+    private function share_leads($user_id, $loan_id)
+    {
+        $reporting_persons_ids = $this->getting_reporting_ids($user_id);
+
+        foreach ($reporting_persons_ids as $value) {
+            $query = new SharedLoanApplications();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $query->shared_loan_app_enc_id = $utilitiesModel->encrypt();
+            $query->loan_app_enc_id = $loan_id;
+            $query->shared_by = $user_id;
+            $query->shared_to = $value;
+            $query->access = 'Full Access';
+            $query->status = 'Active';
+            $query->created_by = $user_id;
+            $query->created_on = date('Y-m-d H:i:s');
+            if (!$query->save()) {
+                throw new \Exception(json_encode($query->getErrors()));
+            }
+        }
+    }
+
 
 }
