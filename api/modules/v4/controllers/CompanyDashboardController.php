@@ -18,6 +18,7 @@ use common\models\extended\LoanApplicationNotificationsExtended;
 use common\models\extended\SharedLoanApplicationsExtended;
 use common\models\LoanApplicationPartners;
 use common\models\LoanApplications;
+use common\models\LoanCoApplicants;
 use common\models\LoanSanctionReports;
 use common\models\LoanType;
 use common\models\Organizations;
@@ -33,6 +34,7 @@ use yii\db\Expression;
 use common\models\Utilities;
 use yii\filters\VerbFilter;
 use Yii;
+use common\models\spaces\Spaces;
 use yii\filters\Cors;
 use yii\helpers\Url;
 use yii\filters\ContentNegotiator;
@@ -2023,6 +2025,7 @@ class CompanyDashboardController extends ApiBaseController
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" THEN c.loan_app_enc_id END) as total_cases',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "New Lead" THEN c.loan_app_enc_id END) as new_lead',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "Sanctioned" THEN c.loan_app_enc_id END) as sanctioned',
+                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "CNI" THEN c.loan_app_enc_id END) as cni',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others"  and c2.loan_status = "Rejected" THEN c.loan_app_enc_id END) as rejected',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "Disbursed" THEN c.loan_app_enc_id END) as disbursed',
                     'COUNT(DISTINCT CASE WHEN d2.request_source = "CIBIL" THEN d.loan_app_enc_id END) as cibil',
@@ -2067,12 +2070,53 @@ class CompanyDashboardController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            return $this->response(200, ['status' => 200, 'data' => $EmployeeStats,'count'=> $count]);
+            return $this->response(200, ['status' => 200, 'data' => $EmployeeStats, 'count' => $count]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
 
     }
 
+    public function actionUploadApplicantImage()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (empty($params['id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "id"']);
+            }
 
+            if (empty($params['type'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "type"']);
+            }
+
+            if ($params['type'] == 'Borrower') {
+                $model = LoanApplications::findOne(['loan_app_enc_id' => $params['id']]);
+            } else {
+                $model = LoanCoApplicants::findOne(['loan_co_app_enc_id' => $params['id']]);
+            }
+
+            if ($model) {
+                $image = UploadedFile::getInstanceByName('image');
+
+                $model->image = Yii::$app->getSecurity()->generateRandomString() . '.' . $image->extension;
+                $model->image_location = Yii::$app->getSecurity()->generateRandomString() . '/';
+                $base_path = Yii::$app->params->upload_directories->loans->image . $model->image_location . $model->image;
+
+                if ($model->update()) {
+                    $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                    $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                    $result = $my_space->uploadFileSources($image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path, "public", ['params' => ['contentType' => $image->type]]);
+                    if ($result) {
+                        return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
+                    } else {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred while uploading image']);
+                    }
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()]);
+                }
+            }
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+    }
 }
