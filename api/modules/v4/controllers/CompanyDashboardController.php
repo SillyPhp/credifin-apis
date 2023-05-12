@@ -2069,8 +2069,7 @@ class CompanyDashboardController extends ApiBaseController
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" THEN c.loan_app_enc_id END) as total_cases',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "New Lead" THEN c.loan_app_enc_id END) as new_lead',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "Sanctioned" THEN c.loan_app_enc_id END) as sanctioned',
-                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "CNI" THEN c.loan_app_enc_id END) as cni',
-                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others"  and c2.loan_status = "Rejected" THEN c.loan_app_enc_id END) as rejected',
+                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and (c2.loan_status = "Rejected" or c2.loan_status = "CNI") THEN c.loan_app_enc_id END) as rejected',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "Disbursed" THEN c.loan_app_enc_id END) as disbursed',
                     'COUNT(DISTINCT CASE WHEN d2.request_source = "CIBIL" THEN d.loan_app_enc_id END) as cibil',
                     'COUNT(DISTINCT CASE WHEN d2.request_source = "EQUIFAX" THEN d.loan_app_enc_id END) as equifax',
@@ -2109,7 +2108,7 @@ class CompanyDashboardController extends ApiBaseController
 
             $count = $EmployeeStats->count();
             $EmployeeStats = $EmployeeStats
-                ->limit($limit)
+//                ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
