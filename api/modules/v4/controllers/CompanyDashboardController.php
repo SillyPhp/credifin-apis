@@ -2062,7 +2062,7 @@ class CompanyDashboardController extends ApiBaseController
             $limit = !empty($params['limit']) ? $params['limit'] : 10;
             $page = !empty($params['page']) ? $params['page'] : 1;
 
-            $EmployeeStats = Users::find()
+            $employeeStats = Users::find()
                 ->alias('a')
                 ->select(['a.user_enc_id', 'concat(a.first_name," ",a.last_name) employee_name', 'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'b1.designation', 'concat(b2.first_name," ",b2.last_name) reporting_person', 'b3.location_name',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status !="Disbursed" and c2.loan_status !="Rejected" THEN c.loan_app_enc_id END) as active',
@@ -2094,7 +2094,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->groupBy(['a.user_enc_id']);
 
             if (isset($params['keyword']) && !empty($params['keyword'])) {
-                $EmployeeStats->andWhere([
+                $employeeStats->andWhere([
                     'or',
                     ['like', 'concat(a.first_name," ",a.last_name)', $params['keyword']],
                     ['like', 'a.phone', $params['keyword']],
@@ -2106,14 +2106,14 @@ class CompanyDashboardController extends ApiBaseController
                 ]);
             }
 
-            $count = $EmployeeStats->count();
-            $EmployeeStats = $EmployeeStats
-//                ->limit($limit)
+            $count = $employeeStats->count();
+            $employeeStats = $employeeStats
+                ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
 
-            return $this->response(200, ['status' => 200, 'data' => $EmployeeStats, 'count' => $count]);
+            return $this->response(200, ['status' => 200, 'data' => $employeeStats, 'count' => $count]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
