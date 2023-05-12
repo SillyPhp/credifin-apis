@@ -2086,7 +2086,7 @@ class CompanyDashboardController extends ApiBaseController
                         $c1->joinWith(['status0 c2']);
                     }], false);
                     if (isset($params['loan_id']) and !empty($params['loan_id'])) {
-                        $c->andWhere(['c.loan_type_enc_id' => $params['loan_id']]);
+                        $c->andWhere(['c.loan_type' => $params['loan_id']]);
                     }
                 }], false)
                 ->joinWith(['creditLoanApplicationReports d' => function ($d) {
