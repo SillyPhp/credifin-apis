@@ -398,7 +398,7 @@ class ProductsController extends ApiBaseController
 
         $products = Products::find()
             ->alias('a')
-            ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'a.created_on'])
+            ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.vehicle_type', 'a.product_enc_id', 'a.status', 'a.created_on'])
             ->joinWith(['productOtherDetails b' => function ($b) {
                 $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.other_detail']);
                 $b->onCondition(['b.is_deleted' => 0]);
@@ -491,7 +491,7 @@ class ProductsController extends ApiBaseController
         // getting detail
         $details = Products::find()
             ->alias('a')
-            ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.product_enc_id', 'a.status', 'a.created_on',
+            ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.vehicle_type', 'a.product_enc_id', 'a.status', 'a.created_on',
                 'c1.name city', 'c1.city_enc_id', 'c2.name state', 'm.name model', 'm.model_enc_id model_id', 'be.name brand', 'd1.name category'])
             ->joinWith(['productOtherDetails b' => function ($b) {
                 $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.km_driven', 'b.making_year', 'b.other_detail', 'b.ownership_type', 'b.variant', 'b.rom', 'b.ram', 'b.screen_size',

@@ -34,6 +34,7 @@ class ProductsForm extends Model
     public $front_camera;
     public $back_camera;
     public $sim_type;
+    public $vehicle_type;
 
     public function formName()
     {
@@ -44,7 +45,7 @@ class ProductsForm extends Model
     {
         return [
             [['model_id', 'price', 'city_id', 'assigned_category', 'product_other_detail', 'ownership_type', 'status'], 'required'],
-            [['variant', 'description', 'product_name', 'dent_images', 'km_driven', 'making_year', 'ram', 'rom', 'images', 'discounted_price', 'screen_size', 'front_camera', 'back_camera', 'sim_type'], 'safe'],
+            [['variant', 'description', 'product_name', 'dent_images', 'km_driven', 'making_year', 'ram', 'rom', 'images', 'discounted_price', 'screen_size', 'front_camera', 'back_camera', 'sim_type', 'vehicle_type'], 'safe'],
             [['assigned_category', 'product_name'], 'trim'],
         ];
     }
@@ -65,6 +66,7 @@ class ProductsForm extends Model
             $product->assigned_category_enc_id = $this->assigned_category;
             $product->price = $this->price;
             $product->city_enc_id = $this->city_id;
+            $product->vehicle_type = $this->vehicle_type;
             $product->name = $this->product_name;
             $product->discounted_price = $this->discounted_price;
             $utilitiesModel = new Utilities();
@@ -190,6 +192,7 @@ class ProductsForm extends Model
             $product->price = $this->price;
             $product->discounted_price = $this->discounted_price;
             $product->description = $this->description;
+            $product->vehicle_type = $this->vehicle_type;
             $product->updated_by = $user_id;
             $product->city_enc_id = $this->city_id;
             $product->updated_on = date('Y-m-d H:i:s');

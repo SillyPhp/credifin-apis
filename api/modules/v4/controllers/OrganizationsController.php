@@ -913,8 +913,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-
-    // add loan product (updated) done
+    // add loan product (updated)
     public function actionAddLoanProduct()
     {
         if ($user = $this->isAuthorized()) {
@@ -941,7 +940,7 @@ class OrganizationsController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-    // get loan products (updated) done
+    // get loan products (updated)
     public function actionGetLoanProducts()
     {
         if ($user = $this->isAuthorized()) {
@@ -966,7 +965,37 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    // get loan product details (updated) done
+    // delete loan product (updated)
+    public function actionRemoveLoanProduct()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['financer_loan_product_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "financer_loan_product_enc_id"']);
+            }
+
+            $product = FinancerLoanProducts::findOne([
+                'financer_loan_product_enc_id' => $params['financer_loan_product_enc_id'],
+                'is_deleted' => 0
+            ]);
+
+            if ($product) {
+                $product->is_deleted = 1;
+                $product->updated_by = $user->user_enc_id;
+                $product->updated_on = date('Y-m-d H:i:s');
+                if (!$product->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $product->getErrors()]);
+                }
+                return $this->response(200, ['status' => 200, 'message' => 'Deleted Successfully']);
+            }
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    // get loan product details (updated)
     public function actionGetLoanProductDetails()
     {
         if ($user = $this->isAuthorized()) {
@@ -1012,7 +1041,7 @@ class OrganizationsController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-    // create or update loan product purpose (updated) done
+    // create or update loan product purpose (updated)
     public function actionUpdateLoanProductPurpose()
     {
         if ($user = $this->isAuthorized()) {
@@ -1070,7 +1099,7 @@ class OrganizationsController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-    // remove loan product purpose (updated) done
+    // remove loan product purpose (updated)
     public function actionRemoveLoanProductPurpose()
     {
         if ($user = $this->isAuthorized()) {
@@ -1100,7 +1129,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    // create or update loan product documents (updated) done
+    // create or update loan product documents (updated)
     public function actionUpdateLoanProductDocuments()
     {
         if ($user = $this->isAuthorized()) {
@@ -1180,7 +1209,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    // remove loan product document (updated) done
+    // remove loan product document (updated)
     public function actionRemoveLoanProductDocument()
     {
         if ($user = $this->isAuthorized()) {
@@ -1207,7 +1236,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    // assign loan status (updated) done
+    // assign loan status (updated)
     public function actionUpdateLoanProductStatus()
     {
         if ($user = $this->isAuthorized()) {
@@ -1262,7 +1291,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    // remove loan product status (updated) done
+    // remove loan product status (updated)
     public function actionRemoveLoanProductStatus()
     {
         if ($user = $this->isAuthorized()) {
@@ -1293,7 +1322,7 @@ class OrganizationsController extends ApiBaseController
     }
 
 
-    // used to create product status (done)
+    // used to create product status
     private function __createStatus($data)
     {
         $loan_status = new FinancerLoanProductStatus();
@@ -1310,7 +1339,7 @@ class OrganizationsController extends ApiBaseController
         return ['status' => 200];
     }
 
-    // used to create product document (done)
+    // used to create product document
     private function __createDocument($data)
     {
         $loan_document = new FinancerLoanProductDocuments();
@@ -1328,7 +1357,7 @@ class OrganizationsController extends ApiBaseController
         return ['status' => 200];
     }
 
-    // used to create product purpose (done)
+    // used to create product purpose
     private function __createPurpose($data)
     {
         $purpose = new FinancerLoanProductPurpose();

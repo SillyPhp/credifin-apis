@@ -155,4 +155,30 @@ class TestController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
+    public function actionLoanApplicationDate()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return 'unauthorised';
+        }
+        $query = LoanApplications::find()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id', 'a.created_on'])
+            ->where(['a.is_deleted' => 0, 'a.updated_on' => null])
+            ->asArray()
+            ->all();
+
+        $transaction = Yii::$app->db->beginTransaction();
+        foreach ($query as $key => $value) {
+            $shift = LoanApplications::findOne(['loan_app_enc_id' => $value['loan_app_enc_id']]);
+            $shift->updated_on = $value['created_on'];
+            if (!$shift->update()) {
+                $transaction->rollBack();
+                return ['status' => 500, 'message' => 'an error occurred', 'error' => $shift->getErrors()];
+            }
+        }
+        $transaction->commit();
+        return 'success';
+
+    }
 }

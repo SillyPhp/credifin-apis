@@ -16,6 +16,7 @@ use Yii;
  * @property string $slug product slug
  * @property double $price product price
  * @property double $discounted_price discounted_price
+ * @property string $vehicle_type vehicle type
  * @property string $description product description
  * @property string $city_enc_id city id
  * @property string $created_by created by
@@ -53,7 +54,7 @@ class Products extends \yii\db\ActiveRecord
         return [
             [['product_enc_id', 'model_enc_id', 'dealer_enc_id', 'assigned_category_enc_id', 'price', 'created_by'], 'required'],
             [['price', 'discounted_price'], 'number'],
-            [['description', 'status'], 'string'],
+            [['vehicle_type', 'description', 'status'], 'string'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['product_enc_id', 'model_enc_id', 'dealer_enc_id', 'assigned_category_enc_id', 'name', 'slug', 'city_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],

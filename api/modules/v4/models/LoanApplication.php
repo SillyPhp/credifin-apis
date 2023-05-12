@@ -132,8 +132,8 @@ class LoanApplication extends Model
             }
             $model->loan_type = $this->loan_type;
             $model->yearly_income = $this->annual_income;
-            $model->created_on = date('Y-m-d H:i:s');
-            $model->created_by = $user_id;
+            $model->created_on = $model->updated_on = date('Y-m-d H:i:s');
+            $model->created_by = $model->updated_by = $user_id;
 
             // assigning lead by id to ref id user
             if ($this->ref_id) {

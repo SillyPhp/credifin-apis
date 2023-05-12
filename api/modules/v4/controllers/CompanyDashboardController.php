@@ -2059,7 +2059,7 @@ class CompanyDashboardController extends ApiBaseController
 
             $EmployeeStats = Users::find()
                 ->alias('a')
-                ->select(['a.user_enc_id', 'concat(a.first_name," ",a.last_name) employee_name', 'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'b1.designation', 'concat(b2.first_name," ",b2.last_name) reporting_person', 'b3.location_name',
+                ->select(['a.user_enc_id', '(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name," ",a.last_name) ELSE a.first_name END) as employee_name', 'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'b1.designation', 'concat(b2.first_name," ",b2.last_name) reporting_person', 'b3.location_name', 'c.updated_on',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status !="Disbursed" and c2.loan_status !="Rejected" THEN c.loan_app_enc_id END) as active',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" THEN c.loan_app_enc_id END) as total_cases',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "New Lead" THEN c.loan_app_enc_id END) as new_lead',
@@ -2075,10 +2075,14 @@ class CompanyDashboardController extends ApiBaseController
                         ->joinWith(['branchEnc b3'])
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
-                ->joinWith(['loanApplications3 c' => function ($c) {
+                ->joinWith(['loanApplications3 c' => function ($c) use ($params) {
+                    $c->andWhere(['between', 'c.updated_on', $params['start_date'], $params['end_date']]);
                     $c->joinWith(['assignedLoanProviders c1' => function ($c1) {
                         $c1->joinWith(['status0 c2']);
                     }], false);
+                    if (isset($params['loan_id']) and !empty($params['loan_id'])) {
+                        $c->andWhere(['c.loan_type_enc_id' => $params['loan_id']]);
+                    }
                 }], false)
                 ->joinWith(['creditLoanApplicationReports d' => function ($d) {
                     $d->joinWith(['responseEnc d1' => function ($d1) {
@@ -2108,7 +2112,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            return $this->response(200, ['status' => 200, 'data' => $EmployeeStats,'count'=> $count]);
+            return $this->response(200, ['status' => 200, 'data' => $EmployeeStats, 'count' => $count]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
