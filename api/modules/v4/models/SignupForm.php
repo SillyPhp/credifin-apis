@@ -41,10 +41,10 @@ class SignupForm extends Model
     public function rules()
     {
         return [
-            [['username', 'first_name', 'last_name', 'phone', 'password', 'source', 'user_type'], 'required'],
+            [['username', 'first_name', 'last_name', 'phone', 'password', 'source'], 'required'],
             [['organization_name', 'organization_email', 'organization_phone'], 'required', 'on' => 'Financer'],
-            [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id'], 'trim'],
-            [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
+            [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'trim'],
+            [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
             [['username'], 'string', 'length' => [3, 20]],
             [['email', 'organization_email'], 'string', 'max' => 100],

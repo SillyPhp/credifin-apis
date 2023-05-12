@@ -27,8 +27,8 @@ use Yii;
  * @property Users $userEnc
  * @property Organizations $organizationEnc
  * @property Designations $designationEnc
- * @property OrganizationLocations $branchEnc
  * @property Users $reportingPerson
+ * @property OrganizationLocations $branchEnc
  */
 class UserRoles extends \yii\db\ActiveRecord
 {
@@ -55,31 +55,8 @@ class UserRoles extends \yii\db\ActiveRecord
             [['user_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_enc_id' => 'user_enc_id']],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
             [['designation_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Designations::className(), 'targetAttribute' => ['designation_enc_id' => 'designation_enc_id']],
-            [['branch_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationLocations::className(), 'targetAttribute' => ['branch_enc_id' => 'organization_enc_id']],
             [['reporting_person'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['reporting_person' => 'user_enc_id']],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'role_enc_id' => 'Role Enc ID',
-            'user_type_enc_id' => 'User Type Enc ID',
-            'user_enc_id' => 'User Enc ID',
-            'organization_enc_id' => 'Organization Enc ID',
-            'designation_enc_id' => 'Designation Enc ID',
-            'employee_code' => 'Employee Code',
-            'reporting_person' => 'Reporting Person',
-            'branch_enc_id' => 'Branch Enc ID',
-            'created_on' => 'Created On',
-            'created_by' => 'Created By',
-            'updated_by' => 'Updated By',
-            'updated_on' => 'Updated On',
-            'is_deleted' => 'Is Deleted',
+            [['branch_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationLocations::className(), 'targetAttribute' => ['branch_enc_id' => 'location_enc_id']],
         ];
     }
 
@@ -126,16 +103,16 @@ class UserRoles extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBranchEnc()
+    public function getReportingPerson()
     {
-        return $this->hasOne(OrganizationLocations::className(), ['organization_enc_id' => 'branch_enc_id']);
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'reporting_person']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getReportingPerson()
+    public function getBranchEnc()
     {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'reporting_person']);
+        return $this->hasOne(OrganizationLocations::className(), ['location_enc_id' => 'branch_enc_id']);
     }
 }

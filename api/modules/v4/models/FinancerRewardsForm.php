@@ -22,6 +22,7 @@ class FinancerRewardsForm extends model
     public $game_type;
     public $reward_options;
 
+
     public function formName()
     {
         return '';
@@ -57,7 +58,7 @@ class FinancerRewardsForm extends model
             if (!empty($this->image)) {
                 $reward->image = Yii::$app->getSecurity()->generateRandomString() . '.' . $this->image->extension;
                 $reward->image_location = Yii::$app->getSecurity()->generateRandomString() . '/';
-                $base_path = Yii::$app->params->upload_directories->form_apps->financer_rewards->image . $reward->image_location . $reward->image;
+                $base_path = Yii::$app->params->upload_directories->financer_rewards->image . $reward->image_location . $reward->image;
 
                 $this->fileUpload($this->image, $base_path);
             }
@@ -112,5 +113,7 @@ class FinancerRewardsForm extends model
             throw new \Exception('error while uploading image');
         }
     }
+
+
 
 }

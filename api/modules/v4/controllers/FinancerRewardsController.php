@@ -4,6 +4,7 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\FinancerRewardsForm;
 use common\models\FinancerRewards;
+use common\models\spaces\Spaces;
 use common\models\FinancerRewardsOption;
 use yii\filters\VerbFilter;
 use yii\filters\Cors;
@@ -21,6 +22,7 @@ class FinancerRewardsController extends ApiBaseController
             'class' => VerbFilter::className(),
             'actions' => [
                 'add' => ['POST', 'OPTIONS'],
+                'upload-icon' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -45,7 +47,7 @@ class FinancerRewardsController extends ApiBaseController
                 if ($model->validate()) {
                     $reward = $model->addReward($user);
 
-                    if ($reward['status']==201) {
+                    if ($reward['status'] == 201) {
                         return $this->response(201, $reward);
                     } else {
                         return $this->response(500, $reward);
@@ -64,7 +66,24 @@ class FinancerRewardsController extends ApiBaseController
 
     }
 
-}
+    public function actionUploadIcon()
+    {
+        if ($user = $this->isAuthorized()) {
+            $icon_image = UploadedFile::getInstanceByName('icon_image');
+            $icon = Yii::$app->getSecurity()->generateRandomString() . '.' .$icon_image->extension;
+            $icon_location = Yii::$app->getSecurity()->generateRandomString() . '/';
+            $base_path = Yii::$app->params->upload_directories->financer_rewards->icon . $icon_location . $icon;
 
+            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+            $result = $my_space->uploadFileSources($icon_image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path, "public", ['params' => ['contentType' => $icon_image]]);
+
+            return $this->response(200, ['status' => 200, 'icon'    => $icon, 'icon_location' => $icon_location]);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+
+    }
+}
 
 ?>
