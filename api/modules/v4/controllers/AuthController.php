@@ -42,7 +42,8 @@ class AuthController extends ApiBaseController
                 'find-user',
                 'change-password',
                 'otp-change-password',
-                'verify-phone'
+                'verify-phone',
+                'referral-logo',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -61,6 +62,7 @@ class AuthController extends ApiBaseController
                 'find-user' => ['POST', 'OPTIONS'],
                 'change-password' => ['POST', 'OPTIONS'],
                 'otp-change-password' => ['POST', 'OPTIONS'],
+                'referral-logo' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -590,15 +592,16 @@ class AuthController extends ApiBaseController
     public function actionReferralLogo()
     {
         $params = Yii::$app->request->post();
+        if (empty($params['code'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "code"']);
+        }
         $ref = \common\models\Referral::find()
             ->alias('a')
             ->select([
-                'a.referral_enc_id',
-                'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",b.logo_location, "/", b.logo) 
-                    ELSE null
-                    END AS logo'
+                'a.referral_enc_id','b.name','b.slug',
+                'CASE WHEN b.logo IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo'
             ])
-            ->joinWith(['organizationEnc b' ])
+            ->joinWith(['organizationEnc b'])
             ->where(['a.code' => $params['code']])
             ->andWhere(['<>', 'a.organization_enc_id', 'null'])
             ->asArray()

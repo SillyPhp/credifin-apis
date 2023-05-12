@@ -5,7 +5,7 @@ namespace api\modules\v4\controllers;
 use api\modules\v4\models\FinancerRewardsForm;
 use common\models\FinancerRewards;
 use common\models\spaces\Spaces;
-use common\models\FinancerRewardsOption;
+use common\models\FinancerRewardsOptions;
 use yii\filters\VerbFilter;
 use yii\filters\Cors;
 use common\models\Utilities;
@@ -21,7 +21,7 @@ class FinancerRewardsController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-                'add' => ['POST', 'OPTIONS'],
+                'add-reward' => ['POST', 'OPTIONS'],
                 'upload-icon' => ['POST', 'OPTIONS'],
             ]
         ];
@@ -85,5 +85,6 @@ class FinancerRewardsController extends ApiBaseController
 
     }
 }
+
 
 ?>

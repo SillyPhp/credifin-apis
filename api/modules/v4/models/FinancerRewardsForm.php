@@ -3,7 +3,7 @@
 namespace api\modules\v4\models;
 
 use common\models\FinancerRewards;
-use common\models\FinancerRewardsOption;
+use common\models\FinancerRewardsOptions;
 use common\models\spaces\Spaces;
 use mysql_xdevapi\Exception;
 use yii\base\Model;
@@ -113,7 +113,5 @@ class FinancerRewardsForm extends model
             throw new \Exception('error while uploading image');
         }
     }
-
-
 
 }

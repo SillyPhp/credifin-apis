@@ -30,7 +30,7 @@ use Yii;
  * @property FinancerLoanProducts $loanProductEnc
  * @property Users $createdBy
  * @property Users $updatedBy
- * @property FinancerRewardsOption $financerRewardsOption
+ * @property FinancerRewardsOptions $financerRewardsOption
  */
 class FinancerRewards extends \yii\db\ActiveRecord
 {
@@ -100,6 +100,6 @@ class FinancerRewards extends \yii\db\ActiveRecord
      */
     public function getFinancerRewardsOption()
     {
-        return $this->hasOne(FinancerRewardsOption::className(), ['financer_rewards_option_enc_id' => 'financer_rewards_enc_id']);
+        return $this->hasOne(FinancerRewardsOptions::className(), ['financer_rewards_option_enc_id' => 'financer_rewards_enc_id']);
     }
 }
