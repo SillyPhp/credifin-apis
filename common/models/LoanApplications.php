@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%loan_applications}}".
  *
@@ -14,6 +16,7 @@ namespace common\models;
  * @property string $college_enc_id
  * @property string $college_course_enc_id organization_enc_id
  * @property string $loan_type_enc_id
+ * @property string $loan_products_enc_id
  * @property string $applicant_name Course Name
  * @property string $employement_type
  * @property string $image
@@ -26,8 +29,9 @@ namespace common\models;
  * @property int $semesters course semesters
  * @property string $phone
  * @property string $email
- * @property string $candidate_status New Lead, On Going, Accepted, Document Uploaded, On Hold, withDrawn, Non Responsive, Rejected, Done, defferds
+ * @property string $candidate_status New Lead, On Going, Accepted, Document Uploaded, On Hold, withDrawn, Non Responsive, Rejected, Done, defferds, Follow Up
  * @property string $candidate_sub_status Sent Again,Trying Again,Initial Call,Credit Call,Case Forwarded,Case Confirmed,IELTS,Admission,Offer Letter,No Document Required,Partial
+ * @property string $candidate_status_date Status Date
  * @property int $cibil_score cibil score
  * @property int $gender 1 for Male, 2 for Female,3 other
  * @property double $amount
@@ -35,25 +39,28 @@ namespace common\models;
  * @property double $amount_received
  * @property double $amount_due
  * @property double $scholarship
+ * @property double $amount_verified College Amount Verified
  * @property string $aadhaar_number
- * @property string $voter_card_number
-
  * @property string $pan_number
+ * @property string $voter_card_number
  * @property string $source
  * @property int $ask_guarantor_info 1 for yes 0 for no
  * @property string $deadline
  * @property string $intake
+ * @property string $td TD date
  * @property string $aadhaar_link_phone_number Aadhar Link Phone Number
  * @property string $managed_by_refferal Managed By Application
  * @property string $managed_by
  * @property string $lead_by_refferal Lead By Application
  * @property string $lead_by
+ * @property string $cpa CPA id
  * @property string $created_by user_enc_id
  * @property string $created_on created on
  * @property string $updated_by
  * @property string $updated_on
  * @property string $lead_application_enc_id Lead application Link
  * @property int $status 0 as Pending, 1 as Approved, 2 as Rejected, 3 as Verified
+ * @property string $status_comments
  * @property int $loan_status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Senctioned, 5 as Disbursed, 6 as Completed, 10 as Rejected
  * @property string $loan_type
  * @property string $form_type
@@ -62,9 +69,10 @@ namespace common\models;
  * @property int $auto_assigned 0 false, 1 true
  * @property int $is_deleted 0 as False, 1 as True
  * @property int $is_removed 0 as Permanently false 1 as Permanently True
- * 
- * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
+ *
  * @property AssignedLoanProvider[] $assignedLoanProviders
+ * @property BillDetails[] $billDetails
+ * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
  * @property EducationLoanPayments[] $educationLoanPayments
  * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
  * @property LoanApplicationComments[] $loanApplicationComments
@@ -72,11 +80,14 @@ namespace common\models;
  * @property LoanApplicationLogs[] $loanApplicationLogs
  * @property LoanApplicationNotifications[] $loanApplicationNotifications
  * @property LoanApplicationOptions[] $loanApplicationOptions
+ * @property LoanApplicationPartners[] $loanApplicationPartners
  * @property LoanApplicationRecords[] $loanApplicationRecords
  * @property LoanApplicationSchoolFee[] $loanApplicationSchoolFees
  * @property LoanApplicationTeacherLoan[] $loanApplicationTeacherLoans
  * @property CollegeCourses $collegeCourseEnc
  * @property LeadsApplications $leadApplicationEnc
+ * @property Users $cpa0
+ * @property FinancerLoanProducts $loanProductsEnc
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property LoanTypes $loanTypeEnc
@@ -87,6 +98,7 @@ namespace common\models;
  * @property LoanApplications $parentApplicationEnc
  * @property LoanApplications[] $loanApplications
  * @property LoanApplicationsCollegePreference[] $loanApplicationsCollegePreferences
+ * @property LoanAuditTrail[] $loanAuditTrails
  * @property LoanCandidateEducation[] $loanCandidateEducations
  * @property LoanCertificates[] $loanCertificates
  * @property LoanCoApplicants[] $loanCoApplicants
@@ -118,18 +130,20 @@ class LoanApplications extends \yii\db\ActiveRecord
         return [
             [['loan_app_enc_id', 'applicant_name', 'phone', 'source'], 'required'],
             [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'gender', 'ask_guarantor_info', 'status', 'loan_status', 'auto_assigned', 'is_deleted', 'is_removed'], 'integer'],
-            [['employement_type', 'degree', 'candidate_status', 'candidate_sub_status', 'source', 'loan_type', 'form_type', 'lender_reasons'], 'string'],
-            [['applicant_dob', 'deadline', 'intake', 'created_on', 'updated_on'], 'safe'],
-            [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship'], 'number'],
-            [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'created_by', 'updated_by', 'lead_application_enc_id'], 'string', 'max' => 100],
+            [['employement_type', 'degree', 'candidate_status', 'candidate_sub_status', 'source', 'status_comments', 'loan_type', 'form_type', 'lender_reasons'], 'string'],
+            [['applicant_dob', 'candidate_status_date', 'deadline', 'intake', 'td', 'created_on', 'updated_on'], 'safe'],
+            [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship', 'amount_verified'], 'number'],
+            [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'loan_products_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'cpa', 'created_by', 'updated_by', 'lead_application_enc_id'], 'string', 'max' => 100],
             [['application_number'], 'string', 'max' => 50],
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
-            [['voter_card_number'], 'string', 'max' => 20],
             [['aadhaar_number'], 'string', 'max' => 16],
+            [['voter_card_number'], 'string', 'max' => 20],
             [['loan_purpose'], 'string', 'max' => 255],
             [['loan_app_enc_id'], 'unique'],
             [['college_course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeCourses::className(), 'targetAttribute' => ['college_course_enc_id' => 'college_course_enc_id']],
             [['lead_application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LeadsApplications::className(), 'targetAttribute' => ['lead_application_enc_id' => 'application_enc_id']],
+            [['cpa'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['cpa' => 'user_enc_id']],
+            [['loan_products_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProducts::className(), 'targetAttribute' => ['loan_products_enc_id' => 'financer_loan_product_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanTypes::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
@@ -147,6 +161,22 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getAssignedLoanProviders()
     {
         return $this->hasMany(AssignedLoanProvider::className(), ['loan_application_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBillDetails()
+    {
+        return $this->hasMany(BillDetails::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreditLoanApplicationReports()
+    {
+        return $this->hasMany(CreditLoanApplicationReports::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**
@@ -208,6 +238,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getLoanApplicationPartners()
+    {
+        return $this->hasMany(LoanApplicationPartners::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getLoanApplicationRecords()
     {
         return $this->hasMany(LoanApplicationRecords::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
@@ -243,6 +281,22 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLeadApplicationEnc()
     {
         return $this->hasOne(LeadsApplications::className(), ['application_enc_id' => 'lead_application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCpa0()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'cpa']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanProductsEnc()
+    {
+        return $this->hasOne(FinancerLoanProducts::className(), ['financer_loan_product_enc_id' => 'loan_products_enc_id']);
     }
 
     /**
@@ -328,6 +382,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getLoanAuditTrails()
+    {
+        return $this->hasMany(LoanAuditTrail::className(), ['loan_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getLoanCandidateEducations()
     {
         return $this->hasMany(LoanCandidateEducation::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
@@ -376,6 +438,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getLoanVerificationLocations()
+    {
+        return $this->hasMany(LoanVerificationLocations::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getPathToClaimOrgLoanApplications()
     {
         return $this->hasMany(PathToClaimOrgLoanApplication::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
@@ -411,21 +481,5 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getSharedLoanApplications()
     {
         return $this->hasMany(SharedLoanApplications::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLoanVerificationLocations()
-    {
-        return $this->hasMany(LoanVerificationLocations::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCreditLoanApplicationReports()
-    {
-        return $this->hasMany(CreditLoanApplicationReports::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 }

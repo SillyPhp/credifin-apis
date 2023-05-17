@@ -11,6 +11,7 @@ use common\models\extended\LoanApplicationOptionsExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
 use common\models\extended\LoanPurposeExtended;
+use common\models\FinancerLoanProducts;
 use common\models\Organizations;
 use common\models\Referral;
 use common\models\SharedLoanApplications;
@@ -70,6 +71,7 @@ class LoanApplication extends Model
     public $branch_id;
     public $applicant_dob;
     public $gender;
+    public $loan_product_id;
 
     public function formName()
     {
@@ -79,10 +81,10 @@ class LoanApplication extends Model
     public function rules()
     {
         return [
-            [['applicant_name', 'loan_type', 'phone_no'], 'required'],
+            [['applicant_name', 'phone_no'], 'required'],
             [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhar_number', 'loan_lender',
                 'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount', 'applicant_dob', 'gender',
-                'vehicle_brand', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type', 'branch_id', 'voter_card_number'], 'safe'],
+                'vehicle_brand', 'loan_type', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type', 'branch_id', 'voter_card_number', 'loan_product_id'], 'safe'],
             [['applicant_name', 'loan_purpose', 'email'], 'trim'],
             [['applicant_name'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],
@@ -130,7 +132,14 @@ class LoanApplication extends Model
             if ($this->loan_lender) {
                 $model->auto_assigned = 1;
             }
-            $model->loan_type = $this->loan_type;
+
+            if($this->loan_product_id){
+                $model->loan_products_enc_id = $this->loan_product_id;
+                $model->loan_type = $this->getLoanType($this->loan_product_id);
+            }else{
+                $model->loan_type = $this->loan_type;
+            }
+
             $model->yearly_income = $this->annual_income;
             $model->created_on = $model->updated_on = date('Y-m-d H:i:s');
             $model->created_by = $model->updated_by = $user_id;
@@ -296,6 +305,22 @@ class LoanApplication extends Model
         }
     }
 
+    private function getLoanType($loan_id){
+        $loan_type = FinancerLoanProducts::find()
+            ->alias('a')
+            ->select(['a.assigned_financer_loan_type_enc_id', 'a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id',
+                'b.loan_type_enc_id', 'c.loan_type_enc_id', 'c.name'])
+            ->joinWith(['assignedFinancerLoanTypeEnc b' => function($b){
+                $b->joinWith(['loanTypeEnc c'], false);
+            }], false)
+            ->where(['a.financer_loan_product_enc_id' => $loan_id])
+            ->asArray()
+            ->one();
+
+        if($loan_type){
+            return $loan_type['name'];
+        }
+    }
     // private function to save loan purpose
     private function addPurpose($loan_id, $user_id, $p)
     {

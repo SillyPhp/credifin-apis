@@ -297,7 +297,9 @@ class CompanyDashboardController extends ApiBaseController
                 'a.scholarship',
                 'a.loan_type',
                 'REPLACE(g.name, "&amp;", "&") as org_name',
+                'a.loan_products_enc_id',
                 'a.semesters',
+
                 'a.years',
                 'a.phone',
                 'a.email',
@@ -311,6 +313,7 @@ class CompanyDashboardController extends ApiBaseController
                 'a.created_by',
                 'a.lead_by',
                 'a.managed_by',
+                'lp.name as loan_product'
             ])
             ->joinWith(['collegeCourseEnc f'], false)
             ->joinWith(['collegeEnc g'], false)
@@ -344,6 +347,7 @@ class CompanyDashboardController extends ApiBaseController
                 $l->select(['l.loan_app_enc_id', 'l.payment_status']);
                 $l->onCondition(['l.payment_status' => ['captured', 'created', 'waived off']]);
             }])
+            ->joinWith(['loanProductsEnc lp'],false)
             ->andWhere(['a.is_deleted' => 0]);
 
         // if its organization and service is not "Loans" then checking lead_by=$dsa
@@ -637,7 +641,7 @@ class CompanyDashboardController extends ApiBaseController
             $loan = LoanApplications::find()
                 ->alias('a')
                 ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number',
-                    'a.applicant_name', 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'a.gender', 'a.applicant_dob',
+                    'a.applicant_name', 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type','lp.name as loan_product', 'a.gender', 'a.applicant_dob',
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address',
                     'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",a.image_location, "/", a.image) ELSE NULL END image',
                 ])
@@ -709,6 +713,7 @@ class CompanyDashboardController extends ApiBaseController
                     $j->orderBy(['j.created_on' => SORT_DESC]);
 
                 }])
+                ->joinWith(['loanProductsEnc lp'],false)
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
@@ -2096,6 +2101,10 @@ class CompanyDashboardController extends ApiBaseController
                 }], false)
                 ->andWhere(['b.organization_enc_id' => $user->organization_enc_id, 'b4.user_type' => 'Employee', 'b.is_deleted' => 0])
                 ->groupBy(['a.user_enc_id']);
+
+            if(isset($params['column']) && isset($params['order_by'])) {
+                $employeeStats->orderBy(['a.' . $params['column'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
+            }
 
             if (isset($params['keyword']) && !empty($params['keyword'])) {
                 $employeeStats->andWhere([
