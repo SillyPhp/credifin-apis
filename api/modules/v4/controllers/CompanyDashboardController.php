@@ -619,8 +619,8 @@ class CompanyDashboardController extends ApiBaseController
 
             // getting date before 1 month
             $date = new \DateTime('now');
-            $date->modify('-30 day'); // or you can use '-90 day' for deduct
-            $date = $date->format('Y-m-d');
+//            $date->modify('-30 day'); // or you can use '-90 day' for deduct
+            $date = $date->format('Y-m-d H:i:s');
 
             $params = Yii::$app->request->post();
 
@@ -663,13 +663,15 @@ class CompanyDashboardController extends ApiBaseController
                         $d1->joinWith(['stateEnc d3'], false);
                     }], false);
                     $d->joinWith(['creditLoanApplicationReports d4' => function ($d4) use ($date) {
-                        $d4->select(['d4.report_enc_id', 'd4.loan_co_app_enc_id', 'd5.file_url', 'd5.filename', 'd4.created_on', 'd6.request_source']);
+                        $d4->select(['d4.report_enc_id', 'd4.loan_co_app_enc_id', 'd5.file_url', 'd5.filename', 'd4.created_on',
+                            'DATEDIFF("' . $date . '", d4.created_on) as days_till_now',
+                            'd6.request_source']);
                         $d4->joinWith(['responseEnc d5' => function ($d5) {
                             $d5->joinWith(['requestEnc d6'], false);
                         }], false);
                         $d4->onCondition(['and',
                             ['d4.is_deleted' => 0],
-                            ['>=', "d4.created_on", $date],
+//                            ['>=', "d4.created_on", $date],
                         ]);
                         $d4->orderBy(['d4.created_on' => SORT_DESC]);
                     }]);
@@ -702,13 +704,13 @@ class CompanyDashboardController extends ApiBaseController
                     $i->joinWith(['stateEnc i2'], false);
                 }], false)
                 ->joinWith(['creditLoanApplicationReports j' => function ($j) use ($date) {
-                    $j->select(['j.report_enc_id', 'j.loan_app_enc_id', 'j1.file_url', 'j1.filename', 'j.created_on', 'j2.request_source'])
+                    $j->select(['j.report_enc_id', 'j.loan_app_enc_id', 'j1.file_url', 'j1.filename', 'j.created_on', 'j2.request_source', 'DATEDIFF("' . $date . '", j.created_on) as days_till_now'])
                         ->joinWith(['responseEnc j1' => function ($j1) {
                             $j1->joinWith(['requestEnc j2'], false);
                         }], false);
                     $j->onCondition(['and',
                         ['j.loan_co_app_enc_id' => null, 'j.is_deleted' => 0],
-                        ['>=', "j.created_on", $date],
+//                        ['>=', "j.created_on", $date],
                     ]);
                     $j->orderBy(['j.created_on' => SORT_DESC]);
 
@@ -2102,8 +2104,8 @@ class CompanyDashboardController extends ApiBaseController
                 ->andWhere(['b.organization_enc_id' => $user->organization_enc_id, 'b4.user_type' => 'Employee', 'b.is_deleted' => 0])
                 ->groupBy(['a.user_enc_id']);
 
-            if(isset($params['column']) && isset($params['order_by'])) {
-                $employeeStats->orderBy(['a.' . $params['column'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
+            if(isset($params['field']) && !empty($params['field']) && isset($params['order_by']) && !empty($params['order_by'])) {
+                $employeeStats->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
             }
 
             if (isset($params['keyword']) && !empty($params['keyword'])) {
