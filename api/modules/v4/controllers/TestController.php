@@ -17,6 +17,8 @@ use common\models\OrganizationTypes;
 use common\models\spaces\Spaces;
 use common\models\SponsoredCourses;
 use common\models\States;
+use common\models\User;
+use common\models\Users;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
 use Yii;
@@ -33,7 +35,7 @@ class TestController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-                'index' => ['GET', 'POST', 'OPTIONS'],
+//                'employee-stats' => ['GET', 'POST', 'OPTIONS'],
 
             ]
         ];
@@ -50,6 +52,30 @@ class TestController extends ApiBaseController
         return $behaviors;
     }
 
+    public function actionLoanApplicationDate()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return 'unauthorised';
+        }
+        $query = LoanApplications::find()
+            ->alias('a')
+            ->select(['a.loan_app_enc_id', 'a.created_on'])
+            ->where(['a.is_deleted' => 0, 'a.updated_on' => null])
+            ->asArray()
+            ->all();
 
+        $transaction = Yii::$app->db->beginTransaction();
+        foreach ($query as $key => $value) {
+            $shift = LoanApplications::findOne(['loan_app_enc_id' => $value['loan_app_enc_id']]);
+            $shift->updated_on = $value['created_on'];
+            if (!$shift->update()) {
+                $transaction->rollBack();
+                return ['status' => 500, 'message' => 'an error occurred', 'error' => $shift->getErrors()];
+            }
+        }
+        $transaction->commit();
+        return 'success';
+
+    }
 
 }

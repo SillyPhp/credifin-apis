@@ -11,10 +11,13 @@ use common\models\extended\LoanApplicationOptionsExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
 use common\models\extended\LoanPurposeExtended;
+use common\models\FinancerLoanProducts;
 use common\models\Organizations;
 use common\models\Referral;
+use common\models\SharedLoanApplications;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
+use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
 use Razorpay\Api\Api;
@@ -68,6 +71,7 @@ class LoanApplication extends Model
     public $branch_id;
     public $applicant_dob;
     public $gender;
+    public $loan_product_id;
 
     public function formName()
     {
@@ -77,10 +81,10 @@ class LoanApplication extends Model
     public function rules()
     {
         return [
-            [['applicant_name', 'loan_type', 'phone_no'], 'required'],
+            [['applicant_name', 'phone_no'], 'required'],
             [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhar_number', 'loan_lender',
                 'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount', 'applicant_dob', 'gender',
-                'vehicle_brand', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type', 'branch_id', 'voter_card_number'], 'safe'],
+                'vehicle_brand', 'loan_type', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type', 'branch_id', 'voter_card_number', 'loan_product_id'], 'safe'],
             [['applicant_name', 'loan_purpose', 'email'], 'trim'],
             [['applicant_name'], 'string', 'max' => 200],
             [['email'], 'string', 'max' => 100],
@@ -128,10 +132,17 @@ class LoanApplication extends Model
             if ($this->loan_lender) {
                 $model->auto_assigned = 1;
             }
-            $model->loan_type = $this->loan_type;
+
+            if($this->loan_product_id){
+                $model->loan_products_enc_id = $this->loan_product_id;
+                $model->loan_type = $this->getLoanType($this->loan_product_id);
+            }else{
+                $model->loan_type = $this->loan_type;
+            }
+
             $model->yearly_income = $this->annual_income;
-            $model->created_on = date('Y-m-d H:i:s');
-            $model->created_by = $user_id;
+            $model->created_on = $model->updated_on = date('Y-m-d H:i:s');
+            $model->created_by = $model->updated_by = $user_id;
 
             // assigning lead by id to ref id user
             if ($this->ref_id) {
@@ -158,6 +169,10 @@ class LoanApplication extends Model
             if (!$model->save()) {
                 $transaction->rollback();
                 throw new \Exception(json_encode($model->getErrors()));
+            }
+
+            if (!empty($model->lead_by)) {
+                $this->share_leads($user_id, $model->loan_app_enc_id);
             }
 
             // if not empty loan purpose then saving it
@@ -232,23 +247,27 @@ class LoanApplication extends Model
             // if user id null or user submitting application without login
             if ($user_id == null) {
 
-                $user = $this->SignUp($options);
+                $user = Users::findOne(['phone' => [$model->phone, '+91' . $model->phone]]);
+                if (empty($user)) {
 
-                $access_token = $this->newToken($user->user_enc_id);
-                $data['username'] = $user->username;
-                $data['user_enc_id'] = $user->user_enc_id;
-                $data['first_name'] = $user->first_name;
-                $data['last_name'] = $user->last_name;
-                $data['initials_color'] = $user->initials_color;
-                $data['email'] = $user->email;
-                $data['phone'] = $user->phone;
-                $data['access_token'] = $access_token->access_token;
-                $data['source'] = $access_token->source;
-                $data['refresh_token'] = $access_token->refresh_token;
-                $data['access_token_expiry_time'] = $access_token->access_token_expiration;
-                $data['refresh_token_expiry_time'] = $access_token->refresh_token_expiration;
-                $data['image'] = '';
-                $data['user_type'] = 'Individual';
+                    $user = $this->SignUp($options);
+
+                    $access_token = $this->newToken($user->user_enc_id);
+                    $data['username'] = $user->username;
+                    $data['user_enc_id'] = $user->user_enc_id;
+                    $data['first_name'] = $user->first_name;
+                    $data['last_name'] = $user->last_name;
+                    $data['initials_color'] = $user->initials_color;
+                    $data['email'] = $user->email;
+                    $data['phone'] = $user->phone;
+                    $data['access_token'] = $access_token->access_token;
+                    $data['source'] = $access_token->source;
+                    $data['refresh_token'] = $access_token->refresh_token;
+                    $data['access_token_expiry_time'] = $access_token->access_token_expiration;
+                    $data['refresh_token_expiry_time'] = $access_token->refresh_token_expiration;
+                    $data['image'] = '';
+                    $data['user_type'] = 'Individual';
+                }
             }
 
             $user = Users::findOne(['phone' => [$model->phone, '+91' . $model->phone]]);
@@ -286,6 +305,22 @@ class LoanApplication extends Model
         }
     }
 
+    private function getLoanType($loan_id){
+        $loan_type = FinancerLoanProducts::find()
+            ->alias('a')
+            ->select(['a.assigned_financer_loan_type_enc_id', 'a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id',
+                'b.loan_type_enc_id', 'c.loan_type_enc_id', 'c.name'])
+            ->joinWith(['assignedFinancerLoanTypeEnc b' => function($b){
+                $b->joinWith(['loanTypeEnc c'], false);
+            }], false)
+            ->where(['a.financer_loan_product_enc_id' => $loan_id])
+            ->asArray()
+            ->one();
+
+        if($loan_type){
+            return $loan_type['name'];
+        }
+    }
     // private function to save loan purpose
     private function addPurpose($loan_id, $user_id, $p)
     {
@@ -762,5 +797,46 @@ class LoanApplication extends Model
         }
         throw new \Exception(json_encode($token->getErrors()));
     }
+
+    private function getting_reporting_ids($user_id)
+    {
+        $data = [];
+        while (true) {
+            $query = UserRoles::find()
+                ->alias('a')
+                ->select(['a.reporting_person'])
+                ->where(['a.user_enc_id' => $user_id, 'a.is_deleted' => 0])
+                ->asArray()
+                ->one();
+            if (!empty($query['reporting_person'])) {
+                $data[] = $user_id = $query['reporting_person'];
+            } else {
+                return $data;
+            }
+        }
+    }
+
+    private function share_leads($user_id, $loan_id)
+    {
+        $reporting_persons_ids = $this->getting_reporting_ids($user_id);
+
+        foreach ($reporting_persons_ids as $value) {
+            $query = new SharedLoanApplications();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $query->shared_loan_app_enc_id = $utilitiesModel->encrypt();
+            $query->loan_app_enc_id = $loan_id;
+            $query->shared_by = $user_id;
+            $query->shared_to = $value;
+            $query->access = 'Full Access';
+            $query->status = 'Active';
+            $query->created_by = $user_id;
+            $query->created_on = date('Y-m-d H:i:s');
+            if (!$query->save()) {
+                throw new \Exception(json_encode($query->getErrors()));
+            }
+        }
+    }
+
 
 }

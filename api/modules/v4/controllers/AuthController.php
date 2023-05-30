@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v3\models\widgets\Referral;
 use api\modules\v4\models\ForgotPassword;
 use api\modules\v4\models\ProfilePicture;
 use api\modules\v4\models\Candidates;
@@ -41,7 +42,8 @@ class AuthController extends ApiBaseController
                 'find-user',
                 'change-password',
                 'otp-change-password',
-                'verify-phone'
+                'verify-phone',
+                'referral-logo',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -60,6 +62,7 @@ class AuthController extends ApiBaseController
                 'find-user' => ['POST', 'OPTIONS'],
                 'change-password' => ['POST', 'OPTIONS'],
                 'otp-change-password' => ['POST', 'OPTIONS'],
+                'referral-logo' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -82,7 +85,7 @@ class AuthController extends ApiBaseController
             $params = Yii::$app->request->post();
 
             // creating signup form object. if its financer then it will make object with scenario Financer to require organization fields
-            $model = ($params['user_type'] == 'Financer') ? new SignupForm(['scenario' => 'Financer']) : new SignupForm();
+            $model = !empty($params['user_type']) ? (($params['user_type'] == 'Financer') ? new SignupForm(['scenario' => 'Financer']) : new SignupForm()) : new SignupForm();
 
             // loading data from post request to model
             if ($model->load(Yii::$app->request->post(), '')) {
@@ -584,5 +587,29 @@ class AuthController extends ApiBaseController
         }
 
         return $this->response(404, ['status' => 404, 'message' => 'user not found']);
+    }
+
+    public function actionReferralLogo()
+    {
+        $params = Yii::$app->request->post();
+        if (empty($params['code'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "code"']);
+        }
+        $ref = \common\models\Referral::find()
+            ->alias('a')
+            ->select([
+                'a.referral_enc_id','b.name','b.slug',
+                'CASE WHEN b.logo IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo'
+            ])
+            ->joinWith(['organizationEnc b'])
+            ->where(['a.code' => $params['code']])
+            ->andWhere(['<>', 'a.organization_enc_id', 'null'])
+            ->asArray()
+            ->one();
+
+        if ($ref) {
+            return $this->response(200, ['status' => 200, 'data' => $ref]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
 }
