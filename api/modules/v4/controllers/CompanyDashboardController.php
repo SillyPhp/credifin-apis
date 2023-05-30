@@ -964,10 +964,10 @@ class CompanyDashboardController extends ApiBaseController
         $employee = UserRoles::find()
             ->alias('a')
             ->select(['a.role_enc_id', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code',
-                'd.designation', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id'])
+                'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id'])
             ->joinWith(['userEnc b'], false)
             ->joinWith(['userTypeEnc c'], false)
-            ->joinWith(['designationEnc d'], false)
+            ->joinWith(['designation d'], false)
             ->joinWith(['reportingPerson e'], false)
             ->joinWith(['branchEnc f' => function ($f) {
                 $f->joinWith(['cityEnc f1']);
@@ -2186,7 +2186,7 @@ class CompanyDashboardController extends ApiBaseController
     public function actionFinancerDesignations()
     {
         if ($user = $this->isAuthorized()) {
-            $model = new financerDesignationForm();
+            $model = new FinancerDesignationForm();
             $get = Yii::$app->request->post();
             if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
                 if ($model->validate()) {
@@ -2209,34 +2209,11 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
-    public function actionDesignationRemove()
-    {
-        if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
-            if (empty($params['assigned_designation_enc_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing parameter "assigned_designation_enc_id"']);
-            }
-
-            $removeDesignation = FinancerAssignedDesignations::findOne(['assigned_designation_enc_id' => $params['assigned_designation_enc_id']]);
-
-            if (!$removeDesignation) {
-                return $this->response(404, ['status' => 404, 'message' => 'not found']);
-            }
-
-            $removeDesignation->is_deleted = 1;
-            $removeDesignation->last_updated_by = $user->user_enc_id;
-            $removeDesignation->last_updated_on = date('Y-m-d H:i:s');
-
-            return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
-        }
-
-    }
-
     public function actionFinancerDesignationList()
     {
         if ($user = $this->isAuthorized()) {
             $financerDesignations = FinancerAssignedDesignations::find()
-                ->select(['assigned_designation_enc_id', 'designation'])
+                ->select(['assigned_designation_enc_id as id', 'designation as value'])
                 ->andWhere(['organization_enc_id' => $user->organization_enc_id, 'is_deleted' => 0])
                 ->asArray()
                 ->all();
@@ -2244,6 +2221,29 @@ class CompanyDashboardController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
+    }
+
+    public function actionDesignationRemove()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (empty($params['assigned_designation_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing parameter "assigned_designation_enc_id"']);
+            }
+            $removeDesignation = FinancerAssignedDesignations::findOne(['organization_enc_id' => $user['organization_enc_id'], 'assigned_designation_enc_id' => $params['assigned_designation_enc_id']]);
+            if (!$removeDesignation) {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+            $removeDesignation->is_deleted = 1;
+            $removeDesignation->last_updated_by = $user->user_enc_id;
+            $removeDesignation->last_updated_on = date('Y-m-d H:i:s');
+            if (!$removeDesignation->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while deleting.', 'error' => $removeDesignation->getErrors()]);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+        }
+
     }
 
     public function actionEmployeeLoanList()
