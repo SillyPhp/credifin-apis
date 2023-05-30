@@ -2,7 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
-use api\modules\v4\models\financerDesignationForm;
+use api\modules\v4\models\FinancerDesignationForm;
 use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\SignupForm;
 use common\models\AssignedDeals;
