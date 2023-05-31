@@ -287,44 +287,48 @@ class TestController extends ApiBaseController
         return true;
     }
 
-//    public function actionTest1(){
-//
-//
-//        $query = AssignedFinancerLoanType::find()
-//            ->alias('a')
-//            ->select(['a.assigned_financer_enc_id', 'b.name', 'a.is_deleted', 'a.created_by'])
-//            ->joinWith(['loanTypeEnc b'], false)
-//            ->asArray()
-//            ->all();
-//        $transaction = Yii::$app->db->beginTransaction();
-//
-//        foreach($query as $value){
-//            $product = FinancerLoanProducts::findOne(['name' => $value['name']]);
-//            if(!$product){
-//                $new_product = new FinancerLoanProducts();
-//                $utilitiesModel = new Utilities();
-//                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//                $new_product->financer_loan_product_enc_id = $utilitiesModel->encrypt();
-//                $new_product->assigned_financer_loan_type_enc_id = $value['assigned_financer_enc_id'];
-//                $new_product->name = $value['name'];
-//                $new_product->created_on = date('Y-m-d H:i:s');
-//                $new_product->updated_on = date('Y-m-d H:i:s');
-//                $new_product->created_by = $value['created_by'];
-//                $new_product->updated_by = $value['created_by'];
-//                $new_product->is_deleted = $value['is_deleted'];
-//                if (!$new_product->save()) {
-//                    $transaction->rollback();
-//                    return false;
-//                }
-//            }
-//        }
-//        $transaction->commit();
-//        return True;
-//
-//
-//    }
+    public function actionLoanShift()
+    {
 
-    public function actionTest3()
+        if (!$user = $this->isAuthorized()) {
+            return 'unauthorised';
+        }
+
+        $query = AssignedFinancerLoanType::find()
+            ->alias('a')
+            ->select(['a.assigned_financer_enc_id', 'b.name', 'a.is_deleted', 'a.created_by'])
+            ->joinWith(['loanTypeEnc b'], false)
+            ->asArray()
+            ->all();
+        $transaction = Yii::$app->db->beginTransaction();
+
+        foreach ($query as $value) {
+            $product = FinancerLoanProducts::findOne(['name' => $value['name']]);
+            if (!$product) {
+                $new_product = new FinancerLoanProducts();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $new_product->financer_loan_product_enc_id = $utilitiesModel->encrypt();
+                $new_product->assigned_financer_loan_type_enc_id = $value['assigned_financer_enc_id'];
+                $new_product->name = $value['name'];
+                $new_product->created_on = date('Y-m-d H:i:s');
+                $new_product->updated_on = date('Y-m-d H:i:s');
+                $new_product->created_by = $value['created_by'];
+                $new_product->updated_by = $value['created_by'];
+                $new_product->is_deleted = $value['is_deleted'];
+                if (!$new_product->save()) {
+                    $transaction->rollback();
+                    return false;
+                }
+            }
+        }
+        $transaction->commit();
+        return True;
+
+
+    }
+
+    public function actionApplicationsShift()
     {
         if ($user = $this->isAuthorized()) {
             $query = LoanApplications::find()
