@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%financer_rewards_option}}".
+ * Th_is is the model class for table "{{%financer_rewards_option}}".
  *
  * @property int $id
  * @property string $financer_rewards_option_enc_id

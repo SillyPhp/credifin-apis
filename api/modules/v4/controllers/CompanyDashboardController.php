@@ -2257,6 +2257,7 @@ class CompanyDashboardController extends ApiBaseController
 
             $employeeLoanList = LoanApplications::find()
                 ->alias('a')
+                ->distinct()
                 ->select(['a.loan_app_enc_id', 'a.loan_status', 'a.amount', 'a.loan_type', 'a.application_number', 'a.applicant_name', 'c1.location_name', 'c3.loan_status', 'd.name product_name'])
                 ->joinWith(['assignedLoanProviders c' => function ($c) {
                     $c->joinWith(['branchEnc c1']);
@@ -2287,41 +2288,31 @@ class CompanyDashboardController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
-            $employeeAmount = Users::find()
-                ->alias('a')
-                ->select(['a.user_enc_id', 'SUM(c.amount) total',
-                    'CASE WHEN c2.loan_status = "Disbursement" THEN SUM(c.amount) ELSE 0 END as disbursement_amount',
-                    'CASE WHEN c2.loan_status = "Disbursement Approval" THEN SUM(c.amount) ELSE 0 END as amount',
-                    'CASE WHEN c2.loan_status = "New Lead" THEN SUM(c.amount) ELSE 0 END as new_lead',
-                    ])
-                ->joinWith(['userRoles b' => function ($b) {
-                    $b->joinWith(['designationEnc b1'])
-                        ->joinWith(['reportingPerson b2'])
-                        ->joinWith(['branchEnc b3'])
-                        ->joinWith(['userTypeEnc b4']);
-                }], false)
-                ->joinWith(['loanApplications3 c' => function ($c) use ($params) {
-                    $c->joinWith(['assignedLoanProviders c1' => function ($c1) {
-                        $c1->joinWith(['status0 c2']);
-                    }], false);
-//                    if (isset($params['loan_id']) and !empty($params['loan_id'])) {
-//                        $c->andWhere(['c.loan_type' => $params['loan_id']]);
-//                    }
-                }], false)
-                ->joinWith(['creditLoanApplicationReports d' => function ($d) {
-                    $d->joinWith(['responseEnc d1' => function ($d1) {
-                        $d1->joinWith(['requestEnc d2']);
-                    }], false);
-                }], false)
 
-                ->andWhere(['b.organization_enc_id' => $user->organization_enc_id, 'b4.user_type' => 'employee', 'b.is_deleted' => 0, 'c.is_deleted' => 0])
-                ->groupBy(['a.user_enc_id'])
+            $service = SelectedServices::find()
+                ->alias('a')
+                ->joinWith(['serviceEnc b'], false)
+                ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
+                ->exists();
+
+            $employeeAmount = LoanApplications::find()
+                ->alias('b')
+                ->select(['SUM(b.amount) total',
+                    'SUM(CASE WHEN i.status = "31" THEN b.amount ELSE 0 END) as disbursed_amount',
+                    'SUM(CASE WHEN i.status = "30" THEN b.amount ELSE 0 END) as sanctioned_amount',
+                    'SUM(CASE WHEN i.status = "3" THEN b.amount ELSE 0 END) as under_process_amount',
+                    'SUM(CASE WHEN i.status = "32" OR i.status = "28" THEN b.amount ELSE 0 END) as rejected_amount',
+                    ])
+                ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
+                    $i->joinWith(['providerEnc j']);
+                    if ($service) {
+                        $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
+                    }
+                }], false)
+                ->andWhere(['b.is_deleted' => 0])
                 ->asArray()
                 ->all();
 
-//            if (isset($params['field']) && !empty($params['field']) && isset($params['order_by']) && !empty($params['order_by'])) {
-//                $employeeAmount->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
-//            }
             return $this->response(200, ['status' => 200, 'data' => $employeeAmount]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
