@@ -77,7 +77,7 @@ class CompanyDashboardController extends ApiBaseController
                 'employee-stats' => ['POST', 'OPTIONS'],
                 'financer-designations' => ['POST', 'OPTIONS'],
                 'financer-designation-list' => ['POST', 'OPTIONS'],
-                'employee-amount' => ['POST', 'OPTIONS']
+                'dashboard-stats' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -2251,6 +2251,10 @@ class CompanyDashboardController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
+            $limit = !empty($params['limit']) ? $params['limit'] : 5;
+            $page = !empty($params['page']) ? $params['page'] : 1;
+
+
             if (empty($params['user_enc_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "user_enc_id"']);
             }
@@ -2258,7 +2262,10 @@ class CompanyDashboardController extends ApiBaseController
             $employeeLoanList = LoanApplications::find()
                 ->alias('a')
                 ->distinct()
-                ->select(['a.loan_app_enc_id', 'a.loan_status', 'a.amount', 'a.loan_type', 'a.application_number', 'a.applicant_name', 'c1.location_name', 'c3.loan_status', 'd.name product_name'])
+                ->select(['a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number', 'a.applicant_name', 'c1.location_name', 'c3.loan_status', 'd.name product_name',
+                    'COUNT(CASE WHEN k2.request_source = "CIBIL" THEN k.loan_app_enc_id END) as cibil',
+                    'COUNT(CASE WHEN k2.request_source = "EQUIFAX" THEN k.loan_app_enc_id END) as equifax',
+                    'COUNT(CASE WHEN k2.request_source = "CRIF" THEN k.loan_app_enc_id END) as crif'])
                 ->joinWith(['assignedLoanProviders c' => function ($c) {
                     $c->joinWith(['branchEnc c1']);
                 }], false)
@@ -2268,15 +2275,25 @@ class CompanyDashboardController extends ApiBaseController
                         $c2->andWhere(['in', 'c3.loan_status', $params['status']]);
                     }
                 }], false)
-                ->joinWith(['loanProductsEnc d'], false)
-                ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0])
+                ->joinWith(['creditLoanApplicationReports k' => function ($k) {
+                    $k->joinWith(['responseEnc k1' => function ($k1) {
+                        $k1->joinWith(['requestEnc k2']);
+                    }], false);
+                }], false)
+                ->joinWith(['loanProductsEnc d'])
+                ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0]);
+
+
+            $count = $employeeLoanList->count();
+            $employeeLoanList = $employeeLoanList
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
 
             if ($employeeLoanList) {
-                return $this->response(200, ['status' => 200, 'loanDetails' => $employeeLoanList]);
+                return $this->response(200, ['status' => 200, 'loanDetails' => $employeeLoanList, 'count' => $count, 'limit' => $limit, 'page' => $page]);
             }
-
             return $this->response(404, ['status' => 404, 'message' => 'Loan Details not found']);
 
         } else {
@@ -2284,11 +2301,10 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
-    public function actionEmployeeAmount()
+    public function actionDashboardStats()
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
-
             $service = SelectedServices::find()
                 ->alias('a')
                 ->joinWith(['serviceEnc b'], false)
@@ -2297,12 +2313,18 @@ class CompanyDashboardController extends ApiBaseController
 
             $employeeAmount = LoanApplications::find()
                 ->alias('b')
-                ->select(['SUM(b.amount) total',
-                    'SUM(CASE WHEN i.status = "31" THEN b.amount ELSE 0 END) as disbursed_amount',
-                    'SUM(CASE WHEN i.status = "30" THEN b.amount ELSE 0 END) as sanctioned_amount',
-                    'SUM(CASE WHEN i.status = "3" THEN b.amount ELSE 0 END) as under_process_amount',
-                    'SUM(CASE WHEN i.status = "32" OR i.status = "28" THEN b.amount ELSE 0 END) as rejected_amount',
-                    ])
+                ->select([
+                    'SUM(b.amount) total',
+                    'SUM(CASE WHEN i.status = "31" THEN i.disbursement_approved ELSE 0 END) as disbursed_amount',
+                    'SUM(CASE WHEN i.status = "30" THEN i.soft_sanction ELSE 0 END) as sanctioned_amount',
+                    //'SUM(CASE WHEN i.status = "3" THEN b.amount ELSE 0 END) as under_process_amount',
+                    //'SUM(CASE WHEN i.status = "32" OR i.status = "28" THEN b.amount ELSE 0 END) as rejected_amount',
+                ])
+                ->andWhere([
+                    'or',
+                    ['between', 'b.updated_on', $params['start_date'], $params['end_date']],
+                    ['between', 'b.created_on', $params['start_date'], $params['end_date']]
+                ])
                 ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
                     $i->joinWith(['providerEnc j']);
                     if ($service) {
@@ -2311,11 +2333,12 @@ class CompanyDashboardController extends ApiBaseController
                 }], false)
                 ->andWhere(['b.is_deleted' => 0])
                 ->asArray()
-                ->all();
+                ->one();
 
             return $this->response(200, ['status' => 200, 'data' => $employeeAmount]);
         } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
 }
