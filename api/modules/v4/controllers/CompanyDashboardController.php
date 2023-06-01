@@ -2251,7 +2251,7 @@ class CompanyDashboardController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
-            $limit = !empty($params['limit']) ? $params['limit'] : 5;
+            $limit = !empty($params['limit']) ? $params['limit'] : 10;
             $page = !empty($params['page']) ? $params['page'] : 1;
 
 
@@ -2262,11 +2262,8 @@ class CompanyDashboardController extends ApiBaseController
             $employeeLoanList = LoanApplications::find()
                 ->alias('a')
                 ->distinct()
-                ->select(['a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number', 'a.applicant_name', 'c1.location_name', 'c3.loan_status', 'd.name product_name',
-                    'COUNT(CASE WHEN k2.request_source = "CIBIL" THEN k.loan_app_enc_id END) as cibil',
-                    'COUNT(CASE WHEN k2.request_source = "EQUIFAX" THEN k.loan_app_enc_id END) as equifax',
-                    'COUNT(CASE WHEN k2.request_source = "CRIF" THEN k.loan_app_enc_id END) as crif',
-                    ])
+                ->select(['a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number', 'a.applicant_name',
+                    'c1.location_name', 'c3.loan_status', 'd.name product_name'])
                 ->joinWith(['assignedLoanProviders c' => function ($c) {
                     $c->joinWith(['branchEnc c1']);
                 }], false)
@@ -2276,15 +2273,18 @@ class CompanyDashboardController extends ApiBaseController
                         $c2->andWhere(['in', 'c3.loan_status', $params['status']]);
                     }
                 }], false)
-                ->joinWith(['creditLoanApplicationReports k' => function ($k) {
+                ->joinWith(['creditLoanApplicationReports k' => function ($k) use ($params) {
+                    $k->select(['k.report_enc_id', 'k.loan_app_enc_id',
+                        'COUNT(CASE WHEN k2.request_source = "CIBIL" THEN k.loan_app_enc_id END) as cibil',
+                        'COUNT(CASE WHEN k2.request_source = "EQUIFAX" THEN k.loan_app_enc_id END) as equifax',
+                        'COUNT(CASE WHEN k2.request_source = "CRIF" THEN k.loan_app_enc_id END) as crif']);
                     $k->joinWith(['responseEnc k1' => function ($k1) {
                         $k1->joinWith(['requestEnc k2']);
-                    }], false);
-                }], false)
+                    }]);
+                    $k->onCondition(['k.created_by' => $params['user_enc_id']]);
+                }])
                 ->joinWith(['loanProductsEnc d'])
                 ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0]);
-
-
             $count = $employeeLoanList->count();
             $employeeLoanList = $employeeLoanList
                 ->limit($limit)
