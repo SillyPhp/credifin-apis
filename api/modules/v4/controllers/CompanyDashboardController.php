@@ -2265,7 +2265,8 @@ class CompanyDashboardController extends ApiBaseController
                 ->select(['a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number', 'a.applicant_name', 'c1.location_name', 'c3.loan_status', 'd.name product_name',
                     'COUNT(CASE WHEN k2.request_source = "CIBIL" THEN k.loan_app_enc_id END) as cibil',
                     'COUNT(CASE WHEN k2.request_source = "EQUIFAX" THEN k.loan_app_enc_id END) as equifax',
-                    'COUNT(CASE WHEN k2.request_source = "CRIF" THEN k.loan_app_enc_id END) as crif'])
+                    'COUNT(CASE WHEN k2.request_source = "CRIF" THEN k.loan_app_enc_id END) as crif',
+                    ])
                 ->joinWith(['assignedLoanProviders c' => function ($c) {
                     $c->joinWith(['branchEnc c1']);
                 }], false)
@@ -2317,14 +2318,24 @@ class CompanyDashboardController extends ApiBaseController
                     'SUM(b.amount) total',
                     'SUM(CASE WHEN i.status = "31" THEN i.disbursement_approved ELSE 0 END) as disbursed_amount',
                     'SUM(CASE WHEN i.status = "30" THEN i.soft_sanction ELSE 0 END) as sanctioned_amount',
-                    //'SUM(CASE WHEN i.status = "3" THEN b.amount ELSE 0 END) as under_process_amount',
-                    //'SUM(CASE WHEN i.status = "32" OR i.status = "28" THEN b.amount ELSE 0 END) as rejected_amount',
+                    'SUM(CASE WHEN i.status = "3" THEN i.disbursement_approved ELSE 0 END) as under_process_amount',
+                    'SUM(CASE WHEN i.status = "32" OR i.status = "28" THEN i.disbursement_approved ELSE 0 END) as rejected_amount',
+                    'COUNT(DISTINCT CASE WHEN b.amount THEN b.loan_app_enc_id END) as all_applications',
+                    'COUNT(DISTINCT CASE WHEN i.status = "31" THEN b.loan_app_enc_id END ) as disbursed',
+                    'COUNT(DISTINCT CASE WHEN i.status = "30" THEN b.loan_app_enc_id END) as sanctioned',
+                    'COUNT(DISTINCT CASE WHEN i.status = "3" THEN b.loan_app_enc_id END) as under_process',
+                    'COUNT(DISTINCT CASE WHEN (i.status = "32" or i.status = "28") THEN b.loan_app_enc_id END) as reject','k.name'
                 ])
                 ->andWhere([
                     'or',
                     ['between', 'b.updated_on', $params['start_date'], $params['end_date']],
                     ['between', 'b.created_on', $params['start_date'], $params['end_date']]
                 ])
+                ->joinWith(['loanProductsEnc k' => function ($k) use ($params) {
+                    if ($params['loan_type']) {
+                        $k->andWhere(['in', 'k.name', $params['loan_type']]);
+                    }
+                }])
                 ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
                     $i->joinWith(['providerEnc j']);
                     if ($service) {
@@ -2340,5 +2351,4 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
-
 }
