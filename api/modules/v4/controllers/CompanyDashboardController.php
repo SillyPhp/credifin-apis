@@ -2327,11 +2327,7 @@ class CompanyDashboardController extends ApiBaseController
                     'COUNT(CASE WHEN i.status = "3" THEN b.loan_app_enc_id END) as under_process',
                     'COUNT(CASE WHEN (i.status = "32" or i.status = "28") THEN b.loan_app_enc_id END) as reject'
                 ])
-                ->andWhere([
-                    'or',
-//                    ['between', 'b.updated_on', $params['start_date'], $params['end_date']],
-                    ['between', 'b.created_on', $params['start_date'], $params['end_date']]
-                ])
+                ->andWhere(['between', 'b.created_on', $params['start_date'], $params['end_date']])
                 ->joinWith(['loanProductsEnc k' => function ($k) use ($params) {
                     if ($params['loan_type']) {
                         $k->andWhere(['in', 'k.name', $params['loan_type']]);
