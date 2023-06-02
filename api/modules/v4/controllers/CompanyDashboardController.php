@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\FinancerDesignationForm;
 use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\SignupForm;
 use common\models\AssignedDeals;
@@ -16,6 +17,7 @@ use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\LoanApplicationCommentsExtended;
 use common\models\extended\LoanApplicationNotificationsExtended;
 use common\models\extended\SharedLoanApplicationsExtended;
+use common\models\FinancerAssignedDesignations;
 use common\models\LoanApplicationPartners;
 use common\models\LoanApplications;
 use common\models\LoanCoApplicants;
@@ -73,6 +75,9 @@ class CompanyDashboardController extends ApiBaseController
                 'status-applications' => ['POST', 'OPTIONS'],
                 'add-column-preference' => ['POST', 'OPTIONS'],
                 'employee-stats' => ['POST', 'OPTIONS'],
+                'financer-designations' => ['POST', 'OPTIONS'],
+                'financer-designation-list' => ['POST', 'OPTIONS'],
+                'dashboard-stats' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -347,7 +352,7 @@ class CompanyDashboardController extends ApiBaseController
                 $l->select(['l.loan_app_enc_id', 'l.payment_status']);
                 $l->onCondition(['l.payment_status' => ['captured', 'created', 'waived off']]);
             }])
-            ->joinWith(['loanProductsEnc lp'],false)
+            ->joinWith(['loanProductsEnc lp'], false)
             ->andWhere(['a.is_deleted' => 0]);
 
         // if its organization and service is not "Loans" then checking lead_by=$dsa
@@ -641,10 +646,10 @@ class CompanyDashboardController extends ApiBaseController
             $loan = LoanApplications::find()
                 ->alias('a')
                 ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number',
-                    'a.applicant_name', 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type','lp.name as loan_product', 'a.gender', 'a.applicant_dob',
+                    'a.applicant_name', 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'lp.name as loan_product', 'a.gender', 'a.applicant_dob',
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address',
                     'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",a.image_location, "/", a.image) ELSE NULL END image',
-                ])
+                    '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee'])
                 ->joinWith(['assignedLoanProviders b'], false)
                 ->joinWith(['loanCertificates c' => function ($c) {
                     $c->select(['c.certificate_enc_id', 'c.loan_app_enc_id', 'c.short_description', 'c.certificate_type_enc_id', 'c.number', 'c1.name', 'c.proof_image', 'c.proof_image_location', 'c.created_on', 'CONCAT(c2.first_name," ",c2.last_name) created_by']);
@@ -715,7 +720,7 @@ class CompanyDashboardController extends ApiBaseController
                     $j->orderBy(['j.created_on' => SORT_DESC]);
 
                 }])
-                ->joinWith(['loanProductsEnc lp'],false)
+                ->joinWith(['loanProductsEnc lp'], false)
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
@@ -959,10 +964,10 @@ class CompanyDashboardController extends ApiBaseController
         $employee = UserRoles::find()
             ->alias('a')
             ->select(['a.role_enc_id', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code',
-                'd.designation', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id'])
+                'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id'])
             ->joinWith(['userEnc b'], false)
             ->joinWith(['userTypeEnc c'], false)
-            ->joinWith(['designationEnc d'], false)
+            ->joinWith(['designation d'], false)
             ->joinWith(['reportingPerson e'], false)
             ->joinWith(['branchEnc f' => function ($f) {
                 $f->joinWith(['cityEnc f1']);
@@ -2072,7 +2077,7 @@ class CompanyDashboardController extends ApiBaseController
             $employeeStats = Users::find()
                 ->alias('a')
                 ->select(['a.user_enc_id', '(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name," ",a.last_name) ELSE a.first_name END) as employee_name', 'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'b1.designation', 'concat(b2.first_name," ",b2.last_name) reporting_person', 'b3.location_name', 'c.updated_on',
-                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status !="Disbursed" and c2.loan_status !="Rejected" and c2.loan_status !="New Lead" and c2.loan_status !="Sanctioned" and c2.loan_status !="CNI" THEN c.loan_app_enc_id END) as active',
+//                    'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status !="Disbursed" and c2.loan_status !="Rejected" and c2.loan_status !="New Lead" and c2.loan_status !="Sanctioned" and c2.loan_status !="CNI" THEN c.loan_app_enc_id END) as active',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" THEN c.loan_app_enc_id END) as total_cases',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "New Lead" THEN c.loan_app_enc_id END) as new_lead',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "Sanctioned" THEN c.loan_app_enc_id END) as sanctioned',
@@ -2104,7 +2109,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->andWhere(['b.organization_enc_id' => $user->organization_enc_id, 'b4.user_type' => 'Employee', 'b.is_deleted' => 0])
                 ->groupBy(['a.user_enc_id']);
 
-            if(isset($params['field']) && !empty($params['field']) && isset($params['order_by']) && !empty($params['order_by'])) {
+            if (isset($params['field']) && !empty($params['field']) && isset($params['order_by']) && !empty($params['order_by'])) {
                 $employeeStats->orderBy(['a.' . $params['field'] => $params['order_by'] == 0 ? SORT_ASC : SORT_DESC]);
             }
 
@@ -2177,4 +2182,164 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
     }
+
+    public function actionFinancerDesignations()
+    {
+        if ($user = $this->isAuthorized()) {
+            $model = new FinancerDesignationForm();
+            $get = Yii::$app->request->post();
+            if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+                if ($model->validate()) {
+                    $designation = $model->addDesignation($user);
+                    if ($designation['status'] == 201) {
+                        return $this->response(201, $designation);
+                    } else {
+                        return $this->response(500, $designation);
+                    }
+                } else {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information', 'error' => $model->getErrors()]);
+                }
+
+            } else {
+                return $this->response(400, ['status' => 400, 'message' => 'bad request']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionFinancerDesignationList()
+    {
+        if ($user = $this->isAuthorized()) {
+            $financerDesignations = FinancerAssignedDesignations::find()
+                ->select(['assigned_designation_enc_id as id', 'designation as value'])
+                ->andWhere(['organization_enc_id' => $user->organization_enc_id, 'is_deleted' => 0])
+                ->asArray()
+                ->all();
+            return $this->response(200, ['status' => 200, 'data' => $financerDesignations]);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+    }
+
+    public function actionDesignationRemove()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (empty($params['assigned_designation_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing parameter "assigned_designation_enc_id"']);
+            }
+            $removeDesignation = FinancerAssignedDesignations::findOne(['organization_enc_id' => $user['organization_enc_id'], 'assigned_designation_enc_id' => $params['assigned_designation_enc_id']]);
+            if (!$removeDesignation) {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+            $removeDesignation->is_deleted = 1;
+            $removeDesignation->last_updated_by = $user->user_enc_id;
+            $removeDesignation->last_updated_on = date('Y-m-d H:i:s');
+            if (!$removeDesignation->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while deleting.', 'error' => $removeDesignation->getErrors()]);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+        }
+
+    }
+
+    public function actionEmployeeLoanList()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            $limit = !empty($params['limit']) ? $params['limit'] : 10;
+            $page = !empty($params['page']) ? $params['page'] : 1;
+
+
+            if (empty($params['user_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "user_enc_id"']);
+            }
+
+            $employeeLoanList = LoanApplications::find()
+                ->alias('a')
+                ->distinct()
+                ->select(['a.loan_app_enc_id', 'a.amount', 'a.loan_type', 'a.application_number', 'a.applicant_name',
+                    'c1.location_name', 'c3.loan_status', 'd.name product_name'])
+                ->joinWith(['assignedLoanProviders c' => function ($c) {
+                    $c->joinWith(['branchEnc c1']);
+                }], false)
+                ->joinWith(['assignedLoanProviders c2' => function ($c2) use ($params) {
+                    $c2->joinWith(['status0 c3']);
+                    if ($params['status']) {
+                        $c2->andWhere(['in', 'c3.loan_status', $params['status']]);
+                    }
+                }], false)
+                ->joinWith(['creditLoanApplicationReports k' => function ($k) use ($params) {
+                    $k->select(['k.report_enc_id', 'k.loan_app_enc_id',
+                        'COUNT(CASE WHEN k2.request_source = "CIBIL" THEN k.loan_app_enc_id END) as cibil',
+                        'COUNT(CASE WHEN k2.request_source = "EQUIFAX" THEN k.loan_app_enc_id END) as equifax',
+                        'COUNT(CASE WHEN k2.request_source = "CRIF" THEN k.loan_app_enc_id END) as crif']);
+                    $k->joinWith(['responseEnc k1' => function ($k1) {
+                        $k1->joinWith(['requestEnc k2']);
+                    }]);
+                    $k->onCondition(['k.created_by' => $params['user_enc_id']]);
+                }])
+                ->joinWith(['loanProductsEnc d'])
+                ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0]);
+            $count = $employeeLoanList->count();
+            $employeeLoanList = $employeeLoanList
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->asArray()
+                ->all();
+
+            if ($employeeLoanList) {
+                return $this->response(200, ['status' => 200, 'loanDetails' => $employeeLoanList, 'count' => $count, 'limit' => $limit, 'page' => $page]);
+            }
+            return $this->response(404, ['status' => 404, 'message' => 'Loan Details not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+    }
+
+    public function actionDashboardStats()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            $service = SelectedServices::find()
+                ->alias('a')
+                ->joinWith(['serviceEnc b'], false)
+                ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
+                ->exists();
+
+            $employeeAmount = LoanApplications::find()
+                ->alias('b')
+                ->select([
+                    'SUM(b.amount) total',
+                    'SUM(CASE WHEN i.status = "31" THEN i.disbursement_approved ELSE 0 END) as disbursed_amount',
+                    'SUM(CASE WHEN i.status = "30" THEN i.soft_sanction ELSE 0 END) as sanctioned_amount',
+                    //'SUM(CASE WHEN i.status = "3" THEN b.amount ELSE 0 END) as under_process_amount',
+                    //'SUM(CASE WHEN i.status = "32" OR i.status = "28" THEN b.amount ELSE 0 END) as rejected_amount',
+                ])
+                ->andWhere([
+                    'or',
+                    ['between', 'b.updated_on', $params['start_date'], $params['end_date']],
+                    ['between', 'b.created_on', $params['start_date'], $params['end_date']]
+                ])
+                ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
+                    $i->joinWith(['providerEnc j']);
+                    if ($service) {
+                        $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
+                    }
+                }], false)
+                ->andWhere(['b.is_deleted' => 0])
+                ->asArray()
+                ->one();
+
+            return $this->response(200, ['status' => 200, 'data' => $employeeAmount]);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
 }
