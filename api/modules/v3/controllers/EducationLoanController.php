@@ -116,7 +116,6 @@ class EducationLoanController extends ApiBaseController
             $model = LoanCertificates::find()
                 ->where(['loan_app_enc_id'=>null])
                 ->asArray()->all();
-
             foreach ($model as $mod){
                 $data = LoanCertificates::findOne(['certificate_enc_id'=>$mod['certificate_enc_id']]);
                 $data->is_deleted = 0;
@@ -126,6 +125,8 @@ class EducationLoanController extends ApiBaseController
                     return json_encode($data->getErrors());
                 }
             }
+
+            print_r($model);
         }
     }
     public function actionGetFeeComponents()
