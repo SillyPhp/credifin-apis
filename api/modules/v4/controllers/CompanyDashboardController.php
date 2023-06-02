@@ -2314,18 +2314,29 @@ class CompanyDashboardController extends ApiBaseController
 
             $employeeAmount = LoanApplications::find()
                 ->alias('b')
+                ->distinct()
                 ->select([
                     'SUM(b.amount) total',
                     'SUM(CASE WHEN i.status = "31" THEN i.disbursement_approved ELSE 0 END) as disbursed_amount',
                     'SUM(CASE WHEN i.status = "30" THEN i.soft_sanction ELSE 0 END) as sanctioned_amount',
-                    //'SUM(CASE WHEN i.status = "3" THEN b.amount ELSE 0 END) as under_process_amount',
-                    //'SUM(CASE WHEN i.status = "32" OR i.status = "28" THEN b.amount ELSE 0 END) as rejected_amount',
+                    'SUM(CASE WHEN i.status = "3" THEN b.amount ELSE 0 END) as under_process_amount',
+                    'SUM(CASE WHEN i.status = "32" OR i.status = "28" THEN b.amount ELSE 0 END) as rejected_amount',
+                    'COUNT(CASE WHEN b.amount THEN b.loan_app_enc_id END) as all_applications',
+                    'COUNT(CASE WHEN i.status = "31" THEN b.loan_app_enc_id END) as disbursed',
+                    'COUNT(CASE WHEN i.status = "30" THEN b.loan_app_enc_id END) as sanctioned',
+                    'COUNT(CASE WHEN i.status = "3" THEN b.loan_app_enc_id END) as under_process',
+                    'COUNT(CASE WHEN (i.status = "32" or i.status = "28") THEN b.loan_app_enc_id END) as reject'
                 ])
                 ->andWhere([
                     'or',
-                    ['between', 'b.updated_on', $params['start_date'], $params['end_date']],
+//                    ['between', 'b.updated_on', $params['start_date'], $params['end_date']],
                     ['between', 'b.created_on', $params['start_date'], $params['end_date']]
                 ])
+                ->joinWith(['loanProductsEnc k' => function ($k) use ($params) {
+                    if ($params['loan_type']) {
+                        $k->andWhere(['in', 'k.name', $params['loan_type']]);
+                    }
+                }],false)
                 ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
                     $i->joinWith(['providerEnc j']);
                     if ($service) {
@@ -2341,5 +2352,4 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
-
 }
