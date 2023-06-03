@@ -2284,6 +2284,7 @@ class CompanyDashboardController extends ApiBaseController
                     $k->onCondition(['k.created_by' => $params['user_enc_id']]);
                 }])
                 ->joinWith(['loanProductsEnc d'])
+                ->where(['between', 'a.created_on', $params['start_date'], $params['end_date']])
                 ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0]);
             $count = $employeeLoanList->count();
             $employeeLoanList = $employeeLoanList
@@ -2295,6 +2296,7 @@ class CompanyDashboardController extends ApiBaseController
             if ($employeeLoanList) {
                 return $this->response(200, ['status' => 200, 'loanDetails' => $employeeLoanList, 'count' => $count, 'limit' => $limit, 'page' => $page]);
             }
+
             return $this->response(404, ['status' => 404, 'message' => 'Loan Details not found']);
 
         } else {
