@@ -2306,11 +2306,29 @@ class CompanyDashboardController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
+
+            // checking if its organization
+            if ($user->organization_enc_id) {
+
+                // getting dsa
+                $leads = $this->getDsa($user->user_enc_id);
+
+                $dsa = [];
+                if ($leads) {
+                    foreach ($leads as $val) {
+                        $dsa[] = $val['assigned_user_enc_id'];
+                    }
+                }
+
+                $dsa[] = $user->user_enc_id;
+            }
             $service = SelectedServices::find()
                 ->alias('a')
                 ->joinWith(['serviceEnc b'], false)
                 ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
                 ->exists();
+
+            $shared_apps = $this->sharedApps($user->user_enc_id);
 
             $employeeAmount = LoanApplications::find()
                 ->alias('b')
@@ -2337,8 +2355,18 @@ class CompanyDashboardController extends ApiBaseController
                         $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
                     }
                 }], false)
-                ->where(['b.is_deleted' => 0]);
-                if ($params['loan_type']) {
+                ->where(['b.is_deleted' => 0, 'b.form_type' => 'others']);
+                if ($user->organization_enc_id) {
+                    if (!$service) {
+                        $employeeAmount->andWhere(['b.lead_by' => $dsa]);
+                    }
+                } else {
+                    $employeeAmount->andWhere(['or', ['b.lead_by' => $user->user_enc_id], ['b.managed_by' => $user->user_enc_id]]);
+                }
+                if ($shared_apps['app_ids']) {
+                    $employeeAmount->orWhere(['b.loan_app_enc_id' => $shared_apps['app_ids']]);
+                }
+                if (!empty($params['loan_type'])) {
                     $employeeAmount->andWhere(['b.loan_type' => $params['loan_type']]);
                 }
             $employeeAmount = $employeeAmount->andWhere(['between', 'b.created_on', $params['start_date'], $params['end_date']])
