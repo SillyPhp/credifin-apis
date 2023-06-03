@@ -50,7 +50,6 @@ class EducationLoanController extends ApiBaseController
             'class' => VerbFilter::className(),
             'actions' => [
                 'get-course-list' => ['POST', 'OPTIONS'],
-                'get-queries-change' => ['POST', 'OPTIONS'],
                 'get-fee-components' => ['POST', 'OPTIONS'],
                 'save-widget-application' => ['POST', 'OPTIONS'],
                 'update-widget-loan-application' => ['POST', 'OPTIONS'],
@@ -87,25 +86,6 @@ class EducationLoanController extends ApiBaseController
             }
         } else {
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
-        }
-    }
-
-    public function actionGetQueriesChange(){
-        if (Yii::$app->request->post()){
-            $param = Yii::$app->request->post();
-            $model = LoanCertificates::find()
-                ->where(['loan_app_enc_id'=>$param['loan_app_enc_id']])
-                ->asArray()->all();
-
-            foreach ($model as $mod){
-                $data = LoanCertificates::findOne(['certificate_enc_id'=>$mod['certificate_enc_id']]);
-                $data->is_deleted = 1;
-                if ($data->save()){
-                    echo true;
-                }else{
-                    return json_encode($data->getErrors());
-                }
-            }
         }
     }
     public function actionGetFeeComponents()
