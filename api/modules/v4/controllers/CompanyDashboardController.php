@@ -649,7 +649,9 @@ class CompanyDashboardController extends ApiBaseController
                     'a.applicant_name', 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'lp.name as loan_product', 'a.gender', 'a.applicant_dob',
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address',
                     'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",a.image_location, "/", a.image) ELSE NULL END image',
-                    '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee'])
+                    '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee'
+//                    'lpm.payment_status as login_fee'
+                ])
                 ->joinWith(['assignedLoanProviders b'], false)
                 ->joinWith(['loanCertificates c' => function ($c) {
                     $c->select(['c.certificate_enc_id', 'c.loan_app_enc_id', 'c.short_description', 'c.certificate_type_enc_id', 'c.number', 'c1.name', 'c.proof_image', 'c.proof_image_location', 'c.created_on', 'CONCAT(c2.first_name," ",c2.last_name) created_by']);
@@ -718,6 +720,11 @@ class CompanyDashboardController extends ApiBaseController
 //                        ['>=', "j.created_on", $date],
                     ]);
                     $j->orderBy(['j.created_on' => SORT_DESC]);
+
+                }])
+                ->joinWith(['loanPayments lpm' => function ($lpm) {
+                    $lpm->select(['lpm.loan_app_enc_id', 'lpm.payment_mode', 'lpm.payment_status']);
+                    $lpm->orderBy(['lpm.created_on' => SORT_DESC]);
 
                 }])
                 ->joinWith(['loanProductsEnc lp'], false)
@@ -2339,10 +2346,13 @@ class CompanyDashboardController extends ApiBaseController
                     'SUM(CASE WHEN i.status = "3" THEN b.amount ELSE 0 END) as under_process_amount',
                     'SUM(CASE WHEN i.status = "32" OR i.status = "28" THEN b.amount ELSE 0 END) as rejected_amount',
                     'COUNT(*) as all_applications',
-                    'COUNT(CASE WHEN i.status = "31" THEN b.loan_app_enc_id END) as disbursed',
+                    'COUNT(CASE WHEN i.status = "31" and i.insurance_charges and i.disbursement_approved THEN b.loan_app_enc_id END) as disbursed',
                     'COUNT(CASE WHEN i.status = "30" THEN b.loan_app_enc_id END) as sanctioned',
                     'COUNT(CASE WHEN i.status = "3" THEN b.loan_app_enc_id END) as under_process',
-                    'COUNT(CASE WHEN (i.status = "32" or i.status = "28") THEN b.loan_app_enc_id END) as reject'
+                    'COUNT(CASE WHEN i.status = "28" THEN b.loan_app_enc_id END) as cni',
+                    'COUNT(CASE WHEN i.status = "32" THEN b.loan_app_enc_id END) as rejected',
+                    'COUNT(CASE WHEN i.status = "26" THEN b.loan_app_enc_id END) as disbursement_approval',
+                    'COUNT(CASE WHEN i.status = "24" THEN b.loan_app_enc_id END) as soft_sanction',
                 ])
 //                ->joinWith(['loanProductsEnc k' => function ($k) use ($params) {
 //                    if ($params['loan_type']) {
@@ -2356,22 +2366,22 @@ class CompanyDashboardController extends ApiBaseController
                     }
                 }], false)
                 ->where(['b.is_deleted' => 0, 'b.form_type' => 'others']);
-                if ($user->organization_enc_id) {
-                    if (!$service) {
-                        $employeeAmount->andWhere(['b.lead_by' => $dsa]);
-                    }
-                } else {
-                    $employeeAmount->andWhere(['or', ['b.lead_by' => $user->user_enc_id], ['b.managed_by' => $user->user_enc_id]]);
+            if ($user->organization_enc_id) {
+                if (!$service) {
+                    $employeeAmount->andWhere(['b.lead_by' => $dsa]);
                 }
-                if ($shared_apps['app_ids']) {
-                    $employeeAmount->orWhere(['b.loan_app_enc_id' => $shared_apps['app_ids']]);
-                }
-                if (!empty($params['loan_type'])) {
-                    $employeeAmount->andWhere(['b.loan_type' => $params['loan_type']]);
-                }
+            } else {
+                $employeeAmount->andWhere(['or', ['b.lead_by' => $user->user_enc_id], ['b.managed_by' => $user->user_enc_id]]);
+            }
+            if ($shared_apps['app_ids']) {
+                $employeeAmount->orWhere(['b.loan_app_enc_id' => $shared_apps['app_ids']]);
+            }
+            if (!empty($params['loan_type'])) {
+                $employeeAmount->andWhere(['b.loan_type' => $params['loan_type']]);
+            }
             $employeeAmount = $employeeAmount->andWhere(['between', 'b.created_on', $params['start_date'], $params['end_date']])
-                    ->asArray()
-                    ->one();
+                ->asArray()
+                ->one();
 
             return $this->response(200, ['status' => 200, 'data' => $employeeAmount]);
         } else {
@@ -2379,3 +2389,4 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 }
+
