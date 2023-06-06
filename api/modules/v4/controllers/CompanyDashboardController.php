@@ -2093,7 +2093,7 @@ class CompanyDashboardController extends ApiBaseController
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
                 ->joinWith(['loanApplications3 c' => function ($c) use ($params) {
-                    $c->andWhere(['between', 'c.updated_on', $params['start_date'], $params['end_date']]);
+                    $c->andWhere(['between', 'c.created_on', $params['start_date'], $params['end_date']]);
                     $c->joinWith(['assignedLoanProviders c1' => function ($c1) {
                         $c1->joinWith(['status0 c2']);
                     }], false);
@@ -2101,7 +2101,8 @@ class CompanyDashboardController extends ApiBaseController
                         $c->andWhere(['c.loan_type' => $params['loan_id']]);
                     }
                 }], false)
-                ->joinWith(['creditLoanApplicationReports d' => function ($d) {
+                ->joinWith(['creditLoanApplicationReports d' => function ($d) use ($params) {
+                    $d->andWhere(['between', 'd.created_on', $params['start_date'], $params['end_date']]);
                     $d->joinWith(['responseEnc d1' => function ($d1) {
                         $d1->joinWith(['requestEnc d2']);
                     }], false);
