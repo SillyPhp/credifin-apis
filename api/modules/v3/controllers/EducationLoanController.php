@@ -88,7 +88,6 @@ class EducationLoanController extends ApiBaseController
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         }
     }
-
     public function actionGetFeeComponents()
     {
         $params = Yii::$app->request->post();

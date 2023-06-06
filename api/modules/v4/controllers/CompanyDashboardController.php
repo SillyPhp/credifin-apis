@@ -2093,7 +2093,7 @@ class CompanyDashboardController extends ApiBaseController
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
                 ->joinWith(['loanApplications3 c' => function ($c) use ($params) {
-                    $c->andWhere(['between', 'c.updated_on', $params['start_date'], $params['end_date']]);
+                    $c->andWhere(['between', 'c.created_on', $params['start_date'], $params['end_date']]);
                     $c->joinWith(['assignedLoanProviders c1' => function ($c1) {
                         $c1->joinWith(['status0 c2']);
                     }], false);
@@ -2101,7 +2101,8 @@ class CompanyDashboardController extends ApiBaseController
                         $c->andWhere(['c.loan_type' => $params['loan_id']]);
                     }
                 }], false)
-                ->joinWith(['creditLoanApplicationReports d' => function ($d) {
+                ->joinWith(['creditLoanApplicationReports d' => function ($d) use ($params) {
+                    $d->andWhere(['between', 'd.created_on', $params['start_date'], $params['end_date']]);
                     $d->joinWith(['responseEnc d1' => function ($d1) {
                         $d1->joinWith(['requestEnc d2']);
                     }], false);
@@ -2284,6 +2285,7 @@ class CompanyDashboardController extends ApiBaseController
                     $k->onCondition(['k.created_by' => $params['user_enc_id']]);
                 }])
                 ->joinWith(['loanProductsEnc d'])
+                ->where(['between', 'a.created_on', $params['start_date'], $params['end_date']])
                 ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0]);
             $count = $employeeLoanList->count();
             $employeeLoanList = $employeeLoanList
@@ -2295,6 +2297,7 @@ class CompanyDashboardController extends ApiBaseController
             if ($employeeLoanList) {
                 return $this->response(200, ['status' => 200, 'loanDetails' => $employeeLoanList, 'count' => $count, 'limit' => $limit, 'page' => $page]);
             }
+
             return $this->response(404, ['status' => 404, 'message' => 'Loan Details not found']);
 
         } else {
@@ -2306,46 +2309,72 @@ class CompanyDashboardController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
+
+            // checking if its organization
+            if ($user->organization_enc_id) {
+
+                // getting dsa
+                $leads = $this->getDsa($user->user_enc_id);
+
+                $dsa = [];
+                if ($leads) {
+                    foreach ($leads as $val) {
+                        $dsa[] = $val['assigned_user_enc_id'];
+                    }
+                }
+
+                $dsa[] = $user->user_enc_id;
+            }
             $service = SelectedServices::find()
                 ->alias('a')
                 ->joinWith(['serviceEnc b'], false)
                 ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
                 ->exists();
 
+            $shared_apps = $this->sharedApps($user->user_enc_id);
+
             $employeeAmount = LoanApplications::find()
                 ->alias('b')
-                ->distinct()
                 ->select([
                     'SUM(b.amount) total',
                     'SUM(CASE WHEN i.status = "31" THEN i.disbursement_approved ELSE 0 END) as disbursed_amount',
                     'SUM(CASE WHEN i.status = "30" THEN i.soft_sanction ELSE 0 END) as sanctioned_amount',
                     'SUM(CASE WHEN i.status = "3" THEN b.amount ELSE 0 END) as under_process_amount',
                     'SUM(CASE WHEN i.status = "32" OR i.status = "28" THEN b.amount ELSE 0 END) as rejected_amount',
-                    'COUNT(CASE WHEN b.amount THEN b.loan_app_enc_id END) as all_applications',
+                    'COUNT(*) as all_applications',
                     'COUNT(CASE WHEN i.status = "31" THEN b.loan_app_enc_id END) as disbursed',
                     'COUNT(CASE WHEN i.status = "30" THEN b.loan_app_enc_id END) as sanctioned',
                     'COUNT(CASE WHEN i.status = "3" THEN b.loan_app_enc_id END) as under_process',
                     'COUNT(CASE WHEN (i.status = "32" or i.status = "28") THEN b.loan_app_enc_id END) as reject'
                 ])
-                ->andWhere([
-                    'or',
-//                    ['between', 'b.updated_on', $params['start_date'], $params['end_date']],
-                    ['between', 'b.created_on', $params['start_date'], $params['end_date']]
-                ])
-                ->joinWith(['loanProductsEnc k' => function ($k) use ($params) {
-                    if ($params['loan_type']) {
-                        $k->andWhere(['in', 'k.name', $params['loan_type']]);
-                    }
-                }],false)
+//                ->joinWith(['loanProductsEnc k' => function ($k) use ($params) {
+//                    if ($params['loan_type']) {
+//                        $k->andWhere(['in', 'k.name', $params['loan_type']]);
+//                    }
+//                }],false)
                 ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
                     $i->joinWith(['providerEnc j']);
                     if ($service) {
                         $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
                     }
                 }], false)
-                ->andWhere(['b.is_deleted' => 0])
-                ->asArray()
-                ->one();
+                ->where(['b.is_deleted' => 0, 'b.form_type' => 'others']);
+                if ($user->organization_enc_id) {
+                    if (!$service) {
+                        $employeeAmount->andWhere(['b.lead_by' => $dsa]);
+                    }
+                } else {
+                    $employeeAmount->andWhere(['or', ['b.lead_by' => $user->user_enc_id], ['b.managed_by' => $user->user_enc_id]]);
+                }
+                if ($shared_apps['app_ids']) {
+                    $employeeAmount->orWhere(['b.loan_app_enc_id' => $shared_apps['app_ids']]);
+                }
+                if (!empty($params['loan_type'])) {
+                    $employeeAmount->andWhere(['b.loan_type' => $params['loan_type']]);
+                }
+            $employeeAmount = $employeeAmount->andWhere(['between', 'b.created_on', $params['start_date'], $params['end_date']])
+                    ->asArray()
+                    ->one();
 
             return $this->response(200, ['status' => 200, 'data' => $employeeAmount]);
         } else {
