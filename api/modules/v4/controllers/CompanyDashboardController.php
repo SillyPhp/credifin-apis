@@ -2285,7 +2285,8 @@ class CompanyDashboardController extends ApiBaseController
                     }
                 }], false)
                 ->joinWith(['creditLoanApplicationReports k' => function ($k) use ($params) {
-                    $k->select(['k.report_enc_id', 'k.loan_app_enc_id',
+                    $k->groupBy(['k.loan_app_enc_id']);
+                    $k->select(['k.report_enc_id', 'k.loan_app_enc_id', 'k.created_by',
                         'COUNT(CASE WHEN k2.request_source = "CIBIL" THEN k.loan_app_enc_id END) as cibil',
                         'COUNT(CASE WHEN k2.request_source = "EQUIFAX" THEN k.loan_app_enc_id END) as equifax',
                         'COUNT(CASE WHEN k2.request_source = "CRIF" THEN k.loan_app_enc_id END) as crif']);
@@ -2293,7 +2294,6 @@ class CompanyDashboardController extends ApiBaseController
                         $k1->joinWith(['requestEnc k2']);
                     }]);
                     $k->onCondition(['k.created_by' => $params['user_enc_id']]);
-                    $k->groupBy(['k.loan_app_enc_id']);
                 }])
                 ->joinWith(['loanProductsEnc d'])
                 ->where(['between', 'a.created_on', $params['start_date'], $params['end_date']])
