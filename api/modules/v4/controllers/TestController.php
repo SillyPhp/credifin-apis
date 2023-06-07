@@ -86,14 +86,13 @@ class TestController extends ApiBaseController
 
     }
 
-    public function actionProductDataShifter()
+    public function actionProductsShift()
     {
         if ($user = $this->isAuthorized()) {
-            $product_save = $this->_productShift($user->user_enc_id);
-            if (!$product_save) {
-                return 'product error';
-            }
-
+//            $product_save = $this->_productShift($user->user_enc_id);
+//            if (!$product_save) {
+//                return 'product error';
+//            }
             $transaction = Yii::$app->db->beginTransaction();
 
             // purpose
@@ -136,9 +135,9 @@ class TestController extends ApiBaseController
             $old_status = FinancerLoanStatus::find()
                 ->alias('a')
                 ->select(['a.financer_loan_status_enc_id', 'a.assigned_financer_loan_type_id', 'a.loan_status_enc_id', 'a.created_by', 'a.created_on', 'a.updated_by', 'a.updated_on', 'a.is_deleted'])
-                ->joinWith(['assignedFinancerLoanType b' => function ($b) {
-                    $b->joinWith(['organizationEnc b1'], false);
-                }], false)
+//                ->joinWith(['assignedFinancerLoanType b' => function ($b) {
+//                    $b->joinWith(['organizationEnc b1'], false);
+//                }], false)
                 ->asArray()
                 ->all();
             foreach ($old_status as $key => $value) {
@@ -171,9 +170,9 @@ class TestController extends ApiBaseController
             $old_documents = FinancerLoanDocuments::find()
                 ->alias('a')
                 ->select(['a.financer_loan_document_enc_id', 'a.assigned_financer_loan_type_id', 'a.certificate_type_enc_id', 'a.sequence', 'a.created_by', 'a.created_on', 'a.updated_by', 'a.updated_on', 'a.is_deleted'])
-                ->joinWith(['assignedFinancerLoanType b' => function ($b) {
-                    $b->joinWith(['organizationEnc b1'], false);
-                }], false)
+//                ->joinWith(['assignedFinancerLoanType b' => function ($b) {
+//                    $b->joinWith(['organizationEnc b1'], false);
+//                }], false)
                 ->asArray()
                 ->all();
             foreach ($old_documents as $key => $value) {
@@ -210,82 +209,82 @@ class TestController extends ApiBaseController
         }
     }
 
-    private function _productShift($user_id)
-    {
-        $purpose_loan_ids = FinancerLoanPurpose::find()
-            ->alias('a')
-            ->distinct()
-            ->select(['a.assigned_financer_loan_type_id', 'c.name'])
-            ->joinWith(['assignedFinancerLoanType b' => function ($b) {
-                $b->joinWith(['loanTypeEnc c'], false);
-                $b->joinWith(['organizationEnc d'], false);
-                $b->onCondition(['b.is_deleted' => 0]);
-                $b->groupBy(['b.loan_type_enc_id']);
-            }], false)
-            ->asArray()
-            ->all();
-        $status_loan_ids = FinancerLoanStatus::find()
-            ->alias('a')
-            ->distinct()
-            ->select(['a.assigned_financer_loan_type_id', 'c.name'])
-            ->joinWith(['assignedFinancerLoanType b' => function ($b) {
-                $b->joinWith(['loanTypeEnc c'], false);
-                $b->joinWith(['organizationEnc d'], false);
-                $b->onCondition(['b.is_deleted' => 0]);
-                $b->groupBy(['b.loan_type_enc_id']);
-            }], false)
-            ->asArray()
-            ->all();
+//    private function _productShift($user_id)
+//    {
+//        $purpose_loan_ids = FinancerLoanPurpose::find()
+//            ->alias('a')
+//            ->distinct()
+//            ->select(['a.assigned_financer_loan_type_id', 'c.name'])
+//            ->joinWith(['assignedFinancerLoanType b' => function ($b) {
+//                $b->joinWith(['loanTypeEnc c'], false);
+//                $b->joinWith(['organizationEnc d'], false);
+//                $b->onCondition(['b.is_deleted' => 0]);
+//                $b->groupBy(['b.loan_type_enc_id']);
+//            }], false)
+//            ->asArray()
+//            ->all();
+//        $status_loan_ids = FinancerLoanStatus::find()
+//            ->alias('a')
+//            ->distinct()
+//            ->select(['a.assigned_financer_loan_type_id', 'c.name'])
+//            ->joinWith(['assignedFinancerLoanType b' => function ($b) {
+//                $b->joinWith(['loanTypeEnc c'], false);
+//                $b->joinWith(['organizationEnc d'], false);
+//                $b->onCondition(['b.is_deleted' => 0]);
+//                $b->groupBy(['b.loan_type_enc_id']);
+//            }], false)
+//            ->asArray()
+//            ->all();
+//
+//        $document_loan_ids = FinancerLoanDocuments::find()
+//            ->alias('a')
+//            ->distinct()
+//            ->select(['a.assigned_financer_loan_type_id', 'c.name'])
+//            ->joinWith(['assignedFinancerLoanType b' => function ($b) {
+//                $b->joinWith(['loanTypeEnc c'], false);
+//                $b->joinWith(['organizationEnc d'], false);
+//                $b->onCondition(['b.is_deleted' => 0]);
+//                $b->groupBy(['b.loan_type_enc_id']);
+//            }], false)
+//            ->asArray()
+//            ->all();
+//
+//        $transaction = Yii::$app->db->beginTransaction();
+//        $data = [$status_loan_ids, $document_loan_ids, $purpose_loan_ids];
+//        $product_save = $this->_checker($data, $user_id);
+//
+//        if (!$product_save) {
+//            $transaction->rollBack();
+//            return false;
+//        }
+//        $transaction->commit();
+//        return true;
+//
+//    }
 
-        $document_loan_ids = FinancerLoanDocuments::find()
-            ->alias('a')
-            ->distinct()
-            ->select(['a.assigned_financer_loan_type_id', 'c.name'])
-            ->joinWith(['assignedFinancerLoanType b' => function ($b) {
-                $b->joinWith(['loanTypeEnc c'], false);
-                $b->joinWith(['organizationEnc d'], false);
-                $b->onCondition(['b.is_deleted' => 0]);
-                $b->groupBy(['b.loan_type_enc_id']);
-            }], false)
-            ->asArray()
-            ->all();
-
-        $transaction = Yii::$app->db->beginTransaction();
-        $data = [$status_loan_ids, $document_loan_ids, $purpose_loan_ids];
-        $product_save = $this->_checker($data, $user_id);
-
-        if (!$product_save) {
-            $transaction->rollBack();
-            return false;
-        }
-        $transaction->commit();
-        return true;
-
-    }
-
-    private function _checker($data, $user_id)
-    {
-        foreach ($data as $key) {
-            foreach ($key as $val) {
-                $product_check = FinancerLoanProducts::findOne(['assigned_financer_loan_type_enc_id' => $val['assigned_financer_loan_type_id'], 'is_deleted' => 0]);
-                if (!$product_check) {
-                    $new_product = new FinancerLoanProducts();
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $new_product->financer_loan_product_enc_id = $utilitiesModel->encrypt();
-                    $new_product->assigned_financer_loan_type_enc_id = $val['assigned_financer_loan_type_id'];
-                    $new_product->name = $val['name'];
-                    $new_product->created_on = date('Y-m-d H:i:s');
-                    $new_product->created_by = $user_id;
-                    $new_product->is_deleted = $val['is_deleted'];
-                    if (!$new_product->save()) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
+//    private function _checker($data, $user_id)
+//    {
+//        foreach ($data as $key) {
+//            foreach ($key as $val) {
+//                $product_check = FinancerLoanProducts::findOne(['assigned_financer_loan_type_enc_id' => $val['assigned_financer_loan_type_id'], 'is_deleted' => 0]);
+//                if (!$product_check) {
+//                    $new_product = new FinancerLoanProducts();
+//                    $utilitiesModel = new Utilities();
+//                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//                    $new_product->financer_loan_product_enc_id = $utilitiesModel->encrypt();
+//                    $new_product->assigned_financer_loan_type_enc_id = $val['assigned_financer_loan_type_id'];
+//                    $new_product->name = $val['name'];
+//                    $new_product->created_on = date('Y-m-d H:i:s');
+//                    $new_product->created_by = $user_id;
+//                    $new_product->is_deleted = $val['is_deleted'];
+//                    if (!$new_product->save()) {
+//                        return false;
+//                    }
+//                }
+//            }
+//        }
+//        return true;
+//    }
 
     public function actionLoanShift()
     {
@@ -318,12 +317,12 @@ class TestController extends ApiBaseController
                 $new_product->is_deleted = $value['is_deleted'];
                 if (!$new_product->save()) {
                     $transaction->rollback();
-                    return false;
+                    return 'Error while shifting products';
                 }
             }
         }
         $transaction->commit();
-        return True;
+        return 'Done';
 
 
     }
@@ -351,7 +350,7 @@ class TestController extends ApiBaseController
                 }
             }
             $transaction->commit();
-            return true;
+            return 'Done';
         }
         return 'unauthorized';
     }
