@@ -2083,9 +2083,9 @@ class CompanyDashboardController extends ApiBaseController
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "Sanctioned" THEN c.loan_app_enc_id END) as sanctioned',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and (c2.loan_status = "Rejected" or c2.loan_status = "CNI") THEN c.loan_app_enc_id END) as rejected',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "Disbursed" THEN c.loan_app_enc_id END) as disbursed',
-                    'COUNT(DISTINCT CASE WHEN d2.request_source = "CIBIL" THEN d.loan_app_enc_id END) as cibil',
-                    'COUNT(DISTINCT CASE WHEN d2.request_source = "EQUIFAX" THEN d.loan_app_enc_id END) as equifax',
-                    'COUNT(DISTINCT CASE WHEN d2.request_source = "CRIF" THEN d.loan_app_enc_id END) as crif'])
+                    'COUNT(CASE WHEN d2.request_source = "CIBIL" THEN d.loan_app_enc_id END) as cibil',
+                    'COUNT(CASE WHEN d2.request_source = "EQUIFAX" THEN d.loan_app_enc_id END) as equifax',
+                    'COUNT(CASE WHEN d2.request_source = "CRIF" THEN d.loan_app_enc_id END) as crif'])
                 ->joinWith(['userRoles b' => function ($b) {
                     $b->joinWith(['designationEnc b1'])
                         ->joinWith(['reportingPerson b2'])
@@ -2102,10 +2102,11 @@ class CompanyDashboardController extends ApiBaseController
                     }
                 }], false)
                 ->joinWith(['creditLoanApplicationReports d' => function ($d) use ($params) {
-                    $d->andWhere(['between', 'd.created_on', $params['start_date'], $params['end_date']]);
                     $d->joinWith(['responseEnc d1' => function ($d1) {
                         $d1->joinWith(['requestEnc d2']);
                     }], false);
+                    $d->onCondition(['between', 'd.created_on', $params['start_date'], $params['end_date']]);
+//                    $d->onCondition(['c.loan_app_enc_id' => 'd.loan_app_enc_id']);
                 }], false)
                 ->andWhere(['b.organization_enc_id' => $user->organization_enc_id, 'b4.user_type' => 'Employee', 'b.is_deleted' => 0])
                 ->groupBy(['a.user_enc_id']);
@@ -2283,6 +2284,7 @@ class CompanyDashboardController extends ApiBaseController
                         $k1->joinWith(['requestEnc k2']);
                     }]);
                     $k->onCondition(['k.created_by' => $params['user_enc_id']]);
+                    $k->groupBy(['k.loan_app_enc_id']);
                 }])
                 ->joinWith(['loanProductsEnc d'])
                 ->where(['between', 'a.created_on', $params['start_date'], $params['end_date']])
