@@ -2107,6 +2107,7 @@ class CompanyDashboardController extends ApiBaseController
                     }
                 }], false)
                 ->joinWith(['creditLoanApplicationReports k' => function ($k) use ($params) {
+                    $k->groupBy(['k.created_by']);
                     $k->select(['k.created_by',
                         'COUNT(CASE WHEN k2.request_source = "CIBIL" THEN k.loan_app_enc_id END) as cibil',
                         'COUNT(CASE WHEN k2.request_source = "EQUIFAX" THEN k.loan_app_enc_id END) as equifax',
