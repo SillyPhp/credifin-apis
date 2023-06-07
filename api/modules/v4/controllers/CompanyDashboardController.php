@@ -722,11 +722,11 @@ class CompanyDashboardController extends ApiBaseController
                     $j->orderBy(['j.created_on' => SORT_DESC]);
 
                 }])
-                ->joinWith(['loanPayments lpm' => function ($lpm) {
-                    $lpm->select(['lpm.loan_app_enc_id', 'lpm.payment_mode', 'lpm.payment_status']);
-                    $lpm->orderBy(['lpm.created_on' => SORT_DESC]);
-
-                }])
+//                ->joinWith(['loanPayments lpm' => function ($lpm) {
+//                    $lpm->select(['lpm.loan_app_enc_id', 'lpm.payment_mode', 'lpm.payment_status']);
+//                    $lpm->orderBy(['lpm.created_on' => SORT_DESC]);
+//
+//                }])
                 ->joinWith(['loanProductsEnc lp'], false)
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
