@@ -2100,7 +2100,7 @@ class CompanyDashboardController extends ApiBaseController
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
                 ->joinWith(['loanApplications3 c' => function ($c) use ($params) {
-                    $c->andWhere(['between', 'c.updated_on', $params['start_date'], $params['end_date']]);
+                    $c->andWhere(['between', 'c.created_on', $params['start_date'], $params['end_date']]);
                     $c->joinWith(['assignedLoanProviders c1' => function ($c1) {
                         $c1->joinWith(['status0 c2']);
                     }], false);
@@ -2108,7 +2108,8 @@ class CompanyDashboardController extends ApiBaseController
                         $c->andWhere(['c.loan_type' => $params['loan_id']]);
                     }
                 }], false)
-                ->joinWith(['creditLoanApplicationReports d' => function ($d) {
+                ->joinWith(['creditLoanApplicationReports d' => function ($d) use ($params) {
+                    $d->andWhere(['between', 'd.created_on', $params['start_date'], $params['end_date']]);
                     $d->joinWith(['responseEnc d1' => function ($d1) {
                         $d1->joinWith(['requestEnc d2']);
                     }], false);
@@ -2342,19 +2343,23 @@ class CompanyDashboardController extends ApiBaseController
             $employeeAmount = LoanApplications::find()
                 ->alias('b')
                 ->select([
-                    'SUM(b.amount) total',
+                    'SUM(b.amount) total_amount',
                     'SUM(CASE WHEN i.status = "31" THEN i.disbursement_approved ELSE 0 END) as disbursed_amount',
-                    'SUM(CASE WHEN i.status = "30" THEN i.soft_sanction ELSE 0 END) as sanctioned_amount',
+                    'SUM(CASE WHEN i.status = "26" THEN i.disbursement_approved ELSE 0 END) as disbursed_approval_amount',
+                    'SUM(CASE WHEN i.status = "31" THEN i.insurance_charges ELSE 0 END) as insurance_charges_amount',
+                    'SUM(CASE WHEN i.status = "24" THEN i.soft_sanction ELSE 0 END) as soft_sanctioned_amount',
                     'SUM(CASE WHEN i.status = "3" THEN b.amount ELSE 0 END) as under_process_amount',
-                    'SUM(CASE WHEN i.status = "32" OR i.status = "28" THEN b.amount ELSE 0 END) as rejected_amount',
-                    'COUNT(*) as all_applications',
-                    'COUNT(CASE WHEN i.status = "31" and i.insurance_charges and i.disbursement_approved THEN b.loan_app_enc_id END) as disbursed',
-                    'COUNT(CASE WHEN i.status = "30" THEN b.loan_app_enc_id END) as sanctioned',
-                    'COUNT(CASE WHEN i.status = "3" THEN b.loan_app_enc_id END) as under_process',
-                    'COUNT(CASE WHEN i.status = "28" THEN b.loan_app_enc_id END) as cni',
-                    'COUNT(CASE WHEN i.status = "32" THEN b.loan_app_enc_id END) as rejected',
-                    'COUNT(CASE WHEN i.status = "26" THEN b.loan_app_enc_id END) as disbursement_approval',
-                    'COUNT(CASE WHEN i.status = "24" THEN b.loan_app_enc_id END) as soft_sanction',
+                    'SUM(CASE WHEN i.status = "32" THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as rejected_amount',
+                    'SUM(CASE WHEN i.status = "28" THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as cni_amount',
+                    'SUM(CASE WHEN i.status = "30" THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as sanctioned_amount',
+                    'COUNT(*) as all_applications_count',
+                    'COUNT(CASE WHEN i.status = "31" THEN b.loan_app_enc_id END) as disbursed_count',
+                    'COUNT(CASE WHEN i.status = "30" THEN b.loan_app_enc_id END) as sanctioned_count',
+                    'COUNT(CASE WHEN i.status = "3" THEN b.loan_app_enc_id END) as under_process_count',
+                    'COUNT(CASE WHEN i.status = "28" THEN b.loan_app_enc_id END) as cni_count',
+                    'COUNT(CASE WHEN i.status = "32" THEN b.loan_app_enc_id END) as rejected_count',
+                    'COUNT(CASE WHEN i.status = "26" THEN b.loan_app_enc_id END) as disbursement_approval_count',
+                    'COUNT(CASE WHEN i.status = "24" THEN b.loan_app_enc_id END) as soft_sanction_count',
                 ])
 //                ->joinWith(['loanProductsEnc k' => function ($k) use ($params) {
 //                    if ($params['loan_type']) {
