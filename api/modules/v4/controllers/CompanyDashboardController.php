@@ -2,7 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
-use api\modules\v4\models\FinancerDesignationForm;
+use api\modules\v4\models\financerDesignationForm;
 use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\SignupForm;
 use common\models\AssignedDeals;
@@ -77,7 +77,6 @@ class CompanyDashboardController extends ApiBaseController
                 'employee-stats' => ['POST', 'OPTIONS'],
                 'financer-designations' => ['POST', 'OPTIONS'],
                 'financer-designation-list' => ['POST', 'OPTIONS'],
-                'dashboard-stats' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -722,10 +721,9 @@ class CompanyDashboardController extends ApiBaseController
                     $j->orderBy(['j.created_on' => SORT_DESC]);
 
                 }])
-//                ->joinWith(['loanPayments lpm' => function ($lpm) {
+//                ->joinWith(['loanPayments lpm' => function($lpm){
 //                    $lpm->select(['lpm.loan_app_enc_id', 'lpm.payment_mode', 'lpm.payment_status']);
 //                    $lpm->orderBy(['lpm.created_on' => SORT_DESC]);
-//
 //                }])
                 ->joinWith(['loanProductsEnc lp'], false)
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
@@ -971,7 +969,7 @@ class CompanyDashboardController extends ApiBaseController
         $employee = UserRoles::find()
             ->alias('a')
             ->select(['a.role_enc_id', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code',
-                'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id'])
+                'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade'])
             ->joinWith(['userEnc b'], false)
             ->joinWith(['userTypeEnc c'], false)
             ->joinWith(['designation d'], false)
@@ -2098,7 +2096,7 @@ class CompanyDashboardController extends ApiBaseController
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
                 ->joinWith(['loanApplications3 c' => function ($c) use ($params) {
-                    $c->andWhere(['between', 'c.created_on', $params['start_date'], $params['end_date']]);
+                    $c->andWhere(['between', 'c.updated_on', $params['start_date'], $params['end_date']]);
                     $c->joinWith(['assignedLoanProviders c1' => function ($c1) {
                         $c1->joinWith(['status0 c2']);
                     }], false);
@@ -2399,4 +2397,3 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 }
-

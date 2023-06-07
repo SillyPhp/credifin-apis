@@ -17,6 +17,7 @@ use Yii;
  * @property string|null $employee_code employee code
  * @property string|null $reporting_person reporting person id
  * @property string|null $branch_enc_id branch enc id
+ * @property string|null $grade grades
  * @property string $created_on current time stamp
  * @property string $created_by create by enc id
  * @property string|null $updated_by updated by
@@ -49,6 +50,7 @@ class UserRoles extends \yii\db\ActiveRecord
     {
         return [
             [['role_enc_id', 'user_type_enc_id', 'created_on', 'created_by'], 'required'],
+            [['grade'], 'string'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['role_enc_id', 'user_type_enc_id', 'user_enc_id', 'organization_enc_id', 'designation_enc_id', 'designation_id', 'employee_code', 'reporting_person', 'branch_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
