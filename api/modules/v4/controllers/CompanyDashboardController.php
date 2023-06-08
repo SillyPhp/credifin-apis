@@ -2089,9 +2089,7 @@ class CompanyDashboardController extends ApiBaseController
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "Sanctioned" THEN c.loan_app_enc_id END) as sanctioned',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and (c2.loan_status = "Rejected" or c2.loan_status = "CNI") THEN c.loan_app_enc_id END) as rejected',
                     'COUNT(DISTINCT CASE WHEN c.is_deleted = "0" and c.form_type = "others" and c2.loan_status = "Disbursed" THEN c.loan_app_enc_id END) as disbursed',
-                    'COUNT(DISTINCT CASE WHEN d2.request_source = "CIBIL" THEN d.loan_app_enc_id END) as cibil',
-                    'COUNT(DISTINCT CASE WHEN d2.request_source = "EQUIFAX" THEN d.loan_app_enc_id END) as equifax',
-                    'COUNT(DISTINCT CASE WHEN d2.request_source = "CRIF" THEN d.loan_app_enc_id END) as crif'])
+                ])
                 ->joinWith(['userRoles b' => function ($b) {
                     $b->joinWith(['designationEnc b1'])
                         ->joinWith(['reportingPerson b2'])
@@ -2107,12 +2105,17 @@ class CompanyDashboardController extends ApiBaseController
                         $c->andWhere(['c.loan_type' => $params['loan_id']]);
                     }
                 }], false)
-                ->joinWith(['creditLoanApplicationReports d' => function ($d) use ($params) {
-                    $d->andWhere(['between', 'd.created_on', $params['start_date'], $params['end_date']]);
-                    $d->joinWith(['responseEnc d1' => function ($d1) {
-                        $d1->joinWith(['requestEnc d2']);
+                ->joinWith(['creditLoanApplicationReports k' => function ($k) use ($params) {
+                    $k->groupBy(['k.created_by']);
+                    $k->select(['k.created_by',
+                        'COUNT(CASE WHEN k2.request_source = "CIBIL" THEN k.loan_app_enc_id END) as cibil',
+                        'COUNT(CASE WHEN k2.request_source = "EQUIFAX" THEN k.loan_app_enc_id END) as equifax',
+                        'COUNT(CASE WHEN k2.request_source = "CRIF" THEN k.loan_app_enc_id END) as crif']);
+                    $k->joinWith(['responseEnc k1' => function ($k1) {
+                        $k1->joinWith(['requestEnc k2']);
                     }], false);
-                }], false)
+                    $k->onCondition(['between', 'k.created_on', $params['start_date'], $params['end_date']]);
+                }])
                 ->andWhere(['b.organization_enc_id' => $user->organization_enc_id, 'b4.user_type' => 'Employee', 'b.is_deleted' => 0])
                 ->groupBy(['a.user_enc_id']);
 
@@ -2281,7 +2284,8 @@ class CompanyDashboardController extends ApiBaseController
                     }
                 }], false)
                 ->joinWith(['creditLoanApplicationReports k' => function ($k) use ($params) {
-                    $k->select(['k.report_enc_id', 'k.loan_app_enc_id',
+                    $k->groupBy(['k.loan_app_enc_id']);
+                    $k->select(['k.report_enc_id', 'k.loan_app_enc_id', 'k.created_by',
                         'COUNT(CASE WHEN k2.request_source = "CIBIL" THEN k.loan_app_enc_id END) as cibil',
                         'COUNT(CASE WHEN k2.request_source = "EQUIFAX" THEN k.loan_app_enc_id END) as equifax',
                         'COUNT(CASE WHEN k2.request_source = "CRIF" THEN k.loan_app_enc_id END) as crif']);
@@ -2343,19 +2347,15 @@ class CompanyDashboardController extends ApiBaseController
                 ->alias('b')
                 ->select([
                     'SUM(b.amount) total_amount',
-                    'SUM(CASE WHEN i.status = "0" THEN b.amount ELSE 0 END) as new_lead_amount',
                     'SUM(CASE WHEN i.status = "31" THEN i.disbursement_approved ELSE 0 END) as disbursed_amount',
                     'SUM(CASE WHEN i.status = "26" THEN i.disbursement_approved ELSE 0 END) as disbursed_approval_amount',
                     'SUM(CASE WHEN i.status = "31" THEN i.insurance_charges ELSE 0 END) as insurance_charges_amount',
                     'SUM(CASE WHEN i.status = "24" THEN i.soft_sanction ELSE 0 END) as soft_sanctioned_amount',
-                    'SUM(CASE WHEN i.status = "15" THEN i.soft_approval ELSE 0 END) as soft_approval_amount',
                     'SUM(CASE WHEN i.status = "3" THEN b.amount ELSE 0 END) as under_process_amount',
                     'SUM(CASE WHEN i.status = "32" THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as rejected_amount',
                     'SUM(CASE WHEN i.status = "28" THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as cni_amount',
                     'SUM(CASE WHEN i.status = "30" THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as sanctioned_amount',
                     'COUNT(*) as all_applications_count',
-                    'COUNT(CASE WHEN i.status = "0" THEN b.loan_app_enc_id END) as new_lead_count',
-                    'COUNT(CASE WHEN i.status = "15" THEN b.loan_app_enc_id END) as soft_approval_count',
                     'COUNT(CASE WHEN i.status = "31" THEN b.loan_app_enc_id END) as disbursed_count',
                     'COUNT(CASE WHEN i.status = "30" THEN b.loan_app_enc_id END) as sanctioned_count',
                     'COUNT(CASE WHEN i.status = "3" THEN b.loan_app_enc_id END) as under_process_count',
@@ -2399,4 +2399,3 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 }
-
