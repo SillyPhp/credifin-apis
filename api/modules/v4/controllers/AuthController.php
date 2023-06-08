@@ -173,7 +173,7 @@ class AuthController extends ApiBaseController
                     $user->last_visit_through = 'EL';
                     if (!$user->update()) {
                         // if user not update then returning error
-                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $user->getErrors()]);
+                        return $this->response(500, ['status' => 500, 'message' => 'an error ', 'error' => $user->getErrors()]);
                     }
 
                     // creating user utilities model to get user data

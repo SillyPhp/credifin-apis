@@ -956,16 +956,32 @@ class OrganizationsController extends ApiBaseController
             if (empty($params['name'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "name"']);
             }
-            $product = new FinancerLoanProducts();
-            $utilitiesModel = new \common\models\Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
-            $product->financer_loan_product_enc_id = $utilitiesModel->encrypt();
-            $product->assigned_financer_loan_type_enc_id = $params['assigned_financer_loan_type_enc_id'];
-            $product->name = $params['name'];
-            $product->created_by = $user->user_enc_id;
-            $product->created_on = date('Y-m-d H:i:s');
-            if (!$product->save()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $product->getErrors()]);
+
+            if ($params['financer_loan_product_enc_id']) {
+                $existingProduct = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $params['financer_loan_product_enc_id']]);
+                if(!$existingProduct){
+                    return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
+                }
+                $existingProduct->name = $params['name'];
+                $existingProduct->updated_on = date('Y-m-d H:i:s');
+                $existingProduct->updated_by = $user->user_enc_id;
+
+                if(!$existingProduct->update()){
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred, product not updated', 'error' => $existingProduct->getErrors()]);
+                }
+
+            } else {
+                $product = new FinancerLoanProducts();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+                $product->financer_loan_product_enc_id = $utilitiesModel->encrypt();
+                $product->assigned_financer_loan_type_enc_id = $params['assigned_financer_loan_type_enc_id'];
+                $product->name = $params['name'];
+                $product->created_by = $user->user_enc_id;
+                $product->created_on = date('Y-m-d H:i:s');
+                if (!$product->save()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $product->getErrors()]);
+                }
             }
             return $this->response(200, ['status' => 200, 'message' => 'successfully added']);
         }
@@ -999,9 +1015,7 @@ class OrganizationsController extends ApiBaseController
                 ->asArray()
                 ->all();
             if ($loan_products) {
-                return $this->response(200, ['status' => 200,
-                    'loan_products' => $loan_products,
-                ]);
+                return $this->response(200, ['status' => 200, 'loan_products' => $loan_products]);
             }
             return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
         } else {
