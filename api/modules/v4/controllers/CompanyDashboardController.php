@@ -2,7 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
-use api\modules\v4\models\financerDesignationForm;
+use api\modules\v4\models\FinancerDesignationForm;
 use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\SignupForm;
 use common\models\AssignedDeals;
@@ -77,6 +77,7 @@ class CompanyDashboardController extends ApiBaseController
                 'employee-stats' => ['POST', 'OPTIONS'],
                 'financer-designations' => ['POST', 'OPTIONS'],
                 'financer-designation-list' => ['POST', 'OPTIONS'],
+                'dashboard-stats' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -2096,7 +2097,7 @@ class CompanyDashboardController extends ApiBaseController
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
                 ->joinWith(['loanApplications3 c' => function ($c) use ($params) {
-                    $c->andWhere(['between', 'c.updated_on', $params['start_date'], $params['end_date']]);
+                    $c->andWhere(['between', 'c.created_on', $params['start_date'], $params['end_date']]);
                     $c->joinWith(['assignedLoanProviders c1' => function ($c1) {
                         $c1->joinWith(['status0 c2']);
                     }], false);
@@ -2346,15 +2347,21 @@ class CompanyDashboardController extends ApiBaseController
                 ->alias('b')
                 ->select([
                     'SUM(b.amount) total_amount',
+                    'SUM(CASE WHEN i.status = "0" THEN b.amount ELSE 0 END) as new_lead_amount',
+                    'SUM(CASE WHEN i.status = "4" THEN IF(i.tl_approved_amount, i.tl_approved_amount, IF(i.bdo_approved_amount, i.bdo_approved_amount, b.amount)) ELSE 0 END) as login_amount',
                     'SUM(CASE WHEN i.status = "31" THEN i.disbursement_approved ELSE 0 END) as disbursed_amount',
                     'SUM(CASE WHEN i.status = "26" THEN i.disbursement_approved ELSE 0 END) as disbursed_approval_amount',
                     'SUM(CASE WHEN i.status = "31" THEN i.insurance_charges ELSE 0 END) as insurance_charges_amount',
                     'SUM(CASE WHEN i.status = "24" THEN i.soft_sanction ELSE 0 END) as soft_sanctioned_amount',
-                    'SUM(CASE WHEN i.status = "3" THEN b.amount ELSE 0 END) as under_process_amount',
+                    'SUM(CASE WHEN i.status = "15" THEN i.soft_approval ELSE 0 END) as soft_approval_amount',
+                    'SUM(CASE WHEN i.status != "0" AND i.status != "4" AND i.status != "15" AND i.status != "31" AND i.status != "26" AND i.status != "32" AND i.status != "30" AND i.status != "28" AND i.status != "24" THEN b.amount ELSE 0 END) as under_process_amount',
                     'SUM(CASE WHEN i.status = "32" THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as rejected_amount',
                     'SUM(CASE WHEN i.status = "28" THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as cni_amount',
                     'SUM(CASE WHEN i.status = "30" THEN IF(i.soft_sanction, i.soft_sanction, IF(i.soft_approval, i.soft_approval, b.amount)) ELSE 0 END) as sanctioned_amount',
                     'COUNT(*) as all_applications_count',
+                    'COUNT(CASE WHEN i.status = "0" THEN b.loan_app_enc_id END) as new_lead_count',
+                    'COUNT(CASE WHEN i.status = "4" THEN b.loan_app_enc_id END) as login_count',
+                    'COUNT(CASE WHEN i.status = "15" THEN b.loan_app_enc_id END) as soft_approval_count',
                     'COUNT(CASE WHEN i.status = "31" THEN b.loan_app_enc_id END) as disbursed_count',
                     'COUNT(CASE WHEN i.status = "30" THEN b.loan_app_enc_id END) as sanctioned_count',
                     'COUNT(CASE WHEN i.status = "3" THEN b.loan_app_enc_id END) as under_process_count',
