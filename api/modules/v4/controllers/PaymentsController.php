@@ -5,6 +5,7 @@ namespace api\modules\v4\controllers;
 use common\models\extended\Organizations;
 use common\models\extended\Payments;
 use common\models\LoanPayments;
+use http\Url;
 use yii\filters\VerbFilter;
 use Razorpay\Api\Api;
 use Yii;
@@ -18,7 +19,7 @@ class PaymentsController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-                'payment-link' => ['POST'],
+                'get-payment-link' => ['POST','OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -26,78 +27,83 @@ class PaymentsController extends ApiBaseController
 
     public function actionGetPaymentLink()
     {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-
+//        if (!$user = $this->isAuthorized()) {
+//            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+//        }
         $params = Yii::$app->request->post();
-
-
         if ($params) {
-            $model = new Payments();
-            $api_key = Yii::$app->params->razorPay->phfleasing->dev->apiKey;
-            $api_secret = Yii::$app->params->razorPay->phfleasing->dev->apiSecret;
-            $api = new Api($api_key, $api_secret);
-            $options['name'] = $params['name'];
-            $options['loan_app_id'] = $params['loan_app_id'];
-            $options['amount'] = $params['amount'];
-            $options['total'] = (int)($params['amount'] * 100);
-            $options['description'] = $params['desc'];
-            $options['loan_app_enc_id'] = $params['loan_app_id'];
-            $options['method'] = $params['method'];
-
-            if ($options['method'] == 0) {
-                if (empty($brand)) {
-                    $org_name = Organizations::findOne(['organization_enc_id' => $user->organization_enc_id])['name'];
-                    $options['brand'] = $org_name;
-                } else {
+            try {
+                $model = new Payments();
+                $api_key = Yii::$app->params->razorPay->phfleasing->prod->apiKey;
+                $api_secret = Yii::$app->params->razorPay->phfleasing->prod->apiSecret;
+                $api = new Api($api_key, $api_secret);
+                $options['name'] = $params['name'];
+                $options['loan_app_id'] = $params['loan_app_id'];
+                $options['amount'] = $params['amount'];
+                $options['total'] = (int)($params['amount'] * 100);
+                $options['description'] = $params['desc'];
+                $options['loan_app_enc_id'] = $params['loan_app_id'];
+                $options['method'] = $params['method'];
+                if ($options['method'] == 0) {
                     $options['brand'] = $params['brand'];
+                    if (empty($options['brand'])) {
+                        $org_name = Organizations::findOne(['organization_enc_id' => $user->organization_enc_id])['name'];
+                        $options['brand'] = $org_name;
+                    }
+                    $options['contact'] = $params['phone'];
+                    $options['call_back_url'] = "http://www.ravinder.eygb.me/api/v4/payments/test";
+                    $options['close_by'] = time() + 24 * 60 * 60 * 7;
                 }
-                $options['contact'] = $params['phone'];
-                $options['call_back_url'] = "http://www.ravinder.eygb.me/api/v4/payments/test";
-                $options['close_by'] = time() + 24 * 60 * 60 * 7;
-            }
-            if ($options['method'] == 1) {
-                $options['close_by'] = time() + 24 * 60 * 60;
-            }
+                if ($options['method'] == 1) {
+                    $options['close_by'] = time() + 24 * 60 * 60;
+                }
 
-            $query = LoanPayments::find()
-                ->alias('a')
-                ->select(['a.payment_short_url surl'])
-                ->where(['a.loan_app_enc_id' => $options['loan_app_id']])
-                ->andWhere(['and',
-                    ['or',
-                        ['!=', 'a.payment_short_url', null],
-                        ['!=', 'a.payment_short_url', '']
-                    ],
-                    ['or',
-                        ['!=', 'a.payment_status', 'captured'],
-                        ['!=', 'a.payment_status', 'created'],
-                        ['a.payment_status' => null],
-                        ['a.payment_status' => ''],
-                    ],
-                    ['a.payment_link_type' => $options['method']]]);
-            if ($options['method'] == 1) {
-                $query->andWhere([
-                        '>', 'a.close_by', date('Y-m-d H:i:s')]
-                );
+                $query = LoanPayments::find()
+                    ->alias('a')
+                    ->select(['a.payment_short_url surl'])
+                    ->where(['a.loan_app_enc_id' => $options['loan_app_id']])
+                    ->andWhere(['and',
+                        ['or',
+                            ['!=', 'a.payment_short_url', null],
+                            ['!=', 'a.payment_short_url', '']
+                        ],
+                        ['or',
+                            ['!=', 'a.payment_status', 'captured'],
+                            ['!=', 'a.payment_status', 'created'],
+                            ['a.payment_status' => null],
+                            ['a.payment_status' => ''],
+                        ],
+                        ['a.payment_link_type' => $options['method']]]);
+                if ($options['method'] == 1) {
+                    $query->andWhere([
+                            '>', 'a.close_by', date('Y-m-d H:i:s')]
+                    );
+                }
+                $query = $query->asArray()
+                    ->one();
+                if ($query) {
+                    return [
+                        'surl' => $query['surl'],
+                        'status' => true
+                    ];
+                }
             }
-
-            $query = $query->asArray()
-                ->one();
-            if ($query) {
-                return ['surl' => $query['surl'],
-                    'status' => 200
+            catch (\Exception $exception){
+                return [
+                    'message'=>$exception->getMessage(),
+                    'status'=>false
                 ];
             }
-
             if ($options['method'] == 0) {
                 return $model->createLink($api, $options);
             } else if ($params['method'] == 1) {
                 return $model->createQr($api, $options);
             }
         } else {
-            return false;
+            return [
+                'message'=>'failed',
+                'status'=>false
+            ];
         }
     }
 

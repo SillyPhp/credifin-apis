@@ -98,7 +98,7 @@ class Payments
             if (self::createUrlLink($options)) {
                 return [
                     'surl' => $link->short_url,
-                    'status' => 200
+                    'status' => true
                 ];
             } else {
                 return [
@@ -132,7 +132,7 @@ class Payments
             if (self::createUrlLink($options)) {
                 return [
                     'surl' => $link->image_url,
-                    'status' => 200,
+                    'status' => true,
                 ];
             } else {
                 return [
