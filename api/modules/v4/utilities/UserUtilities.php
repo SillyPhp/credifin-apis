@@ -31,11 +31,15 @@ class UserUtilities
                 END) as referral_code',
                     'CASE WHEN b.logo IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo',
                     'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(a.first_name," ",a.last_name), "&size=200&rounded=true&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END image',
+                    '(CASE WHEN d1.designation IS NULL THEN null ELSE d1.designation END) as designation'
                 ])
                 ->joinWith(['organizationEnc b' => function ($b) {
                     $b->joinWith(['referrals b1']);
                 }], false)
                 ->joinWith(['referrals0 c'], false)
+                ->joinWith(['userRoles0 d' => function ($d) {
+                    $d->joinWith(['designation d1'], false);
+                }], false)
                 ->where(['a.user_enc_id' => $user_id])
                 ->asArray()
                 ->one();

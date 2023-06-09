@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
+use common\models\extended\Organizations;
 use common\models\extended\Payments;
 use common\models\LoanPayments;
 use yii\filters\VerbFilter;
@@ -25,14 +26,18 @@ class PaymentsController extends ApiBaseController
 
     public function actionGetPaymentLink()
     {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+
         $params = Yii::$app->request->post();
+
 
         if ($params) {
             $model = new Payments();
-            $api_key = 'rzp_test_UROrrJ1Z689b2z';
-            $api_secret = '6JnrI7ZHk2fW3HFqkXEKREJD';
+            $api_key = Yii::$app->params->razorPay->phfleasing->dev->apiKey;
+            $api_secret = Yii::$app->params->razorPay->phfleasing->dev->apiSecret;
             $api = new Api($api_key, $api_secret);
-
             $options['name'] = $params['name'];
             $options['loan_app_id'] = $params['loan_app_id'];
             $options['amount'] = $params['amount'];
@@ -42,7 +47,12 @@ class PaymentsController extends ApiBaseController
             $options['method'] = $params['method'];
 
             if ($options['method'] == 0) {
-                $options['brand'] = $params['brand'];
+                if (empty($brand)) {
+                    $org_name = Organizations::findOne(['organization_enc_id' => $user->organization_enc_id])['name'];
+                    $options['brand'] = $org_name;
+                } else {
+                    $options['brand'] = $params['brand'];
+                }
                 $options['contact'] = $params['phone'];
                 $options['call_back_url'] = "http://www.ravinder.eygb.me/api/v4/payments/test";
                 $options['close_by'] = time() + 24 * 60 * 60 * 7;
@@ -67,18 +77,14 @@ class PaymentsController extends ApiBaseController
                         ['a.payment_status' => ''],
                     ],
                     ['a.payment_link_type' => $options['method']]]);
-//        print_r('dskjv');exit();
-//            if ($options['method']) {
-//                $query->andWhere([
-//                    ['>', 'a.close', date('Y-m-d H:i:s')]
-//                ]);
-//            }else{
-//
-//            }
+            if ($options['method'] == 1) {
+                $query->andWhere([
+                        '>', 'a.close_by', date('Y-m-d H:i:s')]
+                );
+            }
 
             $query = $query->asArray()
                 ->one();
-
             if ($query) {
                 return ['surl' => $query['surl'],
                     'status' => 200

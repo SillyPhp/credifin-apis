@@ -10,20 +10,22 @@ use Yii;
  * @property int $id
  * @property string $financer_loan_product_enc_id assigned financer loan product enc id
  * @property string $assigned_financer_loan_type_enc_id assigned financer loan type enc id
- * @property string $name product name
+ * @property string|null $name product name
  * @property string $created_on created on
  * @property string $created_by created by
- * @property string $updated_on updated on
- * @property string $updated_by updated by
+ * @property string|null $updated_on updated on
+ * @property string|null $updated_by updated by
  * @property int $is_deleted 0 false, 1 true
  *
- * @property FinancerLoanProductDocuments[] $financerLoanProductDocuments
- * @property FinancerLoanProductPurpose[] $financerLoanProductPurposes
- * @property FinancerLoanProductStatus[] $financerLoanProductStatuses
  * @property AssignedFinancerLoanType $assignedFinancerLoanTypeEnc
  * @property Users $createdBy
- * @property Users $updatedBy
+ * @property FinancerLoanProductDocuments[] $financerLoanProductDocuments
+ * @property FinancerLoanProductProcess[] $financerLoanProductProcesses
+ * @property FinancerLoanProductPurpose[] $financerLoanProductPurposes
+ * @property FinancerLoanProductStatus[] $financerLoanProductStatuses
  * @property FinancerRewards[] $financerRewards
+ * @property LoanApplications[] $loanApplications
+ * @property Users $updatedBy
  */
 class FinancerLoanProducts extends \yii\db\ActiveRecord
 {
@@ -53,32 +55,9 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     }
 
 
-
     /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFinancerLoanProductDocuments()
-    {
-        return $this->hasMany(FinancerLoanProductDocuments::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFinancerLoanProductPurposes()
-    {
-        return $this->hasMany(FinancerLoanProductPurpose::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFinancerLoanProductStatuses()
-    {
-        return $this->hasMany(FinancerLoanProductStatus::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
-    }
-
-    /**
+     * Gets query for [[AssignedFinancerLoanTypeEnc]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getAssignedFinancerLoanTypeEnc()
@@ -87,6 +66,8 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[CreatedBy]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getCreatedBy()
@@ -95,18 +76,72 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[FinancerLoanProductDocuments]].
+     *
      * @return \yii\db\ActiveQuery
      */
-    public function getUpdatedBy()
+    public function getFinancerLoanProductDocuments()
     {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
+        return $this->hasMany(FinancerLoanProductDocuments::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
     }
 
     /**
+     * Gets query for [[FinancerLoanProductProcesses]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerLoanProductProcesses()
+    {
+        return $this->hasMany(FinancerLoanProductProcess::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
+    }
+
+    /**
+     * Gets query for [[FinancerLoanProductPurposes]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerLoanProductPurposes()
+    {
+        return $this->hasMany(FinancerLoanProductPurpose::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
+    }
+
+    /**
+     * Gets query for [[FinancerLoanProductStatuses]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerLoanProductStatuses()
+    {
+        return $this->hasMany(FinancerLoanProductStatus::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
+    }
+
+    /**
+     * Gets query for [[FinancerRewards]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getFinancerRewards()
     {
         return $this->hasMany(FinancerRewards::className(), ['loan_product_enc_id' => 'financer_loan_product_enc_id']);
+    }
+
+    /**
+     * Gets query for [[LoanApplications]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplications()
+    {
+        return $this->hasMany(LoanApplications::className(), ['loan_products_enc_id' => 'financer_loan_product_enc_id']);
+    }
+
+    /**
+     * Gets query for [[UpdatedBy]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
     }
 }

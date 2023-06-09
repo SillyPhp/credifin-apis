@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use common\models\FinancerLoanProductDocuments;
+use common\models\FinancerLoanProductProcess;
 use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
 use common\models\AssignedFinancerLoanType;
@@ -1087,6 +1088,11 @@ class OrganizationsController extends ApiBaseController
                 ->joinWith(['assignedFinancerLoanTypeEnc e' => function ($e) {
                     $e->joinWith(['loanTypeEnc e1'], false);
                 }], false)
+                ->joinWith(['financerLoanProductProcesses f' => function ($b) {
+                    $b->select(['f.financer_loan_product_process_enc_id', 'f.financer_loan_product_enc_id', 'f.process', 'f.sequence']);
+                    $b->orderBy(['f.sequence' => SORT_ASC]);
+                    $b->onCondition(['f.is_deleted' => 0]);
+                }])
                 ->onCondition(['a.financer_loan_product_enc_id' => $params['financer_loan_product_enc_id'], 'a.is_deleted' => 0])
                 ->where(['a.is_deleted' => 0])
                 ->asArray()
@@ -1379,6 +1385,93 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
+    // create or update loan product process (updated)
+    public function actionUpdateLoanProductProcess()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_process'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_process"']);
+            }
+            if (empty($params['financer_loan_product_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "financer_loan_product_enc_id"']);
+            }
+            $transaction = Yii::$app->db->beginTransaction();
+            $data['financer_loan_product_enc_id'] = $params['financer_loan_product_enc_id'];
+            $data['user_enc_id'] = $user->user_enc_id;
+            try {
+                foreach ($params['loan_process'] as $key => $value) {
+                    $data['key'] = $key;
+                    $data['process'] = $value['process'];
+                    if (!empty($value['financer_loan_product_process_enc_id'])) {
+                        $process = FinancerLoanProductProcess::findOne([
+                            'financer_loan_product_process_enc_id' => $value['financer_loan_product_process_enc_id'],
+                            'is_deleted' => 0
+                        ]);
+                        if ($process) {
+                            $process->sequence = $key;
+                            $process->process = $value['process'];
+                            $process->updated_by = $user->user_enc_id;
+                            $process->updated_on = date('Y-m-d H:i:s');
+                            if (!$process->update()) {
+                                $transaction->rollBack();
+                                return $this->response(500, ['status' => 500, 'message' => 'An error occurred', 'error' => $process->getErrors()]);
+                            }
+                        } else {
+                            $query = $this->__createProcess($data);
+                            if ($query['status'] == 500) {
+                                $transaction->rollback();
+                                return $this->response(500, $query);
+                            }
+                        }
+                    } else {
+                        $query = $this->__createProcess($data);
+                        if ($query['status'] == 500) {
+                            $transaction->rollback();
+                            return $this->response(500, $query);
+                        }
+                    }
+                }
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+            } catch (Exception $e) {
+                $transaction->rollBack();
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getErrors()]);
+            }
+        }
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    // remove loan product process (updated)
+    public function actionRemoveLoanProductProcess()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['financer_loan_product_process_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "financer_loan_product_process_enc_id"']);
+            }
+
+            $process = FinancerLoanProductProcess::findOne([
+                'financer_loan_product_process_enc_id' => $params['financer_loan_product_process_enc_id'],
+                'is_deleted' => 0
+            ]);
+
+            if ($process) {
+                $process->is_deleted = 1;
+                $process->updated_by = $user->user_enc_id;
+                $process->updated_on = date('Y-m-d H:i:s');
+                if (!$process->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $process->getErrors()]);
+                }
+                return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
+            }
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
 
     // used to create product status
     private function __createStatus($data)
@@ -1429,6 +1522,26 @@ class OrganizationsController extends ApiBaseController
         $purpose->created_by = $data['user_enc_id'];
         if (!$purpose->save()) {
             return ['status' => 500, 'message' => 'an error occurred', 'error' => $purpose->getErrors()];
+        }
+        return ['status' => 200];
+    }
+
+    // used to create product process
+    private function __createProcess($data)
+    {
+        $process = new FinancerLoanProductProcess();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+        $process->financer_loan_product_process_enc_id = $utilitiesModel->encrypt();
+        $process->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
+        $process->process = $data['process'];
+        $process->sequence = $data['key'];
+        $process->created_on = date('Y-m-d H:i:s');
+        $process->updated_on = date('Y-m-d H:i:s');
+        $process->created_by = $data['user_enc_id'];
+        $process->updated_by = $data['user_enc_id'];
+        if (!$process->save()) {
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $process->getErrors()];
         }
         return ['status' => 200];
     }
