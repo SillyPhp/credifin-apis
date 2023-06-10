@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use common\models\FinancerLoanProductDocuments;
+use common\models\FinancerLoanProductProcess;
 use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
 use common\models\AssignedFinancerLoanType;
@@ -382,37 +383,70 @@ class OrganizationsController extends ApiBaseController
         return false;
     }
 
+//    public function actionGetAssignedDocuments()
+//    {
+//        if ($user = $this->isAuthorized()) {
+//            $lender = $this->getFinancerId($user);
+//            if (!$lender) {
+//                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+//            }
+//            $certificates = AssignedFinancerLoanType::find()
+//                ->alias('a')
+//                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
+//                ->joinWith(['loanTypeEnc lt'], false)
+//                ->innerJoinWith(['financerLoanDocuments b' => function ($b) {
+//                    $b->select(['b.financer_loan_document_enc_id', 'b.assigned_financer_loan_type_id', 'b.certificate_type_enc_id',
+//                        'b.sequence', 'ct.name certificate_name']);
+//                    $b->joinWith(['certificateTypeEnc ct'], false);
+//                    $b->orderBy(['b.sequence' => SORT_ASC]);
+//                    $b->onCondition(['b.is_deleted' => 0]);
+//                }])
+//                ->where(['a.organization_enc_id' => $lender, 'a.is_deleted' => 0])
+//                ->groupBy(['a.loan_type_enc_id'])
+//                ->orderBy(['a.created_on' => SORT_DESC])
+//                ->asArray()
+//                ->all();
+//
+//            if ($certificates) {
+//                return $this->response(200, ['status' => 200, 'certificates' => $certificates]);
+//            }
+//            return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+//        } else {
+//            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+//        }
+//    }
+
+//    public function actionGetAssignedProductDocuments()
     public function actionGetAssignedDocuments()
     {
-        if ($user = $this->isAuthorized()) {
-            $lender = $this->getFinancerId($user);
-            if (!$lender) {
-                return $this->response(404, ['status' => 404, 'message' => 'not found']);
-            }
-            $certificates = AssignedFinancerLoanType::find()
-                ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
-                ->joinWith(['loanTypeEnc lt'], false)
-                ->innerJoinWith(['financerLoanDocuments b' => function ($b) {
-                    $b->select(['b.financer_loan_document_enc_id', 'b.assigned_financer_loan_type_id', 'b.certificate_type_enc_id',
-                        'b.sequence', 'ct.name certificate_name']);
-                    $b->joinWith(['certificateTypeEnc ct'], false);
-                    $b->orderBy(['b.sequence' => SORT_ASC]);
-                    $b->onCondition(['b.is_deleted' => 0]);
-                }])
-                ->where(['a.organization_enc_id' => $lender, 'a.is_deleted' => 0])
-                ->groupBy(['a.loan_type_enc_id'])
-                ->orderBy(['a.created_on' => SORT_DESC])
-                ->asArray()
-                ->all();
-
-            if ($certificates) {
-                return $this->response(200, ['status' => 200, 'certificates' => $certificates]);
-            }
-            return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
-        } else {
+        if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
+        $lender = $this->getFinancerId($user);
+        if (!$lender) {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+        $certificates = FinancerLoanProducts::find()
+            ->alias('a')
+            ->select(['b.assigned_financer_enc_id', 'b.organization_enc_id', 'a.financer_loan_product_enc_id', 'a.name loan'])
+            ->joinWith(['assignedFinancerLoanTypeEnc b'], false)
+            ->innerJoinWith(['financerLoanProductDocuments c' => function ($c) {
+                $c->select(['c.financer_loan_product_document_enc_id', 'c.financer_loan_product_enc_id', 'c.certificate_type_enc_id', 'c.sequence', 'c1.name certificate_name']);
+                $c->joinWith(['certificateTypeEnc c1'], false);
+                $c->orderBy(['c.sequence' => SORT_ASC]);
+                $c->onCondition(['c.is_deleted' => 0]);
+            }])
+            ->where(['b.organization_enc_id' => $lender
+                , 'b.is_deleted' => 0, 'a.is_deleted' => 0
+            ])
+            ->groupBy(['a.financer_loan_product_enc_id'])
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+        if ($certificates) {
+            return $this->response(200, ['status' => 200, 'certificates' => $certificates]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
     }
 
     public function actionRemoveAssignedDocumentsList()
@@ -779,18 +813,18 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(404, ['status' => 404, 'message' => 'lender not found']);
             }
 
-            $loan_status = AssignedFinancerLoanType::find()
+            $loan_status = FinancerLoanProducts::find()
                 ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
-                ->joinWith(['loanTypeEnc lt'], false)
-                ->innerJoinWith(['financerLoanStatuses b' => function ($b) {
-                    $b->select(['b.financer_loan_status_enc_id', 'b.assigned_financer_loan_type_id', 'b1.loan_status_enc_id', 'b1.loan_status name', 'b1.value', 'b1.sequence']);
-                    $b->joinWith(['loanStatusEnc b1'], false);
-                    $b->onCondition(['b.is_deleted' => 0]);
-                    $b->orderBy(['b1.sequence' => SORT_ASC]);
+                ->select(['b.assigned_financer_enc_id', 'b.organization_enc_id', 'a.financer_loan_product_enc_id', 'a.name loan'])
+                ->joinWith(['assignedFinancerLoanTypeEnc b'])
+                ->innerJoinWith(['financerLoanProductStatuses c' => function ($c) {
+                    $c->select(['c.financer_loan_product_status_enc_id', 'c.financer_loan_product_enc_id', 'c1.loan_status_enc_id', 'c1.loan_status name', 'c1.value', 'c1.sequence']);
+                    $c->joinWith(['loanStatusEnc c1']);
+                    $c->onCondition(['c.is_deleted' => 0]);
+                    $c->orderBy(['c1.sequence' => SORT_ASC]);
                 }])
-                ->where(['a.organization_enc_id' => $lender])
-                ->groupBy(['a.loan_type_enc_id'])
+                ->where(['b.organization_enc_id' => $lender])
+                ->groupBy(['a.financer_loan_product_enc_id'])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
                 ->all();
@@ -798,7 +832,6 @@ class OrganizationsController extends ApiBaseController
             if ($loan_status) {
                 return $this->response(200, ['status' => 200, 'loan_status' => $loan_status]);
             }
-
             return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
@@ -951,7 +984,6 @@ class OrganizationsController extends ApiBaseController
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $product->getErrors()]);
                 }
             }
-
             return $this->response(200, ['status' => 200, 'message' => 'successfully added']);
         }
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -965,12 +997,22 @@ class OrganizationsController extends ApiBaseController
             if (empty($lender)) {
                 return $this->response(422, ['status' => 422, 'message' => 'Organization not found']);
             }
-            $loan_products = AssignedFinancerLoanType::find()
+            $loan_products = FinancerLoanProducts::find()
                 ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan', 'a.is_deleted', 'flp.name', 'flp.financer_loan_product_enc_id', 'flp.assigned_financer_loan_type_enc_id'])
-                ->innerJoinWith(['financerLoanProducts flp'], false)
-                ->joinWith(['loanTypeEnc lt'], false)
-                ->where(['a.organization_enc_id' => $lender, 'a.is_deleted' => 0, 'flp.is_deleted' => 0])
+                ->select(['a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id', 'b.organization_enc_id', 'b.loan_type_enc_id', 'b1.name loan', 'a.name'])
+                ->joinWith(['assignedFinancerLoanTypeEnc b' => function ($b) use ($lender) {
+                    $b->joinWith(['loanTypeEnc b1'], false);
+                    $b->andWhere([
+                        'b.organization_enc_id' => $lender,
+                        'b.is_deleted' => 0]);
+                }], false)
+                ->joinWith(['financerLoanProductPurposes c' => function ($c) {
+                    $c->select(['c.financer_loan_product_purpose_enc_id', 'c.financer_loan_product_enc_id', 'c.sequence', 'c.purpose']);
+                    $c->orderBy(['c.sequence' => SORT_ASC]);
+                    $c->onCondition(['c.is_deleted' => 0]);
+                }])
+                ->groupBy(['a.financer_loan_product_enc_id'])
+                ->where(['a.is_deleted' => 0])
                 ->asArray()
                 ->all();
             if ($loan_products) {
@@ -1046,6 +1088,11 @@ class OrganizationsController extends ApiBaseController
                 ->joinWith(['assignedFinancerLoanTypeEnc e' => function ($e) {
                     $e->joinWith(['loanTypeEnc e1'], false);
                 }], false)
+                ->joinWith(['financerLoanProductProcesses f' => function ($b) {
+                    $b->select(['f.financer_loan_product_process_enc_id', 'f.financer_loan_product_enc_id', 'f.process', 'f.sequence']);
+                    $b->orderBy(['f.sequence' => SORT_ASC]);
+                    $b->onCondition(['f.is_deleted' => 0]);
+                }])
                 ->onCondition(['a.financer_loan_product_enc_id' => $params['financer_loan_product_enc_id'], 'a.is_deleted' => 0])
                 ->where(['a.is_deleted' => 0])
                 ->asArray()
@@ -1338,6 +1385,93 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
+    // create or update loan product process (updated)
+    public function actionUpdateLoanProductProcess()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['loan_process'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_process"']);
+            }
+            if (empty($params['financer_loan_product_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "financer_loan_product_enc_id"']);
+            }
+            $transaction = Yii::$app->db->beginTransaction();
+            $data['financer_loan_product_enc_id'] = $params['financer_loan_product_enc_id'];
+            $data['user_enc_id'] = $user->user_enc_id;
+            try {
+                foreach ($params['loan_process'] as $key => $value) {
+                    $data['key'] = $key;
+                    $data['process'] = $value['process'];
+                    if (!empty($value['financer_loan_product_process_enc_id'])) {
+                        $process = FinancerLoanProductProcess::findOne([
+                            'financer_loan_product_process_enc_id' => $value['financer_loan_product_process_enc_id'],
+                            'is_deleted' => 0
+                        ]);
+                        if ($process) {
+                            $process->sequence = $key;
+                            $process->process = $value['process'];
+                            $process->updated_by = $user->user_enc_id;
+                            $process->updated_on = date('Y-m-d H:i:s');
+                            if (!$process->update()) {
+                                $transaction->rollBack();
+                                return $this->response(500, ['status' => 500, 'message' => 'An error occurred', 'error' => $process->getErrors()]);
+                            }
+                        } else {
+                            $query = $this->__createProcess($data);
+                            if ($query['status'] == 500) {
+                                $transaction->rollback();
+                                return $this->response(500, $query);
+                            }
+                        }
+                    } else {
+                        $query = $this->__createProcess($data);
+                        if ($query['status'] == 500) {
+                            $transaction->rollback();
+                            return $this->response(500, $query);
+                        }
+                    }
+                }
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+            } catch (Exception $e) {
+                $transaction->rollBack();
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getErrors()]);
+            }
+        }
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    // remove loan product process (updated)
+    public function actionRemoveLoanProductProcess()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['financer_loan_product_process_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "financer_loan_product_process_enc_id"']);
+            }
+
+            $process = FinancerLoanProductProcess::findOne([
+                'financer_loan_product_process_enc_id' => $params['financer_loan_product_process_enc_id'],
+                'is_deleted' => 0
+            ]);
+
+            if ($process) {
+                $process->is_deleted = 1;
+                $process->updated_by = $user->user_enc_id;
+                $process->updated_on = date('Y-m-d H:i:s');
+                if (!$process->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $process->getErrors()]);
+                }
+                return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
+            }
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
 
     // used to create product status
     private function __createStatus($data)
@@ -1388,6 +1522,26 @@ class OrganizationsController extends ApiBaseController
         $purpose->created_by = $data['user_enc_id'];
         if (!$purpose->save()) {
             return ['status' => 500, 'message' => 'an error occurred', 'error' => $purpose->getErrors()];
+        }
+        return ['status' => 200];
+    }
+
+    // used to create product process
+    private function __createProcess($data)
+    {
+        $process = new FinancerLoanProductProcess();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+        $process->financer_loan_product_process_enc_id = $utilitiesModel->encrypt();
+        $process->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
+        $process->process = $data['process'];
+        $process->sequence = $data['key'];
+        $process->created_on = date('Y-m-d H:i:s');
+        $process->updated_on = date('Y-m-d H:i:s');
+        $process->created_by = $data['user_enc_id'];
+        $process->updated_by = $data['user_enc_id'];
+        if (!$process->save()) {
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $process->getErrors()];
         }
         return ['status' => 200];
     }

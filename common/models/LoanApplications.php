@@ -87,6 +87,7 @@ use Yii;
  * @property CollegeCourses $collegeCourseEnc
  * @property LeadsApplications $leadApplicationEnc
  * @property Users $cpa0
+ * @property LoanPayments[] $loanPayments
  * @property FinancerLoanProducts $loanProductsEnc
  * @property Users $createdBy
  * @property Users $updatedBy
@@ -417,6 +418,16 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanDisbursementSchedules()
     {
         return $this->hasMany(LoanDisbursementSchedule::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * Gets query for [[LoanPayments]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanPayments()
+    {
+        return $this->hasMany(LoanPayments::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**

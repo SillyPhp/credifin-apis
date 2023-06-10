@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\TasksForm;
+use common\models\UserTasks;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -147,7 +148,7 @@ class TasksController extends ApiBaseController
 
             // updating data query
             $query = Yii::$app->db->createCommand()
-                ->update(self::tableName(), ['is_deleted' => 1], ['task_enc_id' => $params['task_enc_id'], 'is_deleted' => 0, 'created_by' => $user->user_enc_id])
+                ->update(UserTasks::tableName(), ['is_deleted' => 1], ['task_enc_id' => $params['task_enc_id'], 'is_deleted' => 0, 'created_by' => $user->user_enc_id])
                 ->execute();
 
             if ($query) {
@@ -174,7 +175,7 @@ class TasksController extends ApiBaseController
             }
 
             // checking is_completed
-            if (empty($params['is_completed'])) {
+            if (!isset($params['is_completed'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "is_completed"']);
             }
 
