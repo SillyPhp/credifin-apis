@@ -2296,7 +2296,8 @@ class CompanyDashboardController extends ApiBaseController
                 }])
                 ->joinWith(['loanProductsEnc d'])
                 ->where(['between', 'a.created_on', $params['start_date'], $params['end_date']])
-                ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0]);
+                ->andWhere(['a.lead_by' => $params['user_enc_id'], 'a.is_deleted' => 0])
+                ->groupBy(['a.loan_app_enc_id']);
             $count = $employeeLoanList->count();
             $employeeLoanList = $employeeLoanList
                 ->limit($limit)
