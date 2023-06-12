@@ -70,9 +70,14 @@ class LoanPurpose extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+//    public function getFinancerLoanPurposeEnc()
+//    {
+//        return $this->hasOne(FinancerLoanProductPurpose::className(), ['financer_loan_product_purpose_enc_id' => 'financer_loan_purpose_enc_id']);
+//    }
+
     public function getFinancerLoanPurposeEnc()
     {
-        return $this->hasOne(FinancerLoanProductPurpose::className(), ['financer_loan_product_purpose_enc_id' => 'financer_loan_purpose_enc_id']);
+        return $this->hasOne(FinancerLoanPurpose::className(), ['financer_loan_purpose_enc_id' => 'financer_loan_purpose_enc_id']);
     }
 
     /**
