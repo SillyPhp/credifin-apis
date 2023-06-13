@@ -601,8 +601,8 @@ class LoansController extends ApiBaseController
             if (!empty($params['proof_of'])) {
                 $certificate->proof_of = $params['proof_of'];
             }
-            if (!empty($params['financer_loan_product_document_enc_id'])) {
-                $certificate->financer_loan_document_enc_id = $params['financer_loan_product_document_enc_id'];
+            if (!empty($params['financer_loan_document_enc_id'])) {
+                $certificate->financer_loan_document_enc_id = $params['financer_loan_document_enc_id'];
             }
             $certificate->created_by = $user->user_enc_id;
             if (!empty($params['short_description'])) {

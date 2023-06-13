@@ -41,23 +41,11 @@ class LoanPurpose extends \yii\db\ActiveRecord
             [['fee_component_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationFeeComponents::className(), 'targetAttribute' => ['fee_component_enc_id' => 'fee_component_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
-            [['financer_loan_purpose_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProductPurpose::className(), 'targetAttribute' => ['financer_loan_purpose_enc_id' => 'financer_loan_product_purpose_enc_id']],
+            [['financer_loan_purpose_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanPurpose::className(), 'targetAttribute' => ['financer_loan_purpose_enc_id' => 'financer_loan_purpose_enc_id']],
         ];
     }
 
     /**
-     * Gets query for [[CreatedBy]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCreatedBy()
-    {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
-    }
-
-    /**
-     * Gets query for [[FeeComponentEnc]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getFeeComponentEnc()
@@ -68,9 +56,9 @@ class LoanPurpose extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getFinancerLoanPurposeEnc()
+    public function getCreatedBy()
     {
-        return $this->hasOne(FinancerLoanProductPurpose::className(), ['financer_loan_product_purpose_enc_id' => 'financer_loan_purpose_enc_id']);
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
 
     /**
@@ -79,5 +67,13 @@ class LoanPurpose extends \yii\db\ActiveRecord
     public function getLoanAppEnc()
     {
         return $this->hasOne(LoanApplications::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerLoanPurposeEnc()
+    {
+        return $this->hasOne(FinancerLoanPurpose::className(), ['financer_loan_purpose_enc_id' => 'financer_loan_purpose_enc_id']);
     }
 }
