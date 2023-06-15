@@ -23,6 +23,8 @@ use common\models\LeadsApplications;
 use common\models\LoanAuditTrail;
 use common\models\LoanCertificates;
 use common\models\LoanCoApplicants;
+use common\models\LoanPayments;
+use api\modules\v4\models\LoanPaymentsForm;
 use common\models\LoanVerificationLocations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
@@ -563,6 +565,7 @@ class LoansController extends ApiBaseController
         // checking authorization
         if ($user = $this->isAuthorized()) {
 
+
             $params = Yii::$app->request->post();
 
             // checking loan_id
@@ -1070,4 +1073,22 @@ class LoansController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
+    public function actionLoanPayments()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_app_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_id"']);
+        }
+        $model = new LoanPaymentsForm();
+        if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
+            $model->receipt = UploadedFile::getInstance($model, 'receipt');
+            $response = $model->save($params['loan_app_id'], $user->user_enc_id);
+            return $this->response($response['status'], $response);
+        } else {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+        }
+    }
 }

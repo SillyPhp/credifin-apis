@@ -17,7 +17,7 @@ class TasksForm extends \common\models\UserTasks
         $this->created_on = date('Y-m-d H:i:s');
         $this->name = $options['name'];
         $this->created_by = $options['created_by'];
-        if (!$this->validate()) {
+        if (!$this->save()) {
             return ['status' => 500, 'message' => 'an error occurred', 'error' => $this->getErrors()];
         }
 
@@ -35,6 +35,9 @@ class TasksForm extends \common\models\UserTasks
 
         // getting count
         $total = $tasks->count();
+
+//        print_r($total);
+//        exit();
 
         // getting data array
         $tasks = $tasks->asArray()->all();
