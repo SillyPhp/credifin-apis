@@ -930,12 +930,17 @@ class CompanyDashboardController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
 
             // checking if its organization
-            if ($user->organization_enc_id) {
+            $org_id = $user->organization_enc_id;
+            if (!$user->organization_enc_id) {
+                $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                $org_id = $findOrg->organization_enc_id;
+            }
+            if ($org_id) {
 
                 $params = Yii::$app->request->post();
 
                 // getting employees list
-                $employee = $this->employeesList($user->organization_enc_id, $params);
+                $employee = $this->employeesList($org_id, $params);
 
                 // getting dsa's list
                 $dsa = $this->dsaList($user->user_enc_id, $params);
@@ -2201,8 +2206,8 @@ class CompanyDashboardController extends ApiBaseController
             if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
                 if ($model->validate()) {
                     $designation = $model->addDesignation($user);
-                    if ($designation['status'] == 201) {
-                        return $this->response(201, $designation);
+                    if ($designation['status'] == 200) {
+                        return $this->response(200, $designation);
                     } else {
                         return $this->response(500, $designation);
                     }
