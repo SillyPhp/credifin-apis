@@ -2415,7 +2415,11 @@ class CompanyDashboardController extends ApiBaseController
             if (!empty($params['loan_type'])) {
                 $employeeAmount->andWhere(['b.loan_type' => $params['loan_type']]);
             }
+            if (!empty($params['branch_name'])) {
+                $employeeAmount->andWhere(['i.branch_enc_id' => $params['branch_name']]);
+            }
             $employeeAmount = $employeeAmount->andWhere(['between', 'b.created_on', $params['start_date'], $params['end_date']])
+//                ->andWhere(['i.branch_enc_id' => $params['branch_id']])
                 ->asArray()
                 ->one();
 
