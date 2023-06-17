@@ -1778,9 +1778,14 @@ class CompanyDashboardController extends ApiBaseController
             if (empty($params['parent_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "parent_id"']);
             }
+            $org_id = $user->organization_enc_id;
+            if (!$user->organization_enc_id) {
+                $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                $org_id = $findOrg->organization_enc_id;
+            }
 
             // getting employee with this id
-            $employee = UserRoles::findOne(['user_enc_id' => $params['parent_id'], 'organization_enc_id' => $user->organization_enc_id]);
+            $employee = UserRoles::findOne(['user_enc_id' => $params['parent_id'], 'organization_enc_id' => $org_id]);
             $field = $params['id'];
 
             // if not empty employee
@@ -1800,7 +1805,7 @@ class CompanyDashboardController extends ApiBaseController
                 $employee->role_enc_id = $utilitiesModel->encrypt();
                 $employee->user_type_enc_id = UserTypes::findOne(['user_type' => 'Employee'])->user_type_enc_id;
                 $employee->user_enc_id = $params['parent_id'];
-                $employee->organization_enc_id = $user->organization_enc_id;
+                $employee->organization_enc_id = $org_id;
                 $employee->$field = $params['value'];
                 $employee->created_by = $user->user_enc_id;
                 $employee->created_on = date('Y-m-d H:i:s');
@@ -2227,12 +2232,21 @@ class CompanyDashboardController extends ApiBaseController
     public function actionFinancerDesignationList()
     {
         if ($user = $this->isAuthorized()) {
-            $financerDesignations = FinancerAssignedDesignations::find()
-                ->select(['assigned_designation_enc_id as id', 'designation as value'])
-                ->andWhere(['organization_enc_id' => $user->organization_enc_id, 'is_deleted' => 0])
-                ->asArray()
-                ->all();
-            return $this->response(200, ['status' => 200, 'data' => $financerDesignations]);
+            $org_id = $user->organization_enc_id;
+            if (!$user->organization_enc_id) {
+                $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                $org_id = $findOrg->organization_enc_id;
+            }
+            if ($org_id) {
+                $financerDesignations = FinancerAssignedDesignations::find()
+                    ->select(['assigned_designation_enc_id as id', 'designation as value'])
+                    ->andWhere(['organization_enc_id' => $org_id, 'is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+                return $this->response(200, ['status' => 200, 'data' => $financerDesignations]);
+            } else {
+                return $this->response(401, ['status' => 201, 'message' => 'Financer not found']);
+            }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
