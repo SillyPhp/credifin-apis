@@ -34,13 +34,12 @@ class Payments
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->loan_payments_enc_id = $utilitiesModel->encrypt();
-        $model->loan_app_enc_id = $options['loan_app_enc_id'];
+        $model->loan_app_enc_id = $options['loan_app_id'];
         $model->payment_amount = $options['amount'];
         $model->payment_token = $options['token'];
         $model->payment_short_url = $options['surl'];
         $model->created_on = date('Y-m-d h:i:s');
         $model->close_by = date('Y-m-d h:i:s', $options['close_by']);
-//        date('Y-m-d h:i:s');
         $model->payment_link_type = $options['method'];
         if (!$model->save()) {
             return $model->getErrors();
@@ -123,7 +122,7 @@ class Payments
             "payment_amount" => $options['total'],
             "description" => "For Store 1",
             "close_by" => $options['close_by'],
-            "notes" => array("purpose" => "Test UPI QR code notes")]);
+            "notes" => array("purpose" => $options['purpose'])]);
         if ($link) {
             $options['token'] = $link->id;
             $options['created_on'] = $link->created_at;
