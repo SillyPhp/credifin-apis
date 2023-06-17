@@ -370,6 +370,21 @@ class CompanyDashboardController extends ApiBaseController
             $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
         }
 
+        // if all, rejected or disbursed data needed
+        if (isset($params['type'])) {
+            switch ($params['type']) {
+                case 'rejected':
+                    $loans->andWhere(['or', ['i.status' => 28], ['i.status' => 32]]);
+                    break;
+                case 'disbursed':
+                    $loans->andWhere(['i.status' => 31]);
+                    break;
+                case 'all':
+                    $loans->andWhere(['not in', 'i.status', [28, 31, 32]]);
+                    break;
+            }
+        }
+
         // filter to check status
         if ($filter) {
             $loans->andWhere(['in', 'i.status', $filter]);
