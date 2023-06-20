@@ -370,6 +370,21 @@ class CompanyDashboardController extends ApiBaseController
             $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
         }
 
+        // if all, rejected or disbursed data needed
+        if (isset($params['type'])) {
+            switch ($params['type']) {
+                case 'rejected':
+                    $loans->andWhere(['or', ['i.status' => 28], ['i.status' => 32]]);
+                    break;
+                case 'disbursed':
+                    $loans->andWhere(['i.status' => 31]);
+                    break;
+                case 'all':
+                    $loans->andWhere(['not in', 'i.status', [28, 31, 32]]);
+                    break;
+            }
+        }
+
         // filter to check status
         if ($filter) {
             $loans->andWhere(['in', 'i.status', $filter]);
@@ -648,7 +663,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number',
                     'a.applicant_name', 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'lp.name as loan_product', 'a.gender', 'a.applicant_dob',
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address',
-                    'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",a.image_location, "/", a.image) ELSE NULL END image',
+                    'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",a.image_location, a.image) ELSE NULL END image',
                     '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee'
 //                    'lpm.payment_status as login_fee'
                 ])
@@ -663,7 +678,7 @@ class CompanyDashboardController extends ApiBaseController
                     $d->select(['d.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
                         'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation', 'd1.address',
                         'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.co_applicant_dob', 'd.gender', 'd2.city_enc_id', 'd2.name city', 'd3.state_enc_id', 'd3.name state', 'd3.abbreviation state_abbreviation', 'd1.postal_code', 'd3.state_code',
-                        'CASE WHEN d.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",d.image_location, "/", d.image) ELSE NULL END image',
+                        'CASE WHEN d.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",d.image_location, d.image) ELSE NULL END image',
                     ]);
                     $d->joinWith(['loanApplicantResidentialInfos d1' => function ($d1) {
                         $d1->joinWith(['cityEnc d2'], false);
@@ -930,12 +945,17 @@ class CompanyDashboardController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
 
             // checking if its organization
-            if ($user->organization_enc_id) {
+            $org_id = $user->organization_enc_id;
+            if (!$user->organization_enc_id) {
+                $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                $org_id = $findOrg->organization_enc_id;
+            }
+            if ($org_id) {
 
                 $params = Yii::$app->request->post();
 
                 // getting employees list
-                $employee = $this->employeesList($user->organization_enc_id, $params);
+                $employee = $this->employeesList($org_id, $params);
 
                 // getting dsa's list
                 $dsa = $this->dsaList($user->user_enc_id, $params);
@@ -1773,9 +1793,14 @@ class CompanyDashboardController extends ApiBaseController
             if (empty($params['parent_id'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "parent_id"']);
             }
+            $org_id = $user->organization_enc_id;
+            if (!$user->organization_enc_id) {
+                $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                $org_id = $findOrg->organization_enc_id;
+            }
 
             // getting employee with this id
-            $employee = UserRoles::findOne(['user_enc_id' => $params['parent_id'], 'organization_enc_id' => $user->organization_enc_id]);
+            $employee = UserRoles::findOne(['user_enc_id' => $params['parent_id'], 'organization_enc_id' => $org_id]);
             $field = $params['id'];
 
             // if not empty employee
@@ -1795,7 +1820,7 @@ class CompanyDashboardController extends ApiBaseController
                 $employee->role_enc_id = $utilitiesModel->encrypt();
                 $employee->user_type_enc_id = UserTypes::findOne(['user_type' => 'Employee'])->user_type_enc_id;
                 $employee->user_enc_id = $params['parent_id'];
-                $employee->organization_enc_id = $user->organization_enc_id;
+                $employee->organization_enc_id = $org_id;
                 $employee->$field = $params['value'];
                 $employee->created_by = $user->user_enc_id;
                 $employee->created_on = date('Y-m-d H:i:s');
@@ -2201,8 +2226,8 @@ class CompanyDashboardController extends ApiBaseController
             if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
                 if ($model->validate()) {
                     $designation = $model->addDesignation($user);
-                    if ($designation['status'] == 201) {
-                        return $this->response(201, $designation);
+                    if ($designation['status'] == 200) {
+                        return $this->response(200, $designation);
                     } else {
                         return $this->response(500, $designation);
                     }
@@ -2222,12 +2247,21 @@ class CompanyDashboardController extends ApiBaseController
     public function actionFinancerDesignationList()
     {
         if ($user = $this->isAuthorized()) {
-            $financerDesignations = FinancerAssignedDesignations::find()
-                ->select(['assigned_designation_enc_id as id', 'designation as value'])
-                ->andWhere(['organization_enc_id' => $user->organization_enc_id, 'is_deleted' => 0])
-                ->asArray()
-                ->all();
-            return $this->response(200, ['status' => 200, 'data' => $financerDesignations]);
+            $org_id = $user->organization_enc_id;
+            if (!$user->organization_enc_id) {
+                $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                $org_id = $findOrg->organization_enc_id;
+            }
+            if ($org_id) {
+                $financerDesignations = FinancerAssignedDesignations::find()
+                    ->select(['assigned_designation_enc_id as id', 'designation as value'])
+                    ->andWhere(['organization_enc_id' => $org_id, 'is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+                return $this->response(200, ['status' => 200, 'data' => $financerDesignations]);
+            } else {
+                return $this->response(401, ['status' => 201, 'message' => 'Financer not found']);
+            }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
@@ -2396,7 +2430,11 @@ class CompanyDashboardController extends ApiBaseController
             if (!empty($params['loan_type'])) {
                 $employeeAmount->andWhere(['b.loan_type' => $params['loan_type']]);
             }
+            if (!empty($params['branch_name'])) {
+                $employeeAmount->andWhere(['i.branch_enc_id' => $params['branch_name']]);
+            }
             $employeeAmount = $employeeAmount->andWhere(['between', 'b.created_on', $params['start_date'], $params['end_date']])
+//                ->andWhere(['i.branch_enc_id' => $params['branch_id']])
                 ->asArray()
                 ->one();
 

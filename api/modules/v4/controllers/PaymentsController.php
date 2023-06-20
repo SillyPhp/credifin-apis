@@ -2,8 +2,11 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\PaymentModal;
+use api\modules\v4\models\PaymentModel;
 use common\models\extended\Organizations;
 use common\models\extended\Payments;
+use common\models\LoanApplications;
 use common\models\LoanPayments;
 use http\Url;
 use yii\filters\VerbFilter;
@@ -20,19 +23,65 @@ class PaymentsController extends ApiBaseController
             'class' => VerbFilter::className(),
             'actions' => [
                 'get-payment-link' => ['POST','OPTIONS'],
+                'razor-pay-webhook' => ['POST','OPTIONS'],
+                'update-payment' => ['GET'],
             ]
         ];
         return $behaviors;
     }
 
+    public function actionRazorPayWebhook(){
+        $data = Yii::$app->request->post();
+        if (isset($data['event'])) {
+            if ($data['contains'][0]=='qr_code'){
+                $entity = $data['payload']['qr_code']['entity'];
+                $order_id = $entity['id'];
+            }
+            if ($data['contains'][0]=='payment'){
+                $entity = $data['payload']['payment']['entity'];
+            }
+            if ($data['contains'][0]=='payment_link'){
+                $entity = $data['payload']['payment_link']['entity'];
+            }
+            $payment_id = $entity['id'];
+            $status = $entity['status'];
+            $model = LoanPayments::findOne(['payment_token'=>$order_id]);
+            $method = $entity['method'];
+            if ($data['event'] == "payment.failed") {
+                $method .= $entity['error_code'];
+                $method .= " ";
+                $method .= $entity['error_description'];
+                $method .= " ";
+                $method .= $entity['error_source'];
+                $method .= " ";
+                $method .= $entity['error_step'];
+                $method .= " ";
+                $method .= $entity['error_reason'];
+            }
+            $model->payment_id = $payment_id;
+            $model->payment_status = $status;
+            $model->remarks = $method;
+
+            if ($model->save()) {
+                return $this->response(200, ['status' => 200, 'message' => 'success']);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'Unable To Store Payment Information']);
+            }
+        }
+    }
     public function actionGetPaymentLink()
     {
-//        if (!$user = $this->isAuthorized()) {
-//            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-//        }
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
         $params = Yii::$app->request->post();
         if ($params) {
             try {
+                $url =  \yii\helpers\Url::base('https');
+                $model = new PaymentModel();
+                if ($model->load(Yii::$app->request->post())&&!$model->validate()){
+                    return $this->response(422, ['status' => 422, 'message' => \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)]);
+                }
                 $model = new Payments();
                 $api_key = Yii::$app->params->razorPay->phfleasing->prod->apiKey;
                 $api_secret = Yii::$app->params->razorPay->phfleasing->prod->apiSecret;
@@ -42,7 +91,6 @@ class PaymentsController extends ApiBaseController
                 $options['amount'] = $params['amount'];
                 $options['total'] = (int)($params['amount'] * 100);
                 $options['description'] = $params['desc'];
-                $options['loan_app_enc_id'] = $params['loan_app_id'];
                 $options['method'] = $params['method'];
                 if ($options['method'] == 0) {
                     $options['brand'] = $params['brand'];
@@ -51,10 +99,11 @@ class PaymentsController extends ApiBaseController
                         $options['brand'] = $org_name;
                     }
                     $options['contact'] = $params['phone'];
-                    $options['call_back_url'] = "http://www.ravinder.eygb.me/api/v4/payments/test";
+                    $options['call_back_url'] = $url."/v4/payments/update-payment";
                     $options['close_by'] = time() + 24 * 60 * 60 * 7;
                 }
                 if ($options['method'] == 1) {
+                    $options['purpose'] = $params['purpose'];
                     $options['close_by'] = time() + 24 * 60 * 60;
                 }
 
@@ -107,7 +156,7 @@ class PaymentsController extends ApiBaseController
         }
     }
 
-    public function actionTest()
+    public function actionUpdatePayment()
     {
         $params = Yii::$app->request->get();
         $query = LoanPayments::findOne(['payment_token' => $params['razorpay_payment_link_id']]);
