@@ -2,6 +2,8 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\EmiCollectionForm;
+use common\models\EmiCollection;
 use common\models\FinancerLoanProductDocuments;
 use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
@@ -927,14 +929,14 @@ class OrganizationsController extends ApiBaseController
 
             if ($params['financer_loan_product_enc_id']) {
                 $existingProduct = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $params['financer_loan_product_enc_id']]);
-                if(!$existingProduct){
+                if (!$existingProduct) {
                     return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
                 }
                 $existingProduct->name = $params['name'];
                 $existingProduct->updated_on = date('Y-m-d H:i:s');
                 $existingProduct->updated_by = $user->user_enc_id;
 
-                if(!$existingProduct->update()){
+                if (!$existingProduct->update()) {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred, product not updated', 'error' => $existingProduct->getErrors()]);
                 }
 
@@ -1390,5 +1392,90 @@ class OrganizationsController extends ApiBaseController
             return ['status' => 500, 'message' => 'an error occurred', 'error' => $purpose->getErrors()];
         }
         return ['status' => 200];
+    }
+
+    public function actionEmiCollection()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        try {
+            $model = new EmiCollectionForm();
+            if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
+                return $this->response(422, ['status' => 422, 'message' => \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)]);
+            }
+            $model->location_image = UploadedFile::getInstance($model, 'location_image');
+            $model->borrower_image = UploadedFile::getInstance($model, 'borrower_image');
+            $model->pr_receipt_image = UploadedFile::getInstance($model, 'pr_receipt_image');
+            $save = $model->save($user->user_enc_id);
+            if ($save['status'] == 500) {
+                return $this->response(500, $save);
+            } else {
+                return $this->response(200, $save);
+            }
+        } catch (\Exception $exception) {
+            return [
+                'message' => $exception->getMessage(),
+                'status' => false
+            ];
+        }
+    }
+
+    public function actionGetCollectedEmiList()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['organization_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing Information "organization_id"']);
+        }
+        $org_id = $params['organization_id'];
+//        $proof = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . 'YIQmi4Oi3eyDR5cxn8NzB3q0cRmExmOL/' . 'P6O1aYr4wyXw1KxDaN2p7z5GJK93q0.jpeg', "15 minutes");
+//        print_r($proof);exit();
+//        $path = Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image;
+        $model = EmiCollection::find()
+            ->alias('a')
+            ->select(['a.emi_collection_enc_id', 'a.customer_name', 'a.collection_date', 'a.loan_account_number',
+                'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.payment_method', 'a.other_payment_method',
+                'a.ptp_amount', 'a.ptp_date', 'a.delay_reason', 'a.other_delay_reason',
+//                'image' => new \yii\db\Expression("CASE WHEN a.location_image IS NOT NULL THEN ". $my_space->signedURL("CONCAT($path,a.location_image_location, '/', a.location_image)",'15 minutes')." ELSE NULL END image"),
+                'CASE WHEN a.location_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.location_image_location, "/", a.location_image) ELSE NULL END as location_image',
+                'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
+                'CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
+                'CONCAT(a.address,", ",d.name,", ",e.name,", ",a.pincode) address',
+                'a.comments'])
+            ->joinWith(['createdBy b' => function ($b) use ($org_id) {
+                $b->andWhere(['b.organization_enc_id' => $org_id]);
+            }])
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->joinWith(['stateEnc d'], false)
+            ->joinWith(['cityEnc e'], false)
+            ->andWhere(['a.is_deleted' => 0]);
+        $count = $model->count();
+        $model = $model
+            ->asArray()
+            ->all();
+        if ($count > 0) {
+            $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+            foreach ($model as $key => $value) {
+                if ($value['location_image']) {
+                    $proof = $my_space->signedURL($value['location_image'], "15 minutes");
+                    $model[$key]['location_image'] = $proof;
+                }
+                if ($value['borrower_image']) {
+                    $proof = $my_space->signedURL($value['borrower_image'], "15 minutes");
+                    $model[$key]['borrower_image'] = $proof;
+                }
+                if ($value['pr_receipt_image']) {
+                    $proof = $my_space->signedURL($value['pr_receipt_image'], "15 minutes");
+                    $model[$key]['pr_receipt_image'] = $proof;
+                }
+            }
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
+        }
+        return $this->response(200, ['status' => 200, 'data' => $model, 'count' => $count]);
     }
 }
