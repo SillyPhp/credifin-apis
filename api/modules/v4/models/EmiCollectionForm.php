@@ -8,7 +8,7 @@ use common\models\Utilities;
 use Yii;
 use yii\base\Model;
 
-class EmiCollectionForm extends model
+class EmiCollectionForm extends Model
 {
     public $customer_name;
     public $collection_date;
@@ -26,6 +26,10 @@ class EmiCollectionForm extends model
     public $location_image;
     public $borrower_image;
     public $pr_receipt_image;
+    public $address;
+    public $state;
+    public $city;
+    public $zip;
     public $comments;
 
     public function formName()
@@ -36,28 +40,39 @@ class EmiCollectionForm extends model
     public function rules()
     {
         return [
-            [['customer_name', 'collection_date', 'loan_account_number', 'phone', 'amount', 'loan_type', 'loan_purpose', 'location_image', 'borrower_image', 'pr_receipt_image'], 'required'],
-            [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason'], 'safe'],
+            [['customer_name', 'collection_date', 'loan_account_number', 'phone', 'amount', 'loan_type', 'address', 'state', 'city', 'zip'], 'required'],
+            [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'location_image', 'borrower_image', 'pr_receipt_image', 'payment_method', 'loan_purpose'], 'safe'],
             [['amount', 'ptp_amount'], 'number'],
+            [['collection_date'], 'date', 'format' => 'php:Y-m-d'],
+            [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
+            [['location_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
             ['other_payment_method', 'required', 'when' => function ($model) {
                 return $model->payment_method == null;
             }]
         ];
     }
 
-    public function save()
+    public function save($user_id)
     {
         $model = new EmiCollection();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->emi_collection_enc_id = $utilitiesModel->encrypt();
         $model->customer_name = $this->customer_name;
-        $model->collection_date = date('Y-m-d', strtotime($this->collection_date)) . ' ' . date('H:i:s');
+        $model->collection_date = $this->collection_date;
         $model->loan_account_number = $this->loan_account_number;
         $model->phone = $this->phone;
         $model->amount = $this->amount;
         $model->loan_type = $this->loan_type;
         $model->loan_purpose = $this->loan_purpose;
+        $model->address = $this->address;
+        $model->state_enc_id = $this->state;
+        $model->city_enc_id = $this->city;
+        $model->pincode = $this->zip;
+        $model->created_by = $user_id;
+        $model->updated_by = $user_id;
+        $model->created_on = date('Y-m-d h:i:s');
+        $model->updated_on = date('Y-m-d h:i:s');
         if ($this->ptp_amount) {
             $model->ptp_amount = $this->ptp_amount;
         }
@@ -65,7 +80,7 @@ class EmiCollectionForm extends model
             $model->comments = $this->comments;
         }
         if ($this->ptp_date) {
-            $model->ptp_date = date('Y-m-d', strtotime($this->ptp_date)) . ' ' . date('H:i:s');
+            $model->ptp_date = $this->ptp_date;
         }
         if ($this->delay_reason) {
             $model->delay_reason = $this->delay_reason;
@@ -105,20 +120,18 @@ class EmiCollectionForm extends model
             $this->fileUpload($this->location_image, $model->pr_receipt_image, $model->pr_receipt_image_location);
         }
         if (!$model->save()) {
-            return false;
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()];
         }
-        return true;
-
-
+        return ['status' => 200, 'message' => 'Saved Successfully'];
     }
 
     private function fileUpload($img_obj, $image, $image_location)
     {
-        $base_path = Yii::$app->params->upload_directories->emi_collection->logo . $image_location;
+        $base_path = Yii::$app->params->upload_directories->emi_collection->image . $image_location;
         $type = $img_obj->type;
         $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-        $result = $my_space->uploadFileSources($img_obj->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . $image, "private", ['params' => ['ContentType' => $type]]);
+        $result = $my_space->uploadFileSources($img_obj->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . DIRECTORY_SEPARATOR . $image, "private", ['params' => ['ContentType' => $type]]);
         if (!$result) {
             throw new \Exception('error occurred while uploading logo');
         }
