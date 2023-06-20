@@ -2,6 +2,8 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\EmiCollectionForm;
+use common\models\EmiCollection;
 use common\models\FinancerLoanProductDocuments;
 use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
@@ -927,14 +929,14 @@ class OrganizationsController extends ApiBaseController
 
             if ($params['financer_loan_product_enc_id']) {
                 $existingProduct = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $params['financer_loan_product_enc_id']]);
-                if(!$existingProduct){
+                if (!$existingProduct) {
                     return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
                 }
                 $existingProduct->name = $params['name'];
                 $existingProduct->updated_on = date('Y-m-d H:i:s');
                 $existingProduct->updated_by = $user->user_enc_id;
 
-                if(!$existingProduct->update()){
+                if (!$existingProduct->update()) {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred, product not updated', 'error' => $existingProduct->getErrors()]);
                 }
 
@@ -1390,5 +1392,28 @@ class OrganizationsController extends ApiBaseController
             return ['status' => 500, 'message' => 'an error occurred', 'error' => $purpose->getErrors()];
         }
         return ['status' => 200];
+    }
+
+    public function actionEmiCollection()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        try {
+            $model = new EmiCollectionForm();
+            if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
+                return $this->response(422, ['status' => 422, 'message' => \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)]);
+            }
+
+            if (!$model->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()]);
+            }
+        } catch (\Exception $exception) {
+            return [
+                'message' => $exception->getMessage(),
+                'status' => false
+            ];
+        }
     }
 }
