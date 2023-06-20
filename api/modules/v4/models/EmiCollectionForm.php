@@ -41,7 +41,7 @@ class EmiCollectionForm extends Model
     {
         return [
             [['customer_name', 'collection_date', 'loan_account_number', 'phone', 'amount', 'loan_type', 'address', 'state', 'city', 'zip'], 'required'],
-            [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'location_image', 'borrower_image', 'pr_receipt_image', 'payment_method', 'loan_purpose'], 'safe'],
+            [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'location_image', 'borrower_image', 'pr_receipt_image', 'payment_method', 'loan_purpose', 'comments'], 'safe'],
             [['amount', 'ptp_amount'], 'number'],
             [['collection_date'], 'date', 'format' => 'php:Y-m-d'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
@@ -88,9 +88,10 @@ class EmiCollectionForm extends Model
         if ($this->other_delay_reason) {
             $model->other_delay_reason = $this->other_delay_reason;
         }
-        if (isset($this->payment_method)) {
+        if ($this->payment_method) {
             $model->payment_method = $this->payment_method;
-        } else {
+        }
+        if ($this->other_payment_method){
             $model->other_payment_method = $this->other_payment_method;
         }
         if ($this->location_image) {
