@@ -15,7 +15,7 @@ use Yii;
  * @property string $phone Phone Number
  * @property float $amount Amount
  * @property string $loan_type Loan Type
- * @property string $loan_purpose Loan Purpose
+ * @property string|null $loan_purpose Loan Purpose
  * @property string|null $payment_method Payment Method
  * @property string|null $other_payment_method Other Payment Method
  * @property float|null $ptp_amount Ptp Amount
@@ -60,7 +60,7 @@ class EmiCollection extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['emi_collection_enc_id', 'customer_name', 'collection_date', 'loan_account_number', 'phone', 'amount', 'loan_type', 'loan_purpose', 'created_by', 'created_on'], 'required'],
+            [['emi_collection_enc_id', 'customer_name', 'collection_date', 'loan_account_number', 'phone', 'amount', 'loan_type', 'created_by', 'created_on'], 'required'],
             [['collection_date', 'ptp_date', 'created_on', 'updated_on'], 'safe'],
             [['amount', 'ptp_amount'], 'number'],
             [['address', 'comments'], 'string'],

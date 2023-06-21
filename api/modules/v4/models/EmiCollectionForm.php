@@ -64,7 +64,9 @@ class EmiCollectionForm extends Model
         $model->phone = $this->phone;
         $model->amount = $this->amount;
         $model->loan_type = $this->loan_type;
-        $model->loan_purpose = $this->loan_purpose;
+        if ($this->loan_purpose) {
+            $model->loan_purpose = $this->loan_purpose;
+        }
         $model->address = $this->address;
         $model->state_enc_id = $this->state;
         $model->city_enc_id = $this->city;
@@ -91,7 +93,7 @@ class EmiCollectionForm extends Model
         if ($this->payment_method) {
             $model->payment_method = $this->payment_method;
         }
-        if ($this->other_payment_method){
+        if ($this->other_payment_method) {
             $model->other_payment_method = $this->other_payment_method;
         }
         if ($this->location_image) {
