@@ -1431,26 +1431,22 @@ class OrganizationsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "organization_id"']);
         }
         $org_id = $params['organization_id'];
-//        $proof = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . 'YIQmi4Oi3eyDR5cxn8NzB3q0cRmExmOL/' . 'P6O1aYr4wyXw1KxDaN2p7z5GJK93q0.jpeg', "15 minutes");
-//        print_r($proof);exit();
-//        $path = Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image;
         $model = EmiCollection::find()
             ->alias('a')
-            ->select(['a.emi_collection_enc_id', 'a.customer_name', 'a.collection_date', 'a.loan_account_number',
-                'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.payment_method', 'a.other_payment_method',
-                'a.ptp_amount', 'a.ptp_date', 'a.delay_reason', 'a.other_delay_reason',
-//                'image' => new \yii\db\Expression("CASE WHEN a.location_image IS NOT NULL THEN ". $my_space->signedURL("CONCAT($path,a.location_image_location, '/', a.location_image)",'15 minutes')." ELSE NULL END image"),
+            ->select(['a.emi_collection_enc_id', 'c.location_name branch_name', 'a.customer_name', 'a.collection_date',
+                'a.loan_account_number', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.payment_method',
+                'a.other_payment_method', 'a.ptp_amount', 'a.ptp_date',
+                'CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ",",a.other_delay_reason) ELSE a.delay_reason END AS delay_reason',
                 'CASE WHEN a.location_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.location_image_location, "/", a.location_image) ELSE NULL END as location_image',
                 'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
                 'CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
-                'CONCAT(a.address,", ",d.name,", ",e.name,", ",a.pincode) address',
+                'CONCAT(a.address,", ", a.pincode) address',
                 'a.comments'])
             ->joinWith(['createdBy b' => function ($b) use ($org_id) {
                 $b->andWhere(['b.organization_enc_id' => $org_id]);
             }])
+            ->joinWith(['branchEnc c'], false)
             ->orderBy(['a.created_on' => SORT_DESC])
-            ->joinWith(['stateEnc d'], false)
-            ->joinWith(['cityEnc e'], false)
             ->andWhere(['a.is_deleted' => 0]);
         $count = $model->count();
         $model = $model
