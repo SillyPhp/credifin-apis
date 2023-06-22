@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id Primary Key
  * @property string $emi_collection_enc_id Emi Collection Enc Id
+ * @property string $branch_enc_id Branch Enc Id
  * @property string $customer_name Customer Name
  * @property string $collection_date Collection Date
  * @property string $loan_account_number Loan Account Number
@@ -29,9 +30,9 @@ use Yii;
  * @property string|null $pr_receipt_image Pr Receipt
  * @property string|null $pr_receipt_image_location Pr Receipt Location
  * @property string|null $address Address
- * @property string|null $state_enc_id State Enc Id
- * @property string|null $city_enc_id City Enc Id
  * @property string|null $pincode Pincode
+ * @property float|null $latitude Location Latitude
+ * @property float|null $longitude Location Longitude
  * @property string|null $comments Comments
  * @property string $created_by Created By
  * @property string $created_on Created On
@@ -39,9 +40,8 @@ use Yii;
  * @property string|null $updated_on Updated On
  * @property int $is_deleted Is Deleted
  *
- * @property Cities $cityEnc
+ * @property OrganizationLocations $branchEnc
  * @property Users $createdBy
- * @property States $stateEnc
  * @property Users $updatedBy
  */
 class EmiCollection extends \yii\db\ActiveRecord
@@ -60,12 +60,12 @@ class EmiCollection extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['emi_collection_enc_id', 'customer_name', 'collection_date', 'loan_account_number', 'phone', 'amount', 'loan_type', 'created_by', 'created_on'], 'required'],
+            [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'collection_date', 'loan_account_number', 'phone', 'amount', 'loan_type', 'created_by', 'created_on'], 'required'],
             [['collection_date', 'ptp_date', 'created_on', 'updated_on'], 'safe'],
-            [['amount', 'ptp_amount'], 'number'],
+            [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['address', 'comments'], 'string'],
             [['is_deleted'], 'integer'],
-            [['emi_collection_enc_id', 'customer_name', 'loan_account_number', 'loan_type', 'loan_purpose', 'delay_reason', 'other_delay_reason', 'location_image', 'location_image_location', 'borrower_image', 'borrower_image_location', 'pr_receipt_image', 'pr_receipt_image_location', 'state_enc_id', 'city_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'loan_account_number', 'loan_type', 'loan_purpose', 'delay_reason', 'other_delay_reason', 'location_image', 'location_image_location', 'borrower_image', 'borrower_image_location', 'pr_receipt_image', 'pr_receipt_image_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
             [['payment_method'], 'string', 'max' => 30],
             [['other_payment_method'], 'string', 'max' => 50],
@@ -73,19 +73,18 @@ class EmiCollection extends \yii\db\ActiveRecord
             [['emi_collection_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
-            [['state_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => States::className(), 'targetAttribute' => ['state_enc_id' => 'state_enc_id']],
-            [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
+            [['branch_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationLocations::className(), 'targetAttribute' => ['branch_enc_id' => 'location_enc_id']],
         ];
     }
 
     /**
-     * Gets query for [[CityEnc]].
+     * Gets query for [[BranchEnc]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCityEnc()
+    public function getBranchEnc()
     {
-        return $this->hasOne(Cities::className(), ['city_enc_id' => 'city_enc_id']);
+        return $this->hasOne(OrganizationLocations::className(), ['location_enc_id' => 'branch_enc_id']);
     }
 
     /**
@@ -96,16 +95,6 @@ class EmiCollection extends \yii\db\ActiveRecord
     public function getCreatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
-    }
-
-    /**
-     * Gets query for [[StateEnc]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getStateEnc()
-    {
-        return $this->hasOne(States::className(), ['state_enc_id' => 'state_enc_id']);
     }
 
     /**

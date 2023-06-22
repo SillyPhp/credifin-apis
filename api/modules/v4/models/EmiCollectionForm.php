@@ -11,7 +11,6 @@ use yii\base\Model;
 class EmiCollectionForm extends Model
 {
     public $customer_name;
-    public $collection_date;
     public $loan_account_number;
     public $phone;
     public $amount;
@@ -29,8 +28,11 @@ class EmiCollectionForm extends Model
     public $address;
     public $state;
     public $city;
-    public $zip;
+    public $postal_code;
     public $comments;
+    public $latitude;
+    public $longitude;
+    public $branch_enc_id;
 
     public function formName()
     {
@@ -40,15 +42,11 @@ class EmiCollectionForm extends Model
     public function rules()
     {
         return [
-            [['customer_name', 'collection_date', 'loan_account_number', 'phone', 'amount', 'loan_type', 'address', 'state', 'city', 'zip'], 'required'],
-            [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'location_image', 'borrower_image', 'pr_receipt_image', 'payment_method', 'loan_purpose', 'comments'], 'safe'],
-            [['amount', 'ptp_amount'], 'number'],
-            [['collection_date'], 'date', 'format' => 'php:Y-m-d'],
+            [['customer_name', 'loan_account_number', 'phone', 'amount', 'loan_type', 'address', 'state', 'city', 'postal_code', 'latitude', 'longitude', 'payment_method', 'branch_enc_id'], 'required'],
+            [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'location_image', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method'], 'safe'],
+            [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
             [['location_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
-            ['other_payment_method', 'required', 'when' => function ($model) {
-                return $model->payment_method == null;
-            }]
         ];
     }
 
@@ -58,8 +56,9 @@ class EmiCollectionForm extends Model
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->emi_collection_enc_id = $utilitiesModel->encrypt();
+        $model->branch_enc_id = $this->branch_enc_id;
         $model->customer_name = $this->customer_name;
-        $model->collection_date = $this->collection_date;
+        $model->collection_date = date('Y-m-d');
         $model->loan_account_number = $this->loan_account_number;
         $model->phone = $this->phone;
         $model->amount = $this->amount;
@@ -67,10 +66,11 @@ class EmiCollectionForm extends Model
         if ($this->loan_purpose) {
             $model->loan_purpose = $this->loan_purpose;
         }
-        $model->address = $this->address;
-        $model->state_enc_id = $this->state;
-        $model->city_enc_id = $this->city;
-        $model->pincode = $this->zip;
+        $address = $this->address . ', ' . $this->city . ', ' . $this->state;
+        $model->address = $address;
+        $model->pincode = $this->postal_code;
+        $model->latitude = $this->latitude;
+        $model->longitude = $this->longitude;
         $model->created_by = $user_id;
         $model->updated_by = $user_id;
         $model->created_on = date('Y-m-d h:i:s');
