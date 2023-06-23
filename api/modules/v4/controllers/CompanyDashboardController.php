@@ -375,9 +375,11 @@ class CompanyDashboardController extends ApiBaseController
             switch ($params['type']) {
                 case 'rejected':
                     $loans->andWhere(['or', ['i.status' => 28], ['i.status' => 32]]);
+                    $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
                     break;
                 case 'disbursed':
                     $loans->andWhere(['i.status' => 31]);
+                    $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
                     break;
                 case 'all':
                     $loans->andWhere(['not in', 'i.status', [28, 31, 32]]);
@@ -889,6 +891,7 @@ class CompanyDashboardController extends ApiBaseController
             // updating data
             $provider->status = $params['status'];
             $provider->updated_by = $user->user_enc_id;
+            $provider->loan_status_updated_on = date('Y-m-d H:i:s');
             $provider->updated_on = date('Y-m-d H:i:s');
             if (!$provider->update()) {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating status', 'error' => $provider->getErrors()]);
