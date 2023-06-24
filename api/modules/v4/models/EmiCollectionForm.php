@@ -22,7 +22,7 @@ class EmiCollectionForm extends Model
     public $ptp_date;
     public $delay_reason;
     public $other_delay_reason;
-    public $location_image;
+    public $other_doc_image;
     public $borrower_image;
     public $pr_receipt_image;
     public $address;
@@ -43,15 +43,17 @@ class EmiCollectionForm extends Model
     {
         return [
             [['customer_name', 'loan_account_number', 'phone', 'amount', 'loan_type', 'address', 'state', 'city', 'postal_code', 'latitude', 'longitude', 'payment_method', 'branch_enc_id'], 'required'],
-            [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'location_image', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method'], 'safe'],
+            [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
-            [['location_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
+            [['other_doc_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
         ];
     }
 
     public function save($user_id)
     {
+        Yii::$app->cache->flush();
+
         $model = new EmiCollection();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -96,19 +98,19 @@ class EmiCollectionForm extends Model
         if ($this->other_payment_method) {
             $model->other_payment_method = $this->other_payment_method;
         }
-        if ($this->location_image) {
+        if ($this->other_doc_image) {
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $model->location_image = $utilitiesModel->encrypt() . '.' . $this->location_image->extension;
-            $model->location_image_location = Yii::$app->getSecurity()->generateRandomString();
+            $model->other_doc_image = $utilitiesModel->encrypt() . '.' . $this->other_doc_image->extension;
+            $model->other_doc_image_location = Yii::$app->getSecurity()->generateRandomString();
 
-            $this->fileUpload($this->location_image, $model->location_image, $model->location_image_location);
+            $this->fileUpload($this->other_doc_image, $model->other_doc_image, $model->other_doc_image_location);
         }
 
         if ($this->borrower_image) {
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $model->borrower_image = $utilitiesModel->encrypt() . '.' . $this->location_image->extension;
+            $model->borrower_image = $utilitiesModel->encrypt() . '.' . $this->borrower_image->extension;
             $model->borrower_image_location = Yii::$app->getSecurity()->generateRandomString();
 
             $this->fileUpload($this->borrower_image, $model->borrower_image, $model->borrower_image_location);
@@ -117,10 +119,10 @@ class EmiCollectionForm extends Model
         if ($this->pr_receipt_image) {
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $model->pr_receipt_image = $utilitiesModel->encrypt() . '.' . $this->location_image->extension;
+            $model->pr_receipt_image = $utilitiesModel->encrypt() . '.' . $this->pr_receipt_image->extension;
             $model->pr_receipt_image_location = Yii::$app->getSecurity()->generateRandomString();
 
-            $this->fileUpload($this->location_image, $model->pr_receipt_image, $model->pr_receipt_image_location);
+            $this->fileUpload($this->pr_receipt_image, $model->pr_receipt_image, $model->pr_receipt_image_location);
         }
         if (!$model->save()) {
             return ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()];
