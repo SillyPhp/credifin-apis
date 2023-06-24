@@ -23,12 +23,12 @@ use Yii;
  * @property string|null $ptp_date Ptp Date
  * @property string|null $delay_reason Delay Reason
  * @property string|null $other_delay_reason Other Delay Reason
- * @property string|null $location_image Location Image
- * @property string|null $location_image_location Location Image Location
  * @property string|null $borrower_image Borrower Image
  * @property string|null $borrower_image_location Borrower Image Location
  * @property string|null $pr_receipt_image Pr Receipt
  * @property string|null $pr_receipt_image_location Pr Receipt Location
+ * @property string|null $other_doc_image Other Document Image
+ * @property string|null $other_doc_image_location Other Document Image Location
  * @property string|null $address Address
  * @property string|null $pincode Pincode
  * @property float|null $latitude Location Latitude
@@ -65,7 +65,7 @@ class EmiCollection extends \yii\db\ActiveRecord
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['address', 'comments'], 'string'],
             [['is_deleted'], 'integer'],
-            [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'loan_account_number', 'loan_type', 'loan_purpose', 'delay_reason', 'other_delay_reason', 'location_image', 'location_image_location', 'borrower_image', 'borrower_image_location', 'pr_receipt_image', 'pr_receipt_image_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'loan_account_number', 'loan_type', 'loan_purpose', 'delay_reason', 'other_delay_reason', 'borrower_image', 'borrower_image_location', 'pr_receipt_image', 'pr_receipt_image_location', 'other_doc_image', 'other_doc_image_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone'], 'string', 'max' => 15],
             [['payment_method'], 'string', 'max' => 30],
             [['other_payment_method'], 'string', 'max' => 50],
