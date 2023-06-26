@@ -84,6 +84,7 @@ class LoanApplicationsForm extends LoanApplications
             $this->loan_type_enc_id = (($loan_type) ? $loan_type : null);
             $this->created_by = (($userId) ? $userId : null);
             $this->created_on = date('Y-m-d H:i:s');
+            $this->loan_status_updated_on = date('Y-m-d H:i:s');
             if ($refferal_id) {
                 if ($referralData) {
                     if ($referralData->user_enc_id):
