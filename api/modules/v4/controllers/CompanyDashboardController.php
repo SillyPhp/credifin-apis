@@ -882,18 +882,18 @@ class CompanyDashboardController extends ApiBaseController
 
             // getting object to update
             $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['loan_id'], 'provider_enc_id' => $provider_id, 'is_deleted' => 0]);
-
             // if provider not found to update status
             if (!$provider) {
                 return $this->response(404, ['status' => 404, 'message' => 'provider not found with this loan_id']);
             }
 
+            $loanApp = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id'], 'is_deleted' => 0]);
+
             // updating data
             $provider->status = $params['status'];
-            $provider->updated_by = $user->user_enc_id;
-            $provider->loan_status_updated_on = date('Y-m-d H:i:s');
-            $provider->updated_on = date('Y-m-d H:i:s');
-            if (!$provider->update()) {
+            $loanApp->updated_by = $provider->updated_by = $user->user_enc_id;
+            $loanApp->loan_status_updated_on = $provider->loan_status_updated_on = $provider->updated_on = $loanApp->updated_on = date('Y-m-d H:i:s');
+            if (!$loanApp->update() && !$provider->update()) {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating status', 'error' => $provider->getErrors()]);
             }
 
@@ -2436,7 +2436,7 @@ class CompanyDashboardController extends ApiBaseController
             if (!empty($params['branch_name'])) {
                 $employeeAmount->andWhere(['i.branch_enc_id' => $params['branch_name']]);
             }
-            $employeeAmount = $employeeAmount->andWhere(['between', 'b.created_on', $params['start_date'], $params['end_date']])
+            $employeeAmount = $employeeAmount->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']])
 //                ->andWhere(['i.branch_enc_id' => $params['branch_id']])
                 ->asArray()
                 ->one();
