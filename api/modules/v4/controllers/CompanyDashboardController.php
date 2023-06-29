@@ -892,12 +892,15 @@ class CompanyDashboardController extends ApiBaseController
             // updating data
             $provider->status = $params['status'];
             $loanApp->updated_by = $provider->updated_by = $user->user_enc_id;
-            $loanApp->loan_status_updated_on = $provider->loan_status_updated_on = $provider->updated_on = $loanApp->updated_on = date('Y-m-d H:i:s');
-            if (!$loanApp->update() && !$provider->update()) {
+            $provider->loan_status_updated_on = date('Y-m-d H:i:s');
+            $provider->updated_on = date('Y-m-d H:i:s');
+            $loanApp->loan_status_updated_on =  date('Y-m-d H:i:s');
+            $loanApp->updated_on = date('Y-m-d H:i:s');
+            if ($loanApp->update() && $provider->update()) {
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+            }else{
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating status', 'error' => $provider->getErrors()]);
             }
-
-            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
         }
 
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
