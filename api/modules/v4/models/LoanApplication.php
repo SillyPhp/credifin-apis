@@ -828,6 +828,7 @@ class LoanApplication extends Model
                 return $data;
             }
         }
+        return $data;
     }
 
     private function share_leads($user_id, $loan_id)
