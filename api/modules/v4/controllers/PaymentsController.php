@@ -12,6 +12,7 @@ use http\Url;
 use yii\filters\VerbFilter;
 use Razorpay\Api\Api;
 use Yii;
+use yii\filters\Cors;
 
 class PaymentsController extends ApiBaseController
 {
@@ -22,10 +23,19 @@ class PaymentsController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-                'get-payment-link' => ['POST','OPTIONS'],
-                'razor-pay-webhook' => ['POST','OPTIONS'],
+                'get-payment-link' => ['POST', 'OPTIONS'],
+                'razor-pay-webhook' => ['POST', 'OPTIONS'],
                 'update-payment' => ['GET'],
             ]
+        ];
+        $behaviors['corsFilter'] = [
+            'class' => Cors::className(),
+            'cors' => [
+                'Origin' => ['https://www.empowerloans.in/'],
+                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                'Access-Control-Max-Age' => 86400,
+                'Access-Control-Expose-Headers' => [],
+            ],
         ];
         return $behaviors;
     }
@@ -133,7 +143,7 @@ class PaymentsController extends ApiBaseController
                 if ($query) {
                     return [
                         'surl' => $query['surl'],
-                        'status' => true
+                        'status' => 201
                     ];
                 }
             }
