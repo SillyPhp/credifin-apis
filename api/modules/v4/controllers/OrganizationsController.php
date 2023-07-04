@@ -927,7 +927,7 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "name"']);
             }
 
-            if ($params['financer_loan_product_enc_id']) {
+            if (isset($params['financer_loan_product_enc_id'])) {
                 $existingProduct = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $params['financer_loan_product_enc_id']]);
                 if (!$existingProduct) {
                     return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
@@ -1399,6 +1399,12 @@ class OrganizationsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+        if (!$user->organization_enc_id) {
+            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            if (!$findOrg['organization_enc_id']) {
+                return $this->response(500, ['status' => 500, 'message' => 'Organization not found']);
+            }
+        }
         try {
             $model = new EmiCollectionForm();
             if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
@@ -1493,10 +1499,10 @@ class OrganizationsController extends ApiBaseController
                 'CONCAT(a.address,", ", a.pincode) address',
                 'a.comments']);
         if (isset($org_id)) {
-
-            $model->joinWith(['createdBy b' => function ($b) use ($org_id) {
-                $b->andWhere(['b.organization_enc_id' => $org_id]);
-            }]);
+            $model->joinWith(['createdBy b' => function ($b) {
+                $b->joinWith(['userRoles b1'], false);
+            }], false)
+                ->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
         if (isset($lac)) {
             $model->andWhere(['a.loan_account_number' => $lac]);

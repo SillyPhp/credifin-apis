@@ -52,16 +52,16 @@ class LoanPaymentsForm extends Model
             $model->payment_status = 'captured';
             if ($this->payment_type) {
                 switch ($this->payment_type) {
-                    case 1:
+                    case 0:
                         $p_type = 'Capital Small Finance Bank';
                         break;
-                    case 2:
+                    case 1:
                         $p_type = 'ICICI';
                         break;
-                    case 3:
+                    case 2:
                         $p_type = 'Axis Bank';
                         break;
-                    case 4:
+                    case 3:
                         $p_type = 'Agile Finance';
                         break;
                     default:
