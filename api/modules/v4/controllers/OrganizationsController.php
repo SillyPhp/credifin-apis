@@ -1550,7 +1550,7 @@ class OrganizationsController extends ApiBaseController
             }
             $removeEmi = EmiCollection::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
             if (!$removeEmi) {
-                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+                return $this->response(404, ['status' => 404, 'message' => 'emi_collection_enc_id found']);
             }
             $removeEmi->is_deleted = 1;
             $removeEmi->updated_by = $user->user_enc_id;
