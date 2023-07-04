@@ -58,6 +58,7 @@ class OrganizationsController extends ApiBaseController
                 'remove-status-list' => ['POST', 'OPTIONS'],
                 'remove-status' => ['POST', 'OPTIONS'],
                 'update-status-list' => ['POST', 'OPTIONS'],
+                'delete-emi' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -1546,4 +1547,26 @@ class OrganizationsController extends ApiBaseController
         return $model;
 
     }
+
+    public function actionDeleteEmi()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (empty($params['emi_collection_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing parameter "emi_collection_enc_id"']);
+            }
+            $removeEmi = EmiCollection::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
+            if (!$removeEmi) {
+                return $this->response(404, ['status' => 404, 'message' => 'emi_collection_enc_id found']);
+            }
+            $removeEmi->is_deleted = 1;
+            $removeEmi->updated_by = $user->user_enc_id;
+            $removeEmi->updated_on = date('Y-m-d H:i:s');
+            if (!$removeEmi->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while deleting.', 'error' => $removeEmi->getErrors()]);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+        }
+    }
+
 }
