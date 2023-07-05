@@ -58,6 +58,7 @@ class OrganizationsController extends ApiBaseController
                 'remove-status-list' => ['POST', 'OPTIONS'],
                 'remove-status' => ['POST', 'OPTIONS'],
                 'update-status-list' => ['POST', 'OPTIONS'],
+                'delete-emi' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -927,7 +928,7 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "name"']);
             }
 
-            if ($params['financer_loan_product_enc_id']) {
+            if (isset($params['financer_loan_product_enc_id'])) {
                 $existingProduct = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $params['financer_loan_product_enc_id']]);
                 if (!$existingProduct) {
                     return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
@@ -1399,6 +1400,12 @@ class OrganizationsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+        if (!$user->organization_enc_id) {
+            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            if (!$findOrg['organization_enc_id']) {
+                return $this->response(500, ['status' => 500, 'message' => 'Organization not found']);
+            }
+        }
         try {
             $model = new EmiCollectionForm();
             if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
@@ -1493,10 +1500,10 @@ class OrganizationsController extends ApiBaseController
                 'CONCAT(a.address,", ", a.pincode) address',
                 'a.comments']);
         if (isset($org_id)) {
-
-            $model->joinWith(['createdBy b' => function ($b) use ($org_id) {
-                $b->andWhere(['b.organization_enc_id' => $org_id]);
-            }]);
+            $model->joinWith(['createdBy b' => function ($b) {
+                $b->joinWith(['userRoles b1'], false);
+            }], false)
+                ->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
         if (isset($lac)) {
             $model->andWhere(['a.loan_account_number' => $lac]);
@@ -1540,4 +1547,26 @@ class OrganizationsController extends ApiBaseController
         return $model;
 
     }
+
+    public function actionDeleteEmi()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (empty($params['emi_collection_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing parameter "emi_collection_enc_id"']);
+            }
+            $removeEmi = EmiCollection::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
+            if (!$removeEmi) {
+                return $this->response(404, ['status' => 404, 'message' => 'emi_collection_enc_id found']);
+            }
+            $removeEmi->is_deleted = 1;
+            $removeEmi->updated_by = $user->user_enc_id;
+            $removeEmi->updated_on = date('Y-m-d H:i:s');
+            if (!$removeEmi->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while deleting.', 'error' => $removeEmi->getErrors()]);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+        }
+    }
+
 }

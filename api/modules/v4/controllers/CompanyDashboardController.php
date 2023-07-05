@@ -899,22 +899,25 @@ class CompanyDashboardController extends ApiBaseController
 
             // getting object to update
             $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['loan_id'], 'provider_enc_id' => $provider_id, 'is_deleted' => 0]);
-
             // if provider not found to update status
             if (!$provider) {
                 return $this->response(404, ['status' => 404, 'message' => 'provider not found with this loan_id']);
             }
 
+            $loanApp = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id'], 'is_deleted' => 0]);
+
             // updating data
             $provider->status = $params['status'];
-            $provider->updated_by = $user->user_enc_id;
+            $loanApp->updated_by = $provider->updated_by = $user->user_enc_id;
             $provider->loan_status_updated_on = date('Y-m-d H:i:s');
             $provider->updated_on = date('Y-m-d H:i:s');
-            if (!$provider->update()) {
+            $loanApp->loan_status_updated_on =  date('Y-m-d H:i:s');
+            $loanApp->updated_on = date('Y-m-d H:i:s');
+            if ($loanApp->update() && $provider->update()) {
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+            }else{
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating status', 'error' => $provider->getErrors()]);
             }
-
-            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
         }
 
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -2419,7 +2422,7 @@ class CompanyDashboardController extends ApiBaseController
                     'COUNT(CASE WHEN i.status = "15" THEN b.loan_app_enc_id END) as soft_approval_count',
                     'COUNT(CASE WHEN i.status = "31" THEN b.loan_app_enc_id END) as disbursed_count',
                     'COUNT(CASE WHEN i.status = "30" THEN b.loan_app_enc_id END) as sanctioned_count',
-                    'COUNT(CASE WHEN i.status = "3" THEN b.loan_app_enc_id END) as under_process_count',
+                    'COUNT(CASE WHEN i.status != "0" AND i.status != "4" AND i.status != "15" AND i.status != "31" AND i.status != "26" AND i.status != "32" AND i.status != "30" AND i.status != "28" AND i.status != "24" THEN b.loan_app_enc_id END) as under_process_count',
                     'COUNT(CASE WHEN i.status = "28" THEN b.loan_app_enc_id END) as cni_count',
                     'COUNT(CASE WHEN i.status = "32" THEN b.loan_app_enc_id END) as rejected_count',
                     'COUNT(CASE WHEN i.status = "26" THEN b.loan_app_enc_id END) as disbursement_approval_count',
@@ -2453,7 +2456,7 @@ class CompanyDashboardController extends ApiBaseController
             if (!empty($params['branch_name'])) {
                 $employeeAmount->andWhere(['i.branch_enc_id' => $params['branch_name']]);
             }
-            $employeeAmount = $employeeAmount->andWhere(['between', 'b.created_on', $params['start_date'], $params['end_date']])
+            $employeeAmount = $employeeAmount->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']])
 //                ->andWhere(['i.branch_enc_id' => $params['branch_id']])
                 ->asArray()
                 ->one();
