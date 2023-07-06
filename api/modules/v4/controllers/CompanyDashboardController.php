@@ -259,7 +259,7 @@ class CompanyDashboardController extends ApiBaseController
         //get user roles
         $specialroles = false;
         if (!$user->organization_enc_id){
-            $accessroles = ['State Credit Head','Operations Manager'];
+            $accessroles = ['State Credit Head','Operations Manager', 'Product Manager'];
             $specialroles = UserRoles::find()
                 ->alias('a')
                 ->where(['user_enc_id'=>$user->user_enc_id])
