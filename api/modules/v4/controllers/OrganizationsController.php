@@ -2,6 +2,8 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\models\EmiCollectionForm;
+use common\models\EmiCollection;
 use common\models\FinancerLoanProductDocuments;
 use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
@@ -56,6 +58,7 @@ class OrganizationsController extends ApiBaseController
                 'remove-status-list' => ['POST', 'OPTIONS'],
                 'remove-status' => ['POST', 'OPTIONS'],
                 'update-status-list' => ['POST', 'OPTIONS'],
+                'delete-emi' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -925,16 +928,16 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "name"']);
             }
 
-            if ($params['financer_loan_product_enc_id']) {
+            if (isset($params['financer_loan_product_enc_id'])) {
                 $existingProduct = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $params['financer_loan_product_enc_id']]);
-                if(!$existingProduct){
+                if (!$existingProduct) {
                     return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
                 }
                 $existingProduct->name = $params['name'];
                 $existingProduct->updated_on = date('Y-m-d H:i:s');
                 $existingProduct->updated_by = $user->user_enc_id;
 
-                if(!$existingProduct->update()){
+                if (!$existingProduct->update()) {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred, product not updated', 'error' => $existingProduct->getErrors()]);
                 }
 
@@ -1391,4 +1394,179 @@ class OrganizationsController extends ApiBaseController
         }
         return ['status' => 200];
     }
+
+    public function actionEmiCollection()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        if (!$user->organization_enc_id) {
+            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            if (!$findOrg['organization_enc_id']) {
+                return $this->response(500, ['status' => 500, 'message' => 'Organization not found']);
+            }
+        }
+        try {
+            $model = new EmiCollectionForm();
+            if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
+                return $this->response(422, ['status' => 422, 'message' => \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)]);
+            }
+            $model->other_doc_image = UploadedFile::getInstance($model, 'other_doc_image');
+            $model->borrower_image = UploadedFile::getInstance($model, 'borrower_image');
+            $model->pr_receipt_image = UploadedFile::getInstance($model, 'pr_receipt_image');
+            $save = $model->save($user->user_enc_id);
+            if ($save['status'] == 500) {
+                return $this->response(500, $save);
+            } else {
+                return $this->response(200, $save);
+            }
+        } catch (\Exception $exception) {
+            return [
+                'message' => $exception->getMessage(),
+                'status' => false
+            ];
+        }
+    }
+
+    public function actionGetCollectedEmiList()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        $search = '';
+        if (empty($params['organization_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing Information "organization_id"']);
+        }
+        if (isset($params['search_keyword'])) {
+            $search = $params['search_keyword'];
+        }
+
+        $org_id = $params['organization_id'];
+        $model = $this->_emiData($org_id, 0, $search);
+        $count = count($model);
+        if (!$count > 0) {
+            return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
+        }
+        return $this->response(200, ['status' => 200, 'data' => $model, 'count' => $count]);
+    }
+
+    public function actionEmiDetail()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['emi_collection_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing Information "emi_collection_enc_id"']);
+        }
+        $lac = EmiCollection::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']])['loan_account_number'];
+        $model = $this->_emiData($lac, 1);
+        if (!$model) {
+            return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
+        }
+        $display_data = EmiCollection::find()
+            ->alias('a')
+            ->select(['a.customer_name', 'a.loan_account_number', 'a.loan_type', 'a.phone', 'SUM(a.amount) total_amount', 'COUNT(a.loan_account_number) as total_emis', 'CONCAT(b.location_name , ", ", b1.name) as branch_name'])
+            ->where(['a.loan_account_number' => $lac])
+            ->joinWith(['branchEnc b' => function ($b) {
+                $b->joinWith(['cityEnc b1']);
+            }], false)
+            ->asArray()
+            ->all();
+        return $this->response(200, ['status' => 200, 'display_data' => $display_data[0], 'data' => $model]);
+
+    }
+
+    private function _emiData($data, $id_type, $search = '')
+    {
+        // if id_type = 1 then loan account number if id_type = 0 then organization id, this function is being used for GetCollectedEmiList and EmiDetail
+        if ($id_type == 1) {
+            $lac = $data;
+        }
+        if ($id_type == 0) {
+            $org_id = $data;
+        }
+
+        $model = EmiCollection::find()
+            ->alias('a')
+            ->select(['a.emi_collection_enc_id', 'CONCAT(c.location_name , ", ", c1.name) as branch_name', 'a.customer_name', 'a.collection_date',
+                'a.loan_account_number', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.payment_method',
+                'a.other_payment_method', 'a.ptp_amount', 'a.ptp_date',
+                'CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ",",a.other_delay_reason) ELSE a.delay_reason END AS delay_reason',
+                'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
+                'CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
+                'CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
+                'CONCAT(a.address,", ", a.pincode) address',
+                'a.comments']);
+        if (isset($org_id)) {
+            $model->joinWith(['createdBy b' => function ($b) {
+                $b->joinWith(['userRoles b1'], false);
+            }], false)
+                ->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
+        }
+        if (isset($lac)) {
+            $model->andWhere(['a.loan_account_number' => $lac]);
+        }
+
+        if (!empty($search)) {
+            $model->andWhere([
+                'or',
+                ['like', 'CONCAT(c.location_name , ", ", c1.name)', $search],
+                ['like', 'c.location_name', $search],
+                ['like', 'a.customer_name', $search],
+                ['like', 'a.loan_account_number', $search],
+                ['like', 'a.loan_type', $search],
+            ]);
+        }
+
+        $model = $model->joinWith(['branchEnc c' => function ($c) {
+            $c->joinWith(['cityEnc c1'], false);
+        }], false)
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->andWhere(['a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        foreach ($model as $key => $value) {
+            if ($value['other_doc_image']) {
+                $proof = $my_space->signedURL($value['other_doc_image'], "15 minutes");
+                $model[$key]['other_doc_image'] = $proof;
+            }
+            if ($value['borrower_image']) {
+                $proof = $my_space->signedURL($value['borrower_image'], "15 minutes");
+                $model[$key]['borrower_image'] = $proof;
+            }
+            if ($value['pr_receipt_image']) {
+                $proof = $my_space->signedURL($value['pr_receipt_image'], "15 minutes");
+                $model[$key]['pr_receipt_image'] = $proof;
+            }
+        }
+        return $model;
+
+    }
+
+    public function actionDeleteEmi()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+            if (empty($params['emi_collection_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing parameter "emi_collection_enc_id"']);
+            }
+            $removeEmi = EmiCollection::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']]);
+            if (!$removeEmi) {
+                return $this->response(404, ['status' => 404, 'message' => 'emi_collection_enc_id found']);
+            }
+            $removeEmi->is_deleted = 1;
+            $removeEmi->updated_by = $user->user_enc_id;
+            $removeEmi->updated_on = date('Y-m-d H:i:s');
+            if (!$removeEmi->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while deleting.', 'error' => $removeEmi->getErrors()]);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+        }
+    }
+
 }

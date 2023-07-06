@@ -255,14 +255,29 @@ class CompanyDashboardController extends ApiBaseController
             ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
             ->exists();
 
+
+        //get user roles
+        $specialroles = false;
+        if (!$user->organization_enc_id){
+            $accessroles = ['State Credit Head','Operations Manager', 'Product Manager'];
+            $specialroles = UserRoles::find()
+                ->alias('a')
+                ->where(['user_enc_id'=>$user->user_enc_id])
+                ->joinWith(['designation b'=>function($b) use ($accessroles) {
+                    $b->andWhere(['in', 'b.designation', $accessroles]);
+                }],true,'INNER JOIN')
+                ->exists();
+        }
+
+
         // if user is organization/financer then getting its DSA's
+        $dsa = [];
         if ($user->organization_enc_id) {
 
             // getting DSA
             $leads = $this->getDsa($user->user_enc_id);
 
             // if leads not empty then adding assigned_user_enc_id in dsa array
-            $dsa = [];
             if ($leads) {
                 foreach ($leads as $val) {
                     $dsa[] = $val['assigned_user_enc_id'];
@@ -360,7 +375,9 @@ class CompanyDashboardController extends ApiBaseController
             if (!$service) {
                 $loans->andWhere(['a.lead_by' => $dsa]);
             }
-        } else {
+        }
+
+        if (!$user->organization_enc_id && $specialroles==false){
             // else checking lead_by and managed_by by logged-in user
             $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
         }
@@ -368,6 +385,23 @@ class CompanyDashboardController extends ApiBaseController
         // if shared app_ids exists then also getting data for those applications
         if ($shared_apps['app_ids']) {
             $loans->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
+        }
+
+        // if all, rejected or disbursed data needed
+        if (isset($params['type'])) {
+            switch ($params['type']) {
+                case 'rejected':
+                    $loans->andWhere(['or', ['i.status' => 28], ['i.status' => 32]]);
+                    $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
+                    break;
+                case 'disbursed':
+                    $loans->andWhere(['i.status' => 31]);
+                    $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
+                    break;
+                case 'all':
+                    $loans->andWhere(['not in', 'i.status', [28, 31, 32]]);
+                    break;
+            }
         }
 
         // filter to check status
@@ -865,21 +899,25 @@ class CompanyDashboardController extends ApiBaseController
 
             // getting object to update
             $provider = AssignedLoanProviderExtended::findOne(['loan_application_enc_id' => $params['loan_id'], 'provider_enc_id' => $provider_id, 'is_deleted' => 0]);
-
             // if provider not found to update status
             if (!$provider) {
                 return $this->response(404, ['status' => 404, 'message' => 'provider not found with this loan_id']);
             }
 
+            $loanApp = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id'], 'is_deleted' => 0]);
+
             // updating data
             $provider->status = $params['status'];
-            $provider->updated_by = $user->user_enc_id;
+            $loanApp->updated_by = $provider->updated_by = $user->user_enc_id;
+            $provider->loan_status_updated_on = date('Y-m-d H:i:s');
             $provider->updated_on = date('Y-m-d H:i:s');
-            if (!$provider->update()) {
+            $loanApp->loan_status_updated_on =  date('Y-m-d H:i:s');
+            $loanApp->updated_on = date('Y-m-d H:i:s');
+            if ($loanApp->update() && $provider->update()) {
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+            }else{
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating status', 'error' => $provider->getErrors()]);
             }
-
-            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
         }
 
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -2384,7 +2422,7 @@ class CompanyDashboardController extends ApiBaseController
                     'COUNT(CASE WHEN i.status = "15" THEN b.loan_app_enc_id END) as soft_approval_count',
                     'COUNT(CASE WHEN i.status = "31" THEN b.loan_app_enc_id END) as disbursed_count',
                     'COUNT(CASE WHEN i.status = "30" THEN b.loan_app_enc_id END) as sanctioned_count',
-                    'COUNT(CASE WHEN i.status = "3" THEN b.loan_app_enc_id END) as under_process_count',
+                    'COUNT(CASE WHEN i.status != "0" AND i.status != "4" AND i.status != "15" AND i.status != "31" AND i.status != "26" AND i.status != "32" AND i.status != "30" AND i.status != "28" AND i.status != "24" THEN b.loan_app_enc_id END) as under_process_count',
                     'COUNT(CASE WHEN i.status = "28" THEN b.loan_app_enc_id END) as cni_count',
                     'COUNT(CASE WHEN i.status = "32" THEN b.loan_app_enc_id END) as rejected_count',
                     'COUNT(CASE WHEN i.status = "26" THEN b.loan_app_enc_id END) as disbursement_approval_count',
@@ -2418,7 +2456,7 @@ class CompanyDashboardController extends ApiBaseController
             if (!empty($params['branch_name'])) {
                 $employeeAmount->andWhere(['i.branch_enc_id' => $params['branch_name']]);
             }
-            $employeeAmount = $employeeAmount->andWhere(['between', 'b.created_on', $params['start_date'], $params['end_date']])
+            $employeeAmount = $employeeAmount->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']])
 //                ->andWhere(['i.branch_enc_id' => $params['branch_id']])
                 ->asArray()
                 ->one();

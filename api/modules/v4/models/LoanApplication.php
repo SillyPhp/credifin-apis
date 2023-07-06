@@ -141,7 +141,7 @@ class LoanApplication extends Model
             }
 
             $model->yearly_income = $this->annual_income;
-            $model->created_on = $model->updated_on = date('Y-m-d H:i:s');
+            $model->created_on = $model->updated_on = $model->loan_status_updated_on = date('Y-m-d H:i:s');
             $model->created_by = $model->updated_by = $user_id;
 
             // assigning lead by id to ref id user
@@ -800,40 +800,56 @@ class LoanApplication extends Model
 
     private function getting_reporting_ids($user_id)
     {
+        $marked = [];
         $data = [];
         while (true) {
+            if (in_array($user_id, $marked)) {
+                break;
+            }
+
+            $marked[] = $user_id;
+
             $query = UserRoles::find()
                 ->alias('a')
                 ->select(['a.reporting_person'])
                 ->where(['a.user_enc_id' => $user_id, 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
+
             if (!empty($query['reporting_person'])) {
-                $data[] = $user_id = $query['reporting_person'];
+                $user_id = $query['reporting_person'];
+                if (!in_array($user_id, $data)) {
+                    $data[] = $user_id;
+                } else {
+                    // Reporting person already exists in the data array, break the loop
+                    break;
+                }
             } else {
                 return $data;
             }
         }
+        return $data;
     }
 
     private function share_leads($user_id, $loan_id)
     {
         $reporting_persons_ids = $this->getting_reporting_ids($user_id);
-
-        foreach ($reporting_persons_ids as $value) {
-            $query = new SharedLoanApplications();
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $query->shared_loan_app_enc_id = $utilitiesModel->encrypt();
-            $query->loan_app_enc_id = $loan_id;
-            $query->shared_by = $user_id;
-            $query->shared_to = $value;
-            $query->access = 'Full Access';
-            $query->status = 'Active';
-            $query->created_by = $user_id;
-            $query->created_on = date('Y-m-d H:i:s');
-            if (!$query->save()) {
-                throw new \Exception(json_encode($query->getErrors()));
+        if (!empty($reporting_persons_ids)){
+            foreach ($reporting_persons_ids as $value) {
+                $query = new SharedLoanApplications();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $query->shared_loan_app_enc_id = $utilitiesModel->encrypt();
+                $query->loan_app_enc_id = $loan_id;
+                $query->shared_by = $user_id;
+                $query->shared_to = $value;
+                $query->access = 'Full Access';
+                $query->status = 'Active';
+                $query->created_by = $user_id;
+                $query->created_on = date('Y-m-d H:i:s');
+                if (!$query->save()) {
+                    throw new \Exception(json_encode($query->getErrors()));
+                }
             }
         }
     }
