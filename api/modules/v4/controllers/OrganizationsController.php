@@ -61,6 +61,7 @@ class OrganizationsController extends ApiBaseController
                 'remove-status' => ['POST', 'OPTIONS'],
                 'update-status-list' => ['POST', 'OPTIONS'],
                 'delete-emi' => ['POST', 'OPTIONS'],
+                'emi-list' => ['POST', 'OPTIONS']
             ]
         ];
 
