@@ -255,14 +255,29 @@ class CompanyDashboardController extends ApiBaseController
             ->where(['a.organization_enc_id' => $user->organization_enc_id, 'a.is_selected' => 1, 'b.name' => 'Loans'])
             ->exists();
 
+
+        //get user roles
+        $specialroles = false;
+        if (!$user->organization_enc_id){
+            $accessroles = ['State Credit Head','Operations Manager', 'Product Manager'];
+            $specialroles = UserRoles::find()
+                ->alias('a')
+                ->where(['user_enc_id'=>$user->user_enc_id])
+                ->joinWith(['designation b'=>function($b) use ($accessroles) {
+                    $b->andWhere(['in', 'b.designation', $accessroles]);
+                }],true,'INNER JOIN')
+                ->exists();
+        }
+
+
         // if user is organization/financer then getting its DSA's
+        $dsa = [];
         if ($user->organization_enc_id) {
 
             // getting DSA
             $leads = $this->getDsa($user->user_enc_id);
 
             // if leads not empty then adding assigned_user_enc_id in dsa array
-            $dsa = [];
             if ($leads) {
                 foreach ($leads as $val) {
                     $dsa[] = $val['assigned_user_enc_id'];
@@ -360,7 +375,9 @@ class CompanyDashboardController extends ApiBaseController
             if (!$service) {
                 $loans->andWhere(['a.lead_by' => $dsa]);
             }
-        } else {
+        }
+
+        if (!$user->organization_enc_id && $specialroles==false){
             // else checking lead_by and managed_by by logged-in user
             $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
         }
