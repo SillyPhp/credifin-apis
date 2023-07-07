@@ -93,7 +93,11 @@ class UserUtilities
                 $user['access_token_expiry_time'] = $token->access_token_expiration;
                 $user['refresh_token_expiry_time'] = $token->refresh_token_expiration;
             }
-
+            if (in_array($user['designation'],UserUtilities::$rolesArray)){
+                $user['specialAccessRole'] = true;
+            }else{
+                $user['specialAccessRole'] = false;
+            }
             return $user;
         } catch (\Exception $exception) {
             throw new \Exception($exception);
