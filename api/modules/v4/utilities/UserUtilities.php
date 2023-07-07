@@ -14,6 +14,7 @@ use common\models\UserTypes;
 // this class is used to get user related data
 class UserUtilities
 {
+    public static $rolesArray  = ['State Credit Head','Operations Manager', 'Product Manager'];
     // getting user data to return after signup/login
     public function userData($user_id, $source = null)
     {
