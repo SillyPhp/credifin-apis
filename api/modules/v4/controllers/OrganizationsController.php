@@ -16,6 +16,8 @@ use common\models\FinancerLoanStatus;
 use common\models\LoanStatus;
 use common\models\LoanType;
 use common\models\OrganizationLocations;
+use common\models\UserAccessTokens;
+use common\models\UserRoles;
 use yii\web\UploadedFile;
 use yii\db\Expression;
 use common\models\Utilities;
@@ -59,6 +61,7 @@ class OrganizationsController extends ApiBaseController
                 'remove-status' => ['POST', 'OPTIONS'],
                 'update-status-list' => ['POST', 'OPTIONS'],
                 'delete-emi' => ['POST', 'OPTIONS'],
+                'emi-list' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -1566,6 +1569,34 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred while deleting.', 'error' => $removeEmi->getErrors()]);
             }
             return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+        }
+    }
+
+    public function actionEmiList()
+    {
+
+        if ($user = $this->isAuthorized()) {
+            $org_id = $user->organization_enc_id;
+
+            if (!$user->organization_enc_id) {
+                $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                $org_id = $findOrg->organization_enc_id;
+            }
+            if ($org_id) {
+                $emiList = EmiCollection::find()
+                    ->alias('a')
+                    ->select(['a.customer_name', 'a.phone', 'a.loan_account_number', 'a.loan_type', 'b.location_name as branch_name', 'a.branch_enc_id'])
+                    ->joinWith(['branchEnc b'], false)
+                    ->andWhere(['organization_enc_id' => $org_id, 'a.is_deleted' => 0])
+                    ->groupBy(['a.loan_account_number'])
+                    ->asArray()
+                    ->all();
+                return $this->response(200, ['status' => 200, 'data' => $emiList]);
+            } else {
+                return $this->response(401, ['status' => 201, 'message' => 'Not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
     }
 
