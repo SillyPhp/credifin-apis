@@ -6,6 +6,8 @@ use api\modules\v4\models\LoanApplication;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedLoanProvider;
 use common\models\Cities;
+use common\models\LoanPayments;
+use mPDF;
 use common\models\CreditLoanApplicationReports;
 use common\models\Designations;
 use common\models\extended\LoanApplicationsExtended;
@@ -44,6 +46,7 @@ class TestController extends ApiBaseController
             'class' => VerbFilter::className(),
             'actions' => [
 //                'employee-stats' => ['GET', 'POST', 'OPTIONS'],
+                'generate-pdf' => ['GET', 'POST', 'OPTIONS'],
 
             ]
         ];
@@ -354,4 +357,170 @@ class TestController extends ApiBaseController
         }
         return 'unauthorized';
     }
+
+    public function actionGeneratePdf()
+    {
+        if (Yii::$app->request->isPost) {
+            $params = Yii::$app->request->post();
+            $dealer_name = strtoupper($params['dealer_name']);
+            $vehicle_name = strtoupper($params['vehicle_name']);
+            $brand = strtoupper($params['brand']);
+            $model = $params['model'];
+            $vehicle_make = strtoupper($params['vehicle_make']);
+            $date = $params['date'];
+            $loan_type = $params['loan_type'];
+            $borrower_name = strtoupper($params['borrower_name']);
+            $father_name = $params['father_name'];
+            $address = strtoupper($params['address']);
+            $bill_name = $params['bill_name'];
+            $company_name = $params['company_name'];
+            $replace = ['{dealer_name}', '{vehicle_name}', '{address}', '{brand}', '{model}', '{date}', '{borrower_name}', '{father_name}', '{bill_name}', '{company_name}'];
+            $data = [$dealer_name, $vehicle_name, $brand, $model, $vehicle_make, $date, $loan_type, $borrower_name, $father_name, $address, $bill_name, $company_name];
+//            $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [215.9, 355.6]]);
+//           // $existingPdfContents = file_get_contents(dirname(dirname(dirname(dirname(__DIR__)))) . '/frontend/views/test/pdfView.php');
+//           // $pdf = str_replace($replace, $data, $existingPdfContents);
+//            $mpdf->WriteHTML($pdf);
+            $base = dirname(dirname(dirname(dirname(__DIR__)))) . "/bin";
+            $base2 = dirname(dirname(dirname(dirname(__DIR__)))) . "/assets";
+//            $filePath =  $base.'/'. $dealer_name . '.pdf';
+//            $mpdf->Output($filePath, 'F');
+
+//            $mpdf->AddPage();
+//            $mpdf->Output($dealer_name . '.pdf', 'I');
+//            exit;
+
+            $mpdf = new \Mpdf\Mpdf(['tempDir' => $base, 'debug' => true]);
+            $mpdf->showImageErrors = true;
+            $mpdf->text_input_as_HTML = true;
+            $mpdf->allow_charset_conversion = true;
+            $mpdf->charset_in = 'UTF-8';
+
+            $page = $mpdf->setSourceFile($base . '/templates/dl_template.pdf');
+
+            for ($i = 1; $i <= ($page); $i++) {
+                $mpdf->AddPage();
+                $mpdf->SetFont('Arial', 'B', 8);
+                if ($i == 1) {
+                    $mpdf->WriteFixedPosHTML($dealer_name, 36, 68.7, 40, 80, 'auto');
+//                    $mpdf->WriteFixedPosHTML($dealer_name, 36,77,40,80, 'auto');
+                    $mpdf->WriteFixedPosHTML($vehicle_name, 78, 86.9, 40, 80, 'auto');
+                    $mpdf->WriteFixedPosHTML($borrower_name, 78, 96, 60, 80, 'auto');
+                    $mpdf->WriteFixedPosHTML($address, 78, 106, 40, 80, 'auto');
+                    $mpdf->WriteFixedPosHTML($date, 126, 124.5, 40, 80, 'auto');
+                    $mpdf->WriteFixedPosHTML($loan_type, 126, 134.5, 40, 80, 'auto');
+                    $mpdf->WriteFixedPosHTML($brand, 60, 143.5, 40, 80, 'auto');
+                    $mpdf->WriteFixedPosHTML($father_name, 126, 143.5, 40, 80, 'auto');
+                    $mpdf->WriteFixedPosHTML($address, 96, 152.5, 40, 80, 'auto');
+                    $mpdf->WriteFixedPosHTML($vehicle_make, 116, 162.5, 40, 80, 'auto');
+                    $mpdf->WriteFixedPosHTML($borrower_name, 80, 172, 60, 80, 'auto');
+                    $mpdf->WriteFixedPosHTML($father_name, 156, 172, 60, 80, 'auto');
+                    $mpdf->WriteFixedPosHTML($bill_name, 106, 200, 60, 80, 'auto');
+                    $mpdf->WriteFixedPosHTML($company_name, 164, 209.5, 60, 80, 'auto');
+                }
+                $importPage = $mpdf->ImportPage($i);
+                $mpdf->UseTemplate($importPage);
+            }
+            $filename = rand(1000, 100000);
+            $filePath = $base2 . '/' . $filename . '.pdf';
+//            $mpdf->Output($filePath,'F');
+            $mpdf->Output();
+//            return 'https://ravinder.eygb.me/assets/'.$filename.'.pdf';
+        }
+        //  return $this->render('pdfView');
+    }
+
+
+    public function actionGetPaymentList()
+    {
+        if (Yii::$app->request->isPost) {
+            $params = Yii::$app->request->post();
+            if (!empty($params['loan_app_enc_id']) && isset($params['loan_app_enc_id'])) {
+                $id = $params['loan_app_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $add = LoanPayments::find()
+                ->distinct()
+                ->select(['loan_app_enc_id', 'payment_status', 'payment_token', 'remarks', 'payment_source'])
+                ->andWhere(['loan_app_enc_id' => $params['loan_app_enc_id']])
+                ->asArray()
+                ->all();
+
+            return $this->response(200, ['status' => 200, 'data' => $add]);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+
+//            if ($add === null) {
+//                return $this->response(500, ['status' => 500, 'message' => 'An error occurred']);
+//            }
+//            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+
+//        return $this->response(200, ['status' => 200, 'message' => 'success']);
+    }
+
+    public function actionUpdatePaymentStatus()
+    {
+        if ($user = $this->isAuthorized()) {
+            try {
+                $params = Yii::$app->request->post();
+                if (empty($params['loan_id'])) {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+                }
+
+                if (empty($params['status'])) {
+                    return $this->response(422, ['status' => 422, 'message' => 'missing information "status"']);
+                }
+
+                $update = LoanPayments::findOne(['loan_app_enc_id' => $params['loan_id']]);
+                if (!$update) {
+                    return $this->response(404, ['status' => 404, 'message' => 'not found with this loan_id']);
+                }
+                $update->payment_status = $params['status'];
+                $update->remarks = $params['remarks'];
+                $update->updated_by = $user->user_enc_id;
+                $update->updated_on = date('Y-m-d H:i:s');
+
+                if (!$update->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating status', 'error' => $update->getErrors()]);
+                }
+                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+            } catch (\Exception $e) {
+                return $this->response(500, ['status' => 500, 'message' => $e->getMessage()]);
+            }
+        }
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
 }
+
+
+//if ($user = $this->isAuthorized())
+//{
+//try
+//{
+//$params = Yii::$app->request->post();
+//
+//
+//$update = LoanPayments::findOne(['loan_app_enc_id' => $params['loan_id']]);
+//if (!$update)
+//{
+//return $this->response(404, ['status' => 404, 'message' => 'not found with this loan_id']);
+//}
+//
+//$update->payment_status = $params['status'];
+//$update->remarks = $params['remarks'];
+//$update->updated_by = $user->user_enc_id;
+//$update->updated_on = date('Y-m-d H:i:s');
+//
+//if (!$update->update()) {
+//    return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating status', 'error' => $update->getErrors()]);
+//}
+//return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+//} catch
+//(\Exception $e) {
+//    return ['status' => 500, 'message' => $e->getMessage()];
+//}
+//        }
+//        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+//    }
