@@ -77,7 +77,8 @@ class CompanyDashboardController extends ApiBaseController
                 'employee-stats' => ['POST', 'OPTIONS'],
                 'financer-designations' => ['POST', 'OPTIONS'],
                 'financer-designation-list' => ['POST', 'OPTIONS'],
-                'dashboard-stats' => ['POST', 'OPTIONS']
+                'dashboard-stats' => ['POST', 'OPTIONS'],
+                'branch-list' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -2464,6 +2465,45 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'data' => $employeeAmount]);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionBranchList()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+//            if (empty($params['branch_id'])) {
+//                return $this->response(422, ['status' => 422, 'message' => 'missing information "branch_id"']);
+//            }
+            $test = LoanApplications::find()
+                ->alias('a')
+                ->distinct()
+                ->select(['SUM(a.amount) total_amount', 'b1.location_name',
+                    'SUM(CASE WHEN b.status = "0" THEN a.amount ELSE 0 END) as new_lead_amount',
+                    'SUM(CASE WHEN b.status = "4" THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, a.amount)) ELSE 0 END) as login_amount',
+                    'SUM(CASE WHEN b.status = "31" THEN b.disbursement_approved ELSE 0 END) as disbursed_amount',
+                    'SUM(CASE WHEN b.status = "26" THEN b.disbursement_approved ELSE 0 END) as disbursed_approval_amount',
+                    'SUM(CASE WHEN b.status = "31" THEN b.insurance_charges ELSE 0 END) as insurance_charges_amount',
+                    'SUM(CASE WHEN b.status = "24" THEN b.soft_sanction ELSE 0 END) as soft_sanctioned_amount',
+                    'SUM(CASE WHEN b.status = "15" THEN b.soft_approval ELSE 0 END) as soft_approval_amount',
+                    'SUM(CASE WHEN b.status != "0" AND b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN a.amount ELSE 0 END) as under_process_amount',
+                    'SUM(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, a.amount)) ELSE 0 END) as rejected_amount',
+                    'SUM(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, a.amount)) ELSE 0 END) as cni_amount',
+                    'SUM(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, a.amount)) ELSE 0 END) as sanctioned_amount',])
+                ->joinWith(['assignedLoanProviders b' => function ($b) {
+                    $b->joinWith(['branchEnc b1']);
+                }], false)
+                ->andWhere(['b.is_deleted' => 0])
+                ->groupBy(['b.branch_enc_id'])
+                ->asArray()
+                ->all();
+            if ($test) {
+                return $this->response(200, ['status' => 200, 'data' => $test]);
+            }
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
     }
 }

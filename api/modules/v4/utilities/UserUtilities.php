@@ -23,7 +23,7 @@ class UserUtilities
                 ->alias('a')
                 ->select([
                     'a.user_enc_id', 'a.username', 'a.first_name', 'a.last_name', 'a.initials_color', 'a.phone', 'a.email', 'a.organization_enc_id',
-                    'b.name organization_name', 'b.slug organization_slug', 'a.username organization_username', 'b.email organization_email', 'b.phone organization_phone',
+                    'b.name organization_name', 'b.slug organization_slug', 'f.location_enc_id branch_id', 'f.location_name branch_name','a.username organization_username', 'b.email organization_email', 'b.phone organization_phone',
                     '(CASE
                 WHEN c.code IS NOT NULL THEN c.code
                 WHEN b1.code IS NOT NULL THEN b1.code
@@ -39,6 +39,7 @@ class UserUtilities
                 ->joinWith(['referrals0 c'], false)
                 ->joinWith(['userRoles0 d' => function ($d) {
                     $d->joinWith(['designation d1'], false);
+                    $d->joinWith(['branchEnc f'], false);
                 }], false)
                 ->where(['a.user_enc_id' => $user_id])
                 ->asArray()
