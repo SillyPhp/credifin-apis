@@ -14,6 +14,7 @@ use common\models\UserTypes;
 // this class is used to get user related data
 class UserUtilities
 {
+    public static $rolesArray  = ['State Credit Head','Operations Manager', 'Product Manager'];
     // getting user data to return after signup/login
     public function userData($user_id, $source = null)
     {
@@ -92,7 +93,11 @@ class UserUtilities
                 $user['access_token_expiry_time'] = $token->access_token_expiration;
                 $user['refresh_token_expiry_time'] = $token->refresh_token_expiration;
             }
-
+            if (in_array($user['designation'],UserUtilities::$rolesArray)){
+                $user['specialAccessRole'] = true;
+            }else{
+                $user['specialAccessRole'] = false;
+            }
             return $user;
         } catch (\Exception $exception) {
             throw new \Exception($exception);
