@@ -14,6 +14,7 @@ use common\models\UserTypes;
 // this class is used to get user related data
 class UserUtilities
 {
+    public static $rolesArray  = ['State Credit Head','Operations Manager', 'Product Manager'];
     // getting user data to return after signup/login
     public function userData($user_id, $source = null)
     {
@@ -23,7 +24,7 @@ class UserUtilities
                 ->alias('a')
                 ->select([
                     'a.user_enc_id', 'a.username', 'a.first_name', 'a.last_name', 'a.initials_color', 'a.phone', 'a.email', 'a.organization_enc_id',
-                    'b.name organization_name', 'b.slug organization_slug', 'a.username organization_username', 'b.email organization_email', 'b.phone organization_phone',
+                    'b.name organization_name', 'b.slug organization_slug', 'f.location_enc_id branch_id', 'f.location_name branch_name','a.username organization_username', 'b.email organization_email', 'b.phone organization_phone',
                     '(CASE
                 WHEN c.code IS NOT NULL THEN c.code
                 WHEN b1.code IS NOT NULL THEN b1.code
@@ -39,6 +40,7 @@ class UserUtilities
                 ->joinWith(['referrals0 c'], false)
                 ->joinWith(['userRoles0 d' => function ($d) {
                     $d->joinWith(['designation d1'], false);
+                    $d->joinWith(['branchEnc f'], false);
                 }], false)
                 ->where(['a.user_enc_id' => $user_id])
                 ->asArray()
@@ -91,7 +93,11 @@ class UserUtilities
                 $user['access_token_expiry_time'] = $token->access_token_expiration;
                 $user['refresh_token_expiry_time'] = $token->refresh_token_expiration;
             }
-
+            if (in_array($user['designation'],UserUtilities::$rolesArray)){
+                $user['specialAccessRole'] = true;
+            }else{
+                $user['specialAccessRole'] = false;
+            }
             return $user;
         } catch (\Exception $exception) {
             throw new \Exception($exception);

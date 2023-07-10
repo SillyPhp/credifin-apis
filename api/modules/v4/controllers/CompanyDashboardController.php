@@ -260,18 +260,7 @@ class CompanyDashboardController extends ApiBaseController
 
         //get user roles
         $specialroles = false;
-        if (!$user->organization_enc_id) {
-            $accessroles = ['State Credit Head', 'Operations Manager', 'Product Manager'];
-            $specialroles = UserRoles::find()
-                ->alias('a')
-                ->where(['user_enc_id' => $user->user_enc_id])
-                ->joinWith(['designation b' => function ($b) use ($accessroles) {
-                    $b->andWhere(['in', 'b.designation', $accessroles]);
-                }], true, 'INNER JOIN')
-                ->exists();
-        }
-
-
+        $roleUnderId = null;
         // if user is organization/financer then getting its DSA's
         $dsa = [];
         if ($user->organization_enc_id) {
@@ -379,7 +368,7 @@ class CompanyDashboardController extends ApiBaseController
             }
         }
 
-        if (!$user->organization_enc_id && $specialroles == false) {
+        if (!$user->organization_enc_id && $specialroles==false){
             // else checking lead_by and managed_by by logged-in user
             $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
         }
@@ -913,11 +902,11 @@ class CompanyDashboardController extends ApiBaseController
             $loanApp->updated_by = $provider->updated_by = $user->user_enc_id;
             $provider->loan_status_updated_on = date('Y-m-d H:i:s');
             $provider->updated_on = date('Y-m-d H:i:s');
-            $loanApp->loan_status_updated_on = date('Y-m-d H:i:s');
+            $loanApp->loan_status_updated_on =  date('Y-m-d H:i:s');
             $loanApp->updated_on = date('Y-m-d H:i:s');
             if ($loanApp->update() && $provider->update()) {
                 return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-            } else {
+            }else{
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating status', 'error' => $provider->getErrors()]);
             }
         }
@@ -2469,33 +2458,36 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
-
     public function actionBranchList()
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
-            $test = OrganizationLocations::find()
+
+//            if (empty($params['branch_id'])) {
+//                return $this->response(422, ['status' => 422, 'message' => 'missing information "branch_id"']);
+//            }
+            $test = LoanApplications::find()
                 ->alias('a')
-                ->select(['a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
-                    'SUM(CASE WHEN b.status = "0" THEN c.amount ELSE 0 END) as new_lead_amount',
-                    'SUM(CASE WHEN b.status = "4" THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount)) ELSE 0 END) as login_amount',
+                ->distinct()
+                ->select(['SUM(a.amount) total_amount', 'b1.location_name',
+                    'SUM(CASE WHEN b.status = "0" THEN a.amount ELSE 0 END) as new_lead_amount',
+                    'SUM(CASE WHEN b.status = "4" THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, a.amount)) ELSE 0 END) as login_amount',
                     'SUM(CASE WHEN b.status = "31" THEN b.disbursement_approved ELSE 0 END) as disbursed_amount',
                     'SUM(CASE WHEN b.status = "26" THEN b.disbursement_approved ELSE 0 END) as disbursed_approval_amount',
                     'SUM(CASE WHEN b.status = "31" THEN b.insurance_charges ELSE 0 END) as insurance_charges_amount',
                     'SUM(CASE WHEN b.status = "24" THEN b.soft_sanction ELSE 0 END) as soft_sanctioned_amount',
                     'SUM(CASE WHEN b.status = "15" THEN b.soft_approval ELSE 0 END) as soft_approval_amount',
-                    'SUM(CASE WHEN b.status != "0" AND b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN c.amount ELSE 0 END) as under_process_amount',
-                    'SUM(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as rejected_amount',
-                    'SUM(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as cni_amount',
-                    'SUM(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as sanctioned_amount',
-                ])
-                ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
-                ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')
-                ->where(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
-                ->groupBy(['a.location_enc_id'])
+                    'SUM(CASE WHEN b.status != "0" AND b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN a.amount ELSE 0 END) as under_process_amount',
+                    'SUM(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, a.amount)) ELSE 0 END) as rejected_amount',
+                    'SUM(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, a.amount)) ELSE 0 END) as cni_amount',
+                    'SUM(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, a.amount)) ELSE 0 END) as sanctioned_amount',])
+                ->joinWith(['assignedLoanProviders b' => function ($b) {
+                    $b->joinWith(['branchEnc b1']);
+                }], false)
+                ->andWhere(['b.is_deleted' => 0])
+                ->groupBy(['b.branch_enc_id'])
                 ->asArray()
                 ->all();
-
             if ($test) {
                 return $this->response(200, ['status' => 200, 'data' => $test]);
             }
@@ -2504,5 +2496,4 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
     }
-
 }
