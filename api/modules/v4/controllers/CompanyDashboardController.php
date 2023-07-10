@@ -5,6 +5,7 @@ namespace api\modules\v4\controllers;
 use api\modules\v4\models\FinancerDesignationForm;
 use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\SignupForm;
+use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedDeals;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedLoanProvider;
@@ -276,6 +277,21 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             $dsa[] = $user->user_enc_id;
+        } else {
+            $accessroles = UserUtilities::$rolesArray;
+            $role = UserRoles::find()
+                ->alias('a')
+                ->where(['user_enc_id' => $user->user_enc_id])
+                ->andWhere(['a.is_deleted' => 0])
+                ->joinWith(['designation b' => function ($b) use ($accessroles) {
+                    $b->andWhere(['in', 'b.designation', $accessroles]);
+                }], true, 'INNER JOIN');
+            $specialroles = $role->exists();
+
+            if ($specialroles) {
+                $roleUnder = $role->asArray()->one();
+                $roleUnderId = $roleUnder['organization_enc_id'];
+            }
         }
 
         // getting shared applications to logged-in user
@@ -345,11 +361,14 @@ class CompanyDashboardController extends ApiBaseController
                     END) as employment_type',
                 ]);
             }])
-            ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
+            ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user, $roleUnderId) {
                 $i->joinWith(['providerEnc j']);
                 // if loans service exists then using andWhere with provider_enc_id
                 if ($service) {
                     $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
+                }
+                if (!empty($roleUnderId) || $roleUnderId != null) {
+                    $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
                 }
                 $i->joinWith(['branchEnc be']);
             }])
@@ -360,7 +379,6 @@ class CompanyDashboardController extends ApiBaseController
             }])
             ->joinWith(['loanProductsEnc lp'], false)
             ->andWhere(['a.is_deleted' => 0]);
-
         // if its organization and service is not "Loans" then checking lead_by=$dsa
         if ($user->organization_enc_id) {
             if (!$service) {
@@ -592,7 +610,6 @@ class CompanyDashboardController extends ApiBaseController
 
         return ['loans' => $loans, 'count' => $count];
     }
-
 //    private function __partnerApplications($user)
 //    {
 //        return LoanApplicationPartners::find()
@@ -1965,6 +1982,9 @@ class CompanyDashboardController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
 
             $params = Yii::$app->request->post();
+            //get user roles
+            $specialroles = false;
+            $roleUnderId = null;
 
             // checking if its organization
             if ($user->organization_enc_id) {
@@ -1980,6 +2000,21 @@ class CompanyDashboardController extends ApiBaseController
                 }
 
                 $dsa[] = $user->user_enc_id;
+            } else {
+                $accessroles = UserUtilities::$rolesArray;
+                $role = UserRoles::find()
+                    ->alias('a')
+                    ->where(['user_enc_id' => $user->user_enc_id])
+                    ->andWhere(['a.is_deleted' => 0])
+                    ->joinWith(['designation b' => function ($b) use ($accessroles) {
+                        $b->andWhere(['in', 'b.designation', $accessroles]);
+                    }], true, 'INNER JOIN');
+                $specialroles = $role->exists();
+
+                if ($specialroles) {
+                    $roleUnder = $role->asArray()->one();
+                    $roleUnderId = $roleUnder['organization_enc_id'];
+                }
             }
 
             // checking if logged-in user financer
@@ -1996,11 +2031,14 @@ class CompanyDashboardController extends ApiBaseController
             $stats = LoanApplications::find()
                 ->alias('a')
                 ->select(['j1.loan_status', 'COUNT(a.status) count', 'j1.status_color', 'j1.value'])
-                ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
+                ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user, $roleUnderId) {
                     $i->joinWith(['providerEnc j']);
                     $i->joinWith(['status0 j1']);
                     if ($service) {
                         $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
+                    }
+                    if (!empty($roleUnderId) || $roleUnderId != null) {
+                        $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
                     }
                 }], false)
                 ->andWhere(['a.is_deleted' => 0, 'a.form_type' => 'others']);
@@ -2009,7 +2047,9 @@ class CompanyDashboardController extends ApiBaseController
                 if (!$service) {
                     $stats->andWhere(['a.lead_by' => $dsa]);
                 }
-            } else {
+            }
+            if (!$user->organization_enc_id && $specialroles == false) {
+                // else checking lead_by and managed_by by logged-in user
                 $stats->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
             }
 
@@ -2369,6 +2409,10 @@ class CompanyDashboardController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
+            //get user roles
+            $specialroles = false;
+            $roleUnderId = null;
+
             // checking if its organization
             if ($user->organization_enc_id) {
 
@@ -2383,6 +2427,21 @@ class CompanyDashboardController extends ApiBaseController
                 }
 
                 $dsa[] = $user->user_enc_id;
+            } else {
+                $accessroles = UserUtilities::$rolesArray;
+                $role = UserRoles::find()
+                    ->alias('a')
+                    ->where(['user_enc_id' => $user->user_enc_id])
+                    ->andWhere(['a.is_deleted' => 0])
+                    ->joinWith(['designation b' => function ($b) use ($accessroles) {
+                        $b->andWhere(['in', 'b.designation', $accessroles]);
+                    }], true, 'INNER JOIN');
+                $specialroles = $role->exists();
+
+                if ($specialroles) {
+                    $roleUnder = $role->asArray()->one();
+                    $roleUnderId = $roleUnder['organization_enc_id'];
+                }
             }
             $service = SelectedServices::find()
                 ->alias('a')
@@ -2424,10 +2483,13 @@ class CompanyDashboardController extends ApiBaseController
 //                        $k->andWhere(['in', 'k.name', $params['loan_type']]);
 //                    }
 //                }],false)
-                ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user) {
+                ->joinWith(['assignedLoanProviders i' => function ($i) use ($service, $user, $roleUnderId) {
                     $i->joinWith(['providerEnc j']);
                     if ($service) {
                         $i->andWhere(['i.provider_enc_id' => $user->organization_enc_id]);
+                    }
+                    if (!empty($roleUnderId) || $roleUnderId != null) {
+                        $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
                     }
                 }], false)
                 ->where(['b.is_deleted' => 0, 'b.form_type' => 'others']);
@@ -2435,9 +2497,12 @@ class CompanyDashboardController extends ApiBaseController
                 if (!$service) {
                     $employeeAmount->andWhere(['b.lead_by' => $dsa]);
                 }
-            } else {
+            }
+            if (!$user->organization_enc_id && $specialroles == false) {
+                // else checking lead_by and managed_by by logged-in user
                 $employeeAmount->andWhere(['or', ['b.lead_by' => $user->user_enc_id], ['b.managed_by' => $user->user_enc_id]]);
             }
+
             if ($shared_apps['app_ids']) {
                 $employeeAmount->orWhere(['b.loan_app_enc_id' => $shared_apps['app_ids']]);
             }
@@ -2457,7 +2522,6 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
-
     public function actionBranchList()
     {
         if ($user = $this->isAuthorized()) {
@@ -2466,7 +2530,7 @@ class CompanyDashboardController extends ApiBaseController
 //            if (empty($params['branch_id'])) {
 //                return $this->response(422, ['status' => 422, 'message' => 'missing information "branch_id"']);
 //            }
-            $test = LoanApplications::find()
+            $Branch_list = LoanApplications::find()
                 ->alias('a')
                 ->distinct()
                 ->select(['SUM(a.amount) total_amount', 'b1.location_name',
@@ -2488,8 +2552,8 @@ class CompanyDashboardController extends ApiBaseController
                 ->groupBy(['b.branch_enc_id'])
                 ->asArray()
                 ->all();
-            if ($test) {
-                return $this->response(200, ['status' => 200, 'data' => $test]);
+            if ($Branch_list) {
+                return $this->response(200, ['status' => 200, 'data' => $Branch_list]);
             }
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         } else {
