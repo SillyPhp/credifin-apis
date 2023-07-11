@@ -1653,9 +1653,9 @@ class OrganizationsController extends ApiBaseController
         $notice = FinancerNoticeBoard::find()
             ->alias('a')
             ->select(['a.notice_enc_id',
-                'CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, 'https') . '", a.image_location, "/", a.image) image'
+                'CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, 'https') . '", a.image_location, "/", a.image) image', '(CASE WHEN a.status = 0 THEN "true" ELSE "false" end) as status', 'a.created_on'
             ])
-            ->where(['a.status' => 0, 'a.is_deleted' => 0])
+            ->where(['a.is_deleted' => 0])
             ->asArray()
             ->all();
         if ($notice) {
@@ -1670,6 +1670,9 @@ class OrganizationsController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
         $params = Yii::$app->request->post();
+        if (empty($params['notice_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing parameter "notice_enc_id"']);
+        }
         $notice = FinancerNoticeBoard::findOne(['notice_enc_id' => $params['notice_enc_id'], 'created_by' => $user->user_enc_id]);
         if (!$notice) {
             return $this->response(404, ['status' => 404, 'message' => 'Notice not Found']);
