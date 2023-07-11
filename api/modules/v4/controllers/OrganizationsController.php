@@ -1653,7 +1653,7 @@ class OrganizationsController extends ApiBaseController
         $notice = FinancerNoticeBoard::find()
             ->alias('a')
             ->select(['a.notice_enc_id',
-                'CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, 'https') . '", a.image_location, "/", a.image) image', '(CASE WHEN a.status = Active THEN "true" ELSE "false" end) as status', 'a.created_on'
+                'CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, 'https') . '", a.image_location, "/", a.image) image', '(CASE WHEN a.status = "Active" THEN "true" ELSE "false" end) as status', 'a.created_on'
             ])
             ->where(['a.is_deleted' => 0])
             ->asArray()
