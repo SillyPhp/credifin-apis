@@ -104,7 +104,7 @@ class AuthController extends ApiBaseController
                         $user = new UserUtilities();
                         $user_data = $user->userData($data['user_id'], $model->source);
 
-                        return $this->response(201, ['status' => 201, 'data' => $user_data]);
+                        return $this->response(201, ['status' => 201, 'message' => 'Your account status is \'Pending\'. Please get it approved by admin.']);
                     } else {
                         // if there is error while saving data
                         return $this->response(500, $data);
@@ -458,7 +458,10 @@ class AuthController extends ApiBaseController
             }
 
             // getting user detail from token user
-            $user = Users::findOne(['user_enc_id' => $token->user_enc_id]);
+            $user = Users::findOne(['user_enc_id' => $token->user_enc_id, 'status' => 'Active', 'is_deleted' => 0]);
+            if (!$user) {
+                return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            }
 
             // creating user utilities model to get user data
             $userData = new UserUtilities();
@@ -598,7 +601,7 @@ class AuthController extends ApiBaseController
         $ref = \common\models\Referral::find()
             ->alias('a')
             ->select([
-                'a.referral_enc_id','b.name','b.slug',
+                'a.referral_enc_id', 'b.name', 'b.slug',
                 'CASE WHEN b.logo IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo'
             ])
             ->joinWith(['organizationEnc b'])
