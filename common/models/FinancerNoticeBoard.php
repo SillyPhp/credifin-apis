@@ -12,7 +12,7 @@ use Yii;
  * @property string $image Image
  * @property string $image_location Image Location
  * @property string $financer_enc_id Financer Enc Id
- * @property int $status Status[0 = Active, 1 = Inactive]
+ * @property string $status Status
  * @property string $created_on Created on
  * @property string $created_by Created by
  * @property string $updated_on Updated on
@@ -40,8 +40,9 @@ class FinancerNoticeBoard extends \yii\db\ActiveRecord
     {
         return [
             [['notice_enc_id', 'image', 'image_location', 'financer_enc_id', 'created_on', 'created_by', 'updated_on', 'updated_by'], 'required'],
-            [['status', 'is_deleted'], 'integer'],
+            [['status'], 'string'],
             [['created_on', 'updated_on'], 'safe'],
+            [['is_deleted'], 'integer'],
             [['notice_enc_id', 'image', 'image_location', 'financer_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['notice_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
