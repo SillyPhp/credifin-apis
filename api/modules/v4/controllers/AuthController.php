@@ -103,8 +103,12 @@ class AuthController extends ApiBaseController
                         // creating user utilities model to get user data
                         $user = new UserUtilities();
                         $user_data = $user->userData($data['user_id'], $model->source);
+                        if ($user_data['user_type'] != 'Individual') {
+                            $message = 'Your account status is \'Pending\'. Please get it approved by admin.';
+                            return $this->response(201, ['status' => 201, 'message' => $message]);
 
-                        return $this->response(201, ['status' => 201, 'message' => 'Your account status is \'Pending\'. Please get it approved by admin.']);
+                        }
+                        return $this->response(201, ['status' => 201, 'data' => $user_data]);
                     } else {
                         // if there is error while saving data
                         return $this->response(500, $data);
