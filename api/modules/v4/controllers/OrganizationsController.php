@@ -1654,7 +1654,7 @@ class OrganizationsController extends ApiBaseController
             ->alias('a')
             ->select(['a.notice_enc_id',
                 'CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, 'https') . '", a.image_location, "/", a.image) image',
-                '(CASE WHEN a.status = "Active" THEN 1 ELSE 0 END) as status',
+                '(CASE WHEN a.status = "Active" THEN TRUE ELSE FALSE END) as status',
                 'a.created_on'
             ])
             ->where(['a.is_deleted' => 0])
