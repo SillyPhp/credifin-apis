@@ -164,15 +164,18 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             // default org of user
             $org = $user->organization_enc_id;
-            $user_type = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])['user_type'];
-            if ($user_type == 'Dealer') {
+            if (!$org) {
+                $org = UserRoles::findOne(['user_enc_id' => $user->user_enc_id])['organization_enc_id'];
+            }
+            $user_type = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id]);
+            if ($user_type['user_type'] && $user_type['user_type'] == 'Dealer') {
                 $user_role = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
                 if (!empty($user_role['organization_enc_id'])) {
                     // if user_type = dealer, then org id is from UserRoles
                     $org = $user_role['organization_enc_id'];
                 }
             }
-            if (!$org) {
+            if (empty($org)) {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
 
