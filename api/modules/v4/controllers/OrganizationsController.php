@@ -20,6 +20,7 @@ use common\models\OrganizationLocations;
 use common\models\spaces\Spaces;
 use common\models\UserAccessTokens;
 use common\models\UserRoles;
+use common\models\UserTypes;
 use yii\web\UploadedFile;
 use yii\db\Expression;
 use common\models\Utilities;
@@ -1660,8 +1661,8 @@ class OrganizationsController extends ApiBaseController
                 '(CASE WHEN a.status = "Active" THEN TRUE ELSE FALSE END) as status',
                 'a.created_on'
             ]);
-        if (isset($params['status']) && $params['status'] == 'active') {
-            $notice->andWhere(['a.status' => 'Active']);
+        if (isset($params['status']) && $params['status']) {
+            $notice->andWhere(['a.status' => $params['status']]);
         }
         $notice = $notice->andWhere(['a.is_deleted' => 0])
             ->asArray()
