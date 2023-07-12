@@ -1650,14 +1650,18 @@ class OrganizationsController extends ApiBaseController
         if (!$this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
+        $params = Yii::$app->request->post();
         $notice = FinancerNoticeBoard::find()
             ->alias('a')
             ->select(['a.notice_enc_id',
                 'CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, 'https') . '", a.image_location, "/", a.image) image',
                 '(CASE WHEN a.status = "Active" THEN TRUE ELSE FALSE END) as status',
                 'a.created_on'
-            ])
-            ->where(['a.is_deleted' => 0])
+            ]);
+        if (isset($params['status']) && $params['status'] == 'active') {
+            $notice->andWhere(['a.status' => 'Active']);
+        }
+        $notice = $notice->andWhere(['a.is_deleted' => 0])
             ->asArray()
             ->all();
         if ($notice) {
