@@ -1518,13 +1518,13 @@ class OrganizationsController extends ApiBaseController
                 'CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
                 'CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
                 'CONCAT(a.address,", ", a.pincode) address',
-                'a.comments']);
-        if (isset($org_id)) {
-            $model->joinWith(['createdBy b' => function ($b) {
+                'a.comments'])
+            ->joinWith(['createdBy b' => function ($b) {
                 $b->joinWith(['userRoles b1'], false);
                 $b->joinWith(['designations d']);
-            }], false)
-                ->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
+            }], false);
+        if (isset($org_id)) {
+            $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
 
         if (isset($lac)) {
