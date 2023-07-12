@@ -118,6 +118,10 @@ class ApiBaseController extends Controller
                 // after token validation getting user data object
                 $user = Candidates::findOne(['user_enc_id' => $access_token->user_enc_id]);
 
+                if ($user['status'] != 'Active' || $user['is_deleted'] == 1) {
+                    return false;
+                }
+
                 // identity login
                 Yii::$app->user->login($user);
 

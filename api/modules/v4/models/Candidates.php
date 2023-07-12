@@ -34,8 +34,8 @@ class Candidates extends Users implements \yii\web\IdentityInterface
     public static function findByUsername($username)
     {
         return static::find()
-            ->where(['username' => $username])
-            ->orWhere(['email' => $username])
+            ->where(['or', ['username' => $username], ['email' => $username]])
+            ->andWhere(['is_deleted' => 0])
             ->one();
     }
 
