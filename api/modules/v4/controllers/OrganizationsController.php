@@ -1495,7 +1495,7 @@ class OrganizationsController extends ApiBaseController
             ->alias('a')
             ->select(['a.emi_collection_enc_id', 'CONCAT(c.location_name , ", ", c1.name) as branch_name', 'a.customer_name', 'a.collection_date',
                 'a.loan_account_number', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.payment_method',
-                'a.other_payment_method', 'a.ptp_amount', 'a.ptp_date',
+                'a.other_payment_method', 'a.ptp_amount', 'a.ptp_date', 'd.designation', 'CONCAT(b.first_name, " ", b.last_name) name',
                 'CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ",",a.other_delay_reason) ELSE a.delay_reason END AS delay_reason',
                 'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
                 'CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
@@ -1505,9 +1505,11 @@ class OrganizationsController extends ApiBaseController
         if (isset($org_id)) {
             $model->joinWith(['createdBy b' => function ($b) {
                 $b->joinWith(['userRoles b1'], false);
+                $b->joinWith(['designations d']);
             }], false)
                 ->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
+
         if (isset($lac)) {
             $model->andWhere(['a.loan_account_number' => $lac]);
         }
@@ -1585,9 +1587,12 @@ class OrganizationsController extends ApiBaseController
             if ($org_id) {
                 $emiList = EmiCollection::find()
                     ->alias('a')
-                    ->select(['a.customer_name', 'a.phone', 'a.loan_account_number', 'a.loan_type', 'b.location_name as branch_name', 'a.branch_enc_id'])
+                    ->select(['a.customer_name', 'a.phone', 'a.loan_account_number', 'a.loan_type', 'b.location_name as branch_name', 'a.branch_enc_id', 'CONCAT(c.first_name, " ", c.last_name) name'])
                     ->joinWith(['branchEnc b'], false)
-                    ->andWhere(['organization_enc_id' => $org_id, 'a.is_deleted' => 0])
+                    ->joinWith(['createdBy c' => function ($c) {
+                        $c->joinWith(['designations d']);
+                    }], false)
+                    ->andWhere(['b.organization_enc_id' => $org_id, 'a.is_deleted' => 0])
                     ->groupBy(['a.loan_account_number'])
                     ->asArray()
                     ->all();
