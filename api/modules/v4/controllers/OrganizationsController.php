@@ -13,9 +13,11 @@ use common\models\FinancerLoanDocuments;
 use common\models\FinancerLoanProductStatus;
 use common\models\FinancerLoanPurpose;
 use common\models\FinancerLoanStatus;
+use common\models\FinancerNoticeBoard;
 use common\models\LoanStatus;
 use common\models\LoanType;
 use common\models\OrganizationLocations;
+use common\models\spaces\Spaces;
 use common\models\UserAccessTokens;
 use common\models\UserRoles;
 use yii\web\UploadedFile;
@@ -61,7 +63,10 @@ class OrganizationsController extends ApiBaseController
                 'remove-status' => ['POST', 'OPTIONS'],
                 'update-status-list' => ['POST', 'OPTIONS'],
                 'delete-emi' => ['POST', 'OPTIONS'],
-                'emi-list' => ['POST', 'OPTIONS']
+                'emi-list' => ['POST', 'OPTIONS'],
+                'add-notice' => ['POST', 'OPTIONS'],
+                'get-notice' => ['POST', 'OPTIONS'],
+                'update-notice' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -156,9 +161,17 @@ class OrganizationsController extends ApiBaseController
     public function actionGetBranches()
     {
         if ($user = $this->isAuthorized()) {
-
-            $lender = $this->getFinancerId($user);
-            if (!$lender) {
+            // default org of user
+            $org = $user->organization_enc_id;
+            $user_type = UserTypes::findOne(['user_type_enc_id' => $user->user_type_enc_id])['user_type'];
+            if ($user_type == 'Dealer') {
+                $user_role = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+                if (!empty($user_role['organization_enc_id'])) {
+                    // if user_type = dealer, then org id is from UserRoles
+                    $org = $user_role['organization_enc_id'];
+                }
+            }
+            if (!$org) {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
 
@@ -166,7 +179,7 @@ class OrganizationsController extends ApiBaseController
                 ->alias('a')
                 ->select(['a.location_enc_id', 'a.location_enc_id as id', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , ", ", b.name) as value', 'b.city_enc_id', 'a.status'])
                 ->joinWith(['cityEnc b'], false)
-                ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $lender])
+                ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org])
                 ->asArray()
                 ->all();
 
@@ -1576,33 +1589,118 @@ class OrganizationsController extends ApiBaseController
 
     public function actionEmiList()
     {
-
-        if ($user = $this->isAuthorized()) {
-            $org_id = $user->organization_enc_id;
-
-            if (!$user->organization_enc_id) {
-                $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
-                $org_id = $findOrg->organization_enc_id;
-            }
-            if ($org_id) {
-                $emiList = EmiCollection::find()
-                    ->alias('a')
-                    ->select(['a.customer_name', 'a.phone', 'a.loan_account_number', 'a.loan_type', 'b.location_name as branch_name', 'a.branch_enc_id', 'CONCAT(c.first_name, " ", c.last_name) name'])
-                    ->joinWith(['branchEnc b'], false)
-                    ->joinWith(['createdBy c' => function ($c) {
-                        $c->joinWith(['designations d']);
-                    }], false)
-                    ->andWhere(['b.organization_enc_id' => $org_id, 'a.is_deleted' => 0])
-                    ->groupBy(['a.loan_account_number'])
-                    ->asArray()
-                    ->all();
-                return $this->response(200, ['status' => 200, 'data' => $emiList]);
-            } else {
-                return $this->response(401, ['status' => 201, 'message' => 'Not found']);
-            }
-        } else {
+        if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $org_id = $user->organization_enc_id;
+
+        if (!$user->organization_enc_id) {
+            $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
+            $org_id = $findOrg->organization_enc_id;
+        }
+        if ($org_id) {
+            $emiList = EmiCollection::find()
+                ->alias('a')
+                ->select(['a.customer_name', 'a.phone', 'a.loan_account_number', 'a.loan_type', 'b.location_name as branch_name', 'a.branch_enc_id'])
+                ->joinWith(['branchEnc b'], false)
+                ->andWhere(['organization_enc_id' => $org_id, 'a.is_deleted' => 0])
+                ->groupBy(['a.loan_account_number'])
+                ->asArray()
+                ->all();
+            return $this->response(200, ['status' => 200, 'data' => $emiList]);
+        } else {
+            return $this->response(401, ['status' => 201, 'message' => 'Not found']);
         }
     }
 
+    public function actionAddNotice()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        if (!$org_id = $this->getFinancerId($user)) {
+            return $this->response(401, ['status' => 401, 'message' => 'financer id not found']);
+        }
+        if (!$image = $_FILES['image']) {
+            return $this->response(401, ['status' => 401, 'message' => 'image missing']);
+        }
+        $notice = new FinancerNoticeBoard();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+        $notice->image = $utilitiesModel->encrypt() . '.' . explode('.', $image['name'])[1];
+        $notice->image_location = Yii::$app->getSecurity()->generateRandomString();
+        $base_path = Yii::$app->params->upload_directories->notice->image . $notice->image_location;
+        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+        $result = $my_space->uploadFileSources($image['tmp_name'], Yii::$app->params->digitalOcean->rootDirectory . $base_path . DIRECTORY_SEPARATOR . $notice->image, "public", ['params' => ['ContentType' => $image['type']]]);
+        if (!$result) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred while saving image']);
+        }
+        $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+        $notice->notice_enc_id = $utilitiesModel->encrypt();
+        $notice->financer_enc_id = $org_id;
+        $notice->created_on = $notice->updated_on = date('Y-m-d H:i:s');
+        $notice->created_by = $notice->updated_by = $user->user_enc_id;
+        if (!$notice->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $notice->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+    }
+
+    public function actionGetNotice()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        $notice = FinancerNoticeBoard::find()
+            ->alias('a')
+            ->select(['a.notice_enc_id',
+                'CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, 'https') . '", a.image_location, "/", a.image) image',
+                '(CASE WHEN a.status = "Active" THEN TRUE ELSE FALSE END) as status',
+                'a.created_on'
+            ]);
+        if (isset($params['status']) && $params['status'] == 'active') {
+            $notice->andWhere(['a.status' => 'Active']);
+        }
+        $notice = $notice->andWhere(['a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+        if ($notice) {
+            return $this->response(200, ['status' => 200, 'notices' => $notice]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+    }
+
+    public function actionUpdateNotice()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['notice_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing parameter "notice_enc_id"']);
+        }
+        $notice = FinancerNoticeBoard::findOne(['notice_enc_id' => $params['notice_enc_id'], 'created_by' => $user->user_enc_id]);
+        if (!$notice) {
+            return $this->response(404, ['status' => 404, 'message' => 'Notice not Found']);
+        }
+        if (isset($params['status'])) {
+            $status = 'Inactive';
+            if ($params['status']) {
+                $status = 'Active';
+            }
+            $notice->status = $status;
+        }
+        if (isset($params['delete']) && $params['delete']) {
+            $notice->is_deleted = 1;
+        }
+        $notice->updated_by = $user->user_enc_id;
+        $notice->updated_on = date('Y-m-d H:i:s');
+        if (!$notice->update()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating', 'error' => $notice->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+    }
 }
