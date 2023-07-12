@@ -31,6 +31,8 @@ class LoginForm extends Model
 
             if (!$user || !$user->validatePassword($this->password, $user->password)) {
                 $this->addError($attribute, 'Incorrect username or password');
+            } elseif ($user['status'] != 'Active') {
+                $this->addError('error', 'Account status is \'' . $user['status'] . '\'.');
             }
         }
     }
