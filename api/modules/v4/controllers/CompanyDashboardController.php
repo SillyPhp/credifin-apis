@@ -1043,6 +1043,13 @@ class CompanyDashboardController extends ApiBaseController
             ]);
         }
 
+        // filter employee search on employee reporting person
+        if ($params != null && !empty($params['reporting_person'])) {
+            $employee->andWhere([
+                'like', 'CONCAT(e.first_name," ", e.last_name)', $params['reporting_person'],
+            ]);
+        }
+
         // checking if this employee already exists in list from frontend
         if ($params != null && !empty($params['alreadyExists'])) {
             $employee->andWhere(['not', ['a.user_enc_id' => $params['alreadyExists']]]);
