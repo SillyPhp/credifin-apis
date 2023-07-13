@@ -21,6 +21,7 @@ use common\models\extended\SharedLoanApplicationsExtended;
 use common\models\FinancerAssignedDesignations;
 use common\models\LoanApplicationPartners;
 use common\models\LoanApplications;
+use common\models\LoanApplicationVerification;
 use common\models\LoanCoApplicants;
 use common\models\LoanCertificates;
 use common\models\LoanSanctionReports;
@@ -387,7 +388,7 @@ class CompanyDashboardController extends ApiBaseController
             }
         }
 
-        if (!$user->organization_enc_id && $specialroles==false){
+        if (!$user->organization_enc_id && $specialroles == false) {
             // else checking lead_by and managed_by by logged-in user
             $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
         }
@@ -770,6 +771,9 @@ class CompanyDashboardController extends ApiBaseController
 //                    $lpm->orderBy(['lpm.created_on' => SORT_DESC]);
 //                }])
                 ->joinWith(['loanProductsEnc lp'], false)
+//                ->joinWith(['loanApplicationVerifications lav' => function($lav){
+//
+//                }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
@@ -920,11 +924,11 @@ class CompanyDashboardController extends ApiBaseController
             $loanApp->updated_by = $provider->updated_by = $user->user_enc_id;
             $provider->loan_status_updated_on = date('Y-m-d H:i:s');
             $provider->updated_on = date('Y-m-d H:i:s');
-            $loanApp->loan_status_updated_on =  date('Y-m-d H:i:s');
+            $loanApp->loan_status_updated_on = date('Y-m-d H:i:s');
             $loanApp->updated_on = date('Y-m-d H:i:s');
             if ($loanApp->update() && $provider->update()) {
                 return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-            }else{
+            } else {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating status', 'error' => $provider->getErrors()]);
             }
         }
@@ -2525,6 +2529,7 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
     public function actionBranchList()
     {
         if ($user = $this->isAuthorized()) {
@@ -2562,5 +2567,29 @@ class CompanyDashboardController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
+    }
+
+    public function actionCreateLoanVerify()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        $loan_verify = new LoanApplicationVerification();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $loan_verify->loan_application_verification_enc_id = $utilitiesModel->encrypt();
+        $loan_verify->loan_app_enc_id = $params['loan_app_enc_id'];
+        $loan_verify->type = $params['type'];
+        $loan_verify->status = $params['status'];
+        if (isset($params['preffered_date'])) {
+            $loan_verify->preffered_date = $params['preffered_date'];
+        }
+        $loan_verify->created_on = $loan_verify->updated_on = date('Y-m-d H:i:s');
+        $loan_verify->created_by = $loan_verify->updated_by = $user->user_enc_id;
+        if (!$loan_verify->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_verify->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'Saved successfully']);
     }
 }
