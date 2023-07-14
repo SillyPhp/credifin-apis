@@ -1040,6 +1040,7 @@ class CompanyDashboardController extends ApiBaseController
                 ['like', 'b.username', $params['employee_search']],
                 ['like', 'b.email', $params['employee_search']],
                 ['like', 'b.phone', $params['employee_search']],
+                ['like', 'b.employee_code', $params['employee_search']],
             ]);
         }
 
