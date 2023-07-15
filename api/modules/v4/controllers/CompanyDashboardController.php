@@ -786,8 +786,8 @@ class CompanyDashboardController extends ApiBaseController
 //                }])
                 ->joinWith(['loanProductsEnc lp'], false)
                 // if verification is true then sending list of TVR verification
-                ->joinWith(['loanApplicationVerifications k' => function ($m) {
-                    $m->select(['k.loan_application_verification_enc_id', 'k.loan_app_enc_id', 'k.type', 'k.status', 'k.assigned_to', 'k.preferred_date']);
+                ->joinWith(['loanApplicationVerifications l' => function ($m) {
+                    $m->select(['l.loan_application_verification_enc_id', 'l.loan_app_enc_id', 'l.type', 'l.status', 'l.assigned_to', 'l.preferred_date']);
                 }])
 
 //                ->joinWith(['loanApplicationVerifications lav' => function($lav){
