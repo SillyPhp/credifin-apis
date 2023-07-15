@@ -11,6 +11,8 @@ use Yii;
  * @property string $loan_type_enc_id
  * @property string $name
  * @property string $tags
+ * @property string $value
+ * @property string $acronym
  * @property string $created_on
  * @property string $created_by
  * @property int $is_deleted 0 as false, 1 as true
@@ -39,6 +41,8 @@ class LoanType extends \yii\db\ActiveRecord
             [['created_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['loan_type_enc_id', 'name', 'created_by'], 'string', 'max' => 100],
+            [['value'], 'string', 'max' => 5],
+            [['acronym'], 'string', 'max' => 25],
             [['loan_type_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
         ];
