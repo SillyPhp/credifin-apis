@@ -12,18 +12,18 @@ use Yii;
  * @property string $loan_app_enc_id Loan App Enc Id
  * @property int $type 0 as TVR, 1 as PD
  * @property int $status 0 as Initiated, 1 as Completed
- * @property string|null $assigned_to Assigned to user enc id
- * @property string|null $preffered_date Preferred Date in Json Format
+ * @property string $assigned_to Assigned to user enc id
+ * @property array $preferred_date Preferred Date in Json Format
  * @property string $created_on Created On
  * @property string $created_by Created By
- * @property string|null $updated_on Updated On
- * @property string|null $updated_by Updated By
+ * @property string $updated_on Updated On
+ * @property string $updated_by Updated By
  *
- * @property Users $createdBy
  * @property LoanApplications $loanAppEnc
+ * @property Users $createdBy
  * @property Users $updatedBy
  */
-class LoanApplicationVerification extends \yii\db\ActiveRecord
+class LoanApplicationVerification extends \yii\db\AWctiveRecord
 {
     /**
      * {@inheritdoc}
@@ -41,8 +41,7 @@ class LoanApplicationVerification extends \yii\db\ActiveRecord
         return [
             [['loan_application_verification_enc_id', 'loan_app_enc_id', 'type', 'status', 'created_by'], 'required'],
             [['type', 'status'], 'integer'],
-            [['preffered_date'], 'string'],
-            [['created_on', 'updated_on'], 'safe'],
+            [['preferred_date', 'created_on', 'updated_on'], 'safe'],
             [['loan_application_verification_enc_id', 'loan_app_enc_id', 'assigned_to', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['loan_application_verification_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
@@ -52,18 +51,6 @@ class LoanApplicationVerification extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[CreatedBy]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCreatedBy()
-    {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
-    }
-
-    /**
-     * Gets query for [[LoanAppEnc]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getLoanAppEnc()
@@ -72,8 +59,14 @@ class LoanApplicationVerification extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[UpdatedBy]].
-     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getUpdatedBy()

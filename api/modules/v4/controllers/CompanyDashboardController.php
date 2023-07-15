@@ -381,6 +381,15 @@ class CompanyDashboardController extends ApiBaseController
             }])
             ->joinWith(['loanProductsEnc lp'], false)
             ->andWhere(['a.is_deleted' => 0]);
+
+        // if verification is true then sending list of TVR verification
+        if (isset($params['verification']) && $params['verification']) {
+            $loans->joinWith(['loanApplicationVerifications m' => function ($m) {
+                $m->select(['m.loan_application_verification_enc_id', 'm.loan_app_enc_id', 'm.type', 'm.status', 'm.assigned_to', 'm.preferred_date']);
+                $m->onCondition(['m.status' => 0]);
+            }]);
+        }
+
         // if its organization and service is not "Loans" then checking lead_by=$dsa
         if ($user->organization_enc_id) {
             if (!$service) {
@@ -2575,6 +2584,10 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
         $params = Yii::$app->request->post();
+        $exist_check = LoanApplicationVerification::findOne(['loan_app_enc_id' => $params['loan_app_enc_id']]);
+        if ($exist_check) {
+            return $this->response(409, ['status' => 409, 'message' => 'TVR or PDO already exist']);
+        }
         $loan_verify = new LoanApplicationVerification();
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -2582,8 +2595,8 @@ class CompanyDashboardController extends ApiBaseController
         $loan_verify->loan_app_enc_id = $params['loan_app_enc_id'];
         $loan_verify->type = $params['type'];
         $loan_verify->status = $params['status'];
-        if (isset($params['preffered_date'])) {
-            $loan_verify->preffered_date = $params['preffered_date'];
+        if (isset($params['preferred_date'])) {
+            $loan_verify->preferred_date = $params['preferred_date'];
         }
         $loan_verify->created_on = $loan_verify->updated_on = date('Y-m-d H:i:s');
         $loan_verify->created_by = $loan_verify->updated_by = $user->user_enc_id;
@@ -2591,5 +2604,27 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_verify->getErrors()]);
         }
         return $this->response(200, ['status' => 200, 'message' => 'Saved successfully']);
+    }
+
+    public function actionUpdateLoanVerify()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        if (!isset($params['status']) && !isset($params['loan_application_verification_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "status or loan_application_verification_enc_id" ']);
+        }
+        $loan_verify = LoanApplicationVerification::findOne(['loan_application_verification_enc_id' => $params['loan_application_verification_enc_id'], 'status' => 0]);
+        if (!$loan_verify) {
+            return $this->response(404, ['status' => 404, 'message' => 'TVF not found']);
+        }
+        $update = Yii::$app->db->createCommand()
+            ->update(LoanApplicationVerification::tableName(), ['status' => $params['status']], ['loan_application_verification_enc_id' => $params['loan_application_verification_enc_id']])
+            ->execute();
+        if (!$update) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating']);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'Updated successfully']);
     }
 }
