@@ -81,7 +81,9 @@ class CompanyDashboardController extends ApiBaseController
                 'financer-designations' => ['POST', 'OPTIONS'],
                 'financer-designation-list' => ['POST', 'OPTIONS'],
                 'dashboard-stats' => ['POST', 'OPTIONS'],
-                'branch-list' => ['POST', 'OPTIONS']
+                'branch-list' => ['POST', 'OPTIONS'],
+                'create-tvr' => ['POST', 'OPTIONS'],
+                'update-tvr' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -2578,7 +2580,7 @@ class CompanyDashboardController extends ApiBaseController
         }
     }
 
-    public function actionCreateLoanVerify()
+    public function actionCreateTvr()
     {
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
@@ -2606,7 +2608,7 @@ class CompanyDashboardController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'Saved successfully']);
     }
 
-    public function actionUpdateLoanVerify()
+    public function actionUpdateTvr()
     {
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
