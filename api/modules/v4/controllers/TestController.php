@@ -7,6 +7,7 @@ use common\models\AssignedFinancerLoanType;
 use common\models\AssignedLoanProvider;
 use common\models\Cities;
 use common\models\LoanPayments;
+use common\models\LoanType;
 use mPDF;
 use common\models\CreditLoanApplicationReports;
 use common\models\Designations;
@@ -491,6 +492,104 @@ class TestController extends ApiBaseController
             }
         }
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    public function actionTesting()
+    {
+//        return 1;
+        if (!$user = $this->isAuthorized()) {
+            return 'unauthorized';
+        }
+        $data = '[
+            {"value": "01", "loan_type": "Auto Loan (Personal)"},
+            {"value": "02", "loan_type": "Housing Loan"},
+            {"value": "03", "loan_type": "Property Loan"},
+            {"value": "04", "loan_type": "Loan Against Shares/Securities"},
+            {"value": "05", "loan_type": "Personal Loan"},
+            {"value": "06", "loan_type": "Consumer Loan"},
+            {"value": "07", "loan_type": "Gold Loan"},
+            {"value": "08", "loan_type": "Education Loan"},
+            {"value": "09", "loan_type": "Loan to Professional"},
+            {"value": "10", "loan_type": "Credit Card"},
+            {"value": "11", "loan_type": "Leasing"},
+            {"value": "12", "loan_type": "Overdraft"},
+            {"value": "13", "loan_type": "Two-wheeler Loan"},
+            {"value": "14", "loan_type": "Non-Funded Credit Facility"},
+            {"value": "15", "loan_type": "Loan Against Bank Deposits"},
+            {"value": "16", "loan_type": "Fleet Card"},
+            {"value": "17", "loan_type": "Commercial Vehicle Loan"},
+            {"value": "18", "loan_type": "Telco - Wireless"},
+            {"value": "19", "loan_type": "Telco - Broadband"},
+            {"value": "20", "loan_type": "Telco - Landline"},
+            {"value": "31", "loan_type": "Secured Credit Card"},
+            {"value": "32", "loan_type": "Used Car Loan"},
+            {"value": "33", "loan_type": "Construction Equipment Loan"},
+            {"value": "34", "loan_type": "Tractor Loan"},
+            {"value": "35", "loan_type": "Corporate Credit Card"},
+            {"value": "36", "loan_type": "Kisan Credit Card"},
+            {"value": "37", "loan_type": "Loan on Credit Card"},
+            {"value": "38", "loan_type": "Prime Minister Jaan Dhan Yojana - Overdraft"},
+            {"value": "39", "loan_type": "Mudra Loans - Shishu / Kishor / Tarun"},
+            {"value": "40", "loan_type": "Microfinance - Business Loan"},
+            {"value": "41", "loan_type": "Microfinance - Personal Loan"},
+            {"value": "42", "loan_type": "Microfinance - Housing Loan"},
+            {"value": "43", "loan_type": "Microfinance - Others"},
+            {"value": "44", "loan_type": "Pradhan Mantri Awas Yojana - Credit Link Subsidy Scheme MAY CLSS"},
+            {"value": "45", "loan_type": "P2P Personal Loan"},
+            {"value": "46", "loan_type": "P2P Auto Loan"},
+            {"value": "47", "loan_type": "P2P Education Loan"},
+            {"value": "50", "loan_type": "Business Loan - Secured"},
+            {"value": "51", "loan_type": "Business Loan - General"},
+            {"value": "52", "loan_type": "Business Loan - Priority Sector - Small Business"},
+            {"value": "53", "loan_type": "Business Loan - Priority Sector - Agriculture"},
+            {"value": "54", "loan_type": "Business Loan - Priority Sector - Others"},
+            {"value": "55", "loan_type": "Business Non-Funded Credit Facility - General"},
+            {"value": "56", "loan_type": "Business Non-Funded Credit Facility - Priority Sector - Small Business"},
+            {"value": "57", "loan_type": "Business Non-Funded Credit Facility - Priority Sector - Agriculture"},
+            {"value": "58", "loan_type": "Business Non-Funded Credit Facility - Priority Sector - Others"},
+            {"value": "59", "loan_type": "Business Loan Against Bank Deposits"},
+            {"value": "61", "loan_type": "Business Loan - Unsecured"},
+            {"value": "00", "loan_type": "Other"}
+                ]';
+        $data = json_decode($data, true);
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+
+            foreach ($data as $val) {
+                $query = LoanType::find()
+                    ->select(['loan_type_enc_id', 'value', 'name'])
+                    ->andWhere(['or', ['value' => $val['value']], ['name' => $val['loan_type']]])
+                    ->asArray()
+                    ->one();
+                if ($query && ($val['value'] != $query['value'] || $val['loan_type'] != $query['name'])) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(LoanType::tableName(), ['value' => $val['value'], 'name' => $val['loan_type']], ['loan_type_enc_id' => $query['loan_type_enc_id']])
+                        ->execute();
+                    if ($update != 1) {
+                        $transaction->rollBack();
+                        return 'Update error';
+                    }
+                } else {
+                    $new = new LoanType();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $new->loan_type_enc_id = $utilitiesModel->encrypt();
+                    $new->name = $val['loan_type'];
+                    $new->value = $val['value'];
+                    $new->created_by = $user->user_enc_id;
+                    $new->created_on = date('Y-m-d H:i:s');
+                    $save = $new->save();
+                    if (!$save) {
+                        return 'Save error';
+                    }
+                }
+            }
+            $transaction->commit();
+            return 'Done';
+        } catch (\Exception $e) {
+            return $e;
+        }
+
     }
 }
 

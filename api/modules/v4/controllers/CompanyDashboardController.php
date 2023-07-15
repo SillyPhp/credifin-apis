@@ -782,6 +782,10 @@ class CompanyDashboardController extends ApiBaseController
             // if loan application exists
             if ($loan) {
 
+                //renaming key in loan application
+                $loan['sharedTo'] = $loan['sharedLoanApplications'];
+                unset($loan['sharedLoanApplications']);
+
                 // getting loan sanction reports
                 $loan['loanSanctionReports'] = LoanSanctionReports::find()
                     ->alias('d')
@@ -1027,7 +1031,7 @@ class CompanyDashboardController extends ApiBaseController
         $employee = UserRoles::find()
             ->alias('a')
             ->select(['a.role_enc_id', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code',
-                'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade'])
+                'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade', 'b.created_on doj'])
             ->joinWith(['userEnc b'], false)
             ->joinWith(['userTypeEnc c'], false)
             ->joinWith(['designation d'], false)
