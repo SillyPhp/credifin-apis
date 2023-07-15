@@ -9,72 +9,79 @@ use Yii;
  *
  * @property int $id
  * @property string $loan_app_enc_id
- * @property string $application_number loan application number
- * @property string $parent_application_enc_id loan parent application enc id
+ * @property string|null $application_number loan application number
+ * @property string|null $parent_application_enc_id loan parent application enc id
  * @property int $had_taken_addmission 1 for yes 0 for no
- * @property string $current_scheme_id
- * @property string $college_enc_id
- * @property string $college_course_enc_id organization_enc_id
- * @property string $loan_type_enc_id
- * @property string $loan_products_enc_id
+ * @property string|null $current_scheme_id
+ * @property string|null $college_enc_id
+ * @property string|null $college_course_enc_id organization_enc_id
+ * @property string|null $loan_type_enc_id
+ * @property string|null $loan_products_enc_id
  * @property string $applicant_name Course Name
- * @property string $employement_type
- * @property string $image
- * @property string $image_location
- * @property string $applicant_dob
- * @property string $applicant_current_city
- * @property string $degree
- * @property int $years Course Years
- * @property int $months Course Months
- * @property int $semesters course semesters
+ * @property string|null $employement_type
+ * @property string|null $image
+ * @property string|null $image_location
+ * @property string|null $applicant_dob
+ * @property string|null $applicant_current_city
+ * @property string|null $degree
+ * @property int|null $years Course Years
+ * @property int|null $months Course Months
+ * @property int|null $semesters course semesters
  * @property string $phone
- * @property string $email
- * @property string $candidate_status New Lead, On Going, Accepted, Document Uploaded, On Hold, withDrawn, Non Responsive, Rejected, Done, defferds, Follow Up
- * @property string $candidate_sub_status Sent Again,Trying Again,Initial Call,Credit Call,Case Forwarded,Case Confirmed,IELTS,Admission,Offer Letter,No Document Required,Partial
- * @property string $candidate_status_date Status Date
- * @property int $cibil_score cibil score
- * @property int $gender 1 for Male, 2 for Female,3 other
- * @property double $amount
- * @property double $yearly_income
- * @property double $amount_received
- * @property double $amount_due
- * @property double $scholarship
- * @property double $amount_verified College Amount Verified
- * @property string $aadhaar_number
- * @property string $pan_number
- * @property string $voter_card_number
+ * @property string|null $email
+ * @property string|null $candidate_status New Lead, On Going, Accepted, Document Uploaded, On Hold, withDrawn, Non Responsive, Rejected, Done, defferds, Follow Up
+ * @property string|null $candidate_sub_status Sent Again,Trying Again,Initial Call,Credit Call,Case Forwarded,Case Confirmed,IELTS,Admission,Offer Letter,No Document Required,Partial
+ * @property string|null $candidate_status_date Status Date
+ * @property int|null $cibil_score cibil score
+ * @property int|null $gender 1 for Male, 2 for Female,3 other
+ * @property float|null $amount
+ * @property float|null $yearly_income
+ * @property float|null $amount_received
+ * @property float|null $amount_due
+ * @property float|null $scholarship
+ * @property float|null $amount_verified College Amount Verified
+ * @property string|null $aadhaar_number
+ * @property string|null $pan_number
+ * @property string|null $voter_card_number
  * @property string $source
  * @property int $ask_guarantor_info 1 for yes 0 for no
- * @property string $deadline
- * @property string $intake
- * @property string $td TD date
- * @property string $aadhaar_link_phone_number Aadhar Link Phone Number
- * @property string $managed_by_refferal Managed By Application
- * @property string $managed_by
- * @property string $lead_by_refferal Lead By Application
- * @property string $lead_by
- * @property string $cpa CPA id
- * @property string $created_by user_enc_id
+ * @property string|null $deadline
+ * @property string|null $intake
+ * @property string|null $td TD date
+ * @property string|null $aadhaar_link_phone_number Aadhar Link Phone Number
+ * @property string|null $managed_by_refferal Managed By Application
+ * @property string|null $managed_by
+ * @property string|null $lead_by_refferal Lead By Application
+ * @property string|null $lead_by
+ * @property string|null $cpa CPA id
+ * @property string|null $created_by user_enc_id
  * @property string $created_on created on
- * @property string $updated_by
- * @property string $updated_on
- * @property string $lead_application_enc_id Lead application Link
+ * @property string|null $updated_by
+ * @property string|null $updated_on
+ * @property string|null $lead_application_enc_id Lead application Link
  * @property int $status 0 as Pending, 1 as Approved, 2 as Rejected, 3 as Verified
- * @property string $status_comments
+ * @property string|null $status_comments
  * @property int $loan_status 0 as New Lead, 1 as Accepted, 2 as Pre Verification, 3 as Under Process, 4 as Senctioned, 5 as Disbursed, 6 as Completed, 10 as Rejected
  * @property string $loan_status_updated_on
  * @property string $loan_type
  * @property string $form_type
- * @property string $loan_purpose
- * @property string $lender_reasons
- * @property int $auto_assigned 0 false, 1 true
+ * @property string|null $loan_purpose
+ * @property string|null $lender_reasons
+ * @property int|null $auto_assigned 0 false, 1 true
  * @property int $is_deleted 0 as False, 1 as True
  * @property int $is_removed 0 as Permanently false 1 as Permanently True
  *
  * @property AssignedLoanProvider[] $assignedLoanProviders
  * @property BillDetails[] $billDetails
+ * @property CollegeCourses $collegeCourseEnc
+ * @property Organizations $collegeEnc
+ * @property Users $cpa0
+ * @property Users $createdBy
  * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
+ * @property OrganizationLoanSchemes $currentScheme
  * @property EducationLoanPayments[] $educationLoanPayments
+ * @property LeadsApplications $leadApplicationEnc
+ * @property Users $leadBy
  * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
  * @property LoanApplicationComments[] $loanApplicationComments
  * @property LoanApplicationCommissions[] $loanApplicationCommissions
@@ -85,19 +92,7 @@ use Yii;
  * @property LoanApplicationRecords[] $loanApplicationRecords
  * @property LoanApplicationSchoolFee[] $loanApplicationSchoolFees
  * @property LoanApplicationTeacherLoan[] $loanApplicationTeacherLoans
- * @property CollegeCourses $collegeCourseEnc
- * @property LeadsApplications $leadApplicationEnc
- * @property Users $cpa0
- * @property LoanPayments[] $loanPayments
- * @property FinancerLoanProducts $loanProductsEnc
- * @property Users $createdBy
- * @property Users $updatedBy
- * @property LoanTypes $loanTypeEnc
- * @property Organizations $collegeEnc
- * @property OrganizationLoanSchemes $currentScheme
- * @property Users $managedBy
- * @property Users $leadBy
- * @property LoanApplications $parentApplicationEnc
+ * @property LoanApplicationVerification[] $loanApplicationVerifications
  * @property LoanApplications[] $loanApplications
  * @property LoanApplicationsCollegePreference[] $loanApplicationsCollegePreferences
  * @property LoanAuditTrail[] $loanAuditTrails
@@ -105,14 +100,20 @@ use Yii;
  * @property LoanCertificates[] $loanCertificates
  * @property LoanCoApplicants[] $loanCoApplicants
  * @property LoanDisbursementSchedule[] $loanDisbursementSchedules
+ * @property LoanPayments[] $loanPayments
+ * @property FinancerLoanProducts $loanProductsEnc
  * @property LoanPurpose[] $loanPurposes
  * @property LoanSanctionReports[] $loanSanctionReports
+ * @property LoanTypes $loanTypeEnc
  * @property LoanVerificationLocations[] $loanVerificationLocations
+ * @property Users $managedBy
+ * @property LoanApplications $parentApplicationEnc
  * @property PathToClaimOrgLoanApplication[] $pathToClaimOrgLoanApplications
  * @property PathToOpenLeads[] $pathToOpenLeads
  * @property PathToUnclaimOrgLoanApplication[] $pathToUnclaimOrgLoanApplications
  * @property ReferralLoanApplicationTracking[] $referralLoanApplicationTrackings
  * @property SharedLoanApplications[] $sharedLoanApplications
+ * @property Users $updatedBy
  */
 class LoanApplications extends \yii\db\ActiveRecord
 {
@@ -493,5 +494,15 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getSharedLoanApplications()
     {
         return $this->hasMany(SharedLoanApplications::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * Gets query for [[LoanApplicationVerifications]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationVerifications()
+    {
+        return $this->hasMany(LoanApplicationVerification::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 }
