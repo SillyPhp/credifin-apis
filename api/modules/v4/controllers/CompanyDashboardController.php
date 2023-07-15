@@ -782,6 +782,12 @@ class CompanyDashboardController extends ApiBaseController
 //                    $lpm->orderBy(['lpm.created_on' => SORT_DESC]);
 //                }])
                 ->joinWith(['loanProductsEnc lp'], false)
+                // if verification is true then sending list of TVR verification
+                ->joinWith(['loanApplicationVerifications k' => function ($m) {
+                    $m->select(['k.loan_application_verification_enc_id', 'k.loan_app_enc_id', 'k.type', 'k.status', 'k.assigned_to', 'k.preferred_date']);
+                    $m->onCondition(['k.status' => 0]);
+                }])
+
 //                ->joinWith(['loanApplicationVerifications lav' => function($lav){
 //
 //                }])
@@ -2588,7 +2594,7 @@ class CompanyDashboardController extends ApiBaseController
         $params = Yii::$app->request->post();
         $exist_check = LoanApplicationVerification::findOne(['loan_app_enc_id' => $params['loan_app_enc_id']]);
         if ($exist_check) {
-            return $this->response(409, ['status' => 409, 'message' => 'TVR or PDO already exist']);
+            return $this->response(409, ['status' => 409, 'message' => 'TVR already initiated']);
         }
         $loan_verify = new LoanApplicationVerification();
         $utilitiesModel = new \common\models\Utilities();
