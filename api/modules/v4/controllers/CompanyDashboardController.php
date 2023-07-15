@@ -384,14 +384,6 @@ class CompanyDashboardController extends ApiBaseController
             ->joinWith(['loanProductsEnc lp'], false)
             ->andWhere(['a.is_deleted' => 0]);
 
-        // if verification is true then sending list of TVR verification
-        if (isset($params['verification']) && $params['verification']) {
-            $loans->joinWith(['loanApplicationVerifications m' => function ($m) {
-                $m->select(['m.loan_application_verification_enc_id', 'm.loan_app_enc_id', 'm.type', 'm.status', 'm.assigned_to', 'm.preferred_date']);
-                $m->onCondition(['m.status' => 0]);
-            }]);
-        }
-
         // if its organization and service is not "Loans" then checking lead_by=$dsa
         if ($user->organization_enc_id) {
             if (!$service) {
@@ -422,6 +414,12 @@ class CompanyDashboardController extends ApiBaseController
                     break;
                 case 'all':
                     $loans->andWhere(['not in', 'i.status', [28, 31, 32]]);
+                    break;
+                case 'verification':
+                    $loans->innerJoinWith(['loanApplicationVerifications m' => function ($m) {
+                        $m->select(['m.loan_application_verification_enc_id', 'm.loan_app_enc_id', 'm.type', 'm.status', 'm.assigned_to', 'm.preferred_date']);
+                        $m->onCondition(['m.status' => 0]);
+                    }]);
                     break;
             }
         }
@@ -785,7 +783,6 @@ class CompanyDashboardController extends ApiBaseController
                 // if verification is true then sending list of TVR verification
                 ->joinWith(['loanApplicationVerifications k' => function ($m) {
                     $m->select(['k.loan_application_verification_enc_id', 'k.loan_app_enc_id', 'k.type', 'k.status', 'k.assigned_to', 'k.preferred_date']);
-                    $m->onCondition(['k.status' => 0]);
                 }])
 
 //                ->joinWith(['loanApplicationVerifications lav' => function($lav){
