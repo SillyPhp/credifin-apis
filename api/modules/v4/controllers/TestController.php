@@ -494,7 +494,7 @@ class TestController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-    public function actionTesting()
+    public function actionTestinghaibhai()
     {
 //        return 1;
         if (!$user = $this->isAuthorized()) {
