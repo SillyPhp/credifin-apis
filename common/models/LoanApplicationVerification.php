@@ -23,7 +23,7 @@ use Yii;
  * @property Users $createdBy
  * @property Users $updatedBy
  */
-class LoanApplicationVerification extends \yii\db\AWctiveRecord
+class LoanApplicationVerification extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
