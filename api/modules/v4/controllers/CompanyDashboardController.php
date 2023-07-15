@@ -765,6 +765,11 @@ class CompanyDashboardController extends ApiBaseController
                     $j->orderBy(['j.created_on' => SORT_DESC]);
 
                 }])
+                ->joinWith(['sharedLoanApplications k' => function ($k) {
+                    $k->select(['k.shared_loan_app_enc_id', 'k.loan_app_enc_id', 'k.access', 'k.status', 'concat(k1.first_name," ",k1.last_name) name', 'k1.phone',
+                        'CASE WHEN k1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", k1.image_location, "/", k1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(k1.first_name," ",k1.last_name), "&size=200&rounded=false&background=", REPLACE(k1.initials_color, "#", ""), "&color=ffffff") END image'
+                    ])->joinWith(['sharedTo k1'], false);
+                }])
 //                ->joinWith(['loanPayments lpm' => function($lpm){
 //                    $lpm->select(['lpm.loan_app_enc_id', 'lpm.payment_mode', 'lpm.payment_status']);
 //                    $lpm->orderBy(['lpm.created_on' => SORT_DESC]);
@@ -776,6 +781,10 @@ class CompanyDashboardController extends ApiBaseController
 
             // if loan application exists
             if ($loan) {
+
+                //renaming key in loan application
+                $loan['sharedTo'] = $loan['sharedLoanApplications'];
+                unset($loan['sharedLoanApplications']);
 
                 // getting loan sanction reports
                 $loan['loanSanctionReports'] = LoanSanctionReports::find()
@@ -1040,6 +1049,14 @@ class CompanyDashboardController extends ApiBaseController
                 ['like', 'b.username', $params['employee_search']],
                 ['like', 'b.email', $params['employee_search']],
                 ['like', 'b.phone', $params['employee_search']],
+                ['like', 'a.employee_code', $params['employee_search']],
+            ]);
+        }
+
+        // filter employee search on employee reporting person
+        if ($params != null && !empty($params['reporting_person'])) {
+            $employee->andWhere([
+                'like', 'CONCAT(e.first_name," ", e.last_name)', $params['reporting_person'],
             ]);
         }
 
