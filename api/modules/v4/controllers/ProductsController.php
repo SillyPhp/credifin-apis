@@ -1010,6 +1010,8 @@ class ProductsController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
+//            print_r($user);
+//            die();
             $category = null;
             if (isset($params['category']) || !empty($params['category'])) {
                 $category = $params['category'];
