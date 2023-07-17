@@ -2,8 +2,10 @@
 
 namespace common\models\extended;
 
+use common\models\FinancerLoanProductNoDues;
 use common\models\InstituteLeadsPayments;
 use common\models\LoanPayments;
+use common\models\LoanPaymentsDetails;
 use common\models\Utilities;
 
 use common\models\EducationLoanPayments;
@@ -42,7 +44,35 @@ class Payments
         $model->close_by = date('Y-m-d h:i:s', $options['close_by']);
         $model->payment_link_type = $options['method'];
         if (!$model->save()) {
-            return $model->getErrors();
+            return false;
+        }
+        $payment_details = self::createPaymentDetails($options['amount_enc_ids'], $model->loan_payments_enc_id, $options['user_id']);
+        if (!$payment_details) {
+            return false;
+        }
+        return true;
+    }
+
+    private function createPaymentDetails($amount, $loan_payment_id, $user_id)
+    {
+        foreach ($amount as $value) {
+            $nodues = FinancerLoanProductNoDues::findOne(['financer_loan_product_no_dues_enc_id' => $value]);
+            if (!$nodues) {
+                return false;
+            }
+            $pay_details = new LoanPaymentsDetails();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $pay_details->loan_payments_details_enc_id = $utilitiesModel->encrypt();
+            $pay_details->loan_payments_enc_id = $loan_payment_id;
+            $pay_details->loan_no_dues_enc_id = $value;
+            $pay_details->no_dues_name = $nodues['name'];
+            $pay_details->no_dues_amount = $nodues['amount'];
+            $pay_details->created_by = $user_id;
+            $pay_details->created_on = date('Y-m-d h:i:s');
+            if (!$pay_details->save()) {
+                return false;
+            }
         }
         return true;
     }
@@ -71,11 +101,10 @@ class Payments
             'amount' => $options['total'],
             'currency' => 'INR',
             'accept_partial' => false,
-            'description' => 'Testing out',
+            'description' => $options['description'],
             'customer' => [
                 'name' => $options['name'],
                 'contact' => $options['contact'],
-                'email' => 'cajgsvc@gmail.com'
             ],
             'notify' => [
                 'sms' => true,
@@ -94,10 +123,12 @@ class Payments
             $options['surl'] = $link->short_url;
             $options['token'] = $link->id;
             $options['close_by'] = $link->expire_by;
+            $options['method'] = 0;
             if (self::createUrlLink($options)) {
                 return [
+                    'status' => 200,
                     'surl' => $link->short_url,
-                    'status' => true
+                    'amount' => $options['total'] / 100
                 ];
             } else {
                 return [
@@ -120,7 +151,7 @@ class Payments
             "usage" => "single_use",
             "fixed_amount" => 1,
             "payment_amount" => $options['total'],
-            "description" => "For Store 1",
+            "description" => $options['description'],
             "close_by" => $options['close_by'],
             "notes" => array("purpose" => $options['purpose'])]);
         if ($link) {
@@ -128,10 +159,11 @@ class Payments
             $options['created_on'] = $link->created_at;
             $options['surl'] = $link->image_url;
             $options['close_by'] = $link->close_by;
+            $options['method'] = 1;
             if (self::createUrlLink($options)) {
                 return [
-                    'surl' => $link->image_url,
-                    'status' => true,
+                    'status' => 200,
+                    'surl' => $link->image_url
                 ];
             } else {
                 return [
