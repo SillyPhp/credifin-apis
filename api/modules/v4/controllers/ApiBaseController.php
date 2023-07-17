@@ -102,7 +102,7 @@ class ApiBaseController extends Controller
         }
 
         // getting token detail from DB
-        $access_token = UserAccessTokens::findOne(['access_token' => $token[1]]);
+        $access_token = UserAccessTokens::find()->where(['access_token' => $token[1], 'is_deleted' => 0])->one();
 
         // check if token exists in token detail and source == token detail source
         if (!empty($access_token) && $source == $access_token->source) {
