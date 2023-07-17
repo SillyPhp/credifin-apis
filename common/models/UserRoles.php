@@ -10,28 +10,29 @@ use Yii;
  * @property int $id Primary Key
  * @property string $role_enc_id Role Encrypted ID
  * @property string $user_type_enc_id Foreign Key to user type enc id
- * @property string|null $user_enc_id Foreign Key to user  enc id
- * @property string|null $organization_enc_id Foreign Key to organization enc id
- * @property string|null $designation_enc_id Foreign Key to desiganation enc id
- * @property string|null $designation_id Foreign Key to financer assigned designation
- * @property string|null $employee_code employee code
- * @property string|null $reporting_person reporting person id
- * @property string|null $branch_enc_id branch enc id
- * @property string|null $grade grades
+ * @property string $user_enc_id Foreign Key to user  enc id
+ * @property string $organization_enc_id Foreign Key to organization enc id
+ * @property string $designation_enc_id Foreign Key to desiganation enc id
+ * @property string $designation_id Foreign Key to financer assigned designation
+ * @property string $employee_code employee code
+ * @property string $reporting_person reporting person id
+ * @property string $branch_enc_id branch enc id
+ * @property string $grade grades
+ * @property string $employee_joining_date Employee joining date
  * @property string $created_on current time stamp
  * @property string $created_by create by enc id
- * @property string|null $updated_by updated by
- * @property string|null $updated_on updated on
+ * @property string $updated_by updated by
+ * @property string $updated_on updated on
  * @property int $is_deleted 0 as not deleted, 1 as deleted
  *
+ * @property LoanApplicationCommissions[] $loanApplicationCommissions
+ * @property UserTypes $userTypeEnc
+ * @property Users $userEnc
+ * @property Organizations $organizationEnc
+ * @property Designations $designationEnc
+ * @property Users $reportingPerson
  * @property OrganizationLocations $branchEnc
  * @property FinancerAssignedDesignations $designation
- * @property Designations $designationEnc
- * @property LoanApplicationCommissions[] $loanApplicationCommissions
- * @property Organizations $organizationEnc
- * @property Users $reportingPerson
- * @property Users $userEnc
- * @property UserTypes $userTypeEnc
  */
 class UserRoles extends \yii\db\ActiveRecord
 {
@@ -51,7 +52,7 @@ class UserRoles extends \yii\db\ActiveRecord
         return [
             [['role_enc_id', 'user_type_enc_id', 'created_on', 'created_by'], 'required'],
             [['grade'], 'string'],
-            [['created_on', 'updated_on'], 'safe'],
+            [['employee_joining_date', 'created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['role_enc_id', 'user_type_enc_id', 'user_enc_id', 'organization_enc_id', 'designation_enc_id', 'designation_id', 'employee_code', 'reporting_person', 'branch_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['role_enc_id'], 'unique'],
@@ -123,8 +124,6 @@ class UserRoles extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Designation]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getDesignation()
