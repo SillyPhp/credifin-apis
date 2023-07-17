@@ -108,6 +108,7 @@ class CoApplicantFrom extends Model
             $co_applicant->name = $this->name ? $this->name : $co_applicant->name;
             $co_applicant->co_applicant_dob = $this->dob ? $this->dob : $co_applicant->co_applicant_dob;
             $co_applicant->phone = $this->phone ? $this->phone : $co_applicant->phone;
+            $co_applicant->borrower_type = $this->borrower_type ? $this->borrower_type : $co_applicant->borrower_type;
             $co_applicant->gender = $this->gender ? $this->gender : $co_applicant->gender;
             $co_applicant->pan_number = $this->pan_number ? $this->pan_number : $co_applicant->pan_number;
             $co_applicant->aadhaar_number = $this->aadhaar_number ? $this->aadhaar_number : $co_applicant->aadhaar_number;
