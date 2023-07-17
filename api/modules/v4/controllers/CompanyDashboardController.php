@@ -1048,7 +1048,7 @@ class CompanyDashboardController extends ApiBaseController
         // getting employees data
         $employee = UserRoles::find()
             ->alias('a')
-            ->select(['a.role_enc_id', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code',
+            ->select(['a.role_enc_id', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code', 'a.employee_joining_date',
                 'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade'])
             ->joinWith(['userEnc b'], false)
             ->joinWith(['userTypeEnc c'], false)
