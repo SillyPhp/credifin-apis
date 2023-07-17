@@ -702,7 +702,7 @@ class CompanyDashboardController extends ApiBaseController
                     'a.applicant_name', 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'lp.name as loan_product', 'a.gender', 'a.applicant_dob',
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address',
                     'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",a.image_location, a.image) ELSE NULL END image',
-                    '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee'
+                    '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee', 'k.access'
 //                    'lpm.payment_status as login_fee'
                 ])
                 ->joinWith(['assignedLoanProviders b'], false)
@@ -776,7 +776,7 @@ class CompanyDashboardController extends ApiBaseController
 
                 }])
                 ->joinWith(['sharedLoanApplications k' => function ($k) {
-                    $k->select(['k.shared_loan_app_enc_id', 'k.loan_app_enc_id', 'k.status', 'concat(k1.first_name," ",k1.last_name) name', 'k1.phone',
+                    $k->select(['k.shared_loan_app_enc_id', 'k.loan_app_enc_id', 'k.access', 'k.status', 'concat(k1.first_name," ",k1.last_name) name', 'k1.phone',
                         'CASE WHEN k1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", k1.image_location, "/", k1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(k1.first_name," ",k1.last_name), "&size=200&rounded=false&background=", REPLACE(k1.initials_color, "#", ""), "&color=ffffff") END image'
                     ])->joinWith(['sharedTo k1'], false);
                 }])
@@ -1048,7 +1048,9 @@ class CompanyDashboardController extends ApiBaseController
         // getting employees data
         $employee = UserRoles::find()
             ->alias('a')
-            ->select(['a.role_enc_id', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code', 'a.employee_joining_date',
+            ->select(['a.role_enc_id',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image', 'a.employee_joining_date',
+                , 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code',
                 'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade'])
             ->joinWith(['userEnc b'], false)
             ->joinWith(['userTypeEnc c'], false)
@@ -1093,7 +1095,9 @@ class CompanyDashboardController extends ApiBaseController
         // getting dsa from assigned supervisor table
         $dsa = AssignedSupervisor::find()
             ->alias('a')
-            ->select(['a.assigned_user_enc_id user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', new Expression('"DSA" as user_type')])
+            ->select(['a.assigned_user_enc_id user_enc_id',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
+                , 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', new Expression('"DSA" as user_type')])
             ->joinWith(['assignedUserEnc b'], false)
             ->where(['a.supervisor_enc_id' => $user_id, 'a.supervisor_role' => 'Lead Source', 'a.is_supervising' => 1, 'b.is_deleted' => 0]);
 
@@ -1119,7 +1123,9 @@ class CompanyDashboardController extends ApiBaseController
         // getting connector list
         $connector = SelectedServices::find()
             ->alias('a')
-            ->select(['a.created_by user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', new Expression('"Connector" as user_type')])
+            ->select(['a.created_by user_enc_id',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
+                , 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', new Expression('"Connector" as user_type')])
             ->joinWith(['createdBy b'], false)
             ->joinWith(['serviceEnc c'], false)
             ->where(['a.assigned_user' => $user_id, 'c.name' => 'Connector', 'b.is_deleted' => 0, 'a.is_selected' => 1]);
@@ -1224,9 +1230,17 @@ class CompanyDashboardController extends ApiBaseController
             if (!$user) {
                 return $this->response(404, ['status' => 404, 'message' => 'user not found']);
             }
+            if (!empty($params['status'])) {
+                if ($params['status'] == 'delete') {
+                    $user->is_deleted = 1;
+                } else {
+                    $user->status = $params['status'];
+                }
+            }
 
-            $user->status = $params['status'];
+//            $user->status = $params['status'];
             $user->last_updated_on = date('Y-m-d H:i:s');
+
             if (!$user->update()) {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
             }
@@ -2566,33 +2580,56 @@ class CompanyDashboardController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
+            $limit = 10;
+            $page = 1;
+
+            if (isset($params['limit']) && !empty($params['limit'])) {
+                $limit = $params['limit'];
+            }
+            if (isset($params['page']) && !empty($params['page'])) {
+                $page = $params['page'];
+            }
+
 //            if (empty($params['branch_id'])) {
 //                return $this->response(422, ['status' => 422, 'message' => 'missing information "branch_id"']);
 //            }
-            $Branch_list = LoanApplications::find()
+            $Branch_list = OrganizationLocations::find()
                 ->alias('a')
-                ->distinct()
-                ->select(['SUM(a.amount) total_amount', 'b1.location_name',
-                    'SUM(CASE WHEN b.status = "0" THEN a.amount ELSE 0 END) as new_lead_amount',
-                    'SUM(CASE WHEN b.status = "4" THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, a.amount)) ELSE 0 END) as login_amount',
+                ->select(['a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
+                    'SUM(CASE WHEN b.status = "0" THEN c.amount ELSE 0 END) as new_lead_amount',
+                    'SUM(CASE WHEN b.status = "4" THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount)) ELSE 0 END) as login_amount',
                     'SUM(CASE WHEN b.status = "31" THEN b.disbursement_approved ELSE 0 END) as disbursed_amount',
                     'SUM(CASE WHEN b.status = "26" THEN b.disbursement_approved ELSE 0 END) as disbursed_approval_amount',
                     'SUM(CASE WHEN b.status = "31" THEN b.insurance_charges ELSE 0 END) as insurance_charges_amount',
                     'SUM(CASE WHEN b.status = "24" THEN b.soft_sanction ELSE 0 END) as soft_sanctioned_amount',
                     'SUM(CASE WHEN b.status = "15" THEN b.soft_approval ELSE 0 END) as soft_approval_amount',
-                    'SUM(CASE WHEN b.status != "0" AND b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN a.amount ELSE 0 END) as under_process_amount',
-                    'SUM(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, a.amount)) ELSE 0 END) as rejected_amount',
-                    'SUM(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, a.amount)) ELSE 0 END) as cni_amount',
-                    'SUM(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, a.amount)) ELSE 0 END) as sanctioned_amount',])
-                ->joinWith(['assignedLoanProviders b' => function ($b) {
-                    $b->joinWith(['branchEnc b1']);
-                }], false)
-                ->andWhere(['b.is_deleted' => 0])
-                ->groupBy(['b.branch_enc_id'])
+                    'SUM(CASE WHEN b.status != "0" AND b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN c.amount ELSE 0 END) as under_process_amount',
+                    'SUM(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as rejected_amount',
+                    'SUM(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as cni_amount',
+                    'SUM(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as sanctioned_amount',
+                ])
+                ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
+                ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')
+                ->where(['between', 'b.created_on', $params['start_date'], $params['end_date']])
+                ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
+                ->groupBy(['a.location_enc_id']);
+
+            if (isset($params['keyword']) && !empty($params['keyword'])) {
+                $Branch_list->andWhere([
+                    'or',
+                    ['like', 'a.location_enc_id', $params['keyword']],
+                ]);
+            }
+
+            $count = $Branch_list->count();
+            $Branch_list = $Branch_list
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
+
             if ($Branch_list) {
-                return $this->response(200, ['status' => 200, 'data' => $Branch_list]);
+                return $this->response(200, ['status' => 200, 'data' => $Branch_list, 'count' => $count]);
             }
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         } else {
