@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v2\models\ChangePassword;
 use api\modules\v3\models\widgets\Referral;
 use api\modules\v4\models\ForgotPassword;
 use api\modules\v4\models\ProfilePicture;
@@ -44,6 +45,7 @@ class AuthController extends ApiBaseController
                 'otp-change-password',
                 'verify-phone',
                 'referral-logo',
+                'reset-old-password'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -63,6 +65,7 @@ class AuthController extends ApiBaseController
                 'change-password' => ['POST', 'OPTIONS'],
                 'otp-change-password' => ['POST', 'OPTIONS'],
                 'referral-logo' => ['POST', 'OPTIONS'],
+                'reset-old-password' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -493,35 +496,35 @@ class AuthController extends ApiBaseController
     }
 
     // this action is used to change password
-    public function actionChangePassword()
-    {
-        if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
-
-            // checking new_password empty return missing information
-            if (empty($params['new_password'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "new_password"']);
-            }
-
-            // getting user object with user_enc_id
-            $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
-
-            // encrypting and updating new password
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['password'] = $params['new_password'];
-            $user->password = $utilitiesModel->encrypt_pass();
-            $user->last_updated_on = date('Y-m-d H:i:s');
-            if (!$user->update()) {
-                // if not update returning 500 error
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $user->getErrors()]);
-            }
-
-            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-    }
+//    public function actionChangePassword()
+//    {
+//        if ($user = $this->isAuthorized()) {
+//            $params = Yii::$app->request->post();
+//
+//            // checking new_password empty return missing information
+//            if (empty($params['new_password'])) {
+//                return $this->response(422, ['status' => 422, 'message' => 'missing information "new_password"']);
+//            }
+//
+//            // getting user object with user_enc_id
+//            $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
+//
+//            // encrypting and updating new password
+//            $utilitiesModel = new Utilities();
+//            $utilitiesModel->variables['password'] = $params['new_password'];
+//            $user->password = $utilitiesModel->encrypt_pass();
+//            $user->last_updated_on = date('Y-m-d H:i:s');
+//            if (!$user->update()) {
+//                // if not update returning 500 error
+//                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $user->getErrors()]);
+//            }
+//
+//            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+//
+//        } else {
+//            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+//        }
+//    }
 
     // verifying phone
     public function actionVerifyPhone()
@@ -618,5 +621,65 @@ class AuthController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'data' => $ref]);
         }
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionChangePassword()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            // checking new_password empty return missing information
+            if (empty($params['new_password'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "new_password"']);
+            }
+
+            // getting user object with user_enc_id
+            $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
+
+            // encrypting and updating new password
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['password'] = $params['new_password'];
+            $user->password = $utilitiesModel->encrypt_pass();
+            $user->last_updated_on = date('Y-m-d H:i:s');
+            if (!$user->update()) {
+                // if not update returning 500 error
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $user->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionResetOldPassword()
+    {
+        if ($user = $this->isAuthorized()) {
+            $model = new ChangePassword();
+            if ($model->load(Yii::$app->request->post(), '')) {
+                if ($model->validate()) {
+                    if ($res = $model->changePassword($user->user_enc_id)) {
+                        if ($res === 402) {
+                            return $this->response(402, ['status' => 402, 'message' => 'New And Old Password Should not be Same']);
+                        }
+                        if ($res === 403) {
+                            return $this->response(403, ['status' => 403, 'message' => 'Old Password Is Wrong']);
+                        }
+
+                        return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
+
+                    } else {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
+                } else {
+                    return $this->response(409, ['status' => 409, $model->getErrors()]);
+                }
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'data not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 }
