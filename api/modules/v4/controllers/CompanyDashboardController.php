@@ -1019,6 +1019,7 @@ class CompanyDashboardController extends ApiBaseController
                 // getting dsa's list
                 $dsa = $this->dsaList($user->user_enc_id, $params);
 
+
                 // extracting dsa user_enc_Id
                 $dsa_id = [];
                 if ($dsa) {
@@ -1032,7 +1033,10 @@ class CompanyDashboardController extends ApiBaseController
                 // getting connectors list
                 $connector = $this->connectorsList($dsa_id, $params);
 
-                return $this->response(200, ['status' => 200, 'employees' => $employee, 'dsa' => $dsa, 'connector' => $connector]);
+                // getting dealer's list
+                $dealer = $this->dealerList($org_id, $params);
+
+                return $this->response(200, ['status' => 200, 'employees' => $employee, 'dsa' => $dsa, 'connector' => $connector, 'dealer' => $dealer]);
             } else {
                 return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
             }
@@ -1059,7 +1063,7 @@ class CompanyDashboardController extends ApiBaseController
             ->joinWith(['branchEnc f' => function ($f) {
                 $f->joinWith(['cityEnc f1']);
             }], false)
-            ->where(['a.organization_enc_id' => $org_id, 'c.user_type' => 'Employee', 'a.is_deleted' => 0, 'b.is_deleted' => 0]);
+            ->where(['a.organization_enc_id' => $org_id, 'b.status' => 'Active', 'c.user_type' => 'Employee', 'a.is_deleted' => 0, 'b.is_deleted' => 0]);
 
         // filter employee search on employee name, username, email and phone
         if ($params != null && !empty($params['employee_search'])) {
@@ -1086,6 +1090,52 @@ class CompanyDashboardController extends ApiBaseController
         }
 
         return $employee->asArray()
+            ->all();
+    }
+
+    private function dealerList($org_id, $params = null)
+    {
+        // getting dealer data
+        $dealer = UserRoles::find()
+            ->alias('a')
+            ->select(['a.role_enc_id',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image',
+                'a.employee_joining_date', 'a.user_enc_id', 'b.username', 'b.email', 'b.phone', 'b.first_name', 'b.last_name', 'b.status', 'c.user_type', 'a.employee_code',
+                'd.designation', 'a.designation_id', 'CONCAT(e.first_name," ",e.last_name) reporting_person', 'f.location_name branch_name', 'f.address branch_address', 'f1.name city_name', 'f.location_enc_id branch_id', 'a.grade'])
+            ->joinWith(['userEnc b'], false)
+            ->joinWith(['userTypeEnc c'], false)
+            ->joinWith(['designation d'], false)
+            ->joinWith(['reportingPerson e'], false)
+            ->joinWith(['branchEnc f' => function ($f) {
+                $f->joinWith(['cityEnc f1']);
+            }], false)
+            ->where(['a.organization_enc_id' => $org_id, 'c.user_type' => 'Dealer', 'a.is_deleted' => 0, 'b.is_deleted' => 0]);
+
+        // filter dealer search on dealer name, username, email and phone
+        if ($params != null && !empty($params['dealer_search'])) {
+            $dealer->andWhere([
+                'or',
+                ['like', 'CONCAT(b.first_name," ", b.last_name)', $params['dealer_search']],
+                ['like', 'b.username', $params['dealer_search']],
+                ['like', 'b.email', $params['dealer_search']],
+                ['like', 'b.phone', $params['dealer_search']],
+                ['like', 'a.employee_code', $params['dealer_search']],
+            ]);
+        }
+
+        // filter dealer search on dealer reporting person
+//        if ($params != null && !empty($params['reporting_person'])) {
+//            $dealer->andWhere([
+//                'like', 'CONCAT(e.first_name," ", e.last_name)', $params['reporting_person'],
+//            ]);
+//        }
+
+        // checking if this dealer already exists in list from frontend
+        if ($params != null && !empty($params['alreadyExists'])) {
+            $dealer->andWhere(['not', ['a.user_enc_id' => $params['alreadyExists']]]);
+        }
+
+        return $dealer->asArray()
             ->all();
     }
 
@@ -1116,6 +1166,7 @@ class CompanyDashboardController extends ApiBaseController
         return $dsa->asArray()
             ->all();
     }
+
 
     // getting connector list
     private function connectorsList($user_id, $params = null)
