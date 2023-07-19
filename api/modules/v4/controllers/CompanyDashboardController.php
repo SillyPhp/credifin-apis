@@ -1016,6 +1016,8 @@ class CompanyDashboardController extends ApiBaseController
                 // getting employees list
                 $employee = $this->employeesList($org_id, $params);
 
+                $deleted = $this->employeesList($org_id, $params, 'deleted');
+
                 // getting dsa's list
                 $dsa = $this->dsaList($user->user_enc_id, $params);
 
@@ -1036,7 +1038,7 @@ class CompanyDashboardController extends ApiBaseController
                 // getting dealer's list
                 $dealer = $this->dealerList($org_id, $params);
 
-                return $this->response(200, ['status' => 200, 'employees' => $employee, 'dsa' => $dsa, 'connector' => $connector, 'dealer' => $dealer]);
+                return $this->response(200, ['status' => 200, 'employees' => $employee, 'dsa' => $dsa, 'connector' => $connector, 'dealer' => $dealer, 'deleted' => $deleted]);
             } else {
                 return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
             }
@@ -1047,7 +1049,7 @@ class CompanyDashboardController extends ApiBaseController
     }
 
     // getting employee list
-    private function employeesList($org_id, $params = null)
+    private function employeesList($org_id, $params = null, $deleted = null)
     {
         // getting employees data
         $employee = UserRoles::find()
@@ -1063,7 +1065,14 @@ class CompanyDashboardController extends ApiBaseController
             ->joinWith(['branchEnc f' => function ($f) {
                 $f->joinWith(['cityEnc f1']);
             }], false)
-            ->where(['a.organization_enc_id' => $org_id, 'b.status' => 'Active', 'c.user_type' => 'Employee', 'a.is_deleted' => 0, 'b.is_deleted' => 0]);
+            ->where(['a.organization_enc_id' => $org_id, 'b.status' => 'Active', 'c.user_type' => 'Employee', 'a.is_deleted' => 0]);
+
+        // delete employees list
+        if ($deleted) {
+            $employee->andWhere(['b.is_deleted' => 1]);
+        } else {
+            $employee->andWhere(['b.is_deleted' => 0]);
+        }
 
         // filter employee search on employee name, username, email and phone
         if ($params != null && !empty($params['employee_search'])) {
@@ -1083,6 +1092,7 @@ class CompanyDashboardController extends ApiBaseController
                 'like', 'CONCAT(e.first_name," ", e.last_name)', $params['reporting_person'],
             ]);
         }
+
 
         // checking if this employee already exists in list from frontend
         if ($params != null && !empty($params['alreadyExists'])) {
@@ -1333,6 +1343,7 @@ class CompanyDashboardController extends ApiBaseController
                 (!empty($params['email'])) ? ($user->email = $params['email']) : '';
                 (!empty($params['phone'])) ? ($user->phone = $params['phone']) : '';
                 $user->last_updated_on = date('Y-m-d H:i:s');
+
 
                 if (!$user->update()) {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $user->getErrors()]);
