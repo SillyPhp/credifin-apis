@@ -28,7 +28,7 @@ class UserUtilities
                     'b.name organization_name', 'b.slug organization_slug', 'f.location_enc_id branch_id', 'f.location_name branch_name', 'a.username organization_username', 'b.email organization_email', 'b.phone organization_phone',
                     'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(a.first_name," ",a.last_name), "&size=200&rounded=true&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END image',
                     'CASE WHEN b.logo IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo',
-                    '(CASE WHEN d1.designation IS NULL THEN null ELSE d1.designation END) as designation',
+                    'd1.designation',
                     'd.employee_code', 'd.grade', 'CONCAT(g1.first_name," ",g1.last_name) reporting_person', 'f.location_name branch_name'
                 ])
                 ->joinWith(['organizationEnc b' => function ($b) {
@@ -154,7 +154,7 @@ class UserUtilities
             ->select(['a.organization_enc_id', 'a.name organization_name', 'a.slug organization_slug', 'b.username organization_username', 'a.email organization_email', 'a.phone organization_phone',
                 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=true&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logoOrg',
                 'CASE WHEN b.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(b.first_name," ",b.last_name), "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END imageOrg',
-                '(CASE WHEN d1.designation IS NULL THEN null ELSE d1.designation END) as designation'])
+                'd1.designation'])
             ->joinWith(['createdBy b' => function ($b) {
                 $b->joinWith(['userRoles b1'], false);
                 $b->joinWith(['designations d1'], false);
