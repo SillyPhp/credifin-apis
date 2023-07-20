@@ -12,4 +12,3 @@ common/models/UserLogin.php
 common/models/Utilities.php
 vendor
 .vscode
-composer.json
