@@ -2702,158 +2702,151 @@ class CompanyDashboardController extends ApiBaseController
     public function actionBranchList()
     {
         // checking authorization
-        if ($user = $this->isAuthorized()) {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
 
-            $org_id = $user->organization_enc_id;
+        $org_id = $user->organization_enc_id;
 //            if (!$user->organization_enc_id) {
 //                $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
 //                $org_id = $findOrg->organization_enc_id;
 //            }
-            if ($org_id) {
-                $params = Yii::$app->request->post();
-                if ($params['type'] === 'counts') {
-                    $data = $this->BranchCount($org_id, $params);
-                } else {
-                    $data = $this->BranchSum($org_id, $params);
-                }
-
-                return $this->response(200, ['status' => 200, 'data' => $data]);
+        if ($org_id) {
+            $params = Yii::$app->request->post();
+            if ($params['type'] === 'counts') {
+                $data = $this->branchCount($org_id, $params);
             } else {
-                return $this->response(403, ['status' => 403, 'message' => 'error']);
+                $data = $this->branchSum($org_id, $params);
+            }
+            if ($data['status'] == 200) {
+                return $this->response(200, $data);
+
+            } else {
+                return $this->response(404, $data);
+
             }
         } else {
+            return $this->response(403, ['status' => 403, 'message' => 'error']);
+        }
+    }
+
+
+    private function branchSum($org_id, $params = null)
+    {
+        if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+        $params = Yii::$app->request->post();
+
+        $limit = 10;
+        $page = 1;
+
+        if (isset($params['limit']) && !empty($params['limit'])) {
+            $limit = $params['limit'];
+        }
+        if (isset($params['page']) && !empty($params['page'])) {
+            $page = $params['page'];
+        }
+
+        $BranchSum = OrganizationLocations::find()
+            ->alias('a')
+            ->select(['a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
+                'SUM(CASE WHEN b.status = "0" THEN c.amount ELSE 0 END) as new_lead_amount',
+                'SUM(CASE WHEN b.status = "4" THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount)) ELSE 0 END) as login_amount',
+                'SUM(CASE WHEN b.status = "31" THEN b.disbursement_approved ELSE 0 END) as disbursed_amount',
+                'SUM(CASE WHEN b.status = "26" THEN b.disbursement_approved ELSE 0 END) as disbursed_approval_amount',
+                'SUM(CASE WHEN b.status = "31" THEN b.insurance_charges ELSE 0 END) as insurance_charges_amount',
+                'SUM(CASE WHEN b.status = "24" THEN b.soft_sanction ELSE 0 END) as soft_sanctioned_amount',
+                'SUM(CASE WHEN b.status = "15" THEN b.soft_approval ELSE 0 END) as soft_approval_amount',
+                'SUM(CASE WHEN b.status != "0" AND b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN c.amount ELSE 0 END) as under_process_amount',
+                'SUM(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as rejected_amount',
+                'SUM(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as cni_amount',
+                'SUM(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as sanctioned_amount',
+
+
+            ])
+            ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
+            ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')
+            ->where(['between', 'b.created_on', $params['start_date'], $params['end_date']])
+            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
+            ->groupBy(['a.location_enc_id']);
+
+        if (isset($params['keyword']) && !empty($params['keyword'])) {
+            $BranchSum->andWhere([
+                'or',
+                ['like', 'a.location_enc_id', $params['keyword']],
+            ]);
+        }
+
+        $count = $BranchSum->count();
+        $BranchSum = $BranchSum
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if ($BranchSum) {
+            return ['status' => 200, 'data' => $BranchSum, 'count' => $count];
+        }
+        return ['status' => 404, 'message' => 'not found'];
+
     }
 
-    private function BranchSum($org_id, $params = null)
+    private function branchCount($org_id, $params = null)
     {
-        if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
-
-            $limit = 10;
-            $page = 1;
-
-            if (isset($params['limit']) && !empty($params['limit'])) {
-                $limit = $params['limit'];
-            }
-            if (isset($params['page']) && !empty($params['page'])) {
-                $page = $params['page'];
-            }
-
-            $BranchSum = OrganizationLocations::find()
-                ->alias('a')
-                ->select(['a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
-                    'SUM(CASE WHEN b.status = "0" THEN c.amount ELSE 0 END) as new_lead_amount',
-                    'SUM(CASE WHEN b.status = "4" THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount)) ELSE 0 END) as login_amount',
-                    'SUM(CASE WHEN b.status = "31" THEN b.disbursement_approved ELSE 0 END) as disbursed_amount',
-                    'SUM(CASE WHEN b.status = "26" THEN b.disbursement_approved ELSE 0 END) as disbursed_approval_amount',
-                    'SUM(CASE WHEN b.status = "31" THEN b.insurance_charges ELSE 0 END) as insurance_charges_amount',
-                    'SUM(CASE WHEN b.status = "24" THEN b.soft_sanction ELSE 0 END) as soft_sanctioned_amount',
-                    'SUM(CASE WHEN b.status = "15" THEN b.soft_approval ELSE 0 END) as soft_approval_amount',
-                    'SUM(CASE WHEN b.status != "0" AND b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN c.amount ELSE 0 END) as under_process_amount',
-                    'SUM(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as rejected_amount',
-                    'SUM(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as cni_amount',
-                    'SUM(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as sanctioned_amount',
-
-
-                ])
-                ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
-                ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')
-                ->where(['between', 'b.created_on', $params['start_date'], $params['end_date']])
-                ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
-                ->groupBy(['a.location_enc_id']);
-
-            if (isset($params['keyword']) && !empty($params['keyword'])) {
-                $BranchSum->andWhere([
-                    'or',
-                    ['like', 'a.location_enc_id', $params['keyword']],
-                ]);
-            }
-
-            $count = $BranchSum->count();
-            $BranchSum = $BranchSum
-                ->limit($limit)
-                ->offset(($page - 1) * $limit)
-                ->asArray()
-                ->all();
-
-            if ($BranchSum) {
-                return $this->response(200, ['status' => 200, 'data' => $BranchSum, 'count' => $count]);
-            }
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-    }
+        $params = Yii::$app->request->post();
 
-    private function BranchCount($org_id, $params = null)
-    {
-        if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
+        $limit = 10;
+        $page = 1;
 
-            $limit = 10;
-            $page = 1;
-
-            if (isset($params['limit']) && !empty($params['limit'])) {
-                $limit = $params['limit'];
-            }
-            if (isset($params['page']) && !empty($params['page'])) {
-                $page = $params['page'];
-            }
-
-//            if (empty($params['type'])) {
-//                return $this->response(422, ['status' => 422, 'message' => 'missing information "type"']);
-//            }
-//            if (isset($params['type']) && !empty($params['type'])) {
-//                $type = $params['type'];
-//            }
-//            $type = $params['type'];
-
-//            if (empty($params['branch_id'])) {
-//                return $this->response(422, ['status' => 422, 'message' => 'missing information "branch_id"']);
-//            }
-            $BranchCount = OrganizationLocations::find()
-                ->alias('a')
-                ->select(['a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
-                    'COUNT(CASE WHEN b.status = "0" THEN c.amount END) as new_lead_amount',
-                    'COUNT(CASE WHEN b.status = "4" THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount)) END) as login_amount',
-                    'COUNT(CASE WHEN b.status = "31" THEN b.disbursement_approved END) as disbursed_amount',
-                    'COUNT(CASE WHEN b.status = "26" THEN b.disbursement_approved END) as disbursed_approval_amount',
-                    'COUNT(CASE WHEN b.status = "31" THEN b.insurance_charges END) as insurance_charges_amount',
-                    'COUNT(CASE WHEN b.status = "24" THEN b.soft_sanction END) as soft_sanctioned_amount',
-                    'COUNT(CASE WHEN b.status = "15" THEN b.soft_approval END) as soft_approval_amount',
-                    'COUNT(CASE WHEN b.status != "0" AND b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN c.amount END) as under_process_amount',
-                    'COUNT(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as rejected_amount',
-                    'COUNT(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as cni_amount',
-                    'COUNT(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as sanctioned_amount'])
-                ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
-                ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')
-                ->where(['between', 'b.created_on', $params['start_date'], $params['end_date']])
-                ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
-                ->groupBy(['a.location_enc_id']);
-
-            if (isset($params['keyword']) && !empty($params['keyword'])) {
-                $BranchCount->andWhere([
-                    'or',
-                    ['like', 'a.location_enc_id', $params['keyword']],
-                ]);
-            }
-
-            $count = $BranchCount->count();
-            $BranchCount = $BranchCount
-                ->limit($limit)
-                ->offset(($page - 1) * $limit)
-                ->asArray()
-                ->all();
-
-            if ($BranchCount) {
-                return $this->response(200, ['status' => 200, 'data' => $BranchCount, 'count' => $count]);
-            }
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        if (isset($params['limit']) && !empty($params['limit'])) {
+            $limit = $params['limit'];
         }
+        if (isset($params['page']) && !empty($params['page'])) {
+            $page = $params['page'];
+        }
+
+        $BranchCount = OrganizationLocations::find()
+            ->alias('a')
+            ->select(['a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
+                'COUNT(CASE WHEN b.status = "0" THEN c.amount END) as new_lead_amount',
+                'COUNT(CASE WHEN b.status = "4" THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount)) END) as login_amount',
+                'COUNT(CASE WHEN b.status = "31" THEN b.disbursement_approved END) as disbursed_amount',
+                'COUNT(CASE WHEN b.status = "26" THEN b.disbursement_approved END) as disbursed_approval_amount',
+                'COUNT(CASE WHEN b.status = "31" THEN b.insurance_charges END) as insurance_charges_amount',
+                'COUNT(CASE WHEN b.status = "24" THEN b.soft_sanction END) as soft_sanctioned_amount',
+                'COUNT(CASE WHEN b.status = "15" THEN b.soft_approval END) as soft_approval_amount',
+                'COUNT(CASE WHEN b.status != "0" AND b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN c.amount END) as under_process_amount',
+                'COUNT(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as rejected_amount',
+                'COUNT(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as cni_amount',
+                'COUNT(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) END) as sanctioned_amount'])
+            ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
+            ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')
+            ->where(['between', 'b.created_on', $params['start_date'], $params['end_date']])
+            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
+            ->groupBy(['a.location_enc_id']);
+
+        if (isset($params['keyword']) && !empty($params['keyword'])) {
+            $BranchCount->andWhere([
+                'or',
+                ['like', 'a.location_enc_id', $params['keyword']],
+            ]);
+        }
+
+        $count = $BranchCount->count();
+        $BranchCount = $BranchCount
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if ($BranchCount) {
+            return ['status' => 200, 'data' => $BranchCount, 'count' => $count];
+        }
+        return ['status' => 404, 'message' => 'not found'];
     }
 
 
