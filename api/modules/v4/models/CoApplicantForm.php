@@ -123,8 +123,13 @@ class CoApplicantForm extends Model
                 return ['status' => 500, 'message' => 'an error occurred', 'error' => $co_applicant->getErrors()];
             }
 
+            // address saving if exists already otherwise updating
             $loan_address = LoanApplicantResidentialInfoExtended::findOne(['loan_co_app_enc_id' => $this->loan_co_app_enc_id]);
 
+            if (!$b_check && !empty($loan_address)) {
+                $loan_address->updated_on = date('Y-m-d H:i:s');
+                $loan_address->updated_by = $this->user_id;
+            }
             if (empty($loan_address)) {
                 $loan_address = new LoanApplicantResidentialInfoExtended();
                 $utilitiesModel = new \common\models\Utilities();
@@ -132,25 +137,19 @@ class CoApplicantForm extends Model
                 $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
                 $loan_address->created_on = date('Y-m-d H:i:s');
                 $loan_address->created_by = $this->user_id;
-                if (!$loan_address->save()) {
-                    $transaction->rollBack();
-                    return ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_address->getErrors()];
-                }
             }
 
-            if (!$b_check) {
-                $loan_address->address = $this->address;
-                $loan_address->city_enc_id = $this->city;
-                $loan_address->state_enc_id = $this->state;
-                $loan_address->postal_code = $this->zip;
+            $loan_address->address = $this->address;
+            $loan_address->city_enc_id = $this->city;
+            $loan_address->state_enc_id = $this->state;
+            $loan_address->postal_code = $this->zip;
 
 
-                if (!$loan_address->update()) {
-                    $transaction->rollBack();
-                    return ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_address->getErrors()];
-                }
-
+            if (!$loan_address->update()) {
+                $transaction->rollBack();
+                return ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_address->getErrors()];
             }
+
             $transaction->commit();
             return ['status' => 200, 'message' => 'successfully updated'];
         } catch
