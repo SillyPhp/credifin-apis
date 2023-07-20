@@ -8,15 +8,13 @@ use common\models\Utilities;
 use Yii;
 use yii\base\Model;
 
-class CoApplicantFrom extends Model
+class CoApplicantForm extends Model
 {
-
     public $name;
     public $phone;
     public $dob;
     public $relation;
     public $borrower_type;
-
     public $pan_number;
     public $aadhaar_number;
     public $voter_card_number;
@@ -25,32 +23,39 @@ class CoApplicantFrom extends Model
     public $state;
     public $zip;
     public $gender;
-
+    public $loan_co_app_enc_id;
+    public $loan_id;
+    public $user_id;
 
     public function rules()
     {
         return [
-            [['name', 'dob', 'relation', 'borrower_type'], 'required'],
-            [['pan_number', 'phone', 'aadhaar_number', 'voter_card_number', 'address', 'city', 'state', 'zip', 'gender'], 'safe'],
+            [['name', 'dob', 'relation', 'borrower_type', 'loan_id'], 'required', 'when' => function ($model) {
+                return !isset($model->loan_co_app_enc_id);
+            }],
+            [['pan_number', 'phone', 'loan_co_app_enc_id', 'aadhaar_number', 'voter_card_number', 'address', 'city', 'state', 'zip', 'gender'], 'safe'],
             [['name', 'phone', 'pan_number', 'aadhaar_number', 'voter_card_number'], 'trim'],
             [['name'], 'string', 'max' => 200],
             [['phone'], 'string', 'length' => [10, 15]],
         ];
     }
 
-    // saving co-applicant
-    public function save($loan_id, $user_id)
+    public function formName()
     {
-        // starting transaction
+        return '';
+    }
+
+    // saving co-applicant
+    public function save()
+    {
         $transaction = Yii::$app->db->beginTransaction();
         try {
-
             // saving data
             $co_applicant = new LoanCoApplicantsExtended();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(10, 100000);
             $co_applicant->loan_co_app_enc_id = $utilitiesModel->encrypt();
-            $co_applicant->loan_app_enc_id = $loan_id;
+            $co_applicant->loan_app_enc_id = $this->loan_id;
             $co_applicant->name = $this->name;
             $co_applicant->phone = $this->phone;
             $co_applicant->co_applicant_dob = $this->dob;
@@ -60,7 +65,7 @@ class CoApplicantFrom extends Model
             $co_applicant->pan_number = $this->pan_number;
             $co_applicant->aadhaar_number = $this->aadhaar_number;
             $co_applicant->voter_card_number = $this->voter_card_number;
-            $co_applicant->created_by = $user_id;
+            $co_applicant->created_by = $this->user_id;
             $co_applicant->created_on = date('Y-m-d H:i:s');
             if (!$co_applicant->save()) {
                 $transaction->rollBack();
@@ -69,7 +74,7 @@ class CoApplicantFrom extends Model
 
             // saving address
             $loan_address = new LoanApplicantResidentialInfoExtended();
-            $loan_address->loan_id = $loan_id;
+            $loan_address->loan_id = $this->loan_id;
             $utilitiesModel->variables['string'] = time() . rand(10, 100000);
             $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
             $loan_address->loan_co_app_enc_id = $co_applicant->loan_co_app_enc_id;
@@ -78,15 +83,13 @@ class CoApplicantFrom extends Model
             $loan_address->state_enc_id = $this->state;
             $loan_address->postal_code = $this->zip;
             $loan_address->created_on = date('Y-m-d H:i:s');
-            $loan_address->created_by = $user_id;
+            $loan_address->created_by = $this->user_id;
             if (!$loan_address->save()) {
                 $transaction->rollBack();
                 return ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_address->getErrors()];
             }
 
-            // commiting code
             $transaction->commit();
-
             return ['status' => 200, 'message' => 'successfully saved'];
 
         } catch (\Exception $exception) {
@@ -96,64 +99,64 @@ class CoApplicantFrom extends Model
     }
 
     // updating co-applicant
-    public function update($co_app_id, $user_id)
+    public function update()
     {
-        // starting transaction
         $transaction = Yii::$app->db->beginTransaction();
         try {
-            // getting co-applicant object
-            $co_applicant = LoanCoApplicantsExtended::findOne(['loan_co_app_enc_id' => $co_app_id]);
-
-            // updating co-applicant data data
-            $co_applicant->name = $this->name ? $this->name : $co_applicant->name;
-            $co_applicant->co_applicant_dob = $this->dob ? $this->dob : $co_applicant->co_applicant_dob;
-            $co_applicant->phone = $this->phone ? $this->phone : $co_applicant->phone;
-            $co_applicant->borrower_type = $this->borrower_type ? $this->borrower_type : $co_applicant->borrower_type;
-            $co_applicant->gender = $this->gender ? $this->gender : $co_applicant->gender;
-            $co_applicant->pan_number = $this->pan_number ? $this->pan_number : $co_applicant->pan_number;
-            $co_applicant->aadhaar_number = $this->aadhaar_number ? $this->aadhaar_number : $co_applicant->aadhaar_number;
-            $co_applicant->voter_card_number = $this->voter_card_number ? $this->voter_card_number : $co_applicant->voter_card_number;
-            $co_applicant->updated_by = $user_id;
-            $co_applicant->updated_on = date('Y-m-d H:i:s');
+            $co_applicant = LoanCoApplicantsExtended::findOne(['loan_co_app_enc_id' => $this->loan_co_app_enc_id]);
+            $b_check = $co_applicant['borrower_type'] != $this->borrower_type;
+            if ($b_check) {
+                $co_applicant->borrower_type = $this->borrower_type;
+            } else {
+                $co_applicant->name = $this->name;
+                $co_applicant->co_applicant_dob = $this->dob;
+                $co_applicant->phone = $this->phone;
+                $co_applicant->gender = $this->gender;
+                $co_applicant->pan_number = $this->pan_number;
+                $co_applicant->aadhaar_number = $this->aadhaar_number;
+                $co_applicant->voter_card_number = $this->voter_card_number;
+                $co_applicant->updated_by = $this->user_id;
+                $co_applicant->updated_on = date('Y-m-d H:i:s');
+            }
             if (!$co_applicant->update()) {
                 $transaction->rollBack();
                 return ['status' => 500, 'message' => 'an error occurred', 'error' => $co_applicant->getErrors()];
             }
 
-            // saving address
-            $loan_address = LoanApplicantResidentialInfoExtended::findOne(['loan_co_app_enc_id' => $co_app_id]);
+            $loan_address = LoanApplicantResidentialInfoExtended::findOne(['loan_co_app_enc_id' => $this->loan_co_app_enc_id]);
 
-            // if not empty loan address
-            if (!empty($loan_address)) {
-                $loan_address->updated_on = date('Y-m-d H:i:s');
-                $loan_address->updated_by = $user_id;
-            } else {
-                // else creating new object
+            if (empty($loan_address)) {
                 $loan_address = new LoanApplicantResidentialInfoExtended();
                 $utilitiesModel = new \common\models\Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(10, 100000);
                 $loan_address->loan_app_res_info_enc_id = $utilitiesModel->encrypt();
                 $loan_address->created_on = date('Y-m-d H:i:s');
-                $loan_address->created_by = $user_id;
-            }
-            $loan_address->address = $this->address ? $this->address : $loan_address->address;
-            $loan_address->city_enc_id = $this->city ? $this->city : $loan_address->city_enc_id;
-            $loan_address->state_enc_id = $this->state ? $this->state : $loan_address->state_enc_id;
-            $loan_address->postal_code = $this->zip ? $this->zip : $loan_address->postal_code;
-
-            if (!$loan_address->update()) {
-                $transaction->rollBack();
-                return ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_address->getErrors()];
+                $loan_address->created_by = $this->user_id;
+                if (!$loan_address->save()) {
+                    $transaction->rollBack();
+                    return ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_address->getErrors()];
+                }
             }
 
-            // commiting code
+            if (!$b_check) {
+                $loan_address->address = $this->address;
+                $loan_address->city_enc_id = $this->city;
+                $loan_address->state_enc_id = $this->state;
+                $loan_address->postal_code = $this->zip;
+
+
+                if (!$loan_address->update()) {
+                    $transaction->rollBack();
+                    return ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_address->getErrors()];
+                }
+
+            }
             $transaction->commit();
             return ['status' => 200, 'message' => 'successfully updated'];
-
-        } catch (\Exception $exception) {
+        } catch
+        (\Exception $exception) {
             $transaction->rollBack();
             return ['status' => 500, 'message' => 'an error occurred', 'error' => $exception->getMessage()];
         }
-
     }
 }
