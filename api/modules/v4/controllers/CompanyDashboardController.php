@@ -2711,10 +2711,10 @@ class CompanyDashboardController extends ApiBaseController
 //            }
             if ($org_id) {
                 $params = Yii::$app->request->post();
-                if ($params['type'] === 'amounts') {
-                    $data = $this->BranchSum($org_id, $params);
-                } else {
+                if ($params['type'] === 'counts') {
                     $data = $this->BranchCount($org_id, $params);
+                } else {
+                    $data = $this->BranchSum($org_id, $params);
                 }
 
                 return $this->response(200, ['status' => 200, 'data' => $data]);
