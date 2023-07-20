@@ -414,6 +414,9 @@ class CompanyDashboardController extends ApiBaseController
                     break;
                 case 'all':
                     $loans->andWhere(['not in', 'i.status', [28, 31, 32]]);
+                    if (empty($params['fields_search'])) {
+                        $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
+                    }
                     break;
                 case 'verification':
                     $loans->innerJoinWith(['loanApplicationVerifications m' => function ($m) {
