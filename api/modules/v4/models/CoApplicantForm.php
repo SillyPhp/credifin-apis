@@ -104,8 +104,8 @@ class CoApplicantForm extends Model
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $co_applicant = LoanCoApplicantsExtended::findOne(['loan_co_app_enc_id' => $this->loan_co_app_enc_id]);
-            $b_check = $co_applicant['borrower_type'] != $this->borrower_type;
-            if ($b_check) {
+            $borrower_check = $co_applicant['borrower_type'] != $this->borrower_type;
+            if ($borrower_check) {
                 $co_applicant->borrower_type = $this->borrower_type;
             } else {
                 $co_applicant->name = $this->name;
@@ -125,7 +125,7 @@ class CoApplicantForm extends Model
 
 
             // skipping address save and update if borrower type is getting update
-            if (!$b_check) {
+            if (!$borrower_check) {
                 // address saving if exists already otherwise updating
                 $loan_address = LoanApplicantResidentialInfoExtended::findOne(['loan_co_app_enc_id' => $this->loan_co_app_enc_id]);
 
