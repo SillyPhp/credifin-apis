@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
+use common\models\AssignedLoanProvider;
 use common\models\EmiCollection;
 use common\models\FinancerLoanProductDocuments;
 use common\models\FinancerLoanProductPurpose;
@@ -67,7 +68,8 @@ class OrganizationsController extends ApiBaseController
                 'emi-list' => ['POST', 'OPTIONS'],
                 'add-notice' => ['POST', 'OPTIONS'],
                 'get-notice' => ['POST', 'OPTIONS'],
-                'update-notice' => ['POST', 'OPTIONS']
+                'update-notice' => ['POST', 'OPTIONS'],
+                'financer-loan-status-list' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -826,6 +828,26 @@ class OrganizationsController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
+    }
+
+    public function actionFinancerLoanStatusList()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $org_id = $this->getFinancerId($user);
+        $data = AssignedLoanProvider::find()
+            ->distinct(['b.value'])
+            ->alias('a')
+            ->select(['b.value', 'b.loan_status'])
+            ->joinWith(['status0 b'], false)
+            ->where(['a.provider_enc_id' => $org_id, 'b.is_deleted' => 0])
+            ->asArray()
+            ->all();
+        if ($data) {
+            return $this->response(200, ['status' => 200, 'data' => $data]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
     }
 
     public function actionRemoveStatusList()
