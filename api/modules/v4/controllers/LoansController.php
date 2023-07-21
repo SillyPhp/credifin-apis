@@ -3,7 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\BusinessLoanApplication;
-use api\modules\v4\models\CoApplicantFrom;
+use api\modules\v4\models\CoApplicantForm;
 use common\models\AssignedLoanProvider;
 use common\models\BillDetails;
 use common\models\CertificateTypes;
@@ -858,50 +858,43 @@ class LoansController extends ApiBaseController
     public function actionAddCoApplicant()
     {
         // checking authorization
-        if ($user = $this->isAuthorized()) {
-
-            $params = Yii::$app->request->post();
-
-            // checking loan_id
-            if (empty($params['loan_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
-            }
-
-            // creating co applicant form object
-            $model = new CoApplicantFrom();
-
-            // loading data to model
-            if ($model->load(Yii::$app->request->post(), '')) {
-
-                // validating model
-                if ($model->validate()) {
-
-                    // if not empty loan_co_app_enc_id updating co-applicant
-                    if (!empty($params['loan_co_app_enc_id'])) {
-                        $co_applicant = $model->update($params['loan_co_app_enc_id'], $user->user_enc_id);
-                    } else {
-                        // saving co-applicant
-                        $co_applicant = $model->save($params['loan_id'], $user->user_enc_id);
-                    }
-
-                    // if status 500 returning 500
-                    if ($co_applicant['status'] == 500) {
-                        return $this->response(500, $co_applicant);
-                    }
-
-                    return $this->response(200, $co_applicant);
-                } else {
-                    // validation errors
-                    return $this->response(422, ['status' => 422, 'error' => $model->getErrors()]);
-                }
-            }
-
-            // bad request if no data in request
-            return $this->response(400, ['status' => 400, 'message' => 'bad request']);
-
-        } else {
+        if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+        $params = Yii::$app->request->post();
+
+        // creating co applicant form object
+        $model = new CoApplicantForm();
+        $model->user_id = $user->user_enc_id;
+
+        // loading data to model
+        if ($model->load(Yii::$app->request->post())) {
+
+            // validating model
+            if ($model->validate()) {
+
+                // if not empty loan_co_app_enc_id updating co-applicant
+                if (!empty($params['loan_co_app_enc_id'])) {
+                    $co_applicant = $model->update();
+                } else {
+                    // saving co-applicant
+                    $co_applicant = $model->save();
+                }
+
+                // if status 500 returning 500
+                if ($co_applicant['status'] == 500) {
+                    return $this->response(500, $co_applicant);
+                }
+
+                return $this->response(200, $co_applicant);
+            } else {
+                // validation errors
+                return $this->response(422, ['status' => 422, 'error' => $model->getErrors()]);
+            }
+        }
+
+        // bad request if no data in request
+        return $this->response(400, ['status' => 400, 'message' => 'bad request']);
     }
 
     // audit trail list
