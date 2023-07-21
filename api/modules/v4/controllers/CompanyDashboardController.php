@@ -414,9 +414,9 @@ class CompanyDashboardController extends ApiBaseController
                     break;
                 case 'all':
                     $loans->andWhere(['not in', 'i.status', [28, 31, 32]]);
-                    if (empty($params['fields_search'])) {
-                        $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
-                    }
+//                    if (empty($params['fields_search'])) {
+//                        $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
+//                    }
                     break;
                 case 'verification':
                     $loans->innerJoinWith(['loanApplicationVerifications m' => function ($m) {
@@ -448,30 +448,31 @@ class CompanyDashboardController extends ApiBaseController
             // loop fields
             foreach ($params['fields_search'] as $key => $val) {
 
-                // key match to "a" table array
-                if (in_array($key, $a)) {
+                if (!empty($val)) {
+                    // key match to "a" table array
+                    if (in_array($key, $a)) {
 
-                    // if key is apply_date then checking created_on time
-                    if ($key == 'apply_date') {
-                        $loans->andWhere(['like', 'a.created_on', $val]);
-                    } else {
-                        // else checking other fields with their names
-                        $loans->andWhere(['like', 'a.' . $key, $val]);
+                        // if key is apply_date then checking created_on time
+                        if ($key == 'apply_date') {
+                            $loans->andWhere(['like', 'a.created_on', $val]);
+                        } else {
+                            // else checking other fields with their names
+                            $loans->andWhere(['like', 'a.' . $key, $val]);
+                        }
+                    }
+
+                    // key match to "i" table array
+                    if (in_array($key, $i)) {
+
+                        // if key is branch then checking branch_enc_id time
+                        if ($key == 'branch') {
+                            $loans->andWhere(['like', 'i.branch_enc_id', $val]);
+                        } else {
+                            // else checking other fields with their names
+                            $loans->andWhere(['like', 'i.' . $key, $val]);
+                        }
                     }
                 }
-
-                // key match to "i" table array
-                if (in_array($key, $i)) {
-
-                    // if key is branch then checking branch_enc_id time
-                    if ($key == 'branch') {
-                        $loans->andWhere(['like', 'i.branch_enc_id', $val]);
-                    } else {
-                        // else checking other fields with their names
-                        $loans->andWhere(['like', 'i.' . $key, $val]);
-                    }
-                }
-
             }
         }
 
