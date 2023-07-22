@@ -637,6 +637,7 @@ class TestController extends ApiBaseController
 
     public function actionTest()
     {
+        return 1;
         $url = "https://uat.signdesk.in/api/sandbox/signRequest";
 
         $data = [
