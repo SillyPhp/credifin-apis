@@ -331,6 +331,44 @@ class TestController extends ApiBaseController
 
     }
 
+    public function actionLoanShift2()
+    {
+        return 1;
+        if (!$user = $this->isAuthorized()) {
+            return 'unauthorised';
+        }
+
+        $products = ['Loan Against Property',
+            'Two Wheeler',
+            'Four Wheeler',
+            'Consumer Durable Loan',
+            'School Fee Loan',
+            'Medical Loan',
+            'EV Two Wheeler',
+            'E-Rickshaw'];
+
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        foreach ($products as $value) {
+            $new_product = new FinancerLoanProducts();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $new_product->financer_loan_product_enc_id = $utilitiesModel->encrypt();
+            $new_product->name = $value;
+            $new_product->created_on = date('Y-m-d H:i:s');
+            $new_product->updated_on = date('Y-m-d H:i:s');
+            $new_product->created_by = $user->user_enc_id;
+            $new_product->updated_by = $user->user_enc_id;
+            if (!$new_product->save()) {
+                $transaction->rollback();
+                return 'Error while shifting products';
+            }
+        }
+        $transaction->commit();
+        return 'Done';
+    }
+
     public function actionApplicationsShift()
     {
         if ($user = $this->isAuthorized()) {
