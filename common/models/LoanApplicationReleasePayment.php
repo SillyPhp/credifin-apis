@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%loan_application_release_payment}}".
+ * This is the model class for table "lJCWPnNNVy3d95ppLp7M_loan_application_release_payment".
  *
  * @property int $id Primary id
  * @property string $loan_application_release_payment_enc_id Loan Applications release payment Enc Id
@@ -20,6 +20,7 @@ use Yii;
  * @property LoanApplications $loanAppEnc
  * @property Users $createdBy
  * @property Users $updatedBy
+ * @property Users $assignedTo
  */
 class LoanApplicationReleasePayment extends \yii\db\ActiveRecord
 {
@@ -45,6 +46,7 @@ class LoanApplicationReleasePayment extends \yii\db\ActiveRecord
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
+            [['assigned_to'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['assigned_to' => 'user_enc_id']],
         ];
     }
 
@@ -70,5 +72,13 @@ class LoanApplicationReleasePayment extends \yii\db\ActiveRecord
     public function getUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedTo()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'assigned_to']);
     }
 }
