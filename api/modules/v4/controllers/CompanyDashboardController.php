@@ -20,8 +20,10 @@ use common\models\extended\LoanApplicationNotificationsExtended;
 use common\models\extended\SharedLoanApplicationsExtended;
 use common\models\FinancerAssignedDesignations;
 use common\models\LoanApplicationPartners;
+use common\models\extended\LoanApplicationPdExtended;
+use common\models\extended\LoanApplicationReleasePaymentExtended;
+use common\models\extended\LoanApplicationTvrExtended;
 use common\models\LoanApplications;
-use common\models\LoanApplicationVerification;
 use common\models\LoanCoApplicants;
 use common\models\LoanCertificates;
 use common\models\LoanSanctionReports;
@@ -82,8 +84,9 @@ class CompanyDashboardController extends ApiBaseController
                 'financer-designation-list' => ['POST', 'OPTIONS'],
                 'dashboard-stats' => ['POST', 'OPTIONS'],
                 'branch-list' => ['POST', 'OPTIONS'],
-                'create-tvr' => ['POST', 'OPTIONS'],
-                'update-tvr' => ['POST', 'OPTIONS']
+                'update-tvr' => ['POST', 'OPTIONS'],
+                'update-pd' => ['POST', 'OPTIONS'],
+                'update-release-payment' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -418,9 +421,21 @@ class CompanyDashboardController extends ApiBaseController
 //                        $loans->andWhere(['between', 'a.loan_status_updated_on', $params['start_date'], $params['end_date']]);
 //                    }
                     break;
-                case 'verification':
-                    $loans->innerJoinWith(['loanApplicationVerifications m' => function ($m) {
-                        $m->select(['m.loan_application_verification_enc_id', 'm.loan_app_enc_id', 'm.type', 'm.status', 'm.assigned_to', 'm.preferred_date']);
+                case 'tvr':
+                    $loans->innerJoinWith(['loanApplicationTvrs m' => function ($m) {
+                        $m->select(['m.loan_application_tvr_enc_id', 'm.loan_app_enc_id', 'm.status', 'm.assigned_to']);
+                        $m->onCondition(['m.status' => 0]);
+                    }]);
+                    break;
+                case 'pd':
+                    $loans->innerJoinWith(['loanApplicationPds m' => function ($m) {
+                        $m->select(['m.loan_application_pd_enc_id', 'm.loan_app_enc_id', 'm.status', 'm.assigned_to', 'm.preferred_date']);
+                        $m->onCondition(['m.status' => 0]);
+                    }]);
+                    break;
+                case 'release_payment':
+                    $loans->innerJoinWith(['loanApplicationReleasePayments m' => function ($m) {
+                        $m->select(['m.loan_application_release_payment_enc_id', 'm.loan_app_enc_id', 'm.status', 'm.assigned_to']);
                         $m->onCondition(['m.status' => 0]);
                     }]);
                     break;
@@ -811,8 +826,14 @@ class CompanyDashboardController extends ApiBaseController
 //                }])
                 ->joinWith(['loanProductsEnc lp'], false)
                 // if verification is true then sending list of TVR verification
-                ->joinWith(['loanApplicationVerifications l' => function ($m) {
-                    $m->select(['l.loan_application_verification_enc_id', 'l.loan_app_enc_id', 'l.type', 'l.status', 'l.assigned_to', 'l.preferred_date']);
+                ->joinWith(['loanApplicationTvrs l' => function ($m) {
+                    $m->select(['l.loan_application_tvr_enc_id', 'l.loan_app_enc_id', 'l.status', 'l.assigned_to']);
+                }])
+                ->joinWith(['loanApplicationPds m' => function ($m) {
+                    $m->select(['m.loan_application_pd_enc_id', 'm.loan_app_enc_id', 'm.status', 'm.assigned_to', 'm.preferred_date']);
+                }])
+                ->joinWith(['loanApplicationReleasePayments n' => function ($m) {
+                    $m->select(['n.loan_application_release_payment_enc_id', 'n.loan_app_enc_id', 'n.status', 'n.assigned_to']);
                 }])
 
 //                ->joinWith(['loanApplicationVerifications lav' => function($lav){
@@ -2867,33 +2888,48 @@ class CompanyDashboardController extends ApiBaseController
         return ['status' => 404, 'message' => 'not found'];
     }
 
-
-    public function actionCreateTvr()
+    public function actionUpdatePd()
     {
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
         $params = Yii::$app->request->post();
-        $exist_check = LoanApplicationVerification::findOne(['loan_app_enc_id' => $params['loan_app_enc_id']]);
-        if ($exist_check) {
-            return $this->response(409, ['status' => 409, 'message' => 'TVR already initiated']);
+        if (!isset($params['loan_app_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_enc_id"']);
         }
-        $loan_verify = new LoanApplicationVerification();
-        $utilitiesModel = new \common\models\Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $loan_verify->loan_application_verification_enc_id = $utilitiesModel->encrypt();
-        $loan_verify->loan_app_enc_id = $params['loan_app_enc_id'];
-        $loan_verify->type = $params['type'];
-        $loan_verify->status = $params['status'];
+        $save = 'save';
+        if (!empty($params['loan_application_pd_enc_id'])) {
+            $loan_pd = LoanApplicationPdExtended::findOne(['loan_application_pd_enc_id' => $params['loan_application_pd_enc_id'], 'loan_app_enc_id' => $params['loan_app_enc_id']]);
+            if (!$loan_pd) {
+                return $this->response(404, ['status' => 404, 'message' => 'Pd not found']);
+            }
+            $save = 'update';
+        } else {
+            $exist_check = LoanApplicationPdExtended::findOne(['loan_app_enc_id' => $params['loan_app_enc_id']]);
+            if ($exist_check) {
+                return $this->response(404, ['status' => 404, 'message' => 'Pd with loan id already exists']);
+            }
+            $loan_pd = new LoanApplicationPdExtended();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $loan_pd->loan_application_pd_enc_id = $utilitiesModel->encrypt();
+            $loan_pd->loan_app_enc_id = $params['loan_app_enc_id'];
+            $loan_pd->created_on = date('Y-m-d H:i:s');
+            $loan_pd->created_by = $user->user_enc_id;
+        }
+        $loan_pd->status = $params['status'];
+        if (isset($params['assigned_to'])) {
+            $loan_pd->assigned_to = $params['assigned_to'];
+        }
         if (isset($params['preferred_date'])) {
-            $loan_verify->preferred_date = $params['preferred_date'];
+            $loan_pd->preferred_date = $params['preferred_date'];
         }
-        $loan_verify->created_on = $loan_verify->updated_on = date('Y-m-d H:i:s');
-        $loan_verify->created_by = $loan_verify->updated_by = $user->user_enc_id;
-        if (!$loan_verify->save()) {
-            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_verify->getErrors()]);
+        $loan_pd->updated_on = date('Y-m-d H:i:s');
+        $loan_pd->updated_by = $user->user_enc_id;
+        if (!$loan_pd->$save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_pd->getErrors()]);
         }
-        return $this->response(200, ['status' => 200, 'message' => 'Saved successfully']);
+        return $this->response(200, ['status' => 200, 'message' => $save . 'd successfully']);
     }
 
     public function actionUpdateTvr()
@@ -2902,19 +2938,79 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
         $params = Yii::$app->request->post();
-        if (!isset($params['status']) && !isset($params['loan_application_verification_enc_id'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing information "status or loan_application_verification_enc_id" ']);
+        if (!isset($params['loan_app_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_enc_id"']);
         }
-        $loan_verify = LoanApplicationVerification::findOne(['loan_application_verification_enc_id' => $params['loan_application_verification_enc_id'], 'status' => 0]);
-        if (!$loan_verify) {
-            return $this->response(404, ['status' => 404, 'message' => 'TVF not found']);
+        $save = 'save';
+        if (!empty($params['loan_application_tvr_enc_id'])) {
+            $loan_tvr = LoanApplicationTvrExtended::findOne(['loan_application_tvr_enc_id' => $params['loan_application_tvr_enc_id'], 'loan_app_enc_id' => $params['loan_app_enc_id']]);
+            if (!$loan_tvr) {
+                return $this->response(404, ['status' => 404, 'message' => 'tvr not found']);
+            }
+            $save = 'update';
+        } else {
+            $exist_check = LoanApplicationTvrExtended::findOne(['loan_app_enc_id' => $params['loan_app_enc_id']]);
+            if ($exist_check) {
+                return $this->response(404, ['status' => 404, 'message' => 'tvr with loan id already exists']);
+            }
+            $loan_tvr = new LoanApplicationTvrExtended();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $loan_tvr->loan_application_tvr_enc_id = $utilitiesModel->encrypt();
+            $loan_tvr->loan_app_enc_id = $params['loan_app_enc_id'];
+            $loan_tvr->created_on = date('Y-m-d H:i:s');
+            $loan_tvr->created_by = $user->user_enc_id;
         }
-        $update = Yii::$app->db->createCommand()
-            ->update(LoanApplicationVerification::tableName(), ['status' => $params['status']], ['loan_application_verification_enc_id' => $params['loan_application_verification_enc_id']])
-            ->execute();
-        if (!$update) {
-            return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating']);
+        $loan_tvr->status = $params['status'];
+        if (isset($params['assigned_to'])) {
+            $loan_tvr->assigned_to = $params['assigned_to'];
         }
-        return $this->response(200, ['status' => 200, 'message' => 'Updated successfully']);
+        $loan_tvr->updated_on = date('Y-m-d H:i:s');
+        $loan_tvr->updated_by = $user->user_enc_id;
+        if (!$loan_tvr->$save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_tvr->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => $save . 'd successfully']);
+    }
+
+    public function actionUpdateReleasePayment()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        if (!isset($params['loan_app_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_enc_id"']);
+        }
+        $save = 'save';
+        if (!empty($params['loan_application_release_payment_enc_id'])) {
+            $loan_release_payment = LoanApplicationReleasePaymentExtended::findOne(['loan_application_release_payment_enc_id' => $params['loan_application_release_payment_enc_id'], 'loan_app_enc_id' => $params['loan_app_enc_id']]);
+            if (!$loan_release_payment) {
+                return $this->response(404, ['status' => 404, 'message' => 'Release Payment not found']);
+            }
+            $save = 'update';
+        } else {
+            $exist_check = LoanApplicationReleasePaymentExtended::findOne(['loan_app_enc_id' => $params['loan_app_enc_id']]);
+            if ($exist_check) {
+                return $this->response(404, ['status' => 404, 'message' => 'Release payment with loan id already exists']);
+            }
+            $loan_release_payment = new LoanApplicationReleasePaymentExtended();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $loan_release_payment->loan_application_release_payment_enc_id = $utilitiesModel->encrypt();
+            $loan_release_payment->loan_app_enc_id = $params['loan_app_enc_id'];
+            $loan_release_payment->created_on = date('Y-m-d H:i:s');
+            $loan_release_payment->created_by = $user->user_enc_id;
+        }
+        $loan_release_payment->status = $params['status'];
+        if (isset($params['assigned_to'])) {
+            $loan_release_payment->assigned_to = $params['assigned_to'];
+        }
+        $loan_release_payment->updated_on = date('Y-m-d H:i:s');
+        $loan_release_payment->updated_by = $user->user_enc_id;
+        if (!$loan_release_payment->$save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_release_payment->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => $save . 'd successfully']);
     }
 }

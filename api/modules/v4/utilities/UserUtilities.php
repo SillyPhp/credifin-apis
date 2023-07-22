@@ -34,7 +34,7 @@ class UserUtilities
                     'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image . '",a.image_location, "/", a.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", CONCAT(a.first_name," ",a.last_name), "&size=200&rounded=true&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END image',
                     'CASE WHEN b.logo IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo',
                     'd1.designation',
-                    'd.employee_code', 'd.grade', 'CONCAT(g1.first_name," ",g1.last_name) reporting_person', 'f.location_name branch_name'
+                    'd.employee_code', 'd.grade', 'CONCAT(g1.first_name," ",g1.last_name) reporting_person', 'f.location_name branch_name', 'CONCAT(f.location_name , ", ", f1.name) as branch_location'
                 ])
                 ->joinWith(['organizationEnc b' => function ($b) {
                     $b->joinWith(['referrals b1']);
@@ -43,7 +43,9 @@ class UserUtilities
                 ->joinWith(['userRoles0 d' => function ($d) {
                     $d->joinWith(['reportingPerson g1'], false);
                     $d->joinWith(['designation d1'], false);
-                    $d->joinWith(['branchEnc f'], false);
+                    $d->joinWith(['branchEnc f' => function ($f) {
+                        $f->joinWith(['cityEnc f1'], false);
+                    }], false);
                 }], false)
                 ->joinWith(['userRoles1 g'], false)
                 ->where(['a.user_enc_id' => $user_id])
