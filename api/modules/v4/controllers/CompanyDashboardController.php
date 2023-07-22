@@ -20,6 +20,7 @@ use common\models\extended\LoanApplicationNotificationsExtended;
 use common\models\extended\SharedLoanApplicationsExtended;
 use common\models\FinancerAssignedDesignations;
 use common\models\LoanApplicationPartners;
+use common\models\LoanApplicationPd;
 use common\models\LoanApplications;
 use common\models\LoanApplicationVerification;
 use common\models\LoanCoApplicants;
@@ -2916,5 +2917,100 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating']);
         }
         return $this->response(200, ['status' => 200, 'message' => 'Updated successfully']);
+    }
+
+    public function actionCreateTvrNew()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        if (!isset($params['loan_app_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_enc_id"']);
+        }
+        if (!empty($params['loan_application_verification_enc_id'])) {
+            $loan_verify = LoanApplicationVerification::findOne(['loan_application_verification_enc_id' => $params['loan_application_verification_enc_id'], 'loan_app_enc_id' => $params['loan_app_enc_id']]);
+            if (!$loan_verify) {
+                return $this->response(404, ['status' => 404, 'message' => 'TVF not found']);
+            }
+            $update = true;
+        } else {
+            $exist_check = LoanApplicationVerification::findOne(['loan_app_enc_id' => $params['loan_app_enc_id']]);
+            if ($exist_check) {
+                return $this->response(404, ['status' => 404, 'message' => 'An existing loan ID is associated with "Tvf."']);
+            }
+            $loan_verify = new LoanApplicationVerification();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $loan_verify->loan_application_verification_enc_id = $utilitiesModel->encrypt();
+            $loan_verify->loan_app_enc_id = $params['loan_app_enc_id'];
+            $loan_verify->created_on = date('Y-m-d H:i:s');
+            $loan_verify->created_by = $user->user_enc_id;
+        }
+        $loan_verify->status = $params['status'];
+        if (isset($params['assigned_to'])) {
+            $loan_verify->assigned_to = $params['assigned_to'];
+        }
+        if (isset($params['preferred_date'])) {
+            $loan_verify->preferred_date = $params['preferred_date'];
+        }
+        $loan_verify->updated_on = date('Y-m-d H:i:s');
+        $loan_verify->updated_by = $user->user_enc_id;
+        if (isset($update)) {
+            if (!$loan_verify->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating']);
+            }
+        } else {
+            if (!$loan_verify->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while saving']);
+            }
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'Saved or Updated successfully']);
+    }
+
+    public function actionCreatePd()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        if (!isset($params['loan_app_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_enc_id"']);
+        }
+        if (!empty($params['loan_application_pd_enc_id'])) {
+            $loan_verify = LoanApplicationPd::findOne(['loan_application_pd_enc_id' => $params['loan_application_pd_enc_id'], 'loan_app_enc_id' => $params['loan_app_enc_id']]);
+            if (!$loan_verify) {
+                return $this->response(404, ['status' => 404, 'message' => 'Pd not found']);
+            }
+            $update = true;
+        } else {
+            $exist_check = LoanApplicationPd::findOne(['loan_app_enc_id' => $params['loan_app_enc_id']]);
+            if ($exist_check) {
+                return $this->response(404, ['status' => 404, 'message' => 'An existing loan ID is associated with "Pd."']);
+            }
+            $loan_verify = new LoanApplicationPd();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $loan_verify->loan_application_pd_enc_id = $utilitiesModel->encrypt();
+            $loan_verify->loan_app_enc_id = $params['loan_app_enc_id'];
+            $loan_verify->created_on = date('Y-m-d H:i:s');
+            $loan_verify->created_by = $user->user_enc_id;
+        }
+        $loan_verify->status = $params['status'];
+        if (isset($params['assigned_to'])) {
+            $loan_verify->assigned_to = $params['assigned_to'];
+        }
+        $loan_verify->updated_on = date('Y-m-d H:i:s');
+        $loan_verify->updated_by = $user->user_enc_id;
+        if (isset($update)) {
+            if (!$loan_verify->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating']);
+            }
+        } else {
+            if (!$loan_verify->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred while saving']);
+            }
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'Saved or Updated successfully']);
     }
 }
