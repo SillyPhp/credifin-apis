@@ -50,6 +50,7 @@ class TestController extends ApiBaseController
             'actions' => [
 //                'employee-stats' => ['GET', 'POST', 'OPTIONS'],
                 'generate-pdf' => ['GET', 'POST', 'OPTIONS'],
+                'loan-shift2' => ['POST', 'OPTIONS'],
                 'LoggableBehavior' => [
                     'class' => 'common\models\extended\LoanLoggableBehavior',
                     'className' => end($model),
