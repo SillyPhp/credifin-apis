@@ -114,7 +114,7 @@ class TestController extends ApiBaseController
 
         $old_status = FinancerLoanStatus::find()
             ->alias('a')
-            ->select(['a.financer_loan_status_enc_id', 'a.assigned_financer_loan_type_id', 'a.loan_status_enc_id', 'a.created_by', 'a.created_on', 'a.updated_by', 'a.updated_on', 'a.is_deleted'])
+            ->select(['a.financer_loan_status_enc_id', 'a.assigned_financer_loan_type_id', 'a.loan_status_enc_id', 'a.created_by', 'a.created_on', 'a.updated_by', 'a.updated_on', 'a.is_deleted', 'b1.name loan_type'])
             ->joinWith(['assignedFinancerLoanType b' => function ($b) {
                 $b->joinWith(['loanTypeEnc b1'], false);
             }], false)
@@ -141,15 +141,13 @@ class TestController extends ApiBaseController
                 }
             } else {
                 $transaction->rollBack();
-                print_r($value);
-                exit();
                 return 'error while shifting status';
             }
         }
 
         $old_documents = FinancerLoanDocuments::find()
             ->alias('a')
-            ->select(['a.financer_loan_document_enc_id', 'a.assigned_financer_loan_type_id', 'a.certificate_type_enc_id', 'a.sequence', 'a.created_by', 'a.created_on', 'a.updated_by', 'a.updated_on', 'a.is_deleted'])
+            ->select(['a.financer_loan_document_enc_id', 'a.assigned_financer_loan_type_id', 'a.certificate_type_enc_id', 'a.sequence', 'a.created_by', 'a.created_on', 'a.updated_by', 'a.updated_on', 'a.is_deleted', 'b1.name loan_type'])
             ->joinWith(['assignedFinancerLoanType b' => function ($b) {
                 $b->joinWith(['loanTypeEnc b1'], false);
             }], false)
