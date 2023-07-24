@@ -141,6 +141,8 @@ class TestController extends ApiBaseController
                 }
             } else {
                 $transaction->rollBack();
+                print_r($value);
+                exit();
                 return 'error while shifting status';
             }
         }
