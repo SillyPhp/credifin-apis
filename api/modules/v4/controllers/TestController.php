@@ -338,7 +338,7 @@ class TestController extends ApiBaseController
 
     public function actionLoanShift2()
     {
-        return 1;
+//        return 1;
         if (!$user = $this->isAuthorized()) {
             return 'unauthorised';
         }
