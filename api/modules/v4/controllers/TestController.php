@@ -338,7 +338,7 @@ class TestController extends ApiBaseController
 
     public function actionLoanShift2()
     {
-        return 1;
+//        return 1;
         if (!$user = $this->isAuthorized()) {
             return 'unauthorised';
         }
@@ -368,6 +368,48 @@ class TestController extends ApiBaseController
             if (!$new_product->save()) {
                 $transaction->rollback();
                 return 'Error while shifting products';
+            }
+        }
+        $transaction->commit();
+        return 'Done';
+    }
+
+    public function actionLoanShift3()
+    {
+        return 1;
+        if (!$user = $this->isAuthorized()) {
+            return 'unauthorised';
+        }
+
+        $products = ['Loan Against Property' => '',
+            'Two Wheeler' => '13',
+            'Four Wheeler' => '',
+            'Consumer Durable Loan' => '',
+            'School Fee Loan' => '',
+            'Medical Loan' => '',
+            'EV Two Wheeler' => '',
+            'E-Rickshaw' => ''];
+
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        foreach ($products as $key => $value) {
+            $exist = LoanType::findOne(['name' => $key]);
+            if (!$exist) {
+                $new_product = new LoanType();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $new_product->loan_type_enc_id = $utilitiesModel->encrypt();
+                $new_product->name = $key;
+                if (!empty($value)) {
+                    $new_product->value = $value;
+                }
+                $new_product->created_on = date('Y-m-d H:i:s');
+                $new_product->created_by = $user->user_enc_id;
+                if (!$new_product->save()) {
+                    $transaction->rollback();
+                    return 'Error while shifting loan types';
+                }
             }
         }
         $transaction->commit();
