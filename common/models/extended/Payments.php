@@ -2,7 +2,7 @@
 
 namespace common\models\extended;
 
-use common\models\FinancerLoanProductNoDues;
+use common\models\FinancerLoanProductLoginFeeStructure;
 use common\models\InstituteLeadsPayments;
 use common\models\LoanPayments;
 use common\models\LoanPaymentsDetails;
@@ -56,7 +56,7 @@ class Payments
     private function createPaymentDetails($amount, $loan_payment_id, $user_id)
     {
         foreach ($amount as $value) {
-            $nodues = FinancerLoanProductNoDues::findOne(['financer_loan_product_no_dues_enc_id' => $value]);
+            $nodues = FinancerLoanProductLoginFeeStructure::findOne(['financer_loan_product_no_dues_enc_id' => $value]);
             if (!$nodues) {
                 return false;
             }

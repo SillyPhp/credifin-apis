@@ -2,11 +2,10 @@
 
 namespace api\modules\v4\controllers;
 
-use api\modules\v4\models\PaymentModal;
 use api\modules\v4\models\PaymentModel;
 use common\models\extended\Organizations;
 use common\models\extended\Payments;
-use common\models\FinancerLoanProductNoDues;
+use common\models\FinancerLoanProductLoginFeeStructure;
 use common\models\LoanPayments;
 use Razorpay\Api\Api;
 use Yii;
@@ -99,15 +98,21 @@ class PaymentsController extends ApiBaseController
             $amount = 0;
             $amount_enc_ids = $model->amount;
             foreach ($amount_enc_ids as $value) {
-                $nodues = FinancerLoanProductNoDues::findOne(['financer_loan_product_no_dues_enc_id' => $value])['amount'];
+                $nodues = FinancerLoanProductLoginFeeStructure::findOne(['financer_loan_product_no_dues_enc_id' => $value])['amount'];
                 if (!empty($nodues)) {
                     $amount += (float)$nodues;
                 }
             }
             $res['amount'] = number_format($amount, 2);
             $model = new Payments();
-            $api_key = Yii::$app->params->razorPay->phfleasing->prod->apiKey;
-            $api_secret = Yii::$app->params->razorPay->phfleasing->prod->apiSecret;
+            $options = [];
+            $options['org_id'] = $user->organization_enc_id;
+            $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
+            if (!$keys){
+                return false;
+            }
+            $api_key = $keys['api_key'];
+            $api_secret = $keys['api_secret'];
             $api = new Api($api_key, $api_secret);
             $options['name'] = $params['name'];
             $options['loan_app_id'] = $params['loan_app_id'];
@@ -122,7 +127,7 @@ class PaymentsController extends ApiBaseController
                 $options['brand'] = $org_name;
             }
             $options['contact'] = $params['phone'];
-            $options['call_back_url'] = "https://staging.empowerloans.in/payment/transaction";
+            $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack."/payment/transaction";
 
             $options['purpose'] = $params['purpose'];
 

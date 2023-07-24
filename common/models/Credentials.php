@@ -1,18 +1,19 @@
 <?php
-
 namespace common\models;
 
-use Yii;
 
 /**
- * This is the model class for table "{{%payment_credentials}}".
+ * This is the model class for table "{{%credentials}}".
  *
  * @property int $id Primary Key
  * @property string $credentials_enc_id Encrypted ID
  * @property string $api_key Encrypted key
  * @property string $api_secret Encrypted secret
  * @property string $env Enviroment Mode
+ * @property string $cred_for
  * @property string $organization_enc_id Organization Enc Id
+ * @property string $access_token_expiration
+ * @property string $passphrase
  * @property string $created_on On which date Route information was added to database
  * @property string $created_by By which User Route information was added
  * @property string $last_updated_on On which date Route information was updated
@@ -23,14 +24,14 @@ use Yii;
  * @property Users $createdBy
  * @property Organizations $organizationEnc
  */
-class PaymentCredentials extends \yii\db\ActiveRecord
+class Credentials extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return '{{%payment_credentials}}';
+        return '{{%credentials}}';
     }
 
     /**
@@ -39,11 +40,11 @@ class PaymentCredentials extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['credentials_enc_id', 'api_key', 'api_secret', 'organization_enc_id', 'created_by'], 'required'],
-            [['env'], 'string'],
-            [['created_on', 'last_updated_on'], 'safe'],
+            [['credentials_enc_id', 'api_key', 'api_secret', 'cred_for', 'organization_enc_id', 'passphrase', 'created_by'], 'required'],
+            [['env', 'cred_for'], 'string'],
+            [['access_token_expiration', 'created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
-            [['credentials_enc_id', 'api_key', 'api_secret', 'organization_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['credentials_enc_id', 'api_key', 'api_secret', 'organization_enc_id', 'passphrase', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['credentials_enc_id'], 'unique'],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
@@ -51,25 +52,6 @@ class PaymentCredentials extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'credentials_enc_id' => 'Credentials Enc ID',
-            'api_key' => 'Api Key',
-            'api_secret' => 'Api Secret',
-            'env' => 'Env',
-            'organization_enc_id' => 'Organization Enc ID',
-            'created_on' => 'Created On',
-            'created_by' => 'Created By',
-            'last_updated_on' => 'Last Updated On',
-            'last_updated_by' => 'Last Updated By',
-            'is_deleted' => 'Is Deleted',
-        ];
-    }
 
     /**
      * @return \yii\db\ActiveQuery
