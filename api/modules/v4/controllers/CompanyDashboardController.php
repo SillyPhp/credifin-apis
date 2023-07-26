@@ -19,7 +19,7 @@ use common\models\extended\LoanApplicationCommentsExtended;
 use common\models\extended\LoanApplicationNotificationsExtended;
 use common\models\extended\SharedLoanApplicationsExtended;
 use common\models\FinancerAssignedDesignations;
-use common\models\LoanApplicationPartners;
+use common\models\extended\LoanApplicationPartnersExtended;
 use common\models\extended\LoanApplicationPdExtended;
 use common\models\extended\LoanApplicationReleasePaymentExtended;
 use common\models\extended\LoanApplicationTvrExtended;
@@ -663,7 +663,7 @@ class CompanyDashboardController extends ApiBaseController
     }
 //    private function __partnerApplications($user)
 //    {
-//        return LoanApplicationPartners::find()
+//        return LoanApplicationPartnersExtended::find()
 //            ->alias('a')
 //            ->select(['a.loan_app_enc_id'])
 //            ->joinWith(['providerEnc b'], false)
@@ -951,7 +951,7 @@ class CompanyDashboardController extends ApiBaseController
     // getting partnered applications
     private function __applicationPartners($user, $loan_id)
     {
-        return LoanApplicationPartners::find()
+        return LoanApplicationPartnersExtended::find()
             ->alias('a')
             ->select(['a.loan_application_partner_enc_id', 'a.loan_app_enc_id', 'a.type', 'a.ltv', 'a.partner_enc_id', 'b.name'])
             ->joinWith(['partnerEnc b'], false)
@@ -2045,7 +2045,7 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // getting loan partner with this id
-            $partner = LoanApplicationPartners::findOne(['loan_app_enc_id' => $params['loan_id'], 'partner_enc_id' => $params['partner_id'], 'is_deleted' => 0]);
+            $partner = LoanApplicationPartnersExtended::findOne(['loan_app_enc_id' => $params['loan_id'], 'partner_enc_id' => $params['partner_id'], 'is_deleted' => 0]);
 
             // if partner exists with this id then sending error 409 conflict
             if (!empty($partner)) {
@@ -2053,7 +2053,7 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // adding loan partner
-            $partner = new LoanApplicationPartners();
+            $partner = new LoanApplicationPartnersExtended();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $partner->loan_application_partner_enc_id = $utilitiesModel->encrypt();
@@ -2087,7 +2087,7 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // getting loan partner object
-            $partner = LoanApplicationPartners::findOne(['loan_application_partner_enc_id' => $params['loan_partner_id']]);
+            $partner = LoanApplicationPartnersExtended::findOne(['loan_application_partner_enc_id' => $params['loan_partner_id']]);
 
             // if not empty partner object then removing it
             if (!empty($partner)) {

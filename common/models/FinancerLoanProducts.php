@@ -44,7 +44,7 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['financer_loan_product_enc_id', 'assigned_financer_loan_type_enc_id', 'name', 'created_by', 'updated_on', 'updated_by'], 'required'],
+            [['financer_loan_product_enc_id', 'created_by'], 'required'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['financer_loan_product_enc_id', 'assigned_financer_loan_type_enc_id', 'name', 'created_by', 'updated_by'], 'string', 'max' => 100],
@@ -52,24 +52,6 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
             [['assigned_financer_loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedFinancerLoanType::className(), 'targetAttribute' => ['assigned_financer_loan_type_enc_id' => 'assigned_financer_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'financer_loan_product_enc_id' => 'Financer Loan Product Enc ID',
-            'assigned_financer_loan_type_enc_id' => 'Assigned Financer Loan Type Enc ID',
-            'name' => 'Name',
-            'created_on' => 'Created On',
-            'created_by' => 'Created By',
-            'updated_on' => 'Updated On',
-            'updated_by' => 'Updated By',
-            'is_deleted' => 'Is Deleted',
         ];
     }
 
