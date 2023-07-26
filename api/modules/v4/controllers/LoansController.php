@@ -13,6 +13,7 @@ use common\models\EsignRequestedAgreements;
 use common\models\EsignVehicleLoanDetails;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\EducationLoanPaymentsExtends;
+use common\models\extended\LoanPaymentsExtends;
 use common\models\extended\LoanApplicantResidentialInfoExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
@@ -240,8 +241,8 @@ class LoansController extends ApiBaseController
         $razorpay_signature = $params['razorpay_signature'];
 
         // api keys from local params
-        $api_key = Yii::$app->params->razorPay->prod->apiKey;
-        $api_secret = Yii::$app->params->razorPay->prod->apiSecret;
+        $api_key = Yii::$app->params->razorPay->phfleasing->prod->apiKey;
+        $api_secret = Yii::$app->params->razorPay->phfleasing->prod->apiSecret;
 
         // creating new object razorpay api
         $api = new Api($api_key, $api_secret);
@@ -283,10 +284,10 @@ class LoansController extends ApiBaseController
 
     }
 
-    // saving payment status to education loan payments
+    // saving payment status to loan payments
     private function savePaymentStatus($payment_id, $status, $plink_id, $signature)
     {
-        $loan_payment = EducationLoanPaymentsExtends::findOne(['payment_token' => $plink_id]);
+        $loan_payment = LoanPaymentsExtends::findOne(['payment_token' => $plink_id]);
         $loan_payment->payment_status = $status;
         $loan_payment->payment_id = $payment_id;
         $loan_payment->payment_signature = $signature;
