@@ -33,6 +33,9 @@ class EmiCollectionForm extends Model
     public $latitude;
     public $longitude;
     public $branch_enc_id;
+    public $org_id;
+    public $org_name;
+    public $desc;
 
     public function formName()
     {
@@ -42,7 +45,13 @@ class EmiCollectionForm extends Model
     public function rules()
     {
         return [
-            [['customer_name', 'loan_account_number', 'phone', 'amount', 'loan_type', 'address', 'state', 'city', 'postal_code', 'latitude', 'longitude', 'payment_method', 'branch_enc_id'], 'required'],
+            [['customer_name', 'phone', 'amount', 'loan_type', 'address', 'state', 'city', 'postal_code', 'latitude', 'longitude', 'payment_method', 'branch_enc_id'], 'required'],
+            [['desc', 'org_id', 'org_name'], 'required', 'when' => function ($model) {
+                return $model->payment_method = 'Online Payment';
+            }],
+            [['loan_account_number'], 'required', 'when' => function ($model) {
+                return $model->payment_method != 'Online Payment';
+            }],
             [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
@@ -52,8 +61,6 @@ class EmiCollectionForm extends Model
 
     public function save($user_id)
     {
-        Yii::$app->cache->flush();
-
         $model = new EmiCollection();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -93,6 +100,29 @@ class EmiCollectionForm extends Model
             $model->other_delay_reason = $this->other_delay_reason;
         }
         if ($this->payment_method) {
+            if ($this->payment_method == 'Online Payment') {
+                $options = [];
+                $options['org_id'] = $this->org_id;
+                $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
+                if (!$keys) {
+                    return ['status' => 500, 'message' => 'an error occurred'];
+                }
+                $api_key = $keys['api_key'];
+                $api_secret = $keys['api_secret'];
+                $api = new Api($api_key, $api_secret);
+                $options['total'] = $this->amount * 100;
+                $options['description'] = $this->desc;
+                $options['name'] = $this->customer_name;
+                $options['contact'] = $this->phone;
+                $options['call_back_url'] = $this->customer_name;
+                $options['brand'] = $this->org_name;
+                $options['purpose'] = $this->loan_type;
+                $options['close_by'] = time() + 24 * 60 * 60;
+                $qr = \common\models\credentials\Payments::createQr($api, $options);
+                print_r($qr);
+                exit();
+
+            }
             $model->payment_method = $this->payment_method;
         }
         if ($this->other_payment_method) {
