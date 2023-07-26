@@ -2855,7 +2855,7 @@ class CompanyDashboardController extends ApiBaseController
                 'COUNT(CASE WHEN b.status = "4" THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount)) END) as login_amount',
                 'COUNT(CASE WHEN b.status = "31" THEN b.disbursement_approved END) as disbursed_amount',
                 'COUNT(CASE WHEN b.status = "26" THEN b.disbursement_approved END) as disbursed_approval_amount',
-                'COUNT(CASE WHEN b.status = "31" THEN b.  END) as insurance_charges_amount',
+//                'COUNT(CASE WHEN b.status = "31" THEN b.insurance_charges END) as insurance_charges_amount',
                 'COUNT(CASE WHEN b.status = "24" THEN b.soft_sanction END) as soft_sanctioned_amount',
                 'COUNT(CASE WHEN b.status = "15" THEN b.soft_approval END) as soft_approval_amount',
                 'COUNT(CASE WHEN b.status != "0" AND b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN c.amount END) as under_process_amount',
