@@ -32,6 +32,8 @@ use Yii;
  *
  * @property Users $createdBy
  * @property LoanApplications $loanAppEnc
+ * @property LoanPaymentsDetails[] $loanPaymentsDetails
+ * @property LoanPaymentsLogs[] $loanPaymentsLogs
  * @property Users $updatedBy
  */
 class LoanPayments extends \yii\db\ActiveRecord
@@ -83,6 +85,26 @@ class LoanPayments extends \yii\db\ActiveRecord
     public function getLoanAppEnc()
     {
         return $this->hasOne(LoanApplications::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * Gets query for [[LoanPaymentsDetails]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanPaymentsDetails()
+    {
+        return $this->hasMany(LoanPaymentsDetails::className(), ['loan_payments_enc_id' => 'loan_payments_enc_id']);
+    }
+
+    /**
+     * Gets query for [[LoanPaymentsLogs]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanPaymentsLogs()
+    {
+        return $this->hasMany(LoanPaymentsLogs::className(), ['loan_payments_enc_id' => 'loan_payments_enc_id']);
     }
 
     /**

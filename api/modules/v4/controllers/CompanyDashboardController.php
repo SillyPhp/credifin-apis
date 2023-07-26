@@ -19,7 +19,7 @@ use common\models\extended\LoanApplicationCommentsExtended;
 use common\models\extended\LoanApplicationNotificationsExtended;
 use common\models\extended\SharedLoanApplicationsExtended;
 use common\models\FinancerAssignedDesignations;
-use common\models\LoanApplicationPartners;
+use common\models\extended\LoanApplicationPartnersExtended;
 use common\models\extended\LoanApplicationPdExtended;
 use common\models\extended\LoanApplicationReleasePaymentExtended;
 use common\models\extended\LoanApplicationTvrExtended;
@@ -663,7 +663,7 @@ class CompanyDashboardController extends ApiBaseController
     }
 //    private function __partnerApplications($user)
 //    {
-//        return LoanApplicationPartners::find()
+//        return LoanApplicationPartnersExtended::find()
 //            ->alias('a')
 //            ->select(['a.loan_app_enc_id'])
 //            ->joinWith(['providerEnc b'], false)
@@ -951,7 +951,7 @@ class CompanyDashboardController extends ApiBaseController
     // getting partnered applications
     private function __applicationPartners($user, $loan_id)
     {
-        return LoanApplicationPartners::find()
+        return LoanApplicationPartnersExtended::find()
             ->alias('a')
             ->select(['a.loan_application_partner_enc_id', 'a.loan_app_enc_id', 'a.type', 'a.ltv', 'a.partner_enc_id', 'b.name'])
             ->joinWith(['partnerEnc b'], false)
@@ -2045,7 +2045,7 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // getting loan partner with this id
-            $partner = LoanApplicationPartners::findOne(['loan_app_enc_id' => $params['loan_id'], 'partner_enc_id' => $params['partner_id'], 'is_deleted' => 0]);
+            $partner = LoanApplicationPartnersExtended::findOne(['loan_app_enc_id' => $params['loan_id'], 'partner_enc_id' => $params['partner_id'], 'is_deleted' => 0]);
 
             // if partner exists with this id then sending error 409 conflict
             if (!empty($partner)) {
@@ -2053,7 +2053,7 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // adding loan partner
-            $partner = new LoanApplicationPartners();
+            $partner = new LoanApplicationPartnersExtended();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $partner->loan_application_partner_enc_id = $utilitiesModel->encrypt();
@@ -2087,7 +2087,7 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // getting loan partner object
-            $partner = LoanApplicationPartners::findOne(['loan_application_partner_enc_id' => $params['loan_partner_id']]);
+            $partner = LoanApplicationPartnersExtended::findOne(['loan_application_partner_enc_id' => $params['loan_partner_id']]);
 
             // if not empty partner object then removing it
             if (!empty($partner)) {
@@ -2855,7 +2855,7 @@ class CompanyDashboardController extends ApiBaseController
                 'COUNT(CASE WHEN b.status = "4" THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount)) END) as login_amount',
                 'COUNT(CASE WHEN b.status = "31" THEN b.disbursement_approved END) as disbursed_amount',
                 'COUNT(CASE WHEN b.status = "26" THEN b.disbursement_approved END) as disbursed_approval_amount',
-                'COUNT(CASE WHEN b.status = "31" THEN b.  END) as insurance_charges_amount',
+//                'COUNT(CASE WHEN b.status = "31" THEN b.insurance_charges END) as insurance_charges_amount',
                 'COUNT(CASE WHEN b.status = "24" THEN b.soft_sanction END) as soft_sanctioned_amount',
                 'COUNT(CASE WHEN b.status = "15" THEN b.soft_approval END) as soft_approval_amount',
                 'COUNT(CASE WHEN b.status != "0" AND b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN c.amount END) as under_process_amount',
