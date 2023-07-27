@@ -972,9 +972,7 @@ class OrganizationsController extends ApiBaseController
             if (!$product) {
                 return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
             }
-            if (!empty($params['name']) && !empty($params['assigned_financer_loan_type_enc_id'])) {
-                return $this->response(500, ['status' => 500, 'message' => 'Cannot update both']);
-            }
+
             if (!empty($params['deleted'])) {
                 if ($product['is_deleted'] == 1) {
                     return $this->response(500, ['status' => 500, 'message' => 'Already Deleted']);
@@ -1047,7 +1045,7 @@ class OrganizationsController extends ApiBaseController
             }
             $details = FinancerLoanProducts::find()
                 ->alias('a')
-                ->select(['a.financer_loan_product_enc_id', 'a.name product_name', 'e1.name loan_type_name'])
+                ->select(['a.financer_loan_product_enc_id', 'a.name product_name', 'e1.name loan_type_name', 'a.assigned_financer_loan_type_enc_id'])
                 ->joinWith(['financerLoanProductPurposes b' => function ($b) {
                     $b->select(['b.financer_loan_product_purpose_enc_id', 'b.financer_loan_product_enc_id', 'b.purpose', 'b.sequence']);
                     $b->orderBy(['b.sequence' => SORT_ASC]);
@@ -1068,6 +1066,7 @@ class OrganizationsController extends ApiBaseController
                     $d->orderBy(['d1.sequence' => SORT_ASC]);
                 }])
                 ->joinWith(['assignedFinancerLoanTypeEnc e' => function ($e) {
+                    $e->select(['e.assigned_financer_loan_type_enc_id']);
                     $e->joinWith(['loanTypeEnc e1'], false);
                 }], false)
                 ->onCondition(['a.financer_loan_product_enc_id' => $params['financer_loan_product_enc_id'], 'a.is_deleted' => 0])
