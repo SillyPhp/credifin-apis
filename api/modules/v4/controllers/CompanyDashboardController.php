@@ -385,7 +385,17 @@ class CompanyDashboardController extends ApiBaseController
                 $l->onCondition(['l.payment_status' => ['captured', 'created', 'waived off']]);
             }])
             ->joinWith(['loanProductsEnc lp'], false)
-            ->andWhere(['a.is_deleted' => 0]);
+            ->andWhere(['a.is_deleted' => 0])
+            ->andWhere(['or',
+                ['and',
+                    ['a.loan_type' => 'Loan Against Property'],
+                    ['>=', 'a.loan_status_updated_on', '2023-06-01 00:00:00']
+                ],
+                ['and',
+                    ['not', ['a.loan_type' => 'Loan Against Property']],
+                    ['>=', 'a.loan_status_updated_on', '2023-07-01 00:00:00']
+                ]
+            ]);
 
         // if its organization and service is not "Loans" then checking lead_by=$dsa
         if ($user->organization_enc_id) {
@@ -2321,6 +2331,9 @@ class CompanyDashboardController extends ApiBaseController
             $limit = !empty($params['limit']) ? $params['limit'] : 10;
             $page = !empty($params['page']) ? $params['page'] : 1;
 
+            $lap = strtotime($params['start_date']) > strtotime('2023-06-01 00:00:00') ? $params['start_date'] : '2023-06-01 00:00:00';
+            $nlap = strtotime($params['start_date']) > strtotime('2023-07-01 00:00:00') ? $params['start_date'] : '2023-07-01 00:00:00';
+
             $employeeStats = Users::find()
                 ->alias('a')
                 ->select(['a.user_enc_id', '(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name," ",a.last_name) ELSE a.first_name END) as employee_name', 'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'b1.designation', 'concat(b2.first_name," ",b2.last_name) reporting_person', 'b3.location_name', 'c.updated_on',
@@ -2337,8 +2350,17 @@ class CompanyDashboardController extends ApiBaseController
                         ->joinWith(['branchEnc b3'])
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
-                ->joinWith(['loanApplications3 c' => function ($c) use ($params) {
-                    $c->andWhere(['between', 'c.created_on', $params['start_date'], $params['end_date']]);
+                ->joinWith(['loanApplications3 c' => function ($c) use ($params, $lap, $nlap) {
+                    $c->andWhere(['or',
+                        ['and',
+                            ['c.loan_type' => 'Loan Against Property'],
+                            ['between', 'c.created_on', $lap, $params['end_date']]
+                        ],
+                        ['and',
+                            ['not', ['c.loan_type' => 'Loan Against Property']],
+                            ['between', 'c.created_on', $nlap, $params['end_date']]
+                        ]
+                    ]);
                     $c->joinWith(['assignedLoanProviders c1' => function ($c1) {
                         $c1->joinWith(['status0 c2']);
                     }], false);
@@ -2676,7 +2698,20 @@ class CompanyDashboardController extends ApiBaseController
             if (!empty($params['branch_name'])) {
                 $employeeAmount->andWhere(['i.branch_enc_id' => $params['branch_name']]);
             }
-            $employeeAmount = $employeeAmount->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']])
+            $lap = strtotime($params['start_date']) > strtotime('2023-06-01 00:00:00') ? $params['start_date'] : '2023-06-01 00:00:00';
+            $nlap = strtotime($params['start_date']) > strtotime('2023-07-01 00:00:00') ? $params['start_date'] : '2023-07-01 00:00:00';
+            $employeeAmount = $employeeAmount
+//                ->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']])
+                ->andWhere(['or',
+                    ['and',
+                        ['b.loan_type' => 'Loan Against Property'],
+                        ['between', 'b.loan_status_updated_on', $lap, $params['end_date']]
+                    ],
+                    ['and',
+                        ['not', ['b.loan_type' => 'Loan Against Property']],
+                        ['between', 'b.loan_status_updated_on', $nlap, $params['end_date']]
+                    ]
+                ])
 //                ->andWhere(['i.branch_enc_id' => $params['branch_id']])
                 ->asArray()
                 ->one();
