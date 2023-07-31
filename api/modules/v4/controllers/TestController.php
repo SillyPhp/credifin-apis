@@ -23,8 +23,8 @@ class TestController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-                'data-check-old' => ['POST', 'OPTIONS'],
-                'data-check-new' => ['POST', 'OPTIONS']
+//                'data-check-old' => ['POST', 'OPTIONS'],
+//                'data-check-new' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -43,9 +43,9 @@ class TestController extends ApiBaseController
 
     public function actionDataCheckOld()
     {
-        if (!$user = $this->isAuthorized()) {
-            return 'unauthorised';
-        }
+//        if (!$user = $this->isAuthorized()) {
+//            return 'unauthorised';
+//        }
         $products = ['Loan Against Property',
             'Two Wheeler',
             'Four Wheeler',
@@ -69,9 +69,9 @@ class TestController extends ApiBaseController
 
     public function actionDataCheckNew()
     {
-        if (!$user = $this->isAuthorized()) {
-            return 'unauthorised';
-        }
+//        if (!$user = $this->isAuthorized()) {
+//            return 'unauthorised';
+//        }
         $products = ['Loan Against Property',
             'Two Wheeler',
             'Four Wheeler',
