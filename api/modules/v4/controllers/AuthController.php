@@ -448,7 +448,7 @@ class AuthController extends ApiBaseController
             $source = Yii::$app->request->post('source');
 
             // getting token detail with this access_token and source
-            $token = UserAccessTokens::findOne(['access_token' => $access_token, 'source' => $source]);
+            $token = UserAccessTokens::findOne(['access_token' => $access_token, 'source' => $source, 'is_deleted' => 0]);
 
             // if token not found
             if (!$token) {

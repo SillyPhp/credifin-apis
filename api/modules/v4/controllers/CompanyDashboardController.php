@@ -466,7 +466,7 @@ class CompanyDashboardController extends ApiBaseController
             // loop fields
             foreach ($params['fields_search'] as $key => $val) {
 
-                if (!empty($val)) {
+                if (!empty($val) || $val == '0') {
                     // key match to "a" table array
                     if (in_array($key, $a)) {
 
@@ -481,13 +481,16 @@ class CompanyDashboardController extends ApiBaseController
 
                     // key match to "i" table array
                     if (in_array($key, $i)) {
-
-                        // if key is branch then checking branch_enc_id time
-                        if ($key == 'branch') {
-                            $loans->andWhere(['like', 'i.branch_enc_id', $val]);
-                        } else {
-                            // else checking other fields with their names
-                            $loans->andWhere(['like', 'i.' . $key, $val]);
+                        switch ($key) {
+                            case 'branch':
+                                $loans->andWhere(['like', 'i.branch_enc_id', $val]);
+                                break;
+                            case 'status':
+                                $loans->andWhere(['i.status' => $val]);
+                                break;
+                            default:
+                                $loans->andWhere(['like', 'i.' . $key, $val]);
+                                break;
                         }
                     }
 
