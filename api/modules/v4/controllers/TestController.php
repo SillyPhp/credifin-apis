@@ -6,6 +6,12 @@ use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
 use common\models\CreditLoanApplicationReports;
 use common\models\extended\Industries;
+use common\models\FinancerLoanDocuments;
+use common\models\FinancerLoanProductDocuments;
+use common\models\FinancerLoanProductPurpose;
+use common\models\FinancerLoanProductStatus;
+use common\models\FinancerLoanPurpose;
+use common\models\FinancerLoanStatus;
 use common\models\LoanPayments;
 use common\models\LoanType;
 use common\models\FinancerLoanProducts;
@@ -26,7 +32,7 @@ class TestController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-//                'data-check-old' => ['POST', 'OPTIONS'],
+                'product-data-shift-new' => ['POST', 'OPTIONS'],
 //                'data-check-new' => ['POST', 'OPTIONS']
             ]
         ];
@@ -43,153 +49,120 @@ class TestController extends ApiBaseController
         return $behaviors;
     }
 
-    public function actionTestt()
+    public function actionProductDataShiftNew()
     {
-        if ($user = $this->isAuthorized()) {
-
-            $model = UserUtilities::getUserType($user->user_enc_id) == 'Financer';
-            if (!$model) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "comment"']);
-            }
-
-//            $params = Yii::$app->request->post();
-            $audit = LoanPayments::find()
-                ->alias('a')
-                ->select(['a.loan_payments_enc_id', 'd.application_number', 'd.loan_type', 'd.loan_status', 'd.amount_due', 'c.customer_name', 'd.loan_app_enc_id', 'd.applicant_name', 'b.assigned_loan_payments_enc_id', 'a.reference_number', 'a.payment_status', 'a.payment_token order_id'])
-                ->joinWith(['assignedLoanPayments b' => function ($b) {
-                    //$b->select(['b.loan_payments_enc_id','b.assigned_loan_payments_enc_id','c.emi_collection_enc_id','b.loan_app_enc_id']);
-                    $b->joinWith(['emiCollectionEnc c'], false, 'LEFT JOIN');
-                    $b->joinWith(['loanAppEnc d'], false, 'LEFT JOIN');
-                }], false)
-//                ->andWhere([''])
-//                ->limit($limit)
-//                ->offset(($page - 1) * $limit)
-                ->orderBy(['a.id' => SORT_DESC])
-                ->asArray()
-                ->all();
-
-            if ($audit) {
-                return $this->response(200, ['status' => 200, 'audit_list' => $audit]);
-            }
-
-            // not found
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        if (!$user = $this->isAuthorized()) {
+            return 'unauthorised';
         }
-    }
+        $products = ['Loan Against Property',
+            'Two Wheeler',
+            'Four Wheeler',
+            'Consumer Durable Loan',
+            'School Fee Loan',
+            'Medical Loan',
+            'EV Two Wheeler',
+            'E-Rickshaw'];
 
-    public function actionCreditReport()
-    {
-        $params = Yii::$app->request->post();
-        $credit_report = CreditLoanApplicationReports::find()
+        $old_purpose = FinancerLoanPurpose::find()
             ->alias('a')
-            ->select(['a.response_enc_id'])
-            ->joinWith(['responseEnc b' => function ($b) {
-                $b->select(['b.response_enc_id', 'b1.request_source', 'b.response_body']);
-                $b->joinWith(['requestEnc b1'], false);
-            }])
-//            ->andWhere(['a.loan_app_enc_id' => $params['loan_id']])
-            ->andWhere(['a.loan_app_enc_id' => 'PA5Qxgb6kyw088GaNn96ZorD29XjOa'])
+            ->select(['a.financer_loan_purpose_enc_id', 'a.assigned_financer_loan_type_id', 'a.purpose', 'a.sequence', 'a.created_by', 'a.created_on', 'a.updated_by', 'a.updated_on', 'a.is_deleted', 'b1.name loan_type'])
+            ->joinWith(['assignedFinancerLoanType b' => function ($b) {
+                $b->joinWith(['loanTypeEnc b1'], false);
+            }], false)
+            ->andWhere(['in', 'b1.name', $products])
             ->asArray()
             ->all();
-//        print_r($credit_report);exit();
-        $check = [
-            "CIBIL" => "BureauResponseXml",
-            "EQUIFAX" => "CCRResponse",
-            'CRIF' => 'response_body'
-        ];
-        foreach ($credit_report as $key => $value) {
-            $value['responseEnc']['response_body'] = json_decode($value['responseEnc']['response_body'], true);
-            $data['phones'] = $data['emails'] = $data['address'] = [];
-            if ($value['responseEnc']['request_source'] != 'CRIF') {
-                continue;
-            }
-//            print_r($value);exit();
-            if (array_key_exists($value['responseEnc']['request_source'], $check)) {
-                $search = $check[$value['responseEnc']['request_source']];
-            }
-            if (!empty($search)) {
-                $response_body = UserUtilities::array_search_key($search, $value);
-            }
+        $transaction = Yii::$app->db->beginTransaction();
 
-            switch ($value['responseEnc']['request_source']) {
-                case 'CIBIL':
-                    $array = json_decode(json_encode((array)simplexml_load_string($response_body)), true);
-                    foreach ($array['TelephoneSegment'] as $val) {
-                        if (!in_array($val['TelephoneNumber'], $data['phones'])) {
-                            $data['phones'][] = $val['TelephoneNumber'];
-                        }
-                    }
-                    foreach ($array['EmailContactSegment'] as $val) {
-                        if (!in_array($val['EmailID'], $data['emails'])) {
-                            $data['emails'][] = $val['EmailID'];
-
-                        }
-                    }
-                    foreach ($array['Address'] as $val) {
-                        $tmp = [];
-                        for ($x = 1; $x <= 4; $x++) {
-                            if (isset($val['AddressLine' . $x])) {
-                                if (!in_array($val['AddressLine' . $x], $tmp)) {
-                                    $tmp[] = $val['AddressLine' . $x];
-                                }
-                            }
-                        }
-                        $state = States::findOne(['state_code' => $val['StateCode']])['name'];
-                        if (!empty($state)) {
-                            $tmp[] = $state;
-                        }
-                        $tmp[] = $val['PinCode'];
-                        $data['address'][] = implode(', ', $tmp);
-                    }
-                    $res['CIBIL'] = $data;
-                    break;
-                case 'EQUIFAX':
-                    $response_body = UserUtilities::array_search_key('CIRReportData', $response_body)['IDAndContactInfo'];
-                    foreach ($response_body['AddressInfo'] as $val) {
-                        $data['address'][] = $val['Address'] . ', ' . $val['State'] . ', ' . $val['Postal'];
-                    }
-                    foreach ($response_body['PhoneInfo'] as $val) {
-                        if (!in_array($val['Number'], $data['phones'])) {
-                            $data['phones'][] = $val['Number'];
-                        }
-                    }
-                    foreach ($response_body['EmailAddressInfo'] as $val) {
-                        if (!in_array($val['EmailAddress'], $data['emails'])) {
-                            $data['emails'][] = $val['EmailAddress'];
-                        }
-                    }
-                    $res['EQUIFAX'] = $data;
-                    break;
-                case 'CRIF':
-                    $doc = new \DOMDocument();
-                    $doc->loadXML($response_body);
-                    $xpath = new \DOMXPath($doc);
-//                    print_r($xpath);exit();
-                    $reportContent = $xpath->query('
-/INDV-REPORT-FILE
-')->item(0);
-                    print_r($reportContent);
-                    exit();
-                    $array = json_decode(json_encode($reportContent), true);
-                    print_r($array);
-                    exit();
-///INDV-REPORTS
-///INDV-REPORT
-///PERSONAL-INFO-VARIATION
-///NAME-VARIATIONS
-///VARIATION
-///VALUE
-////                    $reportContent = $reportContent->nodeValue;
-                    print_r($reportContent);
-                    die();
-                    $res[] = $array;
+        foreach ($old_purpose as $item => $value) {
+            $product_check = FinancerLoanProducts::findOne(['name' => $value['loan_type']]);
+            if ($product_check) {
+                $new_purpose = new FinancerLoanProductPurpose();
+                $new_purpose->financer_loan_product_purpose_enc_id = $value['financer_loan_purpose_enc_id'];
+                $new_purpose->financer_loan_product_enc_id = $product_check['financer_loan_product_enc_id'];
+                $new_purpose->purpose = $value['purpose'];
+                $new_purpose->sequence = $value['sequence'];
+                $new_purpose->created_by = $value['created_by'];
+                $new_purpose->created_on = $value['created_on'];
+                $new_purpose->updated_by = $value['updated_by'];
+                $new_purpose->updated_on = $value['updated_on'];
+                $new_purpose->is_deleted = $value['is_deleted'];
+                if (!$new_purpose->save()) {
+                    $transaction->rollBack();
+                    return ['status' => 500, 'message' => 'an error occurred', 'error' => $new_purpose->getErrors()];
+                }
             }
         }
-        print_r($res[0]);
-        exit();
+
+        $old_status = FinancerLoanStatus::find()
+            ->alias('a')
+            ->select(['a.financer_loan_status_enc_id', 'a.assigned_financer_loan_type_id', 'a.loan_status_enc_id', 'a.created_by', 'a.created_on', 'a.updated_by', 'a.updated_on', 'a.is_deleted', 'b1.name loan_type'])
+            ->joinWith(['assignedFinancerLoanType b' => function ($b) {
+                $b->joinWith(['loanTypeEnc b1'], false);
+            }], false)
+            ->andWhere(['in', 'b1.name', $products])
+            ->asArray()
+            ->all();
+
+        foreach ($old_status as $key => $value) {
+            $status_product_id = FinancerLoanProducts::findOne(['name' => $value['loan_type']]);
+
+            if (!empty($status_product_id)) {
+                $new_status = new FinancerLoanProductStatus();
+                $new_status->financer_loan_product_status_enc_id = $value['financer_loan_status_enc_id'];
+                $new_status->financer_loan_product_enc_id = $status_product_id['financer_loan_product_enc_id'];
+                $new_status->loan_status_enc_id = $value['loan_status_enc_id'];
+                $new_status->created_by = $value['created_by'];
+                $new_status->created_on = $value['created_on'];
+                $new_status->updated_by = $value['updated_by'];
+                $new_status->updated_on = $value['updated_on'];
+                $new_status->is_deleted = $value['is_deleted'];
+                if (!$new_status->save()) {
+                    $transaction->rollBack();
+                    return ['status' => 500, 'message' => 'an error occurred', 'error' => $new_status->getErrors()];
+                }
+            } else {
+                $transaction->rollBack();
+                return 'error while shifting status';
+            }
+        }
+
+        $old_documents = FinancerLoanDocuments::find()
+            ->alias('a')
+            ->select(['a.financer_loan_document_enc_id', 'a.assigned_financer_loan_type_id', 'a.certificate_type_enc_id', 'a.sequence', 'a.created_by', 'a.created_on', 'a.updated_by', 'a.updated_on', 'a.is_deleted', 'b1.name loan_type'])
+            ->joinWith(['assignedFinancerLoanType b' => function ($b) {
+                $b->joinWith(['loanTypeEnc b1'], false);
+            }], false)
+            ->andWhere(['in', 'b1.name', $products])
+            ->asArray()
+            ->all();
+        foreach ($old_documents as $key => $value) {
+            $document_product_id = FinancerLoanProducts::findOne(['name' => $value['loan_type']]);
+            if (!empty($document_product_id)) {
+                $new_document = new FinancerLoanProductDocuments();
+                $new_document->financer_loan_product_document_enc_id = $value['financer_loan_document_enc_id'];
+                $new_document->financer_loan_product_enc_id = $document_product_id['financer_loan_product_enc_id'];
+                $new_document->certificate_type_enc_id = $value['certificate_type_enc_id'];
+                $new_document->sequence = $value['sequence'];
+                $new_document->created_by = $value['created_by'];
+                $new_document->created_on = $value['created_on'];
+                $new_document->updated_by = $value['updated_by'];
+                $new_document->updated_on = $value['updated_on'];
+                $new_document->is_deleted = $value['is_deleted'];
+                if (!$new_document->save()) {
+                    $transaction->rollBack();
+                    return ['status' => 500, 'message' => 'an error occurred', 'error' => $new_document->getErrors()];
+                }
+            } else {
+                $transaction->rollBack();
+                return 'error while shifting document';
+            }
+        }
+
+        $transaction->commit();
+        return 'Shifted Data Successfully';
+
+
     }
 
 
