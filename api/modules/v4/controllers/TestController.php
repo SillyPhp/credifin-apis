@@ -2,12 +2,15 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
+use common\models\CreditLoanApplicationReports;
 use common\models\extended\Industries;
 use common\models\LoanPayments;
 use common\models\LoanType;
 use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
+use common\models\States;
 use yii\filters\VerbFilter;
 use Yii;
 use yii\filters\Cors;
@@ -38,6 +41,155 @@ class TestController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    public function actionTestt()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $model = UserUtilities::getUserType($user->user_enc_id) == 'Financer';
+            if (!$model) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "comment"']);
+            }
+
+//            $params = Yii::$app->request->post();
+            $audit = LoanPayments::find()
+                ->alias('a')
+                ->select(['a.loan_payments_enc_id', 'd.application_number', 'd.loan_type', 'd.loan_status', 'd.amount_due', 'c.customer_name', 'd.loan_app_enc_id', 'd.applicant_name', 'b.assigned_loan_payments_enc_id', 'a.reference_number', 'a.payment_status', 'a.payment_token order_id'])
+                ->joinWith(['assignedLoanPayments b' => function ($b) {
+                    //$b->select(['b.loan_payments_enc_id','b.assigned_loan_payments_enc_id','c.emi_collection_enc_id','b.loan_app_enc_id']);
+                    $b->joinWith(['emiCollectionEnc c'], false, 'LEFT JOIN');
+                    $b->joinWith(['loanAppEnc d'], false, 'LEFT JOIN');
+                }], false)
+//                ->andWhere([''])
+//                ->limit($limit)
+//                ->offset(($page - 1) * $limit)
+                ->orderBy(['a.id' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            if ($audit) {
+                return $this->response(200, ['status' => 200, 'audit_list' => $audit]);
+            }
+
+            // not found
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionCreditReport()
+    {
+        $params = Yii::$app->request->post();
+        $credit_report = CreditLoanApplicationReports::find()
+            ->alias('a')
+            ->select(['a.response_enc_id'])
+            ->joinWith(['responseEnc b' => function ($b) {
+                $b->select(['b.response_enc_id', 'b1.request_source', 'b.response_body']);
+                $b->joinWith(['requestEnc b1'], false);
+            }])
+//            ->andWhere(['a.loan_app_enc_id' => $params['loan_id']])
+            ->andWhere(['a.loan_app_enc_id' => 'PA5Qxgb6kyw088GaNn96ZorD29XjOa'])
+            ->asArray()
+            ->all();
+//        print_r($credit_report);exit();
+        $check = [
+            "CIBIL" => "BureauResponseXml",
+            "EQUIFAX" => "CCRResponse",
+            'CRIF' => 'response_body'
+        ];
+        foreach ($credit_report as $key => $value) {
+            $value['responseEnc']['response_body'] = json_decode($value['responseEnc']['response_body'], true);
+            $data['phones'] = $data['emails'] = $data['address'] = [];
+            if ($value['responseEnc']['request_source'] != 'CRIF') {
+                continue;
+            }
+//            print_r($value);exit();
+            if (array_key_exists($value['responseEnc']['request_source'], $check)) {
+                $search = $check[$value['responseEnc']['request_source']];
+            }
+            if (!empty($search)) {
+                $response_body = UserUtilities::array_search_key($search, $value);
+            }
+
+            switch ($value['responseEnc']['request_source']) {
+                case 'CIBIL':
+                    $array = json_decode(json_encode((array)simplexml_load_string($response_body)), true);
+                    foreach ($array['TelephoneSegment'] as $val) {
+                        if (!in_array($val['TelephoneNumber'], $data['phones'])) {
+                            $data['phones'][] = $val['TelephoneNumber'];
+                        }
+                    }
+                    foreach ($array['EmailContactSegment'] as $val) {
+                        if (!in_array($val['EmailID'], $data['emails'])) {
+                            $data['emails'][] = $val['EmailID'];
+
+                        }
+                    }
+                    foreach ($array['Address'] as $val) {
+                        $tmp = [];
+                        for ($x = 1; $x <= 4; $x++) {
+                            if (isset($val['AddressLine' . $x])) {
+                                if (!in_array($val['AddressLine' . $x], $tmp)) {
+                                    $tmp[] = $val['AddressLine' . $x];
+                                }
+                            }
+                        }
+                        $state = States::findOne(['state_code' => $val['StateCode']])['name'];
+                        if (!empty($state)) {
+                            $tmp[] = $state;
+                        }
+                        $tmp[] = $val['PinCode'];
+                        $data['address'][] = implode(', ', $tmp);
+                    }
+                    $res['CIBIL'] = $data;
+                    break;
+                case 'EQUIFAX':
+                    $response_body = UserUtilities::array_search_key('CIRReportData', $response_body)['IDAndContactInfo'];
+                    foreach ($response_body['AddressInfo'] as $val) {
+                        $data['address'][] = $val['Address'] . ', ' . $val['State'] . ', ' . $val['Postal'];
+                    }
+                    foreach ($response_body['PhoneInfo'] as $val) {
+                        if (!in_array($val['Number'], $data['phones'])) {
+                            $data['phones'][] = $val['Number'];
+                        }
+                    }
+                    foreach ($response_body['EmailAddressInfo'] as $val) {
+                        if (!in_array($val['EmailAddress'], $data['emails'])) {
+                            $data['emails'][] = $val['EmailAddress'];
+                        }
+                    }
+                    $res['EQUIFAX'] = $data;
+                    break;
+                case 'CRIF':
+                    $doc = new \DOMDocument();
+                    $doc->loadXML($response_body);
+                    $xpath = new \DOMXPath($doc);
+//                    print_r($xpath);exit();
+                    $reportContent = $xpath->query('
+/INDV-REPORT-FILE
+')->item(0);
+                    print_r($reportContent);
+                    exit();
+                    $array = json_decode(json_encode($reportContent), true);
+                    print_r($array);
+                    exit();
+///INDV-REPORTS
+///INDV-REPORT
+///PERSONAL-INFO-VARIATION
+///NAME-VARIATIONS
+///VARIATION
+///VALUE
+////                    $reportContent = $reportContent->nodeValue;
+                    print_r($reportContent);
+                    die();
+                    $res[] = $array;
+            }
+        }
+        print_r($res[0]);
+        exit();
     }
 
 
