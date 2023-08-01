@@ -4,9 +4,11 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\BusinessLoanApplication;
 use api\modules\v4\models\CoApplicantForm;
+use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanProvider;
 use common\models\BillDetails;
 use common\models\CertificateTypes;
+use common\models\CreditLoanApplicationReports;
 use common\models\EsignAgreementDetails;
 use common\models\EsignDocumentsTemplates;
 use common\models\EsignRequestedAgreements;
@@ -30,6 +32,7 @@ use common\models\LoanVerificationLocations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\spaces\Spaces;
+use common\models\States;
 use common\models\Users;
 use common\models\Utilities;
 use yii\web\UploadedFile;
@@ -1084,5 +1087,111 @@ class LoansController extends ApiBaseController
         } else {
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
         }
+    }
+
+    public function actionCreditReport()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_app_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_id"']);
+        }
+        $credit_report = CreditLoanApplicationReports::find()
+            ->alias('a')
+            ->select(['a.response_enc_id'])
+            ->joinWith(['responseEnc b' => function ($b) {
+                $b->select(['b.response_enc_id', 'b1.request_source', 'b.response_body']);
+                $b->joinWith(['requestEnc b1'], false);
+            }])
+            ->andWhere(['a.loan_app_enc_id' => $params['loan_app_id']])
+            ->asArray()
+            ->all();
+        $check = [
+            "CIBIL" => "BureauResponseXml",
+            "EQUIFAX" => "CCRResponse",
+            'CRIF' => 'response_body'
+        ];
+        $res = [];
+        foreach ($credit_report as $key => $value) {
+            $value['responseEnc']['response_body'] = json_decode($value['responseEnc']['response_body'], true);
+            if (array_key_exists($value['responseEnc']['request_source'], $check)) {
+                $search = $check[$value['responseEnc']['request_source']];
+            }
+            if (!empty($search)) {
+                $response_body = UserUtilities::array_search_key($search, $value);
+
+                switch ($value['responseEnc']['request_source']) {
+                    case 'CIBIL':
+                        $array = json_decode(json_encode((array)simplexml_load_string($response_body)), true);
+                        foreach ($array['TelephoneSegment'] as $val) {
+                            $res['CIBIL']['phones'][] = $val['TelephoneNumber'];
+                        }
+                        foreach ($array['EmailContactSegment'] as $val) {
+                            $res['CIBIL']['emails'][] = $val['EmailID'];
+                        }
+                        foreach ($array['Address'] as $val) {
+                            $tmp = [];
+                            for ($x = 1; $x <= 4; $x++) {
+                                if (isset($val['AddressLine' . $x])) {
+                                    $tmp[] = $val['AddressLine' . $x];
+                                }
+                            }
+                            $state = States::findOne(['state_code' => $val['StateCode']])['name'];
+                            if (!empty($state)) {
+                                $tmp[] = $state;
+                            }
+                            $tmp[] = $val['PinCode'];
+                            $res['CIBIL']['address'][] = implode(', ', $tmp);
+                        }
+                        break;
+                    case 'EQUIFAX':
+                        $response_body = UserUtilities::array_search_key('CIRReportData', $response_body)['IDAndContactInfo'];
+                        foreach ($response_body['AddressInfo'] as $val) {
+                            $res['EQUIFAX']['address'][] = $val['Address'] . ', ' . $val['State'] . ', ' . $val['Postal'];
+                        }
+                        foreach ($response_body['PhoneInfo'] as $val) {
+                            $res['EQUIFAX']['phones'][] = $val['Number'];
+                        }
+                        foreach ($response_body['EmailAddressInfo'] as $val) {
+                            $res['EQUIFAX']['emails'][] = $val['EmailAddress'];
+                        }
+                        break;
+                    case 'CRIF':
+                        $doc = new \DOMDocument();
+                        $doc->loadXML($response_body);
+                        $xpath = new \DOMXPath($doc);
+                        $dataPath = '/INDV-REPORT-FILE/INDV-REPORTS/INDV-REPORT/PERSONAL-INFO-VARIATION';
+                        $endPath = '-VARIATIONS/VARIATION/VALUE';
+                        $emailPath = $dataPath . '/EMAIL' . $endPath;
+                        $addressPath = $dataPath . '/ADDRESS' . $endPath;
+                        $phonePath = $dataPath . '/PHONE-NUMBER' . $endPath;
+                        $addresses = $xpath->query($addressPath);
+                        $phones = $xpath->query($phonePath);
+                        $emails = $xpath->query($emailPath);
+                        for ($i = 0; $i < $emails->length; $i++) {
+                            $res['CRIF']['emails'][] = $emails->item($i)->nodeValue;
+                        }
+                        for ($i = 0; $i < $phones->length; $i++) {
+                            $res['CRIF']['phones'][] = $phones->item($i)->nodeValue;
+                        }
+                        for ($i = 0; $i < $addresses->length; $i++) {
+                            $res['CRIF']['address'][] = $addresses->item($i)->nodeValue;
+                        }
+                        break;
+                }
+            }
+        }
+        foreach ($res as $key => $reports) {
+            foreach ($reports as $rep => $report) {
+                $res[$key][$rep] = array_unique($report);
+            }
+        }
+        if ($res) {
+            return $this->response(200, ['status' => 200, 'data' => $res]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'data not found']);
+
     }
 }
