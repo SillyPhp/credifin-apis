@@ -29,7 +29,7 @@ class TestController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-//                'data-check-old' => ['POST', 'OPTIONS'],
+                'product-data-shift-new' => ['POST', 'OPTIONS'],
 //                'data-check-new' => ['POST', 'OPTIONS']
             ]
         ];
