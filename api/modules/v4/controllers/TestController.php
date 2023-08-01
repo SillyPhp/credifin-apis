@@ -16,6 +16,7 @@ use common\models\LoanPayments;
 use common\models\LoanType;
 use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
+use common\models\LoanTypes1;
 use common\models\States;
 use yii\filters\VerbFilter;
 use Yii;
@@ -26,16 +27,14 @@ class TestController extends ApiBaseController
 {
     public function behaviors()
     {
-        $model = explode("\\", Industries::className());
         $behaviors = parent::behaviors();
-
-        $behaviors['verbs'] = [
-            'class' => VerbFilter::className(),
-            'actions' => [
-                'product-data-shift-new' => ['POST', 'OPTIONS'],
-//                'data-check-new' => ['POST', 'OPTIONS']
-            ]
-        ];
+//        $behaviors['verbs'] = [
+//            'class' => VerbFilter::className(),
+//            'actions' => [
+//                'product-data-shift-new' => ['POST', 'OPTIONS'],
+////                'data-check-new' => ['POST', 'OPTIONS']
+//            ]
+//        ];
 
         $behaviors['corsFilter'] = [
             'class' => Cors::className(),
@@ -382,10 +381,9 @@ class TestController extends ApiBaseController
 
     public function actionTestinghaibhai()
     {
-//        return 1;
-        if (!$user = $this->isAuthorized()) {
-            return 'unauthorized';
-        }
+//        if (!$user = $this->isAuthorized()) {
+//            return 'unauthorized';
+//        }
         $data = '[
             {"value": "01", "loan_type": "Auto Loan (Personal)"},
             {"value": "02", "loan_type": "Housing Loan"},
@@ -456,13 +454,13 @@ class TestController extends ApiBaseController
                         return 'Update error';
                     }
                 } else {
-                    $new = new LoanType();
+                    $new = new LoanTypes1();
                     $utilitiesModel = new Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                     $new->loan_type_enc_id = $utilitiesModel->encrypt();
                     $new->name = $val['loan_type'];
                     $new->value = $val['value'];
-                    $new->created_by = $user->user_enc_id;
+                    $new->created_by = '7B0P3kNEldvG6k9rJmvvQm14wrJXbj';
                     $new->created_on = date('Y-m-d H:i:s');
                     $save = $new->save();
                     if (!$save) {
