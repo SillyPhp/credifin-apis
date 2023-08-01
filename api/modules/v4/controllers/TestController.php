@@ -435,34 +435,18 @@ class TestController extends ApiBaseController
         $data = json_decode($data, true);
         $transaction = Yii::$app->db->beginTransaction();
         try {
-
             foreach ($data as $val) {
-                $query = LoanType::find()
-                    ->select(['loan_type_enc_id', 'value', 'name'])
-                    ->andWhere(['or', ['value' => $val['value']], ['name' => $val['loan_type']]])
-                    ->asArray()
-                    ->one();
-                if ($query && ($val['value'] != $query['value'] || $val['loan_type'] != $query['name'])) {
-                    $update = Yii::$app->db->createCommand()
-                        ->update(LoanType::tableName(), ['value' => $val['value'], 'name' => $val['loan_type']], ['loan_type_enc_id' => $query['loan_type_enc_id']])
-                        ->execute();
-                    if ($update != 1) {
-                        $transaction->rollBack();
-                        return 'Update error';
-                    }
-                } else {
-                    $new = new LoanTypes1();
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $new->loan_type_enc_id = $utilitiesModel->encrypt();
-                    $new->name = $val['loan_type'];
-                    $new->value = $val['value'];
-                    $new->created_by = '7B0P3kNEldvG6k9rJmvvQm14wrJXbj';
-                    $new->created_on = date('Y-m-d H:i:s');
-                    $save = $new->save();
-                    if (!$save) {
-                        return 'Save error';
-                    }
+                $new = new LoanTypes1();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $new->loan_type_enc_id = $utilitiesModel->encrypt();
+                $new->name = $val['loan_type'];
+                $new->value = $val['value'];
+                $new->created_by = '7B0P3kNEldvG6k9rJmvvQm14wrJXbj';
+                $new->created_on = date('Y-m-d H:i:s');
+                $save = $new->save();
+                if (!$save) {
+                    return 'Save error';
                 }
             }
             $transaction->commit();
