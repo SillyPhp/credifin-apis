@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "lJCWPnNNVy3d95ppLp7M_loan_applications".
+ * This is the model class for table "{{%loan_applications}}".
  *
  * @property int $id
  * @property string $loan_app_enc_id
@@ -46,6 +46,9 @@ use Yii;
  * @property string $source
  * @property int $ask_guarantor_info 1 for yes 0 for no
  * @property string $deadline
+ * @property double $capital_roi
+ * @property string $capital_roi_updated_on
+ * @property string $capital_roi_updated_by
  * @property string $intake
  * @property string $td TD date
  * @property string $aadhaar_link_phone_number Aadhar Link Phone Number
@@ -71,6 +74,7 @@ use Yii;
  * @property int $is_deleted 0 as False, 1 as True
  * @property int $is_removed 0 as Permanently false 1 as Permanently True
  *
+ * @property AssignedLoanPayments[] $assignedLoanPayments
  * @property AssignedLoanProvider[] $assignedLoanProviders
  * @property BillDetails[] $billDetails
  * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
@@ -107,7 +111,6 @@ use Yii;
  * @property LoanCertificates[] $loanCertificates
  * @property LoanCoApplicants[] $loanCoApplicants
  * @property LoanDisbursementSchedule[] $loanDisbursementSchedules
- * @property LoanPayments[] $loanPayments
  * @property LoanPurpose[] $loanPurposes
  * @property LoanSanctionReports[] $loanSanctionReports
  * @property LoanVerificationLocations[] $loanVerificationLocations
@@ -133,12 +136,12 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_app_enc_id', 'applicant_name', 'phone', 'source'], 'required'],
+            [['loan_app_enc_id', 'applicant_name', 'phone', 'source', 'loan_status_updated_on'], 'required'],
             [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'gender', 'ask_guarantor_info', 'status', 'loan_status', 'auto_assigned', 'is_deleted', 'is_removed'], 'integer'],
             [['employement_type', 'degree', 'candidate_status', 'candidate_sub_status', 'source', 'status_comments', 'loan_type', 'form_type', 'lender_reasons'], 'string'],
-            [['applicant_dob', 'candidate_status_date', 'deadline', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on'], 'safe'],
-            [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship', 'amount_verified'], 'number'],
-            [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'loan_products_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'cpa', 'created_by', 'updated_by', 'lead_application_enc_id'], 'string', 'max' => 100],
+            [['applicant_dob', 'candidate_status_date', 'deadline', 'capital_roi_updated_on', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on'], 'safe'],
+            [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship', 'amount_verified', 'capital_roi'], 'number'],
+            [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'loan_products_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'capital_roi_updated_by', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'cpa', 'created_by', 'updated_by', 'lead_application_enc_id'], 'string', 'max' => 100],
             [['application_number'], 'string', 'max' => 50],
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
@@ -158,6 +161,89 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['lead_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['lead_by' => 'user_enc_id']],
             [['parent_application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['parent_application_enc_id' => 'loan_app_enc_id']],
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'loan_app_enc_id' => 'Loan App Enc ID',
+            'application_number' => 'Application Number',
+            'parent_application_enc_id' => 'Parent Application Enc ID',
+            'had_taken_addmission' => 'Had Taken Addmission',
+            'current_scheme_id' => 'Current Scheme ID',
+            'college_enc_id' => 'College Enc ID',
+            'college_course_enc_id' => 'College Course Enc ID',
+            'loan_type_enc_id' => 'Loan Type Enc ID',
+            'loan_products_enc_id' => 'Loan Products Enc ID',
+            'applicant_name' => 'Applicant Name',
+            'employement_type' => 'Employement Type',
+            'image' => 'Image',
+            'image_location' => 'Image Location',
+            'applicant_dob' => 'Applicant Dob',
+            'applicant_current_city' => 'Applicant Current City',
+            'degree' => 'Degree',
+            'years' => 'Years',
+            'months' => 'Months',
+            'semesters' => 'Semesters',
+            'phone' => 'Phone',
+            'email' => 'Email',
+            'candidate_status' => 'Candidate Status',
+            'candidate_sub_status' => 'Candidate Sub Status',
+            'candidate_status_date' => 'Candidate Status Date',
+            'cibil_score' => 'Cibil Score',
+            'gender' => 'Gender',
+            'amount' => 'Amount',
+            'yearly_income' => 'Yearly Income',
+            'amount_received' => 'Amount Received',
+            'amount_due' => 'Amount Due',
+            'scholarship' => 'Scholarship',
+            'amount_verified' => 'Amount Verified',
+            'aadhaar_number' => 'Aadhaar Number',
+            'pan_number' => 'Pan Number',
+            'voter_card_number' => 'Voter Card Number',
+            'source' => 'Source',
+            'ask_guarantor_info' => 'Ask Guarantor Info',
+            'deadline' => 'Deadline',
+            'capital_roi' => 'Capital Roi',
+            'capital_roi_updated_on' => 'Capital Roi Updated On',
+            'capital_roi_updated_by' => 'Capital Roi Updated By',
+            'intake' => 'Intake',
+            'td' => 'Td',
+            'aadhaar_link_phone_number' => 'Aadhaar Link Phone Number',
+            'managed_by_refferal' => 'Managed By Refferal',
+            'managed_by' => 'Managed By',
+            'lead_by_refferal' => 'Lead By Refferal',
+            'lead_by' => 'Lead By',
+            'cpa' => 'Cpa',
+            'created_by' => 'Created By',
+            'created_on' => 'Created On',
+            'updated_by' => 'Updated By',
+            'updated_on' => 'Updated On',
+            'lead_application_enc_id' => 'Lead Application Enc ID',
+            'status' => 'Status',
+            'status_comments' => 'Status Comments',
+            'loan_status' => 'Loan Status',
+            'loan_status_updated_on' => 'Loan Status Updated On',
+            'loan_type' => 'Loan Type',
+            'form_type' => 'Form Type',
+            'loan_purpose' => 'Loan Purpose',
+            'lender_reasons' => 'Lender Reasons',
+            'auto_assigned' => 'Auto Assigned',
+            'is_deleted' => 'Is Deleted',
+            'is_removed' => 'Is Removed',
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedLoanPayments()
+    {
+        return $this->hasMany(AssignedLoanPayments::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**
@@ -446,14 +532,6 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanDisbursementSchedules()
     {
         return $this->hasMany(LoanDisbursementSchedule::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLoanPayments()
-    {
-        return $this->hasMany(LoanPayments::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**

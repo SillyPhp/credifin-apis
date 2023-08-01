@@ -23,6 +23,7 @@ use common\models\extended\LoanApplicationPartnersExtended;
 use common\models\extended\LoanApplicationPdExtended;
 use common\models\extended\LoanApplicationReleasePaymentExtended;
 use common\models\extended\LoanApplicationTvrExtended;
+use common\models\FinancerVehicleBrand;
 use common\models\LoanApplications;
 use common\models\LoanCoApplicants;
 use common\models\LoanCertificates;
@@ -86,7 +87,7 @@ class CompanyDashboardController extends ApiBaseController
                 'branch-list' => ['POST', 'OPTIONS'],
                 'update-tvr' => ['POST', 'OPTIONS'],
                 'update-pd' => ['POST', 'OPTIONS'],
-                'update-release-payment' => ['POST', 'OPTIONS']
+                'update-release-payment' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -199,6 +200,8 @@ class CompanyDashboardController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+
+
     }
 
     // getting loan applications by loan status
@@ -741,13 +744,16 @@ class CompanyDashboardController extends ApiBaseController
             // getting loan detail
             $loan = LoanApplications::find()
                 ->alias('a')
-                ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number',
-                    'a.applicant_name', 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'lp.name as loan_product', 'a.gender', 'a.applicant_dob',
+                ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number', 'a.capital_roi', 'a.capital_roi_updated_on', 'concat(ub.first_name," ",ub.last_name) as capital_roi_updated_by',
+                    'a.applicant_name',
+                    'CASE WHEN ub.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", ub.image_location, "/", ub.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(ub.first_name," ",ub.last_name), "&size=200&rounded=false&background=", REPLACE(ub.initials_color, "#", ""), "&color=ffffff") END update_image'
+                    , 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'lp.name as loan_product', 'a.gender', 'a.applicant_dob',
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address',
                     'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",a.image_location, a.image) ELSE NULL END image',
                     '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee', 'k.access'
 //                    'lpm.payment_status as login_fee'
                 ])
+                ->joinWith(['updatedBy ub'])
                 ->joinWith(['assignedLoanProviders b'], false)
                 ->joinWith(['loanCertificates c' => function ($c) {
                     $c->select(['c.certificate_enc_id', 'c.loan_app_enc_id', 'c.short_description', 'c.certificate_type_enc_id', 'c.number', 'c1.name', 'c.proof_image', 'c.proof_image_location', 'c.created_on', 'CONCAT(c2.first_name," ",c2.last_name) created_by']);
@@ -2506,6 +2512,7 @@ class CompanyDashboardController extends ApiBaseController
 
     }
 
+//
     public function actionEmployeeLoanList()
     {
         if ($user = $this->isAuthorized()) {

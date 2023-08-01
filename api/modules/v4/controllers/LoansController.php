@@ -34,6 +34,7 @@ use common\models\ReferralSignUpTracking;
 use common\models\spaces\Spaces;
 use common\models\States;
 use common\models\Users;
+use common\models\UserTypes;
 use common\models\Utilities;
 use yii\web\UploadedFile;
 use api\modules\v4\models\LoanApplication;
@@ -71,6 +72,8 @@ class LoansController extends ApiBaseController
                 'add-verification-location' => ['POST', 'OPTIONS'],
                 'add-co-applicant' => ['POST', 'OPTIONS'],
                 'audit-trail-list' => ['POST', 'OPTIONS'],
+                'update-loan' => ['POST', 'OPTIONS'],
+                'credit-report' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -159,8 +162,45 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // updating payment status
-    public function actionUpdatePaymentStatus()
+    public function actionUpdateLoan()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (!isset($params['loan_app_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_enc_id"']);
+        }
+
+        // Validate capital_roi to be greater than 20
+        if (!isset($params['capital_roi']) || floatval($params['capital_roi']) < 20) {
+            return $this->response(422, ['status' => 422, 'message' => 'capital_roi should be greater than 20']);
+        }
+
+        $loan_update = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_app_enc_id']]);
+
+        if (is_null($loan_update->capital_roi)) {
+            $loan_update->capital_roi = $params['capital_roi'];
+        } else {
+            return $this->response(422, ['status' => 422, 'message' => 'cannot update']);
+        }
+
+        $loan_update->capital_roi_updated_on = date('Y-m-d H:i:s');
+        $loan_update->capital_roi_updated_by = $user->user_enc_id;
+
+        if (!$loan_update->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_update->getErrors()]);
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'successfully']);
+    }
+
+
+// updating payment status
+    public
+    function actionUpdatePaymentStatus()
     {
         $params = Yii::$app->request->post();
 
@@ -207,8 +247,9 @@ class LoansController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
     }
 
-    // contact us leads
-    public function actionContactUs()
+// contact us leads
+    public
+    function actionContactUs()
     {
         // getting params
         $params = Yii::$app->request->post();
@@ -232,8 +273,9 @@ class LoansController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'successfully saved', 'id' => $model->application_enc_id]);
     }
 
-    // updating payment link status
-    public function actionUpdatePaymentLinkStatus()
+// updating payment link status
+    public
+    function actionUpdatePaymentLinkStatus()
     {
         // getting request params
         $params = Yii::$app->request->post();
@@ -287,8 +329,9 @@ class LoansController extends ApiBaseController
 
     }
 
-    // saving payment status to loan payments
-    private function savePaymentStatus($payment_id, $status, $plink_id, $signature)
+// saving payment status to loan payments
+    private
+    function savePaymentStatus($payment_id, $status, $plink_id, $signature)
     {
         $loan_payment = LoanPaymentsExtends::findOne(['payment_token' => $plink_id]);
         $loan_payment->payment_status = $status;
@@ -301,8 +344,9 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // getting detail of application
-    public function actionDetail()
+// getting detail of application
+    public
+    function actionDetail()
     {
         // checking authorization
         if ($user = $this->isAuthorized()) {
@@ -340,8 +384,9 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // updating loan application
-    public function actionUpdate()
+// updating loan application
+    public
+    function actionUpdate()
     {
         $params = Yii::$app->request->post();
 
@@ -396,7 +441,8 @@ class LoansController extends ApiBaseController
         return $this->response(404, ['status' => 404, 'message' => 'loan application not found']);
     }
 
-    private function authorizeEsign()
+    private
+    function authorizeEsign()
     {
         // checking user authorization
         if ($user = $this->isAuthorized()) {
@@ -429,8 +475,9 @@ class LoansController extends ApiBaseController
         return ['status' => 401];
     }
 
-    // getting e-sign applications
-    public function actionGetEsignApplications()
+// getting e-sign applications
+    public
+    function actionGetEsignApplications()
     {
         // checking e-sign authorization
         $data = $this->authorizeEsign();
@@ -492,8 +539,9 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // getting e-sign document templates
-    private function getDocuments()
+// getting e-sign document templates
+    private
+    function getDocuments()
     {
         return EsignDocumentsTemplates::find()
             ->select(['doc_id', 'name', 'file_url'])
@@ -501,8 +549,9 @@ class LoansController extends ApiBaseController
             ->all();
     }
 
-    // getting e-sign requested agreements
-    private function getRequestAgreement($agreement_id)
+// getting e-sign requested agreements
+    private
+    function getRequestAgreement($agreement_id)
     {
         return EsignRequestedAgreements::find()
             ->alias('a')
@@ -516,8 +565,9 @@ class LoansController extends ApiBaseController
             ->all();
     }
 
-    // getting document private url
-    public function actionGetDocumentUrl()
+// getting document private url
+    public
+    function actionGetDocumentUrl()
     {
         // checking authorization
         if ($this->isAuthorized()) {
@@ -563,8 +613,9 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // this action is used to upload document
-    public function actionUploadDocument()
+// this action is used to upload document
+    public
+    function actionUploadDocument()
     {
         // checking authorization
         if ($user = $this->isAuthorized()) {
@@ -646,8 +697,9 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // getting certificate type id if not exists then save it
-    private function getCertificateTypeId($type, $assigned_to)
+// getting certificate type id if not exists then save it
+    private
+    function getCertificateTypeId($type, $assigned_to)
     {
         // getting certificate type
         $exists = CertificateTypes::findOne(['name' => $type]);
@@ -671,8 +723,9 @@ class LoansController extends ApiBaseController
         return $exists->certificate_type_enc_id;
     }
 
-    // updating application number
-    public function actionUpdateApplicationNumber()
+// updating application number
+    public
+    function actionUpdateApplicationNumber()
     {
         // checking authorization
         if ($user = $this->isAuthorized()) {
@@ -714,8 +767,9 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // this action is used to add loan branch
-    public function actionAddLoanBranch()
+// this action is used to add loan branch
+    public
+    function actionAddLoanBranch()
     {
         if ($user = $this->isAuthorized()) {
 
@@ -746,8 +800,9 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // updating loan amounts
-    public function actionUpdateLoanAmounts()
+// updating loan amounts
+    public
+    function actionUpdateLoanAmounts()
     {
         if ($user = $this->isAuthorized()) {
 
@@ -792,8 +847,9 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // this action is used to delete loan application
-    public function actionRemoveLoanApplication()
+// this action is used to delete loan application
+    public
+    function actionRemoveLoanApplication()
     {
         if ($user = $this->isAuthorized()) {
 
@@ -822,8 +878,9 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // this action is used to loan verification location
-    public function actionAddVerificationLocation()
+// this action is used to loan verification location
+    public
+    function actionAddVerificationLocation()
     {
         // checking authorization
         if ($user = $this->isAuthorized()) {
@@ -858,8 +915,9 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // this action is used to add co-applicant
-    public function actionAddCoApplicant()
+// this action is used to add co-applicant
+    public
+    function actionAddCoApplicant()
     {
         // checking authorization
         if (!$user = $this->isAuthorized()) {
@@ -901,8 +959,9 @@ class LoansController extends ApiBaseController
         return $this->response(400, ['status' => 400, 'message' => 'bad request']);
     }
 
-    // audit trail list
-    public function actionAuditTrailList()
+// audit trail list
+    public
+    function actionAuditTrailList()
     {
         if ($this->isAuthorized()) {
 
@@ -943,8 +1002,9 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // this action is used to create financer loan negative location
-    public function actionCreateFinancerLoanNegativeLocation()
+// this action is used to create financer loan negative location
+    public
+    function actionCreateFinancerLoanNegativeLocation()
     {
         // checking authorization
         if ($user = $this->isAuthorized()) {
@@ -997,8 +1057,9 @@ class LoansController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-    // getting financer loan negative locations
-    public function actionGetFinancerLoanNegativeLocation()
+// getting financer loan negative locations
+    public
+    function actionGetFinancerLoanNegativeLocation()
     {
         // checking authorization
         if ($user = $this->isAuthorized()) {
@@ -1032,8 +1093,9 @@ class LoansController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-    // update financer loan negative location
-    public function actionUpdateFinancerLoanNegativeLocation()
+// update financer loan negative location
+    public
+    function actionUpdateFinancerLoanNegativeLocation()
     {
         // checking authorization
         if ($user = $this->isAuthorized()) {
@@ -1070,7 +1132,8 @@ class LoansController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-    public function actionLoanPayments()
+    public
+    function actionLoanPayments()
     {
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -1089,7 +1152,8 @@ class LoansController extends ApiBaseController
         }
     }
 
-    public function actionCreditReport()
+    public
+    function actionCreditReport()
     {
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
