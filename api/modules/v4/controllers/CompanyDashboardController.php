@@ -1656,6 +1656,17 @@ class CompanyDashboardController extends ApiBaseController
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $shared->getErrors()]);
             }
 
+            $shared_by = $user->first_name ." ". $user->last_name;
+            $shared = Users::findOne(['user_enc_id' => $params['shared_to']]);
+            $shared_to = $shared->first_name ." ". $shared->last_name;
+
+            $loan_details = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']]);
+            $notificationBody = "Loan Account Number: $loan_details->application_number \n Applicant Name: $loan_details->applicant_name \n Loan Type: $loan_details->loan_type \n Loan Amount: $loan_details->amount";
+
+            $notificationUsers = new UserUtilities();
+            $notificationUsers->sendPushNotification([$params['shared_to']], "$shared_by shared an application with you", $notificationBody) ;
+            $notificationUsers->sendPushNotification($notificationUsers->getApplicationUserIds($params['loan_id'], $params['shared_to']), "$shared_by shared an application with $shared_to", $notificationBody);
+
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
 
         } else {

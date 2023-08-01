@@ -4,6 +4,8 @@ namespace api\modules\v4\utilities;
 
 use common\models\AssignedSupervisor;
 use common\models\Organizations;
+use common\models\PushNotifications;
+use common\models\SharedLoanApplications;
 use common\models\UserRoles;
 use yii\helpers\Url;
 use Yii;
@@ -16,6 +18,7 @@ use common\models\UserTypes;
 class UserUtilities
 {
     public $rolesArray = ['State Credit Head', 'Operations Manager', 'Product Manager'];
+
     // getting user data to return after signup/login
     public function userData($user_id, $source = null)
     {
@@ -215,4 +218,63 @@ class UserUtilities
         throw new \Exception(json_encode($token->getErrors()));
     }
 
+    public function getApplicationUserIds($loan_id, $shared_to = null)
+    {
+        $userIds = SharedLoanApplications::find()
+            ->alias('a')
+            ->select(['a.shared_to'])
+            ->joinWith(['sharedTo b'], false)
+            ->where(['a.is_deleted' => 0, 'a.loan_app_enc_id' => $loan_id]);
+            if ($shared_to) {
+                $userIds->andWhere(['not', ['a.shared_to' => $shared_to]]);
+            }
+            $userIds = $userIds->asArray()
+            ->all();
+
+        $ids = [];
+        foreach ($userIds as $key => $val) {
+            $ids[] = $val['shared_to'];
+        }
+
+        return $ids;
+    }
+
+    public function sendPushNotification($userIds, $title, $body = null)
+    {
+
+        $tokens = PushNotifications::find()
+            ->select(['token'])
+            ->where(['in', 'user_enc_id', $userIds])
+            ->andWhere(['is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+
+        $token = [];
+        foreach ($tokens as $key => $val) {
+            $token[] = $val['token'];
+        }
+
+        $url = "https://fcm.googleapis.com/fcm/send";
+        $token = $token;
+        $serverKey = 'AAAAKEwFH2k:APA91bGJz4i2IdWaBHL55yjeot0ectkOTP7b0a73RJCTIByOZxfHuaQA6KfepAb4Ck5w11UJ1BnPu8OqMgbqD2mqzGqmnSPAMWT-tpmnuGW9dT5LGBLVfvoYLHpe4KF6rZA9iss6b5zA';
+        $notification = array('title' => $title, 'body' => $body, 'sound' => 'default', 'badge' => '1',);
+        $arrayToSend = array('registration_ids' => $token, 'notification' => $notification, 'data' => ['fcm_options' => ['link' => 'http://localhost:3000/']], 'priority' => 'high');
+        $json = json_encode($arrayToSend);
+        $headers = array();
+        $headers[] = 'Content-Type: application/json';
+        $headers[] = 'Authorization: Bearer ' . $serverKey;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        //Send the request
+        $response = curl_exec($ch);
+        //Close request
+        if ($response === FALSE) {
+            die('FCM Send Error: ' . curl_error($ch));
+        }
+        curl_close($ch);
+    }
 }
