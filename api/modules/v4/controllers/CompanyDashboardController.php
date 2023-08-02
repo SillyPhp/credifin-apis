@@ -753,7 +753,7 @@ class CompanyDashboardController extends ApiBaseController
                     '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee', 'k.access'
 //                    'lpm.payment_status as login_fee'
                 ])
-                ->joinWith(['updatedBy ub'])
+                ->joinWith(['capitalRoiUpdatedBy ub'])
                 ->joinWith(['assignedLoanProviders b'], false)
                 ->joinWith(['loanCertificates c' => function ($c) {
                     $c->select(['c.certificate_enc_id', 'c.loan_app_enc_id', 'c.short_description', 'c.certificate_type_enc_id', 'c.number', 'c1.name', 'c.proof_image', 'c.proof_image_location', 'c.created_on', 'CONCAT(c2.first_name," ",c2.last_name) created_by']);

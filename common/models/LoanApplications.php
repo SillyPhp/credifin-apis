@@ -105,6 +105,7 @@ use Yii;
  * @property Users $leadBy
  * @property LoanApplications $parentApplicationEnc
  * @property LoanApplications[] $loanApplications
+ * @property Users $capitalRoiUpdatedBy
  * @property LoanApplicationsCollegePreference[] $loanApplicationsCollegePreferences
  * @property LoanAuditTrail[] $loanAuditTrails
  * @property LoanCandidateEducation[] $loanCandidateEducations
@@ -160,81 +161,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['managed_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['managed_by' => 'user_enc_id']],
             [['lead_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['lead_by' => 'user_enc_id']],
             [['parent_application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['parent_application_enc_id' => 'loan_app_enc_id']],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'loan_app_enc_id' => 'Loan App Enc ID',
-            'application_number' => 'Application Number',
-            'parent_application_enc_id' => 'Parent Application Enc ID',
-            'had_taken_addmission' => 'Had Taken Addmission',
-            'current_scheme_id' => 'Current Scheme ID',
-            'college_enc_id' => 'College Enc ID',
-            'college_course_enc_id' => 'College Course Enc ID',
-            'loan_type_enc_id' => 'Loan Type Enc ID',
-            'loan_products_enc_id' => 'Loan Products Enc ID',
-            'applicant_name' => 'Applicant Name',
-            'employement_type' => 'Employement Type',
-            'image' => 'Image',
-            'image_location' => 'Image Location',
-            'applicant_dob' => 'Applicant Dob',
-            'applicant_current_city' => 'Applicant Current City',
-            'degree' => 'Degree',
-            'years' => 'Years',
-            'months' => 'Months',
-            'semesters' => 'Semesters',
-            'phone' => 'Phone',
-            'email' => 'Email',
-            'candidate_status' => 'Candidate Status',
-            'candidate_sub_status' => 'Candidate Sub Status',
-            'candidate_status_date' => 'Candidate Status Date',
-            'cibil_score' => 'Cibil Score',
-            'gender' => 'Gender',
-            'amount' => 'Amount',
-            'yearly_income' => 'Yearly Income',
-            'amount_received' => 'Amount Received',
-            'amount_due' => 'Amount Due',
-            'scholarship' => 'Scholarship',
-            'amount_verified' => 'Amount Verified',
-            'aadhaar_number' => 'Aadhaar Number',
-            'pan_number' => 'Pan Number',
-            'voter_card_number' => 'Voter Card Number',
-            'source' => 'Source',
-            'ask_guarantor_info' => 'Ask Guarantor Info',
-            'deadline' => 'Deadline',
-            'capital_roi' => 'Capital Roi',
-            'capital_roi_updated_on' => 'Capital Roi Updated On',
-            'capital_roi_updated_by' => 'Capital Roi Updated By',
-            'intake' => 'Intake',
-            'td' => 'Td',
-            'aadhaar_link_phone_number' => 'Aadhaar Link Phone Number',
-            'managed_by_refferal' => 'Managed By Refferal',
-            'managed_by' => 'Managed By',
-            'lead_by_refferal' => 'Lead By Refferal',
-            'lead_by' => 'Lead By',
-            'cpa' => 'Cpa',
-            'created_by' => 'Created By',
-            'created_on' => 'Created On',
-            'updated_by' => 'Updated By',
-            'updated_on' => 'Updated On',
-            'lead_application_enc_id' => 'Lead Application Enc ID',
-            'status' => 'Status',
-            'status_comments' => 'Status Comments',
-            'loan_status' => 'Loan Status',
-            'loan_status_updated_on' => 'Loan Status Updated On',
-            'loan_type' => 'Loan Type',
-            'form_type' => 'Form Type',
-            'loan_purpose' => 'Loan Purpose',
-            'lender_reasons' => 'Lender Reasons',
-            'auto_assigned' => 'Auto Assigned',
-            'is_deleted' => 'Is Deleted',
-            'is_removed' => 'Is Removed',
+            [['capital_roi_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['capital_roi_updated_by' => 'user_enc_id']],
         ];
     }
 
@@ -484,6 +411,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanApplications()
     {
         return $this->hasMany(LoanApplications::className(), ['parent_application_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCapitalRoiUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'capital_roi_updated_by']);
     }
 
     /**
