@@ -9,7 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string $financer_loan_product_process_enc_id
- * @property string $financer_loan_product_enc_id
+ * @property string $financer_loan_product_login_fee_structure_enc_id
  * @property string $process
  * @property int $sequence process sequence
  * @property string $created_by created by
@@ -38,15 +38,15 @@ class FinancerLoanProductProcess extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['financer_loan_product_process_enc_id', 'financer_loan_product_enc_id', 'process', 'sequence', 'created_by'], 'required'],
+            [['financer_loan_product_process_enc_id', 'financer_loan_product_login_fee_structure_enc_id', 'process', 'sequence', 'created_by'], 'required'],
             [['sequence', 'is_deleted'], 'integer'],
             [['created_on', 'updated_on'], 'safe'],
-            [['financer_loan_product_process_enc_id', 'financer_loan_product_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['financer_loan_product_process_enc_id', 'financer_loan_product_login_fee_structure_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['process'], 'string', 'max' => 200],
             [['financer_loan_product_process_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
-            [['financer_loan_product_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProducts::className(), 'targetAttribute' => ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']],
+            [['financer_loan_product_login_fee_structure_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProducts::className(), 'targetAttribute' => ['financer_loan_product_login_fee_structure_enc_id' => 'financer_loan_product_login_fee_structure_enc_id']],
         ];
     }
 
@@ -71,6 +71,6 @@ class FinancerLoanProductProcess extends \yii\db\ActiveRecord
      */
     public function getFinancerLoanProductEnc()
     {
-        return $this->hasOne(FinancerLoanProducts::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
+        return $this->hasOne(FinancerLoanProducts::className(), ['financer_loan_product_login_fee_structure_enc_id' => 'financer_loan_product_login_fee_structure_enc_id']);
     }
 }

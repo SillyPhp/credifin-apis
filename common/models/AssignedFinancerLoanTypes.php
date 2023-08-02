@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%assigned_financer_loan_type}}".
+ * This is the model class for table "{{%assigned_financer_loan_types}}".
  *
  * @property int $id
  * @property string $assigned_financer_enc_id
@@ -18,23 +18,20 @@ use Yii;
  * @property string $updated_on
  * @property int $is_deleted 0 as false, 1 as true
  *
- * @property AssignedFinancerLoanPartners[] $assignedFinancerLoanPartners
- * @property LoanType $loanTypeEnc
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property Organizations $organizationEnc
- * @property FinancerLoanDocuments[] $financerLoanDocuments
- * @property FinancerLoanPurpose[] $financerLoanPurposes
- * @property FinancerLoanStatus[] $financerLoanStatuses
+ * @property LoanType $loanTypeEnc
+ * @property FinancerLoanProducts[] $financerLoanProducts
  */
-class AssignedFinancerLoanType extends \yii\db\ActiveRecord
+class AssignedFinancerLoanTypes extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return '{{%assigned_financer_loan_type}}';
+        return '{{%assigned_financer_loan_types}}';
     }
 
     /**
@@ -48,27 +45,11 @@ class AssignedFinancerLoanType extends \yii\db\ActiveRecord
             [['created_on', 'updated_on'], 'safe'],
             [['assigned_financer_enc_id', 'organization_enc_id', 'loan_type_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['assigned_financer_enc_id'], 'unique'],
-            [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanType::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
+            [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanType::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAssignedFinancerLoanPartners()
-    {
-        return $this->hasMany(AssignedFinancerLoanPartners::className(), ['assigned_financer_enc_id' => 'assigned_financer_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLoanTypeEnc()
-    {
-        return $this->hasOne(LoanType::className(), ['loan_type_enc_id' => 'loan_type_enc_id']);
     }
 
     /**
@@ -98,17 +79,9 @@ class AssignedFinancerLoanType extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getColumnPreferences()
+    public function getLoanTypeEnc()
     {
-        return $this->hasMany(ColumnPreferences::className(), ['loan_type_enc_id' => 'loan_type_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFinancerLoanDocuments()
-    {
-        return $this->hasMany(FinancerLoanDocuments::className(), ['assigned_financer_loan_type_id' => 'assigned_financer_enc_id']);
+        return $this->hasOne(LoanType::className(), ['loan_type_enc_id' => 'loan_type_enc_id']);
     }
 
     /**
@@ -117,21 +90,5 @@ class AssignedFinancerLoanType extends \yii\db\ActiveRecord
     public function getFinancerLoanProducts()
     {
         return $this->hasMany(FinancerLoanProducts::className(), ['assigned_financer_loan_type_enc_id' => 'assigned_financer_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFinancerLoanPurposes()
-    {
-        return $this->hasMany(FinancerLoanPurpose::className(), ['assigned_financer_loan_type_id' => 'assigned_financer_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFinancerLoanStatuses()
-    {
-        return $this->hasMany(FinancerLoanStatus::className(), ['assigned_financer_loan_type_id' => 'assigned_financer_enc_id']);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
-use common\models\AssignedFinancerLoanType;
+use common\models\AssignedFinancerLoanTypes;
 use common\models\extended\Industries;
 use common\models\LoanPayments;
 use common\models\LoanType;
@@ -54,7 +54,7 @@ class TestController extends ApiBaseController
             'Medical Loan',
             'EV Two Wheeler',
             'E-Rickshaw'];
-        $query = AssignedFinancerLoanType::find()
+        $query = AssignedFinancerLoanTypes::find()
             ->alias('a')
             ->joinWith(['loanTypeEnc b'])
             ->joinWith(['financerLoanPurposes c'])
@@ -106,7 +106,7 @@ class TestController extends ApiBaseController
                 $product = FinancerLoanProducts::findOne(['name' => $value['loan_type']]);
                 if (!empty($product)) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(LoanApplications::tableName(), ['loan_products_enc_id' => $product['financer_loan_product_enc_id']], ['loan_app_enc_id' => $value['loan_app_enc_id']])
+                        ->update(LoanApplications::tableName(), ['loan_products_enc_id' => $product['financer_loan_product_login_fee_structure_enc_id']], ['loan_app_enc_id' => $value['loan_app_enc_id']])
                         ->execute();
                     if (!$update) {
                         $transaction->rollBack();

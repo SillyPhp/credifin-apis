@@ -56,7 +56,7 @@ class FinancerRewards extends \yii\db\ActiveRecord
             [['short_description'], 'string', 'max' => 250],
             [['financer_rewards_enc_id'], 'unique'],
             [['financer_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['financer_enc_id' => 'organization_enc_id']],
-            [['loan_product_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProducts::className(), 'targetAttribute' => ['loan_product_enc_id' => 'financer_loan_product_enc_id']],
+            [['loan_product_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProducts::className(), 'targetAttribute' => ['loan_product_enc_id' => 'financer_loan_product_login_fee_structure_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
         ];
@@ -76,7 +76,7 @@ class FinancerRewards extends \yii\db\ActiveRecord
      */
     public function getLoanProductEnc()
     {
-        return $this->hasOne(FinancerLoanProducts::className(), ['financer_loan_product_enc_id' => 'loan_product_enc_id']);
+        return $this->hasOne(FinancerLoanProducts::className(), ['financer_loan_product_login_fee_structure_enc_id' => 'loan_product_enc_id']);
     }
 
     /**

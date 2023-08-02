@@ -148,7 +148,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['college_course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeCourses::className(), 'targetAttribute' => ['college_course_enc_id' => 'college_course_enc_id']],
             [['lead_application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LeadsApplications::className(), 'targetAttribute' => ['lead_application_enc_id' => 'application_enc_id']],
             [['cpa'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['cpa' => 'user_enc_id']],
-            [['loan_products_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProducts::className(), 'targetAttribute' => ['loan_products_enc_id' => 'financer_loan_product_enc_id']],
+            [['loan_products_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProducts::className(), 'targetAttribute' => ['loan_products_enc_id' => 'financer_loan_product_login_fee_structure_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanTypes::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
@@ -325,7 +325,7 @@ class LoanApplications extends \yii\db\ActiveRecord
      */
     public function getLoanProductsEnc()
     {
-        return $this->hasOne(FinancerLoanProducts::className(), ['financer_loan_product_enc_id' => 'loan_products_enc_id']);
+        return $this->hasOne(FinancerLoanProducts::className(), ['financer_loan_product_login_fee_structure_enc_id' => 'loan_products_enc_id']);
     }
 
     /**
