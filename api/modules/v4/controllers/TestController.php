@@ -106,7 +106,7 @@ class TestController extends ApiBaseController
                 $product = FinancerLoanProducts::findOne(['name' => $value['loan_type']]);
                 if (!empty($product)) {
                     $update = Yii::$app->db->createCommand()
-                        ->update(LoanApplications::tableName(), ['loan_products_enc_id' => $product['financer_loan_product_login_fee_structure_enc_id']], ['loan_app_enc_id' => $value['loan_app_enc_id']])
+                        ->update(LoanApplications::tableName(), ['loan_products_enc_id' => $product['financer_loan_product_enc_id']], ['loan_app_enc_id' => $value['loan_app_enc_id']])
                         ->execute();
                     if (!$update) {
                         $transaction->rollBack();

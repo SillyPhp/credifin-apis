@@ -98,7 +98,7 @@ class PaymentsController extends ApiBaseController
             $amount = 0;
             $amount_enc_ids = $model->amount;
             foreach ($amount_enc_ids as $value) {
-                $nodues = FinancerLoanProductLoginFeeStructure::findOne(['financer_loan_product_no_dues_enc_id' => $value])['amount'];
+                $nodues = FinancerLoanProductLoginFeeStructure::findOne(['financer_loan_product_login_fee_structure_enc_id' => $value])['amount'];
                 if (!empty($nodues)) {
                     $amount += (float)$nodues;
                 }

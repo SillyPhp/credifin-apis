@@ -56,7 +56,7 @@ class Payments
     private function createPaymentDetails($amount, $loan_payment_id, $user_id)
     {
         foreach ($amount as $value) {
-            $nodues = FinancerLoanProductLoginFeeStructure::findOne(['financer_loan_product_no_dues_enc_id' => $value]);
+            $nodues = FinancerLoanProductLoginFeeStructure::findOne(['financer_loan_product_login_fee_structure_enc_id' => $value]);
             if (!$nodues) {
                 return false;
             }

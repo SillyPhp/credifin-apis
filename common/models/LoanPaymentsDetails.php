@@ -46,7 +46,7 @@ class LoanPaymentsDetails extends \yii\db\ActiveRecord
             [['loan_payments_details_enc_id'], 'unique'],
             [['loan_payments_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanPayments::className(), 'targetAttribute' => ['loan_payments_enc_id' => 'loan_payments_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
-            [['loan_no_dues_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProductNoDues::className(), 'targetAttribute' => ['loan_no_dues_enc_id' => 'financer_loan_product_no_dues_enc_id']],
+            [['loan_no_dues_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProductNoDues::className(), 'targetAttribute' => ['loan_no_dues_enc_id' => 'financer_loan_product_login_fee_structure_enc_id']],
         ];
     }
 
@@ -67,7 +67,7 @@ class LoanPaymentsDetails extends \yii\db\ActiveRecord
      */
     public function getLoanNoDuesEnc()
     {
-        return $this->hasOne(FinancerLoanProductNoDues::className(), ['financer_loan_product_no_dues_enc_id' => 'loan_no_dues_enc_id']);
+        return $this->hasOne(FinancerLoanProductNoDues::className(), ['financer_loan_product_login_fee_structure_enc_id' => 'loan_no_dues_enc_id']);
     }
 
     /**

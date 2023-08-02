@@ -308,12 +308,12 @@ class LoanApplication extends Model
     private function getLoanType($loan_id){
         $loan_type = FinancerLoanProducts::find()
             ->alias('a')
-            ->select(['a.assigned_financer_loan_type_enc_id', 'a.financer_loan_product_login_fee_structure_enc_id', 'b.assigned_financer_enc_id',
+            ->select(['a.assigned_financer_loan_type_enc_id', 'a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id',
                 'b.loan_type_enc_id', 'c.loan_type_enc_id', 'c.name'])
             ->joinWith(['assignedFinancerLoanTypeEnc b' => function ($b) {
                 $b->joinWith(['loanTypeEnc c'], false);
             }], false)
-            ->where(['a.financer_loan_product_login_fee_structure_enc_id' => $loan_id])
+            ->where(['a.financer_loan_product_enc_id' => $loan_id])
             ->asArray()
             ->one();
 

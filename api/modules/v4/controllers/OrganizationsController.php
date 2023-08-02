@@ -419,10 +419,10 @@ class OrganizationsController extends ApiBaseController
             }
             $certificates = FinancerLoanProducts::find()
                 ->alias('a')
-                ->select(['b.assigned_financer_enc_id', 'b.organization_enc_id', 'a.financer_loan_product_login_fee_structure_enc_id', 'a.name loan'])
+                ->select(['b.assigned_financer_enc_id', 'b.organization_enc_id', 'a.financer_loan_product_enc_id', 'a.name loan'])
                 ->joinWith(['assignedFinancerLoanTypeEnc b'], false)
                 ->innerJoinWith(['financerLoanProductDocuments c' => function ($c) {
-                    $c->select(['c.financer_loan_product_document_enc_id', 'c.financer_loan_product_login_fee_structure_enc_id', 'c.certificate_type_enc_id', 'c.sequence', 'c1.name certificate_name']);
+                    $c->select(['c.financer_loan_product_document_enc_id', 'c.financer_loan_product_enc_id', 'c.certificate_type_enc_id', 'c.sequence', 'c1.name certificate_name']);
                     $c->joinWith(['certificateTypeEnc c1'], false);
                     $c->orderBy(['c.sequence' => SORT_ASC]);
                     $c->onCondition(['c.is_deleted' => 0]);
@@ -430,7 +430,7 @@ class OrganizationsController extends ApiBaseController
                 ->where(['b.organization_enc_id' => $lender
                     , 'b.is_deleted' => 0, 'a.is_deleted' => 0
                 ])
-                ->groupBy(['a.financer_loan_product_login_fee_structure_enc_id'])
+                ->groupBy(['a.financer_loan_product_enc_id'])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
                 ->all();
@@ -810,16 +810,16 @@ class OrganizationsController extends ApiBaseController
 
             $loan_status = FinancerLoanProducts::find()
                 ->alias('a')
-                ->select(['b.assigned_financer_enc_id', 'b.organization_enc_id', 'a.financer_loan_product_login_fee_structure_enc_id', 'a.name loan'])
+                ->select(['b.assigned_financer_enc_id', 'b.organization_enc_id', 'a.financer_loan_product_enc_id', 'a.name loan'])
                 ->joinWith(['assignedFinancerLoanTypeEnc b'])
                 ->innerJoinWith(['financerLoanProductStatuses c' => function ($c) {
-                    $c->select(['c.financer_loan_product_status_enc_id', 'c.financer_loan_product_login_fee_structure_enc_id', 'c1.loan_status_enc_id', 'c1.loan_status name', 'c1.value', 'c1.sequence']);
+                    $c->select(['c.financer_loan_product_status_enc_id', 'c.financer_loan_product_enc_id', 'c1.loan_status_enc_id', 'c1.loan_status name', 'c1.value', 'c1.sequence']);
                     $c->joinWith(['loanStatusEnc c1']);
                     $c->onCondition(['c.is_deleted' => 0]);
                     $c->orderBy(['c1.sequence' => SORT_ASC]);
                 }])
                 ->where(['b.organization_enc_id' => $lender])
-                ->groupBy(['a.financer_loan_product_login_fee_structure_enc_id'])
+                ->groupBy(['a.financer_loan_product_enc_id'])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
                 ->all();
@@ -970,8 +970,8 @@ class OrganizationsController extends ApiBaseController
 
         $params = Yii::$app->request->post();
 
-        if (isset($params['financer_loan_product_login_fee_structure_enc_id'])) {
-            $product = FinancerLoanProducts::findOne(['financer_loan_product_login_fee_structure_enc_id' => $params['financer_loan_product_login_fee_structure_enc_id']]);
+        if (isset($params['financer_loan_product_enc_id'])) {
+            $product = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $params['financer_loan_product_enc_id']]);
             if (!$product) {
                 return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
             }
@@ -987,7 +987,7 @@ class OrganizationsController extends ApiBaseController
             $product = new FinancerLoanProducts();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(10, 100000);
-            $product->financer_loan_product_login_fee_structure_enc_id = $utilitiesModel->encrypt();
+            $product->financer_loan_product_enc_id = $utilitiesModel->encrypt();
             $product->created_by = $user->user_enc_id;
             $product->created_on = date('Y-m-d H:i:s');
             $save = 'save';
@@ -1021,7 +1021,7 @@ class OrganizationsController extends ApiBaseController
             }
             $loan_products = FinancerLoanProducts::find()
                 ->alias('a')
-                ->select(['a.financer_loan_product_login_fee_structure_enc_id', 'b.assigned_financer_enc_id', 'b.organization_enc_id', 'b.loan_type_enc_id', 'b1.name loan', 'a.name'])
+                ->select(['a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id', 'b.organization_enc_id', 'b.loan_type_enc_id', 'b1.name loan', 'a.name'])
                 ->joinWith(['assignedFinancerLoanTypeEnc b' => function ($b) use ($lender) {
                     $b->joinWith(['loanTypeEnc b1'], false);
                     $b->andWhere([
@@ -1029,15 +1029,15 @@ class OrganizationsController extends ApiBaseController
                         'b.is_deleted' => 0]);
                 }], false)
                 ->joinWith(['financerLoanProductPurposes c' => function ($c) {
-                    $c->select(['c.financer_loan_product_purpose_enc_id', 'c.financer_loan_product_login_fee_structure_enc_id', 'c.sequence', 'c.purpose']);
+                    $c->select(['c.financer_loan_product_purpose_enc_id', 'c.financer_loan_product_enc_id', 'c.sequence', 'c.purpose']);
                     $c->orderBy(['c.sequence' => SORT_ASC]);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
                 ->joinWith(['financerLoanProductLoginFeeStructures d' => function ($d) {
-                    $d->select(['d.financer_loan_product_no_dues_enc_id', 'd.financer_loan_product_login_fee_structure_enc_id', 'd.name', 'd.amount']);
+                    $d->select(['d.financer_loan_product_login_fee_structure_enc_id', 'd.financer_loan_product_enc_id', 'd.name', 'd.amount']);
                     $d->onCondition(['d.is_deleted' => 0]);
                 }])
-                ->groupBy(['a.financer_loan_product_login_fee_structure_enc_id'])
+                ->groupBy(['a.financer_loan_product_enc_id'])
                 ->where(['a.is_deleted' => 0])
                 ->asArray()
                 ->all();
@@ -1056,12 +1056,12 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
-            if (empty($params['financer_loan_product_login_fee_structure_enc_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "financer_loan_product_login_fee_structure_enc_id"']);
+            if (empty($params['financer_loan_product_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "financer_loan_product_enc_id"']);
             }
 
             $product = FinancerLoanProducts::findOne([
-                'financer_loan_product_login_fee_structure_enc_id' => $params['financer_loan_product_login_fee_structure_enc_id'],
+                'financer_loan_product_enc_id' => $params['financer_loan_product_enc_id'],
                 'is_deleted' => 0
             ]);
 
@@ -1086,26 +1086,26 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
             $lender = $this->getFinancerId($user);
-            if (empty($params['financer_loan_product_login_fee_structure_enc_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "financer_loan_product_login_fee_structure_enc_id"']);
+            if (empty($params['financer_loan_product_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "financer_loan_product_enc_id"']);
             }
             $details = FinancerLoanProducts::find()
                 ->alias('a')
-                ->select(['a.financer_loan_product_login_fee_structure_enc_id', 'a.name product_name', 'e1.name loan_type_name', 'a.assigned_financer_loan_type_enc_id'])
+                ->select(['a.financer_loan_product_enc_id', 'a.name product_name', 'e1.name loan_type_name', 'a.assigned_financer_loan_type_enc_id'])
                 ->joinWith(['financerLoanProductPurposes b' => function ($b) {
-                    $b->select(['b.financer_loan_product_purpose_enc_id', 'b.financer_loan_product_login_fee_structure_enc_id', 'b.purpose', 'b.sequence']);
+                    $b->select(['b.financer_loan_product_purpose_enc_id', 'b.financer_loan_product_enc_id', 'b.purpose', 'b.sequence']);
                     $b->orderBy(['b.sequence' => SORT_ASC]);
                     $b->onCondition(['b.is_deleted' => 0]);
                 }])
                 ->joinWith(['financerLoanProductDocuments c' => function ($c) {
-                    $c->select(['c.financer_loan_product_document_enc_id', 'c.financer_loan_product_login_fee_structure_enc_id', 'c.certificate_type_enc_id',
+                    $c->select(['c.financer_loan_product_document_enc_id', 'c.financer_loan_product_enc_id', 'c.certificate_type_enc_id',
                         'c.sequence', 'ct.name name']);
                     $c->joinWith(['certificateTypeEnc ct'], false);
                     $c->orderBy(['c.sequence' => SORT_ASC]);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
                 ->joinWith(['financerLoanProductStatuses d' => function ($d) {
-                    $d->select(['d.financer_loan_product_status_enc_id', 'd.financer_loan_product_login_fee_structure_enc_id', 'd1.loan_status_enc_id', 'd1.loan_status name',
+                    $d->select(['d.financer_loan_product_status_enc_id', 'd.financer_loan_product_enc_id', 'd1.loan_status_enc_id', 'd1.loan_status name',
                         'd1.value', 'd1.sequence']);
                     $d->joinWith(['loanStatusEnc d1'], false);
                     $d->onCondition(['d.is_deleted' => 0]);
@@ -1116,15 +1116,15 @@ class OrganizationsController extends ApiBaseController
                     $e->joinWith(['loanTypeEnc e1'], false);
                 }], false)
                 ->joinWith(['financerLoanProductProcesses f' => function ($f) {
-                    $f->select(['f.financer_loan_product_process_enc_id', 'f.financer_loan_product_login_fee_structure_enc_id', 'f.process', 'f.sequence']);
+                    $f->select(['f.financer_loan_product_process_enc_id', 'f.financer_loan_product_enc_id', 'f.process', 'f.sequence']);
                     $f->orderBy(['f.sequence' => SORT_ASC]);
                     $f->onCondition(['f.is_deleted' => 0]);
                 }])
                 ->joinWith(['financerLoanProductLoginFeeStructures g' => function ($g) {
-                    $g->select(['g.financer_loan_product_no_dues_enc_id', 'g.financer_loan_product_login_fee_structure_enc_id', 'g.name', 'g.amount']);
+                    $g->select(['g.financer_loan_product_login_fee_structure_enc_id', 'g.financer_loan_product_enc_id', 'g.name', 'g.amount']);
                     $g->onCondition(['g.is_deleted' => 0]);
                 }])
-                ->onCondition(['a.financer_loan_product_login_fee_structure_enc_id' => $params['financer_loan_product_login_fee_structure_enc_id'], 'a.is_deleted' => 0])
+                ->onCondition(['a.financer_loan_product_enc_id' => $params['financer_loan_product_enc_id'], 'a.is_deleted' => 0])
                 ->where(['a.is_deleted' => 0])
                 ->asArray()
                 ->one();
@@ -1145,11 +1145,11 @@ class OrganizationsController extends ApiBaseController
             if (empty($params['loan_purpose'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_purpose"']);
             }
-            if (empty($params['financer_loan_product_login_fee_structure_enc_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "financer_loan_product_login_fee_structure_enc_id"']);
+            if (empty($params['financer_loan_product_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "financer_loan_product_enc_id"']);
             }
             $transaction = Yii::$app->db->beginTransaction();
-            $data['financer_loan_product_login_fee_structure_enc_id'] = $params['financer_loan_product_login_fee_structure_enc_id'];
+            $data['financer_loan_product_enc_id'] = $params['financer_loan_product_enc_id'];
             $data['user_enc_id'] = $user->user_enc_id;
             try {
                 foreach ($params['loan_purpose'] as $key => $value) {
@@ -1232,11 +1232,11 @@ class OrganizationsController extends ApiBaseController
             if (empty($params['certificate_types'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "certificate_types"']);
             }
-            if (empty($params['financer_loan_product_login_fee_structure_enc_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "financer_loan_product_login_fee_structure_enc_id"']);
+            if (empty($params['financer_loan_product_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "financer_loan_product_enc_id"']);
             }
             $transaction = Yii::$app->db->beginTransaction();
-            $data['financer_loan_product_login_fee_structure_enc_id'] = $params['financer_loan_product_login_fee_structure_enc_id'];
+            $data['financer_loan_product_enc_id'] = $params['financer_loan_product_enc_id'];
             $data['user_enc_id'] = $user->user_enc_id;
             try {
                 foreach ($params['certificate_types'] as $key => $val) {
@@ -1244,7 +1244,7 @@ class OrganizationsController extends ApiBaseController
                     if (isset($val['certificate_type_enc_id'])) {
                         $document = FinancerLoanProductDocuments::findOne([
                             'certificate_type_enc_id' => $val['certificate_type_enc_id'],
-                            'financer_loan_product_login_fee_structure_enc_id' => $data['financer_loan_product_login_fee_structure_enc_id'],
+                            'financer_loan_product_enc_id' => $data['financer_loan_product_enc_id'],
                             'is_deleted' => 0
                         ]);
                         if ($document) {
@@ -1338,12 +1338,12 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
-            if (empty($params['financer_loan_product_login_fee_structure_enc_id']) || empty($params['loan_status'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "financer_loan_product_login_fee_structure_enc_id" or "loan_status"']);
+            if (empty($params['financer_loan_product_enc_id']) || empty($params['loan_status'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "financer_loan_product_enc_id" or "loan_status"']);
             }
 
             $transaction = Yii::$app->db->beginTransaction();
-            $data['financer_loan_product_login_fee_structure_enc_id'] = $params['financer_loan_product_login_fee_structure_enc_id'];
+            $data['financer_loan_product_enc_id'] = $params['financer_loan_product_enc_id'];
             $data['user_enc_id'] = $user->user_enc_id;
             try {
                 foreach ($params['loan_status'] as $key => $val) {
@@ -1426,11 +1426,11 @@ class OrganizationsController extends ApiBaseController
             if (empty($params['loan_process'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_process"']);
             }
-            if (empty($params['financer_loan_product_login_fee_structure_enc_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "financer_loan_product_login_fee_structure_enc_id"']);
+            if (empty($params['financer_loan_product_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "financer_loan_product_enc_id"']);
             }
             $transaction = Yii::$app->db->beginTransaction();
-            $data['financer_loan_product_login_fee_structure_enc_id'] = $params['financer_loan_product_login_fee_structure_enc_id'];
+            $data['financer_loan_product_enc_id'] = $params['financer_loan_product_enc_id'];
             $data['user_enc_id'] = $user->user_enc_id;
             try {
                 foreach ($params['loan_process'] as $key => $value) {
@@ -1512,7 +1512,7 @@ class OrganizationsController extends ApiBaseController
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         $loan_status->financer_loan_product_status_enc_id = $utilitiesModel->encrypt();
-        $loan_status->financer_loan_product_login_fee_structure_enc_id = $data['financer_loan_product_login_fee_structure_enc_id'];
+        $loan_status->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
         $loan_status->loan_status_enc_id = $data['loan_status_enc_id'];
         $loan_status->created_by = $data['user_enc_id'];
         $loan_status->created_on = date('Y-m-d H:i:s');
@@ -1529,7 +1529,7 @@ class OrganizationsController extends ApiBaseController
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         $loan_document->financer_loan_product_document_enc_id = $utilitiesModel->encrypt();
-        $loan_document->financer_loan_product_login_fee_structure_enc_id = $data['financer_loan_product_login_fee_structure_enc_id'];
+        $loan_document->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
         $loan_document->certificate_type_enc_id = $data['certificate_id'];
         $loan_document->sequence = $data['key'];
         $loan_document->created_by = $data['user_enc_id'];
@@ -1547,7 +1547,7 @@ class OrganizationsController extends ApiBaseController
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         $purpose->financer_loan_product_purpose_enc_id = $utilitiesModel->encrypt();
-        $purpose->financer_loan_product_login_fee_structure_enc_id = $data['financer_loan_product_login_fee_structure_enc_id'];
+        $purpose->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
         $purpose->purpose = $data['purpose'];
         $purpose->sequence = $data['key'];
         $purpose->created_on = date('Y-m-d H:i:s');
@@ -1565,7 +1565,7 @@ class OrganizationsController extends ApiBaseController
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         $process->financer_loan_product_process_enc_id = $utilitiesModel->encrypt();
-        $process->financer_loan_product_login_fee_structure_enc_id = $data['financer_loan_product_login_fee_structure_enc_id'];
+        $process->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
         $process->process = $data['process'];
         $process->sequence = $data['key'];
         $process->created_on = date('Y-m-d H:i:s');
@@ -1742,19 +1742,19 @@ class OrganizationsController extends ApiBaseController
             if (empty($params['product_no_dues'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "product_no_dues"']);
             }
-            if (empty($params['financer_loan_product_login_fee_structure_enc_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "financer_loan_product_login_fee_structure_enc_id"']);
+            if (empty($params['financer_loan_product_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "financer_loan_product_enc_id"']);
             }
             $transaction = Yii::$app->db->beginTransaction();
-            $data['financer_loan_product_login_fee_structure_enc_id'] = $params['financer_loan_product_login_fee_structure_enc_id'];
+            $data['financer_loan_product_enc_id'] = $params['financer_loan_product_enc_id'];
             $data['user_enc_id'] = $user->user_enc_id;
             try {
                 foreach ($params['product_no_dues'] as $key => $value) {
                     $data['name'] = $value['name'];
                     $data['amount'] = $value['amount'];
-                    if (!empty($value['financer_loan_product_no_dues_enc_id'])) {
+                    if (!empty($value['financer_loan_product_login_fee_structure_enc_id'])) {
                         $fees = FinancerLoanProductLoginFeeStructure::findOne([
-                            'financer_loan_product_no_dues_enc_id' => $value['financer_loan_product_no_dues_enc_id'],
+                            'financer_loan_product_login_fee_structure_enc_id' => $value['financer_loan_product_login_fee_structure_enc_id'],
                             'is_deleted' => 0
                         ]);
                         if ($fees) {
@@ -1796,12 +1796,12 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
-            if (empty($params['financer_loan_product_no_dues_enc_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "financer_loan_product_no_dues_enc_id"']);
+            if (empty($params['financer_loan_product_login_fee_structure_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "financer_loan_product_login_fee_structure_enc_id"']);
             }
 
             $fees = FinancerLoanProductLoginFeeStructure::findOne([
-                'financer_loan_product_no_dues_enc_id' => $params['financer_loan_product_no_dues_enc_id'],
+                'financer_loan_product_login_fee_structure_enc_id' => $params['financer_loan_product_login_fee_structure_enc_id'],
                 'is_deleted' => 0
             ]);
 
@@ -1825,8 +1825,8 @@ class OrganizationsController extends ApiBaseController
         $fees = new FinancerLoanProductLoginFeeStructure();
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
-        $fees->financer_loan_product_no_dues_enc_id = $utilitiesModel->encrypt();
-        $fees->financer_loan_product_login_fee_structure_enc_id = $data['financer_loan_product_login_fee_structure_enc_id'];
+        $fees->financer_loan_product_login_fee_structure_enc_id = $utilitiesModel->encrypt();
+        $fees->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
         $fees->name = $data['name'];
         $fees->amount = $data['amount'];
         $fees->created_on = date('Y-m-d H:i:s');
