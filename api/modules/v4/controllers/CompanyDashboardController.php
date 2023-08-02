@@ -7,7 +7,7 @@ use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\SignupForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedDeals;
-use common\models\AssignedFinancerLoanType;
+use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
 use common\models\ClaimedDeals;
@@ -1520,7 +1520,7 @@ class CompanyDashboardController extends ApiBaseController
         if ($detail) {
 
             // getting financer loan types
-            $detail['assignedFinancerLoanTypes'] = AssignedFinancerLoanType::find()
+            $detail['assignedFinancerLoanTypes'] = AssignedFinancerLoanTypes::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name loan_type'])
                 ->joinWith(['loanTypeEnc b'], false)

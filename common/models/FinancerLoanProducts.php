@@ -22,7 +22,7 @@ use Yii;
  * @property FinancerLoanProductProcess[] $financerLoanProductProcesses
  * @property FinancerLoanProductPurpose[] $financerLoanProductPurposes
  * @property FinancerLoanProductStatus[] $financerLoanProductStatuses
- * @property AssignedFinancerLoanType $assignedFinancerLoanTypeEnc
+ * @property AssignedFinancerLoanTypes $assignedFinancerLoanTypeEnc
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property FinancerRewards[] $financerRewards
@@ -49,7 +49,7 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
             [['is_deleted'], 'integer'],
             [['financer_loan_product_enc_id', 'assigned_financer_loan_type_enc_id', 'name', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['financer_loan_product_enc_id'], 'unique'],
-            [['assigned_financer_loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedFinancerLoanType::className(), 'targetAttribute' => ['assigned_financer_loan_type_enc_id' => 'assigned_financer_enc_id']],
+            [['assigned_financer_loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedFinancerLoanTypes::className(), 'targetAttribute' => ['assigned_financer_loan_type_enc_id' => 'assigned_financer_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
         ];
@@ -100,7 +100,7 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
      */
     public function getAssignedFinancerLoanTypeEnc()
     {
-        return $this->hasOne(AssignedFinancerLoanType::className(), ['assigned_financer_enc_id' => 'assigned_financer_loan_type_enc_id']);
+        return $this->hasOne(AssignedFinancerLoanTypes::className(), ['assigned_financer_enc_id' => 'assigned_financer_loan_type_enc_id']);
     }
 
     /**
