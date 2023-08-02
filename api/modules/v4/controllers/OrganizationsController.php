@@ -8,7 +8,7 @@ use common\models\EmiCollection;
 use common\models\FinancerLoanProductDocuments;
 use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
-use common\models\AssignedFinancerLoanTypes;
+use common\models\AssignedFinancerLoanType;
 use common\models\CertificateTypes;
 use common\models\FinancerLoanDocuments;
 use common\models\FinancerLoanProductStatus;
@@ -232,7 +232,7 @@ class OrganizationsController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
 
-            $assignedLoanTypes = AssignedFinancerLoanTypes::find()
+            $assignedLoanTypes = AssignedFinancerLoanType::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'a.status', 'b.name'])
                 ->joinWith(['loanTypeEnc b'], false)
@@ -274,7 +274,7 @@ class OrganizationsController extends ApiBaseController
             }
 
 
-            $assignedType = AssignedFinancerLoanTypes::findOne(['organization_enc_id' => $user->organization_enc_id, 'loan_type_enc_id' => $params['loan_type_enc_id'], 'is_deleted' => 0]);
+            $assignedType = AssignedFinancerLoanType::findOne(['organization_enc_id' => $user->organization_enc_id, 'loan_type_enc_id' => $params['loan_type_enc_id'], 'is_deleted' => 0]);
 
             if ($assignedType) {
                 $assignedType->status = $params['status'] == 'Active' ? 1 : 0;
@@ -284,7 +284,7 @@ class OrganizationsController extends ApiBaseController
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $assignedType->getErrors()]);
                 }
             } else {
-                $assignedType = new AssignedFinancerLoanTypes();
+                $assignedType = new AssignedFinancerLoanType();
                 $assignedType->assigned_financer_enc_id = Yii::$app->security->generateRandomString(32);
                 $assignedType->organization_enc_id = $user->organization_enc_id;
                 $assignedType->loan_type_enc_id = $params['loan_type_enc_id'];
@@ -308,7 +308,7 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $provider_id = $this->getFinancerId($user);
 
-            $assignedLoanTypes = AssignedFinancerLoanTypes::find()
+            $assignedLoanTypes = AssignedFinancerLoanType::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name'])
                 ->joinWith(['loanTypeEnc b'], false)
@@ -414,7 +414,7 @@ class OrganizationsController extends ApiBaseController
             if (!$lender) {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
-            $certificates = AssignedFinancerLoanTypes::find()
+            $certificates = AssignedFinancerLoanType::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
                 ->joinWith(['loanTypeEnc lt'], false)
@@ -603,7 +603,7 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
 
-            $purpose = AssignedFinancerLoanTypes::find()
+            $purpose = AssignedFinancerLoanType::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
                 ->joinWith(['loanTypeEnc lt'], false)
@@ -804,7 +804,7 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(404, ['status' => 404, 'message' => 'lender not found']);
             }
 
-            $loan_status = AssignedFinancerLoanTypes::find()
+            $loan_status = AssignedFinancerLoanType::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
                 ->joinWith(['loanTypeEnc lt'], false)
@@ -1016,7 +1016,7 @@ class OrganizationsController extends ApiBaseController
             if (empty($lender)) {
                 return $this->response(422, ['status' => 422, 'message' => 'Organization not found']);
             }
-            $loan_products = AssignedFinancerLoanTypes::find()
+            $loan_products = AssignedFinancerLoanType::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan', 'a.is_deleted', 'flp.name', 'flp.financer_loan_product_enc_id', 'flp.assigned_financer_loan_type_enc_id'])
                 ->innerJoinWith(['financerLoanProducts flp'], false)

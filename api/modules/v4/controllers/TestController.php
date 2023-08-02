@@ -2,7 +2,7 @@
 
 namespace api\modules\v4\controllers;
 
-use common\models\AssignedFinancerLoanTypes;
+use common\models\AssignedFinancerLoanType;
 use common\models\extended\Industries;
 use common\models\LoanPayments;
 use common\models\LoanType;
@@ -54,7 +54,7 @@ class TestController extends ApiBaseController
             'Medical Loan',
             'EV Two Wheeler',
             'E-Rickshaw'];
-        $query = AssignedFinancerLoanTypes::find()
+        $query = AssignedFinancerLoanType::find()
             ->alias('a')
             ->joinWith(['loanTypeEnc b'])
             ->joinWith(['financerLoanPurposes c'])

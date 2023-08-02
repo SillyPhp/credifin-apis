@@ -22,7 +22,7 @@ use Yii;
  * @property Users $loanPartnerEnc
  * @property Users $createdBy
  * @property Users $updatedBy
- * @property AssignedFinancerLoanTypes $assignedFinancerEnc
+ * @property AssignedFinancerLoanType $assignedFinancerEnc
  */
 class AssignedFinancerLoanPartners extends \yii\db\ActiveRecord
 {
@@ -50,7 +50,7 @@ class AssignedFinancerLoanPartners extends \yii\db\ActiveRecord
             [['loan_partner_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['loan_partner_enc_id' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
-            [['assigned_financer_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedFinancerLoanTypes::className(), 'targetAttribute' => ['assigned_financer_enc_id' => 'assigned_financer_enc_id']],
+            [['assigned_financer_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedFinancerLoanType::className(), 'targetAttribute' => ['assigned_financer_enc_id' => 'assigned_financer_enc_id']],
         ];
     }
 
@@ -83,6 +83,6 @@ class AssignedFinancerLoanPartners extends \yii\db\ActiveRecord
      */
     public function getAssignedFinancerEnc()
     {
-        return $this->hasOne(AssignedFinancerLoanTypes::className(), ['assigned_financer_enc_id' => 'assigned_financer_enc_id']);
+        return $this->hasOne(AssignedFinancerLoanType::className(), ['assigned_financer_enc_id' => 'assigned_financer_enc_id']);
     }
 }

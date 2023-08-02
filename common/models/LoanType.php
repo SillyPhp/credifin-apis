@@ -17,7 +17,7 @@ use Yii;
  * @property string $created_by
  * @property int $is_deleted 0 as false, 1 as true
  *
- * @property AssignedFinancerLoanTypes[] $assignedFinancerLoanTypes
+ * @property AssignedFinancerLoanType[] $assignedFinancerLoanTypes
  * @property Users $createdBy
  */
 class LoanType extends \yii\db\ActiveRecord
@@ -53,7 +53,7 @@ class LoanType extends \yii\db\ActiveRecord
      */
     public function getAssignedFinancerLoanTypes()
     {
-        return $this->hasMany(AssignedFinancerLoanTypes::className(), ['loan_type_enc_id' => 'loan_type_enc_id']);
+        return $this->hasMany(AssignedFinancerLoanType::className(), ['loan_type_enc_id' => 'loan_type_enc_id']);
     }
 
     /**

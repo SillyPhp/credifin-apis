@@ -27,7 +27,7 @@ use Yii;
  * @property FinancerLoanPurpose[] $financerLoanPurposes
  * @property FinancerLoanStatus[] $financerLoanStatuses
  */
-class AssignedFinancerLoanTypes extends \yii\db\ActiveRecord
+class AssignedFinancerLoanType extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
