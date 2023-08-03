@@ -113,7 +113,7 @@ class UserUtilities
     }
 
     // getting user type Financer, DSA, Connector, Employee, Dealer
-    private function getUserType($user_id)
+    public static function getUserType($user_id)
     {
         // getting user object
         $user = Users::findOne(['user_enc_id' => $user_id]);
@@ -213,6 +213,22 @@ class UserUtilities
         }
 
         throw new \Exception(json_encode($token->getErrors()));
+    }
+
+    // to search key in a vast array
+    public static function array_search_key($needle_key, $array)
+    {
+        foreach ($array as $key => $value) {
+            if ($key === $needle_key) {
+                return $value;
+            }
+            if (is_array($value)) {
+                if (($result = self::array_search_key($needle_key, $value)) !== false) {
+                    return $result;
+                }
+            }
+        }
+        return false;
     }
 
 }

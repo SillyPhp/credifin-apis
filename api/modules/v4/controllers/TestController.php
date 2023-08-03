@@ -2,12 +2,22 @@
 
 namespace api\modules\v4\controllers;
 
+use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
+use common\models\CreditLoanApplicationReports;
 use common\models\extended\Industries;
+use common\models\FinancerLoanDocuments;
+use common\models\FinancerLoanProductDocuments;
+use common\models\FinancerLoanProductPurpose;
+use common\models\FinancerLoanProductStatus;
+use common\models\FinancerLoanPurpose;
+use common\models\FinancerLoanStatus;
 use common\models\LoanPayments;
 use common\models\LoanType;
 use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
+use common\models\LoanTypes1;
+use common\models\States;
 use yii\filters\VerbFilter;
 use Yii;
 use yii\filters\Cors;
@@ -17,16 +27,14 @@ class TestController extends ApiBaseController
 {
     public function behaviors()
     {
-        $model = explode("\\", Industries::className());
         $behaviors = parent::behaviors();
-
-        $behaviors['verbs'] = [
-            'class' => VerbFilter::className(),
-            'actions' => [
-//                'data-check-old' => ['POST', 'OPTIONS'],
-//                'data-check-new' => ['POST', 'OPTIONS']
-            ]
-        ];
+//        $behaviors['verbs'] = [
+//            'class' => VerbFilter::className(),
+//            'actions' => [
+//                'product-data-shift-new' => ['POST', 'OPTIONS'],
+////                'data-check-new' => ['POST', 'OPTIONS']
+//            ]
+//        ];
 
         $behaviors['corsFilter'] = [
             'class' => Cors::className(),
@@ -38,6 +46,122 @@ class TestController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    public function actionProductDataShiftNew()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return 'unauthorised';
+        }
+        $products = ['Loan Against Property',
+            'Two Wheeler',
+            'Four Wheeler',
+            'Consumer Durable Loan',
+            'School Fee Loan',
+            'Medical Loan',
+            'EV Two Wheeler',
+            'E-Rickshaw'];
+
+        $old_purpose = FinancerLoanPurpose::find()
+            ->alias('a')
+            ->select(['a.financer_loan_purpose_enc_id', 'a.assigned_financer_loan_type_id', 'a.purpose', 'a.sequence', 'a.created_by', 'a.created_on', 'a.updated_by', 'a.updated_on', 'a.is_deleted', 'b1.name loan_type'])
+            ->joinWith(['assignedFinancerLoanType b' => function ($b) {
+                $b->joinWith(['loanTypeEnc b1'], false);
+            }], false)
+            ->andWhere(['in', 'b1.name', $products])
+            ->asArray()
+            ->all();
+        $transaction = Yii::$app->db->beginTransaction();
+
+        foreach ($old_purpose as $item => $value) {
+            $product_check = FinancerLoanProducts::findOne(['name' => $value['loan_type']]);
+            if ($product_check) {
+                $new_purpose = new FinancerLoanProductPurpose();
+                $new_purpose->financer_loan_product_purpose_enc_id = $value['financer_loan_purpose_enc_id'];
+                $new_purpose->financer_loan_product_enc_id = $product_check['financer_loan_product_enc_id'];
+                $new_purpose->purpose = $value['purpose'];
+                $new_purpose->sequence = $value['sequence'];
+                $new_purpose->created_by = $value['created_by'];
+                $new_purpose->created_on = $value['created_on'];
+                $new_purpose->updated_by = $value['updated_by'];
+                $new_purpose->updated_on = $value['updated_on'];
+                $new_purpose->is_deleted = $value['is_deleted'];
+                if (!$new_purpose->save()) {
+                    $transaction->rollBack();
+                    return ['status' => 500, 'message' => 'an error occurred', 'error' => $new_purpose->getErrors()];
+                }
+            }
+        }
+
+        $old_status = FinancerLoanStatus::find()
+            ->alias('a')
+            ->select(['a.financer_loan_status_enc_id', 'a.assigned_financer_loan_type_id', 'a.loan_status_enc_id', 'a.created_by', 'a.created_on', 'a.updated_by', 'a.updated_on', 'a.is_deleted', 'b1.name loan_type'])
+            ->joinWith(['assignedFinancerLoanType b' => function ($b) {
+                $b->joinWith(['loanTypeEnc b1'], false);
+            }], false)
+            ->andWhere(['in', 'b1.name', $products])
+            ->asArray()
+            ->all();
+
+        foreach ($old_status as $key => $value) {
+            $status_product_id = FinancerLoanProducts::findOne(['name' => $value['loan_type']]);
+
+            if (!empty($status_product_id)) {
+                $new_status = new FinancerLoanProductStatus();
+                $new_status->financer_loan_product_status_enc_id = $value['financer_loan_status_enc_id'];
+                $new_status->financer_loan_product_enc_id = $status_product_id['financer_loan_product_enc_id'];
+                $new_status->loan_status_enc_id = $value['loan_status_enc_id'];
+                $new_status->created_by = $value['created_by'];
+                $new_status->created_on = $value['created_on'];
+                $new_status->updated_by = $value['updated_by'];
+                $new_status->updated_on = $value['updated_on'];
+                $new_status->is_deleted = $value['is_deleted'];
+                if (!$new_status->save()) {
+                    $transaction->rollBack();
+                    return ['status' => 500, 'message' => 'an error occurred', 'error' => $new_status->getErrors()];
+                }
+            } else {
+                $transaction->rollBack();
+                return 'error while shifting status';
+            }
+        }
+
+        $old_documents = FinancerLoanDocuments::find()
+            ->alias('a')
+            ->select(['a.financer_loan_document_enc_id', 'a.assigned_financer_loan_type_id', 'a.certificate_type_enc_id', 'a.sequence', 'a.created_by', 'a.created_on', 'a.updated_by', 'a.updated_on', 'a.is_deleted', 'b1.name loan_type'])
+            ->joinWith(['assignedFinancerLoanType b' => function ($b) {
+                $b->joinWith(['loanTypeEnc b1'], false);
+            }], false)
+            ->andWhere(['in', 'b1.name', $products])
+            ->asArray()
+            ->all();
+        foreach ($old_documents as $key => $value) {
+            $document_product_id = FinancerLoanProducts::findOne(['name' => $value['loan_type']]);
+            if (!empty($document_product_id)) {
+                $new_document = new FinancerLoanProductDocuments();
+                $new_document->financer_loan_product_document_enc_id = $value['financer_loan_document_enc_id'];
+                $new_document->financer_loan_product_enc_id = $document_product_id['financer_loan_product_enc_id'];
+                $new_document->certificate_type_enc_id = $value['certificate_type_enc_id'];
+                $new_document->sequence = $value['sequence'];
+                $new_document->created_by = $value['created_by'];
+                $new_document->created_on = $value['created_on'];
+                $new_document->updated_by = $value['updated_by'];
+                $new_document->updated_on = $value['updated_on'];
+                $new_document->is_deleted = $value['is_deleted'];
+                if (!$new_document->save()) {
+                    $transaction->rollBack();
+                    return ['status' => 500, 'message' => 'an error occurred', 'error' => $new_document->getErrors()];
+                }
+            } else {
+                $transaction->rollBack();
+                return 'error while shifting document';
+            }
+        }
+
+        $transaction->commit();
+        return 'Shifted Data Successfully';
+
+
     }
 
 
@@ -257,10 +381,9 @@ class TestController extends ApiBaseController
 
     public function actionTestinghaibhai()
     {
-//        return 1;
-        if (!$user = $this->isAuthorized()) {
-            return 'unauthorized';
-        }
+//        if (!$user = $this->isAuthorized()) {
+//            return 'unauthorized';
+//        }
         $data = '[
             {"value": "01", "loan_type": "Auto Loan (Personal)"},
             {"value": "02", "loan_type": "Housing Loan"},
@@ -315,34 +438,18 @@ class TestController extends ApiBaseController
         $data = json_decode($data, true);
         $transaction = Yii::$app->db->beginTransaction();
         try {
-
             foreach ($data as $val) {
-                $query = LoanType::find()
-                    ->select(['loan_type_enc_id', 'value', 'name'])
-                    ->andWhere(['or', ['value' => $val['value']], ['name' => $val['loan_type']]])
-                    ->asArray()
-                    ->one();
-                if ($query && ($val['value'] != $query['value'] || $val['loan_type'] != $query['name'])) {
-                    $update = Yii::$app->db->createCommand()
-                        ->update(LoanType::tableName(), ['value' => $val['value'], 'name' => $val['loan_type']], ['loan_type_enc_id' => $query['loan_type_enc_id']])
-                        ->execute();
-                    if ($update != 1) {
-                        $transaction->rollBack();
-                        return 'Update error';
-                    }
-                } else {
-                    $new = new LoanType();
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $new->loan_type_enc_id = $utilitiesModel->encrypt();
-                    $new->name = $val['loan_type'];
-                    $new->value = $val['value'];
-                    $new->created_by = $user->user_enc_id;
-                    $new->created_on = date('Y-m-d H:i:s');
-                    $save = $new->save();
-                    if (!$save) {
-                        return 'Save error';
-                    }
+                $new = new LoanTypes1();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $new->loan_type_enc_id = $utilitiesModel->encrypt();
+                $new->name = $val['loan_type'];
+                $new->value = $val['value'];
+                $new->created_by = '7B0P3kNEldvG6k9rJmvvQm14wrJXbj';
+                $new->created_on = date('Y-m-d H:i:s');
+                $save = $new->save();
+                if (!$save) {
+                    return 'Save error';
                 }
             }
             $transaction->commit();
