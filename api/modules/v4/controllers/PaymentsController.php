@@ -4,7 +4,6 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\PaymentModel;
 use common\models\extended\Organizations;
-use common\models\extended\Payments;
 use common\models\FinancerLoanProductLoginFeeStructure;
 use common\models\LoanPayments;
 use Razorpay\Api\Api;
@@ -98,12 +97,11 @@ class PaymentsController extends ApiBaseController
             $amount = 0;
             $amount_enc_ids = $model->amount;
             foreach ($amount_enc_ids as $value) {
-                $nodues = FinancerLoanProductLoginFeeStructure::findOne(['financer_loan_product_no_dues_enc_id' => $value])['amount'];
+                $nodues = FinancerLoanProductLoginFeeStructure::findOne(['financer_loan_product_login_fee_structure_enc_id' => $value])['amount'];
                 if (!empty($nodues)) {
                     $amount += (float)$nodues;
                 }
             }
-            $model = new Payments();
             $options = [];
             $options['org_id'] = $user->organization_enc_id;
             $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
@@ -119,16 +117,15 @@ class PaymentsController extends ApiBaseController
             $options['user_id'] = $user->user_enc_id;
             $options['amount'] = $amount;
             $options['amount_enc_ids'] = $amount_enc_ids;
-            $options['description'] = $params['desc'];
-            if (empty($options['brand'])) {
-                $org_name = Organizations::findOne(['organization_enc_id' => $user->organization_enc_id])['name'];
-                $options['brand'] = $org_name;
-            } else {
-                $options['brand'] = $params['brand'];
+            $options['description'] = 'Login fee for loan application';
+            $org_name = Organizations::findOne(['organization_enc_id' => $user->organization_enc_id])['name'];
+            if (empty($org_name)) {
+
             }
+            $options['brand'] = $org_name;
             $options['contact'] = $params['phone'];
             $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
-            $options['purpose'] = $params['purpose'];
+            $options['purpose'] = 'Testing';
 
             $res['qr'] = $this->existRazorCheck($options['loan_app_enc_id'], 1);
             if (!$res['qr']) {
