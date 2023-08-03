@@ -3,16 +3,14 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
+use common\models\AssignedFinancerLoanType;
 use common\models\AssignedLoanProvider;
+use common\models\CertificateTypes;
 use common\models\EmiCollection;
+use common\models\FinancerLoanDocuments;
 use common\models\FinancerLoanProductDocuments;
-use common\models\FinancerLoanProductLoginFeeStructure;
-use common\models\FinancerLoanProductProcess;
 use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
-use common\models\AssignedFinancerLoanTypes;
-use common\models\CertificateTypes;
-use common\models\FinancerLoanDocuments;
 use common\models\FinancerLoanProductStatus;
 use common\models\FinancerLoanPurpose;
 use common\models\FinancerLoanStatus;
@@ -21,17 +19,15 @@ use common\models\LoanStatus;
 use common\models\LoanType;
 use common\models\OrganizationLocations;
 use common\models\spaces\Spaces;
-use common\models\UserAccessTokens;
 use common\models\UserRoles;
 use common\models\UserTypes;
-use yii\web\UploadedFile;
-use yii\db\Expression;
 use common\models\Utilities;
-use yii\filters\VerbFilter;
 use Yii;
+use yii\db\Expression;
 use yii\filters\Cors;
+use yii\filters\VerbFilter;
 use yii\helpers\Url;
-use yii\filters\ContentNegotiator;
+use yii\web\UploadedFile;
 
 
 class OrganizationsController extends ApiBaseController
@@ -73,6 +69,7 @@ class OrganizationsController extends ApiBaseController
                 'update-notice' => ['POST', 'OPTIONS'],
                 'update-loan-product-process' => ['POST', 'OPTIONS'],
                 'update-loan-product-fees' => ['POST', 'OPTIONS'],
+                'financer-loan-status-list' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -1583,14 +1580,16 @@ class OrganizationsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-        if (!$user->organization_enc_id) {
+        if (!$org = $user->organization_enc_id) {
             $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
-            if (!$findOrg['organization_enc_id']) {
+            if (!$org = $findOrg['organization_enc_id']) {
                 return $this->response(500, ['status' => 500, 'message' => 'Organization not found']);
             }
         }
+        $transaction = Yii::$app->db->beginTransaction();
         try {
             $model = new EmiCollectionForm();
+            $model->org_id = $org;
             if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
                 return $this->response(422, ['status' => 422, 'message' => \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)]);
             }
@@ -1598,11 +1597,9 @@ class OrganizationsController extends ApiBaseController
             $model->borrower_image = UploadedFile::getInstance($model, 'borrower_image');
             $model->pr_receipt_image = UploadedFile::getInstance($model, 'pr_receipt_image');
             $save = $model->save($user->user_enc_id);
-            if ($save['status'] == 500) {
-                return $this->response(500, $save);
-            } else {
-                return $this->response(200, $save);
-            }
+            $save['status'] == 200 ? $transaction->commit() : $transaction->rollBack();
+            return $this->response($save['status'], $save);
+
         } catch (\Exception $exception) {
             return [
                 'message' => $exception->getMessage(),

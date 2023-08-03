@@ -4,13 +4,12 @@ namespace api\modules\v4\utilities;
 
 use common\models\AssignedSupervisor;
 use common\models\Organizations;
-use common\models\UserRoles;
-use yii\helpers\Url;
-use Yii;
 use common\models\SelectedServices;
 use common\models\UserAccessTokens;
+use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
+use Yii;
 
 // this class is used to get user related data
 class UserUtilities
@@ -92,7 +91,7 @@ class UserUtilities
 
             if ($source != null) {
                 $token = $this->findToken($user_id, $source);
-                $token = empty($token) ? $this->generateNewToken($user_id, $source) : $token;
+                $token = !empty($token) ? $this->getToken($token) : $this->generateNewToken($user_id, $source);
                 $user['access_token'] = $token->access_token;
                 $user['source'] = $token->source;
                 $user['refresh_token'] = $token->refresh_token;
@@ -213,6 +212,22 @@ class UserUtilities
         }
 
         throw new \Exception(json_encode($token->getErrors()));
+    }
+
+    // to search key in a vast array
+    public static function array_search_key($needle_key, $array)
+    {
+        foreach ($array as $key => $value) {
+            if ($key === $needle_key) {
+                return $value;
+            }
+            if (is_array($value)) {
+                if (($result = self::array_search_key($needle_key, $value)) !== false) {
+                    return $result;
+                }
+            }
+        }
+        return false;
     }
 
 }
