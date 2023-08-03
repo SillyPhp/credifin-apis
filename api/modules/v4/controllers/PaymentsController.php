@@ -98,59 +98,58 @@ class PaymentsController extends ApiBaseController
             $amount = 0;
             $amount_enc_ids = $model->amount;
             foreach ($amount_enc_ids as $value) {
-                $nodues = FinancerLoanProductLoginFeeStructure::findOne(['financer_loan_product_login_fee_structure_enc_id' => $value])['amount'];
+                $nodues = FinancerLoanProductLoginFeeStructure::findOne(['financer_loan_product_no_dues_enc_id' => $value])['amount'];
                 if (!empty($nodues)) {
                     $amount += (float)$nodues;
                 }
             }
-            $res['amount'] = number_format($amount, 2);
             $model = new Payments();
             $options = [];
             $options['org_id'] = $user->organization_enc_id;
             $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
-            if (!$keys){
-                return false;
+            if (!$keys) {
+                return ['status' => 500, 'message' => 'an error occurred while fetching razorpay credentials'];
             }
             $api_key = $keys['api_key'];
             $api_secret = $keys['api_secret'];
             $api = new Api($api_key, $api_secret);
+
             $options['name'] = $params['name'];
-            $options['loan_app_id'] = $params['loan_app_id'];
+            $options['loan_app_enc_id'] = $params['loan_app_id'];
             $options['user_id'] = $user->user_enc_id;
             $options['amount'] = $amount;
             $options['amount_enc_ids'] = $amount_enc_ids;
-            $options['total'] = (int)($amount * 100);
             $options['description'] = $params['desc'];
-            $options['brand'] = $params['brand'];
             if (empty($options['brand'])) {
                 $org_name = Organizations::findOne(['organization_enc_id' => $user->organization_enc_id])['name'];
                 $options['brand'] = $org_name;
+            } else {
+                $options['brand'] = $params['brand'];
             }
             $options['contact'] = $params['phone'];
-            $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack."/payment/transaction";
-
+            $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
             $options['purpose'] = $params['purpose'];
 
-            $res['qr'] = $this->existRazorCheck($options['loan_app_id'], 1);
+            $res['qr'] = $this->existRazorCheck($options['loan_app_enc_id'], 1);
             if (!$res['qr']) {
                 $options['close_by'] = time() + 24 * 60 * 60;
-                $qr = $model->createQr($api, $options);
-                if ($qr['status'] != 200) {
+                $qr = \common\models\payments\Payments::createQr($api, $options);
+                if (!$qr) {
                     $transaction->rollback();
-                    return $this->response($qr['status'], $qr);
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }
-                $res['qr'] = $qr['surl'];
+                $res['qr'] = $qr;
             }
-            $res['link'] = $this->existRazorCheck($options['loan_app_id']);
+            $res['link'] = $this->existRazorCheck($options['loan_app_enc_id']);
             if (!$res['link']) {
                 $options['close_by'] = time() + 24 * 60 * 60 * 7;
-                $link = $model->createLink($api, $options);
-                if ($link['status'] != 200) {
+                $link = \common\models\payments\Payments::createLink($api, $options);
+                if (!$link) {
                     $transaction->rollback();
-                    return $this->response($link['status'], $link);
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }
-                $res['amount'] = number_format($link['amount'], 2);
-                $res ['link'] = $link['surl'];
+//                $res['amount'] = number_format($link['amount'], 2);
+                $res ['link'] = $link;
             }
             $transaction->commit();
             return $this->response(200, ['status' => 200, 'data' => $res]);
@@ -167,7 +166,8 @@ class PaymentsController extends ApiBaseController
         $query = LoanPayments::find()
             ->alias('a')
             ->select(['a.payment_short_url surl'])
-            ->where(['a.loan_app_enc_id' => $loan_id])
+            ->joinWith(['assignedLoanPayments b'], false)
+            ->where(['b.loan_app_enc_id' => $loan_id])
             ->andWhere(['and',
                 ['or',
                     ['!=', 'a.payment_short_url', null],
@@ -176,6 +176,7 @@ class PaymentsController extends ApiBaseController
                 ['or',
                     ['!=', 'a.payment_status', 'captured'],
                     ['!=', 'a.payment_status', 'created'],
+                    ['!=', 'a.payment_status', 'cancelled'],
                     ['a.payment_status' => null],
                     ['a.payment_status' => ''],
                 ],
