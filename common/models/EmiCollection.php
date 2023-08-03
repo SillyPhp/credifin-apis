@@ -14,35 +14,35 @@ use Yii;
  * @property string $collection_date Collection Date
  * @property string $loan_account_number Loan Account Number
  * @property string $phone Phone Number
- * @property float $amount Amount
+ * @property double $amount Amount
  * @property string $loan_type Loan Type
- * @property string|null $loan_purpose Loan Purpose
- * @property string|null $payment_method Payment Method
- * @property string|null $other_payment_method Other Payment Method
- * @property float|null $ptp_amount Ptp Amount
- * @property string|null $ptp_date Ptp Date
- * @property string|null $delay_reason Delay Reason
- * @property string|null $other_delay_reason Other Delay Reason
- * @property string|null $borrower_image Borrower Image
- * @property string|null $borrower_image_location Borrower Image Location
- * @property string|null $pr_receipt_image Pr Receipt
- * @property string|null $pr_receipt_image_location Pr Receipt Location
- * @property string|null $other_doc_image Other Document Image
- * @property string|null $other_doc_image_location Other Document Image Location
- * @property string|null $address Address
- * @property string|null $pincode Pincode
- * @property float|null $latitude Location Latitude
- * @property float|null $longitude Location Longitude
- * @property string|null $comments Comments
+ * @property string $loan_purpose Loan Purpose
+ * @property string $payment_method Payment Method
+ * @property string $other_payment_method Other Payment Method
+ * @property double $ptp_amount Ptp Amount
+ * @property string $ptp_date Ptp Date
+ * @property string $delay_reason Delay Reason
+ * @property string $other_delay_reason Other Delay Reason
+ * @property string $borrower_image Borrower Image
+ * @property string $borrower_image_location Borrower Image Location
+ * @property string $pr_receipt_image Pr Receipt
+ * @property string $pr_receipt_image_location Pr Receipt Location
+ * @property string $other_doc_image Other Document Image
+ * @property string $other_doc_image_location Other Document Image Location
+ * @property string $address Address
+ * @property string $pincode Pincode
+ * @property double $latitude Location Latitude
+ * @property double $longitude Location Longitude
+ * @property string $comments Comments
  * @property string $created_by Created By
  * @property string $created_on Created On
- * @property string|null $updated_by Updated By
- * @property string|null $updated_on Updated On
+ * @property string $updated_by Updated By
+ * @property string $updated_on Updated On
  * @property int $is_deleted Is Deleted
  *
- * @property OrganizationLocations $branchEnc
  * @property Users $createdBy
  * @property Users $updatedBy
+ * @property OrganizationLocations $branchEnc
  */
 class EmiCollection extends \yii\db\ActiveRecord
 {
@@ -60,7 +60,7 @@ class EmiCollection extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'collection_date', 'loan_account_number', 'phone', 'amount', 'loan_type', 'created_by', 'created_on'], 'required'],
+            [['emi_collection_enc_id', 'branch_enc_id', 'customer_name', 'collection_date', 'phone', 'amount', 'loan_type', 'created_by', 'created_on'], 'required'],
             [['collection_date', 'ptp_date', 'created_on', 'updated_on'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['address', 'comments'], 'string'],
@@ -78,18 +78,6 @@ class EmiCollection extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[BranchEnc]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getBranchEnc()
-    {
-        return $this->hasOne(OrganizationLocations::className(), ['location_enc_id' => 'branch_enc_id']);
-    }
-
-    /**
-     * Gets query for [[CreatedBy]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getCreatedBy()
@@ -98,12 +86,18 @@ class EmiCollection extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[UpdatedBy]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBranchEnc()
+    {
+        return $this->hasOne(OrganizationLocations::className(), ['location_enc_id' => 'branch_enc_id']);
     }
 }
