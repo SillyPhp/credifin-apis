@@ -17,15 +17,16 @@ use common\models\EsignOrganizationTracking;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\LoanApplicationCommentsExtended;
 use common\models\extended\LoanApplicationNotificationsExtended;
-use common\models\extended\SharedLoanApplicationsExtended;
-use common\models\FinancerAssignedDesignations;
 use common\models\extended\LoanApplicationPartnersExtended;
 use common\models\extended\LoanApplicationPdExtended;
 use common\models\extended\LoanApplicationReleasePaymentExtended;
 use common\models\extended\LoanApplicationTvrExtended;
+use common\models\extended\SharedLoanApplicationsExtended;
+use common\models\FinancerAssignedDesignations;
+use common\models\FinancerVehicleBrand;
 use common\models\LoanApplications;
-use common\models\LoanCoApplicants;
 use common\models\LoanCertificates;
+use common\models\LoanCoApplicants;
 use common\models\LoanSanctionReports;
 use common\models\LoanType;
 use common\models\OrganizationLocations;
@@ -34,18 +35,17 @@ use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
 use common\models\SharedLoanApplications;
+use common\models\spaces\Spaces;
 use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
-use yii\web\UploadedFile;
-use yii\db\Expression;
 use common\models\Utilities;
-use yii\filters\VerbFilter;
 use Yii;
-use common\models\spaces\Spaces;
+use yii\db\Expression;
 use yii\filters\Cors;
+use yii\filters\VerbFilter;
 use yii\helpers\Url;
-use yii\filters\ContentNegotiator;
+use yii\web\UploadedFile;
 
 class CompanyDashboardController extends ApiBaseController
 {
@@ -86,7 +86,10 @@ class CompanyDashboardController extends ApiBaseController
                 'branch-list' => ['POST', 'OPTIONS'],
                 'update-tvr' => ['POST', 'OPTIONS'],
                 'update-pd' => ['POST', 'OPTIONS'],
-                'update-release-payment' => ['POST', 'OPTIONS']
+                'update-release-payment' => ['POST', 'OPTIONS'],
+                'financer-vehicle-brand' => ['POST', 'OPTIONS'],
+                'get-financer-vehicle-brand' => ['POST', 'OPTIONS'],
+                'delete-financer-vehicle-brand' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -751,13 +754,16 @@ class CompanyDashboardController extends ApiBaseController
             // getting loan detail
             $loan = LoanApplications::find()
                 ->alias('a')
-                ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number',
-                    'a.applicant_name', 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'lp.name as loan_product', 'a.gender', 'a.applicant_dob',
+                ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number', 'a.capital_roi', 'a.capital_roi_updated_on', 'concat(ub.first_name," ",ub.last_name) as capital_roi_updated_by',
+                    'a.applicant_name',
+                    'CASE WHEN ub.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", ub.image_location, "/", ub.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(ub.first_name," ",ub.last_name), "&size=200&rounded=false&background=", REPLACE(ub.initials_color, "#", ""), "&color=ffffff") END update_image'
+                    , 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'lp.name as loan_product', 'a.gender', 'a.applicant_dob',
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address',
                     'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",a.image_location, a.image) ELSE NULL END image',
                     '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee', 'k.access'
 //                    'lpm.payment_status as login_fee'
                 ])
+                ->joinWith(['capitalRoiUpdatedBy ub'])
                 ->joinWith(['assignedLoanProviders b'], false)
                 ->joinWith(['loanCertificates c' => function ($c) {
                     $c->select(['c.certificate_enc_id', 'c.loan_app_enc_id', 'c.short_description', 'c.certificate_type_enc_id', 'c.number', 'c1.name', 'c.proof_image', 'c.proof_image_location', 'c.created_on', 'CONCAT(c2.first_name," ",c2.last_name) created_by']);
@@ -3011,4 +3017,103 @@ class CompanyDashboardController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'message' => $save . 'd successfully']);
     }
+
+    public function actionFinancerVehicleBrand()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $brand_name = Yii::$app->request->post('brand_name');
+            $org_id = Yii::$app->request->post('organization_enc_id');
+
+            $logoModel = new FinancerVehicleBrand();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $logoModel->financer_vehicle_brand_enc_id = $utilitiesModel->encrypt();
+            $logoModel->brand_name = $brand_name;
+            $logoModel->organization_enc_id = $org_id;
+            $logoModel->created_by = $user->user_enc_id;
+            $logoModel->created_on = date('Y-m-d H:i:s');
+
+            if ($logo_image = UploadedFile::getInstanceByName('logo_image')) {
+                $logo = Yii::$app->getSecurity()->generateRandomString() . '.' . $logo_image->extension;
+                $logo_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->vehicle_brands->logo . $logo_location;
+
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $result = $my_space->uploadFileSources($logo_image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $logo, "public", ['params' => ['contentType' => $logo_image->type]]);
+
+                $logoModel->logo = $logo;
+                $logoModel->logo_location = $logo_location;
+            }
+
+            if (!$logoModel->save()) {
+                $transaction->rollback();
+                return $this->response(500, ['status' => 500, 'message' => 'An error occurred while saving the vehicle data.', 'error' => $logoModel->getErrors()]);
+            }
+
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'brand_name' => $brand_name]);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return ['status' => 500, 'message' => 'An error occurred', 'error' => json_decode($exception->getMessage(), true)];
+        }
+    }
+
+
+    public function actionGetFinancerVehicleBrand()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $financerList = FinancerVehicleBrand::find()
+            ->alias('a')
+            ->select([
+                'a.financer_vehicle_brand_enc_id',
+                'a.brand_name',
+                'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->vehicle_brands->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'
+            ])
+            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
+            ->asArray()
+            ->all();
+
+        if ($financerList) {
+            return $this->response(200, ['status' => 200, 'financer_list' => $financerList]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'Not found']);
+    }
+
+    public function actionDeleteFinancerVehicleBrand()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+
+        // checking id exists or not
+        if (empty($params['financer_vehicle_brand_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "financer_vehicle_brand_enc_id"']);
+        }
+
+        $vehicle_enc_id = FinancerVehicleBrand::findOne(['financer_vehicle_brand_enc_id' => $params['financer_vehicle_brand_enc_id']]);
+
+        if (!empty($vehicle_enc_id)) {
+            $vehicle_enc_id->is_deleted = 1;
+            $vehicle_enc_id->updated_by = $user->user_enc_id;
+            $vehicle_enc_id->updated_on = date('Y-m-d H:i:s');
+            if (!$vehicle_enc_id->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $vehicle_enc_id->getErrors()]);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
 }
