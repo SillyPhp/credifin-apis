@@ -3,10 +3,12 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\BusinessLoanApplication;
-use api\modules\v4\models\CoApplicantFrom;
+use api\modules\v4\models\CoApplicantForm;
+use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedLoanProvider;
 use common\models\BillDetails;
 use common\models\CertificateTypes;
+use common\models\CreditLoanApplicationReports;
 use common\models\EsignAgreementDetails;
 use common\models\EsignDocumentsTemplates;
 use common\models\EsignRequestedAgreements;
@@ -30,7 +32,9 @@ use common\models\LoanVerificationLocations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\spaces\Spaces;
+use common\models\States;
 use common\models\Users;
+use common\models\UserTypes;
 use common\models\Utilities;
 use yii\web\UploadedFile;
 use api\modules\v4\models\LoanApplication;
@@ -68,6 +72,8 @@ class LoansController extends ApiBaseController
                 'add-verification-location' => ['POST', 'OPTIONS'],
                 'add-co-applicant' => ['POST', 'OPTIONS'],
                 'audit-trail-list' => ['POST', 'OPTIONS'],
+                'update-loan' => ['POST', 'OPTIONS'],
+                'credit-report' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -156,7 +162,43 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // updating payment status
+    public function actionUpdateLoan()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (!isset($params['loan_app_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_enc_id"']);
+        }
+
+        // Validate capital_roi to be greater than 20
+        if (!isset($params['capital_roi']) || floatval($params['capital_roi']) < 20) {
+            return $this->response(422, ['status' => 422, 'message' => 'capital_roi should be greater than 20']);
+        }
+
+        $loan_update = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_app_enc_id']]);
+
+        if (is_null($loan_update->capital_roi)) {
+            $loan_update->capital_roi = $params['capital_roi'];
+        } else {
+            return $this->response(422, ['status' => 422, 'message' => 'cannot update']);
+        }
+
+        $loan_update->capital_roi_updated_on = date('Y-m-d H:i:s');
+        $loan_update->capital_roi_updated_by = $user->user_enc_id;
+
+        if (!$loan_update->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_update->getErrors()]);
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'successfully']);
+    }
+
+
+// updating payment status
     public function actionUpdatePaymentStatus()
     {
         $params = Yii::$app->request->post();
@@ -204,7 +246,7 @@ class LoansController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
     }
 
-    // contact us leads
+// contact us leads
     public function actionContactUs()
     {
         // getting params
@@ -229,7 +271,7 @@ class LoansController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'successfully saved', 'id' => $model->application_enc_id]);
     }
 
-    // updating payment link status
+// updating payment link status
     public function actionUpdatePaymentLinkStatus()
     {
         // getting request params
@@ -284,7 +326,7 @@ class LoansController extends ApiBaseController
 
     }
 
-    // saving payment status to loan payments
+// saving payment status to loan payments
     private function savePaymentStatus($payment_id, $status, $plink_id, $signature)
     {
         $loan_payment = LoanPaymentsExtends::findOne(['payment_token' => $plink_id]);
@@ -298,7 +340,7 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // getting detail of application
+// getting detail of application
     public function actionDetail()
     {
         // checking authorization
@@ -337,7 +379,7 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // updating loan application
+// updating loan application
     public function actionUpdate()
     {
         $params = Yii::$app->request->post();
@@ -426,7 +468,7 @@ class LoansController extends ApiBaseController
         return ['status' => 401];
     }
 
-    // getting e-sign applications
+// getting e-sign applications
     public function actionGetEsignApplications()
     {
         // checking e-sign authorization
@@ -489,7 +531,7 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // getting e-sign document templates
+// getting e-sign document templates
     private function getDocuments()
     {
         return EsignDocumentsTemplates::find()
@@ -498,7 +540,7 @@ class LoansController extends ApiBaseController
             ->all();
     }
 
-    // getting e-sign requested agreements
+// getting e-sign requested agreements
     private function getRequestAgreement($agreement_id)
     {
         return EsignRequestedAgreements::find()
@@ -513,7 +555,7 @@ class LoansController extends ApiBaseController
             ->all();
     }
 
-    // getting document private url
+// getting document private url
     public function actionGetDocumentUrl()
     {
         // checking authorization
@@ -560,7 +602,7 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // this action is used to upload document
+// this action is used to upload document
     public function actionUploadDocument()
     {
         // checking authorization
@@ -643,7 +685,7 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // getting certificate type id if not exists then save it
+// getting certificate type id if not exists then save it
     private function getCertificateTypeId($type, $assigned_to)
     {
         // getting certificate type
@@ -668,7 +710,7 @@ class LoansController extends ApiBaseController
         return $exists->certificate_type_enc_id;
     }
 
-    // updating application number
+// updating application number
     public function actionUpdateApplicationNumber()
     {
         // checking authorization
@@ -711,7 +753,7 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // this action is used to add loan branch
+// this action is used to add loan branch
     public function actionAddLoanBranch()
     {
         if ($user = $this->isAuthorized()) {
@@ -743,7 +785,7 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // updating loan amounts
+// updating loan amounts
     public function actionUpdateLoanAmounts()
     {
         if ($user = $this->isAuthorized()) {
@@ -789,7 +831,7 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // this action is used to delete loan application
+// this action is used to delete loan application
     public function actionRemoveLoanApplication()
     {
         if ($user = $this->isAuthorized()) {
@@ -819,7 +861,7 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // this action is used to loan verification location
+// this action is used to loan verification location
     public function actionAddVerificationLocation()
     {
         // checking authorization
@@ -855,57 +897,50 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // this action is used to add co-applicant
+// this action is used to add co-applicant
     public function actionAddCoApplicant()
     {
         // checking authorization
-        if ($user = $this->isAuthorized()) {
-
-            $params = Yii::$app->request->post();
-
-            // checking loan_id
-            if (empty($params['loan_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
-            }
-
-            // creating co applicant form object
-            $model = new CoApplicantFrom();
-
-            // loading data to model
-            if ($model->load(Yii::$app->request->post(), '')) {
-
-                // validating model
-                if ($model->validate()) {
-
-                    // if not empty loan_co_app_enc_id updating co-applicant
-                    if (!empty($params['loan_co_app_enc_id'])) {
-                        $co_applicant = $model->update($params['loan_co_app_enc_id'], $user->user_enc_id);
-                    } else {
-                        // saving co-applicant
-                        $co_applicant = $model->save($params['loan_id'], $user->user_enc_id);
-                    }
-
-                    // if status 500 returning 500
-                    if ($co_applicant['status'] == 500) {
-                        return $this->response(500, $co_applicant);
-                    }
-
-                    return $this->response(200, $co_applicant);
-                } else {
-                    // validation errors
-                    return $this->response(422, ['status' => 422, 'error' => $model->getErrors()]);
-                }
-            }
-
-            // bad request if no data in request
-            return $this->response(400, ['status' => 400, 'message' => 'bad request']);
-
-        } else {
+        if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+        $params = Yii::$app->request->post();
+
+        // creating co applicant form object
+        $model = new CoApplicantForm();
+        $model->user_id = $user->user_enc_id;
+
+        // loading data to model
+        if ($model->load(Yii::$app->request->post())) {
+
+            // validating model
+            if ($model->validate()) {
+
+                // if not empty loan_co_app_enc_id updating co-applicant
+                if (!empty($params['loan_co_app_enc_id'])) {
+                    $co_applicant = $model->update();
+                } else {
+                    // saving co-applicant
+                    $co_applicant = $model->save();
+                }
+
+                // if status 500 returning 500
+                if ($co_applicant['status'] == 500) {
+                    return $this->response(500, $co_applicant);
+                }
+
+                return $this->response(200, $co_applicant);
+            } else {
+                // validation errors
+                return $this->response(422, ['status' => 422, 'error' => $model->getErrors()]);
+            }
+        }
+
+        // bad request if no data in request
+        return $this->response(400, ['status' => 400, 'message' => 'bad request']);
     }
 
-    // audit trail list
+// audit trail list
     public function actionAuditTrailList()
     {
         if ($this->isAuthorized()) {
@@ -947,7 +982,7 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // this action is used to create financer loan negative location
+// this action is used to create financer loan negative location
     public function actionCreateFinancerLoanNegativeLocation()
     {
         // checking authorization
@@ -1001,7 +1036,7 @@ class LoansController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-    // getting financer loan negative locations
+// getting financer loan negative locations
     public function actionGetFinancerLoanNegativeLocation()
     {
         // checking authorization
@@ -1036,7 +1071,7 @@ class LoansController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-    // update financer loan negative location
+// update financer loan negative location
     public function actionUpdateFinancerLoanNegativeLocation()
     {
         // checking authorization
@@ -1091,5 +1126,111 @@ class LoansController extends ApiBaseController
         } else {
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
         }
+    }
+
+    public function actionCreditReport()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['loan_app_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_id"']);
+        }
+        $credit_report = CreditLoanApplicationReports::find()
+            ->alias('a')
+            ->select(['a.response_enc_id'])
+            ->joinWith(['responseEnc b' => function ($b) {
+                $b->select(['b.response_enc_id', 'b1.request_source', 'b.response_body']);
+                $b->joinWith(['requestEnc b1'], false);
+            }])
+            ->andWhere(['a.loan_app_enc_id' => $params['loan_app_id']])
+            ->asArray()
+            ->all();
+        $check = [
+            "CIBIL" => "BureauResponseXml",
+            "EQUIFAX" => "CCRResponse",
+            'CRIF' => 'response_body'
+        ];
+        $res = [];
+        foreach ($credit_report as $key => $value) {
+            $value['responseEnc']['response_body'] = json_decode($value['responseEnc']['response_body'], true);
+            if (array_key_exists($value['responseEnc']['request_source'], $check)) {
+                $search = $check[$value['responseEnc']['request_source']];
+            }
+            if (!empty($search)) {
+                $response_body = UserUtilities::array_search_key($search, $value);
+
+                switch ($value['responseEnc']['request_source']) {
+                    case 'CIBIL':
+                        $array = json_decode(json_encode((array)simplexml_load_string($response_body)), true);
+                        foreach ($array['TelephoneSegment'] as $val) {
+                            $res['CIBIL']['phones'][] = $val['TelephoneNumber'];
+                        }
+                        foreach ($array['EmailContactSegment'] as $val) {
+                            $res['CIBIL']['emails'][] = $val['EmailID'];
+                        }
+                        foreach ($array['Address'] as $val) {
+                            $tmp = [];
+                            for ($x = 1; $x <= 4; $x++) {
+                                if (isset($val['AddressLine' . $x])) {
+                                    $tmp[] = $val['AddressLine' . $x];
+                                }
+                            }
+                            $state = States::findOne(['state_code' => $val['StateCode']])['name'];
+                            if (!empty($state)) {
+                                $tmp[] = $state;
+                            }
+                            $tmp[] = $val['PinCode'];
+                            $res['CIBIL']['address'][] = implode(', ', $tmp);
+                        }
+                        break;
+                    case 'EQUIFAX':
+                        $response_body = UserUtilities::array_search_key('CIRReportData', $response_body)['IDAndContactInfo'];
+                        foreach ($response_body['AddressInfo'] as $val) {
+                            $res['EQUIFAX']['address'][] = $val['Address'] . ', ' . $val['State'] . ', ' . $val['Postal'];
+                        }
+                        foreach ($response_body['PhoneInfo'] as $val) {
+                            $res['EQUIFAX']['phones'][] = $val['Number'];
+                        }
+                        foreach ($response_body['EmailAddressInfo'] as $val) {
+                            $res['EQUIFAX']['emails'][] = $val['EmailAddress'];
+                        }
+                        break;
+                    case 'CRIF':
+                        $doc = new \DOMDocument();
+                        $doc->loadXML($response_body);
+                        $xpath = new \DOMXPath($doc);
+                        $dataPath = '/INDV-REPORT-FILE/INDV-REPORTS/INDV-REPORT/PERSONAL-INFO-VARIATION';
+                        $endPath = '-VARIATIONS/VARIATION/VALUE';
+                        $emailPath = $dataPath . '/EMAIL' . $endPath;
+                        $addressPath = $dataPath . '/ADDRESS' . $endPath;
+                        $phonePath = $dataPath . '/PHONE-NUMBER' . $endPath;
+                        $addresses = $xpath->query($addressPath);
+                        $phones = $xpath->query($phonePath);
+                        $emails = $xpath->query($emailPath);
+                        for ($i = 0; $i < $emails->length; $i++) {
+                            $res['CRIF']['emails'][] = $emails->item($i)->nodeValue;
+                        }
+                        for ($i = 0; $i < $phones->length; $i++) {
+                            $res['CRIF']['phones'][] = $phones->item($i)->nodeValue;
+                        }
+                        for ($i = 0; $i < $addresses->length; $i++) {
+                            $res['CRIF']['address'][] = $addresses->item($i)->nodeValue;
+                        }
+                        break;
+                }
+            }
+        }
+        foreach ($res as $key => $reports) {
+            foreach ($reports as $rep => $report) {
+                $res[$key][$rep] = array_unique($report);
+            }
+        }
+        if ($res) {
+            return $this->response(200, ['status' => 200, 'data' => $res]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'data not found']);
+
     }
 }
