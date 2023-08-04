@@ -17,7 +17,7 @@ use Yii;
  * @property string $relation
  * @property string $borrower_type borrower type
  * @property int $gender Gender (1 as Male, 2 as Female, 3 as Transgender, 4 as Rather not say)
- * @property int $employment_type 0 as Non Working, 1 as Salaried, 2 as Self Employed
+ * @property int $employment_type  1 as Salaried, 2 as Self Employed, 3 as Non Working
  * @property double $annual_income
  * @property string $co_applicant_dob
  * @property string $image
@@ -33,7 +33,8 @@ use Yii;
  * @property string $created_on created on
  * @property string $updated_on
  * @property string $updated_by
- * 
+ * @property int $is_deleted 0 as true, 1 as false
+ *
  * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
  * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
  * @property LoanCertificates[] $loanCertificates
@@ -58,7 +59,7 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     {
         return [
             [['loan_co_app_enc_id', 'loan_app_enc_id', 'relation'], 'required'],
-            [['cibil_score', 'gender', 'employment_type', 'years_in_current_house', 'address'], 'integer'],
+            [['cibil_score', 'gender', 'employment_type', 'years_in_current_house', 'address', 'is_deleted'], 'integer'],
             [['relation', 'borrower_type'], 'string'],
             [['annual_income'], 'number'],
             [['co_applicant_dob', 'created_on', 'updated_on'], 'safe'],
@@ -71,6 +72,50 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'loan_co_app_enc_id' => 'Loan Co App Enc ID',
+            'loan_app_enc_id' => 'Loan App Enc ID',
+            'name' => 'Name',
+            'email' => 'Email',
+            'cibil_score' => 'Cibil Score',
+            'phone' => 'Phone',
+            'relation' => 'Relation',
+            'borrower_type' => 'Borrower Type',
+            'gender' => 'Gender',
+            'employment_type' => 'Employment Type',
+            'annual_income' => 'Annual Income',
+            'co_applicant_dob' => 'Co Applicant Dob',
+            'image' => 'Image',
+            'image_location' => 'Image Location',
+            'years_in_current_house' => 'Years In Current House',
+            'occupation' => 'Occupation',
+            'address' => 'Address',
+            'pan_number' => 'Pan Number',
+            'voter_card_number' => 'Voter Card Number',
+            'aadhaar_number' => 'Aadhaar Number',
+            'aadhaar_link_phone_number' => 'Aadhaar Link Phone Number',
+            'created_by' => 'Created By',
+            'created_on' => 'Created On',
+            'updated_on' => 'Updated On',
+            'updated_by' => 'Updated By',
+            'is_deleted' => 'Is Deleted',
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreditLoanApplicationReports()
+    {
+        return $this->hasMany(CreditLoanApplicationReports::className(), ['loan_co_app_enc_id' => 'loan_co_app_enc_id']);
     }
 
     /**
@@ -111,13 +156,5 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     public function getUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
-    }
-    
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCreditLoanApplicationReports()
-    {
-        return $this->hasMany(CreditLoanApplicationReports::className(), ['loan_co_app_enc_id' => 'loan_co_app_enc_id']);
     }
 }
