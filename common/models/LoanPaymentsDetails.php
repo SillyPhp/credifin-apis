@@ -49,24 +49,6 @@ class LoanPaymentsDetails extends \yii\db\ActiveRecord
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'loan_payments_details_enc_id' => 'Loan Payments Details Enc ID',
-            'loan_payments_enc_id' => 'Loan Payments Enc ID',
-            'financer_loan_product_login_fee_structure_enc_id' => 'Financer Loan Product Login Fee Structure Enc ID',
-            'no_dues_name' => 'No Dues Name',
-            'no_dues_amount' => 'No Dues Amount',
-            'created_by' => 'Created By',
-            'created_on' => 'Created On',
-            'is_deleted' => 'Is Deleted',
-        ];
-    }
-
-    /**
      * @return \yii\db\ActiveQuery
      */
     public function getLoanPaymentsEnc()
