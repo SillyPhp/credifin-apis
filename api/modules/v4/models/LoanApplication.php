@@ -310,7 +310,7 @@ class LoanApplication extends Model
             ->alias('a')
             ->select(['a.assigned_financer_loan_type_enc_id', 'a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id',
                 'b.loan_type_enc_id', 'c.loan_type_enc_id', 'c.name'])
-            ->joinWith(['assignedFinancerLoanTypeEnc b' => function($b){
+            ->joinWith(['assignedFinancerLoanTypeEnc b' => function ($b) {
                 $b->joinWith(['loanTypeEnc c'], false);
             }], false)
             ->where(['a.financer_loan_product_enc_id' => $loan_id])

@@ -2,20 +2,15 @@
 
 namespace frontend\controllers;
 use api\modules\v2\models\LoanApplicationsForm;
-use common\models\EducationLoanPayments;
+use common\models\EducationLoanTypes;
 use common\models\LoanApplications;
-use common\models\LoanTypes;
 use common\models\OrganizationFeeAmount;
 use common\models\PathToClaimOrgLoanApplication;
 use common\models\PathToUnclaimOrgLoanApplication;
 use Razorpay\Api\Api;
 use Yii;
-use yii\base\InvalidParamException;
-use yii\web\BadRequestHttpException;
 use yii\web\Controller;
-use yii\helpers\Url;
 use yii\web\HttpException;
-use yii\web\Response;
 
 class PaymentController extends Controller
 {
@@ -25,10 +20,10 @@ class PaymentController extends Controller
      {
          throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
      }
-     $loan_type = LoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
+     $loan_type = EducationLoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
      $loanApplication = LoanApplications::find()
-         ->select(['loan_app_enc_id','email','phone'])
-         ->where(['loan_app_enc_id' => $id,'is_deleted' => 0])
+         ->select(['loan_app_enc_id', 'email', 'phone'])
+         ->where(['loan_app_enc_id' => $id, 'is_deleted' => 0])
          ->asArray()
          ->one();
      $claimOrg = PathToClaimOrgLoanApplication::find()

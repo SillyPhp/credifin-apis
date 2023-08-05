@@ -7,7 +7,7 @@ use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\SignupForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedDeals;
-use common\models\AssignedFinancerLoanType;
+use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
 use common\models\ClaimedDeals;
@@ -17,36 +17,35 @@ use common\models\EsignOrganizationTracking;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\LoanApplicationCommentsExtended;
 use common\models\extended\LoanApplicationNotificationsExtended;
-use common\models\extended\SharedLoanApplicationsExtended;
-use common\models\FinancerAssignedDesignations;
 use common\models\extended\LoanApplicationPartnersExtended;
 use common\models\extended\LoanApplicationPdExtended;
 use common\models\extended\LoanApplicationReleasePaymentExtended;
 use common\models\extended\LoanApplicationTvrExtended;
+use common\models\extended\SharedLoanApplicationsExtended;
+use common\models\FinancerAssignedDesignations;
 use common\models\FinancerVehicleBrand;
 use common\models\LoanApplications;
-use common\models\LoanCoApplicants;
 use common\models\LoanCertificates;
+use common\models\LoanCoApplicants;
 use common\models\LoanSanctionReports;
-use common\models\LoanType;
+use common\models\LoanTypes;
 use common\models\OrganizationLocations;
 use common\models\Organizations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
 use common\models\SharedLoanApplications;
+use common\models\spaces\Spaces;
 use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
-use yii\web\UploadedFile;
-use yii\db\Expression;
 use common\models\Utilities;
-use yii\filters\VerbFilter;
 use Yii;
-use common\models\spaces\Spaces;
+use yii\db\Expression;
 use yii\filters\Cors;
+use yii\filters\VerbFilter;
 use yii\helpers\Url;
-use yii\filters\ContentNegotiator;
+use yii\web\UploadedFile;
 
 class CompanyDashboardController extends ApiBaseController
 {
@@ -203,8 +202,6 @@ class CompanyDashboardController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-
-
     }
 
     // getting loan applications by loan status
@@ -252,7 +249,7 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // getting and returning loan_type_enc_id
-            $loan_id = LoanType::findOne(['name' => $params['loan_type'], 'is_deleted' => 0]);
+            $loan_id = LoanTypes::findOne(['name' => $params['loan_type'], 'is_deleted' => 0]);
 
             return $this->response(200, ['status' => 200, 'loans' => $loan_status, 'loan_id' => $loan_id->loan_type_enc_id]);
 
@@ -391,7 +388,17 @@ class CompanyDashboardController extends ApiBaseController
                 $l->onCondition(['l.payment_status' => ['captured', 'created', 'waived off']]);
             }])
             ->joinWith(['loanProductsEnc lp'], false)
-            ->andWhere(['a.is_deleted' => 0]);
+            ->andWhere(['a.is_deleted' => 0])
+            ->andWhere(['or',
+                ['and',
+                    ['a.loan_type' => 'Loan Against Property'],
+                    ['>=', 'a.loan_status_updated_on', '2023-06-01 00:00:00']
+                ],
+                ['and',
+                    ['not', ['a.loan_type' => 'Loan Against Property']],
+                    ['>=', 'a.loan_status_updated_on', '2023-07-01 00:00:00']
+                ]
+            ]);
 
         // if its organization and service is not "Loans" then checking lead_by=$dsa
         if ($user->organization_enc_id) {
@@ -913,7 +920,7 @@ class CompanyDashboardController extends ApiBaseController
                 $loan['loan_partners'] = $this->__applicationPartners($user, $loan['loan_app_enc_id']);
 
                 // getting loan type code
-                $loan['loan_type_code'] = LoanType::findOne(['name' => $loan['loan_type']])->value;
+                $loan['loan_type_code'] = LoanTypes::findOne(['name' => $loan['loan_type']])->value;
 
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }
@@ -1548,7 +1555,7 @@ class CompanyDashboardController extends ApiBaseController
         if ($detail) {
 
             // getting financer loan types
-            $detail['assignedFinancerLoanTypes'] = AssignedFinancerLoanType::find()
+            $detail['assignedFinancerLoanTypes'] = AssignedFinancerLoanTypes::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name loan_type'])
                 ->joinWith(['loanTypeEnc b'], false)
@@ -2349,6 +2356,9 @@ class CompanyDashboardController extends ApiBaseController
             $limit = !empty($params['limit']) ? $params['limit'] : 10;
             $page = !empty($params['page']) ? $params['page'] : 1;
 
+            $lap = strtotime($params['start_date']) > strtotime('2023-06-01 00:00:00') ? $params['start_date'] : '2023-06-01 00:00:00';
+            $nlap = strtotime($params['start_date']) > strtotime('2023-07-01 00:00:00') ? $params['start_date'] : '2023-07-01 00:00:00';
+
             $employeeStats = Users::find()
                 ->alias('a')
                 ->select(['a.user_enc_id', '(CASE WHEN a.last_name IS NOT NULL THEN CONCAT(a.first_name," ",a.last_name) ELSE a.first_name END) as employee_name', 'a.phone', 'a.email', 'a.username', 'a.status', 'b.employee_code', 'b1.designation', 'concat(b2.first_name," ",b2.last_name) reporting_person', 'b3.location_name', 'c.updated_on',
@@ -2365,8 +2375,17 @@ class CompanyDashboardController extends ApiBaseController
                         ->joinWith(['branchEnc b3'])
                         ->joinWith(['userTypeEnc b4']);
                 }], false)
-                ->joinWith(['loanApplications3 c' => function ($c) use ($params) {
-                    $c->andWhere(['between', 'c.created_on', $params['start_date'], $params['end_date']]);
+                ->joinWith(['loanApplications3 c' => function ($c) use ($params, $lap, $nlap) {
+                    $c->andWhere(['or',
+                        ['and',
+                            ['c.loan_type' => 'Loan Against Property'],
+                            ['between', 'c.created_on', $lap, $params['end_date']]
+                        ],
+                        ['and',
+                            ['not', ['c.loan_type' => 'Loan Against Property']],
+                            ['between', 'c.created_on', $nlap, $params['end_date']]
+                        ]
+                    ]);
                     $c->joinWith(['assignedLoanProviders c1' => function ($c1) {
                         $c1->joinWith(['status0 c2']);
                     }], false);
@@ -2534,7 +2553,6 @@ class CompanyDashboardController extends ApiBaseController
 
     }
 
-//
     public function actionEmployeeLoanList()
     {
         if ($user = $this->isAuthorized()) {
@@ -2705,7 +2723,20 @@ class CompanyDashboardController extends ApiBaseController
             if (!empty($params['branch_name'])) {
                 $employeeAmount->andWhere(['i.branch_enc_id' => $params['branch_name']]);
             }
-            $employeeAmount = $employeeAmount->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']])
+            $lap = strtotime($params['start_date']) > strtotime('2023-06-01 00:00:00') ? $params['start_date'] : '2023-06-01 00:00:00';
+            $nlap = strtotime($params['start_date']) > strtotime('2023-07-01 00:00:00') ? $params['start_date'] : '2023-07-01 00:00:00';
+            $employeeAmount = $employeeAmount
+//                ->andWhere(['between', 'b.loan_status_updated_on', $params['start_date'], $params['end_date']])
+                ->andWhere(['or',
+                    ['and',
+                        ['b.loan_type' => 'Loan Against Property'],
+                        ['between', 'b.loan_status_updated_on', $lap, $params['end_date']]
+                    ],
+                    ['and',
+                        ['not', ['b.loan_type' => 'Loan Against Property']],
+                        ['between', 'b.loan_status_updated_on', $nlap, $params['end_date']]
+                    ]
+                ])
 //                ->andWhere(['i.branch_enc_id' => $params['branch_id']])
                 ->asArray()
                 ->one();
@@ -2786,10 +2817,6 @@ class CompanyDashboardController extends ApiBaseController
         }
 
         $org_id = $user->organization_enc_id;
-//            if (!$user->organization_enc_id) {
-//                $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
-//                $org_id = $findOrg->organization_enc_id;
-//            }
         if ($org_id) {
             $params = Yii::$app->request->post();
             if (isset($params['type']) && $params['type'] === 'by_cases') {
@@ -2804,24 +2831,9 @@ class CompanyDashboardController extends ApiBaseController
     }
 
 
-    private function branchSum($org_id, $params = null)
+    private function branchSum($org_id, $params)
     {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-        $params = Yii::$app->request->post();
-
-        $limit = 10;
-        $page = 1;
-
-        if (isset($params['limit']) && !empty($params['limit'])) {
-            $limit = $params['limit'];
-        }
-        if (isset($params['page']) && !empty($params['page'])) {
-            $page = $params['page'];
-        }
-
-        $BranchSum = OrganizationLocations::find()
+        $branchSum = OrganizationLocations::find()
             ->alias('a')
             ->select(['a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
                 'SUM(c.amount) as new_lead_amount',
@@ -2839,48 +2851,30 @@ class CompanyDashboardController extends ApiBaseController
             ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
             ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')
             ->where(['between', 'c.updated_on', $params['start_date'], $params['end_date']])
-            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
+            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id])
             ->groupBy(['a.location_enc_id']);
 
-        if (isset($params['keyword']) && !empty($params['keyword'])) {
-            $BranchSum->andWhere([
+        if (!empty($params['keyword'])) {
+            $branchSum->andWhere([
                 'or',
                 ['like', 'a.location_enc_id', $params['keyword']],
             ]);
         }
 
-        $count = $BranchSum->count();
-        $BranchSum = $BranchSum
-            ->limit($limit)
-            ->offset(($page - 1) * $limit)
+        $branchSum = $branchSum
             ->asArray()
             ->all();
 
-        if ($BranchSum) {
-            return ['status' => 200, 'data' => $BranchSum, 'count' => $count];
+        if ($branchSum) {
+            return ['status' => 200, 'data' => $branchSum, 'count' => count($branchSum)];
         }
         return ['status' => 404, 'message' => 'not found'];
 
     }
 
-    private function branchCount($org_id, $params = null)
+    private function branchCount($org_id, $params)
     {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-        $params = Yii::$app->request->post();
-
-        $limit = 10;
-        $page = 1;
-
-        if (isset($params['limit']) && !empty($params['limit'])) {
-            $limit = $params['limit'];
-        }
-        if (isset($params['page']) && !empty($params['page'])) {
-            $page = $params['page'];
-        }
-
-        $BranchCount = OrganizationLocations::find()
+        $branchCount = OrganizationLocations::find()
             ->alias('a')
             ->select(['a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
                 'COUNT(CASE WHEN b.status = "0" THEN c.amount END) as new_lead_amount',
@@ -2897,25 +2891,22 @@ class CompanyDashboardController extends ApiBaseController
             ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
             ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')
             ->where(['between', 'c.updated_on', $params['start_date'], $params['end_date']])
-            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
+            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org_id])
             ->groupBy(['a.location_enc_id']);
 
-        if (isset($params['keyword']) && !empty($params['keyword'])) {
-            $BranchCount->andWhere([
+        if (!empty($params['keyword'])) {
+            $branchCount->andWhere([
                 'or',
                 ['like', 'a.location_enc_id', $params['keyword']],
             ]);
         }
 
-        $count = $BranchCount->count();
-        $BranchCount = $BranchCount
-            ->limit($limit)
-            ->offset(($page - 1) * $limit)
+        $branchCount = $branchCount
             ->asArray()
             ->all();
 
-        if ($BranchCount) {
-            return ['status' => 200, 'data' => $BranchCount, 'count' => $count];
+        if ($branchCount) {
+            return ['status' => 200, 'data' => $branchCount, 'count' => count($branchCount)];
         }
         return ['status' => 404, 'message' => 'not found'];
     }

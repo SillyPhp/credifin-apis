@@ -19,7 +19,7 @@ namespace common\models;
  * @property Users $userEnc
  * @property Users $createdBy
  * @property Users $updatedBy
- * @property AssignedFinancerLoanType $loanTypeEnc
+ * @property AssignedFinancerLoanTypes $loanTypeEnc
  */
 class ColumnPreferences extends \yii\db\ActiveRecord
 {
@@ -46,7 +46,7 @@ class ColumnPreferences extends \yii\db\ActiveRecord
             [['user_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_enc_id' => 'user_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
-            [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedFinancerLoanType::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
+            [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedFinancerLoanTypes::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
         ];
     }
 
@@ -80,6 +80,6 @@ class ColumnPreferences extends \yii\db\ActiveRecord
      */
     public function getLoanTypeEnc()
     {
-        return $this->hasOne(AssignedFinancerLoanType::className(), ['loan_type_enc_id' => 'loan_type_enc_id']);
+        return $this->hasOne(AssignedFinancerLoanTypes::className(), ['loan_type_enc_id' => 'loan_type_enc_id']);
     }
 }

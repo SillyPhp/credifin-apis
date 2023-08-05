@@ -5,13 +5,12 @@ namespace api\modules\v3\controllers;
 use api\modules\v2\models\LoanApplicationsForm;
 use api\modules\v3\models\Courses;
 use api\modules\v3\models\OrganizationList;
+use Aws\S3\S3Client;
 use common\models\AssignedCollegeCourses;
-use common\models\AssignedLoanProvider;
 use common\models\CertificateTypes;
 use common\models\Cities;
-use common\models\CollegeCourses;
-use common\models\CollegeCoursesPool;
 use common\models\EducationLoanPayments;
+use common\models\EducationLoanTypes;
 use common\models\extended\CloneLoanApplication;
 use common\models\InstituteLeadsPayments;
 use common\models\LoanApplicantResidentialInfo;
@@ -20,25 +19,16 @@ use common\models\LoanCandidateEducation;
 use common\models\LoanCertificates;
 use common\models\LoanCoApplicants;
 use common\models\LoanQualificationType;
-use common\models\LoanTypes;
 use common\models\OrganizationFeeComponents;
-use common\models\Organizations;
 use common\models\PathToClaimOrgLoanApplication;
 use common\models\PathToOpenLeads;
 use common\models\PathToUnclaimOrgLoanApplication;
 use common\models\spaces\Spaces;
 use common\models\States;
-use Yii;
-use yii\web\Response;
-use yii\helpers\Url;
-use yii\rest\Controller;
-use yii\filters\Cors;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
-use yii\web\UploadedFile;
 use common\models\Utilities;
-use Aws\S3\S3Client;
-use Aws\S3\Exception\S3Exception;
+use Yii;
+use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 class EducationLoanController extends ApiBaseController
 {
@@ -102,7 +92,7 @@ class EducationLoanController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            $loan_types = LoanTypes::find()
+            $loan_types = EducationLoanTypes::find()
                 ->select(['loan_type_enc_id', 'loan_name'])
                 ->asArray()
                 ->all();

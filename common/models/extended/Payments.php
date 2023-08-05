@@ -2,13 +2,11 @@
 
 namespace common\models\extended;
 
-use common\models\FinancerLoanProductLoginFeeStructure;
+use common\models\AssignedLoanPayments;
+use common\models\EducationLoanPayments;
 use common\models\InstituteLeadsPayments;
 use common\models\LoanPayments;
-use common\models\LoanPaymentsDetails;
 use common\models\Utilities;
-
-use common\models\EducationLoanPayments;
 
 class Payments
 {
@@ -30,50 +28,39 @@ class Payments
         }
     }
 
-    public function createUrlLink($options)
+    public static function saveLoanPayment($options)
     {
         $model = new LoanPayments();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->loan_payments_enc_id = $utilitiesModel->encrypt();
-        $model->loan_app_enc_id = $options['loan_app_id'];
         $model->payment_amount = $options['amount'];
         $model->payment_token = $options['token'];
         $model->payment_short_url = $options['surl'];
+        $model->payment_status = 'pending';
         $model->created_on = date('Y-m-d h:i:s');
         $model->close_by = date('Y-m-d h:i:s', $options['close_by']);
         $model->payment_link_type = $options['method'];
         if (!$model->save()) {
             return false;
         }
-        $payment_details = self::createPaymentDetails($options['amount_enc_ids'], $model->loan_payments_enc_id, $options['user_id']);
-        if (!$payment_details) {
+
+        $assign = new AssignedLoanPayments();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $assign->assigned_loan_payments_enc_id = $utilitiesModel->encrypt();
+        $assign->loan_payments_enc_id = $model->loan_payments_enc_id;
+        if (!empty($options['emi_collection_enc_id'])) {
+            $assign->emi_collection_enc_id = $options['emi_collection_enc_id'];
+        }
+        if (!empty($options['loan_app_enc_id'])) {
+            $assign->loan_app_enc_id = $options['loan_app_enc_id'];
+        }
+        $assign->created_by = $assign->updated_by = $options['user_id'];
+        $assign->created_on = $assign->updated_on = date('Y-m-d h:i:s');
+        if (!$assign->save()) {
             return false;
         }
-        return true;
-    }
 
-    private function createPaymentDetails($amount, $loan_payment_id, $user_id)
-    {
-        foreach ($amount as $value) {
-            $nodues = FinancerLoanProductLoginFeeStructure::findOne(['financer_loan_product_no_dues_enc_id' => $value]);
-            if (!$nodues) {
-                return false;
-            }
-            $pay_details = new LoanPaymentsDetails();
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $pay_details->loan_payments_details_enc_id = $utilitiesModel->encrypt();
-            $pay_details->loan_payments_enc_id = $loan_payment_id;
-            $pay_details->loan_no_dues_enc_id = $value;
-            $pay_details->no_dues_name = $nodues['name'];
-            $pay_details->no_dues_amount = $nodues['amount'];
-            $pay_details->created_by = $user_id;
-            $pay_details->created_on = date('Y-m-d h:i:s');
-            if (!$pay_details->save()) {
-                return false;
-            }
-        }
         return true;
     }
 
@@ -101,10 +88,11 @@ class Payments
             'amount' => $options['total'],
             'currency' => 'INR',
             'accept_partial' => false,
-            'description' => $options['description'],
+            'description' => 'Testing out',
             'customer' => [
                 'name' => $options['name'],
                 'contact' => $options['contact'],
+                'email' => 'cajgsvc@gmail.com'
             ],
             'notify' => [
                 'sms' => true,
@@ -123,12 +111,10 @@ class Payments
             $options['surl'] = $link->short_url;
             $options['token'] = $link->id;
             $options['close_by'] = $link->expire_by;
-            $options['method'] = 0;
             if (self::createUrlLink($options)) {
                 return [
-                    'status' => 200,
                     'surl' => $link->short_url,
-                    'amount' => $options['total'] / 100
+                    'status' => true
                 ];
             } else {
                 return [
@@ -151,7 +137,7 @@ class Payments
             "usage" => "single_use",
             "fixed_amount" => 1,
             "payment_amount" => $options['total'],
-            "description" => $options['description'],
+            "description" => "For Store 1",
             "close_by" => $options['close_by'],
             "notes" => array("purpose" => $options['purpose'])]);
         if ($link) {
@@ -159,11 +145,10 @@ class Payments
             $options['created_on'] = $link->created_at;
             $options['surl'] = $link->image_url;
             $options['close_by'] = $link->close_by;
-            $options['method'] = 1;
             if (self::createUrlLink($options)) {
                 return [
-                    'status' => 200,
-                    'surl' => $link->image_url
+                    'surl' => $link->image_url,
+                    'status' => true,
                 ];
             } else {
                 return [
