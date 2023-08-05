@@ -80,117 +80,68 @@ class TestController extends ApiBaseController
         }
     }
 
-    public function actionCreditReport()
+    private function addUserRole($user_type_id)
     {
-        $params = Yii::$app->request->post();
-        $credit_report = CreditLoanApplicationReports::find()
-            ->alias('a')
-            ->select(['a.response_enc_id'])
-            ->joinWith(['responseEnc b' => function ($b) {
-                $b->select(['b.response_enc_id', 'b1.request_source', 'b.response_body']);
-                $b->joinWith(['requestEnc b1'], false);
-            }])
-//            ->andWhere(['a.loan_app_enc_id' => $params['loan_id']])
-            ->andWhere(['a.loan_app_enc_id' => 'PA5Qxgb6kyw088GaNn96ZorD29XjOa'])
-            ->asArray()
-            ->all();
-//        print_r($credit_report);exit();
-        $check = [
-            "CIBIL" => "BureauResponseXml",
-            "EQUIFAX" => "CCRResponse",
-            'CRIF' => 'response_body'
-        ];
-        foreach ($credit_report as $key => $value) {
-            $value['responseEnc']['response_body'] = json_decode($value['responseEnc']['response_body'], true);
-            $data['phones'] = $data['emails'] = $data['address'] = [];
-            if ($value['responseEnc']['request_source'] != 'CRIF') {
-                continue;
-            }
-//            print_r($value);exit();
-            if (array_key_exists($value['responseEnc']['request_source'], $check)) {
-                $search = $check[$value['responseEnc']['request_source']];
-            }
-            if (!empty($search)) {
-                $response_body = UserUtilities::array_search_key($search, $value);
+        $ref = Referral::findOne(['code' => $this->ref_id]);
+
+        if (!empty($ref)) {
+            $user_role = new UserRoles();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+            $user_role->role_enc_id = $utilitiesModel->encrypt();
+            $user_role->user_type_enc_id = $user_type_id;
+            $user_role->user_enc_id = $this->user_id;
+            $user_role->created_by = $this->user_id;
+            $user_role->created_on = date('Y-m-d H:i:s');
+
+            if ($user_role->organization_enc_id === null) {
+                $assigner_user = Users::findOne(['user_enc_id' => $ref->user_enc_id]);
+
+                if ($assigner_user !== null) {
+                    $user_role->organization_enc_id = $assigner_user->organization_enc_id;
+                } else {
+                    $user_role->organization_enc_id = $ref->organization_enc_id;
+                }
             }
 
-            switch ($value['responseEnc']['request_source']) {
-                case 'CIBIL':
-                    $array = json_decode(json_encode((array)simplexml_load_string($response_body)), true);
-                    foreach ($array['TelephoneSegment'] as $val) {
-                        if (!in_array($val['TelephoneNumber'], $data['phones'])) {
-                            $data['phones'][] = $val['TelephoneNumber'];
-                        }
-                    }
-                    foreach ($array['EmailContactSegment'] as $val) {
-                        if (!in_array($val['EmailID'], $data['emails'])) {
-                            $data['emails'][] = $val['EmailID'];
+            if (!$user_role->save()) {
+                throw new \Exception(json_encode($user_role->getErrors()));
 
-                        }
-                    }
-                    foreach ($array['Address'] as $val) {
-                        $tmp = [];
-                        for ($x = 1; $x <= 4; $x++) {
-                            if (isset($val['AddressLine' . $x])) {
-                                if (!in_array($val['AddressLine' . $x], $tmp)) {
-                                    $tmp[] = $val['AddressLine' . $x];
-                                }
-                            }
-                        }
-                        $state = States::findOne(['state_code' => $val['StateCode']])['name'];
-                        if (!empty($state)) {
-                            $tmp[] = $state;
-                        }
-                        $tmp[] = $val['PinCode'];
-                        $data['address'][] = implode(', ', $tmp);
-                    }
-                    $res['CIBIL'] = $data;
-                    break;
-                case 'EQUIFAX':
-                    $response_body = UserUtilities::array_search_key('CIRReportData', $response_body)['IDAndContactInfo'];
-                    foreach ($response_body['AddressInfo'] as $val) {
-                        $data['address'][] = $val['Address'] . ', ' . $val['State'] . ', ' . $val['Postal'];
-                    }
-                    foreach ($response_body['PhoneInfo'] as $val) {
-                        if (!in_array($val['Number'], $data['phones'])) {
-                            $data['phones'][] = $val['Number'];
-                        }
-                    }
-                    foreach ($response_body['EmailAddressInfo'] as $val) {
-                        if (!in_array($val['EmailAddress'], $data['emails'])) {
-                            $data['emails'][] = $val['EmailAddress'];
-                        }
-                    }
-                    $res['EQUIFAX'] = $data;
-                    break;
-                case 'CRIF':
-                    $doc = new \DOMDocument();
-                    $doc->loadXML($response_body);
-                    $xpath = new \DOMXPath($doc);
-//                    print_r($xpath);exit();
-                    $reportContent = $xpath->query('
-/INDV-REPORT-FILE
-')->item(0);
-                    print_r($reportContent);
-                    exit();
-                    $array = json_decode(json_encode($reportContent), true);
-                    print_r($array);
-                    exit();
-///INDV-REPORTS
-///INDV-REPORT
-///PERSONAL-INFO-VARIATION
-///NAME-VARIATIONS
-///VARIATION
-///VALUE
-////                    $reportContent = $reportContent->nodeValue;
-                    print_r($reportContent);
-                    die();
-                    $res[] = $array;
             }
         }
-        print_r($res[0]);
-        exit();
     }
+
+
+//    private function addUserRole($user_type_id)
+//    {
+//        $ref = Referral::findOne(['code' => $this->ref_id]);
+//
+//        if (!empty($ref)) {
+//            $user_role = new UserRoles();
+//            $utilitiesModel = new \common\models\Utilities();
+//            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+//            $user_role->role_enc_id = $utilitiesModel->encrypt();
+//            $user_role->user_type_enc_id = $user_type_id;
+//            $user_role->user_enc_id = $this->user_id;
+//            $user_role->created_by = $this->user_id;
+//            $user_role->created_on = date('Y-m-d H:i:s');
+//
+//            if ($user_role->organization_enc_id === null) {
+//                $assigner_user = Users::findOne(['user_enc_id' => $ref->user_enc_id]);
+//
+//                if ($assigner_user !== null) {
+//                    $user_role->organization_enc_id = $assigner_user->organization_enc_id;
+//                } else {
+//                    $user_role->organization_enc_id = $ref->organization_enc_id;
+//                }
+//            }
+//
+//            if (!$user_role->save()) {
+//                throw new \Exception(json_encode($user_role->getErrors()));
+//
+//            }
+//        }
+//    }
 
 
     public function actionDataCheckOld()
