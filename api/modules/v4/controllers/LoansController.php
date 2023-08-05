@@ -17,7 +17,6 @@ use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\EducationLoanPaymentsExtends;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
-use common\models\extended\LoanCoApplicantsExtended;
 use common\models\extended\LoanPaymentsExtends;
 use common\models\extended\LoanVerificationLocationsExtended;
 use common\models\FinancerLoanNegativeLocation;
@@ -1129,7 +1128,7 @@ class LoansController extends ApiBaseController
         }
         $credit_report = CreditLoanApplicationReports::find()
             ->alias('a')
-            ->select(['a.response_enc_id', 'c.name'])
+            ->select(['a.response_enc_id', 'b1.request_source', 'c.borrower_type', 'c.name'])
             ->joinWith(['responseEnc b' => function ($b) {
                 $b->select(['b.response_enc_id', 'b1.request_source', 'b.response_body']);
                 $b->joinWith(['requestEnc b1'], false);
@@ -1230,41 +1229,73 @@ class LoansController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+
         $params = Yii::$app->request->post();
+
         if (isset($params['phone'])) {
             $phoneNumber = $params['phone'];
             $phoneExists = LoanApplications::find()
+                ->alias('a')
+                ->joinWith(['loanCoApplicants b'])
                 ->where(['or',
-                    ['phone' => $phoneNumber],
-                    ['phone' => '+91' . $phoneNumber],
-                    ['phone' => '+' . $phoneNumber],
-                    ['phone' => '91' . ltrim($phoneNumber, '91')],
-                    ['like', 'phone', ltrim($phoneNumber, '+91')],
-                    ['like', 'phone', ltrim($phoneNumber, '+')]
+                    ['a.phone' => $phoneNumber],
+                    ['b.phone' => $phoneNumber],
+                    ['a.phone' => '+91' . $phoneNumber],
+                    ['b.phone' => '+91' . $phoneNumber],
+                    ['a.phone' => '+' . $phoneNumber],
+                    ['b.phone' => '+' . $phoneNumber],
+                    ['a.phone' => preg_replace('/^\+?91/', '', $phoneNumber)],
+                    ['b.phone' => preg_replace('/^\+?91/', '', $phoneNumber)],
+                    ['a.phone' => preg_replace('/^\+?+/', '', $phoneNumber)],
+                    ['b.phone' => preg_replace('/^\+?+/', '', $phoneNumber)],
+
+                    ['a.phone' => '+91' . preg_replace('/^\+?+/', '', $phoneNumber)],
+                    ['b.phone' => '+91' . preg_replace('/^\+?+/', '', $phoneNumber)],
+                    ['a.phone' => '+' . $phoneNumber],
+                    ['b.phone' => '+' . $phoneNumber],
+
                 ])
                 ->exists();
+
             if ($phoneExists) {
                 return $this->response(200, ['status' => 200, 'message' => 'Phone number already exists']);
             } else {
                 return $this->response(201, ['status' => 201, 'message' => 'Phone number does not exist']);
             }
         }
+
+
         if (isset($params['aadhaar_number'])) {
             $aadhaarNumber = $params['aadhaar_number'];
-            $aadhaarExists = LoanCoApplicantsExtended::find()
-                ->where(['aadhaar_number' => $aadhaarNumber])
+
+            $aadhaarExists = LoanApplications::find()
+                ->alias('a')
+                ->joinWith(['loanCoApplicants b'])
+                ->where(['or',
+                    ['a.aadhaar_number' => $aadhaarNumber],
+                    ['b.aadhaar_number' => $aadhaarNumber]
+                ])
                 ->exists();
+
             if ($aadhaarExists) {
                 return $this->response(200, ['status' => 200, 'message' => 'Aadhaar number already exists']);
             } else {
                 return $this->response(201, ['status' => 201, 'message' => 'Aadhaar number does not exist']);
             }
         }
+
         if (isset($params['pan_number'])) {
             $panNumber = $params['pan_number'];
-            $panExists = LoanCoApplicantsExtended::find()
-                ->where(['pan_number' => $panNumber])
+
+            $panExists = LoanApplications::find()
+                ->alias('a')
+                ->joinWith(['loanCoApplicants b'])
+                ->where(['or',
+                    ['a.pan_number' => $panNumber],
+                    ['b.pan_number' => $panNumber]
+                ])
                 ->exists();
+
             if ($panExists) {
                 return $this->response(200, ['status' => 200, 'message' => 'PAN number already exists']);
             } else {
