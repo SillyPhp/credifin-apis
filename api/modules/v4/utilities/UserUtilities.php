@@ -112,7 +112,7 @@ class UserUtilities
     }
 
     // getting user type Financer, DSA, Connector, Employee, Dealer
-    private function getUserType($user_id)
+    public static function getUserType($user_id)
     {
         // getting user object
         $user = Users::findOne(['user_enc_id' => $user_id]);

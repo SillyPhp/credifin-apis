@@ -63,6 +63,7 @@ class LoansController extends ApiBaseController
                 'add-co-applicant' => ['POST', 'OPTIONS'],
                 'audit-trail-list' => ['POST', 'OPTIONS'],
                 'credit-reports' => ['POST', 'OPTIONS'],
+                'update-loan' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -151,7 +152,43 @@ class LoansController extends ApiBaseController
         }
     }
 
-    // updating payment status
+    public function actionUpdateLoan()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (!isset($params['loan_app_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_enc_id"']);
+        }
+
+        // Validate capital_roi to be greater than 20
+        if (!isset($params['capital_roi']) || floatval($params['capital_roi']) < 20) {
+            return $this->response(422, ['status' => 422, 'message' => 'capital_roi should be greater than 20']);
+        }
+
+        $loan_update = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_app_enc_id']]);
+
+        if (is_null($loan_update->capital_roi)) {
+            $loan_update->capital_roi = $params['capital_roi'];
+        } else {
+            return $this->response(422, ['status' => 422, 'message' => 'cannot update']);
+        }
+
+        $loan_update->capital_roi_updated_on = date('Y-m-d H:i:s');
+        $loan_update->capital_roi_updated_by = $user->user_enc_id;
+
+        if (!$loan_update->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_update->getErrors()]);
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => 'successfully']);
+    }
+
+
+// updating payment status
     public function actionUpdatePaymentStatus()
     {
         $params = Yii::$app->request->post();

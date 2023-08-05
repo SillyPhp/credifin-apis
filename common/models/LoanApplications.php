@@ -159,7 +159,16 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['managed_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['managed_by' => 'user_enc_id']],
             [['lead_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['lead_by' => 'user_enc_id']],
             [['parent_application_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['parent_application_enc_id' => 'loan_app_enc_id']],
+            [['capital_roi_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['capital_roi_updated_by' => 'user_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedLoanPayments()
+    {
+        return $this->hasMany(AssignedLoanPayments::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**
@@ -400,6 +409,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanApplications()
     {
         return $this->hasMany(LoanApplications::className(), ['parent_application_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCapitalRoiUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'capital_roi_updated_by']);
     }
 
     /**

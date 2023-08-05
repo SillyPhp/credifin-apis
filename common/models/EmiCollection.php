@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%emi_collection}}".
  *
@@ -40,6 +38,7 @@ use Yii;
  * @property string $updated_on Updated On
  * @property int $is_deleted Is Deleted
  *
+ * @property AssignedLoanPayments[] $assignedLoanPayments
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property OrganizationLocations $branchEnc
@@ -75,6 +74,14 @@ class EmiCollection extends \yii\db\ActiveRecord
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['branch_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationLocations::className(), 'targetAttribute' => ['branch_enc_id' => 'location_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedLoanPayments()
+    {
+        return $this->hasMany(AssignedLoanPayments::className(), ['emi_collection_enc_id' => 'emi_collection_enc_id']);
     }
 
     /**
