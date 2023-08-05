@@ -3,11 +3,10 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v2\models\ChangePassword;
-use api\modules\v3\models\widgets\Referral;
-use api\modules\v4\models\ForgotPassword;
-use api\modules\v4\models\ProfilePicture;
 use api\modules\v4\models\Candidates;
+use api\modules\v4\models\ForgotPassword;
 use api\modules\v4\models\LoginForm;
+use api\modules\v4\models\ProfilePicture;
 use api\modules\v4\models\SignupForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\Organizations;
@@ -17,11 +16,10 @@ use common\models\Usernames;
 use common\models\Users;
 use common\models\UserVerificationTokens;
 use common\models\Utilities;
-use yii\web\UploadedFile;
 use Yii;
-use yii\helpers\Url;
-use yii\filters\Cors;
 use yii\filters\auth\HttpBearerAuth;
+use yii\filters\Cors;
+use yii\web\UploadedFile;
 
 
 class AuthController extends ApiBaseController
@@ -87,14 +85,29 @@ class AuthController extends ApiBaseController
 
             $params = Yii::$app->request->post();
 
-            // creating signup form object. if its financer then it will make object with scenario Financer to require organization fields
-            $model = !empty($params['user_type']) ? (($params['user_type'] == 'Financer') ? new SignupForm(['scenario' => 'Financer']) : new SignupForm()) : new SignupForm();
+            switch ($params['user_type']) {
+                case 'Financer':
+                    $model = new SignupForm(['scenario' => 'Financer']);
+                    break;
+                case 'Dealer':
+                    $model = new SignupForm(['scenario' => 'Dealer']);
+                    break;
+                default:
+                    $model = new SignupForm();
+                    break;
+            }
+
 
             // loading data from post request to model
-            if ($model->load(Yii::$app->request->post(), '')) {
+            if ($model->load(Yii::$app->request->post())) {
 
                 // if source empty then assign user ip address
                 $model->source = !empty($model->source) ? $model->source : Yii::$app->getRequest()->getUserIP();
+                if (!empty($model->ref_id)) {
+                    $gen = self::_genUserPass($params);
+                    $model->username = $gen['username'];
+                    $model->password = $gen['pass'];
+                }
 
                 // if model validated then it will save data
                 if ($model->validate()) {
@@ -129,6 +142,21 @@ class AuthController extends ApiBaseController
             return ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception->getMessage(), true)];
         }
     }
+
+    private function _genUserPass($data)
+    {
+        while (true) {
+            $username = $data['organization_name'] . rand(100, 1000);
+            $checkUsers = Users::findOne(['username' => $username]);
+            if (!$checkUsers) {
+                $res['username'] = $username;
+                break;
+            }
+        }
+        $res['pass'] = $data['phone'];
+        return $res;
+    }
+
 
     // this action is used to validate fields like username, email, phone etc.
     public function actionValidate()
