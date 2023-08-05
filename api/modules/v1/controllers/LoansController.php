@@ -7,11 +7,10 @@ namespace api\modules\v1\controllers;
 use api\modules\v1\models\Candidates;
 use api\modules\v2\models\LoanApplicationsForm;
 use api\modules\v3\models\OrganizationList;
-use common\models\AssignedCollegeCourses;
 use common\models\CertificateTypes;
 use common\models\CollegeCoursesPool;
-use common\models\Countries;
 use common\models\EducationLoanPayments;
+use common\models\EducationLoanTypes;
 use common\models\LeadsApplications;
 use common\models\LeadsCollegePreference;
 use common\models\LoanApplicantResidentialInfo;
@@ -19,22 +18,20 @@ use common\models\LoanApplications;
 use common\models\LoanApplicationsCollegePreference;
 use common\models\LoanCandidateEducation;
 use common\models\LoanCertificates;
-use common\models\PathToOpenLeads;
-use common\models\PressReleasePubliser;
-use common\models\ReferralReviewTracking;
-use common\models\Utilities;
 use common\models\LoanCoApplicants;
 use common\models\LoanQualificationType;
-use common\models\LoanTypes;
 use common\models\OrganizationFeeComponents;
 use common\models\Organizations;
 use common\models\PathToClaimOrgLoanApplication;
+use common\models\PathToOpenLeads;
 use common\models\PathToUnclaimOrgLoanApplication;
+use common\models\PressReleasePubliser;
 use common\models\spaces\Spaces;
 use common\models\UserAccessTokens;
-use yii\helpers\Url;
+use common\models\Utilities;
 use Yii;
 use yii\filters\auth\HttpBearerAuth;
+use yii\helpers\Url;
 
 class LoansController extends ApiBaseController
 {
@@ -163,7 +160,7 @@ class LoansController extends ApiBaseController
             ->asArray()
             ->all();
 
-        $loan_types = LoanTypes::find()
+        $loan_types = EducationLoanTypes::find()
             ->select(['loan_type_enc_id', 'loan_name'])
             ->asArray()
             ->all();

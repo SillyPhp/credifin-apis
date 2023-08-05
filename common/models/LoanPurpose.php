@@ -16,7 +16,7 @@ namespace common\models;
  * @property OrganizationFeeComponents $feeComponentEnc
  * @property Users $createdBy
  * @property LoanApplications $loanAppEnc
- * @property FinancerLoanPurpose $financerLoanPurposeEnc
+ * @property FinancerLoanProductPurpose $financerLoanPurposeEnc
  */
 class LoanPurpose extends \yii\db\ActiveRecord
 {
@@ -41,7 +41,7 @@ class LoanPurpose extends \yii\db\ActiveRecord
             [['fee_component_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationFeeComponents::className(), 'targetAttribute' => ['fee_component_enc_id' => 'fee_component_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
-            [['financer_loan_purpose_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanPurpose::className(), 'targetAttribute' => ['financer_loan_purpose_enc_id' => 'financer_loan_purpose_enc_id']],
+            [['financer_loan_purpose_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProductPurpose::className(), 'targetAttribute' => ['financer_loan_purpose_enc_id' => 'financer_loan_product_purpose_enc_id']],
         ];
     }
 
@@ -74,6 +74,6 @@ class LoanPurpose extends \yii\db\ActiveRecord
      */
     public function getFinancerLoanPurposeEnc()
     {
-        return $this->hasOne(FinancerLoanPurpose::className(), ['financer_loan_purpose_enc_id' => 'financer_loan_purpose_enc_id']);
+        return $this->hasOne(FinancerLoanProductPurpose::className(), ['financer_loan_product_purpose_enc_id' => 'financer_loan_purpose_enc_id']);
     }
 }

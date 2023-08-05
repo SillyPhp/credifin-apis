@@ -90,9 +90,9 @@ namespace common\models;
  * @property AssignedFinancerLoanPartners[] $assignedFinancerLoanPartners
  * @property AssignedFinancerLoanPartners[] $assignedFinancerLoanPartners0
  * @property AssignedFinancerLoanPartners[] $assignedFinancerLoanPartners1
- * @property AssignedFinancerLoanType[] $assignedFinancerLoanTypes
- * @property AssignedFinancerLoanType[] $assignedFinancerLoanTypes0
- * @property AssignedFinancerLoanType[] $assignedFinancerLoanTypes1
+* mas * @property AssignedFinancerLoanTypes[] $assignedFinancerLoanTypes
+ * @property AssignedFinancerLoanTypes[] $assignedFinancerLoanTypes0
+ * @property AssignedFinancerLoanTypes[] $assignedFinancerLoanTypes1
  * @property AssignedIndianJobs[] $assignedIndianJobs
  * @property AssignedIndianJobs[] $assignedIndianJobs0
  * @property AssignedIndustries[] $assignedIndustries
@@ -4300,7 +4300,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getAssignedFinancerLoanTypes()
     {
-        return $this->hasMany(AssignedFinancerLoanType::className(), ['created_by' => 'user_enc_id']);
+        return $this->hasMany(AssignedFinancerLoanTypes::className(), ['created_by' => 'user_enc_id']);
     }
 
     /**
@@ -4308,7 +4308,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getAssignedFinancerLoanTypes0()
     {
-        return $this->hasMany(AssignedFinancerLoanType::className(), ['updated_by' => 'user_enc_id']);
+        return $this->hasMany(AssignedFinancerLoanTypes::className(), ['updated_by' => 'user_enc_id']);
     }
 
     /**
@@ -4316,7 +4316,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getAssignedFinancerLoanTypes1()
     {
-        return $this->hasMany(AssignedFinancerLoanType::className(), ['financer_enc_id' => 'user_enc_id']);
+        return $this->hasMany(AssignedFinancerLoanTypes::className(), ['financer_enc_id' => 'user_enc_id']);
     }
 
     /**

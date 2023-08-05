@@ -6,25 +6,22 @@ use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
 use common\models\Countries;
 use common\models\EducationLoanPayments;
+use common\models\EducationLoanTypes;
 use common\models\extended\EducationLoan;
 use common\models\extended\PaymentsModule;
 use common\models\LoanApplicationOptions;
 use common\models\LoanApplications;
 use common\models\LoanApplicationSchoolFee;
-use common\models\LoanApplicationsCollegePreference;
 use common\models\LoanApplicationTeacherLoan;
 use common\models\LoanCoApplicants;
 use common\models\LoanPurpose;
-use common\models\LoanTypes;
 use common\models\OrganizationFeeAmount;
 use common\models\PathToClaimOrgLoanApplication;
 use common\models\PathToOpenLeads;
 use common\models\PathToUnclaimOrgLoanApplication;
 use common\models\Referral;
-use common\models\User;
 use common\models\Users;
 use Yii;
-use yii\base\Model;
 
 class LoanApplicationsForm extends LoanApplications
 {
@@ -49,7 +46,7 @@ class LoanApplicationsForm extends LoanApplications
 
     public function add($addmission_taken = 1, $userId, $college_id, $source = 'Mec', $is_claimed = 1, $course_name = null, $pref = [], $refferal_id = null, $is_applicant = null, $getLender = null)
     {
-        $loan_type = LoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
+        $loan_type = EducationLoanTypes::findOne(['loan_name' => 'Annual'])->loan_type_enc_id;
         $country_enc_id = Countries::findOne(['name' => 'India'])->country_enc_id;
         if (empty($this->country_enc_id)) {
             $this->country_enc_id = $country_enc_id;

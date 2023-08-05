@@ -7,7 +7,7 @@ use api\modules\v4\models\LoanApplication;
 use api\modules\v4\models\SignupForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedDeals;
-use common\models\AssignedFinancerLoanType;
+use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
 use common\models\ClaimedDeals;
@@ -17,36 +17,35 @@ use common\models\EsignOrganizationTracking;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\LoanApplicationCommentsExtended;
 use common\models\extended\LoanApplicationNotificationsExtended;
-use common\models\extended\SharedLoanApplicationsExtended;
-use common\models\FinancerAssignedDesignations;
 use common\models\extended\LoanApplicationPartnersExtended;
 use common\models\extended\LoanApplicationPdExtended;
 use common\models\extended\LoanApplicationReleasePaymentExtended;
 use common\models\extended\LoanApplicationTvrExtended;
+use common\models\extended\SharedLoanApplicationsExtended;
+use common\models\FinancerAssignedDesignations;
 use common\models\FinancerVehicleBrand;
 use common\models\LoanApplications;
-use common\models\LoanCoApplicants;
 use common\models\LoanCertificates;
+use common\models\LoanCoApplicants;
 use common\models\LoanSanctionReports;
-use common\models\LoanType;
+use common\models\LoanTypes;
 use common\models\OrganizationLocations;
 use common\models\Organizations;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\SelectedServices;
 use common\models\SharedLoanApplications;
+use common\models\spaces\Spaces;
 use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
-use yii\web\UploadedFile;
-use yii\db\Expression;
 use common\models\Utilities;
-use yii\filters\VerbFilter;
 use Yii;
-use common\models\spaces\Spaces;
+use yii\db\Expression;
 use yii\filters\Cors;
+use yii\filters\VerbFilter;
 use yii\helpers\Url;
-use yii\filters\ContentNegotiator;
+use yii\web\UploadedFile;
 
 class CompanyDashboardController extends ApiBaseController
 {
@@ -88,6 +87,9 @@ class CompanyDashboardController extends ApiBaseController
                 'update-tvr' => ['POST', 'OPTIONS'],
                 'update-pd' => ['POST', 'OPTIONS'],
                 'update-release-payment' => ['POST', 'OPTIONS'],
+                'financer-vehicle-brand' => ['POST', 'OPTIONS'],
+                'get-financer-vehicle-brand' => ['POST', 'OPTIONS'],
+                'delete-financer-vehicle-brand' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -200,8 +202,6 @@ class CompanyDashboardController extends ApiBaseController
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-
-
     }
 
     // getting loan applications by loan status
@@ -249,7 +249,7 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // getting and returning loan_type_enc_id
-            $loan_id = LoanType::findOne(['name' => $params['loan_type'], 'is_deleted' => 0]);
+            $loan_id = LoanTypes::findOne(['name' => $params['loan_type'], 'is_deleted' => 0]);
 
             return $this->response(200, ['status' => 200, 'loans' => $loan_status, 'loan_id' => $loan_id->loan_type_enc_id]);
 
@@ -839,12 +839,12 @@ class CompanyDashboardController extends ApiBaseController
                         'CASE WHEN k1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", k1.image_location, "/", k1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(k1.first_name," ",k1.last_name), "&size=200&rounded=false&background=", REPLACE(k1.initials_color, "#", ""), "&color=ffffff") END image'
                     ])->joinWith(['sharedTo k1'], false);
                 }])
-//                ->joinWith(['loanPayments lpm' => function($lpm){
-//                    $lpm->select(['lpm.loan_app_enc_id', 'lpm.payment_mode', 'lpm.payment_status']);
-//                    $lpm->orderBy(['lpm.created_on' => SORT_DESC]);
-//                }])
+                ->joinWith(['assignedLoanPayments p' => function ($p) {
+                    $p->select(['p.loan_app_enc_id', 'p1.payment_mode', 'p1.payment_status']);
+                    $p->orderBy(['p1.created_on' => SORT_DESC]);
+                    $p->joinWith(['loanPaymentsEnc p1'], false);
+                }])
                 ->joinWith(['loanProductsEnc lp'], false)
-                // if verification is true then sending list of TVR verification
                 ->joinWith(['loanApplicationTvrs l' => function ($m) {
                     $m->select(['l.loan_application_tvr_enc_id', 'l.loan_app_enc_id', 'l.status', 'l.assigned_to']);
                 }])
@@ -854,9 +854,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanApplicationReleasePayments n' => function ($m) {
                     $m->select(['n.loan_application_release_payment_enc_id', 'n.loan_app_enc_id', 'n.status', 'n.assigned_to']);
                 }])
-
 //                ->joinWith(['loanApplicationVerifications lav' => function($lav){
-//
 //                }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()
@@ -920,7 +918,7 @@ class CompanyDashboardController extends ApiBaseController
                 $loan['loan_partners'] = $this->__applicationPartners($user, $loan['loan_app_enc_id']);
 
                 // getting loan type code
-                $loan['loan_type_code'] = LoanType::findOne(['name' => $loan['loan_type']])->value;
+                $loan['loan_type_code'] = LoanTypes::findOne(['name' => $loan['loan_type']])->value;
 
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }
@@ -1536,7 +1534,7 @@ class CompanyDashboardController extends ApiBaseController
         if ($detail) {
 
             // getting financer loan types
-            $detail['assignedFinancerLoanTypes'] = AssignedFinancerLoanType::find()
+            $detail['assignedFinancerLoanTypes'] = AssignedFinancerLoanTypes::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name loan_type'])
                 ->joinWith(['loanTypeEnc b'], false)
@@ -2534,7 +2532,6 @@ class CompanyDashboardController extends ApiBaseController
 
     }
 
-//
     public function actionEmployeeLoanList()
     {
         if ($user = $this->isAuthorized()) {
@@ -3018,4 +3015,103 @@ class CompanyDashboardController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'message' => $save . 'd successfully']);
     }
+
+    public function actionFinancerVehicleBrand()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $brand_name = Yii::$app->request->post('brand_name');
+            $org_id = Yii::$app->request->post('organization_enc_id');
+
+            $logoModel = new FinancerVehicleBrand();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $logoModel->financer_vehicle_brand_enc_id = $utilitiesModel->encrypt();
+            $logoModel->brand_name = $brand_name;
+            $logoModel->organization_enc_id = $org_id;
+            $logoModel->created_by = $user->user_enc_id;
+            $logoModel->created_on = date('Y-m-d H:i:s');
+
+            if ($logo_image = UploadedFile::getInstanceByName('logo_image')) {
+                $logo = Yii::$app->getSecurity()->generateRandomString() . '.' . $logo_image->extension;
+                $logo_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->vehicle_brands->logo . $logo_location;
+
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $result = $my_space->uploadFileSources($logo_image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $logo, "public", ['params' => ['contentType' => $logo_image->type]]);
+
+                $logoModel->logo = $logo;
+                $logoModel->logo_location = $logo_location;
+            }
+
+            if (!$logoModel->save()) {
+                $transaction->rollback();
+                return $this->response(500, ['status' => 500, 'message' => 'An error occurred while saving the vehicle data.', 'error' => $logoModel->getErrors()]);
+            }
+
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'brand_name' => $brand_name]);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return ['status' => 500, 'message' => 'An error occurred', 'error' => json_decode($exception->getMessage(), true)];
+        }
+    }
+
+
+    public function actionGetFinancerVehicleBrand()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $financerList = FinancerVehicleBrand::find()
+            ->alias('a')
+            ->select([
+                'a.financer_vehicle_brand_enc_id',
+                'a.brand_name',
+                'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->vehicle_brands->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'
+            ])
+            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
+            ->asArray()
+            ->all();
+
+        if ($financerList) {
+            return $this->response(200, ['status' => 200, 'financer_list' => $financerList]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'Not found']);
+    }
+
+    public function actionDeleteFinancerVehicleBrand()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+
+        // checking id exists or not
+        if (empty($params['financer_vehicle_brand_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "financer_vehicle_brand_enc_id"']);
+        }
+
+        $vehicle_enc_id = FinancerVehicleBrand::findOne(['financer_vehicle_brand_enc_id' => $params['financer_vehicle_brand_enc_id']]);
+
+        if (!empty($vehicle_enc_id)) {
+            $vehicle_enc_id->is_deleted = 1;
+            $vehicle_enc_id->updated_by = $user->user_enc_id;
+            $vehicle_enc_id->updated_on = date('Y-m-d H:i:s');
+            if (!$vehicle_enc_id->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $vehicle_enc_id->getErrors()]);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
 }

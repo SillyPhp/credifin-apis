@@ -5,6 +5,7 @@ namespace api\modules\v4\models;
 use common\models\EmiCollection;
 use common\models\spaces\Spaces;
 use common\models\Utilities;
+use Razorpay\Api\Api;
 use Yii;
 use yii\base\Model;
 
@@ -33,6 +34,9 @@ class EmiCollectionForm extends Model
     public $latitude;
     public $longitude;
     public $branch_enc_id;
+    public $org_id;
+    public $brand;
+    public $desc;
 
     public function formName()
     {
@@ -42,7 +46,13 @@ class EmiCollectionForm extends Model
     public function rules()
     {
         return [
-            [['customer_name', 'loan_account_number', 'phone', 'amount', 'loan_type', 'address', 'state', 'city', 'postal_code', 'latitude', 'longitude', 'payment_method', 'branch_enc_id'], 'required'],
+            [['customer_name', 'phone', 'amount', 'loan_type', 'address', 'state', 'city', 'postal_code', 'latitude', 'longitude', 'payment_method', 'branch_enc_id'], 'required'],
+            [['desc', 'org_id', 'brand'], 'required', 'when' => function ($model) {
+                return $model->payment_method == 'Online Payment';
+            }],
+            [['loan_account_number'], 'required', 'when' => function ($model) {
+                return $model->payment_method != 'Online Payment';
+            }],
             [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
@@ -52,8 +62,6 @@ class EmiCollectionForm extends Model
 
     public function save($user_id)
     {
-        Yii::$app->cache->flush();
-
         $model = new EmiCollection();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -73,10 +81,8 @@ class EmiCollectionForm extends Model
         $model->pincode = $this->postal_code;
         $model->latitude = $this->latitude;
         $model->longitude = $this->longitude;
-        $model->created_by = $user_id;
-        $model->updated_by = $user_id;
-        $model->created_on = date('Y-m-d h:i:s');
-        $model->updated_on = date('Y-m-d h:i:s');
+        $model->created_by = $model->updated_by = $user_id;
+        $model->created_on = $model->updated_on = date('Y-m-d h:i:s');
         if ($this->ptp_amount) {
             $model->ptp_amount = $this->ptp_amount;
         }
@@ -127,8 +133,52 @@ class EmiCollectionForm extends Model
         if (!$model->save()) {
             return ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()];
         }
-        return ['status' => 200, 'message' => 'Saved Successfully'];
+
+        $return = ['status' => 200, 'message' => 'Saved Successfully'];
+
+        if ($model->payment_method == 'Online Payment') {
+            $options = [];
+            $options['emi_collection_enc_id'] = $model->emi_collection_enc_id;
+            $options['user_id'] = $user_id;
+            $options['org_id'] = $this->org_id;
+            $options['amount'] = $this->amount;
+            $options['description'] = 'Emi collection for ' . $this->loan_type;
+            $options['name'] = $this->customer_name;
+            $options['contact'] = $this->phone;
+            $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
+            $options['brand'] = $this->brand;
+            $options['purpose'] = $this->loan_type;
+            $links = self::createLinks($options);
+            if ($links['status'] != 200) {
+                return $links;
+            }
+            $return['links'] = $links['data'];
+        }
+        return $return;
     }
+
+    private function createLinks($options)
+    {
+        $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
+        if (!$keys) {
+            return ['status' => 500, 'message' => 'an error occurred while fetching razorpay credentials'];
+        }
+        $api_key = $keys['api_key'];
+        $api_secret = $keys['api_secret'];
+        $api = new Api($api_key, $api_secret);
+        $options['close_by'] = time() + 24 * 60 * 60;
+        $data['qr'] = \common\models\payments\Payments::createQr($api, $options);
+        if (!$data['qr']) {
+            return ['status' => 500, 'message' => 'an error occurred while creating qr'];
+        }
+        $options['close_by'] = time() + 24 * 60 * 60 * 7;
+        $data['link'] = \common\models\payments\Payments::createLink($api, $options);
+        if (!$data['link']) {
+            return ['status' => 500, 'message' => 'an error occurred while creating link'];
+        }
+        return ['status' => 200, 'data' => $data];
+    }
+
 
     private function fileUpload($img_obj, $image, $image_location)
     {
