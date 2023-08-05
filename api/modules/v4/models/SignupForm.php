@@ -14,9 +14,9 @@ use common\models\Usernames;
 use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
+use common\models\Utilities;
 use Yii;
 use yii\base\Model;
-use common\models\Utilities;
 
 // this signup form is used to signup users with type Individual, Financer, Employee, DSA, Dealer, Connector
 class SignupForm extends Model
@@ -36,16 +36,28 @@ class SignupForm extends Model
     public $user_type;
     public $user_id;
     public $organization_id;
+    public $vehicle_types;
+    public $brands;
+    public $category;
+    public $company_type;
+    public $trade_certificate;
 
     // rules for form
     public function rules()
     {
         return [
-            [['username', 'first_name', 'last_name', 'phone', 'password', 'source'], 'required'],
+            [['username', 'first_name', 'last_name', 'phone', 'password', 'source', 'email'], 'required'],
             [['organization_name', 'organization_email', 'organization_phone'], 'required', 'on' => 'Financer'],
+            [['organization_name', 'vehicle_types', 'brands', 'category', 'company_type', 'trade_certificate'], 'required', 'on' => 'Dealer'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'trim'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
+            [['vehicle_types', 'brands'], function () {
+                if (!is_array($this->brands) && !is_array($this->vehicle_types)) {
+                    $this->addError('vehicle_types', 'It must be an array!');
+                    $this->addError('brands', 'It must be an array!');
+                }
+            }],
             [['username'], 'string', 'length' => [3, 20]],
             [['email', 'organization_email'], 'string', 'max' => 100],
             [['password'], 'string', 'length' => [8, 20]],
@@ -61,6 +73,11 @@ class SignupForm extends Model
             ['phone', 'unique', 'targetClass' => Candidates::className(), 'targetAttribute' => ['phone' => 'phone'], 'message' => 'This phone number has already been used.'],
             ['username', 'unique', 'targetClass' => Usernames::className(), 'targetAttribute' => ['username' => 'username'], 'message' => 'This username has already been taken.'],
         ];
+    }
+
+    public function formName()
+    {
+        return '';
     }
 
     // saving data
