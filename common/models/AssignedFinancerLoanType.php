@@ -17,10 +17,10 @@ namespace common\models;
  * @property int $is_deleted 0 as false, 1 as true
  *
  * @property AssignedFinancerLoanPartners[] $assignedFinancerLoanPartners
- * @property LoanTypes $loanTypeEnc
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property Organizations $organizationEnc
+ * @property LoanType $loanTypeEnc
  * @property FinancerLoanDocuments[] $financerLoanDocuments
  * @property FinancerLoanPurpose[] $financerLoanPurposes
  * @property FinancerLoanStatus[] $financerLoanStatuses
@@ -46,29 +46,10 @@ class AssignedFinancerLoanType extends \yii\db\ActiveRecord
             [['created_on', 'updated_on'], 'safe'],
             [['assigned_financer_enc_id', 'organization_enc_id', 'loan_type_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['assigned_financer_enc_id'], 'unique'],
-            [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanTypes::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'assigned_financer_enc_id' => 'Assigned Financer Enc ID',
-            'organization_enc_id' => 'Organization Enc ID',
-            'loan_type_enc_id' => 'Loan Type Enc ID',
-            'status' => 'Status',
-            'created_on' => 'Created On',
-            'created_by' => 'Created By',
-            'updated_by' => 'Updated By',
-            'updated_on' => 'Updated On',
-            'is_deleted' => 'Is Deleted',
+            [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanType::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
         ];
     }
 
@@ -78,14 +59,6 @@ class AssignedFinancerLoanType extends \yii\db\ActiveRecord
     public function getAssignedFinancerLoanPartners()
     {
         return $this->hasMany(AssignedFinancerLoanPartners::className(), ['assigned_financer_enc_id' => 'assigned_financer_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLoanTypeEnc()
-    {
-        return $this->hasOne(LoanTypes::className(), ['loan_type_enc_id' => 'loan_type_enc_id']);
     }
 
     /**
@@ -110,6 +83,14 @@ class AssignedFinancerLoanType extends \yii\db\ActiveRecord
     public function getOrganizationEnc()
     {
         return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanTypeEnc()
+    {
+        return $this->hasOne(LoanType::className(), ['loan_type_enc_id' => 'loan_type_enc_id']);
     }
 
     /**
