@@ -2,10 +2,8 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
- * This is the model class for table "lJCWPnNNVy3d95ppLp7M_loan_applications".
+ * This is the model class for table "{{%loan_applications}}".
  *
  * @property int $id
  * @property string $loan_app_enc_id
@@ -46,6 +44,9 @@ use Yii;
  * @property string $source
  * @property int $ask_guarantor_info 1 for yes 0 for no
  * @property string $deadline
+ * @property double $capital_roi
+ * @property string $capital_roi_updated_on
+ * @property string $capital_roi_updated_by
  * @property string $intake
  * @property string $td TD date
  * @property string $aadhaar_link_phone_number Aadhar Link Phone Number
@@ -71,6 +72,7 @@ use Yii;
  * @property int $is_deleted 0 as False, 1 as True
  * @property int $is_removed 0 as Permanently false 1 as Permanently True
  *
+ * @property AssignedLoanPayments[] $assignedLoanPayments
  * @property AssignedLoanProvider[] $assignedLoanProviders
  * @property BillDetails[] $billDetails
  * @property CreditLoanApplicationReports[] $creditLoanApplicationReports
@@ -94,20 +96,20 @@ use Yii;
  * @property FinancerLoanProducts $loanProductsEnc
  * @property Users $createdBy
  * @property Users $updatedBy
- * @property LoanTypes $loanTypeEnc
+ * @property EducationLoanTypes $loanTypeEnc
  * @property Organizations $collegeEnc
  * @property OrganizationLoanSchemes $currentScheme
  * @property Users $managedBy
  * @property Users $leadBy
  * @property LoanApplications $parentApplicationEnc
  * @property LoanApplications[] $loanApplications
+ * @property Users $capitalRoiUpdatedBy
  * @property LoanApplicationsCollegePreference[] $loanApplicationsCollegePreferences
  * @property LoanAuditTrail[] $loanAuditTrails
  * @property LoanCandidateEducation[] $loanCandidateEducations
  * @property LoanCertificates[] $loanCertificates
  * @property LoanCoApplicants[] $loanCoApplicants
  * @property LoanDisbursementSchedule[] $loanDisbursementSchedules
- * @property LoanPayments[] $loanPayments
  * @property LoanPurpose[] $loanPurposes
  * @property LoanSanctionReports[] $loanSanctionReports
  * @property LoanVerificationLocations[] $loanVerificationLocations
@@ -133,12 +135,12 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_app_enc_id', 'applicant_name', 'phone', 'source'], 'required'],
+            [['loan_app_enc_id', 'applicant_name', 'phone', 'source', 'loan_status_updated_on'], 'required'],
             [['had_taken_addmission', 'years', 'months', 'semesters', 'cibil_score', 'gender', 'ask_guarantor_info', 'status', 'loan_status', 'auto_assigned', 'is_deleted', 'is_removed'], 'integer'],
             [['employement_type', 'degree', 'candidate_status', 'candidate_sub_status', 'source', 'status_comments', 'loan_type', 'form_type', 'lender_reasons'], 'string'],
-            [['applicant_dob', 'candidate_status_date', 'deadline', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on'], 'safe'],
-            [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship', 'amount_verified'], 'number'],
-            [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'loan_products_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'cpa', 'created_by', 'updated_by', 'lead_application_enc_id'], 'string', 'max' => 100],
+            [['applicant_dob', 'candidate_status_date', 'deadline', 'capital_roi_updated_on', 'intake', 'td', 'created_on', 'updated_on', 'loan_status_updated_on'], 'safe'],
+            [['amount', 'yearly_income', 'amount_received', 'amount_due', 'scholarship', 'amount_verified', 'capital_roi'], 'number'],
+            [['loan_app_enc_id', 'parent_application_enc_id', 'current_scheme_id', 'college_enc_id', 'college_course_enc_id', 'loan_type_enc_id', 'loan_products_enc_id', 'applicant_name', 'image', 'image_location', 'applicant_current_city', 'email', 'capital_roi_updated_by', 'managed_by_refferal', 'managed_by', 'lead_by_refferal', 'lead_by', 'cpa', 'created_by', 'updated_by', 'lead_application_enc_id'], 'string', 'max' => 100],
             [['application_number'], 'string', 'max' => 50],
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
             [['aadhaar_number'], 'string', 'max' => 16],
@@ -151,7 +153,7 @@ class LoanApplications extends \yii\db\ActiveRecord
             [['loan_products_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => FinancerLoanProducts::className(), 'targetAttribute' => ['loan_products_enc_id' => 'financer_loan_product_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
-            [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanTypes::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
+            [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => EducationLoanTypes::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
             [['college_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['college_enc_id' => 'organization_enc_id']],
             [['current_scheme_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationLoanSchemes::className(), 'targetAttribute' => ['current_scheme_id' => 'scheme_enc_id']],
             [['managed_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['managed_by' => 'user_enc_id']],
@@ -349,7 +351,7 @@ class LoanApplications extends \yii\db\ActiveRecord
      */
     public function getLoanTypeEnc()
     {
-        return $this->hasOne(LoanTypes::className(), ['loan_type_enc_id' => 'loan_type_enc_id']);
+        return $this->hasOne(EducationLoanTypes::className(), ['loan_type_enc_id' => 'loan_type_enc_id']);
     }
 
     /**
@@ -446,14 +448,6 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanDisbursementSchedules()
     {
         return $this->hasMany(LoanDisbursementSchedule::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLoanPayments()
-    {
-        return $this->hasMany(LoanPayments::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**

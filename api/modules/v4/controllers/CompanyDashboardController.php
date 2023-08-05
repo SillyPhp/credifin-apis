@@ -28,7 +28,7 @@ use common\models\LoanApplications;
 use common\models\LoanCertificates;
 use common\models\LoanCoApplicants;
 use common\models\LoanSanctionReports;
-use common\models\LoanType;
+use common\models\LoanTypes;
 use common\models\OrganizationLocations;
 use common\models\Organizations;
 use common\models\Referral;
@@ -249,7 +249,7 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // getting and returning loan_type_enc_id
-            $loan_id = LoanType::findOne(['name' => $params['loan_type'], 'is_deleted' => 0]);
+            $loan_id = LoanTypes::findOne(['name' => $params['loan_type'], 'is_deleted' => 0]);
 
             return $this->response(200, ['status' => 200, 'loans' => $loan_status, 'loan_id' => $loan_id->loan_type_enc_id]);
 
@@ -920,7 +920,7 @@ class CompanyDashboardController extends ApiBaseController
                 $loan['loan_partners'] = $this->__applicationPartners($user, $loan['loan_app_enc_id']);
 
                 // getting loan type code
-                $loan['loan_type_code'] = LoanType::findOne(['name' => $loan['loan_type']])->value;
+                $loan['loan_type_code'] = LoanTypes::findOne(['name' => $loan['loan_type']])->value;
 
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }

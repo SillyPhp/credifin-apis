@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%assigned_financer_loan_types}}".
  *
@@ -21,7 +19,7 @@ use Yii;
  * @property Users $createdBy
  * @property Users $updatedBy
  * @property Organizations $organizationEnc
- * @property LoanType $loanTypeEnc
+ * @property LoanTypes $loanTypeEnc
  * @property FinancerLoanProducts[] $financerLoanProducts
  */
 class AssignedFinancerLoanTypes extends \yii\db\ActiveRecord
@@ -48,7 +46,7 @@ class AssignedFinancerLoanTypes extends \yii\db\ActiveRecord
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
-            [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanType::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
+            [['loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanTypes::className(), 'targetAttribute' => ['loan_type_enc_id' => 'loan_type_enc_id']],
         ];
     }
 
@@ -81,7 +79,7 @@ class AssignedFinancerLoanTypes extends \yii\db\ActiveRecord
      */
     public function getLoanTypeEnc()
     {
-        return $this->hasOne(LoanType::className(), ['loan_type_enc_id' => 'loan_type_enc_id']);
+        return $this->hasOne(LoanTypes::className(), ['loan_type_enc_id' => 'loan_type_enc_id']);
     }
 
     /**

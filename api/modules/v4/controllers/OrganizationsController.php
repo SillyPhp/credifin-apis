@@ -4,6 +4,7 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
 use common\models\AssignedFinancerLoanType;
+use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
 use common\models\CertificateTypes;
 use common\models\EmiCollection;
@@ -16,7 +17,7 @@ use common\models\FinancerLoanPurpose;
 use common\models\FinancerLoanStatus;
 use common\models\FinancerNoticeBoard;
 use common\models\LoanStatus;
-use common\models\LoanType;
+use common\models\LoanTypes;
 use common\models\OrganizationLocations;
 use common\models\spaces\Spaces;
 use common\models\UserRoles;
@@ -240,7 +241,7 @@ class OrganizationsController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            $allLoanTypes = LoanType::find()
+            $allLoanTypes = LoanTypes::find()
                 ->select(['name', 'loan_type_enc_id', new Expression('0 as status'),])
                 ->asArray()
                 ->all();

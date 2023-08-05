@@ -3,22 +3,19 @@
 namespace api\modules\v4\controllers;
 
 use common\models\AssignedFinancerLoanTypes;
-use common\models\extended\Industries;
 use common\models\FinancerLoanDocuments;
 use common\models\FinancerLoanProductDocuments;
 use common\models\FinancerLoanProductPurpose;
+use common\models\FinancerLoanProducts;
 use common\models\FinancerLoanProductStatus;
 use common\models\FinancerLoanPurpose;
 use common\models\FinancerLoanStatus;
-use common\models\LoanPayments;
-use common\models\LoanType;
-use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
+use common\models\LoanPayments;
 use common\models\LoanTypes1;
-use yii\filters\VerbFilter;
+use common\models\Utilities;
 use Yii;
 use yii\filters\Cors;
-use common\models\Utilities;
 
 class TestController extends ApiBaseController
 {

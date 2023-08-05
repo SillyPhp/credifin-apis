@@ -17,6 +17,7 @@ use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\EducationLoanPaymentsExtends;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
+use common\models\extended\LoanCoApplicantsExtended;
 use common\models\extended\LoanPaymentsExtends;
 use common\models\extended\LoanVerificationLocationsExtended;
 use common\models\FinancerLoanNegativeLocation;
@@ -1185,5 +1186,54 @@ class LoansController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'data' => $credit_report]);
         }
         return $this->response(404, ['status' => 404, 'message' => 'data not found']);
+    }
+
+    public function actionCheckNumber()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (isset($params['phone'])) {
+            $phoneNumber = $params['phone'];
+            $phoneExists = LoanApplications::find()
+                ->where(['or',
+                    ['phone' => $phoneNumber],
+                    ['phone' => '+91' . $phoneNumber],
+                    ['phone' => '+' . $phoneNumber],
+                    ['phone' => '91' . ltrim($phoneNumber, '91')],
+                    ['like', 'phone', ltrim($phoneNumber, '+91')],
+                    ['like', 'phone', ltrim($phoneNumber, '+')]
+                ])
+                ->exists();
+            if ($phoneExists) {
+                return $this->response(200, ['status' => 200, 'message' => 'Phone number already exists']);
+            } else {
+                return $this->response(201, ['status' => 201, 'message' => 'Phone number does not exist']);
+            }
+        }
+        if (isset($params['aadhaar_number'])) {
+            $aadhaarNumber = $params['aadhaar_number'];
+            $aadhaarExists = LoanCoApplicantsExtended::find()
+                ->where(['aadhaar_number' => $aadhaarNumber])
+                ->exists();
+            if ($aadhaarExists) {
+                return $this->response(200, ['status' => 200, 'message' => 'Aadhaar number already exists']);
+            } else {
+                return $this->response(201, ['status' => 201, 'message' => 'Aadhaar number does not exist']);
+            }
+        }
+        if (isset($params['pan_number'])) {
+            $panNumber = $params['pan_number'];
+            $panExists = LoanCoApplicantsExtended::find()
+                ->where(['pan_number' => $panNumber])
+                ->exists();
+            if ($panExists) {
+                return $this->response(200, ['status' => 200, 'message' => 'PAN number already exists']);
+            } else {
+                return $this->response(201, ['status' => 201, 'message' => 'PAN number does not exist']);
+            }
+        }
+        return $this->response(422, ['status' => 422, 'message' => 'phone or aadhaar_number or pan_number is missing']);
     }
 }
