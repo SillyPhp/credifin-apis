@@ -330,6 +330,30 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
+    public function actionAssignedFinancerLoanTypes()
+    {
+        if ($user = $this->isAuthorized()) {
+            $provider_id = $this->getFinancerId($user);
+
+            $assignedLoanTypes = AssignedFinancerLoanTypes::find()
+                ->alias('a')
+                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name'])
+                ->joinWith(['loanTypeEnc b'], false)
+                ->where(['a.organization_enc_id' => $provider_id, 'a.is_deleted' => 0, 'a.status' => 1])
+                ->asArray()
+                ->all();
+
+            if ($assignedLoanTypes) {
+                return $this->response(200, ['status' => 200, 'assignedLoanTypes' => $assignedLoanTypes]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
     public function actionGetDocumentsList()
     {
         if ($user = $this->isAuthorized()) {
