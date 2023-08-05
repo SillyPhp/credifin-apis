@@ -311,7 +311,7 @@ class OrganizationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $provider_id = $this->getFinancerId($user);
 
-            $assignedLoanTypes = AssignedFinancerLoanTypes::find()
+            $assignedLoanTypes = AssignedFinancerLoanType::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name'])
                 ->joinWith(['loanTypeEnc b'], false)
