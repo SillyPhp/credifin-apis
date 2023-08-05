@@ -119,9 +119,6 @@ class PaymentsController extends ApiBaseController
             $options['amount_enc_ids'] = $amount_enc_ids;
             $options['description'] = 'Login fee for loan application';
             $org_name = Organizations::findOne(['organization_enc_id' => $user->organization_enc_id])['name'];
-            if (empty($org_name)) {
-
-            }
             $options['brand'] = $org_name;
             $options['contact'] = $params['phone'];
             $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";

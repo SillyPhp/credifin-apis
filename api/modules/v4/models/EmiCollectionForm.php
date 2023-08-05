@@ -142,7 +142,7 @@ class EmiCollectionForm extends Model
             $options['user_id'] = $user_id;
             $options['org_id'] = $this->org_id;
             $options['amount'] = $this->amount;
-            $options['description'] = $this->desc;
+            $options['description'] = $this->loan_type;
             $options['name'] = $this->customer_name;
             $options['contact'] = $this->phone;
             $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";

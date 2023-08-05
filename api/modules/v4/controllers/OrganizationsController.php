@@ -10,6 +10,8 @@ use common\models\CertificateTypes;
 use common\models\EmiCollection;
 use common\models\FinancerLoanDocuments;
 use common\models\FinancerLoanProductDocuments;
+use common\models\FinancerLoanProductLoginFeeStructure;
+use common\models\FinancerLoanProductProcess;
 use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
 use common\models\FinancerLoanProductStatus;
