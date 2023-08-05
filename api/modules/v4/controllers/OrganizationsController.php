@@ -95,8 +95,8 @@ class OrganizationsController extends ApiBaseController
             $params = Yii::$app->request->post();
 
             // checking location_name, address, city_id
-            if (empty($params['location_name']) || empty($params['address']) || empty($params['city_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "location_name, address, city_id"']);
+            if (empty($params['location_name']) || empty($params['address']) || empty($params['city_id']) || empty($params['branch_code'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "location_name, address, city_id, branch_code"']);
             }
 
             // adding branch
@@ -106,6 +106,7 @@ class OrganizationsController extends ApiBaseController
             $orgLocations->location_enc_id = $utilitiesModel->encrypt();
             $orgLocations->organization_enc_id = $user->organization_enc_id;
             $orgLocations->location_name = $params['location_name'];
+            $orgLocations->branch_code = $params['branch_code'];
             $orgLocations->location_for = json_encode(['1']);
             $orgLocations->address = $params['address'];
             $orgLocations->city_enc_id = $params['city_id'];
@@ -146,6 +147,7 @@ class OrganizationsController extends ApiBaseController
             // updating data
             (!empty($params['location_name'])) ? $location->location_name = $params['location_name'] : "";
             (!empty($params['city_id'])) ? $location->city_enc_id = $params['city_id'] : "";
+            (!empty($params['branch_code'])) ? $location->branch_code = $params['branch_code'] : "";
             (!empty($params['address'])) ? $location->address = $params['address'] : "";
             (!empty($params['status'])) ? $location->status = $params['status'] : "";
             $location->last_updated_by = $user->user_enc_id;
@@ -183,7 +185,7 @@ class OrganizationsController extends ApiBaseController
 
             $locations = OrganizationLocations::find()
                 ->alias('a')
-                ->select(['a.location_enc_id', 'a.location_enc_id as id', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , ", ", b.name) as value', 'b.city_enc_id', 'a.status'])
+                ->select(['a.location_enc_id', 'a.location_enc_id as id', 'a.branch_code', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , ", ", b.name) as value', 'b.city_enc_id', 'a.status'])
                 ->joinWith(['cityEnc b'], false)
                 ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org])
                 ->asArray()
@@ -1034,8 +1036,7 @@ class OrganizationsController extends ApiBaseController
     }
 
 // get loan product details (updated)
-    public
-    function actionGetLoanProductDetails()
+    public function actionGetLoanProductDetails()
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
@@ -1082,8 +1083,7 @@ class OrganizationsController extends ApiBaseController
     }
 
 // create or update loan product purpose (updated)
-    public
-    function actionUpdateLoanProductPurpose()
+    public function actionUpdateLoanProductPurpose()
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
@@ -1141,8 +1141,7 @@ class OrganizationsController extends ApiBaseController
     }
 
 // remove loan product purpose (updated)
-    public
-    function actionRemoveLoanProductPurpose()
+    public function actionRemoveLoanProductPurpose()
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
@@ -1172,8 +1171,7 @@ class OrganizationsController extends ApiBaseController
     }
 
 // create or update loan product documents (updated)
-    public
-    function actionUpdateLoanProductDocuments()
+    public function actionUpdateLoanProductDocuments()
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
@@ -1253,8 +1251,7 @@ class OrganizationsController extends ApiBaseController
     }
 
 // remove loan product document (updated)
-    public
-    function actionRemoveLoanProductDocument()
+    public function actionRemoveLoanProductDocument()
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
@@ -1281,8 +1278,7 @@ class OrganizationsController extends ApiBaseController
     }
 
 // assign loan status (updated)
-    public
-    function actionUpdateLoanProductStatus()
+    public function actionUpdateLoanProductStatus()
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
@@ -1337,8 +1333,7 @@ class OrganizationsController extends ApiBaseController
     }
 
 // remove loan product status (updated)
-    public
-    function actionRemoveLoanProductStatus()
+    public function actionRemoveLoanProductStatus()
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
@@ -1369,8 +1364,7 @@ class OrganizationsController extends ApiBaseController
 
 
 // used to create product status
-    private
-    function __createStatus($data)
+    private function __createStatus($data)
     {
         $loan_status = new FinancerLoanProductStatus();
         $utilitiesModel = new \common\models\Utilities();
@@ -1387,8 +1381,7 @@ class OrganizationsController extends ApiBaseController
     }
 
 // used to create product document
-    private
-    function __createDocument($data)
+    private function __createDocument($data)
     {
         $loan_document = new FinancerLoanProductDocuments();
         $utilitiesModel = new \common\models\Utilities();
@@ -1406,8 +1399,7 @@ class OrganizationsController extends ApiBaseController
     }
 
 // used to create product purpose
-    private
-    function __createPurpose($data)
+    private function __createPurpose($data)
     {
         $purpose = new FinancerLoanProductPurpose();
         $utilitiesModel = new \common\models\Utilities();
@@ -1424,8 +1416,7 @@ class OrganizationsController extends ApiBaseController
         return ['status' => 200];
     }
 
-    public
-    function actionEmiCollection()
+    public function actionEmiCollection()
     {
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -1458,8 +1449,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    public
-    function actionGetCollectedEmiList()
+    public function actionGetCollectedEmiList()
     {
         if (!$this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -1482,8 +1472,7 @@ class OrganizationsController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'data' => $model, 'count' => $count]);
     }
 
-    public
-    function actionEmiDetail()
+    public function actionEmiDetail()
     {
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -1510,8 +1499,7 @@ class OrganizationsController extends ApiBaseController
 
     }
 
-    private
-    function _emiData($data, $id_type, $search = '')
+    private function _emiData($data, $id_type, $search = '')
     {
         // if id_type = 1 then loan account number if id_type = 0 then organization id, this function is being used for GetCollectedEmiList and EmiDetail
         if ($id_type == 1) {
@@ -1523,7 +1511,6 @@ class OrganizationsController extends ApiBaseController
 
         $model = EmiCollection::find()
             ->alias('a')
-            ->distinct()
             ->select(['a.emi_collection_enc_id', 'CONCAT(c.location_name , ", ", c1.name) as branch_name', 'a.customer_name', 'a.collection_date',
                 'a.loan_account_number', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.payment_method',
                 'a.other_payment_method', 'a.ptp_amount', 'a.ptp_date', 'd.designation', 'CONCAT(b.first_name, " ", b.last_name) name',
@@ -1560,6 +1547,7 @@ class OrganizationsController extends ApiBaseController
             $c->joinWith(['cityEnc c1'], false);
         }], false)
             ->orderBy(['a.created_on' => SORT_DESC])
+//            ->groupBy(['a.emi_collection_enc_id'])
             ->andWhere(['a.is_deleted' => 0])
             ->asArray()
             ->all();
@@ -1584,8 +1572,7 @@ class OrganizationsController extends ApiBaseController
 
     }
 
-    public
-    function actionDeleteEmi()
+    public function actionDeleteEmi()
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
@@ -1606,8 +1593,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    public
-    function actionEmiList()
+    public function actionEmiList()
     {
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
@@ -1633,8 +1619,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    public
-    function actionAddNotice()
+    public function actionAddNotice()
     {
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
@@ -1668,8 +1653,7 @@ class OrganizationsController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
     }
 
-    public
-    function actionGetNotice()
+    public function actionGetNotice()
     {
         if (!$this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
@@ -1694,8 +1678,7 @@ class OrganizationsController extends ApiBaseController
         return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
     }
 
-    public
-    function actionUpdateNotice()
+    public function actionUpdateNotice()
     {
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);

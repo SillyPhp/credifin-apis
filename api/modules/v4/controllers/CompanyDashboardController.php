@@ -88,6 +88,9 @@ class CompanyDashboardController extends ApiBaseController
                 'update-tvr' => ['POST', 'OPTIONS'],
                 'update-pd' => ['POST', 'OPTIONS'],
                 'update-release-payment' => ['POST', 'OPTIONS'],
+                'financer-vehicle-brand' => ['POST', 'OPTIONS'],
+                'get-financer-vehicle-brand' => ['POST', 'OPTIONS'],
+                'delete-financer-vehicle-brand' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -922,6 +925,25 @@ class CompanyDashboardController extends ApiBaseController
 
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
+
+    public function actionUniqueLink()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+        $result = $this->actionLoanDetail();
+        print_r($result);
+        die();
+
+        foreach ($result as $loanApp) {
+            $loan_app_enc_id = $loanApp['loan_app_enc_id'];
+
+            $link = Yii::$app->urlManager->createUrl(['company-dashboard/actionLoanDetail', 'loan_app_enc_id' => $loan_app_enc_id]);
+        }
+    }
+
 
     public function actionLoanCertificates()
     {
@@ -3023,4 +3045,102 @@ class CompanyDashboardController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'message' => $save . 'd successfully']);
     }
+
+    public function actionFinancerVehicleBrand()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $brand_name = Yii::$app->request->post('brand_name');
+            $org_id = Yii::$app->request->post('organization_enc_id');
+
+            $logoModel = new FinancerVehicleBrand();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $logoModel->financer_vehicle_brand_enc_id = $utilitiesModel->encrypt();
+            $logoModel->brand_name = $brand_name;
+            $logoModel->organization_enc_id = $org_id;
+            $logoModel->created_by = $user->user_enc_id;
+            $logoModel->created_on = date('Y-m-d H:i:s');
+
+            if ($logo_image = UploadedFile::getInstanceByName('logo_image')) {
+                $logo = Yii::$app->getSecurity()->generateRandomString() . '.' . $logo_image->extension;
+                $logo_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->vehicle_brands->logo . $logo_location;
+
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $result = $my_space->uploadFileSources($logo_image->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $logo, "public", ['params' => ['contentType' => $logo_image->type]]);
+
+                $logoModel->logo = $logo;
+                $logoModel->logo_location = $logo_location;
+            }
+
+            if (!$logoModel->save()) {
+                $transaction->rollback();
+                return $this->response(500, ['status' => 500, 'message' => 'An error occurred while saving the vehicle data.', 'error' => $logoModel->getErrors()]);
+            }
+
+            $transaction->commit();
+            return $this->response(200, ['status' => 200, 'brand_name' => $brand_name]);
+        } catch (\Exception $exception) {
+            $transaction->rollBack();
+            return ['status' => 500, 'message' => 'An error occurred', 'error' => json_decode($exception->getMessage(), true)];
+        }
+    }
+
+    public function actionGetFinancerVehicleBrand()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+        $financerList = FinancerVehicleBrand::find()
+            ->alias('a')
+            ->select([
+                'a.financer_vehicle_brand_enc_id',
+                'a.brand_name',
+                'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->vehicle_brands->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'
+            ])
+            ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
+            ->asArray()
+            ->all();
+
+        if ($financerList) {
+            return $this->response(200, ['status' => 200, 'financer_list' => $financerList]);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'Not found']);
+    }
+
+    public function actionDeleteFinancerVehicleBrand()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+
+        // checking id exists or not
+        if (empty($params['financer_vehicle_brand_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "financer_vehicle_brand_enc_id"']);
+        }
+
+        $vehicle_enc_id = FinancerVehicleBrand::findOne(['financer_vehicle_brand_enc_id' => $params['financer_vehicle_brand_enc_id']]);
+
+        if (!empty($vehicle_enc_id)) {
+            $vehicle_enc_id->is_deleted = 1;
+            $vehicle_enc_id->updated_by = $user->user_enc_id;
+            $vehicle_enc_id->updated_on = date('Y-m-d H:i:s');
+            if (!$vehicle_enc_id->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $vehicle_enc_id->getErrors()]);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully removed']);
+        }
+
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
 }
