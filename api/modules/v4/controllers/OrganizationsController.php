@@ -49,6 +49,7 @@ class OrganizationsController extends ApiBaseController
                 'get-loan-types' => ['POST', 'OPTIONS'],
                 'update-loan-type' => ['POST', 'OPTIONS'],
                 'assigned-loan-types' => ['POST', 'OPTIONS'],
+                'assigned-financer-loan-types' => ['POST', 'OPTIONS'],
                 'get-documents-list' => ['POST', 'OPTIONS'],
                 'assign-document' => ['POST', 'OPTIONS'],
                 'get-assigned-documents' => ['POST', 'OPTIONS'],
@@ -312,6 +313,30 @@ class OrganizationsController extends ApiBaseController
             $provider_id = $this->getFinancerId($user);
 
             $assignedLoanTypes = AssignedFinancerLoanType::find()
+                ->alias('a')
+                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name'])
+                ->joinWith(['loanTypeEnc b'], false)
+                ->where(['a.organization_enc_id' => $provider_id, 'a.is_deleted' => 0, 'a.status' => 1])
+                ->asArray()
+                ->all();
+
+            if ($assignedLoanTypes) {
+                return $this->response(200, ['status' => 200, 'assignedLoanTypes' => $assignedLoanTypes]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAssignedFinancerLoanTypes()
+    {
+        if ($user = $this->isAuthorized()) {
+            $provider_id = $this->getFinancerId($user);
+
+            $assignedLoanTypes = AssignedFinancerLoanTypes::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name'])
                 ->joinWith(['loanTypeEnc b'], false)
