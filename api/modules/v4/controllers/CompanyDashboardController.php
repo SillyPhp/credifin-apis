@@ -20,9 +20,11 @@ use common\models\extended\LoanApplicationNotificationsExtended;
 use common\models\extended\LoanApplicationPartnersExtended;
 use common\models\extended\LoanApplicationPdExtended;
 use common\models\extended\LoanApplicationReleasePaymentExtended;
+use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanApplicationTvrExtended;
 use common\models\extended\SharedLoanApplicationsExtended;
 use common\models\FinancerAssignedDesignations;
+use common\models\FinancerLoanProducts;
 use common\models\FinancerVehicleBrand;
 use common\models\LoanApplications;
 use common\models\LoanCertificates;
@@ -217,8 +219,8 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // if status is empty sending missing information loan_type
-            if (empty($params['loan_type'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_type"']);
+            if (empty($params['loan_product'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_product"']);
             }
 
             $limit = !empty($params['limit']) ? $params['limit'] : 10;
@@ -249,9 +251,9 @@ class CompanyDashboardController extends ApiBaseController
             }
 
             // getting and returning loan_type_enc_id
-            $loan_id = LoanTypes::findOne(['name' => $params['loan_type'], 'is_deleted' => 0]);
+//            $loan_id = FinancerLoanProducts::findOne(['name' => $params['loan_product'], 'is_deleted' => 0]);
 
-            return $this->response(200, ['status' => 200, 'loans' => $loan_status, 'loan_id' => $loan_id->loan_type_enc_id]);
+            return $this->response(200, ['status' => 200, 'loans' => $loan_status, 'loan_id' => $params['loan_product']]);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -464,11 +466,14 @@ class CompanyDashboardController extends ApiBaseController
         if (!empty($params['loan_type'])) {
             $loans->andWhere(['a.loan_type' => $params['loan_type']]);
         }
+        if (!empty($params['loan_product'])) {
+            $loans->andWhere(['a.loan_products_enc_id' => $params['loan_product']]);
+        }
 
         // fields search filter
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'application_number', 'amount', 'apply_date', 'loan_type'];
+            $a = ['applicant_name', 'application_number', 'amount', 'apply_date', 'loan_type', ' loan_products_enc_id'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -755,7 +760,7 @@ class CompanyDashboardController extends ApiBaseController
             $loan = LoanApplications::find()
                 ->alias('a')
                 ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number', 'a.capital_roi', 'a.capital_roi_updated_on', 'concat(ub.first_name," ",ub.last_name) as capital_roi_updated_by',
-                    'a.applicant_name',
+                    'a.applicant_name', 'lpe.name as loan_product',
                     'CASE WHEN ub.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", ub.image_location, "/", ub.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(ub.first_name," ",ub.last_name), "&size=200&rounded=false&background=", REPLACE(ub.initials_color, "#", ""), "&color=ffffff") END update_image'
                     , 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'lp.name as loan_product', 'a.gender', 'a.applicant_dob',
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address',
@@ -763,6 +768,7 @@ class CompanyDashboardController extends ApiBaseController
                     '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee', 'k.access'
 //                    'lpm.payment_status as login_fee'
                 ])
+                ->joinWith(['loanProductsEnc lpe'], false)
                 ->joinWith(['capitalRoiUpdatedBy ub'])
                 ->joinWith(['assignedLoanProviders b'], false)
                 ->joinWith(['loanCertificates c' => function ($c) {
@@ -930,6 +936,24 @@ class CompanyDashboardController extends ApiBaseController
 
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
+
+//    public function actionUniqueLink()
+//    {
+//        $loan_app_enc_id = Yii::$app->request->post('loan_app_enc_id');
+//
+//        if ($loan_app_enc_id !== null) {
+//            $loan = LoanApplications::find()
+//                ->alias('a')
+//                ->select(['a.phone'])
+//                ->joinWith([''])
+//                ->where(['loan_app_enc_id' => $loan_app_enc_id])
+//                ->asArray()
+//                ->all();
+//
+//            } else {
+//                return "Loan application not found.";
+//            }
+//    }
 
     public function actionLoanCertificates()
     {
@@ -2216,6 +2240,7 @@ class CompanyDashboardController extends ApiBaseController
                     if (!empty($roleUnderId) || $roleUnderId != null) {
                         $i->andWhere(['i.provider_enc_id' => $roleUnderId]);
                     }
+
                 }], false)
                 ->andWhere(['a.is_deleted' => 0, 'a.form_type' => 'others']);
 
@@ -2233,8 +2258,10 @@ class CompanyDashboardController extends ApiBaseController
                 $stats->orWhere(['a.loan_app_enc_id' => $shared_apps['app_ids']]);
             }
 
-            if (!empty($params['loan_type'])) {
-                $stats->andWhere(['a.loan_type' => $params['loan_type']]);
+            if (!empty($params['loan_product'])) {
+                $stats->andWhere(['a.loan_products_enc_id' => $params['loan_product']]);
+                $product_name = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $params['loan_product']]);
+
             }
 
             $stats = $stats
@@ -2242,7 +2269,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            return $this->response(200, ['status' => 200, 'stats' => $stats]);
+            return $this->response(200, ['status' => 200, 'stats' => $stats, 'product_name' => $product_name ? $product_name->name : '']);
 
 
         } else {
@@ -2260,14 +2287,12 @@ class CompanyDashboardController extends ApiBaseController
             $identity = $user->user_enc_id;
 
             // checking if already exists
-            $exist = ColumnPreferences::findOne(['user_enc_id' => $user->user_enc_id, 'loan_type_enc_id' => $params['loan_type_enc_id'], 'is_deleted' => 0]);
-
-            if (!empty($params['disabled_fields'])) {
+            $exist = ColumnPreferences::find()->where(['user_enc_id' => $user->user_enc_id, 'loan_product_enc_id' => $params['loan_product_enc_id']])->asArray()->one();
+            if (empty($params['disabled_fields'])) {
                 return $this->response(422, ['status' => 422, 'message' => 'missing information "disabled_fields"']);
             }
 
             if ($exist) {
-
                 // query to update disabled fields
                 $query = Yii::$app->db->createCommand()
                     ->update(ColumnPreferences::tableName(), ['disabled_fields' => $params['disabled_fields'], 'updated_by' => $identity, 'updated_on' => date('Y-m-d H:i:s')], ['user_enc_id' => $identity, 'column_preference_enc_id' => $exist['column_preference_enc_id']])
@@ -2278,18 +2303,19 @@ class CompanyDashboardController extends ApiBaseController
                     return $this->response(500, ['status' => 500, 'title' => 'Error', 'message' => 'An error has occurred. Please try again.']);
                 }
             } else {
-
                 // saving column preferences
                 $preference = new ColumnPreferences();
                 $utilitiesModel = new \common\models\Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $preference->column_preference_enc_id = $utilitiesModel->encrypt();
                 $preference->user_enc_id = $identity;
-                $preference->loan_type_enc_id = $params['loan_type_enc_id'];
+                $preference->loan_product_enc_id = $params['loan_product_enc_id'];
                 $preference->created_by = $identity;
                 $preference->created_on = date('Y-m-d H:i:s');
                 $preference->disabled_fields = $params['disabled_fields'];
                 if (!$preference->save()) {
+//                    print_r( $preference->loan_product_enc_id);
+//                    die();
                     return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $preference->getErrors()]);
                 }
 
@@ -2305,19 +2331,18 @@ class CompanyDashboardController extends ApiBaseController
     public function actionGetColumnPreference()
     {
         if ($user = $this->isAuthorized()) {
-
             $params = Yii::$app->request->post();
 
-            // checking loan_type_id
-            if (!empty($params['loan_type_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_type_id"']);
+            // checking loan_product_enc_id
+            if (empty($params['loan_product_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_product_enc_id"']);
             }
 
             // fetching data
-            $fetch = ColumnPreferences::findOne(['user_enc_id' => $user->user_enc_id, 'loan_type_enc_id' => $params['loan_type_id']]);
+            $fetch = ColumnPreferences::find()->where(['user_enc_id' => $user->user_enc_id, 'loan_product_enc_id' => $params['loan_product_enc_id']])->asArray()->all();
 
             if ($fetch) {
-                return $this->response(200, ['status' => 200, 'columns' => json_decode($fetch['disabled_fields'])]);
+                return $this->response(200, ['status' => 200, 'columns' => json_decode($fetch[0]['disabled_fields'])]);
             }
 
             return $this->response(404, ['status' => 404, 'message' => 'Preference not found']);
@@ -2696,8 +2721,8 @@ class CompanyDashboardController extends ApiBaseController
             if ($shared_apps['app_ids']) {
                 $employeeAmount->orWhere(['b.loan_app_enc_id' => $shared_apps['app_ids']]);
             }
-            if (!empty($params['loan_type'])) {
-                $employeeAmount->andWhere(['b.loan_type' => $params['loan_type']]);
+            if (!empty($params['loan_product'])) {
+                $employeeAmount->andWhere(['b.loan_products_enc_id' => $params['loan_product']]);
             }
             if (!empty($params['branch_name'])) {
                 $employeeAmount->andWhere(['i.branch_enc_id' => $params['branch_name']]);
@@ -3061,7 +3086,6 @@ class CompanyDashboardController extends ApiBaseController
             return ['status' => 500, 'message' => 'An error occurred', 'error' => json_decode($exception->getMessage(), true)];
         }
     }
-
 
     public function actionGetFinancerVehicleBrand()
     {
