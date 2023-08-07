@@ -20,7 +20,6 @@ use common\models\extended\LoanApplicationNotificationsExtended;
 use common\models\extended\LoanApplicationPartnersExtended;
 use common\models\extended\LoanApplicationPdExtended;
 use common\models\extended\LoanApplicationReleasePaymentExtended;
-use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanApplicationTvrExtended;
 use common\models\extended\SharedLoanApplicationsExtended;
 use common\models\FinancerAssignedDesignations;
@@ -400,8 +399,7 @@ class CompanyDashboardController extends ApiBaseController
                     ['not', ['a.loan_type' => 'Loan Against Property']],
                     ['>=', 'a.loan_status_updated_on', '2023-07-01 00:00:00']
                 ],
-                [
-                    'or',
+                ['or',
                     ['a.loan_type' => null],
                     ['a.loan_type' => '']
                 ]
@@ -2393,6 +2391,11 @@ class CompanyDashboardController extends ApiBaseController
                         ['and',
                             ['not', ['c.loan_type' => 'Loan Against Property']],
                             ['between', 'c.created_on', $nlap, $params['end_date']]
+                        ],
+                        [
+                            'or',
+                            ['c.loan_type' => null],
+                            ['c.loan_type' => '']
                         ]
                     ]);
                     $c->joinWith(['assignedLoanProviders c1' => function ($c1) {
@@ -2744,6 +2747,11 @@ class CompanyDashboardController extends ApiBaseController
                     ['and',
                         ['not', ['b.loan_type' => 'Loan Against Property']],
                         ['between', 'b.loan_status_updated_on', $nlap, $params['end_date']]
+                    ],
+                    [
+                        'or',
+                        ['b.loan_type' => null],
+                        ['b.loan_type' => '']
                     ]
                 ])
 //                ->andWhere(['i.branch_enc_id' => $params['branch_id']])
