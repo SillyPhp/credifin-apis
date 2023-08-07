@@ -399,6 +399,11 @@ class CompanyDashboardController extends ApiBaseController
                 ['and',
                     ['not', ['a.loan_type' => 'Loan Against Property']],
                     ['>=', 'a.loan_status_updated_on', '2023-07-01 00:00:00']
+                ],
+                [
+                    'or',
+                    ['a.loan_type' => null],
+                    ['a.loan_type' => '']
                 ]
             ]);
 
