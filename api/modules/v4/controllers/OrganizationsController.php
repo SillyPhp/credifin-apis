@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
+use api\modules\v4\models\LoanApplication;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
@@ -1652,7 +1653,7 @@ class OrganizationsController extends ApiBaseController
         }
 
         $org_id = $params['organization_id'];
-        $model = $this->_emiData($org_id, 0, $search,$user);
+      return  $model = $this->_emiData($org_id, 0, $search,$user);
         $count = count($model);
         if (!$count > 0) {
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
@@ -1709,9 +1710,10 @@ class OrganizationsController extends ApiBaseController
                 'CONCAT(a.address,", ", a.pincode) address',
                 'a.comments'])
             ->joinWith(['createdBy b' => function ($b) {
-                $b->joinWith(['userRoles b1'], false);
+                $b->joinWith(['userRoles0 b1'], false);
                 $b->joinWith(['designations d']);
             }], false);
+
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
