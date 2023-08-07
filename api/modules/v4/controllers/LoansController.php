@@ -63,6 +63,8 @@ class LoansController extends ApiBaseController
                 'audit-trail-list' => ['POST', 'OPTIONS'],
                 'credit-reports' => ['POST', 'OPTIONS'],
                 'update-loan' => ['POST', 'OPTIONS'],
+                'credit-report' => ['POST', 'OPTIONS'],
+                'check-number' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -1327,4 +1329,5 @@ class LoansController extends ApiBaseController
         return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
 
     }
+
 }
