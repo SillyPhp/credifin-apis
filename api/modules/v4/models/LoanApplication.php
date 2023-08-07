@@ -798,7 +798,7 @@ class LoanApplication extends Model
         throw new \Exception(json_encode($token->getErrors()));
     }
 
-    private function getting_reporting_ids($user_id)
+    public function getting_reporting_ids($user_id)
     {
         $marked = [];
         $data = [];
