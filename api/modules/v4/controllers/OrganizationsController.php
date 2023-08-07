@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
+use api\modules\v4\models\LoanApplication;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
@@ -1662,7 +1663,7 @@ class OrganizationsController extends ApiBaseController
 
     public function actionEmiDetail()
     {
-        if (!$this->isAuthorized()) {
+        if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         $params = Yii::$app->request->post();
@@ -1670,7 +1671,7 @@ class OrganizationsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "emi_collection_enc_id"']);
         }
         $lac = EmiCollection::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']])['loan_account_number'];
-        $model = $this->_emiData($lac, 1);
+        $model = $this->_emiData($lac, 1,'',$user);
         if (!$model) {
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
         }
@@ -1709,9 +1710,10 @@ class OrganizationsController extends ApiBaseController
                 'CONCAT(a.address,", ", a.pincode) address',
                 'a.comments'])
             ->joinWith(['createdBy b' => function ($b) {
-                $b->joinWith(['userRoles b1'], false);
+                $b->joinWith(['userRoles0 b1'], false);
                 $b->joinWith(['designations d']);
             }], false);
+
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
