@@ -52,12 +52,14 @@ class ChangePassword extends Model
 
         $user->password = $this->new_password;
         if ($user->save()) {
-            $update = UserAccessTokens::findAll(['user_enc_id' => $user_id]);
-            //only active will be deleted
-            foreach ($update as $up) {
-                $up->is_deleted = 1;
-                $up->update();
-            }
+            UserAccessTokens::updateAll([
+                'is_deleted' => 1,
+                'last_updated_on' => date('Y-m-d H:i:s')
+            ], ['and',
+                ['user_enc_id' => $user_id],
+                ['is_deleted' => 0]
+            ]);
+
             return true;
         } else {
             return false;

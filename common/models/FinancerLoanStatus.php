@@ -17,7 +17,7 @@ use Yii;
  * @property string $updated_on updated on
  * @property int $is_deleted 0 false, 1 true
  *
- * @property AssignedFinancerLoanType $assignedFinancerLoanType
+ * @property AssignedFinancerLoanTypes $assignedFinancerLoanType
  * @property LoanStatus $loanStatusEnc
  * @property Users $createdBy
  * @property Users $updatedBy
@@ -43,7 +43,7 @@ class FinancerLoanStatus extends \yii\db\ActiveRecord
             [['is_deleted'], 'integer'],
             [['financer_loan_status_enc_id', 'assigned_financer_loan_type_id', 'loan_status_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['financer_loan_status_enc_id'], 'unique'],
-            [['assigned_financer_loan_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedFinancerLoanType::className(), 'targetAttribute' => ['assigned_financer_loan_type_id' => 'assigned_financer_enc_id']],
+            [['assigned_financer_loan_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedFinancerLoanTypes::className(), 'targetAttribute' => ['assigned_financer_loan_type_id' => 'assigned_financer_enc_id']],
             [['loan_status_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanStatus::className(), 'targetAttribute' => ['loan_status_enc_id' => 'loan_status_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
@@ -53,9 +53,9 @@ class FinancerLoanStatus extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAssignedFinancerLoanType()
+    public function getAssignedFinancerLoanTypes()
     {
-        return $this->hasOne(AssignedFinancerLoanType::className(), ['assigned_financer_enc_id' => 'assigned_financer_loan_type_id']);
+        return $this->hasOne(AssignedFinancerLoanTypes::className(), ['assigned_financer_enc_id' => 'assigned_financer_loan_type_id']);
     }
 
     /**

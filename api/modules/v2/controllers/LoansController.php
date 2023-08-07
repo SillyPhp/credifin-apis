@@ -3,15 +3,12 @@
 namespace api\modules\v2\controllers;
 
 use api\modules\v2\models\LoanApplicationsForm;
-use common\models\AssignedCategories;
+use Aws\S3\S3Client;
 use common\models\AssignedCollegeCourses;
 use common\models\CertificateTypes;
-use common\models\CollegeCourses;
 use common\models\CollegeCoursesPool;
 use common\models\EducationLoanPayments;
-use common\models\EmployerApplications;
-use common\models\ErexxCollaborators;
-use common\models\ErexxEmployerApplications;
+use common\models\EducationLoanTypes;
 use common\models\LeadsApplications;
 use common\models\LeadsCollegePreference;
 use common\models\LoanApplicantResidentialInfo;
@@ -20,25 +17,16 @@ use common\models\LoanCandidateEducation;
 use common\models\LoanCertificates;
 use common\models\LoanCoApplicants;
 use common\models\LoanQualificationType;
-use common\models\LoanTypes;
-use common\models\OrganizationFeeAmount;
 use common\models\OrganizationFeeComponents;
 use common\models\OrganizationLoanSchemes;
-use common\models\Organizations;
 use common\models\UserOtherDetails;
 use common\models\Users;
-use Yii;
 use common\models\Utilities;
-use yii\helpers\Url;
-use yii\filters\auth\HttpBearerAuth;
-use yii\web\Response;
+use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\UploadedFile;
-use yii\filters\AccessControl;
-use yii\filters\ContentNegotiator;
-use Aws\S3\S3Client;
-use Aws\S3\Exception\S3Exception;
 
 class LoansController extends ApiBaseController
 {
@@ -426,7 +414,7 @@ class LoansController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            $loan_types = LoanTypes::find()
+            $loan_types = EducationLoanTypes::find()
                 ->select(['loan_type_enc_id', 'loan_name'])
                 ->asArray()
                 ->all();
@@ -455,7 +443,7 @@ class LoansController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            $loan_types = LoanTypes::find()
+            $loan_types = EducationLoanTypes::find()
                 ->select(['loan_type_enc_id', 'loan_name'])
                 ->asArray()
                 ->all();

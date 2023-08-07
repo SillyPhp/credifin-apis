@@ -3,33 +3,34 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
+use common\models\AssignedFinancerLoanType;
+use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
+use common\models\CertificateTypes;
 use common\models\EmiCollection;
+use common\models\FinancerLoanDocuments;
 use common\models\FinancerLoanProductDocuments;
+use common\models\FinancerLoanProductLoginFeeStructure;
+use common\models\FinancerLoanProductProcess;
 use common\models\FinancerLoanProductPurpose;
 use common\models\FinancerLoanProducts;
-use common\models\AssignedFinancerLoanType;
-use common\models\CertificateTypes;
-use common\models\FinancerLoanDocuments;
 use common\models\FinancerLoanProductStatus;
 use common\models\FinancerLoanPurpose;
 use common\models\FinancerLoanStatus;
 use common\models\FinancerNoticeBoard;
 use common\models\LoanStatus;
-use common\models\LoanType;
+use common\models\LoanTypes;
 use common\models\OrganizationLocations;
 use common\models\spaces\Spaces;
-use common\models\UserAccessTokens;
 use common\models\UserRoles;
 use common\models\UserTypes;
-use yii\web\UploadedFile;
-use yii\db\Expression;
 use common\models\Utilities;
-use yii\filters\VerbFilter;
 use Yii;
+use yii\db\Expression;
 use yii\filters\Cors;
+use yii\filters\VerbFilter;
 use yii\helpers\Url;
-use yii\filters\ContentNegotiator;
+use yii\web\UploadedFile;
 
 
 class OrganizationsController extends ApiBaseController
@@ -48,6 +49,7 @@ class OrganizationsController extends ApiBaseController
                 'get-loan-types' => ['POST', 'OPTIONS'],
                 'update-loan-type' => ['POST', 'OPTIONS'],
                 'assigned-loan-types' => ['POST', 'OPTIONS'],
+                'assigned-financer-loan-types' => ['POST', 'OPTIONS'],
                 'get-documents-list' => ['POST', 'OPTIONS'],
                 'assign-document' => ['POST', 'OPTIONS'],
                 'get-assigned-documents' => ['POST', 'OPTIONS'],
@@ -69,6 +71,8 @@ class OrganizationsController extends ApiBaseController
                 'add-notice' => ['POST', 'OPTIONS'],
                 'get-notice' => ['POST', 'OPTIONS'],
                 'update-notice' => ['POST', 'OPTIONS'],
+                'update-loan-product-process' => ['POST', 'OPTIONS'],
+                'update-loan-product-fees' => ['POST', 'OPTIONS'],
                 'financer-loan-status-list' => ['POST', 'OPTIONS']
             ]
         ];
@@ -232,7 +236,7 @@ class OrganizationsController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
 
-            $assignedLoanTypes = AssignedFinancerLoanType::find()
+            $assignedLoanTypes = AssignedFinancerLoanTypes::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'a.status', 'b.name'])
                 ->joinWith(['loanTypeEnc b'], false)
@@ -240,7 +244,7 @@ class OrganizationsController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            $allLoanTypes = LoanType::find()
+            $allLoanTypes = LoanTypes::find()
                 ->select(['name', 'loan_type_enc_id', new Expression('0 as status'),])
                 ->asArray()
                 ->all();
@@ -274,7 +278,7 @@ class OrganizationsController extends ApiBaseController
             }
 
 
-            $assignedType = AssignedFinancerLoanType::findOne(['organization_enc_id' => $user->organization_enc_id, 'loan_type_enc_id' => $params['loan_type_enc_id'], 'is_deleted' => 0]);
+            $assignedType = AssignedFinancerLoanTypes::findOne(['organization_enc_id' => $user->organization_enc_id, 'loan_type_enc_id' => $params['loan_type_enc_id'], 'is_deleted' => 0]);
 
             if ($assignedType) {
                 $assignedType->status = $params['status'] == 'Active' ? 1 : 0;
@@ -284,7 +288,7 @@ class OrganizationsController extends ApiBaseController
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $assignedType->getErrors()]);
                 }
             } else {
-                $assignedType = new AssignedFinancerLoanType();
+                $assignedType = new AssignedFinancerLoanTypes();
                 $assignedType->assigned_financer_enc_id = Yii::$app->security->generateRandomString(32);
                 $assignedType->organization_enc_id = $user->organization_enc_id;
                 $assignedType->loan_type_enc_id = $params['loan_type_enc_id'];
@@ -309,6 +313,30 @@ class OrganizationsController extends ApiBaseController
             $provider_id = $this->getFinancerId($user);
 
             $assignedLoanTypes = AssignedFinancerLoanType::find()
+                ->alias('a')
+                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name'])
+                ->joinWith(['loanTypeEnc b'], false)
+                ->where(['a.organization_enc_id' => $provider_id, 'a.is_deleted' => 0, 'a.status' => 1])
+                ->asArray()
+                ->all();
+
+            if ($assignedLoanTypes) {
+                return $this->response(200, ['status' => 200, 'assignedLoanTypes' => $assignedLoanTypes]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAssignedFinancerLoanTypes()
+    {
+        if ($user = $this->isAuthorized()) {
+            $provider_id = $this->getFinancerId($user);
+
+            $assignedLoanTypes = AssignedFinancerLoanTypes::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'b.name'])
                 ->joinWith(['loanTypeEnc b'], false)
@@ -414,19 +442,20 @@ class OrganizationsController extends ApiBaseController
             if (!$lender) {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
-            $certificates = AssignedFinancerLoanType::find()
+            $certificates = FinancerLoanProducts::find()
                 ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
-                ->joinWith(['loanTypeEnc lt'], false)
-                ->innerJoinWith(['financerLoanDocuments b' => function ($b) {
-                    $b->select(['b.financer_loan_document_enc_id', 'b.assigned_financer_loan_type_id', 'b.certificate_type_enc_id',
-                        'b.sequence', 'ct.name certificate_name']);
-                    $b->joinWith(['certificateTypeEnc ct'], false);
-                    $b->orderBy(['b.sequence' => SORT_ASC]);
-                    $b->onCondition(['b.is_deleted' => 0]);
+                ->select(['b.assigned_financer_enc_id', 'b.organization_enc_id', 'a.financer_loan_product_enc_id', 'a.name loan'])
+                ->joinWith(['assignedFinancerLoanTypeEnc b'], false)
+                ->innerJoinWith(['financerLoanProductDocuments c' => function ($c) {
+                    $c->select(['c.financer_loan_product_document_enc_id', 'c.financer_loan_product_enc_id', 'c.certificate_type_enc_id', 'c.sequence', 'c1.name certificate_name']);
+                    $c->joinWith(['certificateTypeEnc c1'], false);
+                    $c->orderBy(['c.sequence' => SORT_ASC]);
+                    $c->onCondition(['c.is_deleted' => 0]);
                 }])
-                ->where(['a.organization_enc_id' => $lender, 'a.is_deleted' => 0])
-                ->groupBy(['a.loan_type_enc_id'])
+                ->where(['b.organization_enc_id' => $lender
+                    , 'b.is_deleted' => 0, 'a.is_deleted' => 0
+                ])
+                ->groupBy(['a.financer_loan_product_enc_id'])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
                 ->all();
@@ -603,7 +632,7 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
 
-            $purpose = AssignedFinancerLoanType::find()
+            $purpose = AssignedFinancerLoanTypes::find()
                 ->alias('a')
                 ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
                 ->joinWith(['loanTypeEnc lt'], false)
@@ -804,18 +833,18 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(404, ['status' => 404, 'message' => 'lender not found']);
             }
 
-            $loan_status = AssignedFinancerLoanType::find()
+            $loan_status = FinancerLoanProducts::find()
                 ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan'])
-                ->joinWith(['loanTypeEnc lt'], false)
-                ->innerJoinWith(['financerLoanStatuses b' => function ($b) {
-                    $b->select(['b.financer_loan_status_enc_id', 'b.assigned_financer_loan_type_id', 'b1.loan_status_enc_id', 'b1.loan_status name', 'b1.value', 'b1.sequence']);
-                    $b->joinWith(['loanStatusEnc b1'], false);
-                    $b->onCondition(['b.is_deleted' => 0]);
-                    $b->orderBy(['b1.sequence' => SORT_ASC]);
+                ->select(['b.assigned_financer_enc_id', 'b.organization_enc_id', 'a.financer_loan_product_enc_id', 'a.name loan'])
+                ->joinWith(['assignedFinancerLoanTypeEnc b'])
+                ->innerJoinWith(['financerLoanProductStatuses c' => function ($c) {
+                    $c->select(['c.financer_loan_product_status_enc_id', 'c.financer_loan_product_enc_id', 'c1.loan_status_enc_id', 'c1.loan_status name', 'c1.value', 'c1.sequence']);
+                    $c->joinWith(['loanStatusEnc c1']);
+                    $c->onCondition(['c.is_deleted' => 0]);
+                    $c->orderBy(['c1.sequence' => SORT_ASC]);
                 }])
-                ->where(['a.organization_enc_id' => $lender])
-                ->groupBy(['a.loan_type_enc_id'])
+                ->where(['b.organization_enc_id' => $lender])
+                ->groupBy(['a.financer_loan_product_enc_id'])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
                 ->all();
@@ -823,7 +852,6 @@ class OrganizationsController extends ApiBaseController
             if ($loan_status) {
                 return $this->response(200, ['status' => 200, 'loan_status' => $loan_status]);
             }
-
             return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
@@ -958,51 +986,57 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    // add loan product (updated)
-    public function actionAddLoanProduct()
+    // add, update or delete product
+    public function actionUpdateLoanProduct()
     {
-        if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
-            if (empty($params['assigned_financer_loan_type_enc_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "assigned_financer_loan_type_enc_id"']);
-            }
-            if (empty($params['name'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "name"']);
-            }
-
-            if (isset($params['financer_loan_product_enc_id'])) {
-                $existingProduct = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $params['financer_loan_product_enc_id']]);
-                if (!$existingProduct) {
-                    return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
-                }
-                $existingProduct->name = $params['name'];
-                $existingProduct->updated_on = date('Y-m-d H:i:s');
-                $existingProduct->updated_by = $user->user_enc_id;
-
-                if (!$existingProduct->update()) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred, product not updated', 'error' => $existingProduct->getErrors()]);
-                }
-
-            } else {
-                $product = new FinancerLoanProducts();
-                $utilitiesModel = new \common\models\Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(10, 100000);
-                $product->financer_loan_product_enc_id = $utilitiesModel->encrypt();
-                $product->assigned_financer_loan_type_enc_id = $params['assigned_financer_loan_type_enc_id'];
-                $product->name = $params['name'];
-                $product->created_by = $user->user_enc_id;
-                $product->created_on = date('Y-m-d H:i:s');
-                if (!$product->save()) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $product->getErrors()]);
-                }
-            }
-
-            return $this->response(200, ['status' => 200, 'message' => 'successfully added']);
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+
+        $params = Yii::$app->request->post();
+
+        if (isset($params['financer_loan_product_enc_id'])) {
+            $product = FinancerLoanProducts::findOne(['financer_loan_product_enc_id' => $params['financer_loan_product_enc_id']]);
+            if (!$product) {
+                return $this->response(404, ['status' => 404, 'message' => 'Product Not Found']);
+            }
+
+            if (!empty($params['deleted'])) {
+                if ($product['is_deleted'] == 1) {
+                    return $this->response(500, ['status' => 500, 'message' => 'Already Deleted']);
+                }
+                $product->is_deleted = 1;
+            }
+            $save = 'update';
+        } else {
+            $product = new FinancerLoanProducts();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+            $product->financer_loan_product_enc_id = $utilitiesModel->encrypt();
+            $product->created_by = $user->user_enc_id;
+            $product->created_on = date('Y-m-d H:i:s');
+            $save = 'save';
+        }
+
+        if (!empty($params['name'])) {
+            $product->name = $params['name'];
+        }
+
+        if (!empty($params['assigned_financer_loan_type_enc_id'])) {
+            $product->assigned_financer_loan_type_enc_id = $params['assigned_financer_loan_type_enc_id'];
+        }
+
+        $product->updated_by = $user->user_enc_id;
+        $product->updated_on = date('Y-m-d H:i:s');
+
+        if (!$product->$save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $product->getErrors()]);
+        }
+
+        return $this->response(200, ['status' => 200, 'message' => $save . 'd successfully']);
     }
 
-    // get loan products (updated)
+// get loan products (updated)
     public function actionGetLoanProducts()
     {
         if ($user = $this->isAuthorized()) {
@@ -1010,12 +1044,26 @@ class OrganizationsController extends ApiBaseController
             if (empty($lender)) {
                 return $this->response(422, ['status' => 422, 'message' => 'Organization not found']);
             }
-            $loan_products = AssignedFinancerLoanType::find()
+            $loan_products = FinancerLoanProducts::find()
                 ->alias('a')
-                ->select(['a.assigned_financer_enc_id', 'a.organization_enc_id', 'a.loan_type_enc_id', 'lt.name loan', 'a.is_deleted', 'flp.name', 'flp.financer_loan_product_enc_id', 'flp.assigned_financer_loan_type_enc_id'])
-                ->innerJoinWith(['financerLoanProducts flp'], false)
-                ->joinWith(['loanTypeEnc lt'], false)
-                ->where(['a.organization_enc_id' => $lender, 'a.is_deleted' => 0, 'flp.is_deleted' => 0])
+                ->select(['a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id', 'b.organization_enc_id', 'b.loan_type_enc_id', 'b1.name loan', 'a.name'])
+                ->joinWith(['assignedFinancerLoanTypeEnc b' => function ($b) use ($lender) {
+                    $b->joinWith(['loanTypeEnc b1'], false);
+                    $b->andWhere([
+                        'b.organization_enc_id' => $lender,
+                        'b.is_deleted' => 0]);
+                }], false)
+                ->joinWith(['financerLoanProductPurposes c' => function ($c) {
+                    $c->select(['c.financer_loan_product_purpose_enc_id', 'c.financer_loan_product_enc_id', 'c.sequence', 'c.purpose']);
+                    $c->orderBy(['c.sequence' => SORT_ASC]);
+                    $c->onCondition(['c.is_deleted' => 0]);
+                }])
+                ->joinWith(['financerLoanProductLoginFeeStructures d' => function ($d) {
+                    $d->select(['d.financer_loan_product_login_fee_structure_enc_id', 'd.financer_loan_product_enc_id', 'd.name', 'd.amount']);
+                    $d->onCondition(['d.is_deleted' => 0]);
+                }])
+                ->groupBy(['a.financer_loan_product_enc_id'])
+                ->where(['a.is_deleted' => 0])
                 ->asArray()
                 ->all();
             if ($loan_products) {
@@ -1057,7 +1105,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    // get loan product details (updated)
+// get loan product details (updated)
     public function actionGetLoanProductDetails()
     {
         if ($user = $this->isAuthorized()) {
@@ -1068,7 +1116,7 @@ class OrganizationsController extends ApiBaseController
             }
             $details = FinancerLoanProducts::find()
                 ->alias('a')
-                ->select(['a.financer_loan_product_enc_id', 'a.name product_name', 'e1.name loan_type_name'])
+                ->select(['a.financer_loan_product_enc_id', 'a.name product_name', 'e1.name loan_type_name', 'a.assigned_financer_loan_type_enc_id'])
                 ->joinWith(['financerLoanProductPurposes b' => function ($b) {
                     $b->select(['b.financer_loan_product_purpose_enc_id', 'b.financer_loan_product_enc_id', 'b.purpose', 'b.sequence']);
                     $b->orderBy(['b.sequence' => SORT_ASC]);
@@ -1089,8 +1137,18 @@ class OrganizationsController extends ApiBaseController
                     $d->orderBy(['d1.sequence' => SORT_ASC]);
                 }])
                 ->joinWith(['assignedFinancerLoanTypeEnc e' => function ($e) {
+                    $e->select(['e.assigned_financer_loan_type_enc_id']);
                     $e->joinWith(['loanTypeEnc e1'], false);
                 }], false)
+                ->joinWith(['financerLoanProductProcesses f' => function ($f) {
+                    $f->select(['f.financer_loan_product_process_enc_id', 'f.financer_loan_product_enc_id', 'f.process', 'f.sequence']);
+                    $f->orderBy(['f.sequence' => SORT_ASC]);
+                    $f->onCondition(['f.is_deleted' => 0]);
+                }])
+                ->joinWith(['financerLoanProductLoginFeeStructures g' => function ($g) {
+                    $g->select(['g.financer_loan_product_login_fee_structure_enc_id', 'g.financer_loan_product_enc_id', 'g.name', 'g.amount']);
+                    $g->onCondition(['g.is_deleted' => 0]);
+                }])
                 ->onCondition(['a.financer_loan_product_enc_id' => $params['financer_loan_product_enc_id'], 'a.is_deleted' => 0])
                 ->where(['a.is_deleted' => 0])
                 ->asArray()
@@ -1103,7 +1161,7 @@ class OrganizationsController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-    // create or update loan product purpose (updated)
+// create or update loan product purpose (updated)
     public function actionUpdateLoanProductPurpose()
     {
         if ($user = $this->isAuthorized()) {
@@ -1161,7 +1219,7 @@ class OrganizationsController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-    // remove loan product purpose (updated)
+// remove loan product purpose (updated)
     public function actionRemoveLoanProductPurpose()
     {
         if ($user = $this->isAuthorized()) {
@@ -1191,7 +1249,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    // create or update loan product documents (updated)
+// create or update loan product documents (updated)
     public function actionUpdateLoanProductDocuments()
     {
         if ($user = $this->isAuthorized()) {
@@ -1271,8 +1329,9 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    // remove loan product document (updated)
-    public function actionRemoveLoanProductDocument()
+// remove loan product document (updated)
+    public
+    function actionRemoveLoanProductDocument()
     {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
@@ -1298,7 +1357,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    // assign loan status (updated)
+// assign loan status (updated)
     public function actionUpdateLoanProductStatus()
     {
         if ($user = $this->isAuthorized()) {
@@ -1353,7 +1412,7 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    // remove loan product status (updated)
+// remove loan product status (updated)
     public function actionRemoveLoanProductStatus()
     {
         if ($user = $this->isAuthorized()) {
@@ -1383,8 +1442,95 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
+    // create or update loan product process (updated)
+    public function actionUpdateLoanProductProcess()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
 
-    // used to create product status
+            if (empty($params['loan_process'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_process"']);
+            }
+            if (empty($params['financer_loan_product_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "financer_loan_product_enc_id"']);
+            }
+            $transaction = Yii::$app->db->beginTransaction();
+            $data['financer_loan_product_enc_id'] = $params['financer_loan_product_enc_id'];
+            $data['user_enc_id'] = $user->user_enc_id;
+            try {
+                foreach ($params['loan_process'] as $key => $value) {
+                    $data['key'] = $key;
+                    $data['process'] = $value['process'];
+                    if (!empty($value['financer_loan_product_process_enc_id'])) {
+                        $process = FinancerLoanProductProcess::findOne([
+                            'financer_loan_product_process_enc_id' => $value['financer_loan_product_process_enc_id'],
+                            'is_deleted' => 0
+                        ]);
+                        if ($process) {
+                            $process->sequence = $key;
+                            $process->process = $value['process'];
+                            $process->updated_by = $user->user_enc_id;
+                            $process->updated_on = date('Y-m-d H:i:s');
+                            if (!$process->update()) {
+                                $transaction->rollBack();
+                                return $this->response(500, ['status' => 500, 'message' => 'An error occurred', 'error' => $process->getErrors()]);
+                            }
+                        } else {
+                            $query = $this->__createProcess($data);
+                            if ($query['status'] == 500) {
+                                $transaction->rollback();
+                                return $this->response(500, $query);
+                            }
+                        }
+                    } else {
+                        $query = $this->__createProcess($data);
+                        if ($query['status'] == 500) {
+                            $transaction->rollback();
+                            return $this->response(500, $query);
+                        }
+                    }
+                }
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+            } catch (Exception $e) {
+                $transaction->rollBack();
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getErrors()]);
+            }
+        }
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    // remove loan product process (updated)
+    public function actionRemoveLoanProductProcess()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['financer_loan_product_process_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "financer_loan_product_process_enc_id"']);
+            }
+
+            $process = FinancerLoanProductProcess::findOne([
+                'financer_loan_product_process_enc_id' => $params['financer_loan_product_process_enc_id'],
+                'is_deleted' => 0
+            ]);
+
+            if ($process) {
+                $process->is_deleted = 1;
+                $process->updated_by = $user->user_enc_id;
+                $process->updated_on = date('Y-m-d H:i:s');
+                if (!$process->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $process->getErrors()]);
+                }
+                return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
+            }
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+// used to create product status
     private function __createStatus($data)
     {
         $loan_status = new FinancerLoanProductStatus();
@@ -1401,7 +1547,7 @@ class OrganizationsController extends ApiBaseController
         return ['status' => 200];
     }
 
-    // used to create product document
+// used to create product document
     private function __createDocument($data)
     {
         $loan_document = new FinancerLoanProductDocuments();
@@ -1419,7 +1565,7 @@ class OrganizationsController extends ApiBaseController
         return ['status' => 200];
     }
 
-    // used to create product purpose
+// used to create product purpose
     private function __createPurpose($data)
     {
         $purpose = new FinancerLoanProductPurpose();
@@ -1437,19 +1583,41 @@ class OrganizationsController extends ApiBaseController
         return ['status' => 200];
     }
 
+    // used to create product process
+    private function __createProcess($data)
+    {
+        $process = new FinancerLoanProductProcess();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+        $process->financer_loan_product_process_enc_id = $utilitiesModel->encrypt();
+        $process->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
+        $process->process = $data['process'];
+        $process->sequence = $data['key'];
+        $process->created_on = date('Y-m-d H:i:s');
+        $process->updated_on = date('Y-m-d H:i:s');
+        $process->created_by = $data['user_enc_id'];
+        $process->updated_by = $data['user_enc_id'];
+        if (!$process->save()) {
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $process->getErrors()];
+        }
+        return ['status' => 200];
+    }
+
     public function actionEmiCollection()
     {
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-        if (!$user->organization_enc_id) {
+        if (!$org = $user->organization_enc_id) {
             $findOrg = UserRoles::findOne(['user_enc_id' => $user->user_enc_id]);
-            if (!$findOrg['organization_enc_id']) {
+            if (!$org = $findOrg['organization_enc_id']) {
                 return $this->response(500, ['status' => 500, 'message' => 'Organization not found']);
             }
         }
+        $transaction = Yii::$app->db->beginTransaction();
         try {
             $model = new EmiCollectionForm();
+            $model->org_id = $org;
             if ($model->load(Yii::$app->request->post()) && !$model->validate()) {
                 return $this->response(422, ['status' => 422, 'message' => \yii\helpers\ArrayHelper::getColumn($model->errors, 0, false)]);
             }
@@ -1457,11 +1625,9 @@ class OrganizationsController extends ApiBaseController
             $model->borrower_image = UploadedFile::getInstance($model, 'borrower_image');
             $model->pr_receipt_image = UploadedFile::getInstance($model, 'pr_receipt_image');
             $save = $model->save($user->user_enc_id);
-            if ($save['status'] == 500) {
-                return $this->response(500, $save);
-            } else {
-                return $this->response(200, $save);
-            }
+            $save['status'] == 200 ? $transaction->commit() : $transaction->rollBack();
+            return $this->response($save['status'], $save);
+
         } catch (\Exception $exception) {
             return [
                 'message' => $exception->getMessage(),
@@ -1495,7 +1661,7 @@ class OrganizationsController extends ApiBaseController
 
     public function actionEmiDetail()
     {
-        if (!$user = $this->isAuthorized()) {
+        if (!$this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         $params = Yii::$app->request->post();
@@ -1520,7 +1686,8 @@ class OrganizationsController extends ApiBaseController
 
     }
 
-    private function _emiData($data, $id_type, $search = '')
+    private
+    function _emiData($data, $id_type, $search = '')
     {
         // if id_type = 1 then loan account number if id_type = 0 then organization id, this function is being used for GetCollectedEmiList and EmiDetail
         if ($id_type == 1) {
@@ -1532,6 +1699,7 @@ class OrganizationsController extends ApiBaseController
 
         $model = EmiCollection::find()
             ->alias('a')
+            ->distinct()
             ->select(['a.emi_collection_enc_id', 'CONCAT(c.location_name , ", ", c1.name) as branch_name', 'a.customer_name', 'a.collection_date',
                 'a.loan_account_number', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.payment_method',
                 'a.other_payment_method', 'a.ptp_amount', 'a.ptp_date', 'd.designation', 'CONCAT(b.first_name, " ", b.last_name) name',
@@ -1592,6 +1760,111 @@ class OrganizationsController extends ApiBaseController
 
     }
 
+    public function actionUpdateLoanProductFees()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['product_no_dues'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "product_no_dues"']);
+            }
+            if (empty($params['financer_loan_product_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "financer_loan_product_enc_id"']);
+            }
+            $transaction = Yii::$app->db->beginTransaction();
+            $data['financer_loan_product_enc_id'] = $params['financer_loan_product_enc_id'];
+            $data['user_enc_id'] = $user->user_enc_id;
+            try {
+                foreach ($params['product_no_dues'] as $key => $value) {
+                    $data['name'] = $value['name'];
+                    $data['amount'] = $value['amount'];
+                    if (!empty($value['financer_loan_product_login_fee_structure_enc_id'])) {
+                        $fees = FinancerLoanProductLoginFeeStructure::findOne([
+                            'financer_loan_product_login_fee_structure_enc_id' => $value['financer_loan_product_login_fee_structure_enc_id'],
+                            'is_deleted' => 0
+                        ]);
+                        if ($fees) {
+                            $fees->name = $value['name'];
+                            $fees->amount = $value['amount'];
+                            $fees->updated_by = $user->user_enc_id;
+                            $fees->updated_on = date('Y-m-d H:i:s');
+                            if (!$fees->update()) {
+                                $transaction->rollBack();
+                                return $this->response(500, ['status' => 500, 'message' => 'An error occurred', 'error' => $fees->getErrors()]);
+                            }
+                        } else {
+                            $query = $this->__createFees($data);
+                            if ($query['status'] == 500) {
+                                $transaction->rollback();
+                                return $this->response(500, $query);
+                            }
+                        }
+                    } else {
+                        $query = $this->__createFees($data);
+                        if ($query['status'] == 500) {
+                            $transaction->rollback();
+                            return $this->response(500, $query);
+                        }
+                    }
+                }
+                $transaction->commit();
+                return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
+            } catch (Exception $e) {
+                $transaction->rollBack();
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $e->getErrors()]);
+            }
+        }
+        return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+    }
+
+    public function actionRemoveLoanProductFees()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            if (empty($params['financer_loan_product_login_fee_structure_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "financer_loan_product_login_fee_structure_enc_id"']);
+            }
+
+            $fees = FinancerLoanProductLoginFeeStructure::findOne([
+                'financer_loan_product_login_fee_structure_enc_id' => $params['financer_loan_product_login_fee_structure_enc_id'],
+                'is_deleted' => 0
+            ]);
+
+            if ($fees) {
+                $fees->is_deleted = 1;
+                $fees->updated_by = $user->user_enc_id;
+                $fees->updated_on = date('Y-m-d H:i:s');
+                if (!$fees->update()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'An Error Occurred', 'error' => $fees->getErrors()]);
+                }
+                return $this->response(200, ['status' => 200, 'message' => 'Updated Successfully']);
+            }
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function __createFees($data)
+    {
+        $fees = new FinancerLoanProductLoginFeeStructure();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(10, 100000);
+        $fees->financer_loan_product_login_fee_structure_enc_id = $utilitiesModel->encrypt();
+        $fees->financer_loan_product_enc_id = $data['financer_loan_product_enc_id'];
+        $fees->name = $data['name'];
+        $fees->amount = $data['amount'];
+        $fees->created_on = date('Y-m-d H:i:s');
+        $fees->updated_on = date('Y-m-d H:i:s');
+        $fees->created_by = $data['user_enc_id'];
+        $fees->updated_by = $data['user_enc_id'];
+        if (!$fees->save()) {
+            return ['status' => 500, 'message' => 'an error occurred', 'error' => $fees->getErrors()];
+        }
+        return ['status' => 200];
+    }
+
     public function actionDeleteEmi()
     {
         if ($user = $this->isAuthorized()) {
@@ -1639,7 +1912,8 @@ class OrganizationsController extends ApiBaseController
         }
     }
 
-    public function actionAddNotice()
+    public
+    function actionAddNotice()
     {
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
@@ -1673,7 +1947,8 @@ class OrganizationsController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
     }
 
-    public function actionGetNotice()
+    public
+    function actionGetNotice()
     {
         if (!$this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
@@ -1698,7 +1973,8 @@ class OrganizationsController extends ApiBaseController
         return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
     }
 
-    public function actionUpdateNotice()
+    public
+    function actionUpdateNotice()
     {
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);

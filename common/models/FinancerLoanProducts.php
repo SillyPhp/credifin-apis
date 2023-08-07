@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%financer_loan_products}}".
  *
@@ -22,9 +20,9 @@ use Yii;
  * @property FinancerLoanProductProcess[] $financerLoanProductProcesses
  * @property FinancerLoanProductPurpose[] $financerLoanProductPurposes
  * @property FinancerLoanProductStatus[] $financerLoanProductStatuses
- * @property AssignedFinancerLoanType $assignedFinancerLoanTypeEnc
  * @property Users $createdBy
  * @property Users $updatedBy
+ * @property AssignedFinancerLoanTypes $assignedFinancerLoanTypeEnc
  * @property FinancerRewards[] $financerRewards
  * @property LoanApplications[] $loanApplications
  */
@@ -44,14 +42,14 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['financer_loan_product_enc_id', 'created_by'], 'required'],
+            [['financer_loan_product_enc_id', 'assigned_financer_loan_type_enc_id', 'name', 'created_by', 'updated_on', 'updated_by'], 'required'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['financer_loan_product_enc_id', 'assigned_financer_loan_type_enc_id', 'name', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['financer_loan_product_enc_id'], 'unique'],
-            [['assigned_financer_loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedFinancerLoanType::className(), 'targetAttribute' => ['assigned_financer_loan_type_enc_id' => 'assigned_financer_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
+            [['assigned_financer_loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedFinancerLoanTypes::className(), 'targetAttribute' => ['assigned_financer_loan_type_enc_id' => 'assigned_financer_enc_id']],
         ];
     }
 
@@ -98,14 +96,6 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAssignedFinancerLoanTypeEnc()
-    {
-        return $this->hasOne(AssignedFinancerLoanType::className(), ['assigned_financer_enc_id' => 'assigned_financer_loan_type_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getCreatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
@@ -117,6 +107,14 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     public function getUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanTypeEnc()
+    {
+        return $this->hasOne(AssignedFinancerLoanTypes::className(), ['assigned_financer_enc_id' => 'assigned_financer_loan_type_enc_id']);
     }
 
     /**
