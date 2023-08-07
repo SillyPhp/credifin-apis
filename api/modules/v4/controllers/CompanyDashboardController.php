@@ -844,12 +844,12 @@ class CompanyDashboardController extends ApiBaseController
                         'CASE WHEN k1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", k1.image_location, "/", k1.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(k1.first_name," ",k1.last_name), "&size=200&rounded=false&background=", REPLACE(k1.initials_color, "#", ""), "&color=ffffff") END image'
                     ])->joinWith(['sharedTo k1'], false);
                 }])
-//                ->joinWith(['loanPayments lpm' => function($lpm){
-//                    $lpm->select(['lpm.loan_app_enc_id', 'lpm.payment_mode', 'lpm.payment_status']);
-//                    $lpm->orderBy(['lpm.created_on' => SORT_DESC]);
-//                }])
+                ->joinWith(['assignedLoanPayments p' => function ($p) {
+                    $p->select(['p.loan_app_enc_id', 'p1.payment_mode', 'p1.payment_status']);
+                    $p->orderBy(['p1.created_on' => SORT_DESC]);
+                    $p->joinWith(['loanPaymentsEnc p1'], false);
+                }])
                 ->joinWith(['loanProductsEnc lp'], false)
-                // if verification is true then sending list of TVR verification
                 ->joinWith(['loanApplicationTvrs l' => function ($m) {
                     $m->select(['l.loan_application_tvr_enc_id', 'l.loan_app_enc_id', 'l.status', 'l.assigned_to']);
                 }])
@@ -859,9 +859,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanApplicationReleasePayments n' => function ($m) {
                     $m->select(['n.loan_application_release_payment_enc_id', 'n.loan_app_enc_id', 'n.status', 'n.assigned_to']);
                 }])
-
 //                ->joinWith(['loanApplicationVerifications lav' => function($lav){
-//
 //                }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
                 ->asArray()

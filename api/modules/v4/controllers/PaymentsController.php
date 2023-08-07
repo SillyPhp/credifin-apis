@@ -95,14 +95,15 @@ class PaymentsController extends ApiBaseController
             }
 
             $amount = 0;
-            $amount_enc_ids = $model->amount;
-            foreach ($amount_enc_ids as $value) {
-                $nodues = FinancerLoanProductLoginFeeStructure::findOne(['financer_loan_product_login_fee_structure_enc_id' => $value])['amount'];
+            $desc = $amount_enc_ids = $options = [];
+            foreach ($model->amount as $value) {
+                $nodues = FinancerLoanProductLoginFeeStructure::findOne(['financer_loan_product_login_fee_structure_enc_id' => $value]);
                 if (!empty($nodues)) {
-                    $amount += (float)$nodues;
+                    $amount += (float)$nodues['amount'];
+                    $desc[] = $nodues['name'];
+                    $amount_enc_ids[] = ['id' => $value, 'name' => $nodues['name'], 'amount' => (float)$nodues['amount']];
                 }
             }
-            $options = [];
             $options['org_id'] = $user->organization_enc_id;
             $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
             if (!$keys) {
@@ -117,7 +118,7 @@ class PaymentsController extends ApiBaseController
             $options['user_id'] = $user->user_enc_id;
             $options['amount'] = $amount;
             $options['amount_enc_ids'] = $amount_enc_ids;
-            $options['description'] = 'Login fee for loan application';
+            $options['description'] = 'Payment for ' . implode(', ', $desc);
             $org_name = Organizations::findOne(['organization_enc_id' => $user->organization_enc_id])['name'];
             $options['brand'] = $org_name;
             $options['contact'] = $params['phone'];
@@ -145,6 +146,7 @@ class PaymentsController extends ApiBaseController
 //                $res['amount'] = number_format($link['amount'], 2);
                 $res ['link'] = $link;
             }
+
             $transaction->commit();
             return $this->response(200, ['status' => 200, 'data' => $res]);
         } catch (\Exception $exception) {

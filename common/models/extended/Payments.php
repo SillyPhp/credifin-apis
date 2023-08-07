@@ -6,6 +6,7 @@ use common\models\AssignedLoanPayments;
 use common\models\EducationLoanPayments;
 use common\models\InstituteLeadsPayments;
 use common\models\LoanPayments;
+use common\models\LoanPaymentsDetails;
 use common\models\Utilities;
 
 class Payments
@@ -59,6 +60,24 @@ class Payments
         $assign->created_on = $assign->updated_on = date('Y-m-d h:i:s');
         if (!$assign->save()) {
             return false;
+        }
+
+        if (!empty($ids = $options['amount_enc_ids'])) {
+            foreach ($ids as $id) {
+                $detail = new LoanPaymentsDetails();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $detail->loan_payments_details_enc_id = $utilitiesModel->encrypt();
+                $detail->loan_payments_enc_id = $model->loan_payments_enc_id;
+                $detail->financer_loan_product_login_fee_structure_enc_id = $id['id'];
+                $detail->no_dues_name = $id['name'];
+                $detail->no_dues_amount = $id['amount'];
+                $detail->created_by = $options['user_id'];
+                $detail->created_on = date('Y-m-d h:i:s');
+                if (!$detail->save()) {
+                    return false;
+                }
+            }
         }
 
         return true;
