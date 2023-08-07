@@ -1461,7 +1461,7 @@ class OrganizationsController extends ApiBaseController
     public
     function actionGetCollectedEmiList()
     {
-        if (!$this->isAuthorized()) {
+        if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         $params = Yii::$app->request->post();
@@ -1474,7 +1474,7 @@ class OrganizationsController extends ApiBaseController
         }
 
         $org_id = $params['organization_id'];
-        $model = $this->_emiData($org_id, 0, $search);
+        $model = $this->_emiData($org_id, 0, $search,$user);
         $count = count($model);
         if (!$count > 0) {
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
@@ -1511,7 +1511,7 @@ class OrganizationsController extends ApiBaseController
     }
 
     private
-    function _emiData($data, $id_type, $search = '')
+    function _emiData($data, $id_type, $search = '',$user=null)
     {
         // if id_type = 1 then loan account number if id_type = 0 then organization id, this function is being used for GetCollectedEmiList and EmiDetail
         if ($id_type == 1) {
@@ -1540,7 +1540,9 @@ class OrganizationsController extends ApiBaseController
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
-
+        if (!isset($user->organization_enc_id)||empty($user->organization_enc_id)){
+            $model->andWhere(['a.created_by' => $user->user_enc_id]);
+        }
         if (isset($lac)) {
             $model->andWhere(['a.loan_account_number' => $lac]);
         }
