@@ -87,4 +87,5 @@ class TestCacheController extends Controller
 
         return $randomString;
     }
+
 }
