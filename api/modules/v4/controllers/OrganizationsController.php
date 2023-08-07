@@ -1653,7 +1653,7 @@ class OrganizationsController extends ApiBaseController
         }
 
         $org_id = $params['organization_id'];
-      return  $model = $this->_emiData($org_id, 0, $search,$user);
+        $model = $this->_emiData($org_id, 0, $search,$user);
         $count = count($model);
         if (!$count > 0) {
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
