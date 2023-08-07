@@ -17,28 +17,28 @@ class HeaderComponent extends Component
             ->where(['route' => $route])
             ->asArray()
             ->one();
-        return $this->getMenuList($header['header_enc_id']);
+        return $header ? $this->getMenuList($header['header_enc_id']) : false;
     }
 
     public function getMenuList($header_id, $parent = null)
     {
         $model = HeaderMenuItems::find()->alias('a')
-            ->select(['a.item_enc_id', 'b.name', 'a.parent_enc_id','b.route','a.icon', 'a.css_class'])
+            ->select(['a.item_enc_id', 'b.name', 'a.parent_enc_id', 'b.route', 'a.icon', 'a.css_class'])
             ->where(['a.header_enc_id' => $header_id])
             ->andWhere(['a.parent_enc_id' => $parent, 'b.is_deleted' => 0]);
-        if(Yii::$app->user->identity->organization->organization_enc_id){
+        if (Yii::$app->user->identity && Yii::$app->user->identity->organization->organization_enc_id) {
             $model->andWhere([
                 'or',
                 ['a.is_visible_for' => 0],
                 ['a.is_visible_for' => 2]
             ]);
-        } elseif (Yii::$app->user->identity->type->user_type === 'Individual'){
+        } elseif (Yii::$app->user->identity && Yii::$app->user->identity->type->user_type === 'Individual') {
             $model->andWhere([
                 'or',
                 ['a.is_visible_for' => 0],
                 ['a.is_visible_for' => 1]
             ]);
-        } else{
+        } else {
             $model->andWhere([
                 'or',
                 ['a.is_visible_for' => 0]

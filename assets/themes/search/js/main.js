@@ -14,9 +14,8 @@ function getResult(q, url){
             $('.search_menu').show();
             $('.ss-spinner').hide();
             $('.search_menu').html("");
-            data = JSON.parse(data);
-            for(var i=0;i<data.results.length;i++){
-                $('.search_menu').append('<div class="ss-suggestion" id="' + data.results[i].id + '">' + data.results[i].title + '</div>');
+            for (var i = 0; i < data.data.length; i++) {
+                $('.search_menu').append('<div class="ss-suggestion" id="' + data.data[i].course_enc_id + '">' + data.data[i].title + '</div>');
             }
         }
     });
