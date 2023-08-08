@@ -1,31 +1,34 @@
 <?php
 $imgArray = ['gd2.png', 'gd3.png', 'gd4.png', 'gd5.png', 'gd6.png'];
 $colorArray = ['#C7DDEF', '#F9A18B', '#525E7A', '#FED217', '#525E7A'];
-$randomIndex = rand(0,4);
+$randomIndex = rand(0, 4);
 ?>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
 
-<div class="godaddy-offer <?= $revert ? 'revert' : ''?>">
-    <div class="logo">
-        <img src="https://godaddyacademy.com/img/godaddy-logo.png"/>
-    </div>
-    <div class="bg-box" style="background: <?= $colorArray[$randomIndex];?>;"></div>
-    <div class="banner-img">
-        <img src="/assets/themes/ey/images/pages/webinar-widgets/<?=$imgArray[$randomIndex];?>"/>
-    </div>
-    <div class="offer">
-        <div class="offer-text">
-            <span class="upper-text" style="color: <?= ($colorArray[$randomIndex] == '#525E7A') ? '#fff;' : ''; ?>">Shape Your Career with GoDaddy <?= $course ? $course . ' Course' : "";?></span>
-            <?php if($webinar){ ?>
-            <h1 style="color: <?= ($colorArray[$randomIndex] == '#525E7A') ? '#fff;' : ''; ?>">Attend a webinar and avail <?= $discount ? $discount : '20';?>% discount on GoDaddy Academy Courses</h1>
-            <?php } else{ ?>
-            <h1 style="color: <?= ($colorArray[$randomIndex] == '#525E7A') ? '#fff;' : ''; ?>">Apply for an education loan and get <?= $discount ? $discount : '20';?>% discount on GoDaddy Academy Courses</h1>
-            <?php } ?>
-            <a href="/courses/godaddy-academy">Check Out</a>
+    <div class="godaddy-offer <?= isset($revert) ? 'revert' : '' ?>">
+        <div class="logo">
+            <img src="https://godaddyacademy.com/img/godaddy-logo.png"/>
         </div>
+        <div class="bg-box" style="background: <?= $colorArray[$randomIndex]; ?>;"></div>
+        <div class="banner-img">
+            <img src="/assets/themes/ey/images/pages/webinar-widgets/<?= $imgArray[$randomIndex]; ?>"/>
+        </div>
+        <div class="offer">
+            <div class="offer-text">
+                <span class="upper-text" style="color: <?= ($colorArray[$randomIndex] == '#525E7A') ? '#fff;' : ''; ?>">Shape Your Career with GoDaddy <?= isset($course) ? $course . ' Course' : ""; ?></span>
+                <?php if ($webinar) { ?>
+                    <h1 style="color: <?= ($colorArray[$randomIndex] == '#525E7A') ? '#fff;' : ''; ?>">Attend a webinar
+                        and avail <?= $discount ?? '20'; ?>% discount on GoDaddy Academy Courses</h1>
+                <?php } else { ?>
+                    <h1 style="color: <?= ($colorArray[$randomIndex] == '#525E7A') ? '#fff;' : ''; ?>">Apply for an
+                        education loan and get <?= $discount ?? '20'; ?>% discount on GoDaddy Academy Courses</h1>
+                <?php } ?>
+                <a href="/courses/godaddy-academy">Check Out</a>
+            </div>
+        </div>
+        <img src="/assets/themes/ey/images/pages/webinar-widgets/godaddy5.png" class="verticle-logo-design"/>
     </div>
-    <img src="/assets/themes/ey/images/pages/webinar-widgets/godaddy5.png" class="verticle-logo-design"/>
-</div>
 <?php
 $this->registerCss("
 .godaddy-offer .verticle-logo-design{
