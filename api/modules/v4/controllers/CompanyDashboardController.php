@@ -768,7 +768,7 @@ class CompanyDashboardController extends ApiBaseController
                     , 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'lp.name as loan_product', 'a.gender', 'a.applicant_dob',
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address',
                     'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",a.image_location, a.image) ELSE NULL END image',
-                    '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee', 'k.access'
+                    '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee', 'k.access', 'a.loan_products_enc_id'
 //                    'lpm.payment_status as login_fee'
                 ])
                 ->joinWith(['loanProductsEnc lpe'], false)
@@ -926,8 +926,22 @@ class CompanyDashboardController extends ApiBaseController
                 // getting loan application partners
                 $loan['loan_partners'] = $this->__applicationPartners($user, $loan['loan_app_enc_id']);
 
+                if (!empty($loan['loan_products_enc_id'])) {
+                    $product = FinancerLoanProducts::find()
+                        ->alias('a')
+                        ->select(['b1.value'])
+                        ->joinWith(['assignedFinancerLoanTypeEnc b' => function ($b) {
+                            $b->joinWith(['loanTypeEnc b1']);
+                        }], false)
+                        ->where(['a.financer_loan_product_enc_id' => $loan['loan_products_enc_id']])
+                        ->asArray()
+                        ->one();
+                    $loan['loan_type_code'] = $product['value'];
+                } else {
+                    $loan['loan_type_code'] = LoanTypes::findOne(['name' => $loan['loan_type']])->value;
+                }
+
                 // getting loan type code
-                $loan['loan_type_code'] = LoanTypes::findOne(['name' => $loan['loan_type']])->value;
 
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }
