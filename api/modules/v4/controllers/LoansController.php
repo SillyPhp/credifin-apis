@@ -1288,10 +1288,14 @@ class LoansController extends ApiBaseController
             unset($credit_report[$key]['responseEnc']);
         }
         foreach ($credit_report as $key => $val) {
-            foreach ($val[$val['request_source']] as $res => $report) {
-                if (is_array($report)) {
-                    $credit_report[$key][$val['request_source']][$res] = array_unique($report);
+            if (isset($val[$val['request_source']])) {
+                foreach ($val[$val['request_source']] as $res => $report) {
+                    if (is_array($report)) {
+                        $credit_report[$key][$val['request_source']][$res] = array_unique($report);
+                    }
                 }
+            } else {
+                unset($credit_report[$key]);
             }
         }
         if ($credit_report) {
