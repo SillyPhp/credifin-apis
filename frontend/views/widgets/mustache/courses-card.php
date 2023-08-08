@@ -1,24 +1,32 @@
 <script id="course-card" type="text/template">
     {{#.}}
     <div class="col-md-4 col-sm-6">
-        <a href="/courses/detail/{{id}}" target="_blank">
+        <a href="/courses/detail/{{course_enc_id}}" target="_blank">
             <div class="course-box">
                 <div class="course-upper">
                     <div class="course-logo">
-                        <img src="{{image_240x135}}"/>
+                        <img src="{{image}}"/>
                     </div>
                     <div class="course-description">
                         <div class="course-name">{{title}}</div>
-                        <div class="course-fees">{{#price_detail}}{{currency_symbol}}{{/price_detail}}</i>
-                            {{#price_detail}}
-                                {{amount}}
-                            {{/price_detail}}
-                            {{^price_detail}}free{{/price_detail}}</div>
-                        <div class="course-start"><i class="far fa-user"></i>
+                        <div class="course-fees">{{#is_paid}}{{currency}}{{/
+                            is_paid}}</i>
+                            {{#is_paid}}
+                            {{price}}
+                            {{/
+                            is_paid}}
+                            {{^
+                            is_paid}}free{{/
+                            is_paid}}
+                        </div>
+                        <div class="course-start">
+                            {{#name}}<i class="far fa-user"></i>{{/
+                            name}}
                             <span class="c-author">
-                                {{#visible_instructors}}
-                                    {{display_name}},
-                                {{/visible_instructors}}
+                                {{#name}}
+                                    {{name}},
+                                {{/
+                                name}}
                             </span>
                         </div>
                     </div>
