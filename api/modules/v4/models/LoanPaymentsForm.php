@@ -3,11 +3,10 @@
 namespace api\modules\v4\models;
 
 use common\models\LoanPayments;
-use common\models\Utilities;
 use common\models\spaces\Spaces;
-use yii\base\Model;
-
+use common\models\Utilities;
 use Yii;
+use yii\base\Model;
 
 
 class LoanPaymentsForm extends Model
@@ -80,7 +79,7 @@ class LoanPaymentsForm extends Model
                 $model->image = $utilitiesModel->encrypt() . '.' . $this->receipt->extension;
                 $model->image_location = Yii::$app->getSecurity()->generateRandomString();
                 $contentType = $this->receipt->type;
-                $base_path = Yii::$app->params->upload_directories->images->image_path . $model->image_location;
+                $base_path = Yii::$app->params->upload_directories->loan_payments->image_path . $model->image_location;
                 $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                 $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                 $result = $my_space->uploadFileSources($this->receipt->tempName, Yii::$app->params->digitalOcean->rootDirectory . $base_path . '/' . $model->image, 'private', ['params' => ['ContentType' => $contentType]]);
