@@ -46,14 +46,14 @@ class EmiCollectionForm extends Model
     public function rules()
     {
         return [
-            [['customer_name', 'phone', 'amount', 'loan_type', 'address', 'state', 'city', 'postal_code', 'latitude', 'longitude', 'payment_method', 'branch_enc_id'], 'required'],
+            [['customer_name', 'phone', 'amount', 'loan_type', 'latitude', 'longitude', 'payment_method', 'branch_enc_id'], 'required'],
             [['desc', 'org_id', 'brand'], 'required', 'when' => function ($model) {
                 return $model->payment_method == 'Online Payment';
             }],
             [['loan_account_number'], 'required', 'when' => function ($model) {
                 return $model->payment_method != 'Online Payment';
             }],
-            [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method'], 'safe'],
+            [['ptp_amount', 'ptp_date', 'delay_reason', 'other_delay_reason', 'other_doc_image', 'borrower_image', 'pr_receipt_image', 'loan_purpose', 'comments', 'other_payment_method', 'address', 'state', 'city', 'postal_code'], 'safe'],
             [['amount', 'ptp_amount', 'latitude', 'longitude'], 'number'],
             [['ptp_date'], 'date', 'format' => 'php:Y-m-d'],
             [['other_doc_image', 'borrower_image', 'pr_receipt_image'], 'file', 'skipOnEmpty' => True, 'extensions' => 'png, jpg'],
@@ -76,9 +76,21 @@ class EmiCollectionForm extends Model
         if ($this->loan_purpose) {
             $model->loan_purpose = $this->loan_purpose;
         }
-        $address = $this->address . ', ' . $this->city . ', ' . $this->state;
-        $model->address = $address;
-        $model->pincode = $this->postal_code;
+        if ($this->address) {
+            $address = $this->address;
+            if ($this->city) {
+                $address .= ', ' . $this->city;
+            }
+            if ($this->state) {
+                $address .= ', ' . $this->state;
+            }
+        }
+        if (!empty($address)) {
+            $model->address = $address;
+        }
+        if ($this->postal_code) {
+            $model->pincode = $this->postal_code;
+        }
         $model->latitude = $this->latitude;
         $model->longitude = $this->longitude;
         $model->created_by = $model->updated_by = $user_id;

@@ -3,7 +3,6 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
-use api\modules\v4\models\LoanApplication;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
@@ -1653,7 +1652,7 @@ class OrganizationsController extends ApiBaseController
         }
 
         $org_id = $params['organization_id'];
-        $model = $this->_emiData($org_id, 0, $search,$user);
+        $model = $this->_emiData($org_id, 0, $search, $user);
         $count = count($model);
         if (!$count > 0) {
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
@@ -1671,7 +1670,7 @@ class OrganizationsController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "emi_collection_enc_id"']);
         }
         $lac = EmiCollection::findOne(['emi_collection_enc_id' => $params['emi_collection_enc_id']])['loan_account_number'];
-        $model = $this->_emiData($lac, 1,'',$user);
+        $model = $this->_emiData($lac, 1, '', $user);
         if (!$model) {
             return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
         }
@@ -1688,7 +1687,7 @@ class OrganizationsController extends ApiBaseController
 
     }
 
-    private function _emiData($data, $id_type, $search = '',$user=null)
+    private function _emiData($data, $id_type, $search = '', $user = null)
     {
         // if id_type = 1 then loan account number if id_type = 0 then organization id, this function is being used for GetCollectedEmiList and EmiDetail
         if ($id_type == 1) {
@@ -1704,9 +1703,9 @@ class OrganizationsController extends ApiBaseController
                 'a.loan_account_number', 'a.phone', 'a.amount', 'a.loan_type', 'a.loan_purpose', 'a.payment_method',
                 'a.other_payment_method', 'a.ptp_amount', 'a.ptp_date', 'd.designation', 'CONCAT(b.first_name, " ", b.last_name) name',
                 'CASE WHEN a.other_delay_reason IS NOT NULL THEN CONCAT(a.delay_reason, ",",a.other_delay_reason) ELSE a.delay_reason END AS delay_reason',
-                'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
-                'CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
-                'CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
+                'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
+                'CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
+                'CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
                 'CONCAT(a.address,", ", a.pincode) address',
                 'a.comments'])
             ->joinWith(['createdBy b' => function ($b) {
@@ -1717,7 +1716,7 @@ class OrganizationsController extends ApiBaseController
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
-        if (!isset($user->organization_enc_id)||empty($user->organization_enc_id)){
+        if (!isset($user->organization_enc_id) || empty($user->organization_enc_id)) {
             $model->andWhere(['a.created_by' => $user->user_enc_id]);
         }
         if (isset($lac)) {
@@ -1923,21 +1922,31 @@ class OrganizationsController extends ApiBaseController
         if (!$org_id = $this->getFinancerId($user)) {
             return $this->response(401, ['status' => 401, 'message' => 'financer id not found']);
         }
-        if (!$image = $_FILES['image']) {
-            return $this->response(401, ['status' => 401, 'message' => 'image missing']);
-        }
+        $params = Yii::$app->request->post();
         $notice = new FinancerNoticeBoard();
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
-        $notice->image = $utilitiesModel->encrypt() . '.' . explode('.', $image['name'])[1];
-        $notice->image_location = Yii::$app->getSecurity()->generateRandomString();
-        $base_path = Yii::$app->params->upload_directories->notice->image . $notice->image_location;
-        $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
-        $result = $my_space->uploadFileSources($image['tmp_name'], Yii::$app->params->digitalOcean->rootDirectory . $base_path . DIRECTORY_SEPARATOR . $notice->image, "public", ['params' => ['ContentType' => $image['type']]]);
-        if (!$result) {
-            return $this->response(500, ['status' => 500, 'message' => 'an error occurred while saving image']);
+        if (isset($params['type'])) {
+            if ($params['type'] == '0') {
+                if (!$image = $_FILES['image']) {
+                    return $this->response(401, ['status' => 401, 'message' => 'image missing']);
+                }
+                $notice->image = $utilitiesModel->encrypt() . '.' . explode('.', $image['name'])[1];
+                $notice->image_location = Yii::$app->getSecurity()->generateRandomString();
+                $base_path = Yii::$app->params->upload_directories->notice->image . $notice->image_location;
+                $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                $result = $my_space->uploadFileSources($image['tmp_name'], Yii::$app->params->digitalOcean->rootDirectory . $base_path . DIRECTORY_SEPARATOR . $notice->image, "public", ['params' => ['ContentType' => $image['type']]]);
+                if (!$result) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred while saving image']);
+                }
+            } else {
+                $notice->notice = $params['notice'];
+            }
+        } else {
+            return $this->response(500, ['status' => 500, 'message' => 'missing parameter "type"']);
         }
+        $notice->type = $params['type'];
         $utilitiesModel->variables['string'] = time() . rand(10, 100000);
         $notice->notice_enc_id = $utilitiesModel->encrypt();
         $notice->financer_enc_id = $org_id;
@@ -1958,7 +1967,8 @@ class OrganizationsController extends ApiBaseController
         $notice = FinancerNoticeBoard::find()
             ->alias('a')
             ->select(['a.notice_enc_id',
-                'CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, 'https') . '", a.image_location, "/", a.image) image',
+                'a.notice','a.type',
+                '(CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END) as image',
                 '(CASE WHEN a.status = "Active" THEN TRUE ELSE FALSE END) as status',
                 'a.created_on'
             ]);
