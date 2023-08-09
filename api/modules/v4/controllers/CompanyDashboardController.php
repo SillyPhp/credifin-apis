@@ -20,6 +20,7 @@ use common\models\extended\LoanApplicationNotificationsExtended;
 use common\models\extended\LoanApplicationPartnersExtended;
 use common\models\extended\LoanApplicationPdExtended;
 use common\models\extended\LoanApplicationReleasePaymentExtended;
+use common\models\extended\LoanApplicationsReferencesExtended;
 use common\models\extended\LoanApplicationTvrExtended;
 use common\models\extended\SharedLoanApplicationsExtended;
 use common\models\FinancerAssignedDesignations;
@@ -91,6 +92,7 @@ class CompanyDashboardController extends ApiBaseController
                 'financer-vehicle-brand' => ['POST', 'OPTIONS'],
                 'get-financer-vehicle-brand' => ['POST', 'OPTIONS'],
                 'delete-financer-vehicle-brand' => ['POST', 'OPTIONS'],
+                'update-references' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -768,7 +770,7 @@ class CompanyDashboardController extends ApiBaseController
                     , 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'lp.name as loan_product', 'a.gender', 'a.applicant_dob',
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address',
                     'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",a.image_location, a.image) ELSE NULL END image',
-                    '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee', 'k.access'
+                    '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee', 'k.access', 'a.loan_products_enc_id'
 //                    'lpm.payment_status as login_fee'
                 ])
                 ->joinWith(['loanProductsEnc lpe'], false)
@@ -863,6 +865,10 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanApplicationReleasePayments n' => function ($m) {
                     $m->select(['n.loan_application_release_payment_enc_id', 'n.loan_app_enc_id', 'n.status', 'n.assigned_to']);
                 }])
+//                ->joinWith(['loanApplicationsReferences o' => function($o){
+//                    $o->select(['o.references_enc_id', 'o.loan_app_enc_id', 'o.type', 'o.value', 'o.name', 'o.reference']);
+//                    $o->onCondition(['o.is_deleted' => 0]);
+//                }])
 //                ->joinWith(['loanApplicationVerifications lav' => function($lav){
 //                }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
@@ -926,8 +932,22 @@ class CompanyDashboardController extends ApiBaseController
                 // getting loan application partners
                 $loan['loan_partners'] = $this->__applicationPartners($user, $loan['loan_app_enc_id']);
 
+                if (!empty($loan['loan_products_enc_id'])) {
+                    $product = FinancerLoanProducts::find()
+                        ->alias('a')
+                        ->select(['b1.value'])
+                        ->joinWith(['assignedFinancerLoanTypeEnc b' => function ($b) {
+                            $b->joinWith(['loanTypeEnc b1']);
+                        }], false)
+                        ->where(['a.financer_loan_product_enc_id' => $loan['loan_products_enc_id']])
+                        ->asArray()
+                        ->one();
+                    $loan['loan_type_code'] = $product['value'];
+                } else {
+                    $loan['loan_type_code'] = LoanTypes::findOne(['name' => $loan['loan_type']])->value;
+                }
+
                 // getting loan type code
-                $loan['loan_type_code'] = LoanTypes::findOne(['name' => $loan['loan_type']])->value;
 
                 return $this->response(200, ['status' => 200, 'loan_detail' => $loan]);
             }
@@ -3149,6 +3169,54 @@ class CompanyDashboardController extends ApiBaseController
         }
 
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionUpdateReferences()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        if (!isset($params['loan_app_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_enc_id"']);
+        }
+        if (!isset($params['data'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "data"']);
+        }
+        $transaction = Yii::$app->db->beginTransaction();
+        foreach ($params['data'] as $value) {
+            if (!empty($value['references_enc_id'])) {
+                $references = LoanApplicationsReferencesExtended::findOne(['references_enc_id' => $value['references_enc_id'], 'loan_app_enc_id' => $value['loan_app_enc_id']]);
+                if (!$references) {
+                    $transaction->rollBack();
+                    return $this->response(404, ['status' => 404, 'message' => 'Reference not found']);
+                }
+                $save = 'update';
+            } else {
+                $references = new LoanApplicationsReferencesExtended();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $references->references_enc_id = $utilitiesModel->encrypt();
+                $references->loan_app_enc_id = $params['loan_app_enc_id'];
+                if (!empty($value['type'])) {
+                    $references->type = $value['type'];
+                }
+                $references->value = $value['value'];
+                $references->name = $value['name'];
+                $references->reference = $value['reference'];
+                $references->created_on = date('Y-m-d H:i:s');
+                $references->created_by = $user->user_enc_id;
+                $save = 'save';
+            }
+            $references->updated_on = date('Y-m-d H:i:s');
+            $references->updated_by = $user->user_enc_id;
+            if (!$references->$save()) {
+                $transaction->rollBack();
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $references->getErrors()]);
+            }
+        }
+        $transaction->commit();
+        return $this->response(200, ['status' => 200, 'message' => $save . 'd successfully']);
     }
 
 }
