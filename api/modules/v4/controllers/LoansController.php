@@ -1309,12 +1309,14 @@ class LoansController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-//        $org_id = $user->organization_enc_id;
-//        if ($org_id) {
+
         $params = Yii::$app->request->post();
+
+       $date = date('Y-m-d H:i:s', strtotime('-30 days'));
 
         if (isset($params['phone'])) {
             $phoneNumber = $params['phone'];
+
             $phoneExists = LoanApplications::find()
                 ->alias('a')
                 ->joinWith(['loanCoApplicants b'])
@@ -1334,9 +1336,9 @@ class LoansController extends ApiBaseController
                         ['b.phone' => '+91' . preg_replace('/^\+?+/', '', $phoneNumber)],
                         ['a.phone' => '+' . $phoneNumber],
                         ['b.phone' => '+' . $phoneNumber],
-
                     ])
-                    ->exists();
+                ->andWhere(['>=', "a.loan_status_updated_on", $date])
+                ->exists();
 
                 if ($phoneExists) {
                     return $this->response(200, ['status' => 200, 'message' => 'Phone number already exists']);
@@ -1356,6 +1358,7 @@ class LoansController extends ApiBaseController
                         ['a.aadhaar_number' => $aadhaarNumber],
                         ['b.aadhaar_number' => $aadhaarNumber]
                     ])
+                ->andWhere(['>=', "a.loan_status_updated_on", $date])
                     ->exists();
 
                 if ($aadhaarExists) {
@@ -1375,6 +1378,7 @@ class LoansController extends ApiBaseController
                         ['a.pan_number' => $panNumber],
                         ['b.pan_number' => $panNumber]
                     ])
+                    ->andWhere(['>=', "a.loan_status_updated_on", $date])
                     ->exists();
 
                 if ($panExists) {
@@ -1386,7 +1390,6 @@ class LoansController extends ApiBaseController
 
             if (isset($params['voter_card_number'])) {
                 $voter_card_number = $params['voter_card_number'];
-
                 $voter_card_number = LoanApplications::find()
                     ->alias('a')
                     ->joinWith(['loanCoApplicants b'])
@@ -1394,6 +1397,7 @@ class LoansController extends ApiBaseController
                         ['a.voter_card_number' => $voter_card_number],
                         ['b.voter_card_number' => $voter_card_number]
                     ])
+                    ->andWhere(['>=', "a.loan_status_updated_on", $date])
                     ->exists();
 
                 if ($voter_card_number) {
