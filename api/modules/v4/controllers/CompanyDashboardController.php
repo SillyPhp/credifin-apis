@@ -1184,6 +1184,22 @@ class CompanyDashboardController extends ApiBaseController
             $employee->andWhere(['b.is_deleted' => 0]);
         }
 
+        if ($params != null && !empty($params['fields_search'])) {
+            foreach ($params['fields_search'] as $key => $value){
+                switch ($key){
+                    case 'branch':
+                        $employee->andWhere(['like', 'f.location_enc_id' , $value]);
+                        break;
+                    case 'designation':
+                        $employee->andWhere(['like', 'a.designation_id' , $value]);
+                        break;
+                    case 'name':
+                        $employee->andWhere(['like', 'CONCAT(b.first_name," ",b.last_name)' , $value]);
+                        break;
+                }
+            }
+        }
+
         // filter employee search on employee name, username, email and phone
         if ($params != null && !empty($params['employee_search'])) {
             $employee->andWhere([
