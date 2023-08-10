@@ -2,42 +2,36 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%cities}}".
  *
  * @property int $id Primary Key
  * @property string $city_enc_id City Encrypted ID
  * @property string $name City Name
+ * @property string $city_code
  * @property string $state_enc_id Foreign Key to States Table
  *
- * @property ApplicationPlacementCities[] $applicationPlacementCities
- * @property Applications[] $applications
- * @property AppliedApplicationLocations[] $appliedApplicationLocations
- * @property CandidateRecords[] $candidateRecords
+ * @property ApiJobsPlacementCities[] $apiJobsPlacementCities
  * @property States $stateEnc
- * @property CitiesPriority $citiesPriority
+ * @property ClaimServiceableLocations[] $claimServiceableLocations
  * @property CollegeStudentsReview[] $collegeStudentsReviews
- * @property DropResumeApplicationLocations[] $dropResumeApplicationLocations
+ * @property DropResumeSelectedLocations[] $dropResumeSelectedLocations
+ * @property DropResumeAppliedApplications[] $appliedApplicationEncs
  * @property EmployerReviews[] $employerReviews
  * @property InstituteStudentsReview[] $instituteStudentsReviews
- * @property JobsData[] $jobsDatas
- * @property NewOrganizationReviews[] $newOrganizationReviews
- * @property OrganizationBlogInfoLocations[] $organizationBlogInfoLocations
+ * @property LoanApplicantResidentialInfo[] $loanApplicantResidentialInfos
  * @property OrganizationLocations[] $organizationLocations
- * @property OrganizationReviews[] $organizationReviews
- * @property RegisteredStudents[] $registeredStudents
+ * @property OrganizationOtherDetails[] $organizationOtherDetails
+ * @property Products[] $products
+ * @property SalaryReviews[] $salaryReviews
  * @property SchoolStudentsReview[] $schoolStudentsReviews
- * @property TrainingApplicationOtherInformation[] $trainingApplicationOtherInformations
- * @property TrainingProgramBatches[] $trainingProgramBatches
- * @property TwitterPlacementCities[] $twitterPlacementCities
- * @property UserPreferredLocations[] $userPreferredLocations
- * @property UserWorkExperience[] $userWorkExperiences
- * @property Users[] $users
  */
 class Cities extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
@@ -45,13 +39,13 @@ class Cities extends \yii\db\ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
         return [
             [['city_enc_id', 'name', 'state_enc_id'], 'required'],
-            [['city_enc_id', 'state_enc_id'], 'string', 'max' => 100],
+            [['city_enc_id', 'city_code', 'state_enc_id'], 'string', 'max' => 100],
             [['name'], 'string', 'max' => 30],
             [['city_enc_id'], 'unique'],
             [['state_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => States::className(), 'targetAttribute' => ['state_enc_id' => 'state_enc_id']],
@@ -59,43 +53,25 @@ class Cities extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * {@inheritdoc}
      */
-    public function getApplicationPlacementCities()
+    public function attributeLabels()
     {
-        return $this->hasMany(ApplicationPlacementCities::className(), ['city_enc_id' => 'city_enc_id']);
+        return [
+            'id' => 'ID',
+            'city_enc_id' => 'City Enc ID',
+            'name' => 'Name',
+            'city_code' => 'City Code',
+            'state_enc_id' => 'State Enc ID',
+        ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getApplications()
+    public function getApiJobsPlacementCities()
     {
-        return $this->hasMany(Applications::className(), ['city_enc_id' => 'city_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCompanies()
-    {
-        return $this->hasMany(Companies::className(), ['city_enc_id' => 'city_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAppliedApplicationLocations()
-    {
-        return $this->hasMany(AppliedApplicationLocations::className(), ['city_enc_id' => 'city_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCandidateRecords()
-    {
-        return $this->hasMany(CandidateRecords::className(), ['city_enc_id' => 'city_enc_id']);
+        return $this->hasMany(ApiJobsPlacementCities::className(), ['city_enc_id' => 'city_enc_id']);
     }
 
     /**
@@ -109,9 +85,9 @@ class Cities extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCitiesPriority()
+    public function getClaimServiceableLocations()
     {
-        return $this->hasOne(CitiesPriority::className(), ['city_enc_id' => 'city_enc_id']);
+        return $this->hasMany(ClaimServiceableLocations::className(), ['city_enc_id' => 'city_enc_id']);
     }
 
     /**
@@ -125,9 +101,17 @@ class Cities extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getDropResumeApplicationLocations()
+    public function getDropResumeSelectedLocations()
     {
-        return $this->hasMany(DropResumeApplicationLocations::className(), ['city_enc_id' => 'city_enc_id']);
+        return $this->hasMany(DropResumeSelectedLocations::className(), ['city_enc_id' => 'city_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAppliedApplicationEncs()
+    {
+        return $this->hasMany(DropResumeAppliedApplications::className(), ['applied_application_enc_id' => 'applied_application_enc_id'])->viaTable('{{%drop_resume_selected_locations}}', ['city_enc_id' => 'city_enc_id']);
     }
 
     /**
@@ -149,25 +133,9 @@ class Cities extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getJobsDatas()
+    public function getLoanApplicantResidentialInfos()
     {
-        return $this->hasMany(JobsData::className(), ['city_enc_id' => 'city_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNewOrganizationReviews()
-    {
-        return $this->hasMany(NewOrganizationReviews::className(), ['city_enc_id' => 'city_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getOrganizationBlogInfoLocations()
-    {
-        return $this->hasMany(OrganizationBlogInfoLocations::className(), ['city_enc_id' => 'city_enc_id']);
+        return $this->hasMany(LoanApplicantResidentialInfo::className(), ['city_enc_id' => 'city_enc_id']);
     }
 
     /**
@@ -181,17 +149,25 @@ class Cities extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrganizationReviews()
+    public function getOrganizationOtherDetails()
     {
-        return $this->hasMany(OrganizationReviews::className(), ['city_enc_id' => 'city_enc_id']);
+        return $this->hasMany(OrganizationOtherDetails::className(), ['location_enc_id' => 'city_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getRegisteredStudents()
+    public function getProducts()
     {
-        return $this->hasMany(RegisteredStudents::className(), ['location' => 'city_enc_id']);
+        return $this->hasMany(Products::className(), ['city_enc_id' => 'city_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSalaryReviews()
+    {
+        return $this->hasMany(SalaryReviews::className(), ['city_enc_id' => 'city_enc_id']);
     }
 
     /**
@@ -200,53 +176,5 @@ class Cities extends \yii\db\ActiveRecord
     public function getSchoolStudentsReviews()
     {
         return $this->hasMany(SchoolStudentsReview::className(), ['city_enc_id' => 'city_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTrainingApplicationOtherInformations()
-    {
-        return $this->hasMany(TrainingApplicationOtherInformation::className(), ['city_enc_id' => 'city_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTrainingProgramBatches()
-    {
-        return $this->hasMany(TrainingProgramBatches::className(), ['city_enc_id' => 'city_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTwitterPlacementCities()
-    {
-        return $this->hasMany(TwitterPlacementCities::className(), ['city_enc_id' => 'city_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserPreferredLocations()
-    {
-        return $this->hasMany(UserPreferredLocations::className(), ['city_enc_id' => 'city_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserWorkExperiences()
-    {
-        return $this->hasMany(UserWorkExperience::className(), ['city_enc_id' => 'city_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUsers()
-    {
-        return $this->hasMany(Users::className(), ['city_enc_id' => 'city_enc_id']);
     }
 }
