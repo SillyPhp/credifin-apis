@@ -865,10 +865,10 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanApplicationReleasePayments n' => function ($m) {
                     $m->select(['n.loan_application_release_payment_enc_id', 'n.loan_app_enc_id', 'n.status', 'n.assigned_to']);
                 }])
-//                ->joinWith(['loanApplicationsReferences o' => function($o){
-//                    $o->select(['o.references_enc_id', 'o.loan_app_enc_id', 'o.type', 'o.value', 'o.name', 'o.reference']);
-//                    $o->onCondition(['o.is_deleted' => 0]);
-//                }])
+                ->joinWith(['loanApplicationsReferences o' => function($o){
+                    $o->select(['o.references_enc_id', 'o.loan_app_enc_id', 'o.type', 'o.value', 'o.name', 'o.reference']);
+                    $o->onCondition(['o.is_deleted' => 0]);
+                }])
 //                ->joinWith(['loanApplicationVerifications lav' => function($lav){
 //                }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
