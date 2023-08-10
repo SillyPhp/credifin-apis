@@ -1309,18 +1309,18 @@ class LoansController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-        $org_id = $user->organization_enc_id;
-        if ($org_id) {
-            $params = Yii::$app->request->post();
+//        $org_id = $user->organization_enc_id;
+//        if ($org_id) {
+        $params = Yii::$app->request->post();
 
-            if (isset($params['phone'])) {
-                $phoneNumber = $params['phone'];
-                $phoneExists = LoanApplications::find()
-                    ->alias('a')
-                    ->joinWith(['loanCoApplicants b'])
-                    ->where(['or',
-                        ['a.phone' => $phoneNumber],
-                        ['b.phone' => $phoneNumber],
+        if (isset($params['phone'])) {
+            $phoneNumber = $params['phone'];
+            $phoneExists = LoanApplications::find()
+                ->alias('a')
+                ->joinWith(['loanCoApplicants b'])
+                ->where(['or',
+                    ['a.phone' => $phoneNumber],
+                    ['b.phone' => $phoneNumber],
                         ['a.phone' => '+91' . $phoneNumber],
                         ['b.phone' => '+91' . $phoneNumber],
                         ['a.phone' => '+' . $phoneNumber],
@@ -1402,9 +1402,9 @@ class LoansController extends ApiBaseController
                     return $this->response(201, ['status' => 201, 'message' => 'Voter number does not exist']);
                 }
             }
-            return $this->response(422, ['status' => 422, 'message' => 'Phone or Aadhaar_number or PAN_number or Voter_number is missing']);
-        }
-        return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
+        return $this->response(422, ['status' => 422, 'message' => 'Phone or Aadhaar_number or PAN_number or Voter_number is missing']);
+//        }
+//        return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
 
     }
 
