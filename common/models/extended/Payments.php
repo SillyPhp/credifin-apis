@@ -62,7 +62,7 @@ class Payments
             return false;
         }
 
-        if (!empty($ids = $options['amount_enc_ids'])) {
+        if (isset($options['amount_enc_ids']) && !empty($ids = $options['amount_enc_ids'])) {
             foreach ($ids as $id) {
                 $detail = new LoanPaymentsDetails();
                 $utilitiesModel = new Utilities();
