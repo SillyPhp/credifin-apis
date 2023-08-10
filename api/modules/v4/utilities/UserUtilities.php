@@ -91,7 +91,7 @@ class UserUtilities
 
             if ($source != null) {
                 $token = $this->findToken($user_id, $source);
-                $token = !empty($token) ? $this->getToken($token) : $this->generateNewToken($user_id, $source);
+                $token = empty($token) ? $this->generateNewToken($user_id, $source) : $token;
                 $user['access_token'] = $token->access_token;
                 $user['source'] = $token->source;
                 $user['refresh_token'] = $token->refresh_token;
