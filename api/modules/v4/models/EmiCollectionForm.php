@@ -121,8 +121,8 @@ class EmiCollectionForm extends Model
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $model->other_doc_image = $utilitiesModel->encrypt() . '.' . $this->other_doc_image->extension;
             $model->other_doc_image_location = Yii::$app->getSecurity()->generateRandomString();
-
-            $this->fileUpload($this->other_doc_image, $model->other_doc_image, $model->other_doc_image_location);
+            $path = Yii::$app->params->upload_directories->emi_collection->other_doc_image->image;
+            $this->fileUpload($this->other_doc_image, $model->other_doc_image, $model->other_doc_image_location,$path);
         }
 
         if ($this->borrower_image) {
@@ -130,8 +130,8 @@ class EmiCollectionForm extends Model
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $model->borrower_image = $utilitiesModel->encrypt() . '.' . $this->borrower_image->extension;
             $model->borrower_image_location = Yii::$app->getSecurity()->generateRandomString();
-
-            $this->fileUpload($this->borrower_image, $model->borrower_image, $model->borrower_image_location);
+            $path = Yii::$app->params->upload_directories->emi_collection->borrower_image->image;
+            $this->fileUpload($this->borrower_image, $model->borrower_image, $model->borrower_image_location,$path);
         }
 
         if ($this->pr_receipt_image) {
@@ -139,8 +139,8 @@ class EmiCollectionForm extends Model
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $model->pr_receipt_image = $utilitiesModel->encrypt() . '.' . $this->pr_receipt_image->extension;
             $model->pr_receipt_image_location = Yii::$app->getSecurity()->generateRandomString();
-
-            $this->fileUpload($this->pr_receipt_image, $model->pr_receipt_image, $model->pr_receipt_image_location);
+            $path = Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image;
+            $this->fileUpload($this->pr_receipt_image, $model->pr_receipt_image, $model->pr_receipt_image_location,$path);
         }
         if (!$model->save()) {
             return ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()];
@@ -192,9 +192,9 @@ class EmiCollectionForm extends Model
     }
 
 
-    private function fileUpload($img_obj, $image, $image_location)
+    private function fileUpload($img_obj, $image, $image_location,$path)
     {
-        $base_path = Yii::$app->params->upload_directories->emi_collection->image . $image_location;
+        $base_path = $path . $image_location;
         $type = $img_obj->type;
         $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
         $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);

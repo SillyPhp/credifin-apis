@@ -59,7 +59,7 @@ class LoanApplication extends Model
     public $file;
     public $pan_number;
     public $loan_lender;
-    public $aadhar_number;
+    public $aadhaar_number;
     public $voter_card_number;
     public $vehicle_brand;
     public $vehicle_model;
@@ -82,7 +82,7 @@ class LoanApplication extends Model
     {
         return [
             [['applicant_name', 'phone_no'], 'required'],
-            [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhar_number', 'loan_lender',
+            [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhaar_number', 'loan_lender',
                 'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount', 'applicant_dob', 'gender',
                 'vehicle_brand', 'loan_type', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type', 'branch_id', 'voter_card_number', 'loan_product_id'], 'safe'],
             [['applicant_name', 'loan_purpose', 'email'], 'trim'],
@@ -120,7 +120,7 @@ class LoanApplication extends Model
             $model->applicant_dob = $this->applicant_dob;
             $model->gender = $this->gender;
             $model->voter_card_number = $this->voter_card_number;
-            $model->aadhaar_number = $this->aadhar_number;
+            $model->aadhaar_number = $this->aadhaar_number;
             $model->pan_number = $this->pan_number;
             $model->amount = str_replace(',', '', $this->loan_amount);
             $model->source = 'EmpowerFintech';
@@ -405,7 +405,7 @@ class LoanApplication extends Model
             $model->applicant_current_city = $this->current_city;
             $model->email = $this->email ? $this->email : $model->email;
             $model->gender = $this->gender ? $this->gender : $model->gender;
-            $model->aadhaar_number = $this->aadhar_number ? $this->aadhar_number : $model->aadhaar_number;
+            $model->aadhaar_number = $this->aadhaar_number ? $this->aadhaar_number : $model->aadhaar_number;
             $model->voter_card_number = $this->voter_card_number ? $this->voter_card_number : $model->voter_card_number;
             $model->pan_number = $this->pan_number ? $this->pan_number : $model->pan_number;
             $model->applicant_dob = $this->applicant_dob ? $this->applicant_dob : $model->applicant_dob;

@@ -88,7 +88,4 @@ class TestCacheController extends Controller
 
         return $randomString;
     }
-   public function actionLoans(){
-
-   }
 }
