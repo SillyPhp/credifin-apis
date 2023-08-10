@@ -102,10 +102,10 @@ class ApiBaseController extends Controller
         }
 
         // getting token detail from DB
-        $access_token = UserAccessTokens::findOne(['access_token' => $token[1]]);
+        $access_token = UserAccessTokens::find()->where(['access_token' => $token[1], 'source' => $source, 'is_deleted' => 0])->one();
 
         // check if token exists in token detail and source == token detail source
-        if (!empty($access_token) && $source == $access_token->source) {
+        if (!empty($access_token)) {
 
             // it checks if the access token is still valid.
             if (strtotime($access_token->access_token_expiration) > strtotime("now")) {
@@ -117,6 +117,10 @@ class ApiBaseController extends Controller
 
                 // after token validation getting user data object
                 $user = Candidates::findOne(['user_enc_id' => $access_token->user_enc_id]);
+
+                if ($user['status'] != 'Active' || $user['is_deleted'] == 1) {
+                    return false;
+                }
 
                 // identity login
                 Yii::$app->user->login($user);

@@ -28,6 +28,7 @@ use Yii;
  * @property string $created_on created on
  * @property string $updated_on updated on
  * @property string $updated_by linked to user table
+ * @property string $loan_status_updated_on
  * @property int $is_deleted 0 false,1 true
  *
  * @property Organizations $providerEnc
@@ -60,7 +61,7 @@ class AssignedLoanProvider extends \yii\db\ActiveRecord
             [['status', 'is_deleted'], 'integer'],
             [['remarks'], 'string'],
             [['bdo_approved_amount', 'tl_approved_amount', 'soft_approval', 'soft_sanction', 'valuation', 'disbursement_approved', 'insurance_charges'], 'number'],
-            [['created_on', 'updated_on'], 'safe'],
+            [['created_on', 'updated_on', 'loan_status_updated_on'], 'safe'],
             [['assigned_loan_provider_enc_id', 'loan_application_enc_id', 'institute_lead_enc_id', 'provider_enc_id', 'scheme_enc_id', 'assigned_lender_service_enc_id', 'branch_enc_id', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['assigned_loan_provider_enc_id'], 'unique'],
             [['provider_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['provider_enc_id' => 'organization_enc_id']],

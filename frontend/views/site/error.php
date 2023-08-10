@@ -12,22 +12,22 @@ use yii\helpers\Url;
 $this->title = $name;
 $this->params['header_dark'] = true;
 ?>
-<section id="home" class="fullscreen bg-lightest">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-sm-6 pull-right">
-                <div class="error-code">
-                    <?= $exception->statusCode ?>
+    <section id="home" class="fullscreen bg-lightest">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6 pull-right">
+                    <div class="error-code">
+                        <?= $exception->statusCode ?? '' ?>
+                    </div>
+                    <img src="<?= Url::to('@eyAssets/images/pages/error/error.png'); ?>"/>
                 </div>
-                <img src="<?= Url::to('@eyAssets/images/pages/error/error.png'); ?>"/>
-            </div>
-            <div class="col-md-6 col-sm-6 error-description">
-                <h2>Oops,</h2>
-                <h2>nothing here..</h2>
-                <h5><?= nl2br(Html::encode($message)); ?></h5>
-                <a href="/" class="cta">
-                    <span>Back to Home</span>
-                    <svg width="13px" height="10px" viewBox="0 0 13 10">
+                <div class="col-md-6 col-sm-6 error-description">
+                    <h2>Oops,</h2>
+                    <h2>nothing here..</h2>
+                    <h5><?= nl2br(Html::encode($message)); ?></h5>
+                    <a href="/" class="cta">
+                        <span>Back to Home</span>
+                        <svg width="13px" height="10px" viewBox="0 0 13 10">
                         <path d="M1,5 L11,5"></path>
                         <polyline points="8 1 12 5 8 9"></polyline>
                     </svg>

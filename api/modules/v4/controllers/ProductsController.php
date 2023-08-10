@@ -37,7 +37,9 @@ class ProductsController extends ApiBaseController
                 'remove-product-image' => ['POST', 'OPTIONS'],
                 'remove-product' => ['POST', 'OPTIONS'],
                 'all-products' => ['POST', 'OPTIONS'],
-                'add-model' => ['POST', 'OPTIONS']
+                'add-model' => ['POST', 'OPTIONS'],
+                'product-stats' => ['POST', 'OPTIONS'],
+                'product-enquiry' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -389,58 +391,63 @@ class ProductsController extends ApiBaseController
     // getting products list for dealer
     public function actionGetProducts()
     {
-        // getting request params
-        $params = Yii::$app->request->post();
+        if ($user = $this->isAuthorized()) {
+            // getting request params
+            $params = Yii::$app->request->post();
 
-        $limit = !empty($params['limit']) ? $params['limit'] : 10;
-        $page = !empty($params['page']) ? $params['page'] : 1;
-        $category = !empty($params['category']) ? $params['category'] : 'Two Wheeler';
+            $limit = !empty($params['limit']) ? $params['limit'] : 10;
+            $page = !empty($params['page']) ? $params['page'] : 1;
+            $category = !empty($params['category']) ? $params['category'] : 'Two Wheeler';
 
-        $products = Products::find()
-            ->alias('a')
-            ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.vehicle_type', 'a.product_enc_id', 'a.status', 'a.created_on'])
-            ->joinWith(['productOtherDetails b' => function ($b) {
-                $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.other_detail']);
-                $b->onCondition(['b.is_deleted' => 0]);
-            }])
-            ->joinWith(['modelEnc m' => function ($m) {
-                $m->joinWith(['brandEnc m1'], false);
-            }], false)
-            ->joinWith(['productImages c' => function ($c) {
-                $c->select(['c.product_enc_id', 'c.alt', 'c.type',
-                    'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
-            }])
-            ->joinWith(['assignedCategoryEnc d' => function ($d) {
-                $d->joinWith(['categoryEnc d1']);
-            }], false)
-            ->where(['a.is_deleted' => 0]);
+            $products = Products::find()
+                ->alias('a')
+                ->select(['a.name', 'a.slug', 'a.price', 'a.description', 'a.vehicle_type', 'a.product_enc_id', 'a.status', 'a.created_on'])
+                ->joinWith(['productOtherDetails b' => function ($b) {
+                    $b->select(['b.product_other_detail_enc_id', 'b.product_enc_id', 'b.other_detail']);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }])
+                ->joinWith(['modelEnc m' => function ($m) {
+                    $m->joinWith(['brandEnc m1'], false);
+                }], false)
+                ->joinWith(['productImages c' => function ($c) {
+                    $c->select(['c.product_enc_id', 'c.alt', 'c.type',
+                        'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", c.image_location, "/", c.image) END image_link']);
+                }])
+                ->joinWith(['assignedCategoryEnc d' => function ($d) {
+                    $d->joinWith(['categoryEnc d1']);
+                }], false)
+                ->where(['a.is_deleted' => 0]);
 
-        if (isset($params['search_keyword'])) {
-            $products->andWhere(['or',
-                ['like', 'a.name', $params['search_keyword']],
-                ['like', 'm1.name', $params['search_keyword']],
-                ['like', 'a.price', $params['search_keyword']]]);
+            if (isset($params['search_keyword'])) {
+                $products->andWhere(['or',
+                    ['like', 'a.name', $params['search_keyword']],
+                    ['like', 'm1.name', $params['search_keyword']],
+                    ['like', 'a.price', $params['search_keyword']]]);
+            }
+
+            $products = $products->andWhere(['d1.name' => $category, 'dealer_enc_id' => $user->user_enc_id])
+                ->groupBy('a.product_enc_id')
+                ->orderBy(['a.created_on' => SORT_DESC]);
+
+            $count = $products->count();
+
+            $products = $products->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->asArray()
+                ->all();
+
+            if ($products) {
+                return $this->response(200, ['status' => 200, 'products' => $products, 'count' => $count]);
+            }
+            return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
         }
-
-        $products = $products->andWhere(['d1.name' => $category])
-            ->groupBy('a.product_enc_id')
-            ->orderBy(['a.created_on' => SORT_DESC]);
-
-        $count = $products->count();
-
-        $products = $products->limit($limit)
-            ->offset(($page - 1) * $limit)
-            ->asArray()
-            ->all();
-
-        if ($products) {
-            return $this->response(200, ['status' => 200, 'products' => $products, 'count' => $count]);
-        }
-        return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
     }
 
     // this action used to update product status
-    public function actionUpdateProductStatus()
+    public
+    function actionUpdateProductStatus()
     {
         // checking authorization
         if ($user = $this->isAuthorized()) {
@@ -478,7 +485,8 @@ class ProductsController extends ApiBaseController
     }
 
     // getting product detail
-    public function actionGetProductDetails()
+    public
+    function actionGetProductDetails()
     {
         // getting request data
         $params = Yii::$app->request->post();
@@ -533,7 +541,8 @@ class ProductsController extends ApiBaseController
     }
 
     // remove product image
-    public function actionRemoveProductImage()
+    public
+    function actionRemoveProductImage()
     {
         // checking authorization
         if ($user = $this->isAuthorized()) {
@@ -566,7 +575,8 @@ class ProductsController extends ApiBaseController
     }
 
     // this action is used remove product
-    public function actionRemoveProduct()
+    public
+    function actionRemoveProduct()
     {
         // checking authorization
         if ($user = $this->isAuthorized()) {
@@ -599,7 +609,8 @@ class ProductsController extends ApiBaseController
     }
 
     // getting products list for customer
-    public function actionAllProducts()
+    public
+    function actionAllProducts()
     {
         // getting request params
         $params = Yii::$app->request->post();
@@ -635,7 +646,8 @@ class ProductsController extends ApiBaseController
     }
 
     // getting existing brands
-    private function __existingBrands($category)
+    private
+    function __existingBrands($category)
     {
         $existing_brands = Brands::find()
             ->alias('a')
@@ -657,7 +669,8 @@ class ProductsController extends ApiBaseController
     }
 
     // getting products list
-    private function __getProducts($options)
+    private
+    function __getProducts($options)
     {
         // getting products list
         $products = Products::find()
@@ -761,7 +774,8 @@ class ProductsController extends ApiBaseController
     }
 
     // this action provide data to filter products list
-    public function actionProductFilterData()
+    public
+    function actionProductFilterData()
     {
         // getting request params
         $params = Yii::$app->request->post();
@@ -837,7 +851,8 @@ class ProductsController extends ApiBaseController
     }
 
     // this action is used for product enquiry
-    public function actionAddProductEnquiry()
+    public
+    function actionAddProductEnquiry()
     {
         // creating form object
         $model = new EnquiryForm();
@@ -872,7 +887,8 @@ class ProductsController extends ApiBaseController
     }
 
     // this action is used to update product enquiry
-    public function actionUpdateProductEnquiry()
+    public
+    function actionUpdateProductEnquiry()
     {
         // checking authorization
         if ($user = $this->isAuthorized()) {
@@ -917,7 +933,8 @@ class ProductsController extends ApiBaseController
     }
 
     // this action is used to show enquiries to dealer
-    public function actionDealerViewProductEnquiry()
+    public
+    function actionDealerViewProductEnquiry()
     {
         // check authorization
         if ($user = $this->isAuthorized()) {
@@ -955,7 +972,8 @@ class ProductsController extends ApiBaseController
     }
 
     // this action is used to show enquiries to customer who make enquiry
-    public function actionUserViewProductEnquiry()
+    public
+    function actionUserViewProductEnquiry()
     {
         // checking authorization
         if ($user = $this->isAuthorized()) {
@@ -985,6 +1003,124 @@ class ProductsController extends ApiBaseController
             return $this->response(404, ['status' => 404, 'message' => 'not found']);
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionProductStats()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+//            print_r($user);
+//            die();
+            $category = null;
+            if (isset($params['category']) || !empty($params['category'])) {
+                $category = $params['category'];
+            }
+
+            $products = Products::find()
+                ->alias('a')
+                ->select([
+                    'COUNT(CASE WHEN a.status IN ("Active","Inactive","Sold") THEN "a.product_enc_id" END) as total',
+                    'COUNT(CASE WHEN a.status = "Active" THEN a.product_enc_id END) AS active',
+                    'COUNT(CASE WHEN a.status = "Inactive" THEN a.product_enc_id END) AS inactive',
+                    'COUNT(CASE WHEN a.status = "Sold" THEN a.product_enc_id END) AS sold'
+                ])
+                ->joinWith(['assignedCategoryEnc d' => function ($d) {
+                    $d->joinWith(['categoryEnc d1']);
+                }], false)
+                ->where(['a.is_deleted' => 0, 'a.dealer_enc_id' => $user->user_enc_id]);
+
+            if (!empty($category)) {
+                $products->andWhere(['d1.name' => $category]);
+            }
+
+            $products = $products->asArray()
+                ->all();
+
+            if (!empty($products)) {
+                return $this->response(200, ['status' => 200, 'products' => $products]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+
+
+    }
+
+    public function actionProductEnquiry()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            $limit = 10;
+            $page = 1;
+
+            if (isset($params['limit']) && !empty($params['limit'])) {
+                $limit = $params['limit'];
+            }
+            if (isset($params['page']) && !empty($params['page'])) {
+                $page = $params['page'];
+            }
+
+            if (empty($params['dealer_enc_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing information: "dealer_enc_id"']);
+            }
+            if (empty($params['category'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'Missing information: "category"']);
+            }
+            $category = $params['category'];
+
+            $productEnquiry = ProductEnquiry::find()
+                ->alias('a')
+                ->select([
+                    'a.enquiry_enc_id',
+                    'CONCAT(a.first_name, " ", a.last_name) as name',
+                    'a.created_on',
+                    'a.email',
+                    'a.mobile_number',
+                    'a.message',
+                    'a.status',
+                    'b.name as product_name',
+                    'b.slug',
+                    'b.price',
+                    'b1.product_enc_id',
+                    'CASE WHEN b1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->refurbished->image, 'https') . '", b1.image_location, "/", b1.image) END image_link'
+                ])
+                ->joinWith(['product b' => function ($b) {
+                    $b->joinWith(['productImages b1'], false);
+                    $b->joinWith(['assignedCategoryEnc d' => function ($d1) {
+                        $d1->joinWith(['categoryEnc d1']);
+                    }]);
+                }])
+                ->where(['a.is_deleted' => 0, 'b.dealer_enc_id' => $params['dealer_enc_id'], 'd1.name' => $category])
+                ->groupBy('a.enquiry_enc_id');
+
+            if (isset($params['search_keyword']) && !empty($params['search_keyword'])) {
+                $productEnquiry->andWhere([
+                    'or',
+                    ['like', 'b.name', $params['search_keyword']],
+                    ['like', 'concat(a.first_name," ",a.last_name)', $params['search_keyword']],
+                    ['like', 'a.mobile_number', $params['search_keyword']],
+                ]);
+            }
+
+            $count = $productEnquiry->count();
+            $productEnquiry = $productEnquiry
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->orderBy(['a.created_on' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            if (!empty($productEnquiry)) {
+                return $this->response(200, ['status' => 200, 'enquiry' => $productEnquiry, 'count' => $count]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'Data Not Found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
         }
     }
 

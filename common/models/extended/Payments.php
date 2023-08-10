@@ -2,11 +2,12 @@
 
 namespace common\models\extended;
 
+use common\models\AssignedLoanPayments;
+use common\models\EducationLoanPayments;
 use common\models\InstituteLeadsPayments;
 use common\models\LoanPayments;
+use common\models\LoanPaymentsDetails;
 use common\models\Utilities;
-
-use common\models\EducationLoanPayments;
 
 class Payments
 {
@@ -28,23 +29,57 @@ class Payments
         }
     }
 
-    public function createUrlLink($options)
+    public static function saveLoanPayment($options)
     {
         $model = new LoanPayments();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->loan_payments_enc_id = $utilitiesModel->encrypt();
-        $model->loan_app_enc_id = $options['loan_app_enc_id'];
         $model->payment_amount = $options['amount'];
         $model->payment_token = $options['token'];
         $model->payment_short_url = $options['surl'];
+        $model->payment_status = 'pending';
         $model->created_on = date('Y-m-d h:i:s');
         $model->close_by = date('Y-m-d h:i:s', $options['close_by']);
-//        date('Y-m-d h:i:s');
         $model->payment_link_type = $options['method'];
         if (!$model->save()) {
-            return $model->getErrors();
+            return false;
         }
+
+        $assign = new AssignedLoanPayments();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $assign->assigned_loan_payments_enc_id = $utilitiesModel->encrypt();
+        $assign->loan_payments_enc_id = $model->loan_payments_enc_id;
+        if (!empty($options['emi_collection_enc_id'])) {
+            $assign->emi_collection_enc_id = $options['emi_collection_enc_id'];
+        }
+        if (!empty($options['loan_app_enc_id'])) {
+            $assign->loan_app_enc_id = $options['loan_app_enc_id'];
+        }
+        $assign->created_by = $assign->updated_by = $options['user_id'];
+        $assign->created_on = $assign->updated_on = date('Y-m-d h:i:s');
+        if (!$assign->save()) {
+            return false;
+        }
+
+        if (isset($options['amount_enc_ids']) && !empty($ids = $options['amount_enc_ids'])) {
+            foreach ($ids as $id) {
+                $detail = new LoanPaymentsDetails();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $detail->loan_payments_details_enc_id = $utilitiesModel->encrypt();
+                $detail->loan_payments_enc_id = $model->loan_payments_enc_id;
+                $detail->financer_loan_product_login_fee_structure_enc_id = $id['id'];
+                $detail->no_dues_name = $id['name'];
+                $detail->no_dues_amount = $id['amount'];
+                $detail->created_by = $options['user_id'];
+                $detail->created_on = date('Y-m-d h:i:s');
+                if (!$detail->save()) {
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 
@@ -123,7 +158,7 @@ class Payments
             "payment_amount" => $options['total'],
             "description" => "For Store 1",
             "close_by" => $options['close_by'],
-            "notes" => array("purpose" => "Test UPI QR code notes")]);
+            "notes" => array("purpose" => $options['purpose'])]);
         if ($link) {
             $options['token'] = $link->id;
             $options['created_on'] = $link->created_at;

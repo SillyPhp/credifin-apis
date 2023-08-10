@@ -2,30 +2,29 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%financer_loan_products}}".
  *
  * @property int $id
  * @property string $financer_loan_product_enc_id assigned financer loan product enc id
  * @property string $assigned_financer_loan_type_enc_id assigned financer loan type enc id
- * @property string|null $name product name
+ * @property string $name product name
  * @property string $created_on created on
  * @property string $created_by created by
- * @property string|null $updated_on updated on
- * @property string|null $updated_by updated by
+ * @property string $updated_on updated on
+ * @property string $updated_by updated by
  * @property int $is_deleted 0 false, 1 true
  *
- * @property AssignedFinancerLoanType $assignedFinancerLoanTypeEnc
- * @property Users $createdBy
  * @property FinancerLoanProductDocuments[] $financerLoanProductDocuments
+ * @property FinancerLoanProductLoginFeeStructure[] $financerLoanProductLoginFeeStructures
  * @property FinancerLoanProductProcess[] $financerLoanProductProcesses
  * @property FinancerLoanProductPurpose[] $financerLoanProductPurposes
  * @property FinancerLoanProductStatus[] $financerLoanProductStatuses
+ * @property Users $createdBy
+ * @property Users $updatedBy
+ * @property AssignedFinancerLoanTypes $assignedFinancerLoanTypeEnc
  * @property FinancerRewards[] $financerRewards
  * @property LoanApplications[] $loanApplications
- * @property Users $updatedBy
  */
 class FinancerLoanProducts extends \yii\db\ActiveRecord
 {
@@ -43,41 +42,18 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['financer_loan_product_enc_id', 'assigned_financer_loan_type_enc_id', 'created_by'], 'required'],
+            [['financer_loan_product_enc_id', 'assigned_financer_loan_type_enc_id', 'name', 'created_by', 'updated_on', 'updated_by'], 'required'],
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['financer_loan_product_enc_id', 'assigned_financer_loan_type_enc_id', 'name', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['financer_loan_product_enc_id'], 'unique'],
-            [['assigned_financer_loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedFinancerLoanType::className(), 'targetAttribute' => ['assigned_financer_loan_type_enc_id' => 'assigned_financer_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
+            [['assigned_financer_loan_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedFinancerLoanTypes::className(), 'targetAttribute' => ['assigned_financer_loan_type_enc_id' => 'assigned_financer_enc_id']],
         ];
     }
 
-
     /**
-     * Gets query for [[AssignedFinancerLoanTypeEnc]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAssignedFinancerLoanTypeEnc()
-    {
-        return $this->hasOne(AssignedFinancerLoanType::className(), ['assigned_financer_enc_id' => 'assigned_financer_loan_type_enc_id']);
-    }
-
-    /**
-     * Gets query for [[CreatedBy]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCreatedBy()
-    {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
-    }
-
-    /**
-     * Gets query for [[FinancerLoanProductDocuments]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getFinancerLoanProductDocuments()
@@ -86,8 +62,14 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[FinancerLoanProductProcesses]].
-     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerLoanProductLoginFeeStructures()
+    {
+        return $this->hasMany(FinancerLoanProductLoginFeeStructure::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getFinancerLoanProductProcesses()
@@ -96,8 +78,6 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[FinancerLoanProductPurposes]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getFinancerLoanProductPurposes()
@@ -106,8 +86,6 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[FinancerLoanProductStatuses]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getFinancerLoanProductStatuses()
@@ -116,8 +94,30 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[FinancerRewards]].
-     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedFinancerLoanTypeEnc()
+    {
+        return $this->hasOne(AssignedFinancerLoanTypes::className(), ['assigned_financer_enc_id' => 'assigned_financer_loan_type_enc_id']);
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getFinancerRewards()
@@ -126,22 +126,10 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[LoanApplications]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getLoanApplications()
     {
         return $this->hasMany(LoanApplications::className(), ['loan_products_enc_id' => 'financer_loan_product_enc_id']);
-    }
-
-    /**
-     * Gets query for [[UpdatedBy]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUpdatedBy()
-    {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
     }
 }

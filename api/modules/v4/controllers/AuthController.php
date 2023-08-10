@@ -2,11 +2,11 @@
 
 namespace api\modules\v4\controllers;
 
-use api\modules\v3\models\widgets\Referral;
-use api\modules\v4\models\ForgotPassword;
-use api\modules\v4\models\ProfilePicture;
+use api\modules\v2\models\ChangePassword;
 use api\modules\v4\models\Candidates;
+use api\modules\v4\models\ForgotPassword;
 use api\modules\v4\models\LoginForm;
+use api\modules\v4\models\ProfilePicture;
 use api\modules\v4\models\SignupForm;
 use api\modules\v4\utilities\UserUtilities;
 use common\models\Organizations;
@@ -16,11 +16,10 @@ use common\models\Usernames;
 use common\models\Users;
 use common\models\UserVerificationTokens;
 use common\models\Utilities;
-use yii\web\UploadedFile;
 use Yii;
-use yii\helpers\Url;
-use yii\filters\Cors;
 use yii\filters\auth\HttpBearerAuth;
+use yii\filters\Cors;
+use yii\web\UploadedFile;
 
 
 class AuthController extends ApiBaseController
@@ -44,6 +43,7 @@ class AuthController extends ApiBaseController
                 'otp-change-password',
                 'verify-phone',
                 'referral-logo',
+                'reset-old-password'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -63,6 +63,7 @@ class AuthController extends ApiBaseController
                 'change-password' => ['POST', 'OPTIONS'],
                 'otp-change-password' => ['POST', 'OPTIONS'],
                 'referral-logo' => ['POST', 'OPTIONS'],
+                'reset-old-password' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -84,14 +85,29 @@ class AuthController extends ApiBaseController
 
             $params = Yii::$app->request->post();
 
-            // creating signup form object. if its financer then it will make object with scenario Financer to require organization fields
-            $model = !empty($params['user_type']) ? (($params['user_type'] == 'Financer') ? new SignupForm(['scenario' => 'Financer']) : new SignupForm()) : new SignupForm();
+            switch ($params['user_type']) {
+                case 'Financer':
+                    $model = new SignupForm(['scenario' => 'Financer']);
+                    break;
+//                case 'Dealer':
+//                    $model = new SignupForm(['scenario' => 'Dealer']);
+//                    break;
+                default:
+                    $model = new SignupForm();
+                    break;
+            }
+
 
             // loading data from post request to model
-            if ($model->load(Yii::$app->request->post(), '')) {
+            if ($model->load(Yii::$app->request->post())) {
 
                 // if source empty then assign user ip address
                 $model->source = !empty($model->source) ? $model->source : Yii::$app->getRequest()->getUserIP();
+//                if (!empty($model->ref_id)) {
+//                    $gen = self::_genUserPass($params);
+//                    $model->username = $gen['username'];
+//                    $model->password = $gen['pass'];
+//                }
 
                 // if model validated then it will save data
                 if ($model->validate()) {
@@ -103,7 +119,11 @@ class AuthController extends ApiBaseController
                         // creating user utilities model to get user data
                         $user = new UserUtilities();
                         $user_data = $user->userData($data['user_id'], $model->source);
+                        if ($user_data['user_type'] != 'Individual') {
+                            $message = 'Your account status is \'Pending\'. Please get it approved by admin.';
+                            return $this->response(201, ['status' => 201, 'message' => $message]);
 
+                        }
                         return $this->response(201, ['status' => 201, 'data' => $user_data]);
                     } else {
                         // if there is error while saving data
@@ -122,6 +142,21 @@ class AuthController extends ApiBaseController
             return ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception->getMessage(), true)];
         }
     }
+
+    private function _genUserPass($data)
+    {
+        while (true) {
+            $username = $data['organization_name'] . rand(100, 1000);
+            $checkUsers = Users::findOne(['username' => $username]);
+            if (!$checkUsers) {
+                $res['username'] = $username;
+                break;
+            }
+        }
+        $res['pass'] = $data['phone'];
+        return $res;
+    }
+
 
     // this action is used to validate fields like username, email, phone etc.
     public function actionValidate()
@@ -441,7 +476,7 @@ class AuthController extends ApiBaseController
             $source = Yii::$app->request->post('source');
 
             // getting token detail with this access_token and source
-            $token = UserAccessTokens::findOne(['access_token' => $access_token, 'source' => $source]);
+            $token = UserAccessTokens::findOne(['access_token' => $access_token, 'source' => $source, 'is_deleted' => 0]);
 
             // if token not found
             if (!$token) {
@@ -458,7 +493,10 @@ class AuthController extends ApiBaseController
             }
 
             // getting user detail from token user
-            $user = Users::findOne(['user_enc_id' => $token->user_enc_id]);
+            $user = Users::findOne(['user_enc_id' => $token->user_enc_id, 'status' => 'Active', 'is_deleted' => 0]);
+            if (!$user) {
+                return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+            }
 
             // creating user utilities model to get user data
             $userData = new UserUtilities();
@@ -486,35 +524,35 @@ class AuthController extends ApiBaseController
     }
 
     // this action is used to change password
-    public function actionChangePassword()
-    {
-        if ($user = $this->isAuthorized()) {
-            $params = Yii::$app->request->post();
-
-            // checking new_password empty return missing information
-            if (empty($params['new_password'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "new_password"']);
-            }
-
-            // getting user object with user_enc_id
-            $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
-
-            // encrypting and updating new password
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['password'] = $params['new_password'];
-            $user->password = $utilitiesModel->encrypt_pass();
-            $user->last_updated_on = date('Y-m-d H:i:s');
-            if (!$user->update()) {
-                // if not update returning 500 error
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $user->getErrors()]);
-            }
-
-            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-    }
+//    public function actionChangePassword()
+//    {
+//        if ($user = $this->isAuthorized()) {
+//            $params = Yii::$app->request->post();
+//
+//            // checking new_password empty return missing information
+//            if (empty($params['new_password'])) {
+//                return $this->response(422, ['status' => 422, 'message' => 'missing information "new_password"']);
+//            }
+//
+//            // getting user object with user_enc_id
+//            $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
+//
+//            // encrypting and updating new password
+//            $utilitiesModel = new Utilities();
+//            $utilitiesModel->variables['password'] = $params['new_password'];
+//            $user->password = $utilitiesModel->encrypt_pass();
+//            $user->last_updated_on = date('Y-m-d H:i:s');
+//            if (!$user->update()) {
+//                // if not update returning 500 error
+//                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $user->getErrors()]);
+//            }
+//
+//            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+//
+//        } else {
+//            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+//        }
+//    }
 
     // verifying phone
     public function actionVerifyPhone()
@@ -598,7 +636,7 @@ class AuthController extends ApiBaseController
         $ref = \common\models\Referral::find()
             ->alias('a')
             ->select([
-                'a.referral_enc_id','b.name','b.slug',
+                'a.referral_enc_id', 'b.name', 'b.slug',
                 'CASE WHEN b.logo IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->organizations->logo . '",b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=true&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo'
             ])
             ->joinWith(['organizationEnc b'])
@@ -611,5 +649,65 @@ class AuthController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'data' => $ref]);
         }
         return $this->response(404, ['status' => 404, 'message' => 'not found']);
+    }
+
+    public function actionChangePassword()
+    {
+        if ($user = $this->isAuthorized()) {
+            $params = Yii::$app->request->post();
+
+            // checking new_password empty return missing information
+            if (empty($params['new_password'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "new_password"']);
+            }
+
+            // getting user object with user_enc_id
+            $user = Users::findOne(['user_enc_id' => $user->user_enc_id]);
+
+            // encrypting and updating new password
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['password'] = $params['new_password'];
+            $user->password = $utilitiesModel->encrypt_pass();
+            $user->last_updated_on = date('Y-m-d H:i:s');
+            if (!$user->update()) {
+                // if not update returning 500 error
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $user->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionResetOldPassword()
+    {
+        if ($user = $this->isAuthorized()) {
+            $model = new ChangePassword();
+            if ($model->load(Yii::$app->request->post(), '')) {
+                if ($model->validate()) {
+                    if ($res = $model->changePassword($user->user_enc_id)) {
+                        if ($res === 402) {
+                            return $this->response(402, ['status' => 402, 'message' => 'New And Old Password Should not be Same']);
+                        }
+                        if ($res === 403) {
+                            return $this->response(403, ['status' => 403, 'message' => 'Old Password Is Wrong']);
+                        }
+
+                        return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
+
+                    } else {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
+                } else {
+                    return $this->response(409, ['status' => 409, $model->getErrors()]);
+                }
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'data not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 }

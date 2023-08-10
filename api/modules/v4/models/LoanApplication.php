@@ -3,6 +3,7 @@
 namespace api\modules\v4\models;
 
 use common\models\CertificateTypes;
+use common\models\EducationLoanPayments;
 use common\models\EmailLogs;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\EducationLoanPaymentsExtends;
@@ -11,8 +12,11 @@ use common\models\extended\LoanApplicationOptionsExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
 use common\models\extended\LoanPurposeExtended;
+use common\models\extended\Payments;
 use common\models\FinancerLoanProducts;
+use common\models\LoanApplications;
 use common\models\Organizations;
+use common\models\RandomColors;
 use common\models\Referral;
 use common\models\SharedLoanApplications;
 use common\models\UserAccessTokens;
@@ -20,14 +24,10 @@ use common\models\Usernames;
 use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
+use common\models\Utilities;
 use Razorpay\Api\Api;
-use common\models\extended\Payments;
-use common\models\EducationLoanPayments;
-use common\models\LoanApplications;
-use common\models\RandomColors;
 use Yii;
 use yii\base\Model;
-use common\models\Utilities;
 
 class LoanApplication extends Model
 {
@@ -59,7 +59,7 @@ class LoanApplication extends Model
     public $file;
     public $pan_number;
     public $loan_lender;
-    public $aadhar_number;
+    public $aadhaar_number;
     public $voter_card_number;
     public $vehicle_brand;
     public $vehicle_model;
@@ -82,7 +82,7 @@ class LoanApplication extends Model
     {
         return [
             [['applicant_name', 'phone_no'], 'required'],
-            [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhar_number', 'loan_lender',
+            [['desired_tenure', 'company', 'company_type', 'business', 'annual_turnover', 'designation', 'business_premises', 'email', 'pan_number', 'aadhaar_number', 'loan_lender',
                 'address', 'city', 'state', 'zip', 'current_city', 'annual_income', 'occupation', 'vehicle_type', 'vehicle_option', 'ref_id', 'loan_amount', 'applicant_dob', 'gender',
                 'vehicle_brand', 'loan_type', 'vehicle_model', 'vehicle_making_year', 'lead_type', 'dealer_name', 'disbursement_date', 'form_type', 'branch_id', 'voter_card_number', 'loan_product_id'], 'safe'],
             [['applicant_name', 'loan_purpose', 'email'], 'trim'],
@@ -120,7 +120,7 @@ class LoanApplication extends Model
             $model->applicant_dob = $this->applicant_dob;
             $model->gender = $this->gender;
             $model->voter_card_number = $this->voter_card_number;
-            $model->aadhaar_number = $this->aadhar_number;
+            $model->aadhaar_number = $this->aadhaar_number;
             $model->pan_number = $this->pan_number;
             $model->amount = str_replace(',', '', $this->loan_amount);
             $model->source = 'EmpowerFintech';
@@ -135,13 +135,13 @@ class LoanApplication extends Model
 
             if($this->loan_product_id){
                 $model->loan_products_enc_id = $this->loan_product_id;
-                $model->loan_type = $this->getLoanType($this->loan_product_id);
+                $model->loan_type = null;
             }else{
                 $model->loan_type = $this->loan_type;
             }
 
             $model->yearly_income = $this->annual_income;
-            $model->created_on = $model->updated_on = date('Y-m-d H:i:s');
+            $model->created_on = $model->updated_on = $model->loan_status_updated_on = date('Y-m-d H:i:s');
             $model->created_by = $model->updated_by = $user_id;
 
             // assigning lead by id to ref id user
@@ -310,7 +310,7 @@ class LoanApplication extends Model
             ->alias('a')
             ->select(['a.assigned_financer_loan_type_enc_id', 'a.financer_loan_product_enc_id', 'b.assigned_financer_enc_id',
                 'b.loan_type_enc_id', 'c.loan_type_enc_id', 'c.name'])
-            ->joinWith(['assignedFinancerLoanTypeEnc b' => function($b){
+            ->joinWith(['assignedFinancerLoanTypeEnc b' => function ($b) {
                 $b->joinWith(['loanTypeEnc c'], false);
             }], false)
             ->where(['a.financer_loan_product_enc_id' => $loan_id])
@@ -405,7 +405,7 @@ class LoanApplication extends Model
             $model->applicant_current_city = $this->current_city;
             $model->email = $this->email ? $this->email : $model->email;
             $model->gender = $this->gender ? $this->gender : $model->gender;
-            $model->aadhaar_number = $this->aadhar_number ? $this->aadhar_number : $model->aadhaar_number;
+            $model->aadhaar_number = $this->aadhaar_number ? $this->aadhaar_number : $model->aadhaar_number;
             $model->voter_card_number = $this->voter_card_number ? $this->voter_card_number : $model->voter_card_number;
             $model->pan_number = $this->pan_number ? $this->pan_number : $model->pan_number;
             $model->applicant_dob = $this->applicant_dob ? $this->applicant_dob : $model->applicant_dob;
@@ -798,42 +798,58 @@ class LoanApplication extends Model
         throw new \Exception(json_encode($token->getErrors()));
     }
 
-    private function getting_reporting_ids($user_id)
+    public function getting_reporting_ids($user_id)
     {
+        $marked = [];
         $data = [];
         while (true) {
+            if (in_array($user_id, $marked)) {
+                break;
+            }
+
+            $marked[] = $user_id;
+
             $query = UserRoles::find()
                 ->alias('a')
                 ->select(['a.reporting_person'])
                 ->where(['a.user_enc_id' => $user_id, 'a.is_deleted' => 0])
                 ->asArray()
                 ->one();
+
             if (!empty($query['reporting_person'])) {
-                $data[] = $user_id = $query['reporting_person'];
+                $user_id = $query['reporting_person'];
+                if (!in_array($user_id, $data)) {
+                    $data[] = $user_id;
+                } else {
+                    // Reporting person already exists in the data array, break the loop
+                    break;
+                }
             } else {
                 return $data;
             }
         }
+        return $data;
     }
 
     private function share_leads($user_id, $loan_id)
     {
         $reporting_persons_ids = $this->getting_reporting_ids($user_id);
-
-        foreach ($reporting_persons_ids as $value) {
-            $query = new SharedLoanApplications();
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $query->shared_loan_app_enc_id = $utilitiesModel->encrypt();
-            $query->loan_app_enc_id = $loan_id;
-            $query->shared_by = $user_id;
-            $query->shared_to = $value;
-            $query->access = 'Full Access';
-            $query->status = 'Active';
-            $query->created_by = $user_id;
-            $query->created_on = date('Y-m-d H:i:s');
-            if (!$query->save()) {
-                throw new \Exception(json_encode($query->getErrors()));
+        if (!empty($reporting_persons_ids)){
+            foreach ($reporting_persons_ids as $value) {
+                $query = new SharedLoanApplications();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $query->shared_loan_app_enc_id = $utilitiesModel->encrypt();
+                $query->loan_app_enc_id = $loan_id;
+                $query->shared_by = $user_id;
+                $query->shared_to = $value;
+                $query->access = 'Full Access';
+                $query->status = 'Active';
+                $query->created_by = $user_id;
+                $query->created_on = date('Y-m-d H:i:s');
+                if (!$query->save()) {
+                    throw new \Exception(json_encode($query->getErrors()));
+                }
             }
         }
     }

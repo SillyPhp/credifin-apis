@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%loan_purpose}}".
  *
@@ -18,7 +16,7 @@ use Yii;
  * @property OrganizationFeeComponents $feeComponentEnc
  * @property Users $createdBy
  * @property LoanApplications $loanAppEnc
- * @property FinancerLoanPurpose $financerLoanPurposeEnc
+ * @property FinancerLoanProductPurpose $financerLoanPurposeEnc
  */
 class LoanPurpose extends \yii\db\ActiveRecord
 {
@@ -48,18 +46,6 @@ class LoanPurpose extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[CreatedBy]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCreatedBy()
-    {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
-    }
-
-    /**
-     * Gets query for [[FeeComponentEnc]].
-     *
      * @return \yii\db\ActiveQuery
      */
     public function getFeeComponentEnc()
@@ -70,14 +56,9 @@ class LoanPurpose extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-//    public function getFinancerLoanPurposeEnc()
-//    {
-//        return $this->hasOne(FinancerLoanProductPurpose::className(), ['financer_loan_product_purpose_enc_id' => 'financer_loan_purpose_enc_id']);
-//    }
-
-    public function getFinancerLoanPurposeEnc()
+    public function getCreatedBy()
     {
-        return $this->hasOne(FinancerLoanPurpose::className(), ['financer_loan_purpose_enc_id' => 'financer_loan_purpose_enc_id']);
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
 
     /**
@@ -86,5 +67,13 @@ class LoanPurpose extends \yii\db\ActiveRecord
     public function getLoanAppEnc()
     {
         return $this->hasOne(LoanApplications::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerLoanPurposeEnc()
+    {
+        return $this->hasOne(FinancerLoanProductPurpose::className(), ['financer_loan_product_purpose_enc_id' => 'financer_loan_purpose_enc_id']);
     }
 }
