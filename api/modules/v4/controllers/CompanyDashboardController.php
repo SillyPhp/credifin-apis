@@ -865,7 +865,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanApplicationReleasePayments n' => function ($m) {
                     $m->select(['n.loan_application_release_payment_enc_id', 'n.loan_app_enc_id', 'n.status', 'n.assigned_to']);
                 }])
-                ->joinWith(['loanApplicationsReferences o' => function($o){
+                ->joinWith(['loanApplicationsReferences o' => function ($o) {
                     $o->select(['o.references_enc_id', 'o.loan_app_enc_id', 'o.type', 'o.value', 'o.name', 'o.reference']);
                     $o->onCondition(['o.is_deleted' => 0]);
                 }])
@@ -1185,16 +1185,31 @@ class CompanyDashboardController extends ApiBaseController
         }
 
         if ($params != null && !empty($params['fields_search'])) {
-            foreach ($params['fields_search'] as $key => $value){
-                switch ($key){
+            foreach ($params['fields_search'] as $key => $value) {
+                switch ($key) {
                     case 'branch':
-                        $employee->andWhere(['like', 'f.location_enc_id' , $value]);
+                        $employee->andWhere(['like', 'f.location_enc_id', $value]);
                         break;
                     case 'designation':
-                        $employee->andWhere(['like', 'a.designation_id' , $value]);
+                        $employee->andWhere(['like', 'a.designation_id', $value]);
                         break;
                     case 'name':
-                        $employee->andWhere(['like', 'CONCAT(b.first_name," ",b.last_name)' , $value]);
+                        $employee->andWhere(['like', 'CONCAT(b.first_name," ",b.last_name)', $value]);
+                        break;
+                    case 'reporting_person':
+                        $employee->andWhere(['like', 'CONCAT(e.first_name," ",e.last_name)', $value]);
+                        break;
+                    case 'phone':
+                        $employee->andWhere(['like', 'b.phone', $value]);
+                        break;
+                    case 'email':
+                        $employee->andWhere(['like', 'b.email', $value]);
+                        break;
+                    case 'username':
+                        $employee->andWhere(['like', 'b.username', $value]);
+                        break;
+                    case 'status':
+                        $employee->andWhere(['like', 'b.status', $value . '%', false]);
                         break;
                 }
             }
