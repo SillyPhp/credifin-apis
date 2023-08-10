@@ -15,7 +15,7 @@ use Yii;
  * @property string $email Location Email
  * @property string $description Location Description
  * @property string $website Location Website
- * @property string $branch_code branch code
+ * @property string $organization_code
  * @property string $phone Contact Number
  * @property string $address Location Address
  * @property string $postal_code Postal Code
@@ -60,7 +60,7 @@ class OrganizationLocations extends \yii\db\ActiveRecord
             [['latitude', 'longitude'], 'number'],
             [['sequence', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['location_enc_id', 'organization_enc_id', 'website', 'branch_code', 'address', 'city_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['location_enc_id', 'organization_enc_id', 'website', 'organization_code', 'address', 'city_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['location_name', 'email'], 'string', 'max' => 50],
             [['location_for', 'phone'], 'string', 'max' => 15],
             [['postal_code'], 'string', 'max' => 7],
