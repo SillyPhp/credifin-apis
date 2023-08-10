@@ -63,6 +63,8 @@ class LoansController extends ApiBaseController
                 'audit-trail-list' => ['POST', 'OPTIONS'],
                 'credit-reports' => ['POST', 'OPTIONS'],
                 'update-loan' => ['POST', 'OPTIONS'],
+                'credit-report' => ['POST', 'OPTIONS'],
+                'check-number' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -1153,26 +1155,79 @@ class LoansController extends ApiBaseController
                     case 'CIBIL':
                         $array = json_decode(json_encode((array)simplexml_load_string($response_body)), true);
 //                        $name = $array['NameSegment']['ConsumerName1'] . ' ' . $array['NameSegment']['ConsumerName2'];
-                        $credit_report[$key]['CIBIL']['score'] = ltrim($array['ScoreSegment']['Score'], 0);
-                        foreach ($array['TelephoneSegment'] as $val) {
-                            $credit_report[$key]['CIBIL']['phones'][] = $val['TelephoneNumber'];
-                        }
-                        foreach ($array['EmailContactSegment'] as $val) {
-                            $credit_report[$key]['CIBIL']['emails'][] = $val['EmailID'];
-                        }
-                        foreach ($array['Address'] as $val) {
-                            $tmp = [];
-                            for ($x = 1; $x <= 4; $x++) {
-                                if (isset($val['AddressLine' . $x])) {
-                                    $tmp[] = $val['AddressLine' . $x];
+                        if (!empty($array['ScoreSegment'])) {
+                            if (array_key_exists(0, $array['ScoreSegment'])) {
+                                foreach ($array['ScoreSegment'] as $val) {
+                                    if (is_array($val)) {
+                                        $score = ltrim($val['Score'], 0);
+                                        if ($score != '-1') {
+                                            $credit_report[$key]['CIBIL']['score'] = $score;
+                                        }
+                                    }
                                 }
+                            } else {
+                                $credit_report[$key]['CIBIL']['score'] = ltrim($array['ScoreSegment']['Score'], 0);
                             }
-                            $state = States::findOne(['state_code' => $val['StateCode']])['name'];
-                            if (!empty($state)) {
-                                $tmp[] = $state;
+                        }
+
+                        if (!empty($array['TelephoneSegment'])) {
+                            if (array_key_exists(0, $array['TelephoneSegment'])) {
+                                foreach ($array['TelephoneSegment'] as $telephones) {
+                                    $credit_report[$key]['CIBIL']['phones'][] = $telephones['TelephoneNumber'];
+                                }
+                            } else {
+                                $credit_report[$key]['CIBIL']['phones'][] = $array['TelephoneSegment']['TelephoneNumber'];
                             }
-                            $tmp[] = $val['PinCode'];
-                            $credit_report[$key]['CIBIL']['address'][] = implode(', ', $tmp);
+                        }
+
+                        if (!empty($array['EmailContactSegment'])) {
+                            if (array_key_exists(0, $array['EmailContactSegment'])) {
+                                foreach ($array['EmailContactSegment'] as $email) {
+                                    $credit_report[$key]['CIBIL']['emails'][] = $email['EmailID'];
+                                }
+                            } else {
+                                $credit_report[$key]['CIBIL']['emails'][] = $array['EmailContactSegment']['EmailID'];
+                            }
+                        }
+                        if (!empty($array['Address'])) {
+                            if (array_key_exists(0, $array['Address'])) {
+                                foreach ($array['Address'] as $addresses) {
+                                    $tmp = [];
+                                    for ($x = 1; $x <= 4; $x++) {
+                                        $line = 'AddressLine' . $x;
+                                        if (array_key_exists($line, $addresses)) {
+                                            $tmp[] = $addresses[$line];
+                                        }
+                                    }
+                                    if (array_key_exists('StateCode', $addresses)) {
+                                        $state = States::findOne(['state_code' => $addresses['StateCode']])['name'];
+                                        if (!empty($state)) {
+                                            $tmp[] = $state;
+                                        }
+                                    }
+                                    if (array_key_exists('PinCode', $addresses)) {
+                                        $tmp[] = $addresses['PinCode'];
+                                    }
+                                    $credit_report[$key]['CIBIL']['address'][] = implode(', ', $tmp);
+                                }
+                            } else {
+                                for ($x = 1; $x <= 4; $x++) {
+                                    $line = 'AddressLine' . $x;
+                                    if (array_key_exists($line, $array['Address'])) {
+                                        $tmp[] = $array['Address'][$line];
+                                    }
+                                }
+                                if (array_key_exists('StateCode', $array['Address'])) {
+                                    $state = States::findOne(['state_code' => $array['Address']['StateCode']])['name'];
+                                    if (!empty($state)) {
+                                        $tmp[] = $state;
+                                    }
+                                }
+                                if (array_key_exists('PinCode', $array['Address'])) {
+                                    $tmp[] = $array['Address']['PinCode'];
+                                }
+                                $credit_report[$key]['CIBIL']['address'][] = implode(', ', $tmp);
+                            }
                         }
                         break;
                     case 'EQUIFAX':
@@ -1196,7 +1251,12 @@ class LoansController extends ApiBaseController
                         $xpath = new \DOMXPath($doc);
                         $dataPath = '/INDV-REPORT-FILE/INDV-REPORTS/INDV-REPORT';
 //                        $name = $xpath->query($dataPath . '/REQUEST/NAME')->item(0)->nodeValue;
-                        $credit_report[$key]['CRIF']['score'] = $xpath->query($dataPath . '/SCORES/SCORE/SCORE-VALUE')->item(0)->nodeValue;
+                        try {
+
+                            $credit_report[$key]['CRIF']['score'] = $xpath->query($dataPath . '/SCORES/SCORE/SCORE-VALUE')->item(0)->nodeValue;
+                        } catch (\Exception $e) {
+
+                        }
                         $endPath = '-VARIATIONS/VARIATION/VALUE';
                         $emailPath = $dataPath . '/PERSONAL-INFO-VARIATION/EMAIL' . $endPath;
                         $addressPath = $dataPath . '/PERSONAL-INFO-VARIATION/ADDRESS' . $endPath;
@@ -1204,19 +1264,39 @@ class LoansController extends ApiBaseController
                         $addresses = $xpath->query($addressPath);
                         $phones = $xpath->query($phonePath);
                         $emails = $xpath->query($emailPath);
-                        for ($i = 0; $i < $emails->length; $i++) {
-                            $credit_report[$key]['CRIF']['emails'][] = $emails->item($i)->nodeValue;
+                        try {
+                            for ($i = 0; $i < $emails->length; $i++) {
+                                $credit_report[$key]['CRIF']['emails'][] = $emails->item($i)->nodeValue;
+                            }
+                        } catch (\Exception $e) {
                         }
-                        for ($i = 0; $i < $phones->length; $i++) {
-                            $credit_report[$key]['CRIF']['phones'][] = $phones->item($i)->nodeValue;
+                        try {
+                            for ($i = 0; $i < $phones->length; $i++) {
+                                $credit_report[$key]['CRIF']['phones'][] = $phones->item($i)->nodeValue;
+                            }
+                        } catch (\Exception $e) {
                         }
-                        for ($i = 0; $i < $addresses->length; $i++) {
-                            $credit_report[$key]['CRIF']['address'][] = $addresses->item($i)->nodeValue;
+                        try {
+                            for ($i = 0; $i < $addresses->length; $i++) {
+                                $credit_report[$key]['CRIF']['address'][] = $addresses->item($i)->nodeValue;
+                            }
+                        } catch (\Exception $e) {
                         }
                         break;
                 }
             }
             unset($credit_report[$key]['responseEnc']);
+        }
+        foreach ($credit_report as $key => $val) {
+            if (isset($val[$val['request_source']])) {
+                foreach ($val[$val['request_source']] as $res => $report) {
+                    if (is_array($report)) {
+                        $credit_report[$key][$val['request_source']][$res] = array_unique($report);
+                    }
+                }
+            } else {
+                unset($credit_report[$key]);
+            }
         }
         if ($credit_report) {
             return $this->response(200, ['status' => 200, 'data' => $credit_report]);
@@ -1327,4 +1407,5 @@ class LoansController extends ApiBaseController
         return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
 
     }
+
 }

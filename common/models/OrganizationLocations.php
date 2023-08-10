@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%organization_locations}}".
  *
@@ -13,6 +15,7 @@ namespace common\models;
  * @property string $email Location Email
  * @property string $description Location Description
  * @property string $website Location Website
+ * @property string $branch_code branch code
  * @property string $phone Contact Number
  * @property string $address Location Address
  * @property string $postal_code Postal Code
@@ -27,24 +30,27 @@ namespace common\models;
  * @property string $status Organization Location Status (Active, Inactive, Pending)
  * @property int $is_deleted Is Organization Location Deleted (0 as False, 1 as True)
  *
- * @property ApplicationInterviewLocations[] $applicationInterviewLocations
- * @property ApplicationPlacementLocations[] $applicationPlacementLocations
- * @property Cities $cityEnc
+ * @property AssignedLoanProvider[] $assignedLoanProviders
+ * @property EmiCollection[] $emiCollections
  * @property Organizations $organizationEnc
- * @property Users $createdBy
  * @property Users $lastUpdatedBy
+ * @property Users $createdBy
+ * @property Cities $cityEnc
+ * @property OverdueCollection[] $overdueCollections
+ * @property UserRoles[] $userRoles
  */
 class OrganizationLocations extends \yii\db\ActiveRecord
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function tableName()
     {
         return '{{%organization_locations}}';
     }
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function rules()
     {
@@ -54,41 +60,32 @@ class OrganizationLocations extends \yii\db\ActiveRecord
             [['latitude', 'longitude'], 'number'],
             [['sequence', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['location_enc_id', 'organization_enc_id', 'website', 'city_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['location_enc_id', 'organization_enc_id', 'website', 'branch_code', 'address', 'city_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['location_name', 'email'], 'string', 'max' => 50],
             [['location_for', 'phone'], 'string', 'max' => 15],
             [['postal_code'], 'string', 'max' => 7],
-            [['address'], 'string', 'max' => 255],
             [['location_enc_id'], 'unique'],
-            [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
-            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+            [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
         ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getApplicationInterviewLocations()
+    public function getAssignedLoanProviders()
     {
-        return $this->hasMany(ApplicationInterviewLocations::className(), ['location_enc_id' => 'location_enc_id']);
+        return $this->hasMany(AssignedLoanProvider::className(), ['branch_enc_id' => 'location_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getApplicationPlacementLocations()
+    public function getEmiCollections()
     {
-        return $this->hasMany(ApplicationPlacementLocations::className(), ['location_enc_id' => 'location_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCityEnc()
-    {
-        return $this->hasOne(Cities::className(), ['city_enc_id' => 'city_enc_id']);
+        return $this->hasMany(EmiCollection::className(), ['branch_enc_id' => 'location_enc_id']);
     }
 
     /**
@@ -102,6 +99,14 @@ class OrganizationLocations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getLastUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCreatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
@@ -110,8 +115,24 @@ class OrganizationLocations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLastUpdatedBy()
+    public function getCityEnc()
     {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+        return $this->hasOne(Cities::className(), ['city_enc_id' => 'city_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOverdueCollections()
+    {
+        return $this->hasMany(OverdueCollection::className(), ['branch_enc_id' => 'location_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserRoles()
+    {
+        return $this->hasMany(UserRoles::className(), ['branch_enc_id' => 'location_enc_id']);
     }
 }

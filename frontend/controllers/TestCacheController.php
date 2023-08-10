@@ -1,6 +1,7 @@
 <?php
 
 namespace frontend\controllers;
+use common\models\EmiCollection;
 use common\models\RandomColors;
 use yii\web\Controller;
 use Yii;
@@ -87,4 +88,7 @@ class TestCacheController extends Controller
 
         return $randomString;
     }
+   public function actionLoans(){
+
+   }
 }

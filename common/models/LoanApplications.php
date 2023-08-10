@@ -103,6 +103,7 @@ namespace common\models;
  * @property LoanApplications $parentApplicationEnc
  * @property LoanApplications[] $loanApplications
  * @property LoanApplicationsCollegePreference[] $loanApplicationsCollegePreferences
+ * @property LoanApplicationsReferences[] $loanApplicationsReferences
  * @property LoanAuditTrail[] $loanAuditTrails
  * @property LoanCandidateEducation[] $loanCandidateEducations
  * @property LoanCertificates[] $loanCertificates
@@ -416,6 +417,13 @@ class LoanApplications extends \yii\db\ActiveRecord
         return $this->hasMany(LoanApplicationsCollegePreference::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationsReferences()
+    {
+        return $this->hasMany(LoanApplicationsReferences::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
     /**
      * @return \yii\db\ActiveQuery
      */

@@ -3,6 +3,7 @@
 namespace api\modules\v4\models;
 
 use common\models\CertificateTypes;
+use common\models\EducationLoanPayments;
 use common\models\EmailLogs;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\EducationLoanPaymentsExtends;
@@ -11,8 +12,11 @@ use common\models\extended\LoanApplicationOptionsExtended;
 use common\models\extended\LoanApplicationsExtended;
 use common\models\extended\LoanCertificatesExtended;
 use common\models\extended\LoanPurposeExtended;
+use common\models\extended\Payments;
 use common\models\FinancerLoanProducts;
+use common\models\LoanApplications;
 use common\models\Organizations;
+use common\models\RandomColors;
 use common\models\Referral;
 use common\models\SharedLoanApplications;
 use common\models\UserAccessTokens;
@@ -20,14 +24,10 @@ use common\models\Usernames;
 use common\models\UserRoles;
 use common\models\Users;
 use common\models\UserTypes;
+use common\models\Utilities;
 use Razorpay\Api\Api;
-use common\models\extended\Payments;
-use common\models\EducationLoanPayments;
-use common\models\LoanApplications;
-use common\models\RandomColors;
 use Yii;
 use yii\base\Model;
-use common\models\Utilities;
 
 class LoanApplication extends Model
 {
@@ -135,7 +135,7 @@ class LoanApplication extends Model
 
             if($this->loan_product_id){
                 $model->loan_products_enc_id = $this->loan_product_id;
-                $model->loan_type = $this->getLoanType($this->loan_product_id);
+                $model->loan_type = null;
             }else{
                 $model->loan_type = $this->loan_type;
             }
@@ -798,7 +798,7 @@ class LoanApplication extends Model
         throw new \Exception(json_encode($token->getErrors()));
     }
 
-    private function getting_reporting_ids($user_id)
+    public function getting_reporting_ids($user_id)
     {
         $marked = [];
         $data = [];

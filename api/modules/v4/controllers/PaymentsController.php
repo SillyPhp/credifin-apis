@@ -6,6 +6,7 @@ use api\modules\v4\models\PaymentModel;
 use common\models\extended\Organizations;
 use common\models\FinancerLoanProductLoginFeeStructure;
 use common\models\LoanPayments;
+use common\models\UserRoles;
 use Razorpay\Api\Api;
 use Yii;
 use yii\filters\Cors;
@@ -104,7 +105,13 @@ class PaymentsController extends ApiBaseController
                     $amount_enc_ids[] = ['id' => $value, 'name' => $nodues['name'], 'amount' => (float)$nodues['amount']];
                 }
             }
+            if (isset($user->organization_enc_id)||!empty($user->organization_enc_id))
+            {
             $options['org_id'] = $user->organization_enc_id;
+            }
+            else{
+                $options['org_id'] = UserRoles::findOne(['user_enc_id'=>$user->user_enc_id])->organization_enc_id;
+                }
             $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
             if (!$keys) {
                 return ['status' => 500, 'message' => 'an error occurred while fetching razorpay credentials'];
