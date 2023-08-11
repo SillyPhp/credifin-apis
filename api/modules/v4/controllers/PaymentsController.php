@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\PaymentModel;
+use api\modules\v4\utilities\UserUtilities;
 use common\models\extended\Organizations;
 use common\models\FinancerLoanProductLoginFeeStructure;
 use common\models\LoanPayments;
@@ -11,6 +12,7 @@ use Razorpay\Api\Api;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 class PaymentsController extends ApiBaseController
 {
@@ -23,6 +25,7 @@ class PaymentsController extends ApiBaseController
             'actions' => [
                 'get-payment-link' => ['POST', 'OPTIONS'],
                 'razor-pay-webhook' => ['POST', 'OPTIONS'],
+                'get-manual-payment' => ['POST', 'OPTIONS'],
                 'update-payment' => ['GET'],
             ]
         ];
@@ -105,13 +108,11 @@ class PaymentsController extends ApiBaseController
                     $amount_enc_ids[] = ['id' => $value, 'name' => $nodues['name'], 'amount' => (float)$nodues['amount']];
                 }
             }
-            if (isset($user->organization_enc_id)||!empty($user->organization_enc_id))
-            {
-            $options['org_id'] = $user->organization_enc_id;
+            if (isset($user->organization_enc_id) || !empty($user->organization_enc_id)) {
+                $options['org_id'] = $user->organization_enc_id;
+            } else {
+                $options['org_id'] = UserRoles::findOne(['user_enc_id' => $user->user_enc_id])->organization_enc_id;
             }
-            else{
-                $options['org_id'] = UserRoles::findOne(['user_enc_id'=>$user->user_enc_id])->organization_enc_id;
-                }
             $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
             if (!$keys) {
                 return ['status' => 500, 'message' => 'an error occurred while fetching razorpay credentials'];
@@ -162,6 +163,43 @@ class PaymentsController extends ApiBaseController
                 'status' => false
             ];
         }
+    }
+
+    public function actionGetManualPayment()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        if (UserUtilities::getUserType($user->user_enc_id) != 'Financer'){
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        $amount = 0;
+        if (!empty($params['amount'])) {
+            foreach ($params['amount'] as $value) {
+                $check = FinancerLoanProductLoginFeeStructure::findOne(['financer_loan_product_login_fee_structure_enc_id' => $value]);
+                if (!empty($check)) {
+                    $amount += (float)$check['amount'];
+                    $amount_enc_ids[] = ['id' => $value, 'name' => $check['name'], 'amount' => (float)$check['amount']];
+                }
+            }
+        }
+        $options['user_id'] = $user->user_enc_id;
+        $options['loan_app_enc_id'] = $params['loan_app_id'];
+        $options['status'] = 'captured';
+        $options['amount_enc_ids'] = $amount_enc_ids;
+        $options['amount'] = $amount;
+        $options['mode'] = $params['payment_mode'];
+        $options['image'] = UploadedFile::getInstanceByName('image');
+
+        $transaction = Yii::$app->db->beginTransaction();
+        $save = \common\models\extended\Payments::saveLoanPayment($options);
+        if (!$save){
+            $transaction->rollBack();
+            return ['status' => 500, 'message' => 'an error occurred'];
+        }
+        $transaction->commit();
+        return $this->response(200, ['status' => 200, 'message' => 'saved succesfully']);
     }
 
     private function existRazorCheck($loan_id, $method = 0)
