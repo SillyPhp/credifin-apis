@@ -1312,7 +1312,7 @@ class LoansController extends ApiBaseController
 
         $params = Yii::$app->request->post();
 
-       $date = date('Y-m-d H:i:s', strtotime('-30 days'));
+        $date = date('Y-m-d H:i:s', strtotime('-30 days'));
 
         if (isset($params['phone'])) {
             $phoneNumber = $params['phone'];
@@ -1323,93 +1323,141 @@ class LoansController extends ApiBaseController
                 ->where(['or',
                     ['a.phone' => $phoneNumber],
                     ['b.phone' => $phoneNumber],
-                        ['a.phone' => '+91' . $phoneNumber],
-                        ['b.phone' => '+91' . $phoneNumber],
-                        ['a.phone' => '+' . $phoneNumber],
-                        ['b.phone' => '+' . $phoneNumber],
-                        ['a.phone' => preg_replace('/^\+?91/', '', $phoneNumber)],
-                        ['b.phone' => preg_replace('/^\+?91/', '', $phoneNumber)],
-                        ['a.phone' => preg_replace('/^\+?+/', '', $phoneNumber)],
-                        ['b.phone' => preg_replace('/^\+?+/', '', $phoneNumber)],
+                    ['a.phone' => '+91' . $phoneNumber],
+                    ['b.phone' => '+91' . $phoneNumber],
+                    ['a.phone' => '+' . $phoneNumber],
+                    ['b.phone' => '+' . $phoneNumber],
+                    ['a.phone' => preg_replace('/^\+?91/', '', $phoneNumber)],
+                    ['b.phone' => preg_replace('/^\+?91/', '', $phoneNumber)],
+                    ['a.phone' => preg_replace('/^\+?+/', '', $phoneNumber)],
+                    ['b.phone' => preg_replace('/^\+?+/', '', $phoneNumber)],
 
-                        ['a.phone' => '+91' . preg_replace('/^\+?+/', '', $phoneNumber)],
-                        ['b.phone' => '+91' . preg_replace('/^\+?+/', '', $phoneNumber)],
-                        ['a.phone' => '+' . $phoneNumber],
-                        ['b.phone' => '+' . $phoneNumber],
-                    ])
+                    ['a.phone' => '+91' . preg_replace('/^\+?+/', '', $phoneNumber)],
+                    ['b.phone' => '+91' . preg_replace('/^\+?+/', '', $phoneNumber)],
+                    ['a.phone' => '+' . $phoneNumber],
+                    ['b.phone' => '+' . $phoneNumber],
+                ])
                 ->andWhere(['>=', "a.loan_status_updated_on", $date])
                 ->exists();
 
-                if ($phoneExists) {
-                    return $this->response(200, ['status' => 200, 'message' => 'Phone number already exists']);
-                } else {
-                    return $this->response(201, ['status' => 201, 'message' => 'Phone number does not exist']);
-                }
+            if ($phoneExists) {
+                return $this->response(200, ['status' => 200, 'message' => 'Phone number already exists']);
+            } else {
+                return $this->response(201, ['status' => 201, 'message' => 'Phone number does not exist']);
             }
+        }
 
 
-            if (isset($params['aadhaar_number'])) {
-                $aadhaarNumber = $params['aadhaar_number'];
+        if (isset($params['aadhaar_number'])) {
+            $aadhaarNumber = $params['aadhaar_number'];
 
-                $aadhaarExists = LoanApplications::find()
-                    ->alias('a')
-                    ->joinWith(['loanCoApplicants b'])
-                    ->where(['or',
-                        ['a.aadhaar_number' => $aadhaarNumber],
-                        ['b.aadhaar_number' => $aadhaarNumber]
-                    ])
+            $aadhaarExists = LoanApplications::find()
+                ->alias('a')
+                ->joinWith(['loanCoApplicants b'])
+                ->where(['or',
+                    ['a.aadhaar_number' => $aadhaarNumber],
+                    ['b.aadhaar_number' => $aadhaarNumber]
+                ])
                 ->andWhere(['>=', "a.loan_status_updated_on", $date])
-                    ->exists();
+                ->exists();
 
-                if ($aadhaarExists) {
-                    return $this->response(200, ['status' => 200, 'message' => 'Aadhaar number already exists']);
-                } else {
-                    return $this->response(201, ['status' => 201, 'message' => 'Aadhaar number does not exist']);
-                }
+            if ($aadhaarExists) {
+                return $this->response(200, ['status' => 200, 'message' => 'Aadhaar number already exists']);
+            } else {
+                return $this->response(201, ['status' => 201, 'message' => 'Aadhaar number does not exist']);
             }
+        }
 
-            if (isset($params['pan_number'])) {
-                $panNumber = $params['pan_number'];
+        if (isset($params['pan_number'])) {
+            $panNumber = $params['pan_number'];
 
-                $panExists = LoanApplications::find()
-                    ->alias('a')
-                    ->joinWith(['loanCoApplicants b'])
-                    ->where(['or',
-                        ['a.pan_number' => $panNumber],
-                        ['b.pan_number' => $panNumber]
-                    ])
-                    ->andWhere(['>=', "a.loan_status_updated_on", $date])
-                    ->exists();
+            $panExists = LoanApplications::find()
+                ->alias('a')
+                ->joinWith(['loanCoApplicants b'])
+                ->where(['or',
+                    ['a.pan_number' => $panNumber],
+                    ['b.pan_number' => $panNumber]
+                ])
+                ->andWhere(['>=', "a.loan_status_updated_on", $date])
+                ->exists();
 
-                if ($panExists) {
-                    return $this->response(200, ['status' => 200, 'message' => 'PAN number already exists']);
-                } else {
-                    return $this->response(201, ['status' => 201, 'message' => 'PAN number does not exist']);
-                }
+            if ($panExists) {
+                return $this->response(200, ['status' => 200, 'message' => 'PAN number already exists']);
+            } else {
+                return $this->response(201, ['status' => 201, 'message' => 'PAN number does not exist']);
             }
+        }
 
-            if (isset($params['voter_card_number'])) {
-                $voter_card_number = $params['voter_card_number'];
-                $voter_card_number = LoanApplications::find()
-                    ->alias('a')
-                    ->joinWith(['loanCoApplicants b'])
-                    ->where(['or',
-                        ['a.voter_card_number' => $voter_card_number],
-                        ['b.voter_card_number' => $voter_card_number]
-                    ])
-                    ->andWhere(['>=', "a.loan_status_updated_on", $date])
-                    ->exists();
+        if (isset($params['voter_card_number'])) {
+            $voter_card_number = $params['voter_card_number'];
+            $voter_card_number = LoanApplications::find()
+                ->alias('a')
+                ->joinWith(['loanCoApplicants b'])
+                ->where(['or',
+                    ['a.voter_card_number' => $voter_card_number],
+                    ['b.voter_card_number' => $voter_card_number]
+                ])
+                ->andWhere(['>=', "a.loan_status_updated_on", $date])
+                ->exists();
 
-                if ($voter_card_number) {
-                    return $this->response(200, ['status' => 200, 'message' => 'Voter number already exists']);
-                } else {
-                    return $this->response(201, ['status' => 201, 'message' => 'Voter number does not exist']);
-                }
+            if ($voter_card_number) {
+                return $this->response(200, ['status' => 200, 'message' => 'Voter number already exists']);
+            } else {
+                return $this->response(201, ['status' => 201, 'message' => 'Voter number does not exist']);
             }
+        }
         return $this->response(422, ['status' => 422, 'message' => 'Phone or Aadhaar_number or PAN_number or Voter_number is missing']);
 //        }
 //        return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
 
+    }
+
+    public function actionAuditTrail()
+    {
+        if ($this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            // Checking if 'loan_id' is provided
+            if (empty($params['loan_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+            }
+
+            // Fetching audit trail records for a particular 'loan_id'
+            $audit = LoanAuditTrail::find()
+                ->alias('a')
+                ->select(['a.old_value', 'a.new_value', 'a.model', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'])
+                ->joinWith(['user b'], false)
+                ->where(['a.loan_id' => $params['loan_id']])
+                ->andWhere(['not', ['a.field' => ['', 'created_by', 'created_on', 'id', 'proof_image', 'proof_image_location', null]]])
+                ->andWhere(['not like', 'a.field', '%_enc_id%', false])
+                ->andWhere(['not like', 'a.field', '%updated_on%', false])
+                ->orderBy(['a.model' => SORT_ASC, 'a.action' => SORT_ASC, 'a.stamp' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            $groupedAudit = [];
+
+            if ($audit) {
+                foreach ($audit as $record) {
+                    $model = $record['model'];
+                    $action = $record['action'];
+                    if (!isset($groupedAudit[$model][$action])) {
+                        $groupedAudit[$model][$action] = [];
+                    }
+                    $groupedAudit[$model][$action][] = $record;
+                }
+
+                return $this->response(200, ['status' => 200, 'audit_list' => $groupedAudit]);
+            } else {
+                // If audit records are not found
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            // If user is unauthorized
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 
 }
