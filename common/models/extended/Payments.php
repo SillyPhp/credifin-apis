@@ -7,6 +7,7 @@ use common\models\EducationLoanPayments;
 use common\models\InstituteLeadsPayments;
 use common\models\LoanPayments;
 use common\models\LoanPaymentsDetails;
+use common\models\spaces\Spaces;
 use common\models\Utilities;
 
 class Payments
@@ -36,12 +37,37 @@ class Payments
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->loan_payments_enc_id = $utilitiesModel->encrypt();
         $model->payment_amount = $options['amount'];
-        $model->payment_token = $options['token'];
-        $model->payment_short_url = $options['surl'];
-        $model->payment_status = 'pending';
+        if (!empty($options['token'])) {
+            $model->payment_token = $options['token'];
+        }
+        if (!empty($options['surl'])) {
+            $model->payment_short_url = $options['surl'];
+        }
+        $model->payment_status = $options['status'] ?? 'pending';
         $model->created_on = date('Y-m-d h:i:s');
-        $model->close_by = date('Y-m-d h:i:s', $options['close_by']);
-        $model->payment_link_type = $options['method'];
+        if (!empty($options['close_by'])) {
+            $model->close_by = date('Y-m-d h:i:s', $options['close_by']);
+        }
+        if (isset($options['method'])) {
+            $model->payment_link_type = $options['method'];
+        }
+        if (isset($options['mode'])) {
+            $model->payment_mode = $options['mode'];
+        }
+        if ($options['image']) {
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->image = $utilitiesModel->encrypt() . '.' . $options['image']->extension;
+            $model->image_location = \Yii::$app->getSecurity()->generateRandomString();
+            $path = \Yii::$app->params->upload_directories->payments->image;
+            $base_path = $path . $model->image_location;
+            $type = $options['image']->type;
+            $spaces = new Spaces(\Yii::$app->params->digitalOcean->accessKey, \Yii::$app->params->digitalOcean->secret);
+            $my_space = $spaces->space(\Yii::$app->params->digitalOcean->sharingSpace);
+            $result = $my_space->uploadFileSources($options['image']->tempName, \Yii::$app->params->digitalOcean->rootDirectory . '/' . $base_path . DIRECTORY_SEPARATOR . $model->image, "private", ['params' => ['ContentType' => $type]]);
+            if (!$result) {
+                throw new \Exception('error occurred while uploading logo');
+            }
+        }
         if (!$model->save()) {
             return false;
         }
@@ -62,7 +88,7 @@ class Payments
             return false;
         }
 
-        if (!empty($ids = $options['amount_enc_ids'])) {
+        if (isset($options['amount_enc_ids']) && !empty($ids = $options['amount_enc_ids'])) {
             foreach ($ids as $id) {
                 $detail = new LoanPaymentsDetails();
                 $utilitiesModel = new Utilities();
