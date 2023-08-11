@@ -414,7 +414,7 @@ class CompanyDashboardController extends ApiBaseController
             }
         }
 
-        if (!$user->organization_enc_id && $specialroles == false) {
+        if (!$user->organization_enc_id && !$specialroles) {
             // else checking lead_by and managed_by by logged-in user
             $loans->andWhere(['or', ['a.lead_by' => $user->user_enc_id], ['a.managed_by' => $user->user_enc_id]]);
         }
@@ -478,7 +478,7 @@ class CompanyDashboardController extends ApiBaseController
         // fields search filter
         if (!empty($params['fields_search'])) {
             // fields array for "a" alias table
-            $a = ['applicant_name', 'application_number', 'amount', 'apply_date', 'loan_type', ' loan_products_enc_id'];
+            $a = ['applicant_name', 'application_number', 'amount', 'apply_date', 'loan_type', 'loan_products_enc_id'];
 
             // fields array for "cb" alias table
             $name_search = ['created_by', 'sharedTo'];
@@ -851,7 +851,7 @@ class CompanyDashboardController extends ApiBaseController
                     ])->joinWith(['sharedTo k1'], false);
                 }])
                 ->joinWith(['assignedLoanPayments p' => function ($p) {
-                    $p->select(['p.loan_app_enc_id', 'p1.payment_mode', 'p1.payment_status']);
+                    $p->select(['p.loan_app_enc_id', 'p1.payment_mode', 'p1.payment_status', 'p1.payment_amount']);
                     $p->orderBy(['p1.created_on' => SORT_DESC]);
                     $p->joinWith(['loanPaymentsEnc p1'], false);
                 }])
@@ -865,10 +865,10 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanApplicationReleasePayments n' => function ($m) {
                     $m->select(['n.loan_application_release_payment_enc_id', 'n.loan_app_enc_id', 'n.status', 'n.assigned_to']);
                 }])
-//                ->joinWith(['loanApplicationsReferences o' => function($o){
-//                    $o->select(['o.references_enc_id', 'o.loan_app_enc_id', 'o.type', 'o.value', 'o.name', 'o.reference']);
-//                    $o->onCondition(['o.is_deleted' => 0]);
-//                }])
+                ->joinWith(['loanApplicationsReferences o' => function ($o) {
+                    $o->select(['o.references_enc_id', 'o.loan_app_enc_id', 'o.type', 'o.value', 'o.name', 'o.reference']);
+                    $o->onCondition(['o.is_deleted' => 0]);
+                }])
 //                ->joinWith(['loanApplicationVerifications lav' => function($lav){
 //                }])
                 ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
@@ -1182,6 +1182,42 @@ class CompanyDashboardController extends ApiBaseController
             $employee->andWhere(['b.is_deleted' => 1]);
         } else {
             $employee->andWhere(['b.is_deleted' => 0]);
+        }
+
+        if ($params != null && !empty($params['fields_search'])) {
+            $a = ['designation_id', 'employee_code', 'grade', 'employee_joining_date'];
+            $b = ['phone', 'email', 'username', 'status', 'name', 'platform_joining_date'];
+            foreach ($params['fields_search'] as $key => $value) {
+                if (!empty($value) || $value == '0') {
+
+                    if (in_array($key, $a)) {
+                        if ($key == 'designation_id') {
+                            $employee->andWhere(['a.' . $key => $value]);
+                        } else {
+                            $employee->andWhere(['like', 'a.' . $key, $value]);
+                        }
+                    }
+                    if (in_array($key, $b)) {
+                        if ($key == 'status') {
+                            $employee->andWhere(['like', 'b.status', $value . '%', false]);
+                        } elseif ($key == 'name') {
+                            $employee->andWhere(['like', 'CONCAT(b.first_name," ",b.last_name)', $value]);
+                        } elseif ($key == 'platform_joining_date') {
+                            $employee->andWhere(['like', 'b.created_on', $value]);
+                        } else {
+                            $employee->andWhere(['like', 'b.' . $key, $value]);
+                        }
+                    }
+                    switch ($key) {
+                        case 'reporting_person':
+                            $employee->andWhere(['like', 'CONCAT(e.first_name," ",e.last_name)', $value]);
+                            break;
+                        case 'branch':
+                            $employee->andWhere(['like', 'f.location_enc_id', $value]);
+                            break;
+                    }
+                }
+            }
         }
 
         // filter employee search on employee name, username, email and phone
