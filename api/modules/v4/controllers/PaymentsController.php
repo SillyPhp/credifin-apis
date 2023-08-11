@@ -189,6 +189,7 @@ class PaymentsController extends ApiBaseController
         $options['amount_enc_ids'] = $amount_enc_ids;
         $options['amount'] = $amount;
         $options['mode'] = $params['payment_mode'];
+        $options['reference_number'] = $params['reference_number'];
         $options['image'] = UploadedFile::getInstanceByName('image');
 
         $transaction = Yii::$app->db->beginTransaction();
