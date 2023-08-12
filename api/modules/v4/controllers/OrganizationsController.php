@@ -98,9 +98,9 @@ class OrganizationsController extends ApiBaseController
 
             $params = Yii::$app->request->post();
 
-            // checking location_name, address, city_id
-            if (empty($params['location_name']) || empty($params['address']) || empty($params['city_id']) || empty($params['branch_code'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "location_name, address, city_id, branch_code"']);
+            // checking city_id
+            if (empty($params['city_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "city_id']);
             }
 
             // adding branch
@@ -110,7 +110,8 @@ class OrganizationsController extends ApiBaseController
             $orgLocations->location_enc_id = $utilitiesModel->encrypt();
             $orgLocations->organization_enc_id = $user->organization_enc_id;
             $orgLocations->location_name = $params['location_name'];
-            $orgLocations->branch_code = $params['branch_code'];
+//            $orgLocations->branch_code = $params['branch_code'];
+            $orgLocations->organization_code = $params['organization_code'];
             $orgLocations->location_for = json_encode(['1']);
             $orgLocations->address = $params['address'];
             $orgLocations->city_enc_id = $params['city_id'];
@@ -151,7 +152,7 @@ class OrganizationsController extends ApiBaseController
             // updating data
             (!empty($params['location_name'])) ? $location->location_name = $params['location_name'] : "";
             (!empty($params['city_id'])) ? $location->city_enc_id = $params['city_id'] : "";
-            (!empty($params['branch_code'])) ? $location->branch_code = $params['branch_code'] : "";
+            (!empty($params['organization_code'])) ? $location->organization_code = $params['organization_code'] : "";
             (!empty($params['address'])) ? $location->address = $params['address'] : "";
             (!empty($params['status'])) ? $location->status = $params['status'] : "";
             $location->last_updated_by = $user->user_enc_id;
@@ -189,7 +190,7 @@ class OrganizationsController extends ApiBaseController
 
             $locations = OrganizationLocations::find()
                 ->alias('a')
-                ->select(['a.location_enc_id', 'a.location_enc_id as id', 'a.branch_code', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , ", ", b.name) as value', 'b.city_enc_id', 'a.status'])
+                ->select(['a.location_enc_id', 'a.location_enc_id as id', 'CONCAT( b.city_code, "-", a.organization_code) as organization_code', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , ", ", b.name) as value', 'b.city_enc_id', 'a.status'])
                 ->joinWith(['cityEnc b'], false)
                 ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org])
                 ->asArray()

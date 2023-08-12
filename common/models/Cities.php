@@ -52,19 +52,6 @@ class Cities extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'city_enc_id' => 'City Enc ID',
-            'name' => 'Name',
-            'city_code' => 'City Code',
-            'state_enc_id' => 'State Enc ID',
-        ];
-    }
 
     /**
      * @return \yii\db\ActiveQuery
