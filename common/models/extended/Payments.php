@@ -37,6 +37,7 @@ class Payments
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->loan_payments_enc_id = $utilitiesModel->encrypt();
         $model->payment_amount = $options['amount'];
+        $model->reference_number = $options['reference_number'];
         if (!empty($options['token'])) {
             $model->payment_token = $options['token'];
         }
@@ -63,7 +64,7 @@ class Payments
             $type = $options['image']->type;
             $spaces = new Spaces(\Yii::$app->params->digitalOcean->accessKey, \Yii::$app->params->digitalOcean->secret);
             $my_space = $spaces->space(\Yii::$app->params->digitalOcean->sharingSpace);
-            $result = $my_space->uploadFileSources($options['image']->tempName, \Yii::$app->params->digitalOcean->rootDirectory . '/' . $base_path . DIRECTORY_SEPARATOR . $model->image, "private", ['params' => ['ContentType' => $type]]);
+            $result = $my_space->uploadFileSources($options['image']->tempName, \Yii::$app->params->digitalOcean->rootDirectory . $base_path . DIRECTORY_SEPARATOR . $model->image, "private", ['params' => ['ContentType' => $type]]);
             if (!$result) {
                 throw new \Exception('error occurred while uploading logo');
             }

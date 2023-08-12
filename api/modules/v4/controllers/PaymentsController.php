@@ -3,7 +3,6 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\PaymentModel;
-use api\modules\v4\utilities\UserUtilities;
 use common\models\extended\Organizations;
 use common\models\FinancerLoanProductLoginFeeStructure;
 use common\models\LoanPayments;
@@ -32,7 +31,7 @@ class PaymentsController extends ApiBaseController
         $behaviors['corsFilter'] = [
             'class' => Cors::className(),
             'cors' => [
-                'Origin' => ['*'],
+                'Origin' => ['https://www.empowerloans.in/'],
                 'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
                 'Access-Control-Max-Age' => 86400,
                 'Access-Control-Expose-Headers' => [],
@@ -170,9 +169,9 @@ class PaymentsController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-        if (UserUtilities::getUserType($user->user_enc_id) != 'Financer'){
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
+//        if (UserUtilities::getUserType($user->user_enc_id) != 'Financer'){
+//            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+//        }
         $params = Yii::$app->request->post();
         $amount = 0;
         if (!empty($params['amount'])) {
@@ -190,6 +189,7 @@ class PaymentsController extends ApiBaseController
         $options['amount_enc_ids'] = $amount_enc_ids;
         $options['amount'] = $amount;
         $options['mode'] = $params['payment_mode'];
+        $options['reference_number'] = $params['reference_number'];
         $options['image'] = UploadedFile::getInstanceByName('image');
 
         $transaction = Yii::$app->db->beginTransaction();
