@@ -46,7 +46,7 @@ class SignupForm extends Model
     public function rules()
     {
         return [
-            [['username', 'first_name', 'last_name', 'phone', 'password', 'source', 'email'], 'required'],
+            [['username', 'first_name', 'last_name', 'phone', 'password', 'source'], 'required'],
             [['organization_name', 'organization_email', 'organization_phone'], 'required', 'on' => 'Financer'],
             [['organization_name', 'vehicle_types', 'brands', 'category', 'company_type', 'trade_certificate'], 'required', 'on' => 'Dealer'],
             [['username', 'email', 'first_name', 'last_name', 'phone', 'password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website', 'ref_id', 'user_type'], 'trim'],

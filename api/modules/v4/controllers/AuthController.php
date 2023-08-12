@@ -89,9 +89,6 @@ class AuthController extends ApiBaseController
                 case 'Financer':
                     $model = new SignupForm(['scenario' => 'Financer']);
                     break;
-//                case 'Dealer':
-//                    $model = new SignupForm(['scenario' => 'Dealer']);
-//                    break;
                 default:
                     $model = new SignupForm();
                     break;
@@ -103,11 +100,6 @@ class AuthController extends ApiBaseController
 
                 // if source empty then assign user ip address
                 $model->source = !empty($model->source) ? $model->source : Yii::$app->getRequest()->getUserIP();
-//                if (!empty($model->ref_id)) {
-//                    $gen = self::_genUserPass($params);
-//                    $model->username = $gen['username'];
-//                    $model->password = $gen['pass'];
-//                }
 
                 // if model validated then it will save data
                 if ($model->validate()) {
@@ -142,21 +134,6 @@ class AuthController extends ApiBaseController
             return ['status' => 500, 'message' => 'an error occurred', 'error' => json_decode($exception->getMessage(), true)];
         }
     }
-
-    private function _genUserPass($data)
-    {
-        while (true) {
-            $username = $data['organization_name'] . rand(100, 1000);
-            $checkUsers = Users::findOne(['username' => $username]);
-            if (!$checkUsers) {
-                $res['username'] = $username;
-                break;
-            }
-        }
-        $res['pass'] = $data['phone'];
-        return $res;
-    }
-
 
     // this action is used to validate fields like username, email, phone etc.
     public function actionValidate()
