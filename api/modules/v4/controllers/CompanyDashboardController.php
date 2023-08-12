@@ -3304,7 +3304,8 @@ class CompanyDashboardController extends ApiBaseController
                 $b->select(['b.assigned_loan_payments_enc_id', 'b1.loan_payments_enc_id', 'b.loan_app_enc_id']);
                 $b->joinWith(['loanPaymentsEnc b1' => function ($b1) {
                     $b1->select(['b1.loan_payments_enc_id', 'b1.payment_amount', 'b1.payment_mode', 'b1.payment_short_url', 'b1.payment_status',
-                        '(CASE WHEN b1.payment_link_type = "0" Then "Link" WHEN b1.payment_link_type = "1" Then "QR" ELSE NULL END) as mode',
+                        '(CASE WHEN b1.payment_link_type = "0" Then "Link" WHEN b1.payment_link_type = "1" Then "QR" ELSE "Manual" END) as mode', 'b1.reference_number',
+                        '(CASE WHEN b1.image IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payments->image . '", b1.image_location, "/",b1.image) ELSE NULL END) as receipt', 'b1.remarks'
                     ]);
                     $b1->joinWith(['loanPaymentsDetails b2' => function ($b2) {
                         $b2->select(['b2.loan_payments_enc_id', 'b2.no_dues_name', 'b2.no_dues_amount']);
@@ -3321,11 +3322,16 @@ class CompanyDashboardController extends ApiBaseController
         $res = [];
         $paymentModes = ['0' => 'Online Payment', '1' => 'NEFT', '2' => 'RTGS', '3' => 'IMPS', '4' => 'Cheque', '5' => 'UPI',
             '6' => 'DD', '7' => 'Cash', '8' => 'Credit Card', '9' => 'Debit Card'];
+        $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+        $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
         foreach ($assignedList as $assigned) {
             foreach ($assigned['assignedLoanPayments'] as $asp) {
                 $payment = $asp['loanPaymentsEnc']['payment_mode'];
                 if ($payment != null) {
                     $asp['loanPaymentsEnc']['payment_mode'] = $paymentModes[$payment];
+                    if ($asp['loanPaymentsEnc']['receipt'] != null) {
+                        $asp['loanPaymentsEnc']['receipt'] = $my_space->signedURL($asp['loanPaymentsEnc']['receipt'], "15 minutes");;
+                    }
                 }
                 $res[] = $asp['loanPaymentsEnc'];
 

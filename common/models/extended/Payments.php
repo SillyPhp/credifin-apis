@@ -37,6 +37,8 @@ class Payments
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->loan_payments_enc_id = $utilitiesModel->encrypt();
         $model->payment_amount = $options['amount'];
+        $model->payment_status = $options['status'] ?? 'pending';
+        $model->created_on = date('Y-m-d h:i:s');
         if (!empty($options['reference_number'])) {
             $model->reference_number = $options['reference_number'];
         }
@@ -46,16 +48,17 @@ class Payments
         if (!empty($options['surl'])) {
             $model->payment_short_url = $options['surl'];
         }
-        $model->payment_status = $options['status'] ?? 'pending';
-        $model->created_on = date('Y-m-d h:i:s');
         if (!empty($options['close_by'])) {
             $model->close_by = date('Y-m-d h:i:s', $options['close_by']);
+        }
+        if (!empty($options['remarks'])) {
+            $model->remarks = $options['remarks'];
         }
         if (isset($options['method'])) {
             $model->payment_link_type = $options['method'];
         }
-        if (isset($options['mode'])) {
-            $model->payment_mode = $options['mode'];
+        if (isset($options['payment_mode'])) {
+            $model->payment_mode = $options['payment_mode'];
         }
         if (!empty($options['image'])) {
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
