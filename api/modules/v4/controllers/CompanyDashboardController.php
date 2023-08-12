@@ -3255,4 +3255,87 @@ class CompanyDashboardController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => $save . 'd successfully']);
     }
 
+    public function actionLoanPayments()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+
+        if (empty($params['loan_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+        }
+        if (isset($params['type']) && $params['type'] === 'emi_id') {
+            $data = $this->loanEmiList($params);
+        } else {
+            $data = $this->assignedPayment($params);
+        }
+        return $this->response($data['status'], $data);
+    }
+
+    private function loanEmiList($params)
+    {
+        $emiList = LoanApplications::find()
+            ->alias('a')
+//            ->distinct()
+            ->select(['a.loan_app_enc_id', 'b1.emi_collection_enc_id', 'b1.amount', 'b.assigned_loan_payments_enc_id', 'b.loan_app_enc_id', 'b1.loan_account_number',
+                'b1.payment_method'])
+            ->joinWith(['assignedLoanPayments b' => function ($b) {
+                $b->joinWith(['emiCollectionEnc b1'], false);
+
+            }])
+            ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        if ($emiList) {
+            return ['status' => 200, 'data' => $emiList];
+        }
+        return ['status' => 404, 'message' => 'not found'];
+    }
+
+    private function assignedPayment($params)
+    {
+        $assignedList = LoanApplications::find()
+            ->alias('a')
+            ->distinct()
+            ->select(['a.loan_app_enc_id'])
+            ->joinWith(['assignedLoanPayments b' => function ($b) {
+                $b->select(['b.assigned_loan_payments_enc_id', 'b1.loan_payments_enc_id', 'b.loan_app_enc_id']);
+                $b->joinWith(['loanPaymentsEnc b1' => function ($b1) {
+                    $b1->select(['b1.loan_payments_enc_id', 'b1.payment_amount', 'b1.payment_mode', 'b1.payment_short_url', 'b1.payment_status',
+                        '(CASE WHEN b1.payment_link_type = "0" Then "Link" WHEN b1.payment_link_type = "1" Then "QR" ELSE NULL END) as mode',
+                    ]);
+                    $b1->joinWith(['loanPaymentsDetails b2' => function ($b2) {
+                        $b2->select(['b2.loan_payments_enc_id', 'b2.no_dues_name', 'b2.no_dues_amount']);
+                    }]);
+                }]);
+                $b->groupBy(['b.assigned_loan_payments_enc_id']);
+                $b->orderBy(['b1.payment_status' => SORT_ASC]);
+            }])
+            ->groupBy(['a.loan_app_enc_id'])
+            ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        $res = [];
+        $paymentModes = ['0' => 'Online Payment', '1' => 'NEFT', '2' => 'RTGS', '3' => 'IMPS', '4' => 'Cheque', '5' => 'UPI',
+            '6' => 'DD', '7' => 'Cash', '8' => 'Credit Card', '9' => 'Debit Card'];
+        foreach ($assignedList as $assigned) {
+            foreach ($assigned['assignedLoanPayments'] as $asp) {
+                $payment = $asp['loanPaymentsEnc']['payment_mode'];
+                if ($payment != null) {
+                    $asp['loanPaymentsEnc']['payment_mode'] = $paymentModes[$payment];
+                }
+                $res[] = $asp['loanPaymentsEnc'];
+
+            }
+        }
+//       'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loan_payments->image, 'https') . '", p1.image_location, "/", p1.image) ELSE NULL END imgg',
+        if ($res) {
+            return ['status' => 200, 'data' => $res];
+        }
+        return ['status' => 404, 'message' => 'not found'];
+    }
+
 }
