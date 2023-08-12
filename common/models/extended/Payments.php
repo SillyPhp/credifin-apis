@@ -37,7 +37,9 @@ class Payments
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->loan_payments_enc_id = $utilitiesModel->encrypt();
         $model->payment_amount = $options['amount'];
-        $model->reference_number = $options['reference_number'];
+        if (!empty($options['reference_number'])) {
+            $model->reference_number = $options['reference_number'];
+        }
         if (!empty($options['token'])) {
             $model->payment_token = $options['token'];
         }
@@ -55,7 +57,7 @@ class Payments
         if (isset($options['mode'])) {
             $model->payment_mode = $options['mode'];
         }
-        if ($options['image']) {
+        if (!empty($options['image'])) {
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $model->image = $utilitiesModel->encrypt() . '.' . $options['image']->extension;
             $model->image_location = \Yii::$app->getSecurity()->generateRandomString();
