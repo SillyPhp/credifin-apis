@@ -94,7 +94,7 @@ class SignupForm extends Model
             $user->email = $this->email ? strtolower($this->email) : null;
             $user->initials_color = RandomColors::one();
             $user->user_type_enc_id = UserTypes::findOne(['user_type' => $user_type])->user_type_enc_id;
-            $user->status = ($user_type == 'Employee') ? 'Pending' : 'Active';
+            $user->status = ($user_type == 'Individual') ? 'Active' : 'Pending';
             $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
             $user->last_visit = date('Y-m-d H:i:s');
             $user->last_visit_through = 'EL';
