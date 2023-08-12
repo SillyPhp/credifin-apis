@@ -1336,9 +1336,14 @@ class LoansController extends ApiBaseController
                     ['b.phone' => '+91' . preg_replace('/^\+?+/', '', $phoneNumber)],
                     ['a.phone' => '+' . $phoneNumber],
                     ['b.phone' => '+' . $phoneNumber],
-                ])
-                ->andWhere(['>=', "a.loan_status_updated_on", $date])
-                ->exists();
+                ]);
+                if (isset($params['loan_id'])) {
+                    $phoneExists = $phoneExists->andWhere(['a.loan_app_enc_id' => $params['loan_id']]);
+                } else {
+                    $phoneExists = $phoneExists->andWhere(['>=', "a.loan_status_updated_on", $date]);
+                }
+                $phoneExists = $phoneExists->exists();
+
 
             if ($phoneExists) {
                 return $this->response(200, ['status' => 200, 'message' => 'Phone number already exists']);
