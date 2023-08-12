@@ -85,18 +85,11 @@ class AuthController extends ApiBaseController
 
             $params = Yii::$app->request->post();
 
-            switch ($params['user_type']) {
-                case 'Financer':
-                    $model = new SignupForm(['scenario' => 'Financer']);
-                    break;
-                default:
-                    $model = new SignupForm();
-                    break;
-            }
-
+            // creating signup form object. if its financer then it will make object with scenario Financer to require organization fields
+            $model = !empty($params['user_type']) ? (($params['user_type'] == 'Financer') ? new SignupForm(['scenario' => 'Financer']) : new SignupForm()) : new SignupForm();
 
             // loading data from post request to model
-            if ($model->load(Yii::$app->request->post())) {
+            if ($model->load(Yii::$app->request->post(), '')) {
 
                 // if source empty then assign user ip address
                 $model->source = !empty($model->source) ? $model->source : Yii::$app->getRequest()->getUserIP();
