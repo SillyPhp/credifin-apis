@@ -38,7 +38,6 @@ class Payments
         $model->loan_payments_enc_id = $utilitiesModel->encrypt();
         $model->payment_amount = $options['amount'];
         $model->payment_status = $options['status'] ?? 'pending';
-        $model->created_on = date('Y-m-d h:i:s');
         if (!empty($options['reference_number'])) {
             $model->reference_number = $options['reference_number'];
         }
@@ -74,6 +73,8 @@ class Payments
                 throw new \Exception('error occurred while uploading logo');
             }
         }
+        $model->created_by = $model->updated_by = $options['user_id'];
+        $model->created_on = $model->updated_on = date('Y-m-d h:i:s');
         if (!$model->save()) {
             return false;
         }

@@ -3305,14 +3305,17 @@ class CompanyDashboardController extends ApiBaseController
                 $b->joinWith(['loanPaymentsEnc b1' => function ($b1) {
                     $b1->select(['b1.loan_payments_enc_id', 'b1.payment_amount', 'b1.payment_mode', 'b1.payment_short_url', 'b1.payment_status',
                         '(CASE WHEN b1.payment_link_type = "0" Then "Link" WHEN b1.payment_link_type = "1" Then "QR" ELSE "Manual" END) as mode', 'b1.reference_number',
-                        '(CASE WHEN b1.image IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payments->image . '", b1.image_location, "/",b1.image) ELSE NULL END) as receipt', 'b1.remarks'
+                        '(CASE WHEN b1.image IS NOT NULL THEN CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->payments->image . '", b1.image_location, "/",b1.image) ELSE NULL END) as receipt',
+                        'b1.remarks', 'b1.created_on', 'CONCAT(b3.first_name, " ", b3.last_name) as created_by', 'CONCAT(b4.first_name, " ", b4.last_name) as updated_by', 'b1.updated_on'
                     ]);
                     $b1->joinWith(['loanPaymentsDetails b2' => function ($b2) {
                         $b2->select(['b2.loan_payments_enc_id', 'b2.no_dues_name', 'b2.no_dues_amount']);
                     }]);
+                    $b1->joinWith(['createdBy b3'], false);
+                    $b1->joinWith(['updatedBy b4'], false);
                 }]);
                 $b->groupBy(['b.assigned_loan_payments_enc_id']);
-                $b->orderBy(['b1.payment_status' => SORT_ASC]);
+                $b->orderBy(['b1.created_on' => SORT_DESC]);
             }])
             ->groupBy(['a.loan_app_enc_id'])
             ->where(['a.loan_app_enc_id' => $params['loan_id'], 'a.is_deleted' => 0])

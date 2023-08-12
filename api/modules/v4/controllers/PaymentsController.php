@@ -119,7 +119,6 @@ class PaymentsController extends ApiBaseController
             $api_key = $keys['api_key'];
             $api_secret = $keys['api_secret'];
             $api = new Api($api_key, $api_secret);
-
             $options['name'] = $params['name'];
             $options['loan_app_enc_id'] = $params['loan_app_id'];
             $options['user_id'] = $user->user_enc_id;
@@ -131,7 +130,6 @@ class PaymentsController extends ApiBaseController
             $options['contact'] = $params['phone'];
             $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
             $options['purpose'] = 'Payment for ' . implode(', ', $desc);;
-            $options['remarks'] = $params['remarks'];
 
             $res['qr'] = $this->existRazorCheck($options['loan_app_enc_id'], 1);
             if (!$res['qr']) {
