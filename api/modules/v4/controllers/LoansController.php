@@ -34,6 +34,7 @@ use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use yii\helpers\Url;
 
 class LoansController extends ApiBaseController
 {
@@ -1277,12 +1278,12 @@ class LoansController extends ApiBaseController
                     ['a.phone' => '+' . $phoneNumber],
                     ['b.phone' => '+' . $phoneNumber],
                 ]);
-                if (isset($params['loan_id'])) {
-                    $phoneExists = $phoneExists->andWhere(['a.loan_app_enc_id' => $params['loan_id']]);
-                } else {
-                    $phoneExists = $phoneExists->andWhere(['>=', "a.loan_status_updated_on", $date]);
-                }
-                $phoneExists = $phoneExists->exists();
+            if (isset($params['loan_id'])) {
+                $phoneExists = $phoneExists->andWhere(['a.loan_app_enc_id' => $params['loan_id']]);
+            } else {
+                $phoneExists = $phoneExists->andWhere(['>=', "a.loan_status_updated_on", $date]);
+            }
+            $phoneExists = $phoneExists->exists();
 
 
             if ($phoneExists) {
@@ -1352,13 +1353,10 @@ class LoansController extends ApiBaseController
             }
         }
         return $this->response(422, ['status' => 422, 'message' => 'Phone or Aadhaar_number or PAN_number or Voter_number is missing']);
-//        }
-//        return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
     }
-
     public function actionAuditTrailList()
     {
-        if (!$user = $this->isAuthorized()) {
+        if (!$this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
 
@@ -1371,7 +1369,7 @@ class LoansController extends ApiBaseController
         $audit = LoanAuditTrail::find()
             ->alias('a')
             ->select(['a.old_value', 'a.new_value',
-                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . \yii\helpers\Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
                 , 'a.model', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'])
             ->joinWith(['user b'], false)
             ->where(['a.loan_id' => $params['loan_id']])
