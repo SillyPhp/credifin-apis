@@ -1101,24 +1101,6 @@ class LoansController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-    public function actionLoanPayments()
-    {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-        $params = Yii::$app->request->post();
-        if (empty($params['loan_app_id'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_id"']);
-        }
-        $model = new LoanPaymentsForm();
-        if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
-            $model->receipt = UploadedFile::getInstance($model, 'receipt');
-            $response = $model->save($params['loan_app_id'], $user->user_enc_id);
-            return $this->response($response['status'], $response);
-        } else {
-            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
-        }
-    }
 
     public function actionCreditReports()
     {
@@ -1337,9 +1319,14 @@ class LoansController extends ApiBaseController
                     ['b.phone' => '+91' . preg_replace('/^\+?+/', '', $phoneNumber)],
                     ['a.phone' => '+' . $phoneNumber],
                     ['b.phone' => '+' . $phoneNumber],
-                ])
-                ->andWhere(['>=', "a.loan_status_updated_on", $date])
-                ->exists();
+                ]);
+                if (isset($params['loan_id'])) {
+                    $phoneExists = $phoneExists->andWhere(['a.loan_app_enc_id' => $params['loan_id']]);
+                } else {
+                    $phoneExists = $phoneExists->andWhere(['>=', "a.loan_status_updated_on", $date]);
+                }
+                $phoneExists = $phoneExists->exists();
+
 
             if ($phoneExists) {
                 return $this->response(200, ['status' => 200, 'message' => 'Phone number already exists']);
