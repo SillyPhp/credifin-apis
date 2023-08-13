@@ -29,7 +29,6 @@ use common\models\spaces\Spaces;
 use common\models\States;
 use common\models\Users;
 use common\models\Utilities;
-use http\Url;
 use Razorpay\Api\Api;
 use Yii;
 use yii\filters\Cors;
@@ -932,48 +931,6 @@ class LoansController extends ApiBaseController
         return $this->response(400, ['status' => 400, 'message' => 'bad request']);
     }
 
-    // audit trail list
-//    public function actionAuditTrailList()
-//    {
-//        if ($this->isAuthorized()) {
-//
-//            $params = Yii::$app->request->post();
-//
-//            $limit = !empty($params['limit']) ? $params['limit'] : 10;
-//            $page = !empty($params['page']) ? $params['page'] : 1;
-//
-//            // checking loan_id
-//            if (empty($params['loan_id'])) {
-//                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
-//            }
-//
-//            // loan audit trail list for particular loan_id
-//            $audit = LoanAuditTrail::find()
-//                ->alias('a')
-//                ->select(['a.old_value', 'a.new_value', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'])
-//                ->joinWith(['user b'], false)
-//                ->where(['a.loan_id' => $params['loan_id']])
-//                ->andWhere(['not', ['a.field' => ['', 'created_by', 'created_on', 'id', 'proof_image', 'proof_image_location', null]]])
-//                ->andWhere(['not like', 'a.field', '%_enc_id%', false])
-//                ->andWhere(['not like', 'a.field', '%updated_on%', false])
-//                ->limit($limit)
-//                ->offset(($page - 1) * $limit)
-//                ->orderBy(['a.stamp' => SORT_DESC])
-//                ->asArray()
-//                ->all();
-//
-//            if ($audit) {
-//                return $this->response(200, ['status' => 200, 'audit_list' => $audit]);
-//            }
-//
-//            // not found
-//            return $this->response(404, ['status' => 404, 'message' => 'not found']);
-//
-//        } else {
-//            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-//        }
-//    }
-
     // this action is used to create financer loan negative location
     public function actionCreateFinancerLoanNegativeLocation()
     {
@@ -1425,7 +1382,6 @@ class LoansController extends ApiBaseController
             ->orderBy(['a.stamp' => SORT_DESC])
             ->asArray()
             ->all();
-//        'a.model' => SORT_ASC, 'a.action' => SORT_ASC,
 
         $groupedAudit = [];
 
