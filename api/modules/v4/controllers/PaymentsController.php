@@ -119,7 +119,6 @@ class PaymentsController extends ApiBaseController
             $api_key = $keys['api_key'];
             $api_secret = $keys['api_secret'];
             $api = new Api($api_key, $api_secret);
-
             $options['name'] = $params['name'];
             $options['loan_app_enc_id'] = $params['loan_app_id'];
             $options['user_id'] = $user->user_enc_id;
@@ -130,7 +129,7 @@ class PaymentsController extends ApiBaseController
             $options['brand'] = $org_name;
             $options['contact'] = $params['phone'];
             $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
-            $options['purpose'] = 'Testing';
+            $options['purpose'] = 'Payment for ' . implode(', ', $desc);;
 
             $res['qr'] = $this->existRazorCheck($options['loan_app_enc_id'], 1);
             if (!$res['qr']) {
@@ -150,7 +149,6 @@ class PaymentsController extends ApiBaseController
                     $transaction->rollback();
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }
-//                $res['amount'] = number_format($link['amount'], 2);
                 $res ['link'] = $link;
             }
 
@@ -188,13 +186,14 @@ class PaymentsController extends ApiBaseController
         $options['status'] = 'captured';
         $options['amount_enc_ids'] = $amount_enc_ids;
         $options['amount'] = $amount;
-        $options['mode'] = $params['payment_mode'];
+        $options['remarks'] = $params['remarks'];
+        $options['payment_mode'] = $params['payment_mode'];
         $options['reference_number'] = $params['reference_number'];
         $options['image'] = UploadedFile::getInstanceByName('image');
 
         $transaction = Yii::$app->db->beginTransaction();
         $save = \common\models\extended\Payments::saveLoanPayment($options);
-        if (!$save){
+        if (!$save) {
             $transaction->rollBack();
             return ['status' => 500, 'message' => 'an error occurred'];
         }

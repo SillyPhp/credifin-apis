@@ -1707,7 +1707,7 @@ class OrganizationsController extends ApiBaseController
                 'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
                 'CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
                 'CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
-                'CONCAT(a.address,", ", a.pincode) address', 'CONCAT(b.first_name , ", ", b.last_name) as collected_by', 'a.created_on',
+                'CONCAT(a.address,", ", a.pincode) address', 'CONCAT(b.first_name , " ", b.last_name) as collected_by', 'a.created_on',
                 'CONCAT("http://maps.google.com/maps?q=", a.latitude, ",", a.longitude) AS link',
                 'a.comments'])
             ->joinWith(['createdBy b' => function ($b) {
@@ -1969,7 +1969,7 @@ class OrganizationsController extends ApiBaseController
         $notice = FinancerNoticeBoard::find()
             ->alias('a')
             ->select(['a.notice_enc_id',
-                'a.notice','a.type',
+                'a.notice', 'a.type',
                 '(CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END) as image',
                 '(CASE WHEN a.status = "Active" THEN TRUE ELSE FALSE END) as status',
                 'a.created_on'
