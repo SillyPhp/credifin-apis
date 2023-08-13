@@ -29,6 +29,7 @@ use common\models\spaces\Spaces;
 use common\models\States;
 use common\models\Users;
 use common\models\Utilities;
+use http\Url;
 use Razorpay\Api\Api;
 use Yii;
 use yii\filters\Cors;
@@ -932,46 +933,46 @@ class LoansController extends ApiBaseController
     }
 
     // audit trail list
-    public function actionAuditTrailList()
-    {
-        if ($this->isAuthorized()) {
-
-            $params = Yii::$app->request->post();
-
-            $limit = !empty($params['limit']) ? $params['limit'] : 10;
-            $page = !empty($params['page']) ? $params['page'] : 1;
-
-            // checking loan_id
-            if (empty($params['loan_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
-            }
-
-            // loan audit trail list for particular loan_id
-            $audit = LoanAuditTrail::find()
-                ->alias('a')
-                ->select(['a.old_value', 'a.new_value', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'])
-                ->joinWith(['user b'], false)
-                ->where(['a.loan_id' => $params['loan_id']])
-                ->andWhere(['not', ['a.field' => ['', 'created_by', 'created_on', 'id', 'proof_image', 'proof_image_location', null]]])
-                ->andWhere(['not like', 'a.field', '%_enc_id%', false])
-                ->andWhere(['not like', 'a.field', '%updated_on%', false])
-                ->limit($limit)
-                ->offset(($page - 1) * $limit)
-                ->orderBy(['a.stamp' => SORT_DESC])
-                ->asArray()
-                ->all();
-
-            if ($audit) {
-                return $this->response(200, ['status' => 200, 'audit_list' => $audit]);
-            }
-
-            // not found
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-    }
+//    public function actionAuditTrailList()
+//    {
+//        if ($this->isAuthorized()) {
+//
+//            $params = Yii::$app->request->post();
+//
+//            $limit = !empty($params['limit']) ? $params['limit'] : 10;
+//            $page = !empty($params['page']) ? $params['page'] : 1;
+//
+//            // checking loan_id
+//            if (empty($params['loan_id'])) {
+//                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+//            }
+//
+//            // loan audit trail list for particular loan_id
+//            $audit = LoanAuditTrail::find()
+//                ->alias('a')
+//                ->select(['a.old_value', 'a.new_value', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'])
+//                ->joinWith(['user b'], false)
+//                ->where(['a.loan_id' => $params['loan_id']])
+//                ->andWhere(['not', ['a.field' => ['', 'created_by', 'created_on', 'id', 'proof_image', 'proof_image_location', null]]])
+//                ->andWhere(['not like', 'a.field', '%_enc_id%', false])
+//                ->andWhere(['not like', 'a.field', '%updated_on%', false])
+//                ->limit($limit)
+//                ->offset(($page - 1) * $limit)
+//                ->orderBy(['a.stamp' => SORT_DESC])
+//                ->asArray()
+//                ->all();
+//
+//            if ($audit) {
+//                return $this->response(200, ['status' => 200, 'audit_list' => $audit]);
+//            }
+//
+//            // not found
+//            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+//
+//        } else {
+//            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+//        }
+//    }
 
     // this action is used to create financer loan negative location
     public function actionCreateFinancerLoanNegativeLocation()
@@ -1409,6 +1410,60 @@ class LoansController extends ApiBaseController
         return $this->response(422, ['status' => 422, 'message' => 'Phone or Aadhaar_number or PAN_number or Voter_number is missing']);
 //        }
 //        return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
+    }
+
+    public function actionAuditTrailList()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (empty($params['loan_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+        }
+
+        $audit = LoanAuditTrail::find()
+            ->alias('a')
+            ->select(['a.old_value', 'a.new_value',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . \yii\helpers\Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
+                , 'a.model', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'])
+            ->joinWith(['user b'], false)
+            ->where(['a.loan_id' => $params['loan_id']])
+            ->andWhere(['not', ['a.field' => ['', 'created_by', 'created_on', 'id', 'proof_image', 'proof_image_location', null]]])
+            ->andWhere(['not like', 'a.field', '%_enc_id%', false])
+            ->andWhere(['not like', 'a.field', '%updated_on%', false])
+            ->andWhere(['not like', 'a.field', '%EducationLoanPaymentsExtends%', false])
+            ->orderBy(['a.stamp' => SORT_DESC])
+            ->asArray()
+            ->all();
+//        'a.model' => SORT_ASC, 'a.action' => SORT_ASC,
+
+        $groupedAudit = [];
+
+        if ($audit) {
+            foreach ($audit as $item) {
+                $item['model'] = explode("\\", $item['model']);
+                if (is_array($item['model'])) {
+                    $item['model'] = end($item['model']);
+                }
+                $item['model'] = substr_count($item['model'], 'Extended') ? str_replace('Extended', '', $item['model']) : $item['model'];
+                $item['stamp'] = strtotime($item['stamp']);
+                $groupedAudit[$item['model']][] = $item;
+            }
+            foreach ($groupedAudit as $g => $item) {
+                array_multisort(array_column($item, 'stamp'), SORT_DESC, $item);
+                foreach ($item as $key => $i) {
+                    $i['stamp'] = date('Y-m-d H:i:s', $i['stamp']);
+                    $groupedAudit[$g][$key] = $i;
+                }
+            }
+            return $this->response(200, ['status' => 200, 'audit_list' => $groupedAudit]);
+
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
 
     }
 
