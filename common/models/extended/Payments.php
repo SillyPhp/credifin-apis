@@ -41,6 +41,9 @@ class Payments
         if (!empty($options['reference_number'])) {
             $model->reference_number = $options['reference_number'];
         }
+        if (!empty($options['ref_id'])) {
+            $model->reference_id = $options['ref_id'];
+        }
         if (!empty($options['token'])) {
             $model->payment_token = $options['token'];
         }

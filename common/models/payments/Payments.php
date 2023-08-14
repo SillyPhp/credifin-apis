@@ -6,6 +6,7 @@ class Payments
 {
     public static function createQr($api, $options)
     {
+        $ref_id = 'EMPL-'.Yii::$app->security->generateRandomString(8);
         $qr = $api->qrCode->create(["type" => "upi_qr",
             "name" => $options['name'],
             "usage" => "single_use",
@@ -19,6 +20,7 @@ class Payments
             $options['token'] = $qr->id;
             $options['close_by'] = $qr->close_by;
             $options['method'] = 1;
+            $options['ref_id'] = $ref_id;
             $save = \common\models\extended\Payments::saveLoanPayment($options);
             if (!$save) {
                 return false;
@@ -31,9 +33,11 @@ class Payments
 
     public static function createLink($api, $options)
     {
+        $ref_id = 'EMPL-'.Yii::$app->security->generateRandomString(8);
         $link = $api->paymentLink->create([
             'amount' => $options['amount'] * 100,
             'currency' => 'INR',
+            'reference_id' => $ref_id,
             'accept_partial' => false,
             'description' => $options['description'],
             'customer' => [
@@ -59,6 +63,7 @@ class Payments
             $options['token'] = $link->id;
             $options['close_by'] = $link->expire_by;
             $options['method'] = 0;
+            $options['ref_id'] = $ref_id;
             $save = \common\models\extended\Payments::saveLoanPayment($options);
             if (!$save) {
                 return false;
