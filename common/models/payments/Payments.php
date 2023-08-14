@@ -1,7 +1,7 @@
 <?php
 
 namespace common\models\payments;
-
+use Yii;
 class Payments
 {
     public static function createQr($api, $options)
