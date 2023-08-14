@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%loan_payments}}".
  *
@@ -19,6 +21,8 @@ namespace common\models;
  * @property string $remarks Any remarks or reason for Refund
  * @property string $payment_signature
  * @property string $payment_source
+ * @property string $reference_id
+ * @property string $payment_mode_status in case of mode available for payment to accept or not
  * @property string $image Receipt
  * @property string $image_location Receipt Location
  * @property string $created_by
@@ -52,9 +56,9 @@ class LoanPayments extends \yii\db\ActiveRecord
             [['loan_payments_enc_id', 'payment_amount'], 'required'],
             [['payment_link_type', 'payment_mode'], 'integer'],
             [['payment_amount', 'payment_gst'], 'number'],
-            [['remarks'], 'string'],
+            [['remarks', 'payment_mode_status'], 'string'],
             [['created_on', 'updated_on', 'close_by'], 'safe'],
-            [['loan_payments_enc_id', 'payment_token', 'payment_short_url', 'payment_id', 'payment_status', 'image', 'image_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['loan_payments_enc_id', 'payment_token', 'payment_short_url', 'payment_id', 'payment_status', 'reference_id', 'image', 'image_location', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['reference_number'], 'string', 'max' => 50],
             [['payment_signature', 'payment_source'], 'string', 'max' => 255],
             [['loan_payments_enc_id'], 'unique'],

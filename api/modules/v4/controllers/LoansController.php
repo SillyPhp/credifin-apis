@@ -23,10 +23,12 @@ use common\models\FinancerLoanNegativeLocation;
 use common\models\LeadsApplications;
 use common\models\LoanApplications;
 use common\models\LoanAuditTrail;
+use common\models\LoanPayments;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\spaces\Spaces;
 use common\models\States;
+use common\models\UserRoles;
 use common\models\Users;
 use common\models\Utilities;
 use Razorpay\Api\Api;
@@ -268,19 +270,37 @@ class LoansController extends ApiBaseController
     {
         // getting request params
         $params = Yii::$app->request->post();
-
-        // getting
         $razorpay_payment_id = $params['razorpay_payment_id'];
         $razorpay_payment_link_id = $params['razorpay_payment_link_id'];
         $razorpay_signature = $params['razorpay_signature'];
-
-        // api keys from local params
-        $api_key = Yii::$app->params->razorPay->phfleasing->prod->apiKey;
-        $api_secret = Yii::$app->params->razorPay->phfleasing->prod->apiSecret;
-
-        // creating new object razorpay api
-        $api = new Api($api_key, $api_secret);
-
+        $model = LoanPayments::find()
+            ->alias('a')
+            ->select(['d.organization_enc_id org_id', 'e.organization_enc_id user_org_id'])
+            ->where(['payment_token' => $razorpay_payment_link_id])
+            ->joinWith(['assignedLoanPayments b' => function ($b) {
+                $b->joinWith(['loanAppEnc c' => function ($c) {
+                    $c->joinWith(['leadBy d' => function ($d) {
+                        $d->joinWith(['userRoles0 e'], false);
+                    }]);
+                }], false);
+            }], false)
+            ->asArray()->one();
+        if ($model) {
+            if (isset($model['user_org_id']) || !empty($model['user_org_id'])) {
+                $options['org_id'] = $model['user_org_id'];
+            } else {
+                $options['org_id'] = $model['org_id'];
+            }
+            $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
+            if (!$keys) {
+                return ['status' => 500, 'message' => 'an error occurred while fetching razorpay credentials'];
+            }
+            $api_key = $keys['api_key'];
+            $api_secret = $keys['api_secret'];
+            $api = new Api($api_key, $api_secret);
+        } else {
+            return ['status' => 500, 'message' => 'an error occurred while fetching razorpay credentials'];
+        }
         // if not empty razorpay_payment_id
         if (!empty($params['razorpay_payment_id'])) {
 
