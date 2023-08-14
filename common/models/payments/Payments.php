@@ -1,7 +1,7 @@
 <?php
 
 namespace common\models\payments;
-
+use Yii;
 class Payments
 {
     public static function createQr($api, $options)
@@ -34,6 +34,7 @@ class Payments
         $link = $api->paymentLink->create([
             'amount' => $options['amount'] * 100,
             'currency' => 'INR',
+            'reference_id' => $options['ref_id'],
             'accept_partial' => false,
             'description' => $options['description'],
             'customer' => [

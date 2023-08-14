@@ -7,6 +7,7 @@ use common\models\extended\Organizations;
 use common\models\FinancerLoanProductLoginFeeStructure;
 use common\models\LoanPayments;
 use common\models\UserRoles;
+use common\models\WebhookTest;
 use Razorpay\Api\Api;
 use Yii;
 use yii\filters\Cors;
@@ -42,45 +43,78 @@ class PaymentsController extends ApiBaseController
 
     public function actionRazorPayWebhook()
     {
-        $data = Yii::$app->request->post();
-        if (isset($data['event'])) {
-            if ($data['contains'][0] == 'qr_code') {
-                $entity = $data['payload']['qr_code']['entity'];
-                $order_id = $entity['id'];
+        $post = file_get_contents('php://input');
+        $post = json_decode($post,true);
+        if (isset($post['event'])) {
+           if (in_array("payment_link", $post["contains"])){
+               $this->handleLinkWebhook($post);
             }
-            if ($data['contains'][0] == 'payment') {
-                $entity = $data['payload']['payment']['entity'];
+            else if (in_array("qr_code", $post["contains"])){
+               $this->handleQrWebhook($post);
+           }
+      }
+    }
+
+    private function closeAllModes($id){
+        $model = LoanPayments::find()
+            ->where(['reference_id'=>$id])
+            ->asArray()->all();
+        if ($model){
+            foreach ($model as $mod){
+                $data = LoanPayments::findOne(['loan_payments_enc_id'=>$mod['loan_payments_enc_id']]);
+                $data->payment_mode_status = 'closed';
+                $data->save();
             }
-            if ($data['contains'][0] == 'payment_link') {
-                $entity = $data['payload']['payment_link']['entity'];
-            }
-            $payment_id = $entity['id'];
-            $status = $entity['status'];
-            $model = LoanPayments::findOne(['payment_token' => $order_id]);
-            $method = $entity['method'];
-            if ($data['event'] == "payment.failed") {
-                $method .= $entity['error_code'];
-                $method .= " ";
-                $method .= $entity['error_description'];
-                $method .= " ";
-                $method .= $entity['error_source'];
-                $method .= " ";
-                $method .= $entity['error_step'];
-                $method .= " ";
-                $method .= $entity['error_reason'];
-            }
+        }
+    }
+    private function handleQrWebhook($post){
+        if ($post['event']=='qr_code.credited'){
+            $id = $post['payload']['qr_code']['entity']['id'];
+            $payment_id = $post['payload']['payment']['entity']['id'];
+            $status = $post['payload']['payment']['entity']['status'];
+            $model = LoanPayments::findOne(['payment_token' => $id]);
+            $ref_id = $model->reference_id;
+            $method = json_encode($post['payload']['payment']['entity']['upi']);
             $model->payment_id = $payment_id;
             $model->payment_status = $status;
             $model->remarks = $method;
-
+            $model->updated_on = date('Y-m-d H:i:s');
+                if ($model->save()) {
+                    if ($status=='paid'||$status=='captured'){
+                        if (!empty($ref_id)):
+                            $this->closeAllModes($ref_id);
+                        endif;
+                    }
+                    return $this->response(200, ['status' => 200, 'message' => 'success']);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'Unable To Store Payment Information']);
+                }
+        }
+    }
+    private function handleLinkWebhook($post){
+        if ($post['event']=='payment_link.paid'){
+            $id = $post['payload']['payment_link']['entity']['id'];
+            $payment_id = $post['payload']['payment']['entity']['id'];
+            $status = $post['payload']['payment']['entity']['status'];
+            $model = LoanPayments::findOne(['payment_token' => $id]);
+            $ref_id = $model->reference_id;
+            $method = $post['payload']['payment']['entity']['method'];
+            $model->payment_id = $payment_id;
+            $model->payment_status = $status;
+            $model->remarks = $method;
+            $model->updated_on = date('Y-m-d H:i:s');
             if ($model->save()) {
+                if ($status=='paid'||$status=='captured'){
+                    if (!empty($ref_id)):
+                    $this->closeAllModes($ref_id);
+                    endif;
+                }
                 return $this->response(200, ['status' => 200, 'message' => 'success']);
             } else {
                 return $this->response(500, ['status' => 500, 'message' => 'Unable To Store Payment Information']);
             }
         }
     }
-
     public function actionGetPaymentLink()
     {
         if (!$user = $this->isAuthorized()) {
@@ -130,7 +164,7 @@ class PaymentsController extends ApiBaseController
             $options['contact'] = $params['phone'];
             $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
             $options['purpose'] = 'Payment for ' . implode(', ', $desc);;
-
+            $options['ref_id'] = 'EMPL-'.Yii::$app->security->generateRandomString(8);
             $res['qr'] = $this->existRazorCheck($options['loan_app_enc_id'], 1);
             if (!$res['qr']) {
                 $options['close_by'] = time() + 24 * 60 * 60;
