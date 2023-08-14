@@ -164,7 +164,7 @@ class PaymentsController extends ApiBaseController
             $options['contact'] = $params['phone'];
             $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
             $options['purpose'] = 'Payment for ' . implode(', ', $desc);;
-
+            $options['ref_id'] = 'EMPL-'.Yii::$app->security->generateRandomString(8);
             $res['qr'] = $this->existRazorCheck($options['loan_app_enc_id'], 1);
             if (!$res['qr']) {
                 $options['close_by'] = time() + 24 * 60 * 60;
