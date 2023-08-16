@@ -1,7 +1,6 @@
 <?php
 
 namespace common\models\payments;
-use Yii;
 class Payments
 {
     public static function createQr($api, $options)
@@ -10,7 +9,7 @@ class Payments
             "name" => $options['name'],
             "usage" => "single_use",
             "fixed_amount" => 1,
-            "payment_amount" => $options['amount'] * 100,
+            "payment_amount" => (int)($options['amount'] * 100),
             "description" => $options['description'],
             "close_by" => $options['close_by'],
             "notes" => array("purpose" => $options['purpose'])]);
@@ -32,7 +31,7 @@ class Payments
     public static function createLink($api, $options)
     {
         $link = $api->paymentLink->create([
-            'amount' => $options['amount'] * 100,
+            'amount' => (int)($options['amount'] * 100),
             'currency' => 'INR',
             'reference_id' => $options['ref_id'],
             'accept_partial' => false,

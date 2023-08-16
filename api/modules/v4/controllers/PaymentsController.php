@@ -44,31 +44,33 @@ class PaymentsController extends ApiBaseController
     public function actionRazorPayWebhook()
     {
         $post = file_get_contents('php://input');
-        $post = json_decode($post,true);
+        $post = json_decode($post, true);
         if (isset($post['event'])) {
-           if (in_array("payment_link", $post["contains"])){
-               $this->handleLinkWebhook($post);
+            if (in_array("payment_link", $post["contains"])) {
+                $this->handleLinkWebhook($post);
+            } else if (in_array("qr_code", $post["contains"])) {
+                $this->handleQrWebhook($post);
             }
-            else if (in_array("qr_code", $post["contains"])){
-               $this->handleQrWebhook($post);
-           }
-      }
+        }
     }
 
-    private function closeAllModes($id){
+    private function closeAllModes($id)
+    {
         $model = LoanPayments::find()
-            ->where(['reference_id'=>$id])
+            ->where(['reference_id' => $id])
             ->asArray()->all();
-        if ($model){
-            foreach ($model as $mod){
-                $data = LoanPayments::findOne(['loan_payments_enc_id'=>$mod['loan_payments_enc_id']]);
+        if ($model) {
+            foreach ($model as $mod) {
+                $data = LoanPayments::findOne(['loan_payments_enc_id' => $mod['loan_payments_enc_id']]);
                 $data->payment_mode_status = 'closed';
                 $data->save();
             }
         }
     }
-    private function handleQrWebhook($post){
-        if ($post['event']=='qr_code.credited'){
+
+    private function handleQrWebhook($post)
+    {
+        if ($post['event'] == 'qr_code.credited') {
             $id = $post['payload']['qr_code']['entity']['id'];
             $payment_id = $post['payload']['payment']['entity']['id'];
             $status = $post['payload']['payment']['entity']['status'];
@@ -79,20 +81,22 @@ class PaymentsController extends ApiBaseController
             $model->payment_status = $status;
             $model->remarks = $method;
             $model->updated_on = date('Y-m-d H:i:s');
-                if ($model->save()) {
-                    if ($status=='paid'||$status=='captured'){
-                        if (!empty($ref_id)):
-                            $this->closeAllModes($ref_id);
-                        endif;
-                    }
-                    return $this->response(200, ['status' => 200, 'message' => 'success']);
-                } else {
-                    return $this->response(500, ['status' => 500, 'message' => 'Unable To Store Payment Information']);
+            if ($model->save()) {
+                if ($status == 'paid' || $status == 'captured') {
+                    if (!empty($ref_id)):
+                        $this->closeAllModes($ref_id);
+                    endif;
                 }
+                return $this->response(200, ['status' => 200, 'message' => 'success']);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'Unable To Store Payment Information']);
+            }
         }
     }
-    private function handleLinkWebhook($post){
-        if ($post['event']=='payment_link.paid'){
+
+    private function handleLinkWebhook($post)
+    {
+        if ($post['event'] == 'payment_link.paid') {
             $id = $post['payload']['payment_link']['entity']['id'];
             $payment_id = $post['payload']['payment']['entity']['id'];
             $status = $post['payload']['payment']['entity']['status'];
@@ -104,9 +108,9 @@ class PaymentsController extends ApiBaseController
             $model->remarks = $method;
             $model->updated_on = date('Y-m-d H:i:s');
             if ($model->save()) {
-                if ($status=='paid'||$status=='captured'){
+                if ($status == 'paid' || $status == 'captured') {
                     if (!empty($ref_id)):
-                    $this->closeAllModes($ref_id);
+                        $this->closeAllModes($ref_id);
                     endif;
                 }
                 return $this->response(200, ['status' => 200, 'message' => 'success']);
@@ -115,6 +119,7 @@ class PaymentsController extends ApiBaseController
             }
         }
     }
+
     public function actionGetPaymentLink()
     {
         if (!$user = $this->isAuthorized()) {
@@ -164,8 +169,8 @@ class PaymentsController extends ApiBaseController
             $options['contact'] = $params['phone'];
             $options['call_back_url'] = Yii::$app->params->EmpowerYouth->callBack . "/payment/transaction";
             $options['purpose'] = 'Payment for ' . implode(', ', $desc);;
-            $options['ref_id'] = 'EMPL-'.Yii::$app->security->generateRandomString(8);
-            $res['qr'] = $this->existRazorCheck($options['loan_app_enc_id'], 1);
+            $options['ref_id'] = 'EMPL-' . Yii::$app->security->generateRandomString(8);
+            $res['qr'] = $this->existRazorCheck($options, 1);
             if (!$res['qr']) {
                 $options['close_by'] = time() + 24 * 60 * 60;
                 $qr = \common\models\payments\Payments::createQr($api, $options);
@@ -175,7 +180,7 @@ class PaymentsController extends ApiBaseController
                 }
                 $res['qr'] = $qr;
             }
-            $res['link'] = $this->existRazorCheck($options['loan_app_enc_id']);
+            $res['link'] = $this->existRazorCheck($options);
             if (!$res['link']) {
                 $options['close_by'] = time() + 24 * 60 * 60 * 7;
                 $link = \common\models\payments\Payments::createLink($api, $options);
@@ -235,38 +240,50 @@ class PaymentsController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'saved succesfully']);
     }
 
-    private function existRazorCheck($loan_id, $method = 0)
+    private function existRazorCheck($data, $method = 0)
     {
         $query = LoanPayments::find()
             ->alias('a')
-            ->select(['a.payment_short_url surl'])
+            ->select(['a.loan_payments_enc_id', 'a.payment_short_url surl'])
             ->joinWith(['assignedLoanPayments b'], false)
-            ->where(['b.loan_app_enc_id' => $loan_id])
+            ->joinWith(['loanPaymentsDetails c' => function ($c) {
+                $c->select(['c.loan_payments_enc_id', 'c.financer_loan_product_login_fee_structure_enc_id']);
+            }])
             ->andWhere(['and',
-                ['or',
-                    ['!=', 'a.payment_short_url', null],
-                    ['!=', 'a.payment_short_url', '']
+                ['not',
+                    ['in',
+                        'a.payment_status', ['captured', 'created', 'cancelled', 'paid', '', null]
+                    ]
                 ],
-                ['or',
-                    ['!=', 'a.payment_status', 'captured'],
-                    ['!=', 'a.payment_status', 'created'],
-                    ['!=', 'a.payment_status', 'cancelled'],
-                    ['a.payment_status' => null],
-                    ['a.payment_status' => ''],
+                ['not',
+                    ['in',
+                        'a.payment_short_url', ['', null]
+                    ]
                 ],
-                ['a.payment_link_type' => $method]]);
-        if ($method == 1) {
-            $query->andWhere([
-                    '>', 'a.close_by', date('Y-m-d H:i:s')]
-            );
-        }
-        $query = $query->asArray()
+                ['b.loan_app_enc_id' => $data['loan_app_enc_id']],
+                ['a.payment_amount' => $data['amount']],
+                ['a.payment_link_type' => $method],
+                ['a.payment_mode_status' => 'active'],
+                ['not', ['a.close_by' => null]],
+                ['>', 'a.close_by', date('Y-m-d H:i:s')]
+            ])
+            ->asArray()
             ->one();
         if ($query) {
-            return $query['surl'];
-        } else {
-            return false;
+            $encs = [];
+            if (is_array($query['loanPaymentsDetails']) and !empty($query['loanPaymentsDetails'])) {
+                foreach ($query['loanPaymentsDetails'] as $loanPaymentsDetail) {
+                    $encs[] = $loanPaymentsDetail['financer_loan_product_login_fee_structure_enc_id'];
+                }
+                $amount_enc_ids = array_map(function ($subarray) {
+                    return $subarray["id"];
+                }, $data['amount_enc_ids']);
+                if ($encs == $amount_enc_ids) {
+                    return $query['surl'];
+                }
+            }
         }
+        return false;
     }
 
     public function actionUpdatePayment()
