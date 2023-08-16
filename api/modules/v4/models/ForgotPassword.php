@@ -2,13 +2,10 @@
 
 namespace api\modules\v4\models;
 
-use common\models\Organizations;
-use common\models\Users;
 use common\models\UserVerificationTokens;
+use common\models\Utilities;
 use Yii;
 use yii\base\Model;
-use yii\helpers\Url;
-use common\models\Utilities;
 
 class ForgotPassword extends Model
 {
@@ -47,8 +44,8 @@ class ForgotPassword extends Model
         $userVerificationModel->verification_type = 1;
         $userVerificationModel->created_by = $user_id;
         if ($userVerificationModel->validate() && $userVerificationModel->save()) {
-            $user['link'] = 'http://localhost:3000/reset-password/' . $userVerificationModel->token;
-//            $user['link'] = 'https://www.empowerloans.in/reset-password/' . $userVerificationModel->token;
+//            $user['link'] = 'http://localhost:3000/reset-password/' . $userVerificationModel->token;
+            $user['link'] = 'https://www.empowerloans.in/reset-password/' . $userVerificationModel->token;
 
             // sending email
             Yii::$app->mailer->htmlLayout = 'layouts/email';
