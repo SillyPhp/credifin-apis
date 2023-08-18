@@ -179,6 +179,7 @@ class EmiCollectionForm extends Model
         $api_secret = $keys['api_secret'];
         $api = new Api($api_key, $api_secret);
         $options['close_by'] = time() + 24 * 60 * 60;
+        $options['ref_id'] = 'EMPL-' . Yii::$app->security->generateRandomString(8);
         $data['qr'] = \common\models\payments\Payments::createQr($api, $options);
         if (!$data['qr']) {
             return ['status' => 500, 'message' => 'an error occurred while creating qr'];

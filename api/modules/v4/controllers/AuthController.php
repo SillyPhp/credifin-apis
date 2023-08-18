@@ -431,6 +431,16 @@ class AuthController extends ApiBaseController
 
         // changing to new password
         if (Yii::$app->forgotPassword->change($user_id, $params['new_password'])) {
+            UserAccessTokens::updateAll(
+                [
+                    'is_deleted' => 1,
+                    'last_updated_on' => date('Y-m-d H:i:s')
+                ],
+                ['and',
+                    ['user_enc_id' => $user_id],
+                    ['is_deleted' => 0]
+                ]
+            );
             return $this->response(200, ['status' => 200, 'message' => 'password changed successfully']);
         }
 
