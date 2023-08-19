@@ -6,15 +6,15 @@ use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
 use common\models\CreditLoanApplicationReports;
 use common\models\extended\Industries;
-use common\models\LoanPayments;
-use common\models\LoanType;
 use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
-use common\models\States;
-use yii\filters\VerbFilter;
+use common\models\LoanCoApplicants;
+use common\models\LoanPayments;
+use common\models\LoanType;
+use common\models\Utilities;
 use Yii;
 use yii\filters\Cors;
-use common\models\Utilities;
+use yii\filters\VerbFilter;
 
 class TestController extends ApiBaseController
 {
@@ -41,6 +41,134 @@ class TestController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    public function actionLoanCoCreditReportScoreUpdate()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $allLoans = [
+            'R09YXEkaql0PrNMYo8bJl531Wdo82J'
+        ];
+        $limit = 25;
+        $totalPages = ceil(count($allLoans) / $limit);
+        $transaction = Yii::$app->db->beginTransaction();
+        for ($page = 1; $page <= $totalPages; $page++) {
+            $loan_ids = array_slice($allLoans, ($page - 1) * $limit, $limit);
+            $credit_report = CreditLoanApplicationReports::find()
+                ->alias('a')
+                ->select(['a.response_enc_id', 'a.loan_app_enc_id', 'a.loan_co_app_enc_id', 'c.name', 'c.borrower_type', 'a.created_on'])
+                ->joinWith(['responseEnc b' => function ($b) {
+                    $b->select(['b.response_enc_id', 'b1.request_source', 'b.response_body']);
+                    $b->joinWith(['requestEnc b1'], false);
+                }])
+                ->joinWith(['loanCoAppEnc c'], false)
+                ->andWhere(['and',
+                    ['in', 'a.loan_app_enc_id', $loan_ids],
+                    ['b1.request_source' => 'CIBIL']
+                ])
+                ->orderby(['a.created_on' => SORT_ASC])
+                ->asArray()
+                ->all();
+            foreach ($credit_report as $key => $value) {
+                $value['responseEnc']['response_body'] = json_decode($value['responseEnc']['response_body'], true);
+                $response_body = UserUtilities::array_search_key('BureauResponseXml', $value);
+                $array = json_decode(json_encode((array)simplexml_load_string($response_body)), true);
+                if (!empty($array['ScoreSegment'])) {
+                    if (array_key_exists(0, $array['ScoreSegment'])) {
+                        foreach ($array['ScoreSegment'] as $val) {
+                            if (is_array($val)) {
+                                $score = ltrim($val['Score'], 0);
+                                if ($score != '-1') {
+                                    $credit_report[$key]['score'] = $score;
+                                }
+                            }
+                        }
+                    } else {
+                        $credit_report[$key]['score'] = ltrim($array['ScoreSegment']['Score'], 0);
+                    }
+                }
+                unset($credit_report[$key]['responseEnc']);
+                $loancoapp = LoanCoApplicants::findOne(['loan_co_app_enc_id' => $credit_report[$key]['loan_co_app_enc_id']]);
+                if (!$loancoapp) {
+                    $transaction->rollBack();
+                    return 'loan-co-app not found';
+                }
+                $loancoapp->cibil_score = $credit_report[$key]['score'];
+                if (!$loancoapp->update()) {
+                    $transaction->rollBack();
+                    return 'loan-co-app update failed';
+                }
+            }
+        }
+        $transaction->commit();
+        return $this->response(200, ['status' => 200, 'message' => 'loan-co-app update done']);
+    }
+
+    public function actionLoanCreditReportScoreUpdate()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $allLoans = [
+            'R09YXEkaql0PrNMYo8bJl531Wdo82J'
+        ];
+        $limit = 25;
+        $totalPages = ceil(count($allLoans) / $limit);
+        $transaction = Yii::$app->db->beginTransaction();
+        for ($page = 1; $page <= $totalPages; $page++) {
+            $loan_ids = array_slice($allLoans, ($page - 1) * $limit, $limit);
+            $credit_report = CreditLoanApplicationReports::find()
+                ->alias('a')
+                ->select(['a.response_enc_id', 'a.loan_app_enc_id', 'a.loan_co_app_enc_id', 'c.name', 'c.borrower_type', 'a.created_on'])
+                ->joinWith(['responseEnc b' => function ($b) {
+                    $b->select(['b.response_enc_id', 'b1.request_source', 'b.response_body']);
+                    $b->joinWith(['requestEnc b1'], false);
+                }])
+                ->joinWith(['loanCoAppEnc c'], false)
+                ->andWhere(['and',
+                    ['in', 'a.loan_app_enc_id', $loan_ids],
+                    ['b1.request_source' => 'CIBIL']
+                ])
+                ->orderby(['a.created_on' => SORT_ASC])
+                ->asArray()
+                ->all();
+            foreach ($credit_report as $key => $value) {
+                $value['responseEnc']['response_body'] = json_decode($value['responseEnc']['response_body'], true);
+                $response_body = UserUtilities::array_search_key('BureauResponseXml', $value);
+                $array = json_decode(json_encode((array)simplexml_load_string($response_body)), true);
+                if (!empty($array['ScoreSegment'])) {
+                    if (array_key_exists(0, $array['ScoreSegment'])) {
+                        foreach ($array['ScoreSegment'] as $val) {
+                            if (is_array($val)) {
+                                $score = ltrim($val['Score'], 0);
+                                if ($score != '-1') {
+                                    $credit_report[$key]['score'] = $score;
+                                }
+                            }
+                        }
+                    } else {
+                        $credit_report[$key]['score'] = ltrim($array['ScoreSegment']['Score'], 0);
+                    }
+                }
+                unset($credit_report[$key]['responseEnc']);
+                if ($credit_report[$key]['borrower_type'] == 'Borrower') {
+                    $loan = LoanApplications::findOne(['loan_app_enc_id' => $credit_report[$key]['loan_app_enc_id']]);
+                    if (!$loan) {
+                        $transaction->rollBack();
+                        return 'loan not found';
+                    }
+                    $loan->cibil_score = $credit_report[$key]['score'];
+                    if (!$loan->update()) {
+                        $transaction->rollBack();
+                        return 'loan update failed';
+                    }
+                }
+            }
+        }
+        $transaction->commit();
+        return $this->response(200, ['status' => 200, 'message' => 'loan update done']);
     }
 
     public function actionTestt()
