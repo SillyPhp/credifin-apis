@@ -127,7 +127,7 @@ class PaymentsController extends ApiBaseController
         }
         $params = Yii::$app->request->post();
         if (!$params) {
-            return $this->response(401, ['status' => 401, 'message' => 'params not found']);
+            return $this->response(500, ['status' => 500, 'message' => 'params not found']);
         }
         $transaction = Yii::$app->db->beginTransaction();
         try {
