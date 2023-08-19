@@ -69,6 +69,7 @@ class TestController extends ApiBaseController
                 ['in', 'a.loan_app_enc_id', $loan_ids],
                 ['b1.request_source' => 'CIBIL']
             ])
+            ->andWhere(['!=','a.loan_co_app_enc_id' ,NULL])
             ->orderby(['a.created_on' => SORT_ASC])
             ->asArray()
             ->all();
@@ -136,6 +137,7 @@ class TestController extends ApiBaseController
                 ['in', 'a.loan_app_enc_id', $loan_ids],
                 ['b1.request_source' => 'CIBIL']
             ])
+            ->andWhere(['a.loan_co_app_enc_id'=> NULL])
             ->orderby(['a.created_on' => SORT_ASC])
             ->asArray()
             ->all();
