@@ -73,7 +73,8 @@ class OrganizationsController extends ApiBaseController
                 'update-notice' => ['POST', 'OPTIONS'],
                 'update-loan-product-process' => ['POST', 'OPTIONS'],
                 'update-loan-product-fees' => ['POST', 'OPTIONS'],
-                'financer-loan-status-list' => ['POST', 'OPTIONS']
+                'financer-loan-status-list' => ['POST', 'OPTIONS'],
+                'emi-stats' => ['POST', 'OPTIONS']
             ]
         ];
 
