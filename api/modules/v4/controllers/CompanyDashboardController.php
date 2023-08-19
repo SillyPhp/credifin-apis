@@ -93,6 +93,7 @@ class CompanyDashboardController extends ApiBaseController
                 'get-financer-vehicle-brand' => ['POST', 'OPTIONS'],
                 'delete-financer-vehicle-brand' => ['POST', 'OPTIONS'],
                 'update-references' => ['POST', 'OPTIONS'],
+                'loan-payments' => ['POST', 'OPTIONS']
             ]
         ];
 
