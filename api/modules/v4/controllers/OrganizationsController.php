@@ -74,7 +74,8 @@ class OrganizationsController extends ApiBaseController
                 'update-notice' => ['POST', 'OPTIONS'],
                 'update-loan-product-process' => ['POST', 'OPTIONS'],
                 'update-loan-product-fees' => ['POST', 'OPTIONS'],
-                'financer-loan-status-list' => ['POST', 'OPTIONS']
+                'financer-loan-status-list' => ['POST', 'OPTIONS'],
+                'emi-stats' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -1617,6 +1618,7 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(500, ['status' => 500, 'message' => 'Organization not found']);
             }
         }
+
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $model = new EmiCollectionForm();
@@ -1637,6 +1639,45 @@ class OrganizationsController extends ApiBaseController
                 'status' => false
             ];
         }
+    }
+
+    public function actionEmiStats()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        if (!$params = Yii::$app->request->post()) {
+            return $this->response(500, ['status' => 500, 'message' => 'params not found']);
+        }
+        $data = EmiCollection::find()
+            ->select([
+                'payment_method',
+                'COUNT(payment_method) count',
+                'SUM(amount) sum',
+            ])
+            ->where(['between', 'updated_on', $params['start_date'], $params['end_date']]);
+        if (!empty($params['loan_type'])) {
+            $data->andWhere(['loan_type' => $params['loan_type']]);
+        }
+        if (!empty($params['branch_enc_id'])) {
+            $data->andWhere(['branch_enc_id' => $params['branch_enc_id']]);
+        }
+        $data = $data->groupBy('payment_method')
+            ->asArray()
+            ->all();
+        if ($data) {
+            $total[] = ['payment_method' => 'Total EMIs', 'count' => 0, 'sum' => 0];
+            foreach ($data as $item) {
+                if ($item['payment_method'] == 'Not Paid') {
+                    continue;
+                }
+                $total[0]['count'] += $item['count'];
+                $total[0]['sum'] += $item['sum'];
+            }
+            $data = array_merge($total, $data);
+            return $this->response(200, ['status' => 200, 'data' => $data]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
     }
 
     public function actionGetCollectedEmiList()
