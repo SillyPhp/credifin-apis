@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
+use api\modules\v4\models\LoanApplication;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
@@ -73,7 +74,8 @@ class OrganizationsController extends ApiBaseController
                 'update-notice' => ['POST', 'OPTIONS'],
                 'update-loan-product-process' => ['POST', 'OPTIONS'],
                 'update-loan-product-fees' => ['POST', 'OPTIONS'],
-                'financer-loan-status-list' => ['POST', 'OPTIONS']
+                'financer-loan-status-list' => ['POST', 'OPTIONS'],
+                'emi-stats' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -98,9 +100,9 @@ class OrganizationsController extends ApiBaseController
 
             $params = Yii::$app->request->post();
 
-            // checking location_name, address, city_id
-            if (empty($params['location_name']) || empty($params['address']) || empty($params['city_id']) || empty($params['branch_code'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "location_name, address, city_id, branch_code"']);
+            // checking city_id
+            if (empty($params['city_id'])) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information "city_id']);
             }
 
             // adding branch
@@ -110,7 +112,8 @@ class OrganizationsController extends ApiBaseController
             $orgLocations->location_enc_id = $utilitiesModel->encrypt();
             $orgLocations->organization_enc_id = $user->organization_enc_id;
             $orgLocations->location_name = $params['location_name'];
-            $orgLocations->branch_code = $params['branch_code'];
+//            $orgLocations->branch_code = $params['branch_code'];
+            $orgLocations->organization_code = $params['organization_code'];
             $orgLocations->location_for = json_encode(['1']);
             $orgLocations->address = $params['address'];
             $orgLocations->city_enc_id = $params['city_id'];
@@ -151,7 +154,7 @@ class OrganizationsController extends ApiBaseController
             // updating data
             (!empty($params['location_name'])) ? $location->location_name = $params['location_name'] : "";
             (!empty($params['city_id'])) ? $location->city_enc_id = $params['city_id'] : "";
-            (!empty($params['branch_code'])) ? $location->branch_code = $params['branch_code'] : "";
+            (!empty($params['organization_code'])) ? $location->organization_code = $params['organization_code'] : "";
             (!empty($params['address'])) ? $location->address = $params['address'] : "";
             (!empty($params['status'])) ? $location->status = $params['status'] : "";
             $location->last_updated_by = $user->user_enc_id;
@@ -189,7 +192,7 @@ class OrganizationsController extends ApiBaseController
 
             $locations = OrganizationLocations::find()
                 ->alias('a')
-                ->select(['a.location_enc_id', 'a.location_enc_id as id', 'a.branch_code', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , ", ", b.name) as value', 'b.city_enc_id', 'a.status'])
+                ->select(['a.location_enc_id', 'a.location_enc_id as id', 'b.city_code', 'a.organization_code', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , ", ", b.name) as value', 'b.city_enc_id', 'a.status'])
                 ->joinWith(['cityEnc b'], false)
                 ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org])
                 ->asArray()
@@ -1615,6 +1618,7 @@ class OrganizationsController extends ApiBaseController
                 return $this->response(500, ['status' => 500, 'message' => 'Organization not found']);
             }
         }
+
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $model = new EmiCollectionForm();
@@ -1635,6 +1639,45 @@ class OrganizationsController extends ApiBaseController
                 'status' => false
             ];
         }
+    }
+
+    public function actionEmiStats()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        if (!$params = Yii::$app->request->post()) {
+            return $this->response(500, ['status' => 500, 'message' => 'params not found']);
+        }
+        $data = EmiCollection::find()
+            ->select([
+                'payment_method',
+                'COUNT(payment_method) count',
+                'SUM(amount) sum',
+            ])
+            ->where(['between', 'updated_on', $params['start_date'], $params['end_date']]);
+        if (!empty($params['loan_type'])) {
+            $data->andWhere(['loan_type' => $params['loan_type']]);
+        }
+        if (!empty($params['branch_enc_id'])) {
+            $data->andWhere(['branch_enc_id' => $params['branch_enc_id']]);
+        }
+        $data = $data->groupBy('payment_method')
+            ->asArray()
+            ->all();
+        if ($data) {
+            $total[] = ['payment_method' => 'Total EMIs', 'count' => 0, 'sum' => 0];
+            foreach ($data as $item) {
+                if ($item['payment_method'] == 'Not Paid') {
+                    continue;
+                }
+                $total[0]['count'] += $item['count'];
+                $total[0]['sum'] += $item['sum'];
+            }
+            $data = array_merge($total, $data);
+            return $this->response(200, ['status' => 200, 'data' => $data]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'Data not found']);
     }
 
     public function actionGetCollectedEmiList()
@@ -1706,7 +1749,8 @@ class OrganizationsController extends ApiBaseController
                 'CASE WHEN a.borrower_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->borrower_image->image . '",a.borrower_image_location, "/", a.borrower_image) ELSE NULL END as borrower_image',
                 'CASE WHEN a.pr_receipt_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->pr_receipt_image->image . '",a.pr_receipt_image_location, "/", a.pr_receipt_image) ELSE NULL END as pr_receipt_image',
                 'CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
-                'CONCAT(a.address,", ", a.pincode) address',
+                'CONCAT(a.address,", ", a.pincode) address', 'CONCAT(b.first_name , " ", b.last_name) as collected_by', 'a.created_on',
+                'CONCAT("http://maps.google.com/maps?q=", a.latitude, ",", a.longitude) AS link',
                 'a.comments'])
             ->joinWith(['createdBy b' => function ($b) {
                 $b->joinWith(['userRoles0 b1'], false);
@@ -1967,7 +2011,7 @@ class OrganizationsController extends ApiBaseController
         $notice = FinancerNoticeBoard::find()
             ->alias('a')
             ->select(['a.notice_enc_id',
-                'a.notice','a.type',
+                'a.notice', 'a.type',
                 '(CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->notice->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END) as image',
                 '(CASE WHEN a.status = "Active" THEN TRUE ELSE FALSE END) as status',
                 'a.created_on'

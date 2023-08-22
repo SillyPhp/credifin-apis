@@ -8,13 +8,12 @@ class PaymentModel extends Model {
     public $loan_app_id;
     public $amount;
     public $name;
-    public $brand;
     public $phone;
 
     public function rules()
     {
         return [
-            [['name', 'loan_app_id', 'amount', 'brand', 'phone'], 'required'],
+            [['name', 'loan_app_id', 'amount', 'phone'], 'required'],
             ['amount', function () {
                 if (!is_array($this->amount) || empty($this->amount)) {
                     $this->addError('amount', 'Please choose amount!');

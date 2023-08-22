@@ -4,17 +4,15 @@ namespace api\modules\v4\controllers;
 
 use api\modules\v4\utilities\UserUtilities;
 use common\models\AssignedFinancerLoanType;
-use common\models\CreditLoanApplicationReports;
 use common\models\extended\Industries;
-use common\models\LoanPayments;
-use common\models\LoanType;
 use common\models\FinancerLoanProducts;
 use common\models\LoanApplications;
-use common\models\States;
-use yii\filters\VerbFilter;
+use common\models\LoanPayments;
+use common\models\LoanType;
+use common\models\Utilities;
 use Yii;
 use yii\filters\Cors;
-use common\models\Utilities;
+use yii\filters\VerbFilter;
 
 class TestController extends ApiBaseController
 {

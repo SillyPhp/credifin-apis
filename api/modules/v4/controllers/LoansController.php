@@ -23,10 +23,12 @@ use common\models\FinancerLoanNegativeLocation;
 use common\models\LeadsApplications;
 use common\models\LoanApplications;
 use common\models\LoanAuditTrail;
+use common\models\LoanPayments;
 use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\spaces\Spaces;
 use common\models\States;
+use common\models\UserRoles;
 use common\models\Users;
 use common\models\Utilities;
 use Razorpay\Api\Api;
@@ -34,6 +36,7 @@ use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use yii\helpers\Url;
 
 class LoansController extends ApiBaseController
 {
@@ -267,19 +270,37 @@ class LoansController extends ApiBaseController
     {
         // getting request params
         $params = Yii::$app->request->post();
-
-        // getting
         $razorpay_payment_id = $params['razorpay_payment_id'];
         $razorpay_payment_link_id = $params['razorpay_payment_link_id'];
         $razorpay_signature = $params['razorpay_signature'];
-
-        // api keys from local params
-        $api_key = Yii::$app->params->razorPay->phfleasing->prod->apiKey;
-        $api_secret = Yii::$app->params->razorPay->phfleasing->prod->apiSecret;
-
-        // creating new object razorpay api
-        $api = new Api($api_key, $api_secret);
-
+        $model = LoanPayments::find()
+            ->alias('a')
+            ->select(['d.organization_enc_id org_id', 'e.organization_enc_id user_org_id'])
+            ->where(['payment_token' => $razorpay_payment_link_id])
+            ->joinWith(['assignedLoanPayments b' => function ($b) {
+                $b->joinWith(['loanAppEnc c' => function ($c) {
+                    $c->joinWith(['leadBy d' => function ($d) {
+                        $d->joinWith(['userRoles0 e'], false);
+                    }]);
+                }], false);
+            }], false)
+            ->asArray()->one();
+        if ($model) {
+            if (isset($model['user_org_id']) || !empty($model['user_org_id'])) {
+                $options['org_id'] = $model['user_org_id'];
+            } else {
+                $options['org_id'] = $model['org_id'];
+            }
+            $keys = \common\models\credentials\Credentials::getrazorpayKey($options);
+            if (!$keys) {
+                return ['status' => 500, 'message' => 'an error occurred while fetching razorpay credentials'];
+            }
+            $api_key = $keys['api_key'];
+            $api_secret = $keys['api_secret'];
+            $api = new Api($api_key, $api_secret);
+        } else {
+            return ['status' => 500, 'message' => 'an error occurred while fetching razorpay credentials'];
+        }
         // if not empty razorpay_payment_id
         if (!empty($params['razorpay_payment_id'])) {
 
@@ -931,48 +952,6 @@ class LoansController extends ApiBaseController
         return $this->response(400, ['status' => 400, 'message' => 'bad request']);
     }
 
-    // audit trail list
-    public function actionAuditTrailList()
-    {
-        if ($this->isAuthorized()) {
-
-            $params = Yii::$app->request->post();
-
-            $limit = !empty($params['limit']) ? $params['limit'] : 10;
-            $page = !empty($params['page']) ? $params['page'] : 1;
-
-            // checking loan_id
-            if (empty($params['loan_id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
-            }
-
-            // loan audit trail list for particular loan_id
-            $audit = LoanAuditTrail::find()
-                ->alias('a')
-                ->select(['a.old_value', 'a.new_value', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'])
-                ->joinWith(['user b'], false)
-                ->where(['a.loan_id' => $params['loan_id']])
-                ->andWhere(['not', ['a.field' => ['', 'created_by', 'created_on', 'id', 'proof_image', 'proof_image_location', null]]])
-                ->andWhere(['not like', 'a.field', '%_enc_id%', false])
-                ->andWhere(['not like', 'a.field', '%updated_on%', false])
-                ->limit($limit)
-                ->offset(($page - 1) * $limit)
-                ->orderBy(['a.stamp' => SORT_DESC])
-                ->asArray()
-                ->all();
-
-            if ($audit) {
-                return $this->response(200, ['status' => 200, 'audit_list' => $audit]);
-            }
-
-            // not found
-            return $this->response(404, ['status' => 404, 'message' => 'not found']);
-
-        } else {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-    }
-
     // this action is used to create financer loan negative location
     public function actionCreateFinancerLoanNegativeLocation()
     {
@@ -1100,24 +1079,6 @@ class LoansController extends ApiBaseController
         return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
     }
 
-    public function actionLoanPayments()
-    {
-        if (!$user = $this->isAuthorized()) {
-            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
-        }
-        $params = Yii::$app->request->post();
-        if (empty($params['loan_app_id'])) {
-            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_id"']);
-        }
-        $model = new LoanPaymentsForm();
-        if (Yii::$app->request->isPost && $model->load(Yii::$app->request->post())) {
-            $model->receipt = UploadedFile::getInstance($model, 'receipt');
-            $response = $model->save($params['loan_app_id'], $user->user_enc_id);
-            return $this->response($response['status'], $response);
-        } else {
-            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
-        }
-    }
 
     public function actionCreditReports()
     {
@@ -1309,102 +1270,161 @@ class LoansController extends ApiBaseController
         if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
-//        $org_id = $user->organization_enc_id;
-//        if ($org_id) {
+
         $params = Yii::$app->request->post();
+
+        $date = date('Y-m-d H:i:s', strtotime('-30 days'));
 
         if (isset($params['phone'])) {
             $phoneNumber = $params['phone'];
+
             $phoneExists = LoanApplications::find()
                 ->alias('a')
                 ->joinWith(['loanCoApplicants b'])
                 ->where(['or',
                     ['a.phone' => $phoneNumber],
                     ['b.phone' => $phoneNumber],
-                        ['a.phone' => '+91' . $phoneNumber],
-                        ['b.phone' => '+91' . $phoneNumber],
-                        ['a.phone' => '+' . $phoneNumber],
-                        ['b.phone' => '+' . $phoneNumber],
-                        ['a.phone' => preg_replace('/^\+?91/', '', $phoneNumber)],
-                        ['b.phone' => preg_replace('/^\+?91/', '', $phoneNumber)],
-                        ['a.phone' => preg_replace('/^\+?+/', '', $phoneNumber)],
-                        ['b.phone' => preg_replace('/^\+?+/', '', $phoneNumber)],
+                    ['a.phone' => '+91' . $phoneNumber],
+                    ['b.phone' => '+91' . $phoneNumber],
+                    ['a.phone' => '+' . $phoneNumber],
+                    ['b.phone' => '+' . $phoneNumber],
+                    ['a.phone' => preg_replace('/^\+?91/', '', $phoneNumber)],
+                    ['b.phone' => preg_replace('/^\+?91/', '', $phoneNumber)],
+                    ['a.phone' => preg_replace('/^\+?+/', '', $phoneNumber)],
+                    ['b.phone' => preg_replace('/^\+?+/', '', $phoneNumber)],
 
-                        ['a.phone' => '+91' . preg_replace('/^\+?+/', '', $phoneNumber)],
-                        ['b.phone' => '+91' . preg_replace('/^\+?+/', '', $phoneNumber)],
-                        ['a.phone' => '+' . $phoneNumber],
-                        ['b.phone' => '+' . $phoneNumber],
-
-                    ])
-                    ->exists();
-
-                if ($phoneExists) {
-                    return $this->response(200, ['status' => 200, 'message' => 'Phone number already exists']);
-                } else {
-                    return $this->response(201, ['status' => 201, 'message' => 'Phone number does not exist']);
-                }
+                    ['a.phone' => '+91' . preg_replace('/^\+?+/', '', $phoneNumber)],
+                    ['b.phone' => '+91' . preg_replace('/^\+?+/', '', $phoneNumber)],
+                    ['a.phone' => '+' . $phoneNumber],
+                    ['b.phone' => '+' . $phoneNumber],
+                ]);
+            if (isset($params['loan_id'])) {
+                $phoneExists = $phoneExists->andWhere(['a.loan_app_enc_id' => $params['loan_id']]);
+            } else {
+                $phoneExists = $phoneExists->andWhere(['>=', "a.loan_status_updated_on", $date]);
             }
+            $phoneExists = $phoneExists->exists();
 
 
-            if (isset($params['aadhaar_number'])) {
-                $aadhaarNumber = $params['aadhaar_number'];
-
-                $aadhaarExists = LoanApplications::find()
-                    ->alias('a')
-                    ->joinWith(['loanCoApplicants b'])
-                    ->where(['or',
-                        ['a.aadhaar_number' => $aadhaarNumber],
-                        ['b.aadhaar_number' => $aadhaarNumber]
-                    ])
-                    ->exists();
-
-                if ($aadhaarExists) {
-                    return $this->response(200, ['status' => 200, 'message' => 'Aadhaar number already exists']);
-                } else {
-                    return $this->response(201, ['status' => 201, 'message' => 'Aadhaar number does not exist']);
-                }
+            if ($phoneExists) {
+                return $this->response(200, ['status' => 200, 'message' => 'Phone number already exists']);
+            } else {
+                return $this->response(201, ['status' => 201, 'message' => 'Phone number does not exist']);
             }
+        }
 
-            if (isset($params['pan_number'])) {
-                $panNumber = $params['pan_number'];
 
-                $panExists = LoanApplications::find()
-                    ->alias('a')
-                    ->joinWith(['loanCoApplicants b'])
-                    ->where(['or',
-                        ['a.pan_number' => $panNumber],
-                        ['b.pan_number' => $panNumber]
-                    ])
-                    ->exists();
+        if (isset($params['aadhaar_number'])) {
+            $aadhaarNumber = $params['aadhaar_number'];
 
-                if ($panExists) {
-                    return $this->response(200, ['status' => 200, 'message' => 'PAN number already exists']);
-                } else {
-                    return $this->response(201, ['status' => 201, 'message' => 'PAN number does not exist']);
-                }
+            $aadhaarExists = LoanApplications::find()
+                ->alias('a')
+                ->joinWith(['loanCoApplicants b'])
+                ->where(['or',
+                    ['a.aadhaar_number' => $aadhaarNumber],
+                    ['b.aadhaar_number' => $aadhaarNumber]
+                ])
+                ->andWhere(['>=', "a.loan_status_updated_on", $date])
+                ->exists();
+
+            if ($aadhaarExists) {
+                return $this->response(200, ['status' => 200, 'message' => 'Aadhaar number already exists']);
+            } else {
+                return $this->response(201, ['status' => 201, 'message' => 'Aadhaar number does not exist']);
             }
+        }
 
-            if (isset($params['voter_card_number'])) {
-                $voter_card_number = $params['voter_card_number'];
+        if (isset($params['pan_number'])) {
+            $panNumber = $params['pan_number'];
 
-                $voter_card_number = LoanApplications::find()
-                    ->alias('a')
-                    ->joinWith(['loanCoApplicants b'])
-                    ->where(['or',
-                        ['a.voter_card_number' => $voter_card_number],
-                        ['b.voter_card_number' => $voter_card_number]
-                    ])
-                    ->exists();
+            $panExists = LoanApplications::find()
+                ->alias('a')
+                ->joinWith(['loanCoApplicants b'])
+                ->where(['or',
+                    ['a.pan_number' => $panNumber],
+                    ['b.pan_number' => $panNumber]
+                ])
+                ->andWhere(['>=', "a.loan_status_updated_on", $date])
+                ->exists();
 
-                if ($voter_card_number) {
-                    return $this->response(200, ['status' => 200, 'message' => 'Voter number already exists']);
-                } else {
-                    return $this->response(201, ['status' => 201, 'message' => 'Voter number does not exist']);
-                }
+            if ($panExists) {
+                return $this->response(200, ['status' => 200, 'message' => 'PAN number already exists']);
+            } else {
+                return $this->response(201, ['status' => 201, 'message' => 'PAN number does not exist']);
             }
+        }
+
+        if (isset($params['voter_card_number'])) {
+            $voter_card_number = $params['voter_card_number'];
+            $voter_card_number = LoanApplications::find()
+                ->alias('a')
+                ->joinWith(['loanCoApplicants b'])
+                ->where(['or',
+                    ['a.voter_card_number' => $voter_card_number],
+                    ['b.voter_card_number' => $voter_card_number]
+                ])
+                ->andWhere(['>=', "a.loan_status_updated_on", $date])
+                ->exists();
+
+            if ($voter_card_number) {
+                return $this->response(200, ['status' => 200, 'message' => 'Voter number already exists']);
+            } else {
+                return $this->response(201, ['status' => 201, 'message' => 'Voter number does not exist']);
+            }
+        }
         return $this->response(422, ['status' => 422, 'message' => 'Phone or Aadhaar_number or PAN_number or Voter_number is missing']);
-//        }
-//        return $this->response(403, ['status' => 403, 'message' => 'only authorized by financer']);
+    }
+    public function actionAuditTrailList()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+
+        $params = Yii::$app->request->post();
+
+        if (empty($params['loan_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_id"']);
+        }
+
+        $audit = LoanAuditTrail::find()
+            ->alias('a')
+            ->select(['a.old_value', 'a.new_value',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
+                , 'a.model', 'a.action', 'a.field', 'a.stamp', 'CONCAT(b.first_name," ",b.last_name) created_by'])
+            ->joinWith(['user b'], false)
+            ->where(['a.loan_id' => $params['loan_id']])
+            ->andWhere(['not', ['a.field' => ['', 'created_by', 'created_on', 'id', 'proof_image', 'proof_image_location', null]]])
+            ->andWhere(['not like', 'a.field', '%_enc_id%', false])
+            ->andWhere(['not like', 'a.field', '%updated_on%', false])
+            ->andWhere(['not like', 'a.field', '%EducationLoanPaymentsExtends%', false])
+            ->orderBy(['a.stamp' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        $groupedAudit = [];
+
+        if ($audit) {
+            foreach ($audit as $item) {
+                $item['model'] = explode("\\", $item['model']);
+                if (is_array($item['model'])) {
+                    $item['model'] = end($item['model']);
+                }
+                $item['model'] = substr_count($item['model'], 'Extended') ? str_replace('Extended', '', $item['model']) : $item['model'];
+                $item['stamp'] = strtotime($item['stamp']);
+                $groupedAudit[$item['model']][] = $item;
+            }
+            foreach ($groupedAudit as $g => $item) {
+                array_multisort(array_column($item, 'stamp'), SORT_DESC, $item);
+                foreach ($item as $key => $i) {
+                    $i['stamp'] = date('Y-m-d H:i:s', $i['stamp']);
+                    $groupedAudit[$g][$key] = $i;
+                }
+            }
+            return $this->response(200, ['status' => 200, 'audit_list' => $groupedAudit]);
+
+        } else {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
 
     }
 

@@ -116,7 +116,14 @@ class UtilitiesController extends ApiBaseController
     {
         $cities = Cities::find()
             ->alias('a')
-            ->select(['a.city_enc_id id', 'concat(a.name,", ",b.name) name'])
+            ->select([
+                'a.city_enc_id id',
+                'a.city_code',
+                "CASE
+                WHEN COALESCE(NULLIF(TRIM(a.city_code), ''), '') <> '' THEN CONCAT(a.city_code, ' - ', a.name, ', ', b.name) 
+                ELSE CONCAT(a.name, ', ', b.name)
+            END AS name"
+            ])
             ->joinWith(['stateEnc b' => function ($b) {
                 $b->joinWith(['countryEnc c'], false);
             }], false)
