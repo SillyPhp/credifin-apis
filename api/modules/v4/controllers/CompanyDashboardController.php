@@ -1083,7 +1083,7 @@ class CompanyDashboardController extends ApiBaseController
                             'user_enc_id' => $uid,
                             'title' => "Application status changed by $updated_by",
                             'description' =>  $notificationBody,
-                            'link' => '/',
+                            'link' => '/account/loan-application-details/'.$params['loan_id'],
                         ];
 
                         array_push($allNotifications, $notification);
@@ -1765,7 +1765,7 @@ class CompanyDashboardController extends ApiBaseController
                 'user_enc_id' => $params['shared_to'],
                 'title' => "$shared_by shared an application with you",
                 'description' => $notificationBody,
-                'link' => '/',
+                'link' => '/account/loan-application-details/'.$params['loan_id'],
             ];
             array_push($allNotifications, $notification);
             $notificationUsers = new UserUtilities();
@@ -1778,7 +1778,7 @@ class CompanyDashboardController extends ApiBaseController
                         'user_enc_id' => $uid,
                         'title' => "$shared_by shared an application with $shared_to",
                         'description' => $notificationBody,
-                        'link' => '/'
+                        'link' => '/account/loan-application-details/'.$params['loan_id'],
                     ];
                     array_push($allNotifications, $notification);
                 }
