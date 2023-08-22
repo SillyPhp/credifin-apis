@@ -28,15 +28,14 @@ use common\models\Referral;
 use common\models\ReferralSignUpTracking;
 use common\models\spaces\Spaces;
 use common\models\States;
-use common\models\UserRoles;
 use common\models\Users;
 use common\models\Utilities;
 use Razorpay\Api\Api;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
-use yii\web\UploadedFile;
 use yii\helpers\Url;
+use yii\web\UploadedFile;
 
 class LoansController extends ApiBaseController
 {
@@ -168,21 +167,31 @@ class LoansController extends ApiBaseController
             return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_enc_id"']);
         }
 
-        // Validate capital_roi to be greater than 20
-        if (!isset($params['capital_roi']) || floatval($params['capital_roi']) < 20) {
-            return $this->response(422, ['status' => 422, 'message' => 'capital_roi should be greater than 20']);
-        }
+        $type = $params['type'] ?? 'capital';
 
         $loan_update = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_app_enc_id']]);
 
-        if (is_null($loan_update->capital_roi)) {
-            $loan_update->capital_roi = $params['capital_roi'];
-        } else {
-            return $this->response(422, ['status' => 422, 'message' => 'cannot update']);
-        }
+        if ($type == 'capital') {
 
-        $loan_update->capital_roi_updated_on = date('Y-m-d H:i:s');
-        $loan_update->capital_roi_updated_by = $user->user_enc_id;
+            // Validate capital_roi to be greater than 20
+            if (!isset($params['capital_roi']) || floatval($params['capital_roi']) < 20) {
+                return $this->response(422, ['status' => 422, 'message' => 'capital_roi should be greater than 20']);
+            }
+
+            if (is_null($loan_update->capital_roi)) {
+                $loan_update->capital_roi = $params['capital_roi'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'cannot update']);
+            }
+
+            $loan_update->capital_roi_updated_on = date('Y-m-d H:i:s');
+            $loan_update->capital_roi_updated_by = $user->user_enc_id;
+        }
+        if ($type == 'registry') {
+            $loan_update->registry_status = 1;
+            $loan_update->registry_status_updated_on = date('Y-m-d H:i:s');
+            $loan_update->registry_status_updated_by = $user->user_enc_id;
+        }
 
         if (!$loan_update->save()) {
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_update->getErrors()]);
@@ -1374,6 +1383,7 @@ class LoansController extends ApiBaseController
         }
         return $this->response(422, ['status' => 422, 'message' => 'Phone or Aadhaar_number or PAN_number or Voter_number is missing']);
     }
+
     public function actionAuditTrailList()
     {
         if (!$this->isAuthorized()) {

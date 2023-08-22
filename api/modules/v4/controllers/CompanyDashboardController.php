@@ -16,6 +16,7 @@ use common\models\EducationLoanPayments;
 use common\models\EsignOrganizationTracking;
 use common\models\extended\AssignedLoanProviderExtended;
 use common\models\extended\LoanApplicationCommentsExtended;
+use common\models\extended\LoanApplicationFiExtended;
 use common\models\extended\LoanApplicationNotificationsExtended;
 use common\models\extended\LoanApplicationPartnersExtended;
 use common\models\extended\LoanApplicationPdExtended;
@@ -87,6 +88,7 @@ class CompanyDashboardController extends ApiBaseController
                 'dashboard-stats' => ['POST', 'OPTIONS'],
                 'branch-list' => ['POST', 'OPTIONS'],
                 'update-tvr' => ['POST', 'OPTIONS'],
+                'update-fi' => ['POST', 'OPTIONS'],
                 'update-pd' => ['POST', 'OPTIONS'],
                 'update-release-payment' => ['POST', 'OPTIONS'],
                 'financer-vehicle-brand' => ['POST', 'OPTIONS'],
@@ -449,6 +451,12 @@ class CompanyDashboardController extends ApiBaseController
                         $m->onCondition(['m.status' => 0]);
                     }]);
                     break;
+                case 'fi':
+                    $loans->innerJoinWith(['loanApplicationFis m' => function ($m) {
+                        $m->select(['m.loan_application_fi_enc_id', 'm.loan_app_enc_id', 'm.status', 'm.assigned_to']);
+                        $m->onCondition(['m.status' => 0]);
+                    }]);
+                    break;
                 case 'pd':
                     $loans->innerJoinWith(['loanApplicationPds m' => function ($m) {
                         $m->select(['m.loan_application_pd_enc_id', 'm.loan_app_enc_id', 'm.status', 'm.assigned_to', 'm.preferred_date']);
@@ -800,17 +808,18 @@ class CompanyDashboardController extends ApiBaseController
             // getting loan detail
             $loan = LoanApplications::find()
                 ->alias('a')
-                ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number', 'a.capital_roi', 'a.capital_roi_updated_on', 'concat(ub.first_name," ",ub.last_name) as capital_roi_updated_by',
+                ->select(['a.loan_app_enc_id', 'a.amount', 'a.created_on apply_date', 'a.application_number', 'a.aadhaar_number', 'a.pan_number', 'a.capital_roi', 'a.capital_roi_updated_on', 'CONCAT(ub.first_name, " ", ub.last_name) AS capital_roi_updated_by', 'a.registry_status', 'a.registry_status_updated_on', 'CONCAT(rs.first_name, " ", rs.last_name) AS registry_status_updated_by',
                     'a.applicant_name', 'lpe.name as loan_product',
-                    'CASE WHEN ub.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", ub.image_location, "/", ub.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(ub.first_name," ",ub.last_name), "&size=200&rounded=false&background=", REPLACE(ub.initials_color, "#", ""), "&color=ffffff") END update_image'
-                    , 'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'lp.name as loan_product', 'a.gender', 'a.applicant_dob',
+                    'CASE WHEN ub.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", ub.image_location, "/", ub.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(ub.first_name," ",ub.last_name), "&size=200&rounded=false&background=", REPLACE(ub.initials_color, "#", ""), "&color=ffffff") END update_image',
+                    'CASE WHEN rs.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", rs.image_location, "/", rs.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(rs.first_name," ",rs.last_name), "&size=200&rounded=false&background=", REPLACE(rs.initials_color, "#", ""), "&color=ffffff") END rs_image',
+                    'a.phone', 'a.voter_card_number', 'a.email', 'b.status as loan_status', 'a.loan_type', 'lp.name as loan_product', 'a.gender', 'a.applicant_dob',
                     'i1.city_enc_id', 'i1.name city', 'i2.state_enc_id', 'i2.name state', 'i2.abbreviation state_abbreviation', 'i2.state_code', 'i.postal_code', 'i.address',
                     'CASE WHEN a.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",a.image_location, a.image) ELSE NULL END image',
                     '(CASE WHEN a.loan_app_enc_id IS NOT NULL THEN FALSE ELSE TRUE END) as login_fee', 'k.access', 'a.loan_products_enc_id'
-//                    'lpm.payment_status as login_fee'
                 ])
                 ->joinWith(['loanProductsEnc lpe'], false)
-                ->joinWith(['capitalRoiUpdatedBy ub'])
+                ->joinWith(['capitalRoiUpdatedBy ub'], false)
+                ->joinWith(['registryStatusUpdatedBy rs'], false)
                 ->joinWith(['assignedLoanProviders b'], false)
                 ->joinWith(['loanCertificates c' => function ($c) {
                     $c->select(['c.certificate_enc_id', 'c.loan_app_enc_id', 'c.short_description', 'c.certificate_type_enc_id', 'c.number', 'c1.name', 'c.proof_image', 'c.proof_image_location', 'c.created_on', 'CONCAT(c2.first_name," ",c2.last_name) created_by']);
@@ -904,6 +913,9 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanApplicationsReferences o' => function ($o) {
                     $o->select(['o.references_enc_id', 'o.loan_app_enc_id', 'o.type', 'o.value', 'o.name', 'o.reference']);
                     $o->onCondition(['o.is_deleted' => 0]);
+                }])
+                ->joinWith(['loanApplicationFis q' => function ($m) {
+                    $m->select(['q.loan_application_fi_enc_id', 'q.loan_app_enc_id', 'q.status', 'q.assigned_to']);
                 }])
 //                ->joinWith(['loanApplicationVerifications lav' => function($lav){
 //                }])
@@ -3039,6 +3051,47 @@ class CompanyDashboardController extends ApiBaseController
         $loan_tvr->updated_by = $user->user_enc_id;
         if (!$loan_tvr->$save()) {
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_tvr->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => $save . 'd successfully']);
+    }
+
+    public function actionUpdateFi()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        if (!isset($params['loan_app_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "loan_app_enc_id"']);
+        }
+        $save = 'save';
+        if (!empty($params['loan_application_fi_enc_id'])) {
+            $loan_fi = LoanApplicationFiExtended::findOne(['loan_application_fi_enc_id' => $params['loan_application_fi_enc_id'], 'loan_app_enc_id' => $params['loan_app_enc_id']]);
+            if (!$loan_fi) {
+                return $this->response(404, ['status' => 404, 'message' => 'Fi not found']);
+            }
+            $save = 'update';
+        } else {
+            $exist_check = LoanApplicationFiExtended::findOne(['loan_app_enc_id' => $params['loan_app_enc_id']]);
+            if ($exist_check) {
+                return $this->response(404, ['status' => 404, 'message' => 'Fi with loan id already exists']);
+            }
+            $loan_fi = new LoanApplicationFiExtended();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $loan_fi->loan_application_fi_enc_id = $utilitiesModel->encrypt();
+            $loan_fi->loan_app_enc_id = $params['loan_app_enc_id'];
+            $loan_fi->created_on = date('Y-m-d H:i:s');
+            $loan_fi->created_by = $user->user_enc_id;
+        }
+        $loan_fi->status = $params['status'];
+        if (isset($params['assigned_to'])) {
+            $loan_fi->assigned_to = $params['assigned_to'];
+        }
+        $loan_fi->updated_on = date('Y-m-d H:i:s');
+        $loan_fi->updated_by = $user->user_enc_id;
+        if (!$loan_fi->$save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $loan_fi->getErrors()]);
         }
         return $this->response(200, ['status' => 200, 'message' => $save . 'd successfully']);
     }
