@@ -200,8 +200,9 @@ class CompanyDashboardController extends ApiBaseController
 
             // getting applications data
             $loans = $this->__getApplications($user, $params);
+            $data = $this->loanApplicationStats();
 
-            return $this->response(200, ['status' => 200, 'loans' => $loans['loans'], 'count' => $loans['count']]);
+            return $this->response(200, ['status' => 200, 'loans' => $loans['loans'], 'data' => $data['data'], 'count' => $loans['count']]);
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
@@ -688,6 +689,40 @@ class CompanyDashboardController extends ApiBaseController
 
         return ['loans' => $loans, 'count' => $count];
     }
+
+
+    private function loanApplicationStats()
+    {
+        $currentYear = date('Y');
+        $currentMonth = date('m');
+
+        $query = AssignedLoanProvider::find()
+            ->alias('a')
+            ->select([
+                'COUNT(CASE WHEN a.status = "33" THEN b.loan_app_enc_id END) as completed',
+                'COUNT(CASE WHEN a.status != "33" AND a.status != "0" THEN b.loan_app_enc_id END) as pending',
+            ])
+            ->joinWith(['loanApplicationEnc b'], false)
+            ->andWhere(['a.is_deleted' => 0, 'b.is_deleted' => 0])
+            ->andWhere(['YEAR(b.loan_status_updated_on)' => $currentYear])
+            ->andWhere(['MONTH(b.loan_status_updated_on)' => $currentMonth]);
+
+        $count = $query->count();
+        $queryResults = $query
+            ->asArray()
+            ->one();
+
+        $queryResults['new_case'] = $count;
+
+        if ($queryResults) {
+            return ['status' => 200, 'data' => $queryResults];
+        } else {
+            return ['status' => 404, 'message' => 'Not found'];
+        }
+    }
+
+
+
 //    private function __partnerApplications($user)
 //    {
 //        return LoanApplicationPartnersExtended::find()
@@ -2820,68 +2855,6 @@ class CompanyDashboardController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
-
-//    public function actionBranchList()
-//    {
-//        if ($user = $this->isAuthorized()) {
-//            $params = Yii::$app->request->post();
-//
-//            $limit = 10;
-//            $page = 1;
-//
-//            if (isset($params['limit']) && !empty($params['limit'])) {
-//                $limit = $params['limit'];
-//            }
-//            if (isset($params['page']) && !empty($params['page'])) {
-//                $page = $params['page'];
-//            }
-//
-////            if (empty($params['branch_id'])) {
-////                return $this->response(422, ['status' => 422, 'message' => 'missing information "branch_id"']);
-////            }
-//            $Branch_list = OrganizationLocations::find()
-//                ->alias('a')
-//                ->select(['a.location_name', 'a.organization_enc_id', 'a.location_enc_id',
-//                    'SUM(CASE WHEN b.status = "0" THEN c.amount ELSE 0 END) as new_lead_amount',
-//                    'SUM(CASE WHEN b.status = "4" THEN IF(b.tl_approved_amount, b.tl_approved_amount, IF(b.bdo_approved_amount, b.bdo_approved_amount, c.amount)) ELSE 0 END) as login_amount',
-//                    'SUM(CASE WHEN b.status = "31" THEN b.disbursement_approved ELSE 0 END) as disbursed_amount',
-//                    'SUM(CASE WHEN b.status = "26" THEN b.disbursement_approved ELSE 0 END) as disbursed_approval_amount',
-//                    'SUM(CASE WHEN b.status = "31" THEN b.insurance_charges ELSE 0 END) as insurance_charges_amount',
-//                    'SUM(CASE WHEN b.status = "24" THEN b.soft_sanction ELSE 0 END) as soft_sanctioned_amount',
-//                    'SUM(CASE WHEN b.status = "15" THEN b.soft_approval ELSE 0 END) as soft_approval_amount',
-//                    'SUM(CASE WHEN b.status != "0" AND b.status != "4" AND b.status != "15" AND b.status != "31" AND b.status != "26" AND b.status != "32" AND b.status != "30" AND b.status != "28" AND b.status != "24" THEN c.amount ELSE 0 END) as under_process_amount',
-//                    'SUM(CASE WHEN b.status = "32" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as rejected_amount',
-//                    'SUM(CASE WHEN b.status = "28" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as cni_amount',
-//                    'SUM(CASE WHEN b.status = "30" THEN IF(b.soft_sanction, b.soft_sanction, IF(b.soft_approval, b.soft_approval, c.amount)) ELSE 0 END) as sanctioned_amount',
-//                ])
-//                ->leftJoin(AssignedLoanProvider::tableName() . 'as b', 'b.branch_enc_id = a.location_enc_id')
-//                ->leftJoin(LoanApplications::tableName() . 'as c', 'c.loan_app_enc_id = b.loan_application_enc_id')
-//                ->where(['between', 'b.created_on', $params['start_date'], $params['end_date']])
-//                ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $user->organization_enc_id])
-//                ->groupBy(['a.location_enc_id']);
-//
-//            if (isset($params['keyword']) && !empty($params['keyword'])) {
-//                $Branch_list->andWhere([
-//                    'or',
-//                    ['like', 'a.location_enc_id', $params['keyword']],
-//                ]);
-//            }
-//
-//            $count = $Branch_list->count();
-//            $Branch_list = $Branch_list
-//                ->limit($limit)
-//                ->offset(($page - 1) * $limit)
-//                ->asArray()
-//                ->all();
-//
-//            if ($Branch_list) {
-//                return $this->response(200, ['status' => 200, 'data' => $Branch_list, 'count' => $count]);
-//            }
-//            return $this->response(404, ['status' => 404, 'message' => 'not found']);
-//        } else {
-//            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
-//        }
-//    }
 
     public function actionBranchList()
     {
