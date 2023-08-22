@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\utilities\UserUtilities;
+use common\models\NotificationTokens;
 use common\models\PushNotifications;
 use yii\web\UploadedFile;
 use yii\filters\VerbFilter;
@@ -44,13 +45,13 @@ class NotificationsController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
-            $push_notifications = new PushNotifications();
-            $push_notifications->push_notification_enc_id = Yii::$app->getSecurity()->generateRandomString();
-            $push_notifications->token = $params['token'];
-            $push_notifications->created_on = date('Y-m-d H:i:s');
-            $push_notifications->user_enc_id = $user->user_enc_id;
-            if (!$push_notifications->save()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            $notification_token = new NotificationTokens();
+            $notification_token->token_enc_id = Yii::$app->getSecurity()->generateRandomString();
+            $notification_token->token = $params['token'];
+            $notification_token->created_on = date('Y-m-d H:i:s');
+            $notification_token->user_enc_id = $user->user_enc_id;
+            if (!$notification_token->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $notification_token->getErrors()]);
             }
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved', 'user_id' => $user->user_enc_id ]);
@@ -63,11 +64,11 @@ class NotificationsController extends ApiBaseController
         if(empty($params['token'])){
             return $this->response(404, ['status' => 404, 'message' => '"token" in missing']);
         }
-        $push_notification = PushNotifications::findOne(['token' => $params['token'], 'is_deleted' => 0]);
-        if($push_notification){
-            $push_notification->is_deleted = 1;
-            $push_notification->token_expired_on = date('Y-m-d H:i:s');
-            if(!$push_notification->update()){
+        $notification_token = NotificationTokens::findOne(['token' => $params['token'], 'is_deleted' => 0]);
+        if($notification_token){
+            $notification_token->is_deleted = 1;
+            $notification_token->token_expired_on = date('Y-m-d H:i:s');
+            if(!$notification_token->update()){
                 return $this->response(500, 'an error occurred');
             }
         }

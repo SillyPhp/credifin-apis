@@ -3,6 +3,8 @@
 namespace api\modules\v4\utilities;
 
 use common\models\AssignedSupervisor;
+use common\models\Notifications;
+use common\models\NotificationTokens;
 use common\models\Organizations;
 use common\models\PushNotifications;
 use common\models\SharedLoanApplications;
@@ -13,11 +15,13 @@ use common\models\SelectedServices;
 use common\models\UserAccessTokens;
 use common\models\Users;
 use common\models\UserTypes;
+use yii\db\Command;
 
 // this class is used to get user related data
 class UserUtilities
 {
     public $rolesArray = ['State Credit Head', 'Operations Manager', 'Product Manager'];
+
     // getting user data to return after signup/login
     public function userData($user_id, $source = null)
     {
@@ -254,27 +258,53 @@ class UserUtilities
         return $ids;
     }
 
-    public function sendPushNotification($userIds, $title, $body = null)
+    public function saveNotification($allNotifications)
     {
-
-        $tokens = PushNotifications::find()
-            ->select(['token'])
-            ->where(['in', 'user_enc_id', $userIds])
-            ->andWhere(['is_deleted' => 0])
-            ->asArray()
-            ->all();
+        if (!empty($allNotifications)) {
+            $savedNotification = Yii::$app->db->createCommand()->batchInsert(Notifications::tableName(),
+                ['notification_enc_id', 'user_enc_id', 'title', 'description', 'link'],
+                $allNotifications)->execute();
 
 
-        $token = [];
-        foreach ($tokens as $key => $val) {
-            $token[] = $val['token'];
+            if ($savedNotification) {
+                foreach ($allNotifications as $an) {
+                    $tokens = NotificationTokens::find()
+                        ->select(['token'])
+                        ->where(['user_enc_id' => $an['user_enc_id'], 'is_deleted' => 0])
+                        ->asArray()
+                        ->all();
+
+                    $token = [];
+                    foreach ($tokens as $key => $val) {
+                        $token[] = $val['token'];
+                    }
+
+                    if($token){
+                        $notificationStatus = $this->sendPushNotification($token, $an['title'], $an['description'], $an['link']);
+
+                        $updateNotification = Notifications::findOne(['notification_enc_id' => $an['notification_enc_id']]);
+                        if($notificationStatus && $updateNotification){
+                            $updateNotification->status = '1';
+                        }else if(!$notificationStatus && $updateNotification){
+                            $updateNotification->status = '2';
+                        }
+
+                        if(!$updateNotification->update()){
+                            throw new \Exception(json_encode($updateNotification->getErrors()));
+                        };
+                    }
+                }
+            }
         }
+    }
 
+    public function sendPushNotification($token, $title, $body = null, $link = null)
+    {
         $url = "https://fcm.googleapis.com/fcm/send";
-        $token = $token;
+        $tokens = $token;
         $serverKey = 'AAAAKEwFH2k:APA91bGJz4i2IdWaBHL55yjeot0ectkOTP7b0a73RJCTIByOZxfHuaQA6KfepAb4Ck5w11UJ1BnPu8OqMgbqD2mqzGqmnSPAMWT-tpmnuGW9dT5LGBLVfvoYLHpe4KF6rZA9iss6b5zA';
         $notification = array('title' => $title, 'body' => $body, 'sound' => 'default', 'badge' => '1',);
-        $arrayToSend = array('registration_ids' => $token, 'notification' => $notification, 'data' => ['fcm_options' => ['link' => 'http://localhost:3000/']], 'priority' => 'high');
+        $arrayToSend = array('registration_ids' => $tokens, 'data'=> array('notification' => $notification, 'link' => $link), 'priority' => 'high');
         $json = json_encode($arrayToSend);
         $headers = array();
         $headers[] = 'Content-Type: application/json';
@@ -291,5 +321,7 @@ class UserUtilities
             die('FCM Send Error: ' . curl_error($ch));
         }
         curl_close($ch);
+        return json_encode($response);
+
     }
 }

@@ -30,6 +30,7 @@ use common\models\LoanApplications;
 use common\models\LoanCertificates;
 use common\models\LoanCoApplicants;
 use common\models\LoanSanctionReports;
+use common\models\LoanStatus;
 use common\models\LoanTypes;
 use common\models\OrganizationLocations;
 use common\models\Organizations;
@@ -93,6 +94,7 @@ class CompanyDashboardController extends ApiBaseController
                 'get-financer-vehicle-brand' => ['POST', 'OPTIONS'],
                 'delete-financer-vehicle-brand' => ['POST', 'OPTIONS'],
                 'update-references' => ['POST', 'OPTIONS'],
+                'loan-payments' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -1052,6 +1054,7 @@ class CompanyDashboardController extends ApiBaseController
 
             $loanApp = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id'], 'is_deleted' => 0]);
 
+            $prevStatus = $provider->status;
             // updating data
             $provider->status = $params['status'];
             $loanApp->updated_by = $provider->updated_by = $user->user_enc_id;
@@ -1060,6 +1063,35 @@ class CompanyDashboardController extends ApiBaseController
             $loanApp->loan_status_updated_on = date('Y-m-d H:i:s');
             $loanApp->updated_on = date('Y-m-d H:i:s');
             if ($loanApp->update() && $provider->update()) {
+
+                $notificationUsers = new UserUtilities();
+                $userIds = $notificationUsers->getApplicationUserIds($params['loan_id']);
+                $searchable = [$prevStatus, $params['status']];
+                $loanStatus = LoanStatus::find()
+                    ->andWhere(['in', 'value', $searchable])
+                    ->asArray()
+                    ->all();
+                $updated_by = $user->first_name ." ". $user->last_name;
+                $notificationBody = "Status: ".$loanStatus[0]['loan_status']." -> ".$loanStatus[1]['loan_status']." \n Loan Account Number: $loanApp->application_number \n Applicant Name: $loanApp->applicant_name \n Loan Type: $loanApp->loan_type \n Loan Amount: $loanApp->amount";
+                if(!empty($userIds)){
+                    $allNotifications = [];
+                    foreach ($userIds as $uid){
+                        $utilitiesModel = new \common\models\Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $notification = [
+                            'notification_enc_id' =>$utilitiesModel->encrypt(),
+                            'user_enc_id' => $uid,
+                            'title' => "Application status changed by $updated_by",
+                            'description' =>  $notificationBody,
+                            'link' => '/',
+                        ];
+
+                        array_push($allNotifications, $notification);
+                    }
+                }
+
+                $notificationUsers ->saveNotification($allNotifications);
+
                 return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
             } else {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred while updating status', 'error' => $provider->getErrors()]);
@@ -1726,10 +1758,34 @@ class CompanyDashboardController extends ApiBaseController
 
             $loan_details = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']]);
             $notificationBody = "Loan Account Number: $loan_details->application_number \n Applicant Name: $loan_details->applicant_name \n Loan Type: $loan_details->loan_type \n Loan Amount: $loan_details->amount";
-
+            $allNotifications = [];
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $notification = [
+                'notification_enc_id' =>$utilitiesModel->encrypt(),
+                'user_enc_id' => $params['shared_to'],
+                'title' => "$shared_by shared an application with you",
+                'description' => $notificationBody,
+                'link' => '/',
+            ];
+            array_push($allNotifications, $notification);
             $notificationUsers = new UserUtilities();
-            $notificationUsers->sendPushNotification([$params['shared_to']], "$shared_by shared an application with you", $notificationBody) ;
-            $notificationUsers->sendPushNotification($notificationUsers->getApplicationUserIds($params['loan_id'], $params['shared_to']), "$shared_by shared an application with $shared_to", $notificationBody);
+            $userIds = $notificationUsers->getApplicationUserIds($params['loan_id'], $params['shared_to']);
+            if(!empty($userIds)){
+                foreach ($userIds as $uid){
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $notification = [
+                        'notification_enc_id' =>$utilitiesModel->encrypt(),
+                        'user_enc_id' => $uid,
+                        'title' => "$shared_by shared an application with $shared_to",
+                        'description' => $notificationBody,
+                        'link' => '/'
+                    ];
+                    array_push($allNotifications, $notification);
+                }
+            }
+
+            $notificationUsers ->saveNotification($allNotifications);
+            
 
             return $this->response(200, ['status' => 200, 'message' => 'successfully saved']);
 
