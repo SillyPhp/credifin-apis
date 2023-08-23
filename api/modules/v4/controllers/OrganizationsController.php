@@ -1019,7 +1019,7 @@ class OrganizationsController extends ApiBaseController
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(10, 100000);
             $product->financer_loan_product_enc_id = $utilitiesModel->encrypt();
-            $product->product_code = $params['product_code'];
+//            $product->product_code = $params['product_code'];
             $product->created_by = $user->user_enc_id;
             $product->created_on = date('Y-m-d H:i:s');
             $save = 'save';
@@ -1032,7 +1032,7 @@ class OrganizationsController extends ApiBaseController
         if (!empty($params['assigned_financer_loan_type_enc_id'])) {
             $product->assigned_financer_loan_type_enc_id = $params['assigned_financer_loan_type_enc_id'];
         }
-        if (!empty($params['product_code'])) {
+        if (isset($params['product_code'])) {
             $product->product_code = $params['product_code'];
         }
 
