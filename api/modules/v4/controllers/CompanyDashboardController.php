@@ -641,7 +641,7 @@ class CompanyDashboardController extends ApiBaseController
                         'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
                     ])
                     ->joinWith(['sharedTo b'], false)
-                    ->where(['a.is_deleted' => 0, 'a.shared_by' => $user->user_enc_id, 'a.loan_app_enc_id' => $val['loan_app_enc_id']])
+                    ->where(['a.is_deleted' => 0, 'a.loan_app_enc_id' => $val['loan_app_enc_id']])
                     ->asArray()
                     ->all();
 
