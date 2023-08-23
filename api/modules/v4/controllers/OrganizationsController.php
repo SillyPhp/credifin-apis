@@ -3,7 +3,6 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\models\EmiCollectionForm;
-use api\modules\v4\models\LoanApplication;
 use common\models\AssignedFinancerLoanType;
 use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
@@ -11,6 +10,7 @@ use common\models\CertificateTypes;
 use common\models\EmiCollection;
 use common\models\FinancerLoanDocuments;
 use common\models\FinancerLoanProductDocuments;
+use common\models\FinancerLoanProductImages;
 use common\models\FinancerLoanProductLoginFeeStructure;
 use common\models\FinancerLoanProductProcess;
 use common\models\FinancerLoanProductPurpose;
@@ -75,7 +75,9 @@ class OrganizationsController extends ApiBaseController
                 'update-loan-product-process' => ['POST', 'OPTIONS'],
                 'update-loan-product-fees' => ['POST', 'OPTIONS'],
                 'financer-loan-status-list' => ['POST', 'OPTIONS'],
-                'emi-stats' => ['POST', 'OPTIONS']
+                'emi-stats' => ['POST', 'OPTIONS'],
+                'update-loan-product-images' => ['POST', 'OPTIONS'],
+                'remove-loan-product-image' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -1154,6 +1156,11 @@ class OrganizationsController extends ApiBaseController
                     $g->select(['g.financer_loan_product_login_fee_structure_enc_id', 'g.financer_loan_product_enc_id', 'g.name', 'g.amount']);
                     $g->onCondition(['g.is_deleted' => 0]);
                 }])
+                ->joinWith(['financerLoanProductImages h' => function ($h) {
+                    $h->select(['h.product_image_enc_id', 'h.financer_loan_product_enc_id', 'h.name']);
+                    $h->orderBy(['h.sequence' => SORT_ASC]);
+                    $h->onCondition(['h.is_deleted' => 0]);
+                }])
                 ->onCondition(['a.financer_loan_product_enc_id' => $params['financer_loan_product_enc_id'], 'a.is_deleted' => 0])
                 ->where(['a.is_deleted' => 0])
                 ->asArray()
@@ -2058,5 +2065,74 @@ class OrganizationsController extends ApiBaseController
         }
         return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
 
+    }
+
+    public function actionUpdateLoanProductImages()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorised']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['financer_loan_product_enc_id']) || empty($params['images'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing parameter "financer_loan_product_enc_id or images"']);
+        }
+        $product_id = $params['financer_loan_product_enc_id'];
+        $transaction = Yii::$app->db->beginTransaction();
+        foreach ($params['images'] as $key => $value) {
+            if (empty($value['product_image_enc_id']) || !$image = self::_imageCheck($value['product_image_enc_id'], $product_id)) {
+                $image = new FinancerLoanProductImages();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $image->product_image_enc_id = $utilitiesModel->encrypt();
+                $image->financer_loan_product_enc_id = $product_id;
+                $image->created_by = $user->user_enc_id;
+                $image->created_on = date('Y-m-d H:i:s');
+            }
+            $image->name = $value['name'];
+            $image->sequence = $key;
+            $image->updated_by = $user->user_enc_id;
+            $image->updated_on = date('Y-m-d H:i:s');
+            if (!$image->save()) {
+                $transaction->rollBack();
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $image->getErrors()]);
+            }
+        }
+        $transaction->commit();
+        return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+    }
+
+    private function _imageCheck($image_id, $product_id)
+    {
+        $image = FinancerLoanProductImages::findOne([
+            'product_image_enc_id' => $image_id,
+            'financer_loan_product_enc_id' => $product_id,
+            'is_deleted' => 0
+        ]);
+        return $image ?? false;
+    }
+
+    public function actionRemoveLoanProductImage()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['product_image_enc_id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing Information "product_image_enc_id"']);
+        }
+        $image = FinancerLoanProductImages::findOne([
+            'product_image_enc_id' => $params['product_image_enc_id'],
+            'is_deleted' => 0
+        ]);
+        if (!$image) {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+        $image->is_deleted = 1;
+        $image->updated_by = $user->user_enc_id;
+        $image->updated_on = date('Y-m-d H:i:s');
+        if (!$image->update()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $image->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'Deleted Successfully']);
     }
 }
