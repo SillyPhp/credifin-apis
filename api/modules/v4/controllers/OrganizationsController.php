@@ -8,6 +8,7 @@ use common\models\AssignedFinancerLoanTypes;
 use common\models\AssignedLoanProvider;
 use common\models\CertificateTypes;
 use common\models\EmiCollection;
+use common\models\extended\LoanApplicationImagesExtended;
 use common\models\FinancerLoanDocuments;
 use common\models\FinancerLoanProductDocuments;
 use common\models\FinancerLoanProductImages;
@@ -77,7 +78,9 @@ class OrganizationsController extends ApiBaseController
                 'financer-loan-status-list' => ['POST', 'OPTIONS'],
                 'emi-stats' => ['POST', 'OPTIONS'],
                 'update-loan-product-images' => ['POST', 'OPTIONS'],
-                'remove-loan-product-image' => ['POST', 'OPTIONS']
+                'remove-loan-product-image' => ['POST', 'OPTIONS'],
+                'upload-application-image' => ['POST', 'OPTIONS'],
+                'get-assigned-images' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -2134,5 +2137,87 @@ class OrganizationsController extends ApiBaseController
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $image->getErrors()]);
         }
         return $this->response(200, ['status' => 200, 'message' => 'Deleted Successfully']);
+    }
+
+    public function actionUploadApplicationImage()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+//        print_r($params['image']);exit();
+        if (empty($params['product_image_enc_id']) || empty($params['loan_app_enc_id']) || empty($params['image'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'Missing Information "product_image_enc_id or loan_app_enc_id or image"']);
+        }
+        $image_enc_check = FinancerLoanProductImages::findOne(['product_image_enc_id' => $params['product_image_enc_id']]);
+        if (!$image_enc_check) {
+            return $this->response(404, ['status' => 404, 'message' => 'Product image enc id not found']);
+        }
+        $image_parts = explode(";base64,", $params['image']);
+        $image_base64 = base64_decode($image_parts[1]);
+        $ext = explode('/', $image_parts[0])[1];
+        $image = new LoanApplicationImagesExtended();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $image->loan_application_image_enc_id = $utilitiesModel->encrypt();
+        $image->product_image_enc_id = $params['product_image_enc_id'];
+        $image->loan_app_enc_id = $params['loan_app_enc_id'];
+        $image->name = $image_enc_check['name'];
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $image->image = $utilitiesModel->encrypt() . '.' . $ext;
+        $image->image_location = Yii::$app->getSecurity()->generateRandomString();
+        $path = Yii::$app->params->upload_directories->loan_images->image;
+        $base_path = $path . $image->image_location . DIRECTORY_SEPARATOR . $image->image;
+        $type = 'image/' . $ext;
+        $file = dirname(__DIR__, 4) . '/files/temp/' . $image->image;
+        if (file_put_contents($file, $image_base64)) {
+            $spaces = new Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+            $result = $my_space->uploadFileSources($file, Yii::$app->params->digitalOcean->rootDirectory . $base_path, "private", ['params' => ['ContentType' => $type]]);
+            if (!$result) {
+                throw new \Exception('error occurred while uploading image');
+            }
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        }
+        $image->created_on = date('Y-m-d H:i:s');
+        $image->created_by = $user->user_enc_id;
+        if (!$image->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $image->getErrors()]);
+        }
+        return $this->response(200, ['status' => 200, 'message' => 'Saved Successfully']);
+    }
+
+    public function actionGetAssignedImages()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'Unauthorized']);
+        }
+        $lender = $this->getFinancerId($user);
+        if (!$lender) {
+            return $this->response(404, ['status' => 404, 'message' => 'not found']);
+        }
+        $images = FinancerLoanProducts::find()
+            ->alias('a')
+            ->select(['a.financer_loan_product_enc_id', 'a.name'])
+            ->joinWith(['assignedFinancerLoanTypeEnc b'], false)
+            ->innerJoinWith(['financerLoanProductImages c' => function ($c) {
+                $c->select(['c.product_image_enc_id', 'c.financer_loan_product_enc_id', 'c.sequence', 'c.name']);
+                $c->orderBy(['c.sequence' => SORT_ASC]);
+            }])
+            ->where([
+                'b.organization_enc_id' => $lender,
+                'a.is_deleted' => 0,
+                'b.is_deleted' => 0,
+                'c.is_deleted' => 0
+            ])
+            ->groupBy(['a.financer_loan_product_enc_id'])
+            ->asArray()
+            ->all();
+        if ($images) {
+            return $this->response(200, ['status' => 200, 'images' => $images]);
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
     }
 }

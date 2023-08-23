@@ -641,7 +641,7 @@ class CompanyDashboardController extends ApiBaseController
                         'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
                     ])
                     ->joinWith(['sharedTo b'], false)
-                    ->where(['a.is_deleted' => 0, 'a.shared_by' => $user->user_enc_id, 'a.loan_app_enc_id' => $val['loan_app_enc_id']])
+                    ->where(['a.is_deleted' => 0, 'a.loan_app_enc_id' => $val['loan_app_enc_id']])
                     ->asArray()
                     ->all();
 
@@ -827,10 +827,15 @@ class CompanyDashboardController extends ApiBaseController
                     $c->joinWith(['createdBy c2'], false);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
+                ->joinWith(['loanApplicationImages im1' => function ($im1) {
+                    $im1->select(['im1.loan_application_image_enc_id', 'im1.loan_app_enc_id', 'im1.name', 'im1.image', 'im1.image_location', 'im1.created_on', 'CONCAT(im2.first_name," ",im2.last_name) created_by']);
+                    $im1->onCondition(['im1.is_deleted' => 0]);
+                    $im1->joinWith(['createdBy im2'], false);
+                }])
                 ->joinWith(['loanCoApplicants d' => function ($d) use ($date) {
                     $d->select(['d.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
                         'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation', 'd1.address',
-                        'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.co_applicant_dob', 'd.gender', 'd2.city_enc_id', 'd2.name city', 'd3.state_enc_id', 'd3.name state', 'd3.abbreviation state_abbreviation', 'd1.postal_code', 'd3.state_code',
+                        'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.gender', 'd2.city_enc_id', 'd2.name city', 'd3.state_enc_id', 'd3.name state', 'd3.abbreviation state_abbreviation', 'd1.postal_code', 'd3.state_code',
                         'CASE WHEN d.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",d.image_location, d.image) ELSE NULL END image',
                     ]);
                     $d->joinWith(['loanApplicantResidentialInfos d1' => function ($d1) {
@@ -943,13 +948,21 @@ class CompanyDashboardController extends ApiBaseController
                     ->one();
 
                 // if loan certificates exists then getting their images private links
+                $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                 if ($loan['loanCertificates']) {
                     foreach ($loan['loanCertificates'] as $key => $val) {
                         if ($val['proof_image']) {
-                            $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
-                            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                             $proof = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . $val['proof_image_location'] . DIRECTORY_SEPARATOR . $val['proof_image'], "15 minutes");
                             $loan['loanCertificates'][$key]['proof_image'] = $proof;
+                        }
+                    }
+                }
+                if ($loan['loanApplicationImages']) {
+                    foreach ($loan['loanApplicationImages'] as $key => $val) {
+                        if ($val['image']) {
+                            $proof = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loan_images->image . $val['image_location'] . DIRECTORY_SEPARATOR . $val['image'], "15 minutes");
+                            $loan['loanApplicationImages'][$key]['image'] = $proof;
                         }
                     }
                 }
