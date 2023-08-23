@@ -169,7 +169,7 @@ class LoansController extends ApiBaseController
 
         $type = $params['type'] ?? 'capital';
 
-        $loan_update = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_app_enc_id']]);
+        $loan_update = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['loan_app_enc_id']]);
 
         if ($type == 'capital') {
 
