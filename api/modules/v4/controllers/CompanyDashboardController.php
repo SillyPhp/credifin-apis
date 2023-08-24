@@ -851,7 +851,6 @@ class CompanyDashboardController extends ApiBaseController
                         }], false);
                         $d4->onCondition(['and',
                             ['d4.is_deleted' => 0],
-//                            ['>=', "d4.created_on", $date],
                         ]);
                         $d4->orderBy(['d4.created_on' => SORT_DESC]);
                     }]);
@@ -890,10 +889,8 @@ class CompanyDashboardController extends ApiBaseController
                         }], false);
                     $j->onCondition(['and',
                         ['j.loan_co_app_enc_id' => null, 'j.is_deleted' => 0],
-//                        ['>=', "j.created_on", $date],
                     ]);
                     $j->orderBy(['j.created_on' => SORT_DESC]);
-
                 }])
                 ->joinWith(['sharedLoanApplications k' => function ($k) {
                     $k->select(['k.shared_loan_app_enc_id', 'k.loan_app_enc_id', 'k.access', 'k.status', 'concat(k1.first_name," ",k1.last_name) name', 'k1.phone',
@@ -963,6 +960,38 @@ class CompanyDashboardController extends ApiBaseController
                         if ($val['image']) {
                             $proof = $my_space->signedURL(Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loan_images->image . $val['image_location'] . DIRECTORY_SEPARATOR . $val['image'], "15 minutes");
                             $loan['loanApplicationImages'][$key]['image'] = $proof;
+                        }
+                    }
+                }
+
+                if (!empty($loan['creditLoanApplicationReports'])){
+                    foreach ($loan['creditLoanApplicationReports'] as $key=>$value){
+                        if (!empty($value['file_url'])){
+                            $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                            $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                            $parsedUrl = parse_url($value['file_url']);
+                            $path = $parsedUrl['path'];
+                            $path = ltrim($path, '/');
+                            $file_url = $my_space->signedURL($path, "15 minutes");
+                            $loan['creditLoanApplicationReports'][$key]['file_url'] = $file_url;
+                        }
+                    }
+                }
+
+                if (!empty($loan['loanCoApplicants'])){
+                    foreach ($loan['loanCoApplicants'] as $keys=>$values){
+                        if (!empty($values['creditLoanApplicationReports'])) {
+                            foreach ($values['creditLoanApplicationReports'] as $key => $value) {
+                                if (!empty($value['file_url'])) {
+                                    $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                                    $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                                    $parsedUrl = parse_url($value['file_url']);
+                                    $path = $parsedUrl['path'];
+                                    $path = ltrim($path, '/');
+                                    $file_url = $my_space->signedURL($path, "15 minutes");
+                                    $loan['loanCoApplicants'][$keys]['creditLoanApplicationReports'][$key]['file_url'] = $file_url;
+                                }
+                            }
                         }
                     }
                 }
