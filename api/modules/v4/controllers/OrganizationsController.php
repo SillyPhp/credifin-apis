@@ -1700,8 +1700,8 @@ class OrganizationsController extends ApiBaseController
         if (empty($params['organization_id'])) {
             return $this->response(422, ['status' => 422, 'message' => 'Missing Information "organization_id"']);
         }
-        if (isset($params['search_keyword'])) {
-            $search = $params['search_keyword'];
+        if (isset($params['fields_search'])) {
+            $search = $params['fields_search'];
         }
 
         $org_id = $params['organization_id'];
@@ -1761,16 +1761,24 @@ class OrganizationsController extends ApiBaseController
                 'CASE WHEN a.other_doc_image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->emi_collection->other_doc_image->image . '",a.other_doc_image_location, "/", a.other_doc_image) ELSE NULL END as other_doc_image',
                 'CONCAT(a.address,", ", a.pincode) address', 'CONCAT(b.first_name , " ", b.last_name) as collected_by', 'a.created_on',
                 'CONCAT("http://maps.google.com/maps?q=", a.latitude, ",", a.longitude) AS link',
-                'a.comments'])
+                'a.comments', 'e1.payment_status'])
             ->joinWith(['createdBy b' => function ($b) {
                 $b->joinWith(['userRoles0 b1'], false);
                 $b->joinWith(['designations d']);
-            }], false);
+            }], false)
+            ->joinWith(['branchEnc c' => function ($c) {
+                $c->joinWith(['cityEnc c1'], false);
+            }], false)
+            ->joinWith(['assignedLoanPayments e' => function ($e) {
+                $e->joinWith(['loanPaymentsEnc e1'], false);
+            }], false)
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->andWhere(['a.is_deleted' => 0]);
 
         if (isset($org_id)) {
             $model->andWhere(['or', ['b.organization_enc_id' => $org_id], ['b1.organization_enc_id' => $org_id]]);
         }
-        if (!isset($user->organization_enc_id) || empty($user->organization_enc_id)) {
+        if (empty($user->organization_enc_id)) {
             $model->andWhere(['a.created_by' => $user->user_enc_id]);
         }
         if (isset($lac)) {
@@ -1778,21 +1786,41 @@ class OrganizationsController extends ApiBaseController
         }
 
         if (!empty($search)) {
-            $model->andWhere([
-                'or',
-                ['like', 'CONCAT(c.location_name , ", ", c1.name)', $search],
-                ['like', 'c.location_name', $search],
-                ['like', 'a.customer_name', $search],
-                ['like', 'a.loan_account_number', $search],
-                ['like', 'a.loan_type', $search],
-            ]);
+            $a = ['loan_account_number', 'customer_name', 'collection_date', 'amount', 'loan_type', 'payment_method', 'ptp_amount', 'ptp_date', 'delay_reason', 'address'];
+            $others = ['collected_by', 'branch', 'designation', 'payment_status', 'ptp_status'];
+            foreach ($search as $key => $value) {
+                if (!empty($value) || $value == '0') {
+                    if (in_array($key, $a)) {
+                        if ($key == 'amount') {
+                            $model->andWhere(['like', 'a.amount', $value . '%', false]);
+                        } elseif ($key == 'address') {
+                            $model->andWhere(['like', 'CONCAT(a.address,", ", a.pincode)', $value]);
+                        } elseif ($key == 'ptp_amount') {
+                            $model->andWhere(['like', 'a.ptp_amount', $value . '%', false]);
+                        } elseif ($key == 'payment_method') {
+                            $model->andWhere(['a.payment_method' => $value]);
+                        } else {
+                            $model->andWhere(['like', 'a.' . $key, $value]);
+                        }
+                    }
+                    if (in_array($key, $others)) {
+                        if ($key == 'collected_by') {
+                            $model->andWhere(['like', 'CONCAT(b.first_name , " ", b.last_name)', $value]);
+                        } elseif ($key == 'branch') {
+                            $model->andWhere(['c.location_enc_id' => $value]);
+                        } elseif ($key == 'designation') {
+                            $model->andWhere(['like', 'd.' . $key, $value]);
+                        } elseif ($key == 'payment_status') {
+                            $model->andWhere(['like', 'e1.' . $key, $value]);
+                        } elseif ($key == 'ptp_status') {
+                            $model->andWhere([$value == 'yes' ? 'not in' : 'in', 'a.ptp_amount', [null, '']]);
+                        }
+                    }
+                }
+            }
         }
 
-        $model = $model->joinWith(['branchEnc c' => function ($c) {
-            $c->joinWith(['cityEnc c1'], false);
-        }], false)
-            ->orderBy(['a.created_on' => SORT_DESC])
-            ->andWhere(['a.is_deleted' => 0])
+        $model = $model
             ->asArray()
             ->all();
 
