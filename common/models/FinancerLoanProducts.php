@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%financer_loan_products}}".
  *
@@ -9,13 +11,16 @@ namespace common\models;
  * @property string $financer_loan_product_enc_id assigned financer loan product enc id
  * @property string $assigned_financer_loan_type_enc_id assigned financer loan type enc id
  * @property string $name product name
+ * @property string $product_code
  * @property string $created_on created on
  * @property string $created_by created by
  * @property string $updated_on updated on
  * @property string $updated_by updated by
  * @property int $is_deleted 0 false, 1 true
  *
+ * @property ColumnPreferences[] $columnPreferences
  * @property FinancerLoanProductDocuments[] $financerLoanProductDocuments
+ * @property FinancerLoanProductImages[] $financerLoanProductImages
  * @property FinancerLoanProductLoginFeeStructure[] $financerLoanProductLoginFeeStructures
  * @property FinancerLoanProductProcess[] $financerLoanProductProcesses
  * @property FinancerLoanProductPurpose[] $financerLoanProductPurposes
@@ -46,6 +51,7 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
             [['created_on', 'updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['financer_loan_product_enc_id', 'assigned_financer_loan_type_enc_id', 'name', 'created_by', 'updated_by'], 'string', 'max' => 100],
+            [['product_code'], 'string', 'max' => 20],
             [['financer_loan_product_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
@@ -56,9 +62,25 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getColumnPreferences()
+    {
+        return $this->hasMany(ColumnPreferences::className(), ['loan_product_enc_id' => 'financer_loan_product_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getFinancerLoanProductDocuments()
     {
         return $this->hasMany(FinancerLoanProductDocuments::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFinancerLoanProductImages()
+    {
+        return $this->hasMany(FinancerLoanProductImages::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
     }
 
     /**
