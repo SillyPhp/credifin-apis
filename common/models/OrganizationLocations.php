@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use Yii;
 
 /**
  * This is the model class for table "{{%organization_locations}}".
@@ -29,7 +28,7 @@ use Yii;
  * @property string $last_updated_by By which User Organization Location information was updated
  * @property string $status Organization Location Status (Active, Inactive, Pending)
  * @property int $is_deleted Is Organization Location Deleted (0 as False, 1 as True)
- * @property string $branch_code
+ *
  * @property AssignedLoanProvider[] $assignedLoanProviders
  * @property EmiCollection[] $emiCollections
  * @property Organizations $organizationEnc
@@ -55,7 +54,7 @@ class OrganizationLocations extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['location_enc_id', 'organization_enc_id', 'location_name', 'location_for', 'address', 'city_enc_id', 'created_by', 'organization_code'], 'required'],
+            [['location_enc_id', 'organization_enc_id', 'location_name', 'location_for', 'address', 'city_enc_id', 'organization_code', 'created_by'], 'required'],
             [['description', 'status'], 'string'],
             [['latitude', 'longitude'], 'number'],
             [['sequence', 'is_deleted'], 'integer'],
@@ -63,7 +62,6 @@ class OrganizationLocations extends \yii\db\ActiveRecord
             [['location_enc_id', 'organization_enc_id', 'website', 'organization_code', 'address', 'city_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['location_name', 'email'], 'string', 'max' => 50],
             [['location_for', 'phone'], 'string', 'max' => 15],
-            [['branch_code'], 'string', 'max' => 20],
             [['postal_code'], 'string', 'max' => 7],
             [['location_enc_id'], 'unique'],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],

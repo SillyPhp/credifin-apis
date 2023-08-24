@@ -112,7 +112,6 @@ class OrganizationsController extends ApiBaseController
             $orgLocations->location_enc_id = $utilitiesModel->encrypt();
             $orgLocations->organization_enc_id = $user->organization_enc_id;
             $orgLocations->location_name = $params['location_name'];
-            $orgLocations->branch_code = (!empty($params['branch_code'])) ? $params['branch_code'] : null;
             $orgLocations->organization_code = $params['organization_code'];
             $orgLocations->location_for = json_encode(['1']);
             $orgLocations->address = $params['address'];
@@ -155,7 +154,6 @@ class OrganizationsController extends ApiBaseController
             (!empty($params['location_name'])) ? $location->location_name = $params['location_name'] : "";
             (!empty($params['city_id'])) ? $location->city_enc_id = $params['city_id'] : "";
             (!empty($params['organization_code'])) ? $location->organization_code = $params['organization_code'] : "";
-            (!empty($params['branch_code'])) ? $location->branch_code = $params['branch_code'] : "";
             (!empty($params['address'])) ? $location->address = $params['address'] : "";
             (!empty($params['status'])) ? $location->status = $params['status'] : "";
             $location->last_updated_by = $user->user_enc_id;
@@ -193,7 +191,7 @@ class OrganizationsController extends ApiBaseController
 
             $locations = OrganizationLocations::find()
                 ->alias('a')
-                ->select(['a.location_enc_id', 'a.location_enc_id as id', 'b.city_code', 'a.branch_code', 'a.organization_code', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , ", ", b.name) as value', 'b.city_enc_id', 'a.status'])
+                ->select(['a.location_enc_id', 'a.location_enc_id as id', 'b.city_code', 'a.organization_code', 'a.location_name', 'a.location_for', 'a.address', 'b.name city', 'CONCAT(a.location_name , ", ", b.name) as value', 'b.city_enc_id', 'a.status'])
                 ->joinWith(['cityEnc b'], false)
                 ->andWhere(['a.is_deleted' => 0, 'a.organization_enc_id' => $org])
                 ->asArray()
