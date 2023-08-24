@@ -71,6 +71,14 @@ class FinancerLoanProducts extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getColumnPreferences()
+    {
+        return $this->hasMany(ColumnPreferences::className(), ['loan_product_enc_id' => 'financer_loan_product_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getFinancerLoanProductDocuments()
     {
         return $this->hasMany(FinancerLoanProductDocuments::className(), ['financer_loan_product_enc_id' => 'financer_loan_product_enc_id']);
