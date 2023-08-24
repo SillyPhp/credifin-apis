@@ -83,6 +83,7 @@ namespace common\models;
  * @property LoanApplicationComments[] $loanApplicationComments
  * @property LoanApplicationCommissions[] $loanApplicationCommissions
  * @property LoanApplicationFi[] $loanApplicationFis
+ * @property LoanApplicationImages[] $loanApplicationImages
  * @property LoanApplicationLogs[] $loanApplicationLogs
  * @property LoanApplicationNotifications[] $loanApplicationNotifications
  * @property LoanApplicationOptions[] $loanApplicationOptions
@@ -237,6 +238,14 @@ class LoanApplications extends \yii\db\ActiveRecord
     public function getLoanApplicationFis()
     {
         return $this->hasMany(LoanApplicationFi::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLoanApplicationImages()
+    {
+        return $this->hasMany(LoanApplicationImages::className(), ['loan_app_enc_id' => 'loan_app_enc_id']);
     }
 
     /**
