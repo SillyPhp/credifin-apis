@@ -112,7 +112,7 @@ class OrganizationsController extends ApiBaseController
             $orgLocations->location_enc_id = $utilitiesModel->encrypt();
             $orgLocations->organization_enc_id = $user->organization_enc_id;
             $orgLocations->location_name = $params['location_name'];
-            $orgLocations->branch_code = $params['branch_code'];
+            $orgLocations->branch_code = (!empty($params['branch_code'])) ? $params['branch_code'] : null;
             $orgLocations->organization_code = $params['organization_code'];
             $orgLocations->location_for = json_encode(['1']);
             $orgLocations->address = $params['address'];
