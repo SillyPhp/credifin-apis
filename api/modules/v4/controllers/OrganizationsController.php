@@ -20,6 +20,7 @@ use common\models\FinancerLoanProductStatus;
 use common\models\FinancerLoanPurpose;
 use common\models\FinancerLoanStatus;
 use common\models\FinancerNoticeBoard;
+use common\models\LoanAccounts;
 use common\models\LoanStatus;
 use common\models\LoanTypes;
 use common\models\OrganizationLocations;
@@ -80,7 +81,8 @@ class OrganizationsController extends ApiBaseController
                 'update-loan-product-images' => ['POST', 'OPTIONS'],
                 'remove-loan-product-image' => ['POST', 'OPTIONS'],
                 'upload-application-image' => ['POST', 'OPTIONS'],
-                'get-assigned-images' => ['POST', 'OPTIONS']
+                'get-assigned-images' => ['POST', 'OPTIONS'],
+                'search-emi' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -2250,5 +2252,26 @@ class OrganizationsController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'images' => $images]);
         }
         return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+    }
+
+    public function actionSearchEmi()
+    {
+        if (!$this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (!empty($params['loan_number'])) {
+            $query = LoanAccounts::find()
+                ->select(['loan_account_enc_id', 'loan_account_number', 'name', 'phone', 'emi_amount', 'overdue_amount', 'ledger_amount', 'loan_type', 'emi_date'])
+                ->where(['is_deleted' => 0])
+                ->andWhere(['like', 'loan_account_number', '%' . $params['loan_number'] . '%', false])
+                ->limit(20)
+                ->asArray()
+                ->all();
+            if ($query) {
+                return $this->response(200, ['status' => 200, 'data' => $query]);
+            }
+        }
+        return $this->response(404, ['status' => 404, 'message' => 'not found']);
     }
 }
