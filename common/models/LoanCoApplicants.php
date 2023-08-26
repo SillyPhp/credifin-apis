@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%loan_co_applicants}}".
  *
@@ -28,6 +26,8 @@ use Yii;
  * @property string $pan_number co borrower pan card number
  * @property string $voter_card_number
  * @property string $aadhaar_number
+ * @property string $driving_license_number Driving License Number
+ * @property string $marital_status Marital Status
  * @property string $aadhaar_link_phone_number Aadhar Link Phone Number
  * @property string $created_by user_enc_id
  * @property string $created_on created on
@@ -58,55 +58,19 @@ class LoanCoApplicants extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['loan_co_app_enc_id', 'loan_app_enc_id', 'relation'], 'required'],
+            [['loan_co_app_enc_id', 'loan_app_enc_id'], 'required'],
             [['cibil_score', 'gender', 'employment_type', 'years_in_current_house', 'address', 'is_deleted'], 'integer'],
-            [['relation', 'borrower_type'], 'string'],
+            [['relation', 'borrower_type', 'marital_status'], 'string'],
             [['annual_income'], 'number'],
             [['co_applicant_dob', 'created_on', 'updated_on'], 'safe'],
             [['loan_co_app_enc_id', 'loan_app_enc_id', 'name', 'email', 'image', 'image_location', 'occupation', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['phone', 'pan_number', 'aadhaar_link_phone_number'], 'string', 'max' => 15],
-            [['voter_card_number'], 'string', 'max' => 20],
+            [['voter_card_number', 'driving_license_number'], 'string', 'max' => 20],
             [['aadhaar_number'], 'string', 'max' => 16],
             [['loan_co_app_enc_id'], 'unique'],
             [['loan_app_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => LoanApplications::className(), 'targetAttribute' => ['loan_app_enc_id' => 'loan_app_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['updated_by' => 'user_enc_id']],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'loan_co_app_enc_id' => 'Loan Co App Enc ID',
-            'loan_app_enc_id' => 'Loan App Enc ID',
-            'name' => 'Name',
-            'email' => 'Email',
-            'cibil_score' => 'Cibil Score',
-            'phone' => 'Phone',
-            'relation' => 'Relation',
-            'borrower_type' => 'Borrower Type',
-            'gender' => 'Gender',
-            'employment_type' => 'Employment Type',
-            'annual_income' => 'Annual Income',
-            'co_applicant_dob' => 'Co Applicant Dob',
-            'image' => 'Image',
-            'image_location' => 'Image Location',
-            'years_in_current_house' => 'Years In Current House',
-            'occupation' => 'Occupation',
-            'address' => 'Address',
-            'pan_number' => 'Pan Number',
-            'voter_card_number' => 'Voter Card Number',
-            'aadhaar_number' => 'Aadhaar Number',
-            'aadhaar_link_phone_number' => 'Aadhaar Link Phone Number',
-            'created_by' => 'Created By',
-            'created_on' => 'Created On',
-            'updated_on' => 'Updated On',
-            'updated_by' => 'Updated By',
-            'is_deleted' => 'Is Deleted',
         ];
     }
 
