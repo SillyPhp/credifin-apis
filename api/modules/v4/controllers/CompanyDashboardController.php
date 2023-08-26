@@ -835,7 +835,7 @@ class CompanyDashboardController extends ApiBaseController
                 ->joinWith(['loanCoApplicants d' => function ($d) use ($date) {
                     $d->select(['d.loan_co_app_enc_id', 'd.loan_app_enc_id', 'd.name', 'd.email', 'd.phone', 'd.borrower_type',
                         'd.relation', 'd.employment_type', 'd.annual_income', 'd.co_applicant_dob', 'd.occupation', 'd1.address',
-                        'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.gender', 'd2.city_enc_id', 'd2.name city', 'd3.state_enc_id', 'd3.name state', 'd3.abbreviation state_abbreviation', 'd1.postal_code', 'd3.state_code', 'd.marital_status', 'd.driving_license_number',
+                        'd.voter_card_number', 'd.aadhaar_number', 'd.pan_number', 'd.gender', 'd2.city_enc_id', 'd2.name city', 'd3.state_enc_id', 'd3.name state', 'd3.abbreviation state_abbreviation', 'd1.postal_code', 'd3.state_code', 'd.marital_status', 'd.driving_license_number', 'd.cibil_score',
                         'CASE WHEN d.image IS NOT NULL THEN  CONCAT("' . Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->loans->image . '",d.image_location, d.image) ELSE NULL END image',
                     ]);
                     $d->joinWith(['loanApplicantResidentialInfos d1' => function ($d1) {

@@ -119,6 +119,8 @@ class CoApplicantForm extends Model
                 $co_applicant->pan_number = $this->pan_number;
                 $co_applicant->aadhaar_number = $this->aadhaar_number;
                 $co_applicant->voter_card_number = $this->voter_card_number;
+                $co_applicant->driving_license_number = $this->driving_license_number;
+                $co_applicant->marital_status = $this->marital_status;
                 $co_applicant->updated_by = $this->user_id;
                 $co_applicant->updated_on = date('Y-m-d H:i:s');
             }
