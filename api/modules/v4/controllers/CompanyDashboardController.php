@@ -967,7 +967,7 @@ class CompanyDashboardController extends ApiBaseController
 
                 if (!empty($loan['creditLoanApplicationReports'])){
                     foreach ($loan['creditLoanApplicationReports'] as $key=>$value){
-                        if ($value['file_url']){
+                        if (!empty($value['file_url'])){
                             $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
                             $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
                             $parsedUrl = parse_url($value['file_url']);
@@ -975,6 +975,24 @@ class CompanyDashboardController extends ApiBaseController
                             $path = ltrim($path, '/');
                             $file_url = $my_space->signedURL($path, "15 minutes");
                             $loan['creditLoanApplicationReports'][$key]['file_url'] = $file_url;
+                        }
+                    }
+                }
+
+                if (!empty($loan['loanCoApplicants'])){
+                    foreach ($loan['loanCoApplicants'] as $keys=>$values){
+                        if (!empty($values['creditLoanApplicationReports'])) {
+                            foreach ($values['creditLoanApplicationReports'] as $key => $value) {
+                                if (!empty($value['file_url'])) {
+                                    $spaces = new \common\models\spaces\Spaces(Yii::$app->params->digitalOcean->accessKey, Yii::$app->params->digitalOcean->secret);
+                                    $my_space = $spaces->space(Yii::$app->params->digitalOcean->sharingSpace);
+                                    $parsedUrl = parse_url($value['file_url']);
+                                    $path = $parsedUrl['path'];
+                                    $path = ltrim($path, '/');
+                                    $file_url = $my_space->signedURL($path, "15 minutes");
+                                    $loan['loanCoApplicants'][$keys]['creditLoanApplicationReports'][$key]['file_url'] = $file_url;
+                                }
+                            }
                         }
                     }
                 }

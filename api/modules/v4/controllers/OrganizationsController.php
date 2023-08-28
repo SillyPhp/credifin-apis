@@ -1129,7 +1129,7 @@ class OrganizationsController extends ApiBaseController
             }
             $details = FinancerLoanProducts::find()
                 ->alias('a')
-                ->select(['a.financer_loan_product_enc_id', 'a.name product_name', 'e1.name loan_type_name', 'a.assigned_financer_loan_type_enc_id'])
+                ->select(['a.financer_loan_product_enc_id', 'a.product_code', 'a.name product_name', 'e1.name loan_type_name', 'a.assigned_financer_loan_type_enc_id'])
                 ->joinWith(['financerLoanProductPurposes b' => function ($b) {
                     $b->select(['b.financer_loan_product_purpose_enc_id', 'b.financer_loan_product_enc_id', 'b.purpose', 'b.sequence']);
                     $b->orderBy(['b.sequence' => SORT_ASC]);
