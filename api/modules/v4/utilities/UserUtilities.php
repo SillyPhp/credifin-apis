@@ -2,6 +2,7 @@
 
 namespace api\modules\v4\utilities;
 
+use common\models\AssignedLoanProvider;
 use common\models\AssignedSupervisor;
 use common\models\Notifications;
 use common\models\NotificationTokens;
@@ -250,10 +251,21 @@ class UserUtilities
         $userIds = $userIds->asArray()
             ->all();
 
+        $financerId = AssignedLoanProvider::find()
+            ->alias('a')
+            ->select(['c.user_enc_id'])
+            ->joinWith(['providerEnc b' => function ($b) {
+                $b->joinWith(['userEncs0 c'], false);
+            }], false)
+            ->where(['a.loan_application_enc_id' => $loan_id])
+            ->asArray()
+            ->one();
+
         $ids = [];
         foreach ($userIds as $key => $val) {
             $ids[] = $val['shared_to'];
         }
+        $ids[] = $financerId['user_enc_id'];
 
         return $ids;
     }
@@ -262,7 +274,7 @@ class UserUtilities
     {
         if (!empty($allNotifications)) {
             $savedNotification = Yii::$app->db->createCommand()->batchInsert(Notifications::tableName(),
-                ['notification_enc_id', 'user_enc_id', 'title', 'description', 'link'],
+                ['notification_enc_id', 'user_enc_id', 'title', 'description', 'link', 'created_by'],
                 $allNotifications)->execute();
 
 
@@ -279,17 +291,17 @@ class UserUtilities
                         $token[] = $val['token'];
                     }
 
-                    if($token){
+                    if ($token) {
                         $notificationStatus = $this->sendPushNotification($token, $an['title'], $an['description'], $an['link']);
 
                         $updateNotification = Notifications::findOne(['notification_enc_id' => $an['notification_enc_id']]);
-                        if($notificationStatus && $updateNotification){
+                        if ($notificationStatus && $updateNotification) {
                             $updateNotification->status = '1';
-                        }else if(!$notificationStatus && $updateNotification){
+                        } else if (!$notificationStatus && $updateNotification) {
                             $updateNotification->status = '2';
                         }
 
-                        if(!$updateNotification->update()){
+                        if (!$updateNotification->update()) {
                             throw new \Exception(json_encode($updateNotification->getErrors()));
                         };
                     }
@@ -302,9 +314,9 @@ class UserUtilities
     {
         $url = "https://fcm.googleapis.com/fcm/send";
         $tokens = $token;
-        $serverKey = 'AAAAKEwFH2k:APA91bGJz4i2IdWaBHL55yjeot0ectkOTP7b0a73RJCTIByOZxfHuaQA6KfepAb4Ck5w11UJ1BnPu8OqMgbqD2mqzGqmnSPAMWT-tpmnuGW9dT5LGBLVfvoYLHpe4KF6rZA9iss6b5zA';
+        $serverKey = Yii::$app->params->fireabse->modules->pushNotification->serverKey;
         $notification = array('title' => $title, 'body' => $body, 'sound' => 'default', 'badge' => '1',);
-        $arrayToSend = array('registration_ids' => $tokens, 'data'=> array('notification' => $notification, 'link' => $link), 'priority' => 'high');
+        $arrayToSend = array('registration_ids' => $tokens, 'data' => array('notification' => $notification, 'link' => $link), 'priority' => 'high');
         $json = json_encode($arrayToSend);
         $headers = array();
         $headers[] = 'Content-Type: application/json';

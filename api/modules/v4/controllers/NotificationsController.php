@@ -3,6 +3,7 @@
 namespace api\modules\v4\controllers;
 
 use api\modules\v4\utilities\UserUtilities;
+use common\models\Notifications;
 use common\models\NotificationTokens;
 use common\models\PushNotifications;
 use yii\web\UploadedFile;
@@ -10,6 +11,7 @@ use yii\filters\VerbFilter;
 use Yii;
 use yii\filters\Cors;
 use yii\filters\ContentNegotiator;
+use yii\helpers\Url;
 use common\models\Utilities;
 
 // this controller is used for push notifications
@@ -25,6 +27,8 @@ class NotificationsController extends ApiBaseController
             'actions' => [
                 'save-token' => ['POST', 'OPTIONS'],
                 'update-token' => ['POST', 'OPTIONS'],
+                'get-notifications-list' => ['POST', 'OPTIONS'],
+                'set-notification-open' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -41,7 +45,8 @@ class NotificationsController extends ApiBaseController
         return $behaviors;
     }
 
-    public function actionSaveToken(){
+    public function actionSaveToken()
+    {
         if ($user = $this->isAuthorized()) {
             $params = Yii::$app->request->post();
 
@@ -54,21 +59,22 @@ class NotificationsController extends ApiBaseController
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $notification_token->getErrors()]);
             }
 
-            return $this->response(200, ['status' => 200, 'message' => 'successfully saved', 'user_id' => $user->user_enc_id ]);
+            return $this->response(200, ['status' => 200, 'message' => 'successfully saved', 'user_id' => $user->user_enc_id]);
         }
     }
 
-    public function actionUpdateToken(){
+    public function actionUpdateToken()
+    {
         $params = Yii::$app->request->post();
 
-        if(empty($params['token'])){
-            return $this->response(404, ['status' => 404, 'message' => '"token" in missing']);
+        if (empty($params['token'])) {
+            return $this->response(422, ['status' => 422, 'message' => '"token" in missing']);
         }
         $notification_token = NotificationTokens::findOne(['token' => $params['token'], 'is_deleted' => 0]);
-        if($notification_token){
+        if ($notification_token) {
             $notification_token->is_deleted = 1;
             $notification_token->token_expired_on = date('Y-m-d H:i:s');
-            if(!$notification_token->update()){
+            if (!$notification_token->update()) {
                 return $this->response(500, 'an error occurred');
             }
         }
@@ -76,10 +82,66 @@ class NotificationsController extends ApiBaseController
         return $this->response(200, ['status' => 200, 'message' => 'Token Expired Successfully']);
     }
 
-    public function actionPushNotification(){
+    public function actionGetNotificationsList()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+            $limit = !empty($params['limit']) ? $params['limit'] : 10;
+            $page = !empty($params['page']) ? $params['page'] : 1;
+
+            $notifications = Notifications::find()
+                ->alias('a')
+                ->select(['a.title', 'a.description', 'a.link', 'a.notification_enc_id', 'a.user_enc_id', 'a.is_open',
+                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->digitalOcean->baseUrl . Yii::$app->params->digitalOcean->rootDirectory . Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", concat(b.first_name," ",b.last_name), "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'
+                ])
+                ->joinWith(['createdBy b'], false)
+                ->where(['a.user_enc_id' => $user->user_enc_id, 'a.is_deleted' => 0]);
+            $count = $notifications->count();
+            $notifications = $notifications
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->orderBy(['a.created_on' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            if ($notifications) {
+                return $this->response(200, ['status' => 200, 'notification' => $notifications, 'count' => (int)$count]);
+            }
+
+            return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionSetNotificationOpen(){
+        if($user = $this->isAuthorized()){
+            $params = Yii::$app->request->post();
+
+            if(empty($params['notification_enc_id'])){
+                return $this->response(422, ['status' => 422, 'message' => 'Missing Information "notification_enc_id"']);
+            }
+            $notification = Notifications::findOne(['notification_enc_id' => $params['notification_enc_id']]);
+            if($notification){
+                $notification->is_open = 1;
+                $notification->opened_on = date('Y-m-d H:i:s');
+                if(!$notification->update()){
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error'=> $notification->getErrors()]);
+                }
+
+                return $this->response(200, ['status' => 200, 'message' => 'Notification Updated Successfully']);
+            }
+        }else{
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionPushNotification()
+    {
         $params = Yii::$app->request->post();
 
-        if(empty($params['userIds']) || empty($params['title'])){
+        if (empty($params['userIds']) || empty($params['title'])) {
             return $this->response(500, ['status' => 500, 'message' => 'Missing information "userIds" or "title"']);
         }
 

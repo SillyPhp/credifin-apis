@@ -1143,7 +1143,7 @@ class CompanyDashboardController extends ApiBaseController
                     ->asArray()
                     ->all();
                 $updated_by = $user->first_name ." ". $user->last_name;
-                $notificationBody = "Status: ".$loanStatus[0]['loan_status']." -> ".$loanStatus[1]['loan_status']." \n Loan Account Number: $loanApp->application_number \n Applicant Name: $loanApp->applicant_name \n Loan Type: $loanApp->loan_type \n Loan Amount: $loanApp->amount";
+                $notificationBody = "Status: ".$loanStatus[0]['loan_status']." -> ".$loanStatus[1]['loan_status'];
                 if(!empty($userIds)){
                     $allNotifications = [];
                     foreach ($userIds as $uid){
@@ -1152,9 +1152,10 @@ class CompanyDashboardController extends ApiBaseController
                         $notification = [
                             'notification_enc_id' =>$utilitiesModel->encrypt(),
                             'user_enc_id' => $uid,
-                            'title' => "Application status changed by $updated_by",
+                            'title' => "Application status of $loanApp->application_number changed by $updated_by",
                             'description' =>  $notificationBody,
-                            'link' => '/account/loan-application-details/'.$params['loan_id'],
+                            'link' => 'https://staging.empowerloans.in/account/loan-application/'.$params['loan_id'],
+                            'created_by' => $user->user_enc_id
                         ];
 
                         array_push($allNotifications, $notification);
@@ -1864,7 +1865,7 @@ class CompanyDashboardController extends ApiBaseController
             $shared_to = $shared->first_name ." ". $shared->last_name;
 
             $loan_details = LoanApplications::findOne(['loan_app_enc_id' => $params['loan_id']]);
-            $notificationBody = "Loan Account Number: $loan_details->application_number \n Applicant Name: $loan_details->applicant_name \n Loan Type: $loan_details->loan_type \n Loan Amount: $loan_details->amount";
+            $notificationBody =  $loan_details->application_number ? "Loan Account Number: $loan_details->application_number" : '';
             $allNotifications = [];
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $notification = [
@@ -1872,7 +1873,8 @@ class CompanyDashboardController extends ApiBaseController
                 'user_enc_id' => $params['shared_to'],
                 'title' => "$shared_by shared an application with you",
                 'description' => $notificationBody,
-                'link' => '/account/loan-application-details/'.$params['loan_id'],
+                'link' => '/account/loan-application/'.$params['loan_id'],
+                'created_by' => $user->user_enc_id
             ];
             array_push($allNotifications, $notification);
             $notificationUsers = new UserUtilities();
@@ -1885,7 +1887,8 @@ class CompanyDashboardController extends ApiBaseController
                         'user_enc_id' => $uid,
                         'title' => "$shared_by shared an application with $shared_to",
                         'description' => $notificationBody,
-                        'link' => '/account/loan-application-details/'.$params['loan_id'],
+                        'link' => '/account/loan-application/'.$params['loan_id'],
+                        'created_by' => $user->user_enc_id,
                     ];
                     array_push($allNotifications, $notification);
                 }
