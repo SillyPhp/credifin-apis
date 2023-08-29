@@ -1440,7 +1440,7 @@ class LoansController extends ApiBaseController
 
     public function actionLoanUpdate()
     {
-        if (!$this->isAuthorized()) {
+        if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
         $params = Yii::$app->request->post();
@@ -1454,6 +1454,8 @@ class LoansController extends ApiBaseController
                 return $this->response(404, ['status' => 404, 'message' => 'loan not found']);
             }
             $model->$type = $params['value'];
+            $model->updated_by = $user->user_enc_id;
+            $model->updated_on = date('Y-m-d H:i:s');
             if (!$model->save()) {
                 return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()]);
             }
