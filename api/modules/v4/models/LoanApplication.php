@@ -884,6 +884,7 @@ class LoanApplication extends Model
                     $purposeCodeArray[] = $purpose['purpose_code'];
                 }
             }
+            $purposeCodeArray = array_unique($purposeCodeArray);
             $purposeCode = implode('-', $purposeCodeArray);
             $finalPurposeCode = '-' . $purposeCode;
         }
