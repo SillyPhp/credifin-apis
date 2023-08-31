@@ -67,6 +67,7 @@ class LoansController extends ApiBaseController
                 'update-loan' => ['POST', 'OPTIONS'],
                 'credit-report' => ['POST', 'OPTIONS'],
                 'check-number' => ['POST', 'OPTIONS'],
+                'loan-update' => ['POST', 'OPTIONS']
             ]
         ];
 
@@ -735,43 +736,42 @@ class LoansController extends ApiBaseController
     public function actionUpdateApplicationNumber()
     {
         // checking authorization
-        if ($user = $this->isAuthorized()) {
-
-            $params = Yii::$app->request->post();
-
-            // checking value
-            if (empty($params['value'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "value"']);
-            }
-
-            // checking id
-            if (empty($params['id'])) {
-                return $this->response(422, ['status' => 422, 'message' => 'missing information "id"']);
-            }
-
-            // getting loan application object from loan id
-            $application = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
-
-            // updating data
-            if ($application) {
-                $application->application_number = $params['value'];
-                $application->updated_by = $user->user_enc_id;
-                $application->updated_on = date('Y-m-d H:i:s');
-                if (!$application->update()) {
-                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $application->getErrors()]);
-                }
-
-                return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
-
-            } else {
-
-                // if application not found
-                return $this->response(404, ['status' => 404, 'message' => 'application not found']);
-            }
-
-        } else {
+        if (!$user = $this->isAuthorized()) {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
+
+        $params = Yii::$app->request->post();
+
+        // checking value
+        if (empty($params['value'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "value"']);
+        }
+
+        // checking id
+        if (empty($params['id'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information "id"']);
+        }
+
+        // getting loan application object from loan id
+        $application = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
+
+        // updating data
+        if ($application) {
+            $application->application_number = $params['value'];
+            $application->updated_by = $user->user_enc_id;
+            $application->updated_on = date('Y-m-d H:i:s');
+            if (!$application->update()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $application->getErrors()]);
+            }
+
+            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+
+        } else {
+
+            // if application not found
+            return $this->response(404, ['status' => 404, 'message' => 'application not found']);
+        }
+
     }
 
     // this action is used to add loan branch
@@ -1100,7 +1100,9 @@ class LoansController extends ApiBaseController
         }
         $credit_report = CreditLoanApplicationReports::find()
             ->alias('a')
-            ->select(['a.response_enc_id', 'b1.request_source', 'c.borrower_type', 'c.name'])
+            ->select(['a.response_enc_id', 'b1.request_source', 'c.borrower_type', 'c.name',
+                'a.created_on'
+            ])
             ->joinWith(['responseEnc b' => function ($b) {
                 $b->select(['b.response_enc_id', 'b1.request_source', 'b.response_body']);
                 $b->joinWith(['requestEnc b1'], false);
@@ -1139,7 +1141,12 @@ class LoansController extends ApiBaseController
                                 $credit_report[$key]['CIBIL']['score'] = ltrim($array['ScoreSegment']['Score'], 0);
                             }
                         }
+                        if (!empty($array['Header'])) {
+                            $rawDate = $array['Header']['DateProcessed'];
+                            $formattedDate = substr($rawDate, 4) . '-' . substr($rawDate, 2, 2) . '-' . substr($rawDate, 0, 2);
 
+                            $credit_report[$key]['report_date'] = $formattedDate;
+                        }
                         if (!empty($array['TelephoneSegment'])) {
                             if (array_key_exists(0, $array['TelephoneSegment'])) {
                                 foreach ($array['TelephoneSegment'] as $telephones) {
@@ -1419,10 +1426,24 @@ class LoansController extends ApiBaseController
                 if (is_array($item['model'])) {
                     $item['model'] = end($item['model']);
                 }
-                $item['model'] = substr_count($item['model'], 'Extended') ? str_replace('Extended', '', $item['model']) : $item['model'];
-                $item['stamp'] = strtotime($item['stamp']);
-                $groupedAudit[$item['model']][] = $item;
+                if ($item['model'] !== 'EducationLoanPayments') {
+                    $item['model'] = substr_count($item['model'], 'Extended') ? str_replace('Extended', '', $item['model']) : $item['model'];
+                    $item['stamp'] = strtotime($item['stamp']);
+
+                    if ($item['field'] === 'gender') {
+                        if ($item['new_value'] == 1) {
+                            $item['new_value'] = 'Male';
+                        } elseif ($item['new_value'] == 2) {
+                            $item['new_value'] = 'Female';
+                        } else {
+                            $item['new_value'] = 'Others';
+                        }
+                    }
+
+                    $groupedAudit[$item['model']][] = $item;
+                }
             }
+
             foreach ($groupedAudit as $g => $item) {
                 array_multisort(array_column($item, 'stamp'), SORT_DESC, $item);
                 foreach ($item as $key => $i) {
@@ -1430,6 +1451,7 @@ class LoansController extends ApiBaseController
                     $groupedAudit[$g][$key] = $i;
                 }
             }
+
             return $this->response(200, ['status' => 200, 'audit_list' => $groupedAudit]);
 
         } else {
@@ -1438,4 +1460,29 @@ class LoansController extends ApiBaseController
 
     }
 
+    public function actionLoanUpdate()
+    {
+        if (!$user = $this->isAuthorized()) {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+        $params = Yii::$app->request->post();
+        if (empty($params['type']) || empty($params['id']) || empty($params['value'])) {
+            return $this->response(422, ['status' => 422, 'message' => 'missing information " or id or value"']);
+        }
+        if (in_array($params['type'], ['invoice_number', 'rc_number', 'chassis_number'])) {
+            $type = $params['type'];
+            $model = LoanApplicationsExtended::findOne(['loan_app_enc_id' => $params['id']]);
+            if (!$model) {
+                return $this->response(404, ['status' => 404, 'message' => 'loan not found']);
+            }
+            $model->$type = $params['value'];
+            $model->updated_by = $user->user_enc_id;
+            $model->updated_on = date('Y-m-d H:i:s');
+            if (!$model->save()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred', 'error' => $model->getErrors()]);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'successfully updated']);
+        }
+        return $this->response(500, ['status' => 500, 'message' => 'invalid field']);
+    }
 }
